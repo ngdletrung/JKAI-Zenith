@@ -1,0 +1,11 @@
+"""
+🧬 [ZENITH-LOGIC]: agent-workflow-automation
+"""
+import asyncio
+
+async def agent_workflow_automation(**kwargs):
+    """Thuc thi ky nang dong hoa tu Ruflo thua Master."""
+    from core.utils.knowledge_brain import knowledge_brain
+    task_id = kwargs.get("task_id", "manual")
+    prompt = f"Executing agent-workflow-automation with params: {kwargs}"
+    return await knowledge_brain.ask(prompt, tier=2, task_id=task_id)

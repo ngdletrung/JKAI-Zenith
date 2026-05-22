@@ -1,0 +1,390 @@
+"""
+⚡ FAST PIPELINE — Zenith v43.0  [T2 → T3 → T4 → T6]
+═══════════════════════════════════════════════════════════
+Giống hệt DEEP Pipeline nhưng BỎ QUA T5 (CRITIC).
+Đây là Self-Contained Unit — không cần ai điều phối bên ngoài.
+
+  ┌─────────────────────────────────────────────────────────┐
+  │  T1  receptionist.py   → Nhận diện & Switchboard        │
+  │  T2  FastPipeline      → Recon + Context (RAG)      ←   │
+  │  T3  FastPipeline      → Forge + Policy (PLANNER)   ←   │  FILE NÀY
+  │  T4  FastPipeline      → Gọi Executor thực thi      ←   │
+  │  [T5 CRITIC bị bỏ qua — Điểm khác duy nhất vs DEEP]     │
+  │  T6  FastPipeline      → SUMMARIZER tóm tắt         ←   │
+  └─────────────────────────────────────────────────────────┘
+
+NGUYÊN TẮC VÀNG:
+  - Chạy đủ T2, T3, T4, T6
+  - BỎ QUA T5 (CRITIC) — đây là điểm khác biệt DUY NHẤT so với DEEP
+  - Dùng role PLANNER để lập Blueprint (T3)
+  - Mọi model đều được map từ rule_hardware.md, KHÔNG set cứng ở đây
+═══════════════════════════════════════════════════════════
+"""
+import json
+import logging
+import os
+from typing import Any, Dict, List, Optional
+import httpx
+
+logger = logging.getLogger("JKAI.FastPipeline")
+
+class FastPipeline:
+    """
+    ⚡ Luồng Phản Xạ — Tự khép kín hoàn toàn.
+    T2 → T3 → T4 → T6 (Bỏ qua T5 CRITIC)
+    """
+    def __init__(self):
+        # 🧠 [PLANNING-INIT]: Đúc kết các Stage T2+T3
+        from planning_pipeline import (
+            ReconStage, ContextStage, ForgeStage, PolicyStage, PlanningPipeline
+        )
+        self._planning = PlanningPipeline(stages=[
+            ReconStage(), ContextStage(), ForgeStage(), PolicyStage()
+        ])
+
+    async def execute(
+        self,
+        goal: str,
+        task_id: str,
+        planner_instance: Any,
+        context: Dict = None,
+        history: List = None,
+        images: List = None,
+        mode: str = "fast",
+        trace_id: str = "system",
+    ) -> Dict[str, Any]:
+        """
+        Thực thi luồng FAST: T2 → T3 → T4 → T6 (không có T5 CRITIC).
+        Returns: dict {"answer": str, "task_id": str, "steps": list}
+        """
+        from core.utils.engine import engine
+
+        context = context or {}
+        history = history or []
+
+        engine.publish_mission_log(
+            "SYSTEM",
+            f"⚡ [FAST-PIPELINE]: Khởi động luồng phản xạ 4 tầng (T2→T3→T4→T6), bỏ qua CRITIC.",
+            task_id, trace_id, stealth=True
+        )
+
+        # ═══════════════════════════════════════════
+        # T2 + T3: Recon → Context → Forge → Policy
+        # ═══════════════════════════════════════════
+        initial_state = {
+            "goal": goal,
+            "task_id": task_id,
+            "trace_id": trace_id,
+            "planner_instance": planner_instance,
+            "context": context,
+            "mode": mode,
+            "complexity": context.get("complexity", "simple"),
+        }
+
+        try:
+            plan_state = await self._planning.execute(initial_state)
+        except Exception as e:
+            logger.error(f"🚨 [FAST-T2T3-ERR]: {e}")
+            engine.publish_mission_log("ERROR", f"🚨 [T2/T3 FAULT]: {e}", task_id, trace_id)
+            return {"answer": f"❌ [PLANNER ERROR]: Không thể lập kế hoạch - {e}", "task_id": task_id}
+
+        final_plan = plan_state.get("final_plan", {})
+        steps = final_plan.get("steps", [])
+
+        engine.publish_mission_log(
+            "PLANNER",
+            f"📊 [BLUEPRINT SEALED]: {len(steps)} bước thực thi đã được đúc kết.",
+            task_id, trace_id,
+        )
+
+        if not steps:
+            return {"answer": "⚠️ [PLANNER]: Không tạo được bước thực thi.", "task_id": task_id}
+
+        # ═══════════════════════════════════════════
+        # T4: Gọi Executor service thực thi Blueprint
+        # ═══════════════════════════════════════════
+        execution_results = []
+        try:
+            engine.publish_mission_log(
+                "EXECUTOR", "⚙️ [T4]: Chuyển Blueprint sang Ban Thực Thi...", task_id, trace_id
+            )
+            async with httpx.AsyncClient(timeout=300.0) as client:
+                exec_payload = {
+                    "goal": goal,
+                    "steps": steps,
+                    "task_id": task_id,
+                    "trace_id": trace_id,
+                    "history": history,
+                    "context": context,
+                }
+                executor_url = os.getenv("EXECUTOR_URL", "http://ai-executor:8001")
+                resp = await client.post(f"{executor_url}/execute", json=exec_payload)
+                if resp.status_code == 200:
+                    exec_data = resp.json()
+                    execution_results = exec_data.get("results", [])
+                    engine.publish_mission_log(
+                        "EXECUTOR",
+                        f"✅ [T4]: Thực thi hoàn tất — {len(execution_results)} kết quả.",
+                        task_id, trace_id,
+                    )
+                else:
+                    engine.publish_mission_log(
+                        "WARN", f"⚠️ [T4]: Executor trả về {resp.status_code}.", task_id, trace_id
+                    )
+        except Exception as e:
+            logger.warning(f"⚠️ [FAST-T4-ERR]: {e}")
+            engine.publish_mission_log("WARN", f"⚠️ [T4 FAULT]: {e} — Tiếp tục T6.", task_id, trace_id)
+
+        # [T5 CRITIC] — Silent bypass in FAST mode.
+        pass
+
+        # ═══════════════════════════════════════════
+        # T6: SUMMARIZER tóm tắt và trả kết quả
+        # ═══════════════════════════════════════════
+        try:
+            engine.publish_mission_log(
+                "SUMMARIZER", "📝 [T6]: Ban Thư Ký đang soạn Báo cáo...", task_id, trace_id
+            )
+            manifesto = await engine.get_brain_knowledge("agent_summarizer.md") or "Bạn là Thư ký Zenith T6."
+            
+            # Lấy thời gian hiện tại theo UTC+7
+            import datetime
+            utc_now = datetime.datetime.utcnow()
+            vietnam_now = utc_now + datetime.timedelta(hours=7)
+            ampm = "AM" if vietnam_now.hour < 12 else "PM"
+            hour_12 = vietnam_now.hour % 12
+            if hour_12 == 0: hour_12 = 12
+            weekday_map = {"Monday": "Thứ Hai", "Tuesday": "Thứ Ba", "Wednesday": "Thứ Tư", "Thursday": "Thứ Năm", "Friday": "Thứ Sáu", "Saturday": "Thứ Bảy", "Sunday": "Chủ Nhật"}
+            weekday_vn = weekday_map.get(vietnam_now.strftime('%A'), vietnam_now.strftime('%A'))
+            formatted_time = f"{hour_12:02d}h{vietnam_now.minute:02d}m{vietnam_now.second:02d}s {ampm} ({weekday_vn}, ngày {vietnam_now.strftime('%d')} tháng {vietnam_now.strftime('%m')} năm {vietnam_now.strftime('%Y')})"
+
+            # Phân tích xem có phải là nhiệm vụ đọc báo/URL hay không
+            is_web_reading = False
+            scraped_title = ""
+            results_list = []
+            if isinstance(execution_results, dict):
+                results_list = list(execution_results.values())
+            elif isinstance(execution_results, list):
+                results_list = execution_results
+
+            for res in results_list:
+                if isinstance(res, dict) and res.get("status") == "success":
+                    output_data = res.get("output", {})
+                    if isinstance(output_data, dict):
+                        # Trường hợp cào Jina (chứa "content") hoặc tìm kiếm có chứa "content"
+                        content = output_data.get("content", "")
+                        if content:
+                            is_web_reading = True
+                            # Tìm tiêu đề từ content
+                            for line in content.splitlines()[:5]:
+                                if line.strip().startswith("# "):
+                                    scraped_title = line.strip()[2:].strip()
+                                    break
+                            if not scraped_title:
+                                scraped_title = "Tổng hợp nội dung trang Web"
+                            break
+                        # Trường hợp tìm kiếm Internet Tavily (chứa "results")
+                        elif "results" in output_data:
+                            is_web_reading = True
+                            tavily_res = output_data.get("results", [])
+                            if tavily_res and isinstance(tavily_res[0], dict):
+                                scraped_title = tavily_res[0].get("title", "")
+                            if not scraped_title:
+                                scraped_title = "Kết quả tìm kiếm Internet mới nhất"
+                            break
+
+            # Check if search results are empty/sparse
+            is_results_empty = True
+            for res in results_list:
+                if isinstance(res, dict) and res.get("status") == "success":
+                    output_data = res.get("output", {})
+                    if isinstance(output_data, dict):
+                        if "results" in output_data:
+                            for r in output_data.get("results", []):
+                                if isinstance(r, dict) and (r.get("content") or r.get("snippet")):
+                                    if len((r.get("content") or r.get("snippet") or "").strip()) > 30:
+                                        is_results_empty = False
+                                        break
+                        elif output_data.get("content"):
+                            if len(output_data.get("content", "").strip()) > 30:
+                                is_results_empty = False
+                                break
+
+            if is_web_reading:
+                if is_results_empty:
+                    summary_prompt = (
+                        f"[MISSION DATA]\n"
+                        f"Objective: {goal}\n"
+                        f"Execution Results: {self._compress_results(execution_results)}\n\n"
+                        "══════════════════════════════════════════\n"
+                        "[SUMMARIZER PROTOCOL - NO DATA ALERT]\n"
+                        "══════════════════════════════════════════\n"
+                        "You are the Elite Secretary of JKAI Zenith. We did not find any substantial details from the search results to formulate a detailed news report.\n"
+                        "Please write a polite, professional, and elegant notification in Vietnamese to Master stating that the search results returned empty or lacked detailed information today.\n"
+                        "Do not make up any news or facts. Simply inform the Master clearly, and include the signature at the bottom.\n\n"
+                        f"👉 {formatted_time}\n"
+                        f"👉 Ban Thư Ký JKAI Zenith\n"
+                    )
+                else:
+                    if not scraped_title:
+                        scraped_title = "Bản tin Tổng hợp Internet Zenith"
+                    summary_prompt = (
+                        f"[MISSION DATA]\n"
+                        f"Objective: {goal}\n"
+                        f"Execution Results: {self._compress_results(execution_results)}\n\n"
+                        "══════════════════════════════════════════\n"
+                        "[SUMMARIZER PROTOCOL - TIN TỨC & URL]\n"
+                        "══════════════════════════════════════════\n"
+                        "You are the Elite Secretary of JKAI Zenith. Write a clear, comprehensive, and detailed news summary in Vietnamese.\n\n"
+                        "[CORE DIRECTIVES FOR WEBPAGE SUMMARY]\n"
+                        f"1. Dùng Tiêu đề của bài báo làm tiêu đề chính của báo cáo: '# {scraped_title}'.\n"
+                        "2. Tuyệt đối KHÔNG sử dụng các tiêu đề rập khuôn máy móc như '[BÁO CÁO ELITE]' hay '[MISSION_RESULT]'.\n"
+                        "3. Tuyệt đối KHÔNG viết câu vô nghĩa 'Mục tiêu Master đã được thực hiện' hay 'Kế hoạch đã được thực hiện'. Vào thẳng nội dung bài báo một cách tự nhiên, trang trọng và lịch thiệp.\n"
+                        "4. Trình bày bài tóm tắt theo văn phong BÁO CÁO CHUYÊN NGHIỆP và ĐẲNG CẤP EXECUTIVE:\n"
+                        "   - Sử dụng các dấu gạch đầu dòng rõ ràng (- ) cho mỗi ý chính.\n"
+                        "   - Sử dụng chữ IN ĐẬM (bold markdown) để nhấn mạnh các từ khóa chính, tiêu đề phụ, hoặc số liệu quan trọng.\n"
+                        "   - Sử dụng chữ thường (regular text) cho phần giải thích đi kèm để tạo độ tương phản trực quan tuyệt vời, giúp Master lướt báo cáo cực kỳ dễ nhìn và sang trọng.\n"
+                    )
+            else:
+                summary_prompt = (
+                    f"[MISSION DATA]\n"
+                    f"Objective: {goal}\n"
+                    f"Execution Results: {self._compress_results(execution_results)}\n\n"
+                    "══════════════════════════════════════════\n"
+                    "[SUMMARIZER PROTOCOL - THỰC THI KỸ THUẬT]\n"
+                    "══════════════════════════════════════════\n"
+                    "You are the Elite Secretary of JKAI Zenith. Write a clear, professional mission report in Vietnamese.\n\n"
+                    "[CORE DIRECTIVES]\n"
+                    "1. BASE YOUR REPORT ONLY on the Execution Results above. Do not invent or assume any data.\n"
+                    "2. If Execution Results are empty or contain errors, report the failure honestly.\n"
+                    "3. Viết báo cáo chuyên nghiệp, mạch lạc, dễ nhìn và đẳng cấp:\n"
+                    "   - Sử dụng dấu gạch đầu dòng rõ ràng (- ) cho mỗi luận điểm chính.\n"
+                    "   - Sử dụng chữ IN ĐẬM (bold) để làm nổi bật các sự kiện cốt lõi, từ khóa kỹ thuật hoặc chỉ số quan trọng.\n"
+                    "   - Giữ phần nội dung mô tả chi tiết bằng chữ thường để bảo toàn tính dễ đọc trực quan.\n"
+                    "4. Tuyệt đối KHÔNG viết các câu rập khuôn sáo rỗng như 'Mục tiêu Master đã được thực hiện' hay '[BÁO CÁO ELITE]'.\n"
+                    "5. Sử dụng thuật ngữ tiếng Việt chuẩn mực: dịch 'Post-Mortem', 'Autopsy', 'Error Report' thành 'Báo cáo sự cố', 'Phân tích nguyên nhân', 'Hành động khắc phục', 'Chi tiết lỗi'. Tránh hoàn toàn việc sử dụng từ Hán-Việt kỳ dị hoặc tự tạo từ ngữ tối nghĩa.\n"
+                )
+
+            final_answer = await engine.call_chat(
+                messages=[
+                    {"role": "system", "content": manifesto},
+                    {"role": "user", "content": summary_prompt},
+                ],
+                role="SUMMARIZER",  # Role được map tới model trong rule_hardware.md
+                task_id=task_id,
+                trace_id=trace_id,
+            )
+            
+            signature = f"\n\n---\n👉 Tổng hợp lúc {formatted_time}\n\nBan Thư Ký JKAI Zenith"
+            
+            if isinstance(final_answer, dict) and "answer" in final_answer:
+                final_answer["answer"] += signature
+            elif isinstance(final_answer, str):
+                final_answer += signature
+                
+            engine.publish_mission_log(
+                "SUMMARIZER", "✅ [T6]: Báo cáo đã soạn thảo hoàn tất.", task_id, trace_id
+            )
+        except Exception as e:
+            logger.error(f"🚨 [FAST-T6-ERR]: {e}")
+            final_answer = f"✅ Kế hoạch đã được lập và thực thi. [{e}]"
+
+        logger.info(f"⚡ [FAST-PIPELINE]: Hoàn tất T2→T3→T4→T6 cho task {task_id}")
+        return {
+            "answer": final_answer or "✅ Sứ mệnh hoàn tất.",
+            "task_id": task_id,
+            "steps": steps,
+            "sensitive": False,
+        }
+
+    def _compress_results(self, results: Any) -> str:
+        """
+        🗜️ [CONTEXT-COMPRESSOR]: Nén kết quả thực thi để tránh tràn cửa sổ ngữ cảnh (Context Window)
+        của mô hình cục bộ.
+        """
+        if not results:
+            return "[]"
+            
+        try:
+            # Nếu results là dict, hãy nén từng phần tử bên trong
+            if isinstance(results, dict):
+                compressed = {}
+                for step_id, step_res in results.items():
+                    if not isinstance(step_res, dict):
+                        compressed[step_id] = step_res
+                        continue
+                    
+                    output_data = step_res.get("output", {})
+                    if isinstance(output_data, dict):
+                        cleaned_output = {}
+                        # Trường hợp kết quả tìm kiếm Tavily (chứa "results")
+                        if "results" in output_data:
+                            cleaned_results = []
+                            for r in output_data.get("results", []):
+                                if isinstance(r, dict):
+                                    cleaned_r = {
+                                        "title": r.get("title", ""),
+                                        "url": r.get("url", ""),
+                                        "content": (r.get("content") or r.get("snippet") or "")[:400]
+                                    }
+                                    cleaned_results.append(cleaned_r)
+                            cleaned_output["results"] = cleaned_results
+                        # Trường hợp kết quả cào trang Jina (chứa "content")
+                        elif "content" in output_data:
+                            cleaned_output["content"] = output_data.get("content", "")[:3000]
+                        else:
+                            # Copy các trường thông tin nhỏ khác
+                            for k, v in output_data.items():
+                                if isinstance(v, str) and len(v) > 1000:
+                                    cleaned_output[k] = v[:1000]
+                                else:
+                                    cleaned_output[k] = v
+                        
+                        cleaned_res = {k: v for k, v in step_res.items() if k != "output"}
+                        cleaned_res["output"] = cleaned_output
+                        compressed[step_id] = cleaned_res
+                    else:
+                        compressed[step_id] = step_res
+                return json.dumps(compressed, ensure_ascii=False)
+                
+            elif isinstance(results, list):
+                # Tương tự cho dạng list
+                cleaned_list = []
+                for res in results:
+                    if not isinstance(res, dict):
+                        cleaned_list.append(res)
+                        continue
+                    
+                    output_data = res.get("output", {})
+                    if isinstance(output_data, dict):
+                        cleaned_output = {}
+                        if "results" in output_data:
+                            cleaned_results = []
+                            for r in output_data.get("results", []):
+                                if isinstance(r, dict):
+                                    cleaned_r = {
+                                        "title": r.get("title", ""),
+                                        "url": r.get("url", ""),
+                                        "content": (r.get("content") or r.get("snippet") or "")[:400]
+                                    }
+                                    cleaned_results.append(cleaned_r)
+                            cleaned_output["results"] = cleaned_results
+                        elif "content" in output_data:
+                            cleaned_output["content"] = output_data.get("content", "")[:3000]
+                        else:
+                            for k, v in output_data.items():
+                                if isinstance(v, str) and len(v) > 1000:
+                                    cleaned_output[k] = v[:1000]
+                                else:
+                                    cleaned_output[k] = v
+                        cleaned_res = {k: v for k, v in res.items() if k != "output"}
+                        cleaned_res["output"] = cleaned_output
+                        cleaned_list.append(cleaned_res)
+                    else:
+                        cleaned_list.append(res)
+                return json.dumps(cleaned_list, ensure_ascii=False)
+                
+        except Exception:
+            pass
+            
+        return json.dumps(results, ensure_ascii=False)

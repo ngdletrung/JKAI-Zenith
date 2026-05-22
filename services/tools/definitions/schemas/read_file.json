@@ -1,0 +1,14 @@
+{
+  "name": "read_file",
+  "description": "Đọc nội dung của một tệp tin. Dùng để phân tích code hoặc tài liệu.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "path": {
+        "type": "string",
+        "description": "Đường dẫn tuyệt đối hoặc tương đối tới tệp tin."
+      }
+    },
+    "required": ["path"]
+  }
+}

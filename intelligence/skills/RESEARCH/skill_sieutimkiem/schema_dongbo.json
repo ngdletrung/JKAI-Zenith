@@ -1,0 +1,13 @@
+{
+    "name": "dong_bo_toan_dien_qdrant",
+    "description": "Thực hiện quét toàn bộ thư mục tri thức và nạp chúng vào cơ sở dữ liệu Vector Qdrant để nâng cấp khả năng RAG (Tổng Chỉ mục).",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "folder_path": {
+                "type": "string",
+                "description": "Đường dẫn thư mục cần quét (mặc định là /intelligence)."
+            }
+        }
+    }
+}

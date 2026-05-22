@@ -1,0 +1,18 @@
+{
+  "name": "browser_interact",
+  "description": "Truy cập trình duyệt thực để tương tác với trang web động, click, điền form hoặc trích xuất dữ liệu.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "url": {
+        "type": "string",
+        "description": "Địa chỉ URL cần truy cập."
+      },
+      "objective": {
+        "type": "string",
+        "description": "Mục tiêu cụ thể cần thực hiện trên trang web."
+      }
+    },
+    "required": ["url", "objective"]
+  }
+}

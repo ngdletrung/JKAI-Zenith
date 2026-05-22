@@ -1,0 +1,18 @@
+{
+  "name": "write_file",
+  "description": "Tạo mới hoặc ghi đè nội dung một tệp tin.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "path": {
+        "type": "string",
+        "description": "Đường dẫn tới tệp tin cần tạo/ghi."
+      },
+      "content": {
+        "type": "string",
+        "description": "Nội dung đầy đủ của tệp tin."
+      }
+    },
+    "required": ["path", "content"]
+  }
+}

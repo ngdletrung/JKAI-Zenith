@@ -1,0 +1,19 @@
+{
+  "name": "host_control",
+  "description": "Host Control Bridge: Quyền năng tương tác với Windows Master (Click, Type, Speak, Terminal). Chỉ dùng khi có yêu cầu cụ thể.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "action": {
+        "type": "string",
+        "enum": ["screenshot", "click", "type", "speak", "terminal"],
+        "description": "Hành động cần thực hiện trên máy tính Master."
+      },
+      "params": {
+        "type": "object",
+        "description": "Tham số cho hành động (ví dụ: {x: 100, y: 200} cho click, {text: 'hello'} cho type/speak, {command: 'dir'} cho terminal)."
+      }
+    },
+    "required": ["action"]
+  }
+}

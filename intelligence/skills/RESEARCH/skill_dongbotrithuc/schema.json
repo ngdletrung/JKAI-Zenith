@@ -1,0 +1,23 @@
+{
+    "name": "dong_bo_tri_thuc",
+    "description": "[SOP v15.0] Hệ thống Đồng hóa Tri thức v15.0 - Đọc, tư duy phản biện và chắt lọc tinh hoa từ kho tài liệu ngoại lai.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "limit": {
+                "type": "integer",
+                "description": "Giới hạn số lượng tệp tin xử lý (mặc định 1000).",
+                "default": 1000
+            },
+            "profile": {
+                "type": "string",
+                "description": "Cấu hình đồng hóa (mặc định UNIFIED_ELITE).",
+                "default": "UNIFIED_ELITE"
+            },
+            "task_id": {
+                "type": "string",
+                "description": "ID nhiệm vụ để báo cáo log lên Dashboard."
+            }
+        }
+    }
+}

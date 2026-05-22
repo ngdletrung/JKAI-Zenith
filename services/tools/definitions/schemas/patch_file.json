@@ -1,0 +1,22 @@
+{
+  "name": "patch_file",
+  "description": "Chỉnh sửa một phần tệp tin bằng cách thay thế đoạn mã cũ bằng đoạn mã mới. Đây là cách an toàn nhất để sửa code.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "path": {
+        "type": "string",
+        "description": "Đường dẫn tới tệp tin cần sửa."
+      },
+      "original": {
+        "type": "string",
+        "description": "Đoạn mã gốc cần thay thế (phải khớp 100%)."
+      },
+      "replacement": {
+        "type": "string",
+        "description": "Đoạn mã mới sẽ thay thế vào."
+      }
+    },
+    "required": ["path", "original", "replacement"]
+  }
+}

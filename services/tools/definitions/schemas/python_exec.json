@@ -1,0 +1,11 @@
+{
+    "name": "python_exec",
+    "description": "Thực thi mã Python trong môi trường cô lập.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "code": { "type": "string", "description": "Đoạn mã Python cần thực thi" }
+        },
+        "required": ["code"]
+    }
+}

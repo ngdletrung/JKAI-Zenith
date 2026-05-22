@@ -1,0 +1,57 @@
+{
+  "chains": {
+    "SOVEREIGN_RESEARCH": {
+      "description": "Chuỗi trinh sát tình báo và lập đề xuất chiến lược.",
+      "steps": [
+        { "skill_id": "SEARCH_WEB_GLOBAL", "action": "web_search", "desc": "Siêu tìm kiếm dữ liệu thô." },
+        { "skill_id": "SYNC_KNOWLEDGE_QUANTUM", "action": "assimilate", "desc": "Đồng hóa và tóm tắt tri thức." },
+        { "skill_id": "EXECUTIVE_PROPOSAL", "action": "propose", "desc": "Kiến tạo đề xuất chiến lược cho Master." }
+      ]
+    },
+    "DEEP_INTELLIGENCE_BROWSE": {
+      "description": "Chuỗi duyệt web chuyên sâu và trích xuất tri thức đa tầng.",
+      "steps": [
+        { "skill_id": "WEB_PATHFINDER", "action": "navigate", "desc": "Điều hướng và vượt rào cản web." },
+        { "skill_id": "SEMANTIC_DEEP_READER", "action": "extract", "desc": "Đọc sâu và trích xuất thực thể." },
+        { "skill_id": "SYNC_KNOWLEDGE_QUANTUM", "action": "assimilate", "desc": "Đồng hóa dữ liệu vào kho tri thức." }
+      ]
+    },
+    "AUTONOMOUS_FORGE": {
+      "description": "Chuỗi tự động kiến tạo và thẩm định kỹ năng mới.",
+      "steps": [
+        { "skill_id": "SKILL_FORGE", "action": "forge", "desc": "Lò đúc kỹ năng mới." },
+        { "skill_id": "SYSTEM_CORE_EXECUTOR", "action": "audit", "desc": "Thẩm định mã nguồn chuẩn Elite." },
+        { "skill_id": "MICROSERVICE_FORGE", "action": "deploy", "desc": "Triển khai hạ tầng Microservice." }
+      ]
+    },
+    "EMERGENCY_STABILIZE": {
+      "description": "Chuỗi tự động cấp cứu và phục hồi hệ thống.",
+      "steps": [
+        { "skill_id": "SYSTEM_XRAY_MONITOR", "action": "diagnose", "desc": "Chẩn đoán bệnh hệ thống." },
+        { "skill_id": "SYSTEM_CORE_EXECUTOR", "action": "heal", "desc": "Vệ binh tự phục hồi." },
+        { "skill_id": "SYSTEM_XRAY_MONITOR", "action": "verify", "desc": "Giám sát hậu phục hồi." }
+      ]
+    },
+    "SYSTEM_ENGINEERING_SURGERY": {
+      "description": "Chuỗi phẫu thuật mã nguồn và thực thi lệnh hệ thống cấp cao.",
+      "steps": [
+        { "skill_id": "SYSTEM_CORE_EXECUTOR", "action": "shell", "desc": "Thực thi lệnh hệ thống định mệnh." },
+        { "skill_id": "MULTI_LAYER_SURGERY", "action": "edit", "desc": "Phẫu thuật mã nguồn đa tầng." },
+        { "skill_id": "SPARC_ENGINEERING_CORE", "action": "engineer", "desc": "Tối ưu hóa kiến trúc kỹ thuật." }
+      ]
+    },
+    "INFRASTRUCTURE_FORGE": {
+      "description": "Chuỗi quản trị và mở rộng hạ tầng Microservice/Docker.",
+      "steps": [
+        { "skill_id": "SYSTEM_XRAY_MONITOR", "action": "scan", "desc": "Tầm soát hạ tầng." },
+        { "skill_id": "MICROSERVICE_FORGE", "action": "orchestrate", "desc": "Điều phối Docker/N8N." },
+        { "skill_id": "HOST_SATELLITE_CONTROL", "action": "control", "desc": "Kiểm soát vệ tinh Host." }
+      ]
+    }
+  },
+  "protocols": {
+    "data_passing": "context_injection",
+    "error_handling": "auto_retry_with_healing",
+    "version": "41.0"
+  }
+}

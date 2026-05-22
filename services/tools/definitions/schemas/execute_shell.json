@@ -1,0 +1,14 @@
+{
+  "name": "execute_shell",
+  "description": "Thực thi lệnh Terminal bên trong môi trường Docker. Dùng để cài đặt, quản lý container.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "command": {
+        "type": "string",
+        "description": "Lệnh Linux/Bash cần thực thi."
+      }
+    },
+    "required": ["command"]
+  }
+}

@@ -1,0 +1,578 @@
+name: JKAI
+
+services:
+  # =========================
+  # 🗄️ POSTGRESQL
+  # =========================
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    networks:
+      - ai-network
+
+  # =========================
+  # 🧠 REDIS QUEUE (cho n8n worker)
+  # =========================
+  redis-queue-v2:
+    image: redis:7-alpine
+    container_name: redis-queue
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction", "--requirepass", "${REDIS_PASSWORD}"]
+    volumes:
+      - redis-queue-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+    networks:
+      - ai-network
+
+  # =========================
+  # 🧠 REDIS AI (cho AI workers)
+  # =========================
+  redis-ai:
+    image: redis:7-alpine
+    container_name: redis-ai
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
+    volumes:
+      - redis-ai-data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    ports:
+      - "6379:6379"
+    networks:
+      - ai-network
+
+  # =========================
+  # 🔍 QDRANT VECTOR DB
+  # =========================
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: qdrant
+    restart: unless-stopped
+    ports:
+      - "6333:6333"
+    volumes:
+      - qdrant-data:/qdrant/storage
+    networks:
+      - ai-network
+
+  # =========================
+  # 🧠 RAG SERVICE
+  # =========================
+  rag-service:
+    build: ./rag
+    container_name: rag-service
+    restart: unless-stopped
+    depends_on:
+      qdrant:
+        condition: service_started
+    command: ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    env_file: .env
+    volumes:
+      - ./rag:/app
+      - ./intelligence/vault/01_Knowledge:/app/knowledge_base
+      - ./intelligence:/intelligence:ro
+      - ./core:/shared/core:ro
+    environment:
+      - PYTHONPATH=/app:/shared
+      - OLLAMA_HOST=http://host.docker.internal:11434
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    ports:
+      - "8000:8000"
+    networks:
+      - ai-network
+    mem_limit: 2g
+    cpus: 2
+
+  # =========================
+  # 🚀 AI TELEGRAM
+  # =========================
+  ai-telegram:
+    build: ./services/ai-telegram
+    container_name: ai-telegram
+    restart: unless-stopped
+    env_file: .env
+    depends_on:
+      - ai-control-plane
+    environment:
+      - AI_CONTROL_PLANE_URL=http://ai-control-plane:8000
+      - PYTHONUNBUFFERED=1
+    volumes:
+      - ./services/ai-telegram:/app
+    networks:
+      - ai-network
+    mem_limit: 1g
+    cpus: 1
+
+  # =========================
+  # 🚀 N8N MAIN
+  # =========================
+  n8n-main:
+    image: n8nio/n8n:${N8N_VERSION:-latest}
+    container_name: n8n-main
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=${POSTGRES_DB}
+      - WEBHOOK_URL=${WEBHOOK_URL:-}
+      - DB_POSTGRESDB_USER=${POSTGRES_USER}
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_POSTGRESDB_SCHEMA=public
+      - EXECUTIONS_MODE=${EXECUTIONS_MODE}
+      - QUEUE_BULL_REDIS_HOST=${QUEUE_BULL_REDIS_HOST}
+      - QUEUE_BULL_REDIS_PORT=6379
+      - QUEUE_BULL_REDIS_PASSWORD=${REDIS_PASSWORD}
+      - QUEUE_BULL_REDIS_DB=0
+      - REDIS_HOST=${QUEUE_BULL_REDIS_HOST}
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - N8N_USER_MANAGEMENT_JWT_SECRET=${N8N_USER_MANAGEMENT_JWT_SECRET}
+      - RAG_API_URL=${RAG_API_URL}
+      - N8N_ENABLE_EXECUTE_COMMAND=${N8N_ENABLE_EXECUTE_COMMAND}
+      - NODE_FUNCTION_ALLOW_BUILTIN=child_process,fs,path,os
+      - NODE_FUNCTION_ALLOW_EXTERNAL=axios,moment,lodash,redis
+      - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
+      - N8N_HOST=${N8N_HOST}
+      - N8N_PORT=${N8N_PORT}
+      - N8N_PROTOCOL=${N8N_PROTOCOL}
+      - WEBHOOK_URL=${WEBHOOK_URL}
+      - OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS=true
+      - N8N_EXCLUDE_NODES=Python
+    volumes:
+      - n8n-data:/root/.n8n
+      - files-data:/files
+      - scripts-data:/scripts
+      - ./intelligence/vault:/data/obsidian
+      - storage-data:/storage
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis-queue-v2:
+        condition: service_healthy
+    networks:
+      - ai-network
+    mem_limit: 4g
+    mem_reservation: 2g
+    cpus: 2
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:5678/healthz || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # =========================
+  # 👷 N8N WORKER
+  # =========================
+  n8n-worker:
+    image: n8nio/n8n:${N8N_VERSION:-latest}
+    container_name: n8n-worker
+    restart: unless-stopped
+    command: ["worker"]
+    environment:
+      - DB_TYPE=postgresdb
+      - DB_POSTGRESDB_HOST=postgres
+      - DB_POSTGRESDB_PORT=5432
+      - DB_POSTGRESDB_DATABASE=${POSTGRES_DB}
+      - DB_POSTGRESDB_USER=${POSTGRES_USER}
+      - DB_POSTGRESDB_PASSWORD=${POSTGRES_PASSWORD}
+      - DB_POSTGRESDB_SCHEMA=public
+      - EXECUTIONS_MODE=${EXECUTIONS_MODE}
+      - QUEUE_BULL_REDIS_HOST=${QUEUE_BULL_REDIS_HOST}
+      - QUEUE_BULL_REDIS_PORT=6379
+      - QUEUE_BULL_REDIS_PASSWORD=${REDIS_PASSWORD}
+      - QUEUE_BULL_REDIS_DB=0
+      - REDIS_HOST=${QUEUE_BULL_REDIS_HOST}
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
+      - N8N_ENCRYPTION_KEY=${N8N_ENCRYPTION_KEY}
+      - NODE_FUNCTION_ALLOW_BUILTIN=child_process,fs,path,os
+      - NODE_FUNCTION_ALLOW_EXTERNAL=axios,moment,lodash,redis
+      - GENERIC_TIMEZONE=${GENERIC_TIMEZONE}
+      - OFFLOAD_MANUAL_EXECUTIONS_TO_WORKERS=true
+    volumes:
+      - n8n-data:/root/.n8n
+      - files-data:/files
+      - scripts-data:/scripts
+      - ./intelligence/vault:/data/obsidian
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis-queue-v2:
+        condition: service_healthy
+    networks:
+      - ai-network
+    mem_limit: 2g
+    mem_reservation: 1g
+    cpus: 2
+    deploy:
+      replicas: 1
+      mode: replicated
+
+
+  # =========================
+  # 🛰️ AI CONTROL PLANE (v6)
+  # =========================
+  ai-control-plane:
+    build: ./services/ai-control-plane
+    container_name: ai-control-plane
+    restart: unless-stopped
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    env_file: .env
+    ports:
+      - "7000:8000"
+    volumes:
+      - ./services/ai-control-plane:/app
+      - ./models:/shared/models
+      - ./core:/shared/core
+      - ./services/tools:/shared/tools
+      - ./intelligence/tools:/shared/tool_schemas
+      - ./intelligence/prompts:/prompts
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./intelligence:/intelligence
+      - storage-data:/storage
+    environment:
+      - PYTHONPATH=/app:/shared
+      - PYTHONUNBUFFERED=1
+      - PROMPTS_DIR=/prompts
+    depends_on:
+      redis-ai:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    networks:
+      - ai-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    mem_limit: 4g
+    cpus: 4
+
+  # =========================
+  # 👷 AI WORKER ENGINE (v4.1 - Execution Core)
+  # =========================
+  ai-worker:
+    build: ./services/ai-control-plane
+    container_name: ai-worker
+    restart: unless-stopped
+    command: python worker.py
+    env_file: .env
+    volumes:
+      - ./services/ai-control-plane:/app
+      - ./models:/shared/models
+      - ./core:/shared/core
+      - ./services/tools:/shared/tools
+      - ./intelligence/tools:/shared/tool_schemas
+      - ./intelligence/prompts:/prompts
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./intelligence:/intelligence
+      - storage-data:/storage
+    environment:
+      - PYTHONPATH=/app:/shared
+      - PYTHONUNBUFFERED=1
+      - PROMPTS_DIR=/prompts
+    depends_on:
+      redis-ai:
+        condition: service_healthy
+      ai-control-plane:
+        condition: service_started
+    networks:
+      - ai-network
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    mem_limit: 4g
+    cpus: 4
+
+  # =========================
+  # 🧠 AI BRAIN (v6 - Planner & Critic)
+  # =========================
+  ai-brain:
+    build: ./services/ai-brain
+    container_name: ai-brain
+    restart: unless-stopped
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    env_file: .env
+    ports:
+      - "8001:8000"
+    volumes:
+      - ./services/ai-brain:/app
+      - ./models:/shared/models
+      - ./core:/shared/core
+      - ./services/tools:/shared/tools
+      - ./intelligence/tools:/shared/tool_schemas
+      - ./intelligence/prompts:/prompts
+      - storage-data:/storage
+      - ./intelligence/skills:/skills
+      - ./intelligence/rules:/rules
+      - ./intelligence/commands:/commands
+      - ./intelligence/agents:/agents
+      - ./intelligence:/intelligence
+      - .:/workspace
+      - ./README.md:/README.md
+    environment:
+      - PYTHONPATH=/app:/shared
+      - PYTHONUNBUFFERED=1
+      - PROMPTS_DIR=/prompts
+    depends_on:
+      redis-ai:
+        condition: service_healthy
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - ai-network
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    mem_limit: 4g
+    cpus: 4
+
+  # =========================
+  # ⚙️ BAN THỰC THI ALPHA (v6 - GPU/VRAM)
+  # =========================
+  ai-executor-1:
+    build: ./services/ai-executor
+    container_name: ai-executor-1
+    restart: unless-stopped
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    env_file: .env
+    ports:
+      - "8002:8000"
+    volumes:
+      - ./services/ai-executor:/app
+      - ./models:/shared/models
+      - ./core:/shared/core
+      - ./services/tools:/shared/tools
+      - ./intelligence/tools:/shared/tool_schemas
+      - ./intelligence/prompts:/prompts
+      - ./intelligence:/intelligence
+      - storage-data:/data
+    environment:
+      - PYTHONPATH=/app:/shared
+      - PYTHONUNBUFFERED=1
+      - PROMPTS_DIR=/prompts
+      - EXECUTOR_ROLE=ALPHA
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - ai-network
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    mem_limit: 4g
+    cpus: 4
+
+  # =========================
+  # ⚙️ BAN THỰC THI BETA (v6 - CPU/Backup)
+  # =========================
+  ai-executor-2:
+    build: ./services/ai-executor
+    container_name: ai-executor-2
+    restart: unless-stopped
+    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    env_file: .env
+    ports:
+      - "8007:8000"
+    volumes:
+      - ./services/ai-executor:/app
+      - ./models:/shared/models
+      - ./core:/shared/core
+      - ./services/tools:/shared/tools
+      - ./intelligence/tools:/shared/tool_schemas
+      - ./intelligence/prompts:/prompts
+      - ./intelligence:/intelligence
+      - storage-data:/data
+    environment:
+      - PYTHONPATH=/app:/shared
+      - PYTHONUNBUFFERED=1
+      - PROMPTS_DIR=/prompts
+      - EXECUTOR_ROLE=BETA
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - ai-network
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+    mem_limit: 4g
+    cpus: 4
+
+
+
+  # =========================
+  # ⚒️ ZENITH FILE WARDEN (Forged Service)
+  # =========================
+  zenith-file-warden:
+    build: ./services/zenith-file-warden
+    container_name: jkai-file-warden
+    restart: always
+    ports:
+      - "8005:8005"
+    volumes:
+      - ./intelligence:/intelligence:ro
+    networks:
+      - ai-network
+    environment:
+      - REDIS_HOST=redis-ai
+    mem_limit: 512m
+    cpus: 0.5
+
+  # =========================
+  # 👁️ AI BROWSER (Visual Satellite)
+  # =========================
+  ai-browser:
+    build: ./services/ai-browser
+    container_name: ai-browser
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "8003:8000"
+    volumes:
+      - ./services/ai-browser:/app
+      - ./core:/shared/core
+    environment:
+      - OLLAMA_HOST=http://host.docker.internal:11434
+      - PYTHONUNBUFFERED=1
+      - PYTHONPATH=/app:/shared
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - ai-network
+    mem_limit: 2g
+    cpus: 1
+
+  # =========================
+  # 📊 MISSION CONTROL (Hybrid Live Mode - Port 9999)
+  # =========================
+  mission-control:
+    build: ./services/mission-control
+    container_name: mission-control
+    restart: unless-stopped
+    env_file: .env
+    ports:
+      - "9999:9999"
+      - "9998:9998"
+      - "5173:5173"
+    volumes:
+      - ./services/mission-control/frontend/src:/app/frontend/src
+      - ./services/mission-control/frontend/public:/app/frontend/public
+      - ./services/mission-control/frontend/index.html:/app/frontend/index.html
+      - ./services/mission-control/frontend/vite.config.ts:/app/frontend/vite.config.ts
+      - ./services/mission-control/frontend/package.json:/app/frontend/package.json
+      - ./services/mission-control/frontend/tsconfig.json:/app/frontend/tsconfig.json
+      - ./services/mission-control/backend:/app/backend
+      - ./models:/shared/models
+      - ./core:/shared/core
+      - storage-data:/storage
+      - /var/run/docker.sock:/var/run/docker.sock
+      - .:/workspace
+    environment:
+      - PYTHONPATH=/app/backend:/shared
+      - PYTHONUNBUFFERED=1
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - ai-network
+    depends_on:
+      - redis-ai
+
+
+  # =========================
+  # 🎨 STABLE DIFFUSION (SDNext - ROCm Art Engine)
+  # Khởi động: docker-compose --profile art up -d stable-diffusion
+  # =========================
+  stable-diffusion:
+    image: rocm/pytorch:latest
+    container_name: stable-diffusion
+    profiles: ["art"]
+    restart: unless-stopped
+    ports:
+      - "7860:7860"
+    volumes:
+      - ./services/stable-diffusion:/app
+      - storage-data:/app/outputs
+    working_dir: /app
+    environment:
+      - ROCM_PATH=/opt/rocm
+      - HSA_OVERRIDE_GFX_VERSION=10.3.0
+      - ATOM_HOME=/app
+      - COMMANDLINE_ARGS=--listen --port 7860 --api --cors-allow-origins *
+    security_opt:
+      - seccomp:unconfined
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    command: ["python3", "launch.py", "--use-rocm", "--precision", "full", "--no-half", "--api", "--listen", "--port", "7860"]
+    networks:
+      - ai-network
+      - gpu-internal
+
+  # =========================
+  # 🕵️ JAEGER (X-RAY MONITORING)
+  # =========================
+  jaeger:
+    image: jaegertracing/all-in-one:latest
+    container_name: jaeger
+    restart: unless-stopped
+    ports:
+      - "16686:16686"   # UI
+      - "4317:4317"     # OTLP gRPC
+      - "4318:4318"     # OTLP HTTP
+    environment:
+      - COLLECTOR_OTLP_ENABLED=true
+    networks:
+      - ai-network
+
+# =========================
+# 📦 NAMED VOLUMES
+# =========================
+volumes:
+  postgres-data:
+  redis-queue-data:
+  redis-ai-data:
+  qdrant-data:
+  n8n-data:
+  files-data:
+  scripts-data:
+  storage-data:
+  skills-data:
+  rules-data:
+  commands-data:
+  agents-data:
+  tools-data:
+
+# =========================
+# 🌐 NETWORK
+# =========================
+networks:
+  ai-network:
+    driver: bridge
+  gpu-internal:
+    driver: bridge
+    internal: true
