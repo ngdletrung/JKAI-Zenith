@@ -45,6 +45,12 @@ async def chat_endpoint(payload: dict):
             role=payload.get("role", f"EXECUTOR_{role_type}"),
             model=payload.get("model"),
             json_mode=payload.get("json_mode", False),
+            schema=payload.get("schema"),
+            options=payload.get("options"),
+            profile=payload.get("profile"),
+            keep_alive=payload.get("keep_alive"),
+            task_id=payload.get("task_id", "unknown"),
+            images=payload.get("images"),
             lock_timeout=payload.get("lock_timeout", 60)
         )
     }

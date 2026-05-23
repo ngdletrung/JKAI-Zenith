@@ -111,17 +111,32 @@ const isImportantTag = (tag: string, msg: string = '') => {
   return ['JKAI', 'MISSION_RESULT', 'ERROR', 'WARN', 'WARNING', 'ZENITH'].includes(t) || t.startsWith('MASTER') || isPhase;
 };
 
-const toTitleCase = (str: string) => {
+const toTitleCase = (str: string, lang: string = 'vi') => {
   if (!str) return '';
   const upper = str.toUpperCase();
   if (upper === 'JKAI') return 'JKAI';
-  if (upper === 'SYSTEM') return 'System';
-  if (upper === 'PROGRESS') return 'Progress';
+  if (upper === 'PROGRESS') return 'Tiến trình';
+  
+  if (lang === 'vi') {
+    if (upper.includes('GATEWAY') || upper.includes('RECEPTIONIST')) return 'Ban Lễ Tân';
+    if (upper.includes('DISPATCHER') || upper.includes('ROUTING')) return 'Ban Điều Phối';
+    if (upper.includes('PLANNER') || upper.includes('THOUGHT')) return 'Ban Kế Hoạch';
+    if (upper.includes('EXECUTOR') || upper.includes('ALPHA') || upper.includes('BETA')) return 'Ban Thực Thi';
+    if (upper.includes('SUMMARIZER')) return 'Ban Thư Ký';
+    if (upper.includes('CRITIC') || upper.includes('AUDIT') || upper.includes('REVIEW')) return 'Ban Kiểm Soát';
+    if (upper.includes('DATA_SCOUT') || upper.includes('RESEARCH') || upper.includes('SEARCH') || upper.includes('LATENCY') || upper.includes('PERFORMANCE') || upper.includes('METRICS') || upper.includes('SIEUTIMKIEM') || upper.includes('TIMKIEM')) return 'Ban Hành Chính';
+    if (upper.includes('ENGINE') || upper.includes('CORE')) return 'Trung tâm Điều hành';
+    if (upper.includes('SYSTEM') || upper.includes('SYS_LOG') || upper.includes('NEURAL')) return 'Ban Kỹ Thuật';
+    if (upper.includes('MASTER') || upper.includes('USER')) return 'Ban Giám Đốc';
+    if (upper.includes('MISSION_RESULT') || upper.includes('RESULT')) return 'Kết quả';
+  }
+  
   return str.split('_').map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('_');
 };
 
 const ProcessLogTab = memo(() => {
   const progressLogs = useZenithStore(s => s.progressLogs);
+  const language = useZenithStore(s => s.language);
   const scrollRef = useRef<HTMLDivElement>(null);
   const userScrolledRef = useRef(false);
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -166,7 +181,17 @@ const ProcessLogTab = memo(() => {
         )}
         {sortedLogs.map((l: any, i: number) => {
           const tag = (l.tag || 'SYS').toUpperCase();
-          const msg = (l.msg || '').replace(/\[⏱️\s*[\d.]+\s*s\]/g, '').trim();
+          let msg = (l.msg || '').replace(/\[⏱️\s*[\d.]+\s*s\]/g, '').trim();
+          
+          // Lọc triệt để các thẻ kỹ thuật dạng [TAG_NAME] ở đầu câu
+          // Hỗ trợ lặp để bóc tách nhiều lớp (VD: 🧠 [THOUGHT]: 📡 [ROUTING]: -> 🧠 📡)
+          let prevMsg;
+          do {
+            prevMsg = msg;
+            msg = msg.replace(/^([^\[a-zA-Z0-9]*?)\[[A-Z0-9_\s-]+\]:?\s*/, '$1');
+          } while (msg !== prevMsg);
+          
+          msg = msg.trim();
           if (!msg) return null;
           
           const color = getCliColor(tag, msg);
@@ -178,11 +203,11 @@ const ProcessLogTab = memo(() => {
           if (important || isThought) {
             // 🧠 Hiển thị tên service: [Thought:Receptionist] thay vì chỉ [Thought]
             const displayTag = (isThought && l.source) 
-              ? `${toTitleCase(tag)}:${toTitleCase(l.source)}`
-              : toTitleCase(tag);
+              ? toTitleCase(l.source, language)
+              : toTitleCase(tag, language);
             return (
               <div key={l.id || i} id={`log-${l.id}`} className={`my-2 flex items-start gap-2.5 ${important ? '' : 'opacity-70'}`}>
-                <span className={`${color} font-bold shrink-0 text-[11.5px] mt-[2px] w-[85px] whitespace-nowrap overflow-hidden text-ellipsis`}>[{displayTag}]</span>
+                <span className={`${color} font-bold shrink-0 text-[11.5px] mt-[2px] w-[100px] whitespace-nowrap overflow-hidden text-ellipsis`}>{displayTag}:</span>
                 <div className={`prose prose-invert max-w-none prose-sm flex-1 min-w-0 ${isErrorOrWarn ? 'text-rose-500' : 'text-white/85'}`}>
                   <MarkdownRenderer content={msg} />
                 </div>
@@ -192,7 +217,7 @@ const ProcessLogTab = memo(() => {
           
           return (
             <div key={l.id || i} id={`log-${l.id}`} className="flex items-start gap-2.5 py-0.5 opacity-50">
-              <span className={`${color} font-normal shrink-0 text-[11.5px] w-[85px] whitespace-nowrap overflow-hidden text-ellipsis`}>[{toTitleCase(tag)}]</span>
+              <span className={`${color} font-normal shrink-0 text-[11.5px] w-[100px] whitespace-nowrap overflow-hidden text-ellipsis`}>{toTitleCase(tag, language)}:</span>
               <span className="text-gray-400 flex-1 min-w-0 break-words">{msg}</span>
             </div>
           );

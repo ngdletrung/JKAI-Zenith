@@ -221,13 +221,15 @@ class HardwareScheduler:
 
     async def resolve_smart_fallback(self, failed_model: str, router, fallback_roles: list) -> Optional[dict]:
         """
-        🧠 [UNIFIED-SMART-FALLBACK v3.0]: Quản lý dự phòng thông minh tập trung.
-        Tự động phân giải cấu hình thuần theo ROLE từ ModelRouter, tuyệt đối không gán cứng tên model.
+        🧠 [UNIFIED-SMART-FALLBACK v4.0]: Quản lý dự phòng thông minh tập trung.
+        Tôn trọng ĐÚNG phần cứng được chỉ định trong rule_hardware.md:
+          - Role cấu hình GPU/VRAM → chỉ tìm fallback trong GPU Ollama (port 11434)
+          - Role cấu hình CPU/RAM  → chỉ tìm fallback trong CPU Ollama (port 11435)
 
         Ưu tiên theo chiến thuật 3 tầng:
-          Tầng 1 — HOT (đang nạp sẵn trong RAM/VRAM Ollama): Tránh độ trễ nạp.
-          Tầng 2 — AVAILABLE (có sẵn trong thư viện Ollama): Cần warm-up ngắn.
-          Tầng 3 — ORDERED (thứ tự ưu tiên vai trò): Cứu cánh tối hậu.
+          Tầng 1 — HOT (đang nạp sẵn trong đúng phần cứng): Tránh độ trễ nạp.
+          Tầng 2 — AVAILABLE (có sẵn trong thư viện đúng phần cứng): Cần warm-up ngắn.
+          Tầng 3 — ORDERED (thứ tự ưu tiên vai trò, đúng phần cứng): Cứu cánh tối hậu.
 
         Args:
             failed_model: Tên model vừa thất bại để loại trừ.
@@ -238,41 +240,22 @@ class HardwareScheduler:
             dict {"role": str, "model": str, "hardware": str} hoặc None nếu kiệt sức.
         """
         import os
-        ollama_host = os.getenv('OLLAMA_HOST', 'http://host.docker.internal:11434')
+        ollama_gpu_host = os.getenv('OLLAMA_HOST_GPU', 'http://host.docker.internal:11434')
+        ollama_cpu_host = os.getenv('OLLAMA_HOST_CPU', 'http://host.docker.internal:11435')
 
         # Bước 1: Phân giải động danh sách ứng viên từ Router
         role_candidates = []
         for role_name in fallback_roles:
             fb_cfg = router.get_role_config(role_name)
             if fb_cfg and fb_cfg.get("model"):
+                hw = fb_cfg.get("hardware", "CPU/RAM")
                 role_candidates.append({
                     "role": role_name,
                     "model": fb_cfg.get("model"),
-                    "hardware": fb_cfg.get("hardware", "CPU")
+                    "hardware": hw,
+                    # Chọn đúng Ollama host theo phần cứng được chỉ định
+                    "ollama_host": ollama_gpu_host if "GPU" in hw.upper() else ollama_cpu_host
                 })
-
-        # Bước 2: Truy xuất thực tế trạng thái Ollama
-        hot_models = set()
-        available_models = set()
-
-        try:
-            async with httpx.AsyncClient(timeout=5.0) as client:
-                # Models đang hoạt động trong RAM/VRAM
-                ps_resp = await client.get(f"{ollama_host}/api/ps")
-                if ps_resp.status_code == 200:
-                    for m in ps_resp.json().get("models", []):
-                        hot_models.add(m["name"])
-                        hot_models.add(m["name"].split(":")[0])
-
-                # Toàn bộ thư viện cục bộ
-                tags_resp = await client.get(f"{ollama_host}/api/tags")
-                if tags_resp.status_code == 200:
-                    for m in tags_resp.json().get("models", []):
-                        available_models.add(m["name"])
-                        available_models.add(m["name"].split(":")[0])
-
-        except Exception as e:
-            logger.warning(f"⚠️ [SMART-FALLBACK]: Lỗi kết nối Ollama: {e}. Áp dụng thứ tự tĩnh.")
 
         def _is_failed(model_name: str) -> bool:
             return model_name == failed_model or model_name.split(":")[0] == failed_model.split(":")[0]
@@ -280,28 +263,68 @@ class HardwareScheduler:
         def _in_set(model_name: str, model_set: set) -> bool:
             return model_name in model_set or model_name.split(":")[0] in model_set
 
-        # Tầng 1: HOT — nạp sẵn trong VRAM/RAM
-        for candidate in role_candidates:
-            m = candidate["model"]
-            if not _is_failed(m) and _in_set(m, hot_models):
-                logger.info(f"✅ [SMART-FALLBACK] Tầng 1 HOT: role={candidate['role']} model={m}")
-                return {**candidate, "note": "Nơ-ron sẵn sàng thực chiến (HOT)."}
+        # Bước 2: Truy xuất HOT & AVAILABLE cho từng host riêng biệt
+        # (Cache theo host để tránh gọi trùng)
+        host_hot_cache: dict[str, set] = {}
+        host_available_cache: dict[str, set] = {}
 
-        # Tầng 2: AVAILABLE — có sẵn trong thư viện
-        for candidate in role_candidates:
-            m = candidate["model"]
-            if not _is_failed(m) and _in_set(m, available_models):
-                logger.info(f"✅ [SMART-FALLBACK] Tầng 2 AVAILABLE: role={candidate['role']} model={m}")
-                return {**candidate, "note": "Nơ-ron dự bị từ Thư viện (AVAILABLE)."}
+        async def _fetch_host_models(host: str):
+            if host in host_hot_cache:
+                return
+            hot = set()
+            avail = set()
+            try:
+                async with httpx.AsyncClient(timeout=5.0) as client:
+                    ps_resp = await client.get(f"{host}/api/ps")
+                    if ps_resp.status_code == 200:
+                        for m in ps_resp.json().get("models", []):
+                            hot.add(m["name"])
+                            hot.add(m["name"].split(":")[0])
 
-        # Tầng 3: ORDERED — cứu cánh theo thứ tự vai trò
+                    tags_resp = await client.get(f"{host}/api/tags")
+                    if tags_resp.status_code == 200:
+                        for m in tags_resp.json().get("models", []):
+                            avail.add(m["name"])
+                            avail.add(m["name"].split(":")[0])
+            except Exception as e:
+                logger.warning(f"⚠️ [SMART-FALLBACK]: Lỗi kết nối {host}: {e}")
+            host_hot_cache[host] = hot
+            host_available_cache[host] = avail
+
+        # Fetch models cho từng host cần thiết
+        needed_hosts = set(c["ollama_host"] for c in role_candidates)
+        for h in needed_hosts:
+            await _fetch_host_models(h)
+
+        # Tầng 1: HOT — nạp sẵn ĐÚNG phần cứng
         for candidate in role_candidates:
             m = candidate["model"]
+            host = candidate["ollama_host"]
+            hw = candidate["hardware"]
+            hot_set = host_hot_cache.get(host, set())
+            if not _is_failed(m) and _in_set(m, hot_set):
+                logger.info(f"✅ [SMART-FALLBACK] Tầng 1 HOT [{hw}]: role={candidate['role']} model={m} host={host}")
+                return {**candidate, "note": f"Nơ-ron sẵn sàng thực chiến HOT [{hw}]."}
+
+        # Tầng 2: AVAILABLE — có sẵn trong thư viện ĐÚNG phần cứng
+        for candidate in role_candidates:
+            m = candidate["model"]
+            host = candidate["ollama_host"]
+            hw = candidate["hardware"]
+            avail_set = host_available_cache.get(host, set())
+            if not _is_failed(m) and _in_set(m, avail_set):
+                logger.info(f"✅ [SMART-FALLBACK] Tầng 2 AVAILABLE [{hw}]: role={candidate['role']} model={m} host={host}")
+                return {**candidate, "note": f"Nơ-ron dự bị từ Thư viện AVAILABLE [{hw}]."}
+
+        # Tầng 3: ORDERED — cứu cánh theo thứ tự, vẫn giữ đúng phần cứng
+        for candidate in role_candidates:
+            m = candidate["model"]
+            hw = candidate["hardware"]
             if not _is_failed(m):
-                logger.info(f"✅ [SMART-FALLBACK] Tầng 3 ORDERED: role={candidate['role']} model={m}")
-                return {**candidate, "note": "Nơ-ron theo thứ tự ưu tiên (ORDERED)."}
+                logger.info(f"✅ [SMART-FALLBACK] Tầng 3 ORDERED [{hw}]: role={candidate['role']} model={m}")
+                return {**candidate, "note": f"Nơ-ron theo thứ tự ưu tiên ORDERED [{hw}]."}
 
-        logger.error("❌ [SMART-FALLBACK] OMEGA: Kiệt lực hoàn toàn.")
+        logger.error("❌ [SMART-FALLBACK] OMEGA: Kiệt lực hoàn toàn — không tìm được fallback đúng phần cứng.")
         return None
 
     # Legacy bridge — giữ tương thích với code cũ còn sót lại

@@ -546,6 +546,8 @@ services:
       - "4318:4318"     # OTLP HTTP
     environment:
       - COLLECTOR_OTLP_ENABLED=true
+    volumes:
+      - jaeger_tmp:/tmp
     networks:
       - ai-network
 
@@ -566,6 +568,7 @@ volumes:
   commands-data:
   agents-data:
   tools-data:
+  jaeger_tmp:
 
 # =========================
 # 🌐 NETWORK

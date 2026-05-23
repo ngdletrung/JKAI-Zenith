@@ -1,6 +1,6 @@
 import React, { memo, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Brain, Zap, ShieldCheck, MessageSquare, Target, Activity, Bot, Settings, Hexagon, Radar, RotateCcw, FileCode2, AlertTriangle, Plus } from 'lucide-react';
+import { Brain, Zap, ShieldCheck, MessageSquare, Target, Activity, Bot, Settings, Hexagon, Radar, RotateCcw, FileCode2, AlertTriangle, Plus, Search, Globe } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useZenithStore, AgentLog } from '../../store/zenithStore';
 import { ZenithService } from '../../services/ZenithService';
@@ -30,6 +30,8 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
     tag.includes('TƯ DUY') ||
     tag === 'GATEWAY' ||
     tag === 'DISPATCHER' ||
+    tag === 'DISPATCHER_LLM' ||
+    tag === 'RECEPTIONIST' ||
     tag === 'DEBUG' ||
     (tag === 'SYSTEM' && (msg.includes('[') || msg.includes('📡')))
   ) && !forceReasoning && !isUser;
@@ -112,7 +114,7 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
   // 💎 [EXECUTIVE-OFFICE-PROTOCOL]: Định danh Chuyên nghiệp
   const renderIdentity = () => {
     if (isUser) {
-      const label = tag === 'MASTER_WEB' ? 'Chủ Tịch (Web)' : tag === 'MASTER_TELE' ? 'Chủ Tịch (Tele)' : 'Chủ Tịch';
+      const label = tag === 'MASTER_WEB' ? 'MASTER (WEB)' : tag === 'MASTER_TELE' ? 'MASTER (TELE)' : 'MASTER';
       return (
         <div className="flex items-center gap-2">
           {/* 👑 [IMPERIAL-CROWN]: Biểu tượng vương miện tinh xảo */}
@@ -152,6 +154,7 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
     else if (tag.includes('PLANNER')) { DeptIcon = Brain; deptColor = "text-indigo-400"; }
     else if (tag.includes('AUDIT')) { DeptIcon = ShieldCheck; deptColor = "text-rose-400"; }
     else if (tag.includes('FORGE')) { DeptIcon = Settings; deptColor = "text-purple-400"; }
+    else if (tag === 'WEB_SEARCH' || tag === 'BRAIN_QUERY' || tag === 'GREP' || tag === 'SMART_INDEX') { DeptIcon = Search; deptColor = "text-violet-400"; }
     else if (tag.includes('BRAIN') || tag === 'SYSTEM') { DeptIcon = Brain; deptColor = "text-cyan-400"; }
     else if (tag === 'ENGINE' || tag === 'MISSION_RESULT') { DeptIcon = Target; deptColor = "text-blue-400"; }
     else if (tag === 'SUMMARIZER') { DeptIcon = FileCode2; deptColor = "text-fuchsia-400"; }
@@ -165,7 +168,8 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
       else if (tag.includes('EXECUTOR')) displayTag = 'Ban Thực Thi';
       else if (tag.includes('SUMMARIZER')) displayTag = 'Ban Thư Ký';
       else if (tag.includes('CRITIC') || tag.includes('AUDIT')) displayTag = 'Ban Kiểm Soát';
-      else if (tag.includes('DATA_SCOUT') || tag.includes('RESEARCH') || tag.includes('SEARCH')) displayTag = 'Ban Tình Báo';
+      else if (tag === 'WEB_SEARCH' || tag === 'BRAIN_QUERY' || tag === 'GREP' || tag === 'SMART_INDEX') displayTag = 'Ban Hành Chính';
+      else if (tag.includes('DATA_SCOUT') || tag.includes('RESEARCH') || tag.includes('SEARCH')) displayTag = 'Ban Thông Tin';
       else if (tag === 'SYSTEM' || tag === 'SYS_LOG') displayTag = 'Ban Kỹ Thuật';
       else if (tag === 'ENGINE') displayTag = 'Trung tâm Điều hành';
     } else {
@@ -175,6 +179,7 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
       else if (tag.includes('EXECUTOR')) displayTag = 'Execution Dept';
       else if (tag.includes('SUMMARIZER')) displayTag = 'Secretariat';
       else if (tag.includes('CRITIC') || tag.includes('AUDIT')) displayTag = 'Audit Dept';
+      else if (tag === 'WEB_SEARCH' || tag === 'BRAIN_QUERY' || tag === 'GREP' || tag === 'SMART_INDEX') displayTag = 'Administrative Dept';
       else if (tag.includes('DATA_SCOUT') || tag.includes('RESEARCH') || tag.includes('SEARCH')) displayTag = 'Intelligence Dept';
       else if (tag === 'SYSTEM' || tag === 'SYS_LOG') displayTag = 'Tech Ops';
       else if (tag === 'ENGINE') displayTag = 'Operations Center';

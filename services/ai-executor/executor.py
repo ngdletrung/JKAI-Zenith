@@ -213,14 +213,37 @@ class Executor:
                                  policy: ExecutionPolicy, start_time: float, args: dict) -> dict:
         latency_ms = (time.time() - start_time) * 1000
         is_success = isinstance(result, dict) and result.get("status") != "error"
-        engine.record_skill_execution(tool_name, is_success, latency_ms)
+        
+        # 1. [EVENT-STORE]: Ghi nhận Telemetry chuẩn của Zenith
+        from core.utils.event_store import event_store
+        event_store.log_event(
+            task_id=task_id,
+            agent_id=os.getenv("EXECUTOR_ROLE", "ALPHA"),
+            event_type="SKILL_EXECUTION",
+            payload={"tool": tool_name, "success": is_success, "latency": latency_ms}
+        )
+
+        # 2. [FAILURE-MEMORY]: Khởi hoạt luồng tự học (Self-Healing) khi fail
+        if not is_success:
+            from core.utils.failure_memory import failure_memory, FailureStage
+            error_detail = result.get("msg") if isinstance(result, dict) else str(result)
+            goal_desc = args.get("expert_mindset", f"Thực thi công cụ {tool_name}")
+            await failure_memory.record_failure(
+                task_id=task_id,
+                goal=goal_desc,
+                task_type="general",
+                failure_stage=FailureStage.TOOL_EXECUTION,
+                error_detail=error_detail,
+                failed_tools=[tool_name]
+            )
         
         if is_success:
             content = result.get("content") or result.get("data") or result.get("path")
             if content: engine.set_insight(task_id, f"res_{tool_name}", content)
             
             # Elite Logging
-            target = os.path.basename(args.get("path", args.get("TargetFile", ""))) or tool_name
+            path_arg = args.get("path") or args.get("TargetFile") or ""
+            target = os.path.basename(str(path_arg)) or tool_name
             self._log("EXECUTOR", f"Successfully executed {target}.", task_id)
             return {"status": "success", "output": result}
         

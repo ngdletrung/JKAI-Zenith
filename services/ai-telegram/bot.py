@@ -133,8 +133,10 @@ def execute_neural_command(goal, images=None, mode="fast"):
         with httpx.Client(timeout=600.0) as client:
             res = client.post(f"{CONTROL_PLANE_URL}/api/submit_task", json=payload)
             data = res.json() if res.status_code == 200 else {}
-            if res.status_code != 200:
-                safe_send_message(MASTER_ID, f"⚠️ <b>HỆ THỐNG:</b> Đã tiếp nhận yêu cầu <i>(Mode: {mode.upper()})</i>. Đang khởi tạo luồng tư duy...", parse_mode="HTML")
+            if res.status_code == 200:
+                safe_send_message(MASTER_ID, f"✅ <b>HỆ THỐNG:</b> Đã tiếp nhận yêu cầu <i>(Mode: {mode.upper()})</i>. Đang khởi tạo luồng tư duy...", parse_mode="HTML")
+            else:
+                safe_send_message(MASTER_ID, f"⚠️ <b>LỖI HỆ THỐNG:</b> Không thể kết nối Trung tâm <i>(Mã lỗi: {res.status_code})</i>. Đang chuyển vào hàng chờ...", parse_mode="HTML")
     except Exception as e:
         safe_send_message(MASTER_ID, f"❌ <b>LỖI KẾT NỐI:</b> {str(e)}", parse_mode="HTML")
 
@@ -209,6 +211,14 @@ def log_listener():
                         clean_msg = data.get("msg", "").strip()
                         if not clean_msg: continue
                         
+                        # 💎 [AESTHETIC-TELE-MSG]: Lọc triệt để mọi thẻ [TAG] ở đầu dòng
+                        prev_msg = None
+                        while clean_msg != prev_msg:
+                            prev_msg = clean_msg
+                            clean_msg = re.sub(r'^([^\[a-zA-Z0-9]*?)\[[A-Z0-9_\s-]+\]:?\s*', r'\1', clean_msg)
+                        clean_msg = clean_msg.strip()
+                        if not clean_msg: continue
+                        
                         pin_id = data.get("pin_id")
                         is_pin = bool(pin_id)
 
@@ -248,17 +258,72 @@ def log_listener():
 
                         # 💎 [AESTHETIC-TELE-MSG]: Match the beautiful progress bar and operational style
                         prefix = "👑" if tag in ["MASTER", "MASTER_WEB", "MASTER_TELE"] else "🧠" if tag in ["JKAI", "MISSION_RESULT", "DONE", "RESULT", "THOUGHT"] else "🚨" if tag in ["ERROR", "CRITICAL", "WARN"] else "⚙️" if tag == "SYSTEM" else "📈" if tag in ["HEARTBEAT", "PROGRESS"] else "⚡"
-                        action_label = data.get('action') or tag.replace('_', ' ').title()
+                        
+                        raw_tag = tag.upper()
+                        if "GATEWAY" in raw_tag or "RECEPTIONIST" in raw_tag:
+                            action_label = "Ban Lễ Tân"
+                        elif "DISPATCHER" in raw_tag or "ROUTING" in raw_tag:
+                            action_label = "Ban Điều Phối"
+                        elif "PLANNER" in raw_tag or "THOUGHT" in raw_tag:
+                            action_label = "Ban Kế Hoạch"
+                        elif "EXECUTOR" in raw_tag or "ALPHA" in raw_tag or "BETA" in raw_tag:
+                            action_label = "Ban Thực Thi"
+                        elif "SUMMARIZER" in raw_tag:
+                            action_label = "Ban Thư Ký"
+                        elif "CRITIC" in raw_tag or "AUDIT" in raw_tag or "REVIEW" in raw_tag:
+                            action_label = "Ban Kiểm Soát"
+                        elif "DATA_SCOUT" in raw_tag or "RESEARCH" in raw_tag or "SEARCH" in raw_tag or "LATENCY" in raw_tag or "PERFORMANCE" in raw_tag or "METRICS" in raw_tag or "SIEUTIMKIEM" in raw_tag or "TIMKIEM" in raw_tag:
+                            action_label = "Ban Hành Chính"
+                        elif "SYSTEM" in raw_tag or "SYS_LOG" in raw_tag or "NEURAL" in raw_tag:
+                            action_label = "Ban Kỹ Thuật"
+                        elif "ENGINE" in raw_tag or "CORE" in raw_tag:
+                            action_label = "Trung tâm Điều hành"
+                        elif "MASTER" in raw_tag or "USER" in raw_tag:
+                            action_label = "Ban Giám Đốc"
+                        elif "MISSION_RESULT" in raw_tag or "RESULT" in raw_tag:
+                            action_label = "Kết quả"
+                        else:
+                            action_label = data.get('action') or tag.replace('_', ' ').title()
                         
                         # Keep full length for dynamic pinned updates
                         short_msg = clean_msg[:4000] if is_pin else (clean_msg[:300] + "..." if len(clean_msg) > 300 else clean_msg)
                         
-                        if is_pin and tag == "THOUGHT":
-                            # Lấy role name từ source field (THOUGHT:SUMMARIZER → source=SUMMARIZER)
-                            role_name = data.get("source", "") or data.get("full_tag", "THOUGHT").replace("THOUGHT:", "")
-                            if not role_name:
+                        is_thought = "THOUGHT]" in clean_msg or "THOUGHT:" in data.get("full_tag", "") or (is_pin and bool(data.get("source")))
+                        
+                        if is_pin and (tag == "THOUGHT" or is_thought):
+                            # Lấy role name từ source field
+                            role_name = data.get("source", "") or tag
+                            
+                            # Loại bỏ tiền tố "🧠 [ROLE THOUGHT]:" để lấy nội dung thuần
+                            short_msg = re.sub(r'^🧠\s*\[.*?THOUGHT\]:\s*', '', short_msg)
+                            
+                            if not role_name or role_name == "THOUGHT":
                                 role_name = "MODEL"
                             role_name = role_name.upper()
+                            
+                            display_role = role_name
+                            if "GATEWAY" in role_name or "RECEPTIONIST" in role_name:
+                                display_role = "Ban Lễ Tân"
+                            elif "DISPATCHER" in role_name or "ROUTING" in role_name:
+                                display_role = "Ban Điều Phối"
+                            elif "PLANNER" in role_name or "THOUGHT" in role_name:
+                                display_role = "Ban Kế Hoạch"
+                            elif "EXECUTOR" in role_name or "ALPHA" in role_name or "BETA" in role_name:
+                                display_role = "Ban Thực Thi"
+                            elif "SUMMARIZER" in role_name:
+                                display_role = "Ban Thư Ký"
+                            elif "CRITIC" in role_name or "AUDIT" in role_name or "REVIEW" in role_name:
+                                display_role = "Ban Kiểm Soát"
+                            elif "DATA_SCOUT" in role_name or "RESEARCH" in role_name or "SEARCH" in role_name or "LATENCY" in role_name or "PERFORMANCE" in role_name or "METRICS" in role_name or "SIEUTIMKIEM" in role_name or "TIMKIEM" in role_name:
+                                display_role = "Ban Hành Chính"
+                            elif "SYSTEM" in role_name or "SYS_LOG" in role_name or "NEURAL" in role_name:
+                                display_role = "Ban Kỹ Thuật"
+                            elif "ENGINE" in role_name or "CORE" in role_name:
+                                display_role = "Trung tâm Điều hành"
+                            elif "MASTER" in role_name or "USER" in role_name:
+                                display_role = "Ban Giám Đốc"
+                            elif "MISSION_RESULT" in role_name or "RESULT" in role_name:
+                                display_role = "Kết quả"
                             
                             # Convert markdown-like structures to beautiful Telegram HTML
                             formatted_msg = escape_html(short_msg)
@@ -272,18 +337,19 @@ def log_listener():
                             # Convert blockquote lines to beautiful, sovereign vertical bars (100% safe)
                             formatted_msg = formatted_msg.replace("&gt; ", "┃ ").replace("&gt;", "┃ ")
                             
-                            final_text = f"🧠 <b>[TƯ DUY - {role_name}]</b>\n\n{formatted_msg}"
+                            final_text = f"🏢 <b>{display_role}</b>:\n{formatted_msg}"
                         elif tag in ["MASTER", "MASTER_WEB", "MASTER_TELE", "JKAI", "MISSION_RESULT", "DONE", "RESULT", "ERROR", "CRITICAL", "SYSTEM"]:
-                            final_text = f"{prefix} <b>[{tag}]</b>\n{escape_html(clean_msg)}"
+                            final_text = f"{prefix} <b>{tag}</b>:\n{escape_html(clean_msg)}"
                         else:
-                            final_text = f"{prefix} <b>[{action_label}]</b>\n{escape_html(short_msg)}"
+                            # Đảm bảo Tên Ban: Nội dung cho các log hành động
+                            final_text = f"🏢 <b>{action_label}</b>: {escape_html(short_msg)}"
 
                         if tag == "ZENITH": 
-                            final_text = f"💎 <b>[ZENITH]</b>\n{escape_html(clean_msg)}"
+                            final_text = f"💎 <b>[ZENITH]</b>:\n{escape_html(clean_msg)}"
                         elif tag == "WARN": 
-                            final_text = f"⚠️ <b>[CẢNH BÁO]</b>\n{escape_html(clean_msg)}"
+                            final_text = f"⚠️ <b>[CẢNH BÁO]</b>:\n{escape_html(clean_msg)}"
                         elif tag in ["AUTH", "SECURITY"]: 
-                            final_text = f"🔐 <b>[BẢO MẬT]</b>\n{escape_html(clean_msg)}"
+                            final_text = f"🔐 <b>[BẢO MẬT]</b>:\n{escape_html(clean_msg)}"
 
                         # 🔄 IN-PLACE MESSAGE EDIT!
                         if is_pin and pin_id in pin_map:
@@ -337,13 +403,23 @@ def handle_callback(call):
 def cmd_help(message):
     if message.from_user.id != MASTER_ID: return
     help_text = (
-        "🏛️ <b>JKAI ZENITH COMMAND CENTER</b>\n\n"
-        "• Gửi yêu cầu trực tiếp để xử lý nhanh (Fast Mode).\n"
-        "• Thêm <code>[DEEP]</code> đầu tin nhắn để suy nghĩ sâu.\n"
-        "• <b>/cancel</b> hoặc <b>/stop</b>: Ngắt mạch toàn bộ hệ thống.\n"
-        "• Gửi voice để ra lệnh bằng giọng nói.\n"
-        "• Gửi ảnh để AI phân tích thị giác.\n\n"
-        "<i>Hệ thống đã được phong tỏa bằng Mã băm Chủ quyền.</i>"
+        "🏛️ <b>BỘ TƯ LỆNH JKAI ZENITH</b>\n\n"
+        "<b>🔹 NHÓM LỆNH VẬN HÀNH (HỆ THỐNG)</b>\n"
+        "• <code>/status</code> - 📊 Kiểm tra sức khỏe của các lõi AI.\n"
+        "• <code>/sync</code> - 🔄 Kích hoạt tiến trình đồng hóa tri thức.\n"
+        "• <code>/reset</code> (hoặc <code>/clear</code>) - 🧹 Xóa bộ nhớ ngữ cảnh hiện tại để bắt đầu task mới.\n"
+        "• <code>/insights</code> - 💡 Trích xuất top 10 tư duy chiến lược gần nhất từ Vỏ não.\n\n"
+        "<b>🔹 NHÓM LỆNH HÀNH ĐỘNG (SKILLS)</b>\n"
+        "• <code>/search_skill [từ khóa]</code> - 🔍 Tra cứu các kỹ năng (VD: <i>/search_skill docker</i>).\n"
+        "• <code>/run_skill [#ID]</code> - 🚀 Chạy cưỡng bức một kỹ năng (VD: <i>/run_skill #09</i>).\n\n"
+        "<b>🔹 NHÓM LỆNH ỨNG CỨU VÀ CẢI TIẾN</b>\n"
+        "• <code>/tusualoi</code> - 🛡️ Đặc quyền toàn hệ thống để tìm và tự động vá lỗi.\n"
+        "• <code>/tucaitien</code> - 🧬 Kích hoạt lõi tiến hóa, tự viết lại mã nguồn để tối ưu hóa.\n"
+        "• <code>/cancel</code> (hoặc <code>/stop</code>) - 🛑 Ngắt mạch khẩn cấp mọi tiến trình AI.\n\n"
+        "💡 <b>MẸO:</b>\n"
+        "- Thêm <code>[DEEP]</code> ở đầu câu để ép AI suy nghĩ sâu.\n"
+        "- Gửi Voice hoặc Ảnh để gọi Giao thức Nhãn thần/Thính giác.\n"
+        "- Gõ <code>/help_secret</code> để xem danh sách Lệnh Đặc Quyền của Tổng Giám Đốc."
     )
     safe_send_message(MASTER_ID, help_text, parse_mode="HTML")
 

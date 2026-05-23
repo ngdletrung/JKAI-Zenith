@@ -125,7 +125,7 @@ class ReflexGate:
         clean = cls.clean_vn(goal).lower()
         
         # 🕒 [TIME-REFLEX]: Phản xạ ngày giờ
-        if any(kw in clean for kw in ["hom nay", "thu may", "ngay may", "may gio", "thang may", "bay gio"]):
+        if any(kw in clean for kw in ["thu may", "ngay may", "may gio", "thang may", "ngay bao nhieu"]):
             tz = pytz.timezone('Asia/Ho_Chi_Minh')
             now = datetime.datetime.now(tz)
             days = ["Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"]
@@ -158,7 +158,7 @@ class ReflexGate:
                 "Chúng ta hãy cùng nhau kiến tạo nên những nhiệm vụ tuyệt vời! 🚀"
             ],
             "HELP": [
-                "📜 [HELP]: /help, /status, /sync, /skill_run #ID. JKAI Zenith luôn sẵn sàng!"
+                "📜 [HELP]: /help, /status, /sync, /skill_search, /skill_run #ID. JKAI Zenith luôn sẵn sàng!"
             ],
             "CMD_STATUS": [
                 "📊 [SYSTEM]: CPU: Optimal | RAM: Secure | GPU: Ready. Master cần kiểm tra thông số chi tiết không ạ?"

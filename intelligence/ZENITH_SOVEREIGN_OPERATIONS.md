@@ -417,3 +417,130 @@ M?c d�ch: Thanh t?y r�c no-ron v� t�i sinh tri th?c d? d?t d? tinh khi?t m� ngu?
 
 ---
 *Sovereign Property of Mr LeeTrung. Optimized for Eternal Excellence.* ?????????????
+
+---
+
+## 18. QUY TRINH FAST_PIPELINE (PHAN XA CHOP NHOANG - v5.0)
+**Muc dich**: Xu ly yeu cau co the khop ky nang ngay lap tuc, bo qua Planner de toi da hoa toc do phan hoi. Gioi han 3 buoc suy nghi.
+
+### Luong thuc thi (Receptionist -> TaskManager -> Executor):
+
+**Buoc 1 — Pre-flight Validation & Command Interceptor**
+- Ra soat yeu cau rong, ky tu nguy hiem, lenh huy diet.
+- Danh chan va thuc thi ngay sieu lenh (/search_skill, /sync, /reset, /shutdown...).
+- Quet mat ma chu quyen (Sovereign Auth) va mat hieu phe duyet da kenh.
+
+**Buoc 2 — Vision + Data-Scout Dispatch (Fast Reflex)**
+- Kich hoat thi giac neu co hinh anh dinh kem.
+- Dispatcher chay Reflex Match (Tang 1 - ~0ms): khop keyword word-boundary trong SKILL_TRIGGER_MAP.
+- Neu mode ast va khop ky nang -> **Bypass Planner & Intent** -> tra ve steps truc tiep.
+
+**Buoc 3 — Neural Intent Router** *(Chi chay neu khong co phan xa nhanh)*
+- Phan loai yeu cau: GREETING | SEARCH | EXECUTE | STRATEGY.
+
+**Buoc 4 — 3-Layer Neural Cortex (Nap Ky uc)**
+- Truy van semantic_memory lay chi muc va lich su chien luoc lien quan nhat.
+
+**Buoc 5 — Memory Sync & Garbage Filter**
+- Nap lich su hoi thoai (toi da 10 tin nhan gan nhat).
+- Ap dung Elite Filter: loai bo tin nhan rac/trung lap tranh loan nuron ngu canh.
+
+**Buoc 6 — Vong lap Suy nghi & Hanh dong (Toi da 3 buoc)**
+- Goi engine.call_chat voi gioi han 3 lan.
+- Ap dung Critic Review neu co goi tool.
+- Kich hoat Security Gate neu tool cham vung loi he thong (needs_auth).
+
+**Buoc 7 — Neural Distillation & Memory Save**
+- Ghi ket qua vao bo nho vinh cuu (Redis + semantic_memory).
+- Goi Microservice chung cat chuyen sau (fire & forget).
+
+### So do Fast Path (TaskManager):
+`
+Receptionist -> (khop fast) -> _run_fast_path
+  -> DAG build tu steps -> _execute_dag (fast bypass: /call_tool truc tiep)
+  -> Summarizer (fast mode)
+  -> Persistence (Mission History)
+`
+
+---
+
+## 19. QUY TRINH DEEP_PIPELINE (6 GIAI DOAN CHIEN LUOC - v5.0)
+**Muc dich**: Xu ly nhiem vu phuc tap, da buoc, yeu cau lap ke hoach va tham dinh tu phap. Khong gioi han vong suy nghi (chi gioi han boi MissionBudget: 50 buoc, 3600s).
+
+### 6 Giai doan thuc thi (TaskManager._run_deep_path):
+
+**T1 — Tiep nhan & Phan luong (Receptionist Gate)**
+- Toan bo yeu cau qua oute_to_receptionist truoc.
+- Neu xa giao/sieu lenh -> thoat som (Early Exit).
+- Neu mode ast -> chuyen FAST_PIPELINE.
+- Neu mode deep/auto va khong khop reflex -> kich hoat DEEP.
+
+**T2 — Lap Ke hoach (Planner — Blueprint)**
+- Goi oute_to_planner de AI lap Blueprint da buoc theo do thi DAG.
+- Planner tra ve rong -> nem ngoai le, kich hoat Fallback khan.
+
+**T2.5 — Tiem Script Chuan bi (Script Injection)**
+- Tu dong phat hien ngu canh (vi du: tu khoa "refactor", "sua").
+- Chay script chuan bi thuc dia truoc khi hanh phap (vi du: git diff).
+
+**T3 — Hanh phap Da nhiem (Swarm Execution — Safe DAG)**
+- Thuc thi cac buoc theo DAG, toi da 6 buoc song song moi dot.
+- Smart Concurrency Filter: tranh xung dot duong dan file.
+- Circuit Breaker: nguong 3 lan loi -> ngat mach, tranh sup do day chuyen.
+- MissionBudget: gioi han toi da 50 buoc, timeout 3600s.
+- Moi buoc co retry 3 lan khi gap loi ket noi.
+- Adaptive Concurrency: fatigue_score > 0.8 -> giam con 2 luong song song.
+
+**T4 — Tham dinh Tu phap (Judicial Review)**
+- Goi oute_to_judicial_review sau khi hanh phap xong.
+- AI tham dinh: atigue_score (muc met moi) + completion_ratio (ty le hoan thanh).
+- Ket qua ghi vao CognitiveState (su kien REFLECTED).
+
+**T5 — Thu hoach Tri thuc (Summarize + Distill)**
+- Goi oute_to_summarizer tong hop bao cao Elite.
+- Neu atigue_score > 0.1: kich hoat 2 luong chung cat bai hoc song song (distill + distill_judicial).
+
+**T6 — Ghi so Bien nien (Persistence)**
+- Luu CognitiveState vao Redis.
+- Ghi dau Su menh vao lich su Mission Control.
+
+### So sanh FAST vs DEEP:
+| Tieu chi | FAST | DEEP |
+| :--- | :--- | :--- |
+| Lap ke hoach | Bypass | Bat buoc (DAG) |
+| Vong suy nghi | Toi da 3 | Budget (50 buoc / 3600s) |
+| Tham dinh Tu phap | Khong | Co |
+| Chung cat bai hoc | Khong | Co (neu du phuc tap) |
+| Tiem script chuan bi | Khong | Co (T2.5) |
+| Song song toi da | Khac nhau | 6 buoc/dot (adaptive) |
+| Muc dich | Phan xa nhanh | Chien luoc dai hoi |
+
+### File tham chieu nguon:
+- services/ai-brain/receptionist.py — Fast pipeline logic.
+- services/ai-brain/dispatcher.py — Skill trigger map & LLM dispatch.
+- services/ai-control-plane/task_manager.py — Deep path orchestrator.
+
+---
+
+## 20. QUY TRINH AUTO MODE (CO CHE PHAN NHANH THONG MINH)
+**Muc dich**: Khong phai mot quy trinh doc lap — AUTO la co che phan nhanh tu dong chon luong toi uu.
+
+### Ban chat:
+- **Telegram / API mac dinh**: mode = uto (neu khong co tham so mode cu the).
+- **deep_pipeline.py**: khai bao mode: str = "auto" la default.
+
+### Luat phan nhanh theo tung tang:
+
+| Tang | mode = uto xu ly nhu the nao |
+| :--- | :--- |
+| eceptionist.py | Log hien thi "FAST_PIPELINE". Neu Dispatcher khop ky nang -> Bypass Planner, tra ve steps truc tiep (xu ly nhu fast). |
+| 	ask_manager.py | Neu Receptionist tra ve mode=ast -> chay _run_fast_path. Neu khong -> roi vao _run_deep_path (DEEP). |
+| deep_pipeline.py | Default mode=uto, thuc thi day du T2->T6. |
+
+### Ket luan:
+`
+AUTO = "Tu dong chon FAST neu khop ky nang ngay lap tuc,
+        leo len DEEP neu yeu cau phai lap ke hoach."
+`
+
+**AUTO khong phai luong rieng — no la Switchboard thong minh.**

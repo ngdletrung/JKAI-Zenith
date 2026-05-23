@@ -4,6 +4,19 @@ Tài liệu này ghi lại các cột mốc tiến hóa, sự cố kỹ thuật 
 
 ---
 
+## 📅 [2026-05-23] - ZENITH v3.5: DUAL-ENGINE SINGULARITY & NEURAL REGISTRY
+- **Bối cảnh (Why)**: Tối ưu hóa phân bổ tài nguyên phần cứng (RX 6600 & Xeon E5) bằng cách chạy song song GPU và CPU mà không gây nghẽn cổ chai (bottleneck), đồng thời giải quyết triệt để sự phân mảnh cấu hình mạng (hardcode URL) gây ra lỗi phân giải tên miền ảo trong kiến trúc Microservices thưa Tổng Giám Đốc.
+- **Giải pháp (How)**:
+    - **Dual-Engine Singularity**: Tách Ollama thành 2 luồng độc lập: Động cơ 1 (Port 11434 - GPU-only) dành riêng cho DeepSeek-R1; Động cơ 2 (Port 11435 - CPU-only) dành cho Lễ Tân/Điều Phối/Thực Thi với Lượng tử hóa INT8/AVX2. Sửa lỗi `Regex` cạo mất dấu `/` trong `engine.py` và sửa lỗi đối chiếu phân biệt hoa thường (`Case-sensitivity`) khi check tiến trình `ps`.
+    - **Neural Service Registry**: Tạo "Sổ đăng ký Dịch vụ" tập trung tại `core/utils/registry.py`. Tái cấu trúc (Refactor) 9 file trọng yếu dọc 3 Tầng (Brain, Control Plane, Mission Control) để chúng bắt buộc "hỏi đường" Registry thay vì gắn cứng (hardcode) địa chỉ như `http://ai-executor:8000`.
+- **Giá trị (Value)**: Loại bỏ vĩnh viễn lỗi `Name or service not known`. Hệ sinh thái đạt mức độ đóng gói cao (Encapsulation), tốc độ gọi nội bộ thần tốc, tài nguyên phần cứng được tận dụng tối đa theo tư duy "Nhất thể".
+- **Pitfall & Tự sửa lỗi (Self-Healing)**: 
+    1. Khi tích hợp Registry vào `mission-control/backend`, phát sinh lỗi `ModuleNotFoundError` do xung đột Namespace. Hệ thống đã Rollback các file của `mission-control` về `os.getenv` để cách ly.
+    2. Phát hiện lỗi `TypeError: publish_progress() takes 3 to 4 positional arguments but 5 were given` làm gãy luồng `FAST_PIPELINE` khi gọi kỹ năng `skill_sieutimkiem`. Hệ thống đã tự động mở rộng signature của `publish_progress` trong `engine.py` (dùng `*args, **kwargs`) để tương thích ngược.
+    3. Bộ điều phối GPU trước đây dùng Redis Lock (`gpu_vram`) chặn việc thực thi song song 2 mô hình (DeepSeek & Nomic Embed). Đã tháo khóa GPU theo cấu hình thực tế của Master để đạt hiệu năng song song tuyệt đối.
+    4. Sửa lỗi `AttributeError: 'JKAIIntelligenceEngine' object has no attribute 'record_skill_execution'` tại tầng Executor bằng cách triệt để tích hợp `EventStore` (lưu vết sự kiện Telemetry) và `FailureMemory` (khởi hoạt luồng Self-Healing) thay vì tạo hàm đếm tạm thời.
+- **Trạng thái**: 💎 **DUAL-ENGINE & NEURAL REGISTRY ACTIVE - v3.5 EVOLUTION COMPLETE**
+
 ## 📅 [2026-05-21] - ZENITH v3.4: MULTICLOUD ROUTING & GEMINI 3.5 FLASH INTEGRATION
 - **Bối cảnh (Why)**: Tích hợp API đám mây tốc độ cao và tự động chuyển hướng các tác vụ có ngữ cảnh siêu lớn (>8000 tokens) lên Gemini 3.5 Flash để tối ưu hóa tài nguyên phần cứng local và giải quyết bài toán xử lý tài liệu dài thưa Tổng Giám Đốc.
 - **Giải pháp (How)**:

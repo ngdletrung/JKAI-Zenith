@@ -85,7 +85,9 @@ class SovereignCore:
                 if p_keys:
                     r.delete(*p_keys)
                 r.set("agent_status", "IDLE")
-                r.delete("agent:stop_signal", "hitl_pending")
+                # Đặt tín hiệu dừng ngắt mạch 3 giây thay vì xóa, để giết các luồng ngầm thưa Master
+                r.set("agent:stop_signal", "true", ex=3)
+                r.delete("hitl_pending")
             redis_safe(_flush)
             logger.info("🧹 [SOVEREIGN]: Đã hoàn tất Giao thức Khởi tạo hệ thống.")
         except: pass

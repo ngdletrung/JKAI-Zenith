@@ -299,7 +299,7 @@ function App() {
         </div>
 
         {/* Right: Neural Workspace */}
-        <div className="w-[28%] shrink-0 flex flex-col gap-4 h-full min-h-0">
+        <div className="w-[32%] shrink-0 flex flex-col gap-4 h-full min-h-0">
           <SectionLabel icon={CircuitBoard} label={dict.workspace_title} />
           <div className="p-1.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-md relative shrink-0">
             <div className="flex gap-1">

@@ -117,7 +117,8 @@ class FastPipeline:
                     "history": history,
                     "context": context,
                 }
-                executor_url = os.getenv("EXECUTOR_URL", "http://ai-executor:8001")
+                from core.utils.registry import registry
+                executor_url = registry.get_service_url("executor")
                 resp = await client.post(f"{executor_url}/execute", json=exec_payload)
                 if resp.status_code == 200:
                     exec_data = resp.json()
@@ -202,11 +203,11 @@ class FastPipeline:
                         if "results" in output_data:
                             for r in output_data.get("results", []):
                                 if isinstance(r, dict) and (r.get("content") or r.get("snippet")):
-                                    if len((r.get("content") or r.get("snippet") or "").strip()) > 30:
+                                    if len((r.get("content") or r.get("snippet") or "").strip()) > 10:
                                         is_results_empty = False
                                         break
                         elif output_data.get("content"):
-                            if len(output_data.get("content", "").strip()) > 30:
+                            if len(output_data.get("content", "").strip()) > 10:
                                 is_results_empty = False
                                 break
 
@@ -219,32 +220,56 @@ class FastPipeline:
                         "══════════════════════════════════════════\n"
                         "[SUMMARIZER PROTOCOL - NO DATA ALERT]\n"
                         "══════════════════════════════════════════\n"
-                        "You are the Elite Secretary of JKAI Zenith. We did not find any substantial details from the search results to formulate a detailed news report.\n"
-                        "Please write a polite, professional, and elegant notification in Vietnamese to Master stating that the search results returned empty or lacked detailed information today.\n"
-                        "Do not make up any news or facts. Simply inform the Master clearly, and include the signature at the bottom.\n\n"
-                        f"👉 {formatted_time}\n"
-                        f"👉 Ban Thư Ký JKAI Zenith\n"
+                        "You are the Elite Secretary of JKAI Zenith. The search returned no usable data.\n"
+                        "Please write a SHORT, polite, natural Vietnamese reply to Master explaining that you couldn't find the information. Do NOT make up any facts.\n"
+                        f"Current time: {formatted_time}\n"
                     )
                 else:
-                    if not scraped_title:
-                        scraped_title = "Bản tin Tổng hợp Internet Zenith"
-                    summary_prompt = (
-                        f"[MISSION DATA]\n"
-                        f"Objective: {goal}\n"
-                        f"Execution Results: {self._compress_results(execution_results)}\n\n"
-                        "══════════════════════════════════════════\n"
-                        "[SUMMARIZER PROTOCOL - TIN TỨC & URL]\n"
-                        "══════════════════════════════════════════\n"
-                        "You are the Elite Secretary of JKAI Zenith. Write a clear, comprehensive, and detailed news summary in Vietnamese.\n\n"
-                        "[CORE DIRECTIVES FOR WEBPAGE SUMMARY]\n"
-                        f"1. Dùng Tiêu đề của bài báo làm tiêu đề chính của báo cáo: '# {scraped_title}'.\n"
-                        "2. Tuyệt đối KHÔNG sử dụng các tiêu đề rập khuôn máy móc như '[BÁO CÁO ELITE]' hay '[MISSION_RESULT]'.\n"
-                        "3. Tuyệt đối KHÔNG viết câu vô nghĩa 'Mục tiêu Master đã được thực hiện' hay 'Kế hoạch đã được thực hiện'. Vào thẳng nội dung bài báo một cách tự nhiên, trang trọng và lịch thiệp.\n"
-                        "4. Trình bày bài tóm tắt theo văn phong BÁO CÁO CHUYÊN NGHIỆP và ĐẲNG CẤP EXECUTIVE:\n"
-                        "   - Sử dụng các dấu gạch đầu dòng rõ ràng (- ) cho mỗi ý chính.\n"
-                        "   - Sử dụng chữ IN ĐẬM (bold markdown) để nhấn mạnh các từ khóa chính, tiêu đề phụ, hoặc số liệu quan trọng.\n"
-                        "   - Sử dụng chữ thường (regular text) cho phần giải thích đi kèm để tạo độ tương phản trực quan tuyệt vời, giúp Master lướt báo cáo cực kỳ dễ nhìn và sang trọng.\n"
-                    )
+                    # Phân loại ngữ cảnh: Q&A giao tiếp thường hay Lệnh tổng hợp tin tức?
+                    qa_keywords = ["thế nào", "là gì", "bao nhiêu", "ở đâu", "khi nào", "ai", "có không", "thời tiết", "giá", "tỷ giá", "hôm nay", "bây giờ", "hiện tại", "nhiệt độ", "how", "what", "when", "where", "weather", "price"]
+                    news_keywords = ["tin tức", "tóm tắt", "báo cáo", "tổng hợp", "điểm báo", "news", "summary", "report"]
+                    goal_lower = goal.lower()
+                    is_conversational = any(kw in goal_lower for kw in qa_keywords)
+                    is_news_report = any(kw in goal_lower for kw in news_keywords)
+                    
+                    if is_conversational and not is_news_report:
+                        # Chế độ TRẢ LỜI GIAO TIẾP TỰ NHIÊN
+                        summary_prompt = (
+                            f"[MISSION DATA]\n"
+                            f"Objective: {goal}\n"
+                            f"Search Results: {self._compress_results(execution_results)}\n\n"
+                            "══════════════════════════════════════════\n"
+                            "[SUMMARIZER PROTOCOL - CONVERSATIONAL Q&A]\n"
+                            "══════════════════════════════════════════\n"
+                            "You are JKAI, a helpful and elegant AI assistant. Master asked you a conversational question.\n"
+                            "[CORE DIRECTIVES]\n"
+                            "1. Answer DIRECTLY and NATURALLY in Vietnamese, like a knowledgeable friend — NO formal report headers, NO bullet-point lists unless necessary.\n"
+                            "2. Base your answer STRICTLY on the Search Results. Do NOT invent data.\n"
+                            "3. Keep it SHORT and conversational unless Master asked for detail.\n"
+                            "4. Politely start with 'Dạ' or similar Vietnamese greeting if appropriate.\n"
+                            f"5. Current time: {formatted_time}\n"
+                        )
+                    else:
+                        # Chế độ BÁO CÁO TIN TỨC CHUYÊN NGHIỆP
+                        if not scraped_title:
+                            scraped_title = "Bản tin Tổng hợp Internet Zenith"
+                        summary_prompt = (
+                            f"[MISSION DATA]\n"
+                            f"Objective: {goal}\n"
+                            f"Execution Results: {self._compress_results(execution_results)}\n\n"
+                            "══════════════════════════════════════════\n"
+                            "[SUMMARIZER PROTOCOL - TIN TỨC & URL]\n"
+                            "══════════════════════════════════════════\n"
+                            "You are the Elite Secretary of JKAI Zenith. Write a clear, comprehensive, and detailed news summary in Vietnamese.\n\n"
+                            "[CORE DIRECTIVES FOR WEBPAGE SUMMARY]\n"
+                            f"1. Dùng Tiêu đề của bài báo làm tiêu đề chính của báo cáo: '# {scraped_title}'.\n"
+                            "2. Tuyệt đối KHÔNG sử dụng các tiêu đề rập khuôn máy móc như '[BÁO CÁO ELITE]' hay '[MISSION_RESULT]'.\n"
+                            "3. Tuyệt đối KHÔNG viết câu vô nghĩa 'Mục tiêu Master đã được thực hiện'. Vào thẳng nội dung bài báo một cách tự nhiên.\n"
+                            "4. Trình bày bài tóm tắt theo văn phong BÁO CÁO CHUYÊN NGHIỆP:\n"
+                            "   - Sử dụng các dấu gạch đầu dòng rõ ràng (- ) cho mỗi ý chính.\n"
+                            "   - Sử dụng chữ IN ĐẬM (bold markdown) để nhấn mạnh các từ khóa chính.\n"
+                            "   - Sử dụng chữ thường cho phần giải thích để tạo độ tương phản trực quan.\n"
+                        )
             else:
                 summary_prompt = (
                     f"[MISSION DATA]\n"

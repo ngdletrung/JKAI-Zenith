@@ -101,7 +101,7 @@ const BASE_NODES = [
   { id: 'critic', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'ELITE CRITIC', status: 'IDLE', icon: 'critic' } },
   { id: 'executor', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'MISSION EXECUTOR', status: 'IDLE', icon: 'executor' } },
   { id: 'receptionist', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'BAN TRỢ LÝ', status: 'IDLE', icon: 'receptionist' } },
-  { id: 'legal', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'BAN THƯ KÝ', status: 'IDLE', icon: 'legal' } },
+  { id: 'legal', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'Ban Thư Ký', status: 'IDLE', icon: 'legal' } },
   { id: 'memory', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'MEMORY CORE', status: 'IDLE', icon: 'memory' } },
 ] as const;
 

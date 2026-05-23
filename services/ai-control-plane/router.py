@@ -21,11 +21,10 @@ class ServiceRouter:
     Sovereign Property of LeeTrung. 🏛️💎🛡️🚀
     """
     def __init__(self):
-        self.brain_url = os.getenv("AI_BRAIN_URL")
-        self.executor_url = os.getenv("EXECUTOR_URL", "http://ai-executor-1:8000")
-        self.executor_cpu_url = os.getenv("EXECUTOR_2_URL", "http://ai-executor-2:8000")
-        if not self.brain_url or not self.executor_url:
-            raise ValueError("AI_BRAIN_URL or EXECUTOR_URL not set in .env")
+        from core.utils.registry import registry
+        self.brain_url = registry.get_service_url("brain")
+        self.executor_url = registry.get_service_url("executor")
+        self.executor_cpu_url = registry.get_service_url("executor_2")
         
         # 💎 [PRODUCTION-TIMEOUTS]: Professional Synapse Protection
         self.client = httpx.AsyncClient(

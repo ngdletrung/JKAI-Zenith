@@ -160,7 +160,7 @@ class ForgeStage(PlanningStage):
                 for i, step in enumerate(parsed_json["steps"]):
                     if not isinstance(step, dict): continue
                     if "id" not in step: step["id"] = f"step_{i}"
-                    if "tool" not in step: step["tool"] = "SEARCH_WEB_GLOBAL"
+                    if "tool" not in step: step["tool"] = "OMNI_SEARCH_ENGINE"
                     if "args" not in step: step["args"] = {}
                     if "description" not in step: step["description"] = "Automatic recovery step"
                     cleaned_steps.append(step)
@@ -171,7 +171,7 @@ class ForgeStage(PlanningStage):
                 for step in parsed_json["steps"]:
                     if not isinstance(step, dict): continue
                     tool = str(step.get("tool", "")).upper()
-                    if tool in ["SEARCH_WEB_GLOBAL", "SEARCH_WEB", "WEB_SEARCH"]:
+                    if tool in ["SEARCH_WEB_GLOBAL", "SEARCH_WEB", "WEB_SEARCH", "OMNI_SEARCH_ENGINE"]:
                         raw_query = str(step.get("args", {}).get("query", ""))
                         is_hallucinated = (
                             len(raw_query) > 120 or
@@ -196,7 +196,7 @@ class ForgeStage(PlanningStage):
                     logger.warning(f"⚠️ [TOOL-SANITY-LOAD-ERR]: Error loading registry_Map_skills.json: {e}")
                     available_tools = []
                     
-                valid_tool_names = set(available_tools + ["SEARCH_WEB_GLOBAL", "BROWSER_CONTROL", "CODE_EXECUTION", "READ_FILE", "LLM_ANALYSIS", "ASK_USER", "FILE_WARDEN", "PYTHON_REPL", "SYSTEM_CMD"])
+                valid_tool_names = set(available_tools + ["OMNI_SEARCH_ENGINE", "SEARCH_WEB_GLOBAL", "BROWSER_CONTROL", "CODE_EXECUTION", "READ_FILE", "LLM_ANALYSIS", "ASK_USER", "FILE_WARDEN", "PYTHON_REPL", "SYSTEM_CMD"])
                 
                 dropped_ids = set()
                 dropped_tools = []
@@ -235,11 +235,11 @@ class ForgeStage(PlanningStage):
                     from planner import PlanStep
                     blueprint.steps = [PlanStep(
                         id="auto_recovery_01",
-                        tool="SEARCH_WEB_GLOBAL",
+                        tool="OMNI_SEARCH_ENGINE",
                         args={"query": goal},
-                        description=f"Auto-recovery: global web search for: {goal}",
-                        expert_mindset="Execute immediately.",
-                        verification="Search results obtained"
+                        description=f"Auto-recovery: omni search (Tavily/Cloud/Browse) for: {goal}",
+                        expert_mindset="Execute immediately using the best available search source.",
+                        verification="Search results obtained from at least one source."
                     )]
 
                 state["blueprint_obj"] = blueprint

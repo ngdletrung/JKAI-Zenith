@@ -101,13 +101,19 @@ async def health_check(): return {'status': 'alive'}
 
 from planner import Planner
 from critic import Critic
-from receptionist import Receptionist
-from dispatcher import Dispatcher
+from receptionist import Receptionist # Old receptionist
+from dispatcher import Dispatcher # Old/New dispatcher
+
+from security.semantic_firewall import SemanticFirewall
+from ingress_gateway.ingress import IngressGateway
 
 planner = Planner()
 critic = Critic()
-receptionist = Receptionist(critic=critic, assimilator=assimilator)
-dispatcher = Dispatcher()
+receptionist_legacy = Receptionist(critic=critic, assimilator=assimilator) # Legacy doesn't need container
+dispatcher_new = Dispatcher()
+
+semantic_firewall = SemanticFirewall()
+ingress_gateway = IngressGateway(receptionist_legacy, semantic_firewall, dispatcher_new)
 
 @app.post('/session/init')
 async def initialize_session():
@@ -145,7 +151,8 @@ async def plan_task(request: Request):
         )
         return result
     except Exception as e:
-        logger.error(f'[PLAN-ERR] {e}')
+        import traceback
+        logger.error(f'[PLAN-ERR] {e}\n{traceback.format_exc()}')
         _publish_log('SYS_LOG', f'Loi Planner: {str(e)}')
         return {"steps": [], "ambiguous": False, "error": str(e)}
 
@@ -253,11 +260,26 @@ async def receptionist_task(request: Request):
     sync_hlc_from_payload(data)
     
     goal, task_id = data.get('goal', ''), data.get('task_id', 'sys')
-    # 🧠 [STEP-1]: Xử lý qua Ban Lễ Tân thưa Master
-    result = await receptionist.handle_task(goal, task_id, history=data.get('history', []), images=data.get('images'))
-    raw_answer = result.get('answer', '')
     
-    # 🔬 [STEP-2]: Kích hoạt Hội Đồng Nơ-ron thẩm định thưa Master
+    # 🧠 [STAGE-2]: KHỚI ĐỘNG CỔNG INGRESS (VỚI SHADOW MODE)
+    # Traffic giờ đi qua IngressGateway. Nó sẽ tự gọi Legacy Pipeline
+    # và song song chạy Shadow Pipeline để đo đạc sự khác biệt.
+    result = await ingress_gateway.receive_request(
+        goal=goal,
+        task_id=task_id,
+        history=data.get('history', []),
+        images=data.get('images'),
+        mode=data.get('mode', 'fast')
+    )
+    
+    raw_answer = result.get('answer', '')
+    has_steps = bool(result.get('steps'))
+    
+    # 🔬 [STEP-2]: Chỉ kiểm tra Hội Đồng Nơ-ron cho phản hồi hội thoại thưa Master
+    # Nếu là FAST_PIPELINE (có steps), bỏ qua audit — trả trực tiếp cho Control Plane
+    if has_steps:
+        return {'status': 'ok', **result}
+    
     if len(raw_answer) > 50:
         _publish_log("ZENITH", "🔬 [NEURAL-COUNCIL]: Đang triệu hồi Hội đồng để thẩm định phản hồi...")
         final_answer = await _neural_council_audit(goal, raw_answer, task_id)

@@ -21,24 +21,34 @@ class SelfHealing:
             "mission-control": "http://mission-control:5173"
         }
         # 🧠 [NEURAL-INTEGRATION]: Ket noi voi Bo nao va Do thi thua Master
-        from core.utils.knowledge_brain import knowledge_brain
-        self.brain = knowledge_brain
-        
-        # Dung dynamic import cho ai-brain vi co dau gach ngang
-        import importlib.util
-        import sys
-        from core.config import settings
-        brain_path = os.path.join(settings.WORKSPACE_ROOT, "services/ai-brain")
-        if brain_path not in sys.path:
-            sys.path.append(brain_path)
+        self.brain = None
+        self.graph = None
+        try:
+            from core.utils.knowledge_brain import knowledge_brain
+            self.brain = knowledge_brain
             
-        spec = importlib.util.spec_from_file_location("knowledge_graph", os.path.join(brain_path, "knowledge_graph.py"))
-        kg_module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(kg_module)
-        self.graph = kg_module.get_universal_graph()
+            # Dung dynamic import cho ai-brain vi co dau gach ngang
+            import importlib.util
+            import sys
+            from core.config import settings
+            brain_path = os.path.join(settings.WORKSPACE_ROOT, "services/ai-brain")
+            if brain_path not in sys.path:
+                sys.path.append(brain_path)
+                
+            kg_path = os.path.join(brain_path, "knowledge_graph.py")
+            if os.path.exists(kg_path):
+                spec = importlib.util.spec_from_file_location("knowledge_graph", kg_path)
+                kg_module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(kg_module)
+                self.graph = kg_module.get_universal_graph()
+            else:
+                print("⚠️ [SELF-HEALING]: Không tìm thấy knowledge_graph.py (có thể đang chạy trong Executor isolated container). Đồ thị sẽ bị tắt.")
+        except Exception as e:
+            print(f"⚠️ [SELF-HEALING-INIT]: Lỗi nạp đồ thị hoặc não bộ: {e}")
 
     async def _search_experiential_solution(self, error_msg: str):
         """🧠 [Q-RANK-HEALING]: Truy tìm toa thuốc từ tiền lệ."""
+        if not self.brain: return "Không thể truy cập kho tri thức (Não bộ không khả dụng)."
         try:
             # Dung Q-Rank de tim cac nhiem vu tuong tu trong qua khu
             query = f"Lỗi: {error_msg}. Cách khắc phục và giải pháp kỹ thuật."
@@ -49,6 +59,7 @@ class SelfHealing:
 
     async def _trace_impact_via_graph(self, file_path: str):
         """🕸️ [GRAPH-DIAGNOSTIC]: Thấu thị sự ảnh hưởng qua Đồ thị."""
+        if not self.graph: return "Đồ thị tri thức không khả dụng trong phân khu này."
         try:
             # Tim cac file lien quan den file dang loi
             base_name = os.path.basename(file_path)

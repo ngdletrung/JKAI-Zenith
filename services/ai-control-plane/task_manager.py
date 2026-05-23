@@ -412,14 +412,14 @@ class TaskManager:
             err_msg = manifest.get("error", "Lỗi nơ-ron không xác định.")
             self._log("ERROR", f"🚨 [RECEPTIONIST-FAILED]: {err_msg}", tid, trid)
             err_answer = f"⚠️ **Sự cố Kết nối Nơ-ron**: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình `qwen3:4b` hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. 🫡 (Chi tiết: {err_msg})"
-            self._log("JKAI", err_answer, tid, trid, action="Mission Blocked", summary="Receptionist Error Shield")
+            self._log("JKAI", err_answer, tid, trid)
             return {"status": "error", "answer": err_answer, "task_id": tid}
 
-        # 🛡️ [EARLY-EXIT]: Nếu Receptionist đã hoàn tất (Social/Command)
-        if manifest.get("answer") or manifest.get("is_social"):
+        # 🛡️ [EARLY-EXIT]: Nếu Receptionist đã hoàn tất (Social/Command - không có steps)
+        if (manifest.get("answer") and not manifest.get("steps")) or manifest.get("is_social"):
             ans_val = manifest.get("answer", "Hệ thống đã nhận thông điệp của ngài.")
             ans_str = ans_val.get("content") if isinstance(ans_val, dict) else str(ans_val)
-            self._log("JKAI", ans_str, tid, trid, action="Mission Accomplished", summary="Receptionist Direct Answer")
+            self._log("JKAI", ans_str, tid, trid)
             return {**manifest, "status": "success"}
 
         # 🚀 [BRANCHING]: Nếu là FAST hoặc Dispatcher cưỡng chế FAST
@@ -443,7 +443,7 @@ class TaskManager:
         
         if not steps:
             err_answer = "⚠️ **Lỗi phản xạ**: Không thể tạo lộ trình thực thi chớp nhoáng (FAST) cho yêu cầu này. Master vui lòng tinh chỉnh lại yêu cầu hoặc thử lại ạ. 🫡"
-            self._log("JKAI", err_answer, tid, trid, action="Mission Blocked", summary="Fast Path Planning Failed")
+            self._log("JKAI", err_answer, tid, trid)
             return {"status": "error", "answer": err_answer, "task_id": tid}
 
         sid = manifest.get("session_id") or trid
@@ -459,7 +459,7 @@ class TaskManager:
         final_ans = summary_res.get("summary", summary_res.get("answer", "Nhiệm vụ hoàn tất."))
 
         # Sửa lỗi thừa: Tác vụ FAST không cần chưng cất bài học (Bypass Distiller)
-        self._log("JKAI", final_ans, tid, trid, action="Mission Accomplished", summary="Elite Summary Report")
+        self._log("JKAI", final_ans, tid, trid)
         
         # 💾 [PERSISTENCE-TRIGGER]: Ghi sổ
         await self._save_mission_to_history(core, "completed")
@@ -503,7 +503,7 @@ class TaskManager:
 
             final_ans = res.get("summary", "")
             async with w_lock: self.cog_store.save(core.apply(CogEvent(CogEventType.TASK_FINALIZED, payload={"answer": final_ans})))
-            self._log("JKAI", final_ans, tid, trid, action="Mission Accomplished", summary="Elite Strategic Analysis")
+            self._log("JKAI", final_ans, tid, trid)
             
             # 💾 [PERSISTENCE-TRIGGER]: Ghi sổ
             await self._save_mission_to_history(core, "completed")
@@ -513,7 +513,7 @@ class TaskManager:
         except Exception as e:
             self._log("ERROR", f"🚨 [DEEP-PATH-FAILED]: {str(e)}", tid, trid)
             err_answer = f"⚠️ **Lỗi thực thi chiến lược**: Hệ thống không thể lập kế hoạch hoặc thực thi nhiệm vụ này. Master vui lòng kiểm tra lại bối cảnh hoặc thử lại ạ. 🫡 (Chi tiết: {str(e)})"
-            self._log("JKAI", err_answer, tid, trid, action="Mission Blocked", summary="Deep Path Strategic Failure")
+            self._log("JKAI", err_answer, tid, trid)
             return {"status": "error", "answer": err_answer, "task_id": tid}
 
     async def _execute_dag(self, dag, core, budget, w_lock, goal, tid, trid, mode):

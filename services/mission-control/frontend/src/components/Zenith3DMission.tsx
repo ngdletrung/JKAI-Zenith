@@ -5,6 +5,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 const getStrategicMessage = (message: string, role: string, status: string) => {
   const s = String(status || '').toUpperCase();
 
+  // 🛡️ Ẩn bong bóng hoàn toàn khi nhàn rỗi (chưa chạy task)
+  if (s === 'IDLE') return null;
+
   let cleanMsg = message || '';
   
   // 🏛️ [ZENITH-SURGICAL-STRIPPER]: Phẫu thuật triệt để phần kỹ thuật
@@ -210,13 +213,6 @@ const FloatingSpeechBubble = ({ seat, status, message, showMsg, sortedByRecency 
 
   if (!showMsg || !displayMsg) return null;
 
-  const currentStatus = status.toUpperCase();
-  const currentPos = posMatrix[currentStatus] || posMatrix.IDLE;
-
-  const agentTransform = (role === 'master' || side === 'right')
-    ? 'translate(0%, -100%)'
-    : 'translate(-100%, -100%)';
-
   const layerRank = sortedByRecency.findIndex((x: any) => x.id === id);
   const dynamicZIndex = 110 + (layerRank !== -1 ? layerRank : order);
 
@@ -247,21 +243,21 @@ const FloatingSpeechBubble = ({ seat, status, message, showMsg, sortedByRecency 
     glowShadow = 'rgba(217, 70, 239, 0.2)';
   }
 
+  // 🏛️ Khôi phục vị trí hàng dọc
+  const verticalStart = 30;
+  const verticalSpacing = 10;
+  const topPos = verticalStart + (order * verticalSpacing);
+
   return (
     <div
-      className="absolute transition-all duration-300 ease-out pointer-events-none"
+      className="absolute transition-all duration-300 ease-out pointer-events-none flex flex-col items-center"
       style={{
-        left: currentPos.x,
-        top: currentPos.y,
-        width: currentPos.size,
-        zIndex: dynamicZIndex,
-        transform: agentTransform,
-        transformOrigin: (role === 'master' || side === 'right') ? 'bottom left' : 'bottom right',
-        willChange: 'left, top, width, transform'
+        top: `${topPos}%`,
+        width: '100%',
+        zIndex: dynamicZIndex
       }}
     >
-      {/* Đặt bong bóng nổi hẳn lên trên đầu avatar của nhân vật */}
-      <div className="absolute bottom-[104%] left-1/2 -translate-x-1/2 w-[220px] pointer-events-auto">
+      <div className="w-[18%] max-w-[22%] min-w-[160px] pointer-events-auto">
         <motion.div
           key={`${id}-${displayMsg.slice(0, 12)}`} // Kích hoạt transition mượt khi nội dung log thay đổi
           initial={{ opacity: 0, scale: 0.85, y: 8 }}
@@ -294,14 +290,6 @@ const FloatingSpeechBubble = ({ seat, status, message, showMsg, sortedByRecency 
             )}
           </p>
 
-          {/* Mũi tên chỉ xuống nhân vật */}
-          <div 
-            className="absolute bottom-[-5px] left-1/2 -translate-x-1/2 w-2.5 h-2.5 rotate-45 border-r border-b"
-            style={{ 
-              backgroundColor: 'rgba(10,13,20,0.96)',
-              borderColor: accentColor
-            }}
-          />
         </motion.div>
       </div>
     </div>

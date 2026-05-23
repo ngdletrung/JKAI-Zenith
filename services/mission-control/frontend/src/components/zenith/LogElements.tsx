@@ -67,25 +67,29 @@ export const ActionBadge = memo(({ label, onClick }: { label: string, onClick?: 
 });
 
 export const ReasoningBlock = memo(({ tag, msg }: { tag: string, msg: string }) => {
-  const role = tag.includes(':') ? tag.split(':')[1] : tag;
-  const isCritic = role === 'CRITIC' || role === 'ADVERSARIAL';
+  const safeTag = tag || '';
+  const roleRaw = (safeTag.includes(':') ? safeTag.split(':')[1] : safeTag).trim();
+  const roleUpper = roleRaw.toUpperCase();
+  const tagUpper = safeTag.toUpperCase();
+  const isCritic = roleUpper === 'CRITIC' || roleUpper === 'ADVERSARIAL';
   
   // 💎 [CLI-AESTHETIC]: Các log không quan trọng (tiến trình nền) sẽ có màu xám
-  const isImportant = role === 'MASTER' || role === 'DISPATCHER' || role === 'GATEWAY' || role === 'ERROR' || role === 'CRITIC' || tag === 'PROGRESS' || tag.includes('THOUGHT') || tag.includes('PLANNING') || tag.includes('TƯ DUY');
+  const isImportant = roleUpper === 'MASTER' || roleUpper === 'DISPATCHER' || roleUpper === 'GATEWAY' || roleUpper === 'ERROR' || roleUpper === 'CRITIC' || tagUpper === 'PROGRESS' || tagUpper.includes('THOUGHT') || tagUpper.includes('PLANNING') || tagUpper.includes('TƯ DUY');
   
   let color = isImportant ? 'text-cyan-400' : 'text-gray-500';
 
-  let displayRole = role;
-  if (role.includes('GATEWAY') || role.includes('RECEPTIONIST')) { color = "text-emerald-400"; displayRole = 'Ban Lễ Tân'; }
-  else if (role.includes('DISPATCHER')) { color = "text-amber-400"; displayRole = 'Ban Điều Phối'; }
-  else if (role.includes('PLANNER') || role.includes('THOUGHT')) { color = "text-indigo-400"; displayRole = 'Ban Kế Hoạch'; }
-  else if (role.includes('EXECUTOR')) { color = "text-blue-400"; displayRole = 'Ban Thực Thi'; }
-  else if (role.includes('SUMMARIZER')) { color = "text-fuchsia-400"; displayRole = 'Ban Thư Ký'; }
-  else if (role.includes('CRITIC') || role.includes('AUDIT')) { color = "text-rose-400"; displayRole = 'Ban Kiểm Soát'; }
-  else if (role.includes('DATA_SCOUT') || role.includes('RESEARCH') || role.includes('SEARCH')) { color = "text-sky-400"; displayRole = 'Ban Tình Báo'; }
-  else if (role.includes('FORGE')) { color = "text-purple-400"; displayRole = 'Ban Công Nghệ'; }
-  else if (role === 'SYSTEM' || role === 'SYS_LOG') { displayRole = 'Ban Kỹ Thuật'; }
-  else if (role === 'ENGINE') { displayRole = 'Trung tâm Điều hành'; }
+  let displayRole = roleRaw;
+  if (roleUpper.includes('GATEWAY') || roleUpper.includes('RECEPTIONIST')) { color = "text-emerald-400"; displayRole = 'Ban Lễ Tân'; }
+  else if (roleUpper.includes('DISPATCHER')) { color = "text-amber-400"; displayRole = 'Ban Điều Phối'; }
+  else if (roleUpper.includes('PLANNER') || roleUpper.includes('THOUGHT')) { color = "text-indigo-400"; displayRole = 'Ban Kế Hoạch'; }
+  else if (roleUpper.includes('EXECUTOR') || roleUpper.includes('ALPHA') || roleUpper.includes('BETA')) { color = "text-blue-400"; displayRole = 'Ban Thực Thi'; }
+  else if (roleUpper.includes('SUMMARIZER')) { color = "text-fuchsia-400"; displayRole = 'Ban Thư Ký'; }
+  else if (roleUpper.includes('CRITIC') || roleUpper.includes('AUDIT') || roleUpper.includes('REVIEW')) { color = "text-rose-400"; displayRole = 'Ban Kiểm Soát'; }
+  else if (roleUpper.includes('DATA_SCOUT') || roleUpper.includes('RESEARCH') || roleUpper.includes('SEARCH')) { color = "text-sky-400"; displayRole = 'Ban Thông Tin'; }
+  else if (roleUpper.includes('FORGE')) { color = "text-purple-400"; displayRole = 'Ban Công Nghệ'; }
+  else if (roleUpper === 'SYSTEM' || roleUpper === 'SYS_LOG') { displayRole = 'Ban Kỹ Thuật'; }
+  else if (roleUpper === 'ENGINE') { displayRole = 'Trung tâm Điều hành'; }
+  else if (roleUpper === 'MASTER') { color = "text-amber-400"; displayRole = 'Chủ Tịch'; }
 
   let cleanMsg = msg.replace(/^(?:[^\w\s]*)\s*\[.*?\]:\s*/g, '').trim();
   cleanMsg = cleanMsg.replace(/^Đang /i, 'Đang ').replace(/^Đã /i, 'Đã ');
@@ -93,7 +97,7 @@ export const ReasoningBlock = memo(({ tag, msg }: { tag: string, msg: string }) 
   // Loại bỏ các hộp màu mè, hiển thị trực tiếp một dòng CLI
   return (
     <div className={`font-mono text-[12px] leading-relaxed my-1 flex gap-2 ${isImportant ? 'opacity-100' : 'opacity-70'}`}>
-      <span className={`${color} font-semibold shrink-0`}>[{displayRole}]</span>
+      <span className={`${color} font-semibold shrink-0`}>{displayRole}:</span>
       <span className={isImportant ? 'text-white/90 italic' : 'text-gray-400 italic'}>
         <MarkdownRenderer content={cleanMsg || msg} />
       </span>

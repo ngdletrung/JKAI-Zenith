@@ -79,6 +79,12 @@ export const MermaidBlock = memo(({ chart }: { chart: string }) => {
 export const MarkdownRenderer = memo(({ content }: { content: string }) => {
   const setInspectedFile = useZenithStore(s => s.setInspectedFile);
   
+  // Chuyển thẻ <think> của DeepSeek thành code block để render UI đẹp mắt
+  // Hỗ trợ cả trường hợp đang stream chưa có thẻ đóng </think>
+  const formattedContent = content
+    .replace(/<think>\n?/g, '```thought\n')
+    .replace(/<\/think>\n?/g, '\n```\n');
+  
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
@@ -91,6 +97,15 @@ export const MarkdownRenderer = memo(({ content }: { content: string }) => {
 
           if (lang === 'mermaid') {
             return <MermaidBlock chart={contentStr} />;
+          }
+          if (lang === 'thought') {
+            return (
+              <div className="my-3 p-4 rounded-xl bg-indigo-900/10 border border-indigo-500/20 text-indigo-200/80 italic text-[12px] leading-relaxed whitespace-pre-wrap shadow-inner">
+                <Brain className="w-4 h-4 inline-block mr-2 mb-1 text-indigo-400 opacity-80" />
+                <span className="font-semibold text-indigo-300 mr-2">Tư duy Nơ-ron:</span>
+                {contentStr}
+              </div>
+            );
           }
 
           const isFilePath = isInline && (contentStr.includes('/') || contentStr.includes('\\')) && (contentStr.includes('.') || contentStr.length > 5);
@@ -148,7 +163,7 @@ export const MarkdownRenderer = memo(({ content }: { content: string }) => {
         hr: () => <hr className="my-8 border-white/5" />
       }}
     >
-      {content}
+      {formattedContent}
     </ReactMarkdown>
   );
 });

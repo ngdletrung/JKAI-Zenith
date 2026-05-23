@@ -80,8 +80,30 @@
 | **GLOBAL_FLUID** | 8192 | 0 | 100 | 0.3 | 1.1 | Chuyển ngữ GPU Optimization |
 | **UNIFIED_ELITE** | 8192 | 14 | 0 | 0.3 | 1.1 | Tổng hợp đa tầng |
 | **STRICT_CRITIC** | 8192 | 14 | 0 | 0.0 | 1.1 | Phản biện logic |
-| **RAM_OPTIMIZED** | 8192 | 8 | 0 | 0.3 | 1.1 | Tối ưu hóa cho CPU/RAM |
+| **RAM_OPTIMIZED** | 8192 | 14 | 0 | 0.3 | 1.1 | Tối ưu hóa cho CPU/RAM |
 | **REFLEX_GALAXY** | 4096 | 0 | 100 | 0.1 | 1.1 | Phản xạ nhanh, GPU |
+
+---
+
+[OLLAMA_ENVIRONMENT]
+# --- GLOBAL ---
+OLLAMA_KEEP_ALIVE=-1
+OLLAMA_FLASH_ATTENTION=1
+OLLAMA_KV_CACHE_TYPE=q8_0
+
+# --- GPU ENGINE (Port 11434 - ROCm) ---
+GPU_OLLAMA_NUM_PARALLEL=2
+GPU_OLLAMA_MAX_LOADED_MODELS=2
+GPU_OLLAMA_GPU_OVERHEAD=134217728
+
+# --- CPU ENGINE (Port 11435 - RAM) ---
+CPU_OLLAMA_NUM_PARALLEL=2
+CPU_OLLAMA_MAX_LOADED_MODELS=10
+CPU_OLLAMA_NUMA=1
+CPU_OLLAMA_NUM_THREAD=20
+CPU_OPENBLAS_NUM_THREADS=20
+CPU_OMP_NUM_THREADS=20
+# OLLAMA_NUM_THREAD khóa chặt luồng tính toán vào 14 nhân vật lý thực, kết hợp NUMA=1 để chống Context Switching
 
 ---
 
@@ -90,27 +112,27 @@
 > CRITICAL: engine.py tim chinh xac chuoi "3. Active Role Mapping" de bat dau parse bang nay (engine.py dong 395).
 > Moi thay doi ten section phai dong bo voi engine.py.
 
-| Role | Active Model | Hardware | num_ctx | Temp | num_gpu | top_p | repeat_penalty | KEEP_ALIVE | Active Profile | num_thread |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| EMBEDDER | nomic-embed-text:latest | **GPU/VRAM** | 1024 | 0.0 | 100 | 1.0 | 1.0 | **-1** | STABLE_SYNC | 0 |
-| RECEPTIONIST | qwen3:4b  | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED | 8 |
-| CHAT | qwen3:4b  | **CPU/RAM** | 8192 | 0.55 | 0 | 0.92 | 1.08 | **-1** | RAM_OPTIMIZED | 8 |
-| SUMMARIZER | deepseek-r1:latest | **GPU/VRAM** | 4096 | 0.05 | 100 | 0.80 | 1.10 | **-1** | ELITE_REASONING | 0 |
-| DISPATCHER | qwen3:4b  | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED | 8 |
-| CRITIC | qwen3:4b  | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED | 8 |
-| PLANNER | deepseek-r1:latest | **GPU/VRAM** | 4096 | 0.05 | 100 | 0.85 | 1.05 | **-1** | ELITE_REASONING | 0 |
-| CRITIC_ALPHA | deepseek-r1:latest | **GPU/VRAM** | 4096 | 0.05 | 100 | 0.80 | 1.10 | **-1** | ELITE_REASONING | 0 |
-| CRITIC_BETA | qwen3:4b  | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED | 8 |
-| DATA_SCOUT | qwen3:4b  | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED | 8 |
-| EXECUTOR_ALPHA | deepseek-r1:latest | **GPU/VRAM** | 4096 | 0.0 | 100 | 0.85 | 1.05 | **-1** | ELITE_REASONING | 0 |
-| EXECUTOR_BETA | qwen3:4b | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED | 8 |
-| EXECUTOR | qwen3:4b | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED | 8 |
-| RESERVE_AGENT | qwen3:4b | **CPU/RAM** | 8192 | 0.45 | 0 | 0.92 | 1.10 | **-1** | RAM_OPTIMIZED | 8 |
-| COMPRESSOR | qwen3:0.6b | **GPU/VRAM** | 4096 | 0.1 | 100 | 0.90 | 1.10 | **-1** | REFLEX_GALAXY | 0 |
-| VISION | moondream:latest | **CPU/RAM** | 2048 | 0.1 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED | 8 |
-| VOICE | faster-whisper | **CPU/RAM** | 1024 | 0.0 | 0 | 1.0 | 1.0 | **-1** | STABLE_SYNC | 8 |
-| TRANSLATOR | qwen3.5:latest | **CPU/RAM** | 8192 | 0.2 | 0 | 0.88 | 1.10 | **-1** | RAM_OPTIMIZED | 8 |
-| GRAPHIC_MASTER | SDXL-Turbo-ROCm | **GPU/VRAM** | 0 | 0.0 | 100 | -1 | -1 | 0 | ULTRA_ART | 0 |
+| Role | Active Model | Hardware | num_ctx | Temp | num_gpu | top_p | repeat_penalty | KEEP_ALIVE | Active Profile |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| EMBEDDER | nomic-embed-text:latest | **GPU/VRAM** | 1024 | 0.0 | 100 | 1.0 | 1.0 | **-1** | STABLE_SYNC |
+| RECEPTIONIST | tomng/nanbeige4.1:3b-q4_K_M  | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
+| CHAT | tomng/nanbeige4.1:3b-q4_K_M  | **CPU/RAM** | 8192 | 0.55 | 0 | 0.92 | 1.08 | **-1** | RAM_OPTIMIZED |
+| SUMMARIZER | deepseek-r1:latest | **GPU/VRAM** | 4096 | 0.05 | 100 | 0.80 | 1.10 | **-1** | ELITE_REASONING |
+| DISPATCHER | tomng/nanbeige4.1:3b-q4_K_M  | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
+| CRITIC | tomng/nanbeige4.1:3b-q4_K_M  | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
+| PLANNER | deepseek-r1:latest | **GPU/VRAM** | 4096 | 0.05 | 100 | 0.85 | 1.05 | **-1** | ELITE_REASONING |
+| CRITIC_ALPHA | deepseek-r1:latest | **GPU/VRAM** | 4096 | 0.05 | 100 | 0.80 | 1.10 | **-1** | ELITE_REASONING |
+| CRITIC_BETA | tomng/nanbeige4.1:3b-q4_K_M  | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
+| DATA_SCOUT | tomng/nanbeige4.1:3b-q4_K_M  | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
+| EXECUTOR_ALPHA | deepseek-r1:latest | **GPU/VRAM** | 4096 | 0.0 | 100 | 0.85 | 1.05 | **-1** | ELITE_REASONING |
+| EXECUTOR_BETA | fauxpaslife/nanbeige4.1-python-deepthink:3b | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
+| EXECUTOR | fauxpaslife/nanbeige4.1-python-deepthink:3b | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
+| RESERVE_AGENT | tomng/nanbeige4.1:3b-q4_K_M | **CPU/RAM** | 8192 | 0.45 | 0 | 0.92 | 1.10 | **-1** | RAM_OPTIMIZED |
+| COMPRESSOR | qwen3:0.6b | **GPU/VRAM** | 4096 | 0.1 | 100 | 0.90 | 1.10 | **-1** | REFLEX_GALAXY |
+| VISION | moondream:latest | **CPU/RAM** | 2048 | 0.1 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
+| VOICE | faster-whisper | **CPU/RAM** | 1024 | 0.0 | 0 | 1.0 | 1.0 | **-1** | STABLE_SYNC |
+| TRANSLATOR | qwen3.5:latest | **CPU/RAM** | 8192 | 0.2 | 0 | 0.88 | 1.10 | **-1** | RAM_OPTIMIZED |
+| GRAPHIC_MASTER | SDXL-Turbo-ROCm | **GPU/VRAM** | 0 | 0.0 | 100 | -1 | -1 | 0 | ULTRA_ART |
 
 ---
 

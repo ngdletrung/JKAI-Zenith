@@ -173,6 +173,9 @@ class Planner:
 {active_skills_dna}
 </ACTIVE_SKILLS_INSTRUCTIONS>
 {reasoning_block}
+<SELF_HEALING_PROTOCOL>
+NẾU BẠN GẶP LỖI HOẶC THIẾU THÔNG TIN (hoặc có feedback báo lỗi), bạn có toàn quyền sử dụng các công cụ hệ thống (như shell, cmd, powershell, patch, write, replace) để tự động kiểm tra log, tìm nguyên nhân lỗi, và sinh các bước (PlanStep) sửa code khắc phục lỗi thay vì dừng lại. Bạn là thực thể TỰ CHỦ (AUTONOMOUS) - Hãy tự chẩn đoán và tự chữa lành (Self-Healing).
+</SELF_HEALING_PROTOCOL>
 <GOLDEN_RULES>Chỉ dùng tool ID hợp lệ. Parallel:true cho bước độc lập.</GOLDEN_RULES>
 """
         return "\n\n".join([specialist_prompt, manifesto, PROTOCOL])
@@ -196,6 +199,10 @@ class Planner:
 
         specialist_prompt = await self._forge.forge_specialist_prompt(goal=goal, context=context, skills_summary=skills_summary, fast_mode=bool(cached_blueprint))
         system_prompt = self._build_system_prompt(manifesto or "", specialist_prompt, skill_dna or skills_summary, complexity, bool(cached_blueprint), reasoning_str)
+
+        # 🛡️ [TYPE-SAFETY]: Đảm bảo history luôn là list để tránh lỗi "unhashable type: 'slice'"
+        if history is not None and not isinstance(history, list):
+            history = [history] if history else []
 
         messages = [{"role": "system", "content": system_prompt}]
         if history and len(history) > self._HISTORY_THRESHOLD:

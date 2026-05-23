@@ -58,7 +58,9 @@ class Receptionist:
         """Gọi Executor để thực thi công cụ - Tối ưu Synapse thưa Master."""
         self._log("EXECUTOR", f"🛠️ Thực thi: {tool_name}({json.dumps(tool_args)})", task_id)
         try:
-            resp = await self.client.post("http://ai-executor:8000/call_tool", json={
+            from core.utils.registry import registry
+            executor_url = registry.get_service_url('executor')
+            resp = await self.client.post(f"{executor_url}/call_tool", json={
                 "name": tool_name,
                 "args": tool_args,
                 "task_id": task_id
@@ -272,15 +274,16 @@ Yêu cầu độ chính xác tuyệt đối thưa Master."""
             elif cmd == "/status":
                 res = await self._cmd_status()
                 return {"answer": res, "task_id": task_id, "sensitive": False}
-            elif cmd in ["/audit", "/warrior", "/check"]:
-                # 🛡️ TRIỆU HỒI CHIẾN BINH ZENITH QUA MẬT LỆNH thưa Master
-                # Nếu có tham số 'fix' hoặc 'repair' -> Kích hoạt Auto-Heal thưa Master
-                auto_heal = "fix" in args.lower() or "repair" in args.lower()
-                suffix = "_auto_repair" if auto_heal else ""
-                warrior_task_id = f"warrior_{int(time.time())}{suffix}"
-                
-                res = await self.call_executor_tool("skill_self_healing", {"service_name": "System"}, warrior_task_id)
-                return {"answer": res.get("msg", "Lỗi triệu hồi Chiến binh."), "task_id": warrior_task_id, "sensitive": True}
+            elif cmd == "/tusualoi":
+                warrior_task_id = f"warrior_{int(time.time())}_auto_repair"
+                args_dict = {"service_name": "System", "instruction": "Tiến hành sửa lỗi mô hình, cho phép toàn quyền ngoại trừ sửa đổi mật khẩu lệnh (sovereign key)."}
+                res = await self.call_executor_tool("skill_self_healing", args_dict, warrior_task_id)
+                return {"answer": res.get("msg", "Lỗi triệu hồi Chiến binh Tự sửa lỗi."), "task_id": warrior_task_id, "sensitive": True}
+            elif cmd == "/tucaitien":
+                warrior_task_id = f"warrior_{int(time.time())}_auto_improve"
+                args_dict = {"optimization_goal": "Tiến hành cải tiến hệ thống, cho phép toàn quyền ngoại trừ sửa đổi mật khẩu lệnh (sovereign key)."}
+                res = await self.call_executor_tool("skill_tucaitien", args_dict, warrior_task_id)
+                return {"answer": res.get("msg", "Lỗi triệu hồi Chiến binh Tự cải tiến."), "task_id": warrior_task_id, "sensitive": True}
             elif cmd in ["/cancel", "/cancle", "/stop"]:
                 # 🛑 [THE MASTER'S COMMAND]: Khôi phục lệnh dừng khẩn cấp thưa Master.
                 try:
@@ -803,33 +806,32 @@ Thực thi kỹ năng `{clean_name}` dựa trên ngữ cảnh: `{last_query}`.
 
     def _cmd_help(self):
         """Bản đồ Giao thức Siêu lệnh chuẩn Singularity v1.0 thưa Master."""
-        return """🏛️ **BẢN ĐỒ SIÊU LỆNH JKAI SINGULARITY (v1.0)** 🏛️
-
-📊 **GIÁM SÁT & HỆ THỐNG**
-- `/status` - Báo cáo sức khỏe Nhất thể & Tài nguyên.
-- `/insights` - Truy xuất các đúc kết chiến lược từ Vỏ não Thần kinh. 🧠
-- `/sync` - Đồng bộ tri thức (Neural Assimilation). 🔄
-- `/cancel` - **DỪNG KHẨN CẤP** mọi tác vụ và reset nơ-ron. 🛑
-- `/audit` - Kiểm định an toàn hệ thống toàn phần. 👁️
-
-🧠 **TÁC CHIẾN & TƯ DUY**
-- `/search [query]` - Quét 12 trụ cột tri thức. 🔍
-- `/run_skill [số/#ID]` - Thực thi kỹ năng định danh. 🛠️
-- `/help` - Hiển thị bản hướng dẫn này.
-
-💡 **Mẹo**: Master có thể gõ `[DEEP]` trước yêu cầu để kích hoạt tư duy sâu. 
-💎🫡🦾🚀⚡🌌🏛️🦾"""
+        return (
+            "🏛️ **BỘ TƯ LỆNH JKAI ZENITH**\n\n"
+            "🔹 **NHÓM LỆNH VẬN HÀNH (HỆ THỐNG)**\n"
+            "- `/status`: 📊 Kiểm tra sức khỏe của các lõi AI.\n"
+            "- `/sync`: 🔄 Kích hoạt tiến trình đồng hóa tri thức.\n"
+            "- `/reset` (hoặc `/clear`): 🧹 Xóa bộ nhớ ngữ cảnh hiện tại để bắt đầu task mới.\n"
+            "- `/insights`: 💡 Trích xuất top 10 tư duy chiến lược gần nhất từ Vỏ não.\n\n"
+            "🔹 **NHÓM LỆNH HÀNH ĐỘNG (SKILLS)**\n"
+            "- `/search_skill [từ khóa]`: 🔍 Tra cứu các kỹ năng (VD: `/search_skill docker`).\n"
+            "- `/run_skill [#ID]`: 🚀 Chạy cưỡng bức một kỹ năng (VD: `/run_skill #09`).\n\n"
+            "🔹 **NHÓM LỆNH ỨNG CỨU VÀ CẢI TIẾN**\n"
+            "- `/tusualoi`: 🛡️ Đặc quyền toàn hệ thống để tìm và tự động vá lỗi.\n"
+            "- `/tucaitien`: 🧬 Kích hoạt lõi tiến hóa, tự viết lại mã nguồn để tối ưu hóa.\n"
+            "- `/cancel` (hoặc `/stop`): 🛑 Ngắt mạch khẩn cấp mọi tiến trình AI.\n\n"
+            "💡 **Ghi chú**: Gõ `/help_secret` để xem danh sách Lệnh Đặc Quyền của Tổng Giám Đốc."
+        )
 
     def _cmd_help_secret(self):
         """Bảng tra cứu Mật lệnh Chủ quyền dành riêng cho Master."""
-        return """🤫 **GIAO THỨC MẬT LỆNH CHỦ QUYỀN (SECRET-ONLY)** 🏛️
-
-🔌 **/shutdown** - Tắt toàn bộ hệ sinh thái JKAI và Ollama (Yêu cầu Mật mã).
-🔥 **/self-destruct** - Giao thức Tự hủy thiêu rụi dữ liệu (Yêu cầu Approve + Mật mã).
-🔐 **/change-sovereign-key** - Thay đổi Mật mã Chủ quyền (Yêu cầu Mật mã cũ).
-
-⚠️ **LƯU Ý**: Master hãy tuyệt đối bảo mật các lệnh này.
-💎🛡️🔒🚀⚡"""
+        return (
+            "🔐 **LỆNH ĐẶC QUYỀN (SOVEREIGN)**\n"
+            "*(Yêu cầu nhập Mật mã Tối thượng trên Web Dashboard)*\n\n"
+            "- `/shutdown`: 🔌 Tắt toàn bộ hệ thống JKAI Zenith.\n"
+            "- `/self-destruct`: 💥 Giao thức tự hủy (Xóa toàn bộ dữ liệu).\n"
+            "- `/change-sovereign-key`: 🔑 Thay đổi Mật mã Chủ quyền."
+        )
 
     async def _cmd_global_search(self, query: str, task_id: str):
         """Tìm kiếm xuyên suốt 12 trụ cột thưa Master."""

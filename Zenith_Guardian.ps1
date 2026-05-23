@@ -13,21 +13,39 @@ $env:HSA_OVERRIDE_GFX_VERSION = "10.3.0"
 $env:HIP_VISIBLE_DEVICES = "0"
 $env:ROCR_VISIBLE_DEVICES = "0"
 $env:OLLAMA_LLM_LIBRARY = "rocm"
-$env:OLLAMA_MAX_LOADED_MODELS = "10"       # Giu 10 model hot trong RAM (128GB du suc)
-$env:OLLAMA_NUM_PARALLEL = "1"             # Giam tu 4 xuong 2 de chong tran VRAM GPU cho DeepSeek-R1
-$env:OLLAMA_KEEP_ALIVE = "-1"              # Giu model trong RAM mai mai (khong tu unload)
-$env:OLLAMA_NUM_THREAD = "8"               # Global fallback thread count (Xeon E5-2699 v4)
-$env:OPENBLAS_NUM_THREADS = "4"            # Anti-OpenBLAS pool overflow for 44-thread Xeon CPU
-$env:OMP_NUM_THREADS = "4"                 # OpenMP thread constraint for stability
-$env:OLLAMA_GPU_OVERHEAD = "134217728"
-$env:OLLAMA_FLASH_ATTENTION = "1"
-# $env:OLLAMA_KV_CACHE_TYPE = "q4_0"
-$env:OLLAMA_MODELS = "D:\Docker\Ollama_AI\Ollama_model"
-$env:OLLAMA_HOST = "0.0.0.0"
+$env:OLLAMA_KEEP_ALIVE = "-1"
 
-$OLLAMA_GEN_API = "http://127.0.0.1:11434/api/generate"
-$OLLAMA_EMB_API = "http://127.0.0.1:11434/api/embeddings"
 $RULE_FILE = "D:\Docker\N8N\intelligence\rule_hardware.md"
+
+# --- 0.1 THAU THI CAU HINH PHAN CUNG (SINGLE SOURCE OF TRUTH) ---
+# Doc cau hinh tu rule_hardware.md khoi [OLLAMA_ENVIRONMENT]
+$globalEnv = @{}
+$gpuEnv = @{}
+$cpuEnv = @{}
+
+if (Test-Path $RULE_FILE) {
+    $hwContent = Get-Content $RULE_FILE
+    $inEnvSection = $false
+    foreach ($line in $hwContent) {
+        if ($line -match "\[OLLAMA_ENVIRONMENT\]") { $inEnvSection = $true; continue }
+        if ($inEnvSection -and $line -match "^\[" -or ($inEnvSection -and $line -match "^---")) { $inEnvSection = $false; continue }
+        if ($inEnvSection -and $line -match "^\s*([A-Z0-9_]+)=(.*)$") {
+            $k = $matches[1]
+            $v = $matches[2]
+            if ($k -match "^GPU_") { $gpuEnv[$k.Substring(4)] = $v }
+            elseif ($k -match "^CPU_") { $cpuEnv[$k.Substring(4)] = $v }
+            else { $globalEnv[$k] = $v }
+        }
+    }
+}
+
+# Tiêm biến Global vào hệ thống
+foreach ($k in $globalEnv.Keys) { Set-Item -Path "Env:$k" -Value $globalEnv[$k] }
+
+$env:OLLAMA_MODELS = "D:\Docker\Ollama_AI\Ollama_model"
+
+$OLLAMA_GPU_HOST = "127.0.0.1:11434"
+$OLLAMA_CPU_HOST = "127.0.0.1:11435"
 $LOG_FILE = "D:\Docker\N8N\intelligence\protocols\guardian_logs.txt"
 $DOCKER_EXE = "C:\Program Files\Docker\Docker\Docker Desktop.exe"
 
@@ -53,7 +71,7 @@ function Write-KuteLog($msg, $status = "INFO") {
 
 try {
     # 0.5. THIET LAP DO UU TIEN OLLAMA TRONG REGISTRY (HKLM)
-    # Dat CpuPriorityClass = 5 (Below Normal) de luon nhuong quyen cho WSL2/Docker khi bi 100% CPU.
+    # Dat CpuPriorityClass = 2 (Normal) de toi uu bang thong CPU. (Truoc do la 5 - BelowNormal).
     # Note: IFEO setting for PerfOptions is only read from HKEY_LOCAL_MACHINE (HKLM).
     $ifeoPath = "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Image File Execution Options"
     try {
@@ -62,9 +80,9 @@ try {
             $perfPath = "$exePath\PerfOptions"
             if (-not (Test-Path $exePath)) { New-Item -Path $ifeoPath -Name $exe -Force -ErrorAction Stop | Out-Null }
             if (-not (Test-Path $perfPath)) { New-Item -Path $exePath -Name "PerfOptions" -Force -ErrorAction Stop | Out-Null }
-            New-ItemProperty -Path $perfPath -Name "CpuPriorityClass" -Value 5 -PropertyType DWORD -Force -ErrorAction Stop | Out-Null
+            New-ItemProperty -Path $perfPath -Name "CpuPriorityClass" -Value 2 -PropertyType DWORD -Force -ErrorAction Stop | Out-Null
         }
-        Write-KuteLog "Thiet lap do uu tien BelowNormal cho Ollama trong Registry HKLM thanh cong." "SUCCESS"
+        Write-KuteLog "Thiet lap do uu tien Normal cho Ollama trong Registry HKLM thanh cong." "SUCCESS"
     }
     catch {
         Write-KuteLog "Loi khi ghi Registry HKLM (Yeu cau Admin): $($_.Exception.Message)" "WARNING"
@@ -76,8 +94,8 @@ try {
     Write-KuteLog "Kich hoat Bo theo doi Do uu tien chu dong..." "PROCESS"
     $WatcherScript = {
         while ($true) {
-            Get-Process "ollama*" -ErrorAction SilentlyContinue | Where-Object { $_.PriorityClass -ne "BelowNormal" -and $_.PriorityClass -ne "Idle" } | ForEach-Object {
-                try { $_.PriorityClass = "BelowNormal" } catch {}
+            Get-Process "ollama*" -ErrorAction SilentlyContinue | Where-Object { $_.PriorityClass -ne "Normal" -and $_.PriorityClass -ne "Idle" } | ForEach-Object {
+                try { $_.PriorityClass = "Normal" } catch {}
             }
             Start-Sleep -Seconds 2
         }
@@ -90,21 +108,33 @@ try {
     Get-Process "ollama*" -ErrorAction SilentlyContinue | Stop-Process -Force
     Start-Sleep -Seconds 3
 
-    $portCheck = Get-NetTCPConnection -LocalPort 11434 -ErrorAction SilentlyContinue
-    if ($portCheck) {
-        Write-KuteLog "Port 11434 van dang bi chiem boi PID $($portCheck.OwningProcess). Dang giai phong..." "WARNING"
-        Stop-Process -Id $portCheck.OwningProcess -Force -ErrorAction SilentlyContinue
-        Start-Sleep -Seconds 2
-    }
+    $portCheckGPU = Get-NetTCPConnection -LocalPort 11434 -ErrorAction SilentlyContinue
+    if ($portCheckGPU) { Stop-Process -Id $portCheckGPU.OwningProcess -Force -ErrorAction SilentlyContinue }
+    $portCheckCPU = Get-NetTCPConnection -LocalPort 11435 -ErrorAction SilentlyContinue
+    if ($portCheckCPU) { Stop-Process -Id $portCheckCPU.OwningProcess -Force -ErrorAction SilentlyContinue }
+    Start-Sleep -Seconds 2
 
-    # 2. KICH HOAT OLLAMA SERVER
-    Write-KuteLog "Kich hoat He thong Ollama ROCm v33.0 (Singularity)..." "PROCESS"
-    $ollamaProc = Start-Process "ollama" -ArgumentList "serve" -WindowStyle Minimized -PassThru
+    # 2. KICH HOAT OLLAMA SERVER (DUAL-ENGINE)
+    Write-KuteLog "Kich hoat He thong Ollama ROCm v34.0 (Dual-Engine Singularity)..." "PROCESS"
     
-    # Kich hoat do uu tien thap cho tien trinh vua khoi tao
-    if ($ollamaProc) {
-        try { $ollamaProc.PriorityClass = "BelowNormal" } catch {}
-    }
+    # --- ĐỘNG CƠ 1: GPU VRAM ENGINE ---
+    $env:OLLAMA_HOST = $OLLAMA_GPU_HOST
+    foreach ($k in $gpuEnv.Keys) { Set-Item -Path "Env:$k" -Value $gpuEnv[$k] }
+    $env:HIP_VISIBLE_DEVICES = "0"
+    $env:ROCR_VISIBLE_DEVICES = "0"
+    Write-KuteLog "-> Khoi dong GPU Engine tren $OLLAMA_GPU_HOST..." "PROCESS"
+    $ollamaGpu = Start-Process "ollama" -ArgumentList "serve" -WindowStyle Minimized -PassThru
+    if ($ollamaGpu) { try { $ollamaGpu.PriorityClass = "Normal" } catch {} }
+
+    # --- ĐỘNG CƠ 2: CPU RAM ENGINE ---
+    $env:OLLAMA_HOST = $OLLAMA_CPU_HOST
+    foreach ($k in $cpuEnv.Keys) { Set-Item -Path "Env:$k" -Value $cpuEnv[$k] }
+    $env:HIP_VISIBLE_DEVICES = ""
+    $env:ROCR_VISIBLE_DEVICES = ""
+    $env:OLLAMA_NO_GPU = "1"
+    Write-KuteLog "-> Khoi dong CPU Engine tren $OLLAMA_CPU_HOST..." "PROCESS"
+    $ollamaCpu = Start-Process "ollama" -ArgumentList "serve" -WindowStyle Minimized -PassThru
+    if ($ollamaCpu) { try { $ollamaCpu.PriorityClass = "Normal" } catch {} }
     
     # [OFFLINE-AFFINITY]: Tam dung can thiep phan cung theo y chi Master de tranh treo Windows.
     # Windows se tu dieu phoi phan cung thưa Master.
@@ -113,9 +143,10 @@ try {
     $retryCount = 0
     while ($retryCount -lt 12) {
         try {
-            $response = Invoke-RestMethod -Uri "http://127.0.0.1:11434/api/tags" -Method Get -ErrorAction Stop
-            if ($response) { 
-                Write-KuteLog "Intelligence Core da SAN SANG! (^_^)" "SUCCESS"
+            $resp1 = Invoke-RestMethod -Uri "http://$OLLAMA_GPU_HOST/api/tags" -Method Get -ErrorAction Stop
+            $resp2 = Invoke-RestMethod -Uri "http://$OLLAMA_CPU_HOST/api/tags" -Method Get -ErrorAction Stop
+            if ($resp1 -and $resp2) { 
+                Write-KuteLog "Intelligence Core (Dual-Engine) da SAN SANG! (^_^)" "SUCCESS"
                 break 
             }
         }
@@ -191,13 +222,15 @@ try {
         $gpuInfo = if ($m.gpu -gt 0) { "GPU ($($m.gpu) layers)" } else { "CPU" }
         Write-KuteLog "Dang load model $role ($name) -> $gpuInfo..." "PROCESS"
         
-        # Thiet lap BelowNormal cho tat ca cac process ollama truoc khi gui request
+        # Thiet lap Normal cho tat ca cac process ollama truoc khi gui request
         Get-Process "ollama*" -ErrorAction SilentlyContinue | ForEach-Object {
-            try { $_.PriorityClass = "BelowNormal" } catch {}
+            try { $_.PriorityClass = "Normal" } catch {}
         }
         
         $isEmbed = $name -match "embed"
-        $targetApi = if ($isEmbed) { $OLLAMA_EMB_API } else { $OLLAMA_GEN_API }
+        $targetHost = if ($m.gpu -gt 0) { $OLLAMA_GPU_HOST } else { $OLLAMA_CPU_HOST }
+        $apiPath = if ($isEmbed) { "embeddings" } else { "generate" }
+        $targetApi = "http://${targetHost}/api/${apiPath}"
         
         $opts = @{}
         if ($null -ne $m.gpu) { $opts.Add("num_gpu", [int]$m.gpu) }
@@ -217,9 +250,9 @@ try {
             Write-KuteLog "   XX Loi khi trieu hoi $role ($name): $($_.Exception.Message)" "ERROR"
         }
         
-        # Thiet lap lai de dam bao child process (ollama_llama_server.exe) vua sinh ra duoc chuyen ve BelowNormal ngay lap tuc
+        # Thiet lap lai de dam bao child process (ollama_llama_server.exe) vua sinh ra duoc chuyen ve Normal ngay lap tuc
         Get-Process "ollama*" -ErrorAction SilentlyContinue | ForEach-Object {
-            try { $_.PriorityClass = "BelowNormal" } catch {}
+            try { $_.PriorityClass = "Normal" } catch {}
         }
         
         if ($m.gpu -gt 0) { Start-Sleep -Seconds 8 } else { Start-Sleep -Seconds 2 }
@@ -241,7 +274,7 @@ try {
             $dockerRetry++
         }
         Write-KuteLog "Kich hoat toan bo He sinh thai (docker compose up -d)..." "PROCESS"
-        & docker compose up -d
+        & docker compose up -d --remove-orphans
     }
     
     Write-KuteLog "HE THONG NEURAL SOVEREIGN DA DONGBO TUYET DOI." "SUCCESS"

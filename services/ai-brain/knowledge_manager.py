@@ -146,10 +146,16 @@ class JKAIKnowledgeOrchestrator:
 
     async def _expand_query(self, query: str, task_id: str) -> List[str]:
         """Giai đoạn 1: Khai phóng truy vấn thưa Master."""
-        prompt = f"Phân tích yêu cầu '{query}' và tạo ra 3 biến thể tìm kiếm (tiếng Anh và tiếng Việt) để quét sâu tri thức. Trả về JSON list."
+        prompt = f"Phân tích yêu cầu '{query}' và tạo ra 3 biến thể tìm kiếm (tiếng Anh và tiếng Việt) để quét sâu tri thức. Trả về JSON list các chuỗi (string)."
         try:
             res = await engine.call_chat([{"role": "user", "content": prompt}], role="SUMMARIZER", task_id=task_id, json_mode=True)
-            if isinstance(res, list): return res
+            if isinstance(res, list):
+                # Clean up if the model returns a list of dicts
+                clean_res = []
+                for item in res:
+                    if isinstance(item, str): clean_res.append(item)
+                    elif isinstance(item, dict) and item.values(): clean_res.append(str(list(item.values())[0]))
+                if clean_res: return clean_res
         except: pass
         return [query]
 
