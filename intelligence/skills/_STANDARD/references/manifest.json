@@ -1,0 +1,21 @@
+{
+  "id": "REFERENCES",
+  "name": "References",
+  "version": "1.0.0",
+  "description": "Skill References - Domain _STANDARD",
+  "author": "JKAI Zenith",
+  "domain": "_STANDARD",
+  "triggers": [],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Input query or task description"
+      }
+    },
+    "required": [
+      "query"
+    ]
+  }
+}

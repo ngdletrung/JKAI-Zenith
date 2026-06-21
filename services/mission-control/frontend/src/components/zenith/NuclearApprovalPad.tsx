@@ -4,7 +4,7 @@ import { ShieldCheck, ShieldAlert, Target, AlertTriangle, Lock, XCircle, Swords,
 import toast from 'react-hot-toast';
 import { ZenithService } from '../../services/ZenithService';
 
-export const NuclearApprovalPad = memo(({ language, task_id }: { language: string, task_id?: string }) => {
+export const NuclearApprovalPad = memo(({ language, task_id, onApprove, onCancel }: { language: string, task_id?: string, onApprove?: (code: string) => void, onCancel?: () => void }) => {
   const [code, setCode] = useState('');
   const [isVerifying, setIsVerifying] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
@@ -16,6 +16,13 @@ export const NuclearApprovalPad = memo(({ language, task_id }: { language: strin
     setIsVerifying(true);
     setError(null);
     try {
+      if (onApprove) {
+        await onApprove(code);
+        toast.success(language === 'vi' ? '🔱 SOVEREIGN SEAL ACCEPTED! ĐANG TRIỂN KHAI...' : '🔱 SOVEREIGN SEAL ACCEPTED! DEPLOYING...', { id: 'nuclear-success' });
+        setIsApproved(true);
+        return;
+      }
+      
       let targetId = task_id;
       if (!targetId) {
         const pending = await ZenithService.getPendingHitl();
@@ -34,13 +41,20 @@ export const NuclearApprovalPad = memo(({ language, task_id }: { language: strin
         setTimeout(() => setError(null), 2000);
       }
     } catch (e) {
-      toast.error('Uplink failed');
+      setError(language === 'vi' ? 'MẬT MÃ CHỦ QUYỀN KHÔNG KHỚP. TRUY CẬP BỊ TỪ CHỐI.' : 'SOVEREIGN KEY MISMATCH. ACCESS DENIED.');
+      toast.error(language === 'vi' ? '❌ XÁC THỰC THẤT BẠI' : '❌ AUTHENTICATION FAILED', { id: 'nuclear-fail' });
+      setCode('');
+      setTimeout(() => setError(null), 2000);
     } finally {
       setIsVerifying(false);
     }
   };
 
   const handleReject = async () => {
+    if (onCancel) {
+      onCancel();
+      return;
+    }
     setIsVerifying(true);
     try {
       let targetId = task_id;
@@ -105,7 +119,7 @@ export const NuclearApprovalPad = memo(({ language, task_id }: { language: strin
             <span className={`text-[7px] font-black uppercase tracking-[0.4em] ${error ? 'text-red-500/60' : 'text-[#fbbf24]/60'} block mb-0.5`}>
               {error ? 'Security Breach' : 'Waiting for Master'}
             </span>
-            <h3 className="text-sm font-black text-white/90 tracking-tight">XÁC THỰC QUYỀN CHỦ TỊCH</h3>
+            <h3 className="text-sm font-black text-white/90 tracking-tight">XÁC THỰC QUYỀN MASTER</h3>
           </div>
         </div>
 

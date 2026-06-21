@@ -40,7 +40,7 @@ class WorldStateEngine:
 
         if HAS_PSUTIL:
             try:
-                # 🛡️ [NON-BLOCKING]: Không dùng interval=0.1 vì nó sẽ block toàn bộ Event Loop!
+                # [NON-BLOCKING]: Không dùng interval=0.1 vì nó sẽ block toàn bộ Event Loop!
                 state["cpu_percent"] = psutil.cpu_percent(interval=None)
                 ram = psutil.virtual_memory()
                 state["ram_percent"] = ram.percent

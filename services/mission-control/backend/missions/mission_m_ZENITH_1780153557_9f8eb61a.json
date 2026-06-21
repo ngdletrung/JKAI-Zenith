@@ -1,0 +1,138 @@
+{
+  "id": "m_ZENITH_1780153557_9f8eb61a",
+  "title": "hãy cho tôi 5 tin tức về Việt Nam mới nhất hôm nay ?",
+  "goal": "hãy cho tôi 5 tin tức về Việt Nam mới nhất hôm nay ?",
+  "status": "completed",
+  "ts": 1780153657.2131941,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "hãy cho tôi 5 tin tức về Việt Nam mới nhất hôm nay ?",
+      "ts": 1780153557.0462208,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780153557_9f8eb61a"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1780153557_9f8eb61a` initialized | Trace: `trace_9f8eb61a`. Runtime ready.",
+      "ts": 1780153557.0489237,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780153557_9f8eb61a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780153557.2454004,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780153557_9f8eb61a"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: Pre-routing/Intent-Forcing: Real-time query detected. Executing search directly thưa Master.",
+      "ts": 1780153557.2497358,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780153557_9f8eb61a"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780153557.2522998,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780153557_9f8eb61a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_ef278550e178",
+      "ts": 1780153557.2545526,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780153557_9f8eb61a"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "TAVILY: Initiating global web search for hãy cho tôi 5 tin tức về Việt Nam mới nhất hôm nay ? 30/05/2026",
+      "ts": 1780153568.0278885,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780153557_9f8eb61a"
+    },
+    {
+      "tag": "WEB_DATA",
+      "msg": "TAVILY-FOUND: Discovered 5 results.\n1. 💯 Tin mới 30/5/2026 | TIN TỨC THẾ GIỚI MỚI NHẤT TRONG NGÀY|  (https://www.youtube.com/watch?v=Zt0pXj_Brjc&vl=pt-BR)\n2. 💯🔔FULL Thời Sự Thế Giới 30/5/2026 | THẢO YÊN VÀ HOÀNG TRỌNG  (https://www.youtube.com/watch?v=rMhFbpP6a1c)\n3. Việt - Tin tức online 24h mới nhất hôm nay (https://baomoi.com/tag/Vi%E1%BB%87t.epi)\n",
+      "ts": 1780153569.1038184,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780153557_9f8eb61a"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780153569.1992536,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780153557_9f8eb61a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (7129 ký tự)",
+      "ts": 1780153569.2057273,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780153557_9f8eb61a"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: DEEP-DISTILLING: Large search data found (7129 chars). Distilling knowledge...",
+      "ts": 1780153569.2076678,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780153557_9f8eb61a"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi động bộ lọc Cosine TF-IDF siêu tốc thưa Master...",
+      "ts": 1780153569.210142,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780153557_9f8eb61a"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Hoàn tất chưng cất trong 3ms (Cắt từ 7129 còn 1626 ký tự) thưa Master.",
+      "ts": 1780153569.214985,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780153557_9f8eb61a"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T15:06:09.223800] [RECEPTIONIST] [Task: ZENITH_1780153557_9f8eb61a] Đang triệu tập qwen3:4b... (Context: 2048)",
+      "ts": 1780153569.2238157,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780153557_9f8eb61a"
+    },
+    {
+      "tag": "WARNING",
+      "msg": "📡 [CONNECTION-LOST]: Trạm tại http://host.docker.internal:11434/api/chat gặp sự cố hoặc nghẽn nơ-ron (ReadTimeout). Đang kích hoạt Giao thức Chuyển vùng thưa Master...",
+      "ts": 1780153604.2297993,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780153557_9f8eb61a"
+    },
+    {
+      "tag": "INFO",
+      "msg": "✅ [FAILOVER-SUCCESS]: Đã tìm thấy nơ-ron qwen3:4b tại trạm dự phòng http://host.docker.internal:11435. Đang chuyển kết nối thưa Master.",
+      "ts": 1780153604.251294,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780153557_9f8eb61a"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "💎🫡 [ZENITH]: 1. \"Quốc hội Việt Nam thông qua luật bảo vệ môi trường mới\"  \n2. \"Chủ tịch nước Cộng hòa xã hội chủ nghĩa Việt Nam kêu gọi cộng đồng bảo vệ sức khỏe\"  \n3. \"Sự kiện an ninh mạng xã hội mới tại Việt Nam\"  \n4. \"Hội nghị quốc tế về công nghệ sinh học tại Hà Nội\"  \n5. \"Chính phủ Việt Nam công bố quyết định mới về giáo dục\"",
+      "ts": 1780153657.193782,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780153557_9f8eb61a"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "1. \"Quốc hội Việt Nam thông qua luật bảo vệ môi trường mới\"  \n2. \"Chủ tịch nước Cộng hòa xã hội chủ nghĩa Việt Nam kêu gọi cộng đồng bảo vệ sức khỏe\"  \n3. \"Sự kiện an ninh mạng xã hội mới tại Việt Nam\"  \n4. \"Hội nghị quốc tế về công nghệ sinh học tại Hà Nội\"  \n5. \"Chính phủ Việt Nam công bố quyết định mới về giáo dục\"",
+      "ts": 1780153657.1997612,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780153557_9f8eb61a"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

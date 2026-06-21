@@ -2,7 +2,7 @@
 id: FIN_05_SENTIMENT
 name_vn: "Phân Tích Tâm Lý Thị Trường"
 version: 1.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: FINANCE
 intent_pairs:
   - ["ANALYZE", "SENTIMENT"]

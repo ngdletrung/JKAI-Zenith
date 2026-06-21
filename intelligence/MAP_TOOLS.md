@@ -1,14 +1,13 @@
 <!-- 
 [ZENITH FILE DIRECTIVE]
 - File: MAP_TOOLS.md
-- Role: Bản đồ hướng dẫn sử dụng công cụ (Tools) cho Đặc vụ.
+- Role: Zenith Intelligence Documentation.
 - Ownership: Mr LeeTrung
-- Status: Active | Version: SDS v1.2
-
-[NGUYEN TAC LAM VIEC - WORKING PRINCIPLES]:
-1. [CORE-LOGIC]: Cung cấp mô tả chức năng và ngữ cảnh sử dụng (When/What) cho mọi công cụ hệ thống.
-2. [DEPENDENCY]: Phải đồng bộ với danh mục công cụ thực tế mà AI có quyền truy cập.
-3. [RESTRICTION]: Không sử dụng Emoji trong mô tả kỹ thuật. Luôn giữ văn phong chuyên nghiệp, nhiệt tình.
+- Status: Active | Version: SDS v19.9
+[WORKING PRINCIPLES]:
+1. [HEADER-FIRST]: Antigravity BAT BUOC phai doc khoi header nay truoc khi thao tac.
+2. [SDS-COMPLIANCE]: Moi thay doi phai tuan thu Giao thuc SDS moi nhat.
+3. [NO-EMOJI]: Cam dung emoji trong noi dung tep cau hinh va logic.
 -->
 # JKAI ZENITH: BAN DO CONG CU THUC CHIEN (v1.2)
 **"Ngu quan cua thuc the - Canh tay cua chu quyen"**

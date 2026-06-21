@@ -1,0 +1,40 @@
+{
+  "id": "m_ZENITH_0106-2306_66e3f3",
+  "title": "vậy tôi cần phải cung cấp gì để chạy skill nay",
+  "goal": "vậy tôi cần phải cung cấp gì để chạy skill nay",
+  "status": "completed",
+  "ts": 1780330007.9284544,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "vậy tôi cần phải cung cấp gì để chạy skill nay",
+      "ts": 1780330006.04957,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0106-2306_66e3f3"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_0106-2306_66e3f3` initialized | Trace: `trace_66e3f3`. Runtime ready.",
+      "ts": 1780330006.0515225,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0106-2306_66e3f3"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Skill run guide (đầu vào / cách chạy).",
+      "ts": 1780330007.9072068,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0106-2306_66e3f3"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "🏛️ **HƯỚNG DẪN CHẠY SKILL (Command Deck)**\n\n## #7001 — Kiến Tạo Kỹ Năng HUEIC Tự Động: Lõi đúc năng lực văn phòng chuyên biệt theo quy chuẩn HUEIC. Kỹ năng này thực hiện quy trình 4 giai đoạn: Deep Scan (Thấu thị tài liệu mẫu), Variable Mapping (Bóc tách nơ-ron biến số), Confirmation (Xác nhận từ Master) và Final Forging (Đúc kết Skill nhất thể). Biến các quy trình giấy tờ phức tạp thành các nơ-ron kỹ năng tự động hóa 100%.\n\n- **Registry**: `SKILL_HUEIC_TAO_SKILL_DE_XUAT_THEO_FORM`\n\n### Master cần cung cấp (giai đoạn 1 — Deep Scan)\n1. **File mẫu**: một hoặc nhiều `.docx` / `.xlsx` / `.pdf` (biểu mẫu HUEIC cần tự động hóa).\n2. **Tên skill mong muốn** (tiếng Việt), ví dụ: `Đề xuất cấp kinh phí`.\n3. (Tuỳ chọn) Gắn file qua Mission Control **hoặc** đường dẫn trong workspace JKAI.\n\n### Cách chạy\n```text\n/run_skill #7001\n```\nHoặc chat:\n```text\nTạo skill [Tên Skill] — đính kèm file mẫu. Phân tích biến số trước, chưa đúc skill.\n```\n\n### Quy trình 4 bước (HUEIC Forge)\n| Bước | Việc | Master |\n|------|------|--------|\n| 1 Deep Scan | Đọc file mẫu, liệt kê biến số | Gửi file + tên skill |\n| 2 Variable Mapping | Bảng biến (ho_va_ten, …) | Xem & chỉnh |\n| 3 Confirmation | Xác nhận danh sách biến | Trả lời «đồng ý» / sửa |\n| 4 Final Forging | Đúc skill + đăng ký registry | Chờ hoàn tất |\n\n### Tham số kỹ thuật (`logic.py`)\n- `mode`: `analyze` (mặc định) hoặc `forge`\n- `skill_name`: tên skill\n- `files`: danh sách đường dẫn file mẫu\n- `confirmed_vars`: dict biến đã duyệt (khi `mode=forge`)\n\n**Lưu ý:** Lỗi «Model không hỗ trợ Tools API» là giới hạn model RECEPTIONIST (deepseek-r1), **không** phải thiếu `query` SEARCH_WEB. Chạy skill qua `/run_skill #7001` hoặc DEEP pipeline + executor, không cần ReAct thủ công.\n\n\n---\n💡 Sau khi có file mẫu: upload Mission Control hoặc nêu path `scratch/projects/.../file.docx`.\n",
+      "ts": 1780330007.9155543,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0106-2306_66e3f3"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

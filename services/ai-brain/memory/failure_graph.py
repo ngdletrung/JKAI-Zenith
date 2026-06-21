@@ -7,7 +7,7 @@ class SemanticFailureGraph:
     Không chỉ lưu Log tuyến tính, mà vẽ ra biểu đồ nhân-quả (Cause & Effect) của các lỗi.
     Ví dụ: Tool A -> Thường Timeout -> Khi Network > 200ms.
     """
-    def __init__(self, db_path: str = "d:/Docker/N8N/services/ai-brain/memory/failure_graph.json"):
+    def __init__(self, db_path: str = "d:/Docker/JKAI/services/ai-brain/memory/failure_graph.json"):
         self.db_path = db_path
         self.graph = self._load_graph()
 

@@ -133,6 +133,7 @@ class QueenCoordinator:
             Kết quả: Hệ thống đạt ngưỡng Sovereign ổn định.
             
             Viết một bản báo cáo uy phong, chuẩn xác, thể hiện trình độ công nghệ đỉnh cao.
+            Trình bày kết quả theo format chuẩn: dùng ## cho section header, bảng markdown (| cột1 | cột2 |) cho dữ liệu, --- cho separator, gạch đầu dòng cho danh sách.
             """
             report = await engine.call_chat(
                 messages=[{"role": "user", "content": prompt}],

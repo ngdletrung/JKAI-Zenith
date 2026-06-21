@@ -1,0 +1,173 @@
+{
+  "id": "m_ZENITH_1780050092_a299809d",
+  "title": "hãy cho tôi giá vàng hôm nay",
+  "goal": "hãy cho tôi giá vàng hôm nay",
+  "status": "failed",
+  "ts": 1780050146.851635,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "hãy cho tôi giá vàng hôm nay",
+      "ts": 1780050092.6398687,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1780050092_a299809d` initialized | Trace: `trace_a299809d`. Runtime ready.",
+      "ts": 1780050092.641459,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780050092.843511,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:21:33.832636] [RECEPTIONIST] [Task: ZENITH_1780050092_a299809d] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780050093.8327157,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:21:34.493682] [RECEPTIONIST] [Task: ZENITH_1780050092_a299809d] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780050094.4937756,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:21:35.036948] [RECEPTIONIST] [Task: ZENITH_1780050092_a299809d] {\"name\": \"SEARCH_WEB_GLOBAL\", \"arguments\": {\"extracted_params\": \"giá vàng hôm nay tại Việt Nam\"}}",
+      "ts": 1780050095.0369792,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:21:35.040319] [RECEPTIONIST] [Task: ZENITH_1780050092_a299809d] Hoàn tất trong 1.21s. (Size: 97 chars)",
+      "ts": 1780050095.0403376,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780050095.043475,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: 896561e6-84b9-425d-8a9d-d5300aa84874",
+      "ts": 1780050095.0446472,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (10 ký tự)",
+      "ts": 1780050134.3284745,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:22:14.432463] [RECEPTIONIST] [Task: ZENITH_1780050092_a299809d] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780050134.4324996,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:22:14.435764] [RECEPTIONIST] [Task: ZENITH_1780050092_a299809d] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1780050134.435797,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "💎🫡 [ZENITH]: Mission aborted by Master.",
+      "ts": 1780050134.4384017,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780050136.5342698,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:22:16.623817] [RECEPTIONIST] [Task: ZENITH_1780050092_a299809d] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780050136.6238358,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:22:16.626843] [RECEPTIONIST] [Task: ZENITH_1780050092_a299809d] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1780050136.6268795,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "💎🫡 [ZENITH]: Mission aborted by Master.",
+      "ts": 1780050136.6291099,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780050140.7240148,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:22:20.821109] [RECEPTIONIST] [Task: ZENITH_1780050092_a299809d] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780050140.8211396,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:22:20.823719] [RECEPTIONIST] [Task: ZENITH_1780050092_a299809d] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1780050140.823737,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "💎🫡 [ZENITH]: Mission aborted by Master.",
+      "ts": 1780050140.8257337,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "🚨 [RECEPTIONIST-FAILED]: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist",
+      "ts": 1780050146.8344536,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780050092_a299809d"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "⚠️ **Sự cố Kết nối Nơ-ron**: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. 🫡 (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+      "ts": 1780050146.8363357,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780050092_a299809d"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

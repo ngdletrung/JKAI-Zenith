@@ -4,6 +4,7 @@ import asyncio
 import logging
 import time as _time
 from core.utils.engine import engine
+from core.utils import path_manager
 from redis_client import redis_safe
 
 logger = logging.getLogger("Distiller")
@@ -15,12 +16,38 @@ class ExperienceDistiller:
     """
     def __init__(self):
         self.log_history_key = "monitor:log_history"
-        self.base_intel_path = "/intelligence" if os.path.exists("/intelligence") else "D:/Docker/N8N/intelligence"
+        self.base_intel_path = "/intelligence" if os.path.exists("/intelligence") else path_manager.get("INTELLIGENCE_DIR", os.path.join(path_manager.get_root(), "intelligence"))
         self.pillars = [
             "skills", "agents", "rules", "knowledge", "prompts", 
             "commands", "tools", "protocols", "training", "vault", 
             "archive", "obsidian"
         ]
+
+    async def distill_recent_tasks(self):
+        """🔄 [AUTO-DISTILL-ALL]: Tầm soát và đúc kết các task chạy gần đây thưa Master."""
+        logger.info("🧪 [DISTILLER] Bắt đầu quét các tác vụ gần đây để đúc kết tri thức...")
+        logs = redis_safe(lambda r: r.lrange(self.log_history_key, 0, 500), [])
+        
+        unique_tasks = {}
+        for l in logs:
+            try:
+                data = json.loads(l)
+                tid = data.get("task_id")
+                msg = data.get("msg", "")
+                if tid and tid not in ["system", "manual", "unknown"]:
+                    if tid not in unique_tasks:
+                        unique_tasks[tid] = msg
+            except Exception: pass
+            
+        if not unique_tasks:
+            logger.info("⚠️ [DISTILLER] Không tìm thấy tác vụ nào cần đúc kết gần đây thưa Master.")
+            return
+            
+        for tid, goal in unique_tasks.items():
+            try:
+                await self.distill_task(tid, goal)
+            except Exception as e:
+                logger.error(f"❌ [DISTILLER-ERR] Lỗi khi đúc kết task {tid}: {e}")
 
     async def distill_task(self, task_id: str, goal: str):
         logger.info(f"🧪 [DISTILLER] Analyzing task {task_id}: '{goal}'")
@@ -33,7 +60,7 @@ class ExperienceDistiller:
                 data = json.loads(l)
                 if data.get("task_id") == task_id or task_id == "manual":
                     relevant_logs.append(f"[{data.get('tag')}] {data.get('msg')}")
-            except: pass
+            except Exception: pass
         
         if not relevant_logs:
             logger.warning("⚠️ [DISTILLER] No relevant logs found for distillation.")
@@ -80,30 +107,42 @@ class ExperienceDistiller:
         )
 
         if isinstance(distilled_data, dict):
-            # 🏛️ [SOVEREIGN GUARD INTEGRATION]: Nhất thể hóa vào Hiến pháp Chủ quyền thưa Master
+            # 📋 [PLAN BOARD v2.0]: Lưu đề xuất vào Tab Kế Hoạch thay vì block HITL thưa Master
             from core.utils.sovereign_guard import SovereignGuard
-            guard = SovereignGuard("Zenith Distiller")
+            guard = SovereignGuard("OMNI-EVOLVE Distiller")
             
-            summary = distilled_data.get("lessons_learned", ["Kết tinh tri thức mới"])[0][:100]
-            approved = await guard.ensure_approval(
-                task_id=task_id,
-                action_desc=f"Kết tinh tri thức vào Trụ cột `{distilled_data.get('action_type', 'knowledge')}`: {summary}",
-                is_core=True,
-                req_type="APPROVE_DISTILL" # Loại phê duyệt chuẩn hóa cho Distiller thưa Master
-            )
-            
-            if not approved:
-                logger.info("🛑 [DISTILLER]: Master từ chối kết tinh tri thức này.")
-                return
-
-            # 🛡️ GIAO THỨC PHÂN LOẠI VĨ MÔ: Đưa tri thức về đúng Trụ cột thưa Master
             pillar = distilled_data.get("action_type", "knowledge").lower()
             if pillar not in self.pillars: pillar = "knowledge"
             
-            await self._package_knowledge(distilled_data, goal, pillar)
-            await self._update_registry(distilled_data, pillar)
+            lessons = distilled_data.get("lessons_learned", [])
+            summary = lessons[0][:120] if lessons else "Kết tinh tri thức từ kinh nghiệm thực chiến"
             
-            # 🚀 [SELF-EVOLUTION-TRIGGER]: Nếu phát hiện lỗi hệ thống, kích hoạt Tự phẫu thuật thưa Master
+            description_parts = []
+            if lessons:
+                description_parts.append("**📚 Bài học:** " + "; ".join(lessons[:3]))
+            prefs = distilled_data.get("master_preferences", [])
+            if prefs:
+                description_parts.append("**💎 Profile Master:** " + "; ".join(prefs[:2]))
+            rules = distilled_data.get("suggested_rules", [])
+            if rules:
+                description_parts.append("**⚖️ Quy tắc đề xuất:** " + "; ".join(rules[:2]))
+            
+            # Gửi lên Tab Kế Hoạch — không block, trả về ngay
+            await guard.submit_proposal(
+                task_id=task_id,
+                title=f"[OMNI-EVOLVE] Kết tinh tri thức Trụ cột: {pillar.upper()}",
+                description="\n\n".join(description_parts) or summary,
+                proposal_type="KNOWLEDGE_DISTILL",
+                is_red_zone=False,  # Chỉ đồng hóa tri thức, không can thiệp hệ thống
+                execute_goal=f"Đồng hóa tri thức mới vào Trụ cột {pillar}: {summary}",
+                metadata={
+                    "pillar": pillar,
+                    "rating": distilled_data.get("rating", 3),
+                    "distilled_data": distilled_data
+                }
+            )
+            
+            # 🚀 [SELF-EVOLUTION-TRIGGER]: Nếu phát hiện lỗi hệ thống, đề xuất Tự phẫu thuật thưa Master
             if distilled_data.get("rating", 0) <= 2 or "error" in goal.lower() or "failure" in goal.lower():
                 await self.propose_self_patch(task_id, goal, relevant_logs)
 
@@ -143,30 +182,31 @@ class ExperienceDistiller:
             
             if isinstance(patch_data, dict) and patch_data.get("target_file"):
                 from core.utils.sovereign_guard import SovereignGuard
-                guard = SovereignGuard("Zenith Surgeon")
+                guard = SovereignGuard("OMNI-EVOLVE Surgeon")
                 
-                # 🛡️ XIN MẬT LỆNH MASTER thưa Ngài
-                approved = await guard.ensure_approval(
-                    task_id=task_id,
-                    action_desc=(
-                        f"🔬 [TỰ PHẪU THUẬT]: Đề xuất sửa file `{patch_data['target_file']}`\n"
-                        f"Lý do: {patch_data['reason']}\n"
-                        f"Tác động: {patch_data['impact']}"
-                    ),
-                    is_core=True,
-                    req_type="APPROVE_SELF_PATCH"
+                # 📋 [PLAN BOARD v2.0]: Lưu vào Tab Kế Hoạch — Master quyết định khi rảnh thưa Ngài
+                # is_red_zone=True vì can thiệp vào mã nguồn → cần mật khẩu lệnh khi phê duyệt
+                target_file = patch_data['target_file']
+                reason = patch_data.get('reason', 'Phát hiện lỗi logic')
+                impact = patch_data.get('impact', 'Cải thiện hiệu suất hệ thống')
+                proposed_code = patch_data.get('proposed_code', '')
+                
+                proposal_desc = (
+                    f"**🎯 File cần sửa:** `{target_file}`\n\n"
+                    f"**🔍 Lý do:** {reason}\n\n"
+                    f"**✅ Tác động:** {impact}\n\n"
+                    f"**💻 Code đề xuất:**\n```python\n{proposed_code[:500]}{'...' if len(proposed_code) > 500 else ''}\n```"
                 )
                 
-                if approved:
-                    # Ghi nhận đề xuất vào 00_Import để Master hoặc Antigravity thực thi thực tế thưa Master
-                    # (Để an toàn, hiện tại chỉ lưu đề xuất để Master duyệt cuối cùng thưa Ngài)
-                    import_path = os.path.join(self.base_intel_path, "vault/01_Surgical_Proposals")
-                    os.makedirs(import_path, exist_ok=True)
-                    proposal_file = f"patch_{int(_time.time())}.json"
-                    with open(os.path.join(import_path, proposal_file), "w", encoding="utf-8") as f:
-                        json.dump(patch_data, f, indent=2, ensure_ascii=False)
-                        
-                    engine.publish_mission_log("SURGEON", f"✅ [SELF-SURGERY]: Bản vá cho `{patch_data['target_file']}` đã được phê duyệt và lưu tại Vault.", task_id)
+                await guard.submit_proposal(
+                    task_id=task_id,
+                    title=f"[SELF-SURGERY] Đề xuất sửa file: {os.path.basename(target_file)}",
+                    description=proposal_desc,
+                    proposal_type="SELF_SURGERY",
+                    is_red_zone=True,  # 🔴 Vùng đỏ — can thiệp mã nguồn, cần mật khẩu lệnh
+                    execute_goal=f"Phẫu thuật file `{target_file}`: {reason}",
+                    metadata=patch_data
+                )
         except Exception as e:
             logger.error(f"❌ [SURGERY-ERR]: {e}")
 
@@ -189,39 +229,48 @@ class ExperienceDistiller:
         # 1. Lưu vào Vault/00_Import để Assimilator xử lý tiếp thưa Master
         # Gán nhãn Pillar trong filename để Assimilator dễ nhận diện
         import_path = os.path.join(self.base_intel_path, "vault/00_Import")
-        os.makedirs(import_path, exist_ok=True)
+        await asyncio.to_thread(os.makedirs, import_path, exist_ok=True)
         filename = f"{pillar}_{int(_time.time())}.md"
         
         full_path = os.path.join(import_path, filename)
-        with open(full_path, "w", encoding="utf-8") as f:
-            f.write(content)
+        await asyncio.to_thread(self._write_file, full_path, content)
             
         # 2. Cập nhật trực tiếp vào Bản đồ Tri thức (MAP_*.md) thưa Master
         await self._update_map_file(pillar, data, goal)
         
         logger.info(f"💎 [DISTILLER] Knowledge crystallized and routed to Pillar: {pillar}")
 
+    def _write_file(self, path: str, content: str):
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(content)
+
+    def _append_file(self, path: str, content: str):
+        with open(path, "a", encoding="utf-8") as f:
+            f.write(content)
+
     async def _update_registry(self, data: dict, pillar: str):
         """Cập nhật Registry trung tâm thưa Master"""
         registry_path = os.path.join(self.base_intel_path, "registry.json")
         try:
-            with open(registry_path, "r", encoding="utf-8") as f:
-                registry = json.load(f)
-            
-            # Đảm bảo pillar tồn tại trong registry
-            if pillar not in registry: registry[pillar] = {}
-            
-            item_id = f"DIST_{int(_time.time())}"
-            registry[pillar][item_id] = {
-                "name": data.get("lessons_learned", ["New Insight"])[0][:50],
-                "type": pillar,
-                "ts": _time.time(),
-                "status": "crystallized"
-            }
-            registry["last_updated"] = int(_time.time())
-            
-            with open(registry_path, "w", encoding="utf-8") as f:
-                json.dump(registry, f, indent=2, ensure_ascii=False)
+            def _sync_update():
+                with open(registry_path, "r", encoding="utf-8") as f:
+                    registry = json.load(f)
+                
+                if pillar not in registry: registry[pillar] = {}
+                
+                item_id = f"DIST_{int(_time.time())}"
+                registry[pillar][item_id] = {
+                    "name": data.get("lessons_learned", ["New Insight"])[0][:50],
+                    "type": pillar,
+                    "ts": _time.time(),
+                    "status": "crystallized"
+                }
+                registry["last_updated"] = int(_time.time())
+                
+                with open(registry_path, "w", encoding="utf-8") as f:
+                    json.dump(registry, f, indent=2, ensure_ascii=False)
+                return registry
+            await asyncio.to_thread(_sync_update)
         except Exception as e:
             logger.error(f"❌ [REGISTRY-ERR] {e}")
 
@@ -230,12 +279,11 @@ class ExperienceDistiller:
         map_filename = f"MAP_{pillar.upper()}.md"
         map_path = os.path.join(self.base_intel_path, map_filename)
         
-        if not os.path.exists(map_path): return
+        if not await asyncio.to_thread(os.path.exists, map_path): return
         
         try:
             new_entry = f"\n- ⭐⭐⭐ | **{goal[:50]}** | `Auto-Distilled` | {data.get('lessons_learned', [''])[0][:100]} |"
-            with open(map_path, "a", encoding="utf-8") as f:
-                f.write(new_entry)
-        except: pass
+            await asyncio.to_thread(self._append_file, map_path, new_entry)
+        except Exception: pass
 
 distiller = ExperienceDistiller()

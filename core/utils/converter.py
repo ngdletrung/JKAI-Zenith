@@ -30,14 +30,14 @@ class JKAI_Converter:
             
         # ⚡ [CACHE-CHECK]: Kiểm tra bộ nhớ nóng trước khi đọc
         try:
-            from redis_client import redis_safe
+            from core.redis_client import redis_safe
             # Dùng tên file + thời gian chỉnh sửa làm key để đảm bảo tính cập nhật
             cache_key = f"neural_cache:md:{path.name}:{os.path.getmtime(file_path)}"
             cached_content = redis_safe(lambda r: r.get(cache_key), None)
             if cached_content:
                 logger.info(f"⚡ [CACHE-HIT]: Truy xuất thần tốc bản dịch {path.name} từ Redis.")
                 return cached_content.decode('utf-8') if isinstance(cached_content, bytes) else cached_content
-        except: pass
+        except Exception: pass
 
         ext = path.suffix.lower()
         convertible_docs = {".pdf", ".docx", ".xlsx", ".pptx", ".csv", ".xml", ".html", ".json"}
@@ -119,7 +119,7 @@ class JKAI_Converter:
                 if ext not in binary_exts:
                     try:
                         result_md = path.read_text(encoding="utf-8", errors="ignore")
-                    except:
+                    except Exception:
                         with open(path, "rb") as f:
                             result_md = f.read().decode('utf-8', errors='ignore')
             
@@ -128,14 +128,11 @@ class JKAI_Converter:
 
             # ⚡ [CACHE-SAVE]: Lưu vào bộ nhớ nóng cho các Đặc vụ khác dùng chung
             if result_md and not result_md.startswith('❌'):
-                from redis_client import redis_safe
+                from core.redis_client import redis_safe
                 redis_safe(lambda r: r.set(cache_key, result_md, ex=3600)) # Cache trong 1 giờ
             
             return result_md
 
-        except Exception as e:
-            logger.error(f"❌ [CONVERTER-ERR] {path.name}: {e}")
-            return f"\n[ERROR CONVERTING {path.name}: {str(e)}]\n"
         except Exception as e:
             logger.error(f"❌ [CONVERTER-ERR] {path.name}: {e}")
             return f"\n[ERROR CONVERTING {path.name}: {str(e)}]\n"

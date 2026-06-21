@@ -24,35 +24,41 @@ class ZenithSteward:
 
         try:
             # 🕒 [DEADLOCK-PROTECTION]: Giới hạn thời gian chờ khóa GPU
+            logger.info(f"⏳ [STEWARD] Requesting GPU for {requested_service}...")
             await asyncio.wait_for(self.gpu_lock.acquire(), timeout=60.0)
             
             if self.current_tenant == requested_service:
+                logger.info(f"✨ [STEWARD] {requested_service} already has GPU.")
                 # Nếu là SD, kiểm tra xem nó còn sống không
                 if requested_service == 'stable-diffusion':
                     if not await self._is_container_running('stable-diffusion'):
                         await self._start_container('stable-diffusion')
                 return True
-        except asyncio.TimeoutError:
-            logger.error("🚨 [STEWARD] GPU Lock Timeout! Bypassing or forcing release...")
-            self.gpu_lock.release() # Force release if possible
-            return False
 
-            try:
-                # 1. Giải phóng chủ nhân cũ
-                if self.current_tenant == 'ollama':
-                    await self._unload_ollama()
-                elif self.current_tenant == 'stable-diffusion':
-                    await self._stop_container('stable-diffusion')
-    
-                # 2. Kích hoạt chủ nhân mới
-                if requested_service == 'stable-diffusion':
-                    await self._start_container('stable-diffusion')
-                
-                self.current_tenant = requested_service
-                return True
-            finally:
-                if self.gpu_lock.locked():
-                    self.gpu_lock.release()
+            # 🔄 [TENANT-SWITCH]: Switching active VRAM owner
+            logger.info(f"🔄 [STEWARD] Switching GPU: {self.current_tenant} -> {requested_service}")
+            
+            # 1. Giải phóng chủ nhân cũ
+            if self.current_tenant == 'ollama':
+                await self._unload_ollama()
+            elif self.current_tenant == 'stable-diffusion':
+                await self._stop_container('stable-diffusion')
+
+            # 2. Kích hoạt chủ nhân mới
+            if requested_service == 'stable-diffusion':
+                await self._start_container('stable-diffusion')
+            
+            self.current_tenant = requested_service
+            return True
+
+        except asyncio.TimeoutError:
+            logger.error("🚨 [STEWARD] GPU Lock Timeout! System overloaded.")
+            return False
+        except Exception as e:
+            logger.error(f"❌ [STEWARD] GPU Permission Error: {e}")
+            if self.gpu_lock.locked():
+                self.gpu_lock.release()
+            return False
 
     async def _unload_ollama(self):
         """Dọn dẹp VRAM Ollama triệt để."""
@@ -74,7 +80,7 @@ class ZenithSteward:
             )
             stdout, _ = await proc.communicate()
             return bool(stdout.strip())
-        except: return False
+        except Exception: return False
 
     async def _start_container(self, name: str):
         logger.info(f"🚀 [STEWARD] Starting {name} container...")
@@ -88,11 +94,19 @@ class ZenithSteward:
         await proc.wait()
 
     async def report_completion(self, service: str):
-        if service == 'stable-diffusion':
-            logger.info("✅ [STEWARD] Graphics task done. Auto-closing SD to free VRAM.")
-            await self._stop_container('stable-diffusion')
-            self.current_tenant = None
-        else:
-            logger.info(f"✅ [STEWARD] {service} task done. Keeping in VRAM for performance.")
+        """
+        Signal completion and release the hardware lock.
+        """
+        try:
+            if service == 'stable-diffusion':
+                logger.info("✅ [STEWARD] Graphics task done. Auto-closing SD to free VRAM.")
+                await self._stop_container('stable-diffusion')
+                self.current_tenant = None
+            else:
+                logger.info(f"✅ [STEWARD] {service} task done. Keeping in VRAM for performance.")
+        finally:
+            if self.gpu_lock.locked():
+                self.gpu_lock.release()
+                logger.info("🔓 [STEWARD] GPU Lock released.")
 
 steward = ZenithSteward()

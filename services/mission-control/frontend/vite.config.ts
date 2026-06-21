@@ -31,6 +31,7 @@ export default defineConfig(({ mode }) => {
       host: '0.0.0.0',
       port: FRONTEND_PORT,
       strictPort: true,
+      allowedHosts: true,
 
       /**
        * HMR

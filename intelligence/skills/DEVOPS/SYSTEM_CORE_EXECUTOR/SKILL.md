@@ -2,7 +2,7 @@
 id: SYSTEM_CORE_EXECUTOR
 name_vn: "Hệ Vận Động Cốt Lõi"
 version: 2.5.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: DEVOPS
 intent_pairs:
   - ["EXECUTE", "SYSTEM_CORE"]

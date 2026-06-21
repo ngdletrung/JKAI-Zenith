@@ -1,8 +1,8 @@
 ---
 id: OMNI_EVOLUTION_FORGE
 name_vn: "Lò Đúc Tiến Hóa Vạn Vật"
-version: 1.0.0
-author: "Antigravity Forge"
+version: 2.0.0 (Z-SOS Integrated)
+author: "JKAI ZENITH Forge"
 domain: CORE
 intent_pairs:
   - ["SCAN", "EVOLUTION"]

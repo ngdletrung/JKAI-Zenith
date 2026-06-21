@@ -30,7 +30,7 @@ class ExecutiveForge:
            - Giải pháp Chiến lược (Đề xuất cụ thể).
            - Lộ trình thực thi (Roadmap).
            - Đánh giá Rủi ro & Hiệu quả.
-        3. Trình bày bằng Markdown Elite, sử dụng các ký hiệu biểu tượng (Icons) chuẩn Zenith.
+        3. Trình bày báo cáo theo format chuẩn: dùng ## cho section, bảng markdown cho dữ liệu có cấu trúc, dấu gạch ngang cho separator, gạch đầu dòng cho danh sách.
         """
         
         engine.publish_progress(40, "Đang chưng cất dữ liệu đa chiều...", task_id)
@@ -53,9 +53,10 @@ class ExecutiveForge:
         Tóm tắt nội dung sau đây thành một BẢN TÓM TẮT ĐIỀU HÀNH (Executive Summary).
         - Chỉ tập trung vào các thông số quan trọng nhất (KPIs).
         - Đưa ra khuyến nghị hành động ngay lập tức.
-        - Tối đa 500 từ.
-        
-        NỘI DUNG:
+         - Tối đa 500 từ.
+         - Trình bày kết quả theo format chuẩn: dùng ## cho section header, bảng markdown (| cột1 | cột2 |) cho dữ liệu, --- cho separator, gạch đầu dòng cho danh sách.
+         
+         NỘI DUNG:
         {complex_content}
         """
         

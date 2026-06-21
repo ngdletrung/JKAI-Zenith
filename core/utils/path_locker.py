@@ -21,7 +21,7 @@ class PathLockRegistry:
         try:
             p = Path(raw_path).expanduser().absolute()
             return str(p)
-        except:
+        except Exception:
             return raw_path
 
     def _is_destructive(self, command: str) -> bool:
@@ -75,7 +75,7 @@ class PathLockRegistry:
             try:
                 import json
                 args = json.loads(args)
-            except:
+            except Exception:
                 args = {}
 
         if not isinstance(args, dict):

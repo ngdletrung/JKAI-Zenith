@@ -1,0 +1,46 @@
+{
+  "id": "GIT_WORKFLOW_AND_VERSIONING",
+  "name": "Git Workflow And Versioning",
+  "version": "1.0.0",
+  "description": "Enforces atomic commit guidelines and trunk-based development.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "quy chuẩn commit",
+    "git workflow",
+    "atomic commit",
+    "overview",
+    "when to use",
+    "core principles",
+    "trunk based development  recommended",
+    "1  commit early  commit often",
+    "commit",
+    "feature",
+    "branches",
+    "changes",
+    "branch",
+    "change",
+    "work",
+    "validation",
+    "test",
+    "separate",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "msg": {
+          "type": "string",
+          "description": "The commit message draft."
+        }
+      },
+      "required": [
+        "msg"
+      ]
+    }
+  }
+}

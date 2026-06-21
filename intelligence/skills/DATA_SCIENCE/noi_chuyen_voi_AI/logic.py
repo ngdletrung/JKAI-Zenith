@@ -2,11 +2,12 @@ import os
 import json
 import httpx
 from core.utils.engine import engine
+from core.utils import path_manager
 
 class NeuralTalk:
     """
     🔗 NÓI CHUYỆN VỚI AI (noi_chuyen_voi_AI): Giao thức trò chuyện và Hợp nhất Trí tuệ Đa nền tảng.
-    Kết nối JKAI Zenith với các Siêu AI thế giới (GPT-4, Claude, DeepSeek).
+    Kết nối JKAI Zenith với các Siêu AI thế giới (Gemini, GPT-4, DeepSeek, Grok).
     """
     def __init__(self):
         self.keys = self._load_keys_from_rules()
@@ -16,7 +17,7 @@ class NeuralTalk:
         Giao thức Thấu thị: Trích xuất Key trực tiếp từ `rules_software.md`.
         """
         keys = {}
-        path = os.getenv("WORKSPACE_ROOT", "D:/Docker/N8N") + "/intelligence/rules_software.md"
+        path = os.getenv("WORKSPACE_ROOT", path_manager.get_root()) + "/intelligence/rules_software.md"
         if os.path.exists(path):
             with open(path, "r", encoding="utf-8") as f:
                 content = f.read()

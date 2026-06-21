@@ -1,3 +1,14 @@
+<!-- 
+[ZENITH FILE DIRECTIVE]
+- File: MAP_RULES.md
+- Role: Zenith Intelligence Documentation.
+- Ownership: Mr LeeTrung
+- Status: Active | Version: SDS v19.9
+[WORKING PRINCIPLES]:
+1. [HEADER-FIRST]: Antigravity BAT BUOC phai doc khoi header nay truoc khi thao tac.
+2. [SDS-COMPLIANCE]: Moi thay doi phai tuan thu Giao thuc SDS moi nhat.
+3. [NO-EMOJI]: Cam dung emoji trong noi dung tep cau hinh va logic.
+-->
 # ⚖️ JKAI Zenith: HỒ SƠ TRÍ TUỆ QUY TẮC (MAP_RULES)
 
 Danh mục các Giao thức an ninh, Quy trình SOP và Thông số kỹ thuật bắt buộc.
@@ -6,7 +17,7 @@ Danh mục các Giao thức an ninh, Quy trình SOP và Thông số kỹ thuật
 
 | Xếp hạng | Quy tắc | Đường dẫn | Ghi chú Tính năng |
 |:---:|:---|:---|:---|
-| ⭐⭐⭐⭐⭐ | **Path Protocol** | `./rule_paths.md` | Giao thức Tọa độ: Nhất thể hóa và quản trị đường dẫn tập trung. |
+| ⭐⭐⭐⭐⭐ | **Path Protocol** | `./path_rules.md` | Giao thức Tọa độ: Nhất thể hóa và quản trị đường dẫn tập trung. |
 | ⭐⭐⭐⭐⭐ | **Hardware Protocol** | `./rule_hardware.md` | Giới hạn phần cứng: Tối ưu hóa GPU RX 6600 và quản lý VRAM. |
 | ⭐⭐⭐⭐⭐ | **MISSION_DEBRIEF_PROTOCOL.md** | `./protocols/MISSION_DEBRIEF_PROTOCOL.md` | Giao thức báo cáo sau tác chiến (BẮT BUỘC). |
 | ⭐⭐⭐⭐⭐ | **Information Flow** | `./rules/ELITE_SOP_INFORMATION_FLOW.md` | Quy trình dòng chảy thông tin Elite: Thông tuyến v12.5. |

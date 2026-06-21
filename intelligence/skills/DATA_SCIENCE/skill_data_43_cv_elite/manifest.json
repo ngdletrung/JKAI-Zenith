@@ -1,0 +1,58 @@
+{
+  "id": "SKILL_DATA_43_CV_ELITE",
+  "name": "Zenith Computer Vision Elite",
+  "version": "1.0.0",
+  "description": "Visual intelligence core: High-performance computer vision for object detection, image classification, and spatial analysis.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "thị giác máy tính elite",
+    "nhận diện hình ảnh",
+    "object detection",
+    "cv elite",
+    "phân tích không gian",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "hinh",
+    "nang",
+    "thuc",
+    "phan",
+    "thong",
+    "video",
+    "tuong",
+    "hoac",
+    "quan",
+    "thuat",
+    "data",
+    "du lieu",
+    "phan tich du lieu",
+    "ml",
+    "machine learning"
+  ],
+  "domain": "DATA_SCIENCE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "image_path": {
+          "type": "string",
+          "description": "Path to the image for CV analysis."
+        },
+        "cv_task": {
+          "type": "string",
+          "enum": [
+            "detection",
+            "classification",
+            "segmentation"
+          ],
+          "description": "Type of visual task."
+        }
+      },
+      "required": [
+        "image_path"
+      ]
+    }
+  }
+}

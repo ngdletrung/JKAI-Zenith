@@ -1,0 +1,47 @@
+{
+  "id": "GITHUB_MULTI_REPO",
+  "name": "Zenith GitHub Multi-Repo",
+  "version": "1.0.0",
+  "description": "Distributed repository management: Synchronizes and manages multiple GitHub repositories simultaneously for microservice architectures.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "quản lý nhiều repo",
+    "github multi repo",
+    "đồng bộ microservices",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "quan",
+    "nhat",
+    "nhieu",
+    "repo",
+    "thai",
+    "thong",
+    "nhau",
+    "hoac",
+    "phuc",
+    "nguon",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "repo_list": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "List of repositories to manage."
+        }
+      }
+    }
+  }
+}

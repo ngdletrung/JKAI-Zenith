@@ -1,0 +1,54 @@
+{
+  "id": "DOSSIER_INVESTIGATOR",
+  "name": "Zenith Dossier Investigator",
+  "version": "1.0.0",
+  "description": "Multi-source intelligence gathering engine: Performs parallel reconnaissance across memory, web, and code to build relational dossiers.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "trinh sát",
+    "điều tra",
+    "investigate",
+    "dossier build",
+    "truy quét thực thể",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "thuc",
+    "trinh",
+    "nang",
+    "hoac",
+    "dung",
+    "phan",
+    "hien",
+    "thanh",
+    "thong",
+    "chung",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "seed": {
+          "type": "string",
+          "description": "The initial entity or topic to investigate."
+        },
+        "max_depth": {
+          "type": "integer",
+          "description": "Recursion depth for entity discovery.",
+          "default": 2
+        }
+      },
+      "required": [
+        "seed"
+      ]
+    }
+  }
+}

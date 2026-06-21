@@ -2,7 +2,7 @@
 id: FIN_08_FOREX
 name_vn: "Giao Dịch Ngoại Hối Elite"
 version: 1.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: FINANCE
 intent_pairs:
   - ["TRADE", "FOREX"]

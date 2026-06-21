@@ -2,7 +2,7 @@
 id: FIN_02_TECH_ANALYSIS
 name_vn: "Phân Tích Kỹ Thuật Elite"
 version: 1.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: FINANCE
 intent_pairs:
   - ["ANALYZE", "TECHNICAL"]

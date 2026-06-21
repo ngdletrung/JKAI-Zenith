@@ -43,7 +43,7 @@ def fix_file(path):
     return False
 
 def run_repair():
-    base_dir = os.getenv("WORKSPACE_ROOT", "D:/Docker/N8N")
+    base_dir = os.getenv("WORKSPACE_ROOT", "D:/Docker/JKAI")
     targets = ['services', 'intelligence', 'shared', 'core']
     
     count = 0

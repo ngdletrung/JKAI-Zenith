@@ -42,4 +42,4 @@ def purge_honorifics(root_dir):
     print(f"   - Tổng số hậu ngữ đã xóa: {total_replaced}")
 
 if __name__ == "__main__":
-    purge_honorifics(r'd:\Docker\N8N\intelligence')
+    purge_honorifics(r'd:\Docker\JKAI\intelligence')

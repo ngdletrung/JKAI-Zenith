@@ -61,7 +61,7 @@ for port in [11434, 11435]:
         # Also add name without tag
         for m in data.get("models", []):
             avail[port].add(m["name"].split(":")[0].lower())
-    except:
+    except Exception:
         avail[port] = set()
 
 print(f"\n{'Role':<16} {'Hardware':<10} {'Port':<6} {'Model':<55} {'Status'}")

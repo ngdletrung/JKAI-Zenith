@@ -4,6 +4,7 @@ import yaml
 import subprocess
 from pathlib import Path
 from core.utils.engine import engine
+from core.utils import path_manager
 
 class InstantForge:
     """
@@ -11,7 +12,7 @@ class InstantForge:
     Tự động hóa toàn bộ quy trình: Viết code -> Dockerize -> Deploy.
     """
     def __init__(self):
-        self.base_dir = Path(os.getenv("WORKSPACE_ROOT", "D:/Docker/N8N"))
+        self.base_dir = Path(os.getenv("WORKSPACE_ROOT", path_manager.get_root()))
         self.services_dir = self.base_dir / "services"
         self.compose_path = self.base_dir / "docker-compose.yml"
 
@@ -42,15 +43,29 @@ class InstantForge:
             json_mode=True
         )
 
-        # 2. Tạo cấu trúc thư mục
+        # 2. Tạo bộ hồ sơ 5 file (Nhất thể Standard)
         target_dir = self.services_dir / service_name
         target_dir.mkdir(parents=True, exist_ok=True)
         
-        (target_dir / "main.py").write_text(forge_plan.get("main_py", ""), encoding="utf-8")
+        (target_dir / "logic.py").write_text(forge_plan.get("main_py", ""), encoding="utf-8")
+        (target_dir / "SKILL.md").write_text(f"---\nid: {service_name.upper()}\nname_vn: {service_name}\ndomain: DEVOPS\n---\n# {service_name}\n## 📖 TỔNG QUAN\n{forge_plan.get('description', '')}", encoding="utf-8")
+        (target_dir / "dossier.md").write_text(f"# Hồ sơ Năng lực: {service_name}\n## 🎯 Capability Overview\n{forge_plan.get('description', '')}\n## 🛠️ Detailed Features\n- Microservice tự động được đúc cho hạ tầng Zenith.", encoding="utf-8")
+        
+        manifest_content = {
+            "id": service_name.upper(),
+            "name_vn": service_name,
+            "domain": "DEVOPS",
+            "rel_path": f"services/{service_name}/SKILL.md",
+            "description": forge_plan.get("description", "")
+        }
+        (target_dir / "manifest.json").write_text(json.dumps(manifest_content, indent=4, ensure_ascii=False), encoding="utf-8")
+        (target_dir / "__init__.py").write_text("# Microservice Initialization\n", encoding="utf-8")
+        
+        # Docker files
         (target_dir / "requirements.txt").write_text(forge_plan.get("requirements_txt", ""), encoding="utf-8")
         (target_dir / "Dockerfile").write_text(forge_plan.get("dockerfile", ""), encoding="utf-8")
 
-        engine.publish_mission_log("FORGE_WRITE", f"🛠️ [FORGE]: Đã phẫu thuật xong mã nguồn và Dockerfile cho `{service_name}`.", task_id)
+        engine.publish_mission_log("FORGE_WRITE", f"🛠️ [FORGE]: Đã phẫu thuật xong bộ hồ sơ 5 file và Docker cho `{service_name}`.", task_id)
 
         # 3. Cập nhật Docker Compose
         try:

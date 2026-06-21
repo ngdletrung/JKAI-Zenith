@@ -40,7 +40,7 @@ class ContextCompressor:
                         summary = f"[tool_result]: Object with keys {list(data.keys())}."
                     else:
                         summary = f"[tool_result]: {str(data)[:200]}..."
-                except:
+                except Exception:
                     summary = f"[tool_result]: Raw output ({len(content)} chars). Snippet: {content[:150]}..."
                 
                 pruned.append({**msg, "content": f"### [PRUNED-TOOL-OUTPUT]:\n{summary}"})

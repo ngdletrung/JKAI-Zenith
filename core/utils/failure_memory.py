@@ -18,6 +18,7 @@ Tích hợp vào planner.py:
 
 import json
 import time
+import os
 import hashlib
 import logging
 from typing import Any, Dict, List, Optional
@@ -144,6 +145,11 @@ class FailureMemory:
             if fix_worked and not existing.successful_fix:
                 existing.successful_fix = attempted_fix
                 existing.prevention_step = prevention
+            
+            # 🛡️ [SELF-SURGERY]: Nếu pattern lặp lại nhiều lần, đề xuất bản vá vĩnh viễn
+            if existing.occurrence >= self._HIGH_RISK_THRESHOLD:
+                await self.propose_surgical_patch(existing, error_detail)
+                
             await self._persist(existing)
             logger.info(f"[FAILURE-MEMORY]: Pattern merged. occurrence={existing.occurrence} | {existing.root_cause[:60]}")
             return existing
@@ -211,12 +217,66 @@ class FailureMemory:
         )
 
     async def get_tool_failure_rate(self, tool_id: str) -> float:
-        """Tỷ lệ failure của một tool cụ thể. 0.0 = hoàn hảo, 1.0 = luôn fail."""
+        """Ty le failure cua mot tool cu the. 0.0 = hoan hao, 1.0 = luon fail."""
         all_patterns = await self._load_all()
         total = sum(1 for p in all_patterns if tool_id in p.failed_tools)
         if not all_patterns:
             return 0.0
         return min(1.0, total / max(1, len(all_patterns)) * 3)  # Amplify signal
+
+    async def propose_surgical_patch(self, pattern: FailurePattern, error_detail: str):
+        """🏛️ [SURGICAL-PROPOSAL]: Tu dong de xuat ban va ma nguon khi loi lap lai thua Master."""
+        from core.utils.engine import engine
+        from core.utils import path_manager
+        
+        proposal_path = os.path.join(path_manager.get("INTELLIGENCE_DIR", "intelligence"), "vault", "01_Surgical_Proposals")
+        os.makedirs(proposal_path, exist_ok=True)
+        
+        proposal_file = f"auto_patch_{pattern.similarity_key()}_{int(time.time())}.json"
+        
+        # Tạo prompt để model phân tích và viết bản vá
+        patch_prompt = f"""
+        BẠN LÀ KIẾN TRÚC SƯ TRƯỞNG JKAI ZENITH - CHUYÊN GIA TỰ PHẪU THUẬT.
+        Hệ thống phát hiện lỗi lặp lại {pattern.occurrence} lần.
+        
+        PATTERN LỖI: {pattern.root_cause}
+        CHI TIẾT LỖI GẦN NHẤT: {error_detail}
+        GIAI ĐOẠN THẤT BẠI: {pattern.failure_stage.value}
+        TOOLS LIÊN QUAN: {', '.join(pattern.failed_tools)}
+        
+        NHIỆM VỤ:
+        1. Xác định file gây lỗi trong codebase.
+        2. Đề xuất một đoạn code vá lỗi hoàn chỉnh.
+        
+        TRẢ VỀ JSON CHUẨN:
+        {{
+            "target_file": "path/to/file",
+            "reason": "Giải thích chi tiết nguyên nhân gốc rễ",
+            "proposed_code": "Đoạn code sửa đổi hoàn chỉnh",
+            "impact": "Lợi ích sau khi sửa"
+        }}
+        """
+        
+        try:
+            patch_data = await engine.call_chat(
+                messages=[{"role": "system", "content": patch_prompt}],
+                role="PLANNER",
+                profile="STRICT",
+                json_mode=True
+            )
+            
+            if isinstance(patch_data, dict) and patch_data.get("target_file"):
+                full_path = os.path.join(proposal_path, proposal_file)
+                with open(full_path, "w", encoding="utf-8") as f:
+                    json.dump(patch_data, f, indent=2, ensure_ascii=False)
+                
+                engine.publish_mission_log(
+                    "SURGEON", 
+                    f"✅ [AUTO-SURGERY]: De xuat ban va cho `{patch_data['target_file']}` da duoc luu vao Vault.",
+                    pattern.task_id
+                )
+        except Exception as e:
+            logger.error(f"❌ [AUTO-SURGERY-ERR]: {e}")
 
     # ── PRIVATE HELPERS ───────────────────────────────────────────────────────
 

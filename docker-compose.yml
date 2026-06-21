@@ -15,6 +15,28 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - postgres-data:/var/lib/postgresql/data
+    command: 
+      - "postgres"
+      - "-c"
+      - "max_connections=200"
+      - "-c"
+      - "shared_buffers=1GB"
+      - "-c"
+      - "effective_cache_size=3GB"
+      - "-c"
+      - "maintenance_work_mem=256MB"
+      - "-c"
+      - "checkpoint_completion_target=0.9"
+      - "-c"
+      - "wal_buffers=16MB"
+      - "-c"
+      - "default_statistics_target=100"
+      - "-c"
+      - "random_page_cost=1.1"
+      - "-c"
+      - "effective_io_concurrency=200"
+      - "-c"
+      - "work_mem=20MB"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
@@ -22,6 +44,8 @@ services:
       retries: 10
     networks:
       - ai-network
+    mem_limit: 4g
+    cpus: 2
 
   # =========================
   # 🧠 REDIS QUEUE (cho n8n worker)
@@ -48,7 +72,7 @@ services:
     image: redis:7-alpine
     container_name: redis-ai
     restart: unless-stopped
-    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory", "2gb", "--maxmemory-policy", "allkeys-lru", "--requirepass", "${REDIS_PASSWORD}"]
     volumes:
       - redis-ai-data:/data
     healthcheck:
@@ -60,6 +84,8 @@ services:
       - "6379:6379"
     networks:
       - ai-network
+    mem_limit: 2g
+    cpus: 1
 
   # =========================
   # 🔍 QDRANT VECTOR DB
@@ -74,6 +100,8 @@ services:
       - qdrant-data:/qdrant/storage
     networks:
       - ai-network
+    mem_limit: 4g
+    cpus: 2
 
   # =========================
   # 🧠 RAG SERVICE
@@ -89,7 +117,7 @@ services:
     env_file: .env
     volumes:
       - ./rag:/app
-      - ./intelligence/vault/01_Knowledge:/app/knowledge_base
+      - ./intelligence/wiki:/app/knowledge_base
       - ./intelligence:/intelligence:ro
       - ./core:/shared/core:ro
     environment:
@@ -260,10 +288,12 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./intelligence:/intelligence
       - storage-data:/storage
+      - .:/workspace
     environment:
       - PYTHONPATH=/app:/shared
       - PYTHONUNBUFFERED=1
       - PROMPTS_DIR=/prompts
+      - TASK_BOARD_PATH=/workspace/task.md
     depends_on:
       redis-ai:
         condition: service_healthy
@@ -285,6 +315,11 @@ services:
     restart: unless-stopped
     command: python worker.py
     env_file: .env
+    environment:
+      - PYTHONPATH=/app:/shared
+      - PYTHONUNBUFFERED=1
+      - PROMPTS_DIR=/prompts
+      - TASK_BOARD_PATH=/workspace/task.md
     volumes:
       - ./services/ai-control-plane:/app
       - ./models:/shared/models
@@ -295,10 +330,7 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
       - ./intelligence:/intelligence
       - storage-data:/storage
-    environment:
-      - PYTHONPATH=/app:/shared
-      - PYTHONUNBUFFERED=1
-      - PROMPTS_DIR=/prompts
+      - .:/workspace
     depends_on:
       redis-ai:
         condition: service_healthy
@@ -318,7 +350,7 @@ services:
     build: ./services/ai-brain
     container_name: ai-brain
     restart: unless-stopped
-    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     env_file: .env
     ports:
       - "8001:8000"
@@ -341,6 +373,7 @@ services:
       - PYTHONPATH=/app:/shared
       - PYTHONUNBUFFERED=1
       - PROMPTS_DIR=/prompts
+      - TASK_BOARD_PATH=/workspace/task.md
     depends_on:
       redis-ai:
         condition: service_healthy
@@ -361,7 +394,7 @@ services:
     build: ./services/ai-executor
     container_name: ai-executor-1
     restart: unless-stopped
-    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     env_file: .env
     ports:
       - "8002:8000"
@@ -396,7 +429,7 @@ services:
     build: ./services/ai-executor
     container_name: ai-executor-2
     restart: unless-stopped
-    command: uvicorn main:app --host 0.0.0.0 --port 8000
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
     env_file: .env
     ports:
       - "8007:8000"
@@ -457,6 +490,7 @@ services:
     volumes:
       - ./services/ai-browser:/app
       - ./core:/shared/core
+      - ./intelligence:/intelligence:ro
     environment:
       - OLLAMA_HOST=http://host.docker.internal:11434
       - PYTHONUNBUFFERED=1
@@ -465,8 +499,9 @@ services:
       - "host.docker.internal:host-gateway"
     networks:
       - ai-network
-    mem_limit: 2g
-    cpus: 1
+    shm_size: 2gb
+    mem_limit: 4g
+    cpus: 2
 
   # =========================
   # 📊 MISSION CONTROL (Hybrid Live Mode - Port 9999)
@@ -533,24 +568,6 @@ services:
       - ai-network
       - gpu-internal
 
-  # =========================
-  # 🕵️ JAEGER (X-RAY MONITORING)
-  # =========================
-  jaeger:
-    image: jaegertracing/all-in-one:latest
-    container_name: jaeger
-    restart: unless-stopped
-    ports:
-      - "16686:16686"   # UI
-      - "4317:4317"     # OTLP gRPC
-      - "4318:4318"     # OTLP HTTP
-    environment:
-      - COLLECTOR_OTLP_ENABLED=true
-    volumes:
-      - jaeger_tmp:/tmp
-    networks:
-      - ai-network
-
 # =========================
 # 📦 NAMED VOLUMES
 # =========================
@@ -568,7 +585,6 @@ volumes:
   commands-data:
   agents-data:
   tools-data:
-  jaeger_tmp:
 
 # =========================
 # 🌐 NETWORK

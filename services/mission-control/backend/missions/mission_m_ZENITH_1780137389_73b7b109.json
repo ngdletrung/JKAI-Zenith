@@ -1,0 +1,145 @@
+{
+  "id": "m_ZENITH_1780137389_73b7b109",
+  "title": "hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay",
+  "goal": "hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay",
+  "status": "completed",
+  "ts": 1780137455.8611398,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay",
+      "ts": 1780137389.156709,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1780137389_73b7b109` initialized | Trace: `trace_73b7b109`. Runtime ready.",
+      "ts": 1780137389.1593523,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780137389.3665645,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: Pre-routing/Intent-Forcing: Real-time query detected. Executing search directly thưa Master.",
+      "ts": 1780137389.379932,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780137389.381633,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_f7bc957bc07d",
+      "ts": 1780137389.383327,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "TAVILY: Initiating global web search for hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay 30/05/2026",
+      "ts": 1780137394.5886445,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    },
+    {
+      "tag": "WEB_DATA",
+      "msg": "TAVILY-FOUND: Discovered 5 results.\n1. Tin tức thời sự quốc tế mới nhất ngày: 30/5/2026 | Tin Nóng  (https://www.youtube.com/watch?v=TGxfFv57Nx4)\n2. Tin tức tình hình Campuchia mới nhất hôm nay trên VnExpress (https://vnexpress.net/chu-de/campuchia-2360)\n3. Campuchia - Tin tức online 24h mới nhất hôm nay (https://baomoi.com/campuchia-tag3985.epi)\n",
+      "ts": 1780137397.487777,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780137397.5677023,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (8323 ký tự)",
+      "ts": 1780137397.5727212,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: DEEP-DISTILLING: Large search data found (8323 chars). Distilling knowledge...",
+      "ts": 1780137397.5749373,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi động bộ lọc Cosine TF-IDF siêu tốc thưa Master...",
+      "ts": 1780137397.577161,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Hoàn tất chưng cất trong 3ms (Cắt từ 8323 còn 2352 ký tự) thưa Master.",
+      "ts": 1780137397.5819426,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T10:36:38.860592] [RECEPTIONIST] [Task: ZENITH_1780137389_73b7b109] Đang triệu tập qwen3:4b... (Context: 2048)",
+      "ts": 1780137398.860609,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T10:36:40.877259] [RECEPTIONIST] [Task: ZENITH_1780137389_73b7b109] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780137400.87728,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T10:37:35.836964] [RECEPTIONIST] [Task: ZENITH_1780137389_73b7b109] Đây là 5 tin tức mới nhất về quốc gia Cambodia từ ngày 30/05/2026:\n\n1. [Tin tức thời sự quốc tế mới nhất ngày 30/05/2026] - YouTube  \n2. [Baomoi] - 30/05/2026  \n3. [24h] - 30/05/2026  \n4. [VnExpress] - 28/05/2026  \n5. [CafeF] - 12/05/2026",
+      "ts": 1780137455.8369944,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T10:37:35.840084] [RECEPTIONIST] [Task: ZENITH_1780137389_73b7b109] Hoàn tất trong 56.98s. (Size: 238 chars)",
+      "ts": 1780137455.840098,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "💎🫡 [ZENITH]: Đây là 5 tin tức mới nhất về quốc gia Cambodia từ ngày 30/05/2026:\n\n1. [Tin tức thời sự quốc tế mới nhất ngày 30/05/2026] - YouTube  \n2. [Baomoi] - 30/05/2026  \n3. [24h] - 30/05/2026  \n4. [VnExpress] - 28/05/2026  \n5. [CafeF] - 12/05/2026",
+      "ts": 1780137455.8430264,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Đây là 5 tin tức mới nhất về quốc gia Cambodia từ ngày 30/05/2026:\n\n1. [Tin tức thời sự quốc tế mới nhất ngày 30/05/2026] - YouTube  \n2. [Baomoi] - 30/05/2026  \n3. [24h] - 30/05/2026  \n4. [VnExpress] - 28/05/2026  \n5. [CafeF] - 12/05/2026",
+      "ts": 1780137455.8479862,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780137389_73b7b109"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

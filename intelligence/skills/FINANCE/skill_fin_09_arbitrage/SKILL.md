@@ -2,7 +2,7 @@
 id: FIN_09_ARBITRAGE
 name_vn: "Giao Dịch Chênh Lệch Giá"
 version: 1.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: FINANCE
 intent_pairs:
   - ["TRADE", "ARBITRAGE"]

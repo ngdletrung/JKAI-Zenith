@@ -313,7 +313,7 @@ class CognitiveGuardrails:
         try:
             serialized = json.dumps(args, sort_keys=True, ensure_ascii=False, default=str)
             return hashlib.sha256(serialized.encode()).hexdigest()[:16]
-        except:
+        except Exception:
             return hashlib.md5(str(args).encode()).hexdigest()[:16]
 
     def _hash_plan(self, plan: List[Dict]) -> str:
@@ -321,7 +321,7 @@ class CognitiveGuardrails:
         try:
             structure = [(s.get("tool", ""), s.get("description", "")[:30]) for s in plan]
             return hashlib.md5(str(structure).encode()).hexdigest()[:16]
-        except:
+        except Exception:
             return str(len(plan))
 
     def _compute_status(self) -> str:
@@ -338,7 +338,7 @@ class CognitiveGuardrails:
         if self._on_violation:
             try:
                 self._on_violation(self.task_id, violation)
-            except:
+            except Exception:
                 pass
 
 

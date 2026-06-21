@@ -1,0 +1,53 @@
+{
+  "id": "SKILL_SYS_16_CONTAINER_SEC",
+  "name": "Zenith Container Security Shield",
+  "version": "1.0.0",
+  "description": "Hardening core: Protects the containerized infrastructure by implementing image scanning, runtime security policies, and network isolation.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "bảo mật container",
+    "gia cố hệ thống docker",
+    "container hardening",
+    "security audit container",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "container",
+    "viec",
+    "image",
+    "thiet",
+    "master",
+    "cong",
+    "tang",
+    "docker",
+    "thuc",
+    "hien",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "container_id": {
+          "type": "string",
+          "description": "ID of the container to secure."
+        },
+        "policy_level": {
+          "type": "string",
+          "enum": [
+            "standard",
+            "strict"
+          ],
+          "description": "Security policy level."
+        }
+      }
+    }
+  }
+}

@@ -131,10 +131,14 @@ _INTENT_POLICIES: Dict[str, Dict[str, Any]] = {
 
     # Default
     "general":         {"depth": ReasoningDepth.MEDIUM,   "verify": VerificationLevel.SKIP,   "cache": True,  "timeout": 30.0, "model": "balanced"},
+    "self_improvement": {"depth": ReasoningDepth.DEEP,     "verify": VerificationLevel.FULL,   "cache": False, "timeout": 240.0, "model": "deep",     "use_critic": True},
+    "self_healing":     {"depth": ReasoningDepth.DEEP,     "verify": VerificationLevel.FULL,   "cache": False, "timeout": 180.0, "model": "deep",     "use_critic": True},
 }
 
 # Keywords để detect intent từ description/tool name
 _INTENT_KEYWORDS: List[Tuple[str, List[str]]] = [
+    ("self_improvement", ["skill_tucaitien", "tucaitien", "tu_cai_tien"]),
+    ("self_healing",     ["skill_self_healing", "self_healing", "tusualoi", "tu_sua_loi"]),
     ("debug",       ["debug", "fix", "error", "loi", "sua", "trace"]),
     ("architecture",["architect", "design", "kien_truc", "scaffold", "structure"]),
     ("refactor",    ["refactor", "cai_tien", "optimize", "clean"]),

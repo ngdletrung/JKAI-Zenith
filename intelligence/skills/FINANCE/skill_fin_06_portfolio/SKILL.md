@@ -2,7 +2,7 @@
 id: FIN_06_PORTFOLIO
 name_vn: "Tối Ưu Danh Mục Đầu Tư"
 version: 1.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: FINANCE
 intent_pairs:
   - ["OPTIMIZE", "PORTFOLIO"]

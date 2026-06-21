@@ -4,6 +4,7 @@ import json
 import time
 import asyncio
 from core.utils.engine import engine
+from core.utils import path_manager
 
 # =================================================================
 # 🛡️ JKAI ZENITH: LOGIC THẨM ĐỊNH MÃ NGUỒN ELITE v31.0 (QUANTUM AUDIT)
@@ -65,7 +66,7 @@ async def audit_code(file_path: str, task_id: str = "audit"):
             return {"status": "error", "msg": "Không thể giải mã báo cáo thẩm định nơ-ron."}
 
         # Lưu báo cáo vào Vault chuẩn v31.0
-        ws_root = os.getenv("WORKSPACE_ROOT", "D:/Docker/N8N")
+        ws_root = os.getenv("WORKSPACE_ROOT", path_manager.get_root())
         report_file = os.path.join(ws_root, "intelligence", "vault", f"AUDIT_{os.path.basename(file_path)}_{int(time.time())}.md")
         os.makedirs(os.path.dirname(report_file), exist_ok=True)
         
@@ -93,7 +94,7 @@ async def audit_code(file_path: str, task_id: str = "audit"):
         return {"status": "error", "msg": f"Sự cố thẩm định Quantum: {str(e)}"}
 
 if __name__ == "__main__":
-    path = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.getenv("WORKSPACE_ROOT", "D:/Docker/N8N"), "services/ai-control-plane/task_manager.py")
+    path = sys.argv[1] if len(sys.argv) > 1 else os.path.join(os.getenv("WORKSPACE_ROOT", path_manager.get_root()), "services/ai-control-plane/task_manager.py")
     try:
         res = asyncio.run(audit_code(path))
         print(json.dumps(res, indent=2, ensure_ascii=True))

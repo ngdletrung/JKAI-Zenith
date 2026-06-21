@@ -1,0 +1,327 @@
+{
+  "id": "m_ZENITH_1779934786_5f817a15",
+  "title": "hãy tìm cho tôi top 5 github tuần này",
+  "goal": "hãy tìm cho tôi top 5 github tuần này",
+  "status": "completed",
+  "ts": 1779935136.4209342,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "hãy tìm cho tôi top 5 github tuần này",
+      "ts": 1779934786.5670357,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1779934786_5f817a15` initialized | Trace: `trace_5f817a15`. Runtime ready.",
+      "ts": 1779934786.5679212,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 📡 Đang phân tích chỉ thị với chế độ [FAST_PIPELINE] (Input mode: AUTO)...",
+      "ts": 1779934786.6416285,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "🧠 [LLM-FALLBACK]: Reflex không chắc chắn. Đang gọi LLM...",
+      "ts": 1779934786.7150831,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[INFO] [2026-05-28T02:19:46.722196] [DISPATCHER] [Task: ZENITH_1779934786_5f817a15] Đang triệu tập phi4-mini:latest... (Context: 2048)",
+      "ts": 1779934786.7222166,
+      "source": "DISPATCHER",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[METRIC] [2026-05-28T02:19:46.735921] [DISPATCHER] [Task: ZENITH_1779934786_5f817a15] [NEURAL-SUMMON]: Đặc vụ `phi4-mini:latest` vắng mặt toàn diện. Đang triệu tập gấp vào Engine CPU...",
+      "ts": 1779934786.7359433,
+      "source": "DISPATCHER",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[INFO] [2026-05-28T02:21:00.655630] [DISPATCHER] [Task: ZENITH_1779934786_5f817a15] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1779934860.6556535,
+      "source": "DISPATCHER",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[INFO] [2026-05-28T02:21:23.787108] [DISPATCHER] [Task: ZENITH_1779934786_5f817a15] {\n  \"skill\": \"#1016\",\n  \"mode\": \"deep\",\n  \"confidence\": 0.9,\n  \"implicit_intent\": \"Giải mã ý định ẩn\",\n  \"reasoning\": \"Yêu cầu xử lý big data, phân tích dữ liệu lớn và kết nối với các hệ thống lưu trữ dữ liệu lớn như HDFS, S3 hoặc cơ sở dữ liệu NoSQL quy mô lớn. Kỹ năng này phù hợp vì nó bao gồm Distributed Spark Processing, Real-time Data Streaming và Massive Storage Connectivity.\"\n}",
+      "ts": 1779934883.78715,
+      "source": "DISPATCHER",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[INFO] [2026-05-28T02:21:23.791450] [DISPATCHER] [Task: ZENITH_1779934786_5f817a15] [PHÂN TÍCH CHIẾN LƯỢC]:\nYêu cầu xử lý big data, phân tích dữ liệu lớn và kết nối với các hệ thống lưu trữ dữ liệu lớn như HDFS, S3 hoặc cơ sở dữ liệu NoSQL quy mô lớn. Kỹ năng này phù hợp vì nó bao gồm Distributed Spark Processing, Real-time Data Streaming và Massive Storage Connectivity.",
+      "ts": 1779934883.7916687,
+      "source": "DISPATCHER",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[INFO] [2026-05-28T02:21:23.794014] [DISPATCHER] [Task: ZENITH_1779934786_5f817a15] Hoàn tất trong 97.07s. (Size: 387 chars)",
+      "ts": 1779934883.7940414,
+      "source": "DISPATCHER",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "📊 [LATENCY]: 97089.66 ms",
+      "ts": 1779934883.7978427,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 💾 [SEMANTIC-CACHE-STORE]: Đã lưu định tuyến mới vào Qdrant cho câu lệnh.",
+      "ts": 1779934883.8090484,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 [SOVEREIGN-CORE]: Kích hoạt Não Bộ Tự Trị (Universal ReAct Loop).",
+      "ts": 1779934883.8110275,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🔄 [Thinking] Vòng 1...",
+      "ts": 1779934883.8141816,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:21:23.875346] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] Đang triệu tập qwen3:4b... (Context: 4096)",
+      "ts": 1779934883.8753858,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:21:26.357747] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1779934886.3577828,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:22:21.731906] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] Hoàn tất trong 57.86s. (Size: 0 chars)",
+      "ts": 1779934941.7319264,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:22:21.735326] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] 🛠️ [NATIVE-TOOL-CALL]: Nơ-ron quyết định sử dụng 1 công cụ.",
+      "ts": 1779934941.7353477,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Kích hoạt `UNKNOWN`: {'extracted_params': 'top 5 github tuần này', 'skill_id': '#1016'}",
+      "ts": 1779934941.7373893,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🔄 [Thinking] Vòng 2...",
+      "ts": 1779934941.7385364,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:22:21.745754] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] Đang triệu tập qwen3:4b... (Context: 4096)",
+      "ts": 1779934941.7457733,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:22:24.282065] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1779934944.2820861,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:22:49.381358] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] Hoàn tất trong 27.64s. (Size: 0 chars)",
+      "ts": 1779934969.3813758,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:22:49.384438] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] 🛠️ [NATIVE-TOOL-CALL]: Nơ-ron quyết định sử dụng 1 công cụ.",
+      "ts": 1779934969.3844535,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Kích hoạt `UNKNOWN`: {'extracted_params': 'top 5 github tuần này', 'skill_id': '#1006'}",
+      "ts": 1779934969.3867784,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🔄 [Thinking] Vòng 3...",
+      "ts": 1779934969.3885846,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:22:49.397736] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] Đang triệu tập qwen3:4b... (Context: 4096)",
+      "ts": 1779934969.3977642,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:22:49.727624] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1779934969.7276437,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:24:23.319627] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] {\"name\": \"execute_skill\", \"arguments\": {\"extracted_params\": \"top 5 github tuần này\", \"skill_id\": \"#1006\"}}",
+      "ts": 1779935063.3196628,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:24:23.322953] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] Hoàn tất trong 93.92s. (Size: 106 chars)",
+      "ts": 1779935063.3229692,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 [AUTO-HEAL]: Đã phát hiện và giải mã JSON ẩn trong phản hồi văn bản.",
+      "ts": 1779935063.325029,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Kích hoạt `UNKNOWN`: {'extracted_params': 'top 5 github tuần này', 'skill_id': '#1006'}",
+      "ts": 1779935063.3264136,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🔄 [Thinking] Vòng 4...",
+      "ts": 1779935063.3272913,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:24:23.334332] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] Đang triệu tập qwen3:4b... (Context: 4096)",
+      "ts": 1779935063.3343465,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:24:26.090718] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1779935066.0907395,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:25:10.795586] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] Hoàn tất trong 47.46s. (Size: 0 chars)",
+      "ts": 1779935110.7956033,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:25:10.797177] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] 🛠️ [NATIVE-TOOL-CALL]: Nơ-ron quyết định sử dụng 1 công cụ.",
+      "ts": 1779935110.7971935,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Kích hoạt `UNKNOWN`: {'extracted_params': 'top 5 github tuần này', 'skill_id': '#1001'}",
+      "ts": 1779935110.798872,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🔄 [Thinking] Vòng 5...",
+      "ts": 1779935110.7997568,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:25:10.806988] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] Đang triệu tập qwen3:4b... (Context: 4096)",
+      "ts": 1779935110.807006,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:25:13.569651] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1779935113.5698504,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:25:36.382777] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] Hoàn tất trong 25.58s. (Size: 0 chars)",
+      "ts": 1779935136.382799,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T02:25:36.387144] [RECEPTIONIST] [Task: ZENITH_1779934786_5f817a15] 🛠️ [NATIVE-TOOL-CALL]: Nơ-ron quyết định sử dụng 1 công cụ.",
+      "ts": 1779935136.3871782,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Kích hoạt `UNKNOWN`: {'extracted_params': 'top 5 github tuần này', 'skill_id': '#1001'}",
+      "ts": 1779935136.39059,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Thưa Master, tôi đã cố gắng tra cứu công cụ nhưng xảy ra lỗi nội bộ ở vòng lặp suy nghĩ.",
+      "ts": 1779935136.3969605,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779934786_5f817a15"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

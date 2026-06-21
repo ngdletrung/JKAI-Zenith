@@ -1,0 +1,53 @@
+{
+  "id": "SKILL_DATA_44_PREDICTIVE",
+  "name": "Zenith Predictive Analytics",
+  "version": "1.0.0",
+  "description": "Forecasting core: Uses historical data and statistical models to predict future trends, behaviors, and outcomes for proactive decision-making.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "phân tích dự báo",
+    "forecasting",
+    "dự đoán xu hướng",
+    "predictive analytics",
+    "future outcome",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "master",
+    "lieu",
+    "nang",
+    "thuong",
+    "thoi",
+    "gian",
+    "cach",
+    "thong",
+    "hien",
+    "tuong",
+    "data",
+    "du lieu",
+    "phan tich du lieu",
+    "ml",
+    "machine learning"
+  ],
+  "domain": "DATA_SCIENCE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "dataset_path": {
+          "type": "string",
+          "description": "Path to the historical data."
+        },
+        "forecast_period": {
+          "type": "integer",
+          "description": "Number of units to forecast into the future."
+        }
+      },
+      "required": [
+        "dataset_path"
+      ]
+    }
+  }
+}

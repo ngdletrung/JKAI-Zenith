@@ -2,11 +2,11 @@ import os
 import asyncio
 import httpx
 import time
-import json
 import logging
 import psutil
 from typing import Dict, Any
 from core.utils.engine import engine
+from core.utils import report_formatter as rf
 
 logger = logging.getLogger("jkai.xray_monitor")
 
@@ -73,7 +73,18 @@ class SystemXRayMonitor:
             "timestamp": time.strftime("%Y-%m-%d %H:%M:%S")
         }
         
-        engine.publish_mission_log("MISSION_RESULT", f"📊 [REPORT]: {json.dumps(report, indent=2)}", task_id)
+        report_text = rf.build([
+            rf.header("BAO CAO HE THONG X-RAY", f"Trang thai: {report['status']}"),
+            rf.section("Phan cung"),
+            rf.kvdict(report["hardware"]),
+            rf.section("Tang noron AI"),
+            rf.kvdict({k: str(v) for k, v in report["neural_layer"].items()}),
+            rf.section("Ha tang"),
+            rf.kvdict({"containers": "\n".join(report["infrastructure"]["containers"])}),
+            rf.section("Thoi gian"),
+            rf.kvdict({"timestamp": report["timestamp"]})
+        ])
+        engine.publish_mission_log("MISSION_RESULT", f"📊 [REPORT]:\n{report_text}", task_id)
         return report
 
 _instance = SystemXRayMonitor()

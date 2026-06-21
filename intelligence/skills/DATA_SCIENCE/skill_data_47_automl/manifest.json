@@ -1,0 +1,52 @@
+{
+  "id": "SKILL_DATA_47_AUTOML",
+  "name": "Zenith AutoML Intelligence",
+  "version": "1.0.0",
+  "description": "Automated AI core: Streamlines the entire machine learning pipeline from feature engineering to model selection and deployment, enabling rapid development of high-quality models.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "tự động hóa học máy",
+    "automl",
+    "tự động chọn model",
+    "vận hành ai tự động",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "hinh",
+    "nhat",
+    "toan",
+    "thuat",
+    "thoi",
+    "gian",
+    "khong",
+    "hang",
+    "thiet",
+    "chon",
+    "data",
+    "du lieu",
+    "phan tich du lieu",
+    "ml",
+    "machine learning"
+  ],
+  "domain": "DATA_SCIENCE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "dataset_path": {
+          "type": "string",
+          "description": "Path to the dataset."
+        },
+        "time_limit": {
+          "type": "integer",
+          "description": "Time limit for searching the best model (seconds)."
+        }
+      },
+      "required": [
+        "dataset_path"
+      ]
+    }
+  }
+}

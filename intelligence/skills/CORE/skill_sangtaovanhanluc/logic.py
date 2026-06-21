@@ -55,7 +55,7 @@ async def phu_thuy_do_hoa(prompt: str, negative_prompt: str = "", steps: int = 2
         try:
             async with httpx.AsyncClient() as client:
                 await client.post(f"{control_host}/gpu/release", json={"service": "stable-diffusion"})
-        except: pass
+        except Exception: pass
         return {"status": "error", "msg": str(e)}
 
 async def chup_anh_man_hinh():

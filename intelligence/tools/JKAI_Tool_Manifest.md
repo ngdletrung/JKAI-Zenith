@@ -9,6 +9,7 @@ Tài liệu này là mục lục tối thượng về năng lực tác chiến c
 - `read_file`, `write_file`, `patch_file`: Thao tác dữ liệu.
 - `execute_shell`: Thực thi lệnh hệ thống.
 - `web_search`, `web_scraper`: Thu thập thông tin mạng.
+- `OPENHANDS_MISSION`: Ban Thực thi Chuyên biệt (Complex missions).
 
 ---
 
@@ -22,7 +23,7 @@ Tài liệu này là mục lục tối thượng về năng lực tác chiến c
 ---
 
 ## 📖 3. QUÂN ĐOÀN 50 SIÊU KỸ NĂNG (ELITE QUARTETS)
-*Tham chiếu: [ZENITH_SKILL_CODEX.md](file:///D:/Docker/N8N/intelligence/knowledge/vault/ZENITH_SKILL_CODEX.md)*
+*Tham chiếu: [ZENITH_SKILL_CODEX.md](file:///D:/Docker/JKAI/intelligence/knowledge/vault/ZENITH_SKILL_CODEX.md)*
 
 ### 🏦 LÃNH ĐỊA I: TÀI CHÍNH (`skill_fin_01` -> `10`)
 - Theo dõi dòng tiền, phân tích kỹ thuật, truy vết cá mập.

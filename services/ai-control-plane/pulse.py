@@ -46,7 +46,6 @@ class ZenithPulse:
             "📚 RAG-Service": "http://rag-service:8000/health",
             "🔍 Qdrant DB": "http://qdrant:6333/healthz",
             "👁️ AI-Browser": "http://ai-browser:8000/health",
-            "🕵️ Jaeger Trace": "http://jaeger:16686/"
         }
         
         for name, url in services.items():
@@ -57,7 +56,7 @@ class ZenithPulse:
                 else:
                     health["details"].append(f"{name}: `Unstable` ⚠️")
                     health["status"] = "DEGRADED"
-            except:
+            except Exception:
                 health["details"].append(f"{name}: `Offline` ❌")
                 health["status"] = "DEGRADED"
 
@@ -77,7 +76,7 @@ class ZenithPulse:
                     else:
                         health["details"].append(f"{name}: `Stopped` ⚠️")
                         health["status"] = "DEGRADED"
-                except:
+                except Exception:
                     health["details"].append(f"{name}: `Missing` ❌")
                     health["status"] = "DEGRADED"
         except Exception as e:
@@ -103,10 +102,10 @@ class ZenithPulse:
             try:
                 # Thử lấy dữ liệu GPU nếu có agent sensor
                 pass
-            except: pass
+            except Exception: pass
             
             return {"cpu": cpu, "ram": ram, "gpu": gpu, "ts": time.time()}
-        except:
+        except Exception:
             return {"cpu": 0, "ram": 0, "gpu": 0, "ts": time.time()}
 
     async def run_forever(self):

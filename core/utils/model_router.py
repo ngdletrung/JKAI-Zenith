@@ -1,28 +1,56 @@
 import os
 import re
 import logging
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
+from core.utils.models import RoleConfig, NeuralProfile, ModelOptions
 
 logger = logging.getLogger('ModelRouter')
 
 class ModelRouter:
     """
-    📡 JKAI MODEL ROUTER v1.3
-    Điều hướng Mệnh lệnh tới đúng Model và Phần cứng.
-    Tích hợp VRAM Budgeting.
+    📡 JKAI MODEL ROUTER v2.0
+    Central parser for rule_hardware.md — single source of truth.
+    Provides both dict-based (legacy) and dataclass-based interfaces.
     """
     def __init__(self, rules_path: str):
         self.rules_path = rules_path
         self._rules_last_mtime = 0
-        self._role_mapping_cache = {}
-        self._profiles_cache = {}
-        self._model_sizes = {} # 📊 [VRAM-MAP]: Lưu trữ kích thước model
-        self.global_params = {}
+        self._role_mapping_cache: Dict[str, dict] = {}
+        self._role_config_cache: Dict[str, RoleConfig] = {}
+        self._profiles_cache: Dict[str, dict] = {}
+        self._model_sizes: Dict[str, float] = {}
+        self.global_params: Dict[str, str] = {}
 
     def get_role_config(self, role: str) -> Dict[str, Any]:
         self._refresh_rules_if_needed()
         role_upper = role.upper()
         return self._role_mapping_cache.get(role_upper, self._role_mapping_cache.get("CHAT", {}))
+
+    def get_role_config_dataclass(self, role: str) -> Optional[RoleConfig]:
+        self._refresh_rules_if_needed()
+        role_upper = role.upper()
+        # Return from dataclass cache, or build it on demand for roles not pre-built
+        cached = self._role_config_cache.get(role_upper)
+        if cached:
+            return cached
+        # Fallback to dict cache
+        fallback = self._role_mapping_cache.get(role_upper, self._role_mapping_cache.get("CHAT"))
+        if fallback:
+            return self._dict_to_role_config(fallback)
+        return None
+
+    def get_global_params(self) -> Dict[str, str]:
+        self._refresh_rules_if_needed()
+        return dict(self.global_params)
+
+    def _dict_to_role_config(self, d: dict) -> RoleConfig:
+        opts = d.get('options', {})
+        return RoleConfig(
+            model=d.get('model', ''),
+            options=ModelOptions(**{k: v for k, v in opts.items() if k in ModelOptions.model_fields}),
+            keep_alive=str(d.get('keep_alive', '5m')),
+            hardware=d.get('hardware', '').upper(),
+        )
 
     def _refresh_rules_if_needed(self):
         try:
@@ -41,6 +69,7 @@ class ModelRouter:
                 content = f.read()
             
             new_r_cache = {}
+            new_role_config_cache = {}
             self.global_params = {}
             self._profiles_cache = {}
             self._model_sizes = {}
@@ -51,10 +80,19 @@ class ModelRouter:
             in_section_3 = False  
             headers = []
 
+            # Parse global params from top of file: "- **KEY**: VALUE"
+            for line in lines[:60]:
+                stripped = line.strip()
+                if stripped.startswith('- **') and ':' in stripped:
+                    clean_line = stripped[4:].replace('**:', ':').replace('**', '')
+                    if ':' in clean_line:
+                        p_key, p_val = clean_line.split(':', 1)
+                        self.global_params[p_key.strip().upper()] = p_val.split('(')[0].strip()
+
             for line in lines:
                 line = line.strip()
                 if not line or not line.startswith('|') or ':---' in line:
-                    if 'II. MO HINH THUC TE' in line:
+                    if 'II. MO HINH THUC TE' in line or '2. Model Tier Registry' in line:
                         in_section_2, in_section_25, in_section_3 = True, False, False
                         headers = []
                     elif '2.5. Neural Hardware Profiles' in line:
@@ -62,6 +100,10 @@ class ModelRouter:
                         headers = []
                     elif '3. Active Role Mapping' in line:
                         in_section_2, in_section_25, in_section_3 = False, False, True
+                        headers = []
+                    elif line.startswith('#'):
+                        # Reset section flags when encountering other headings to avoid parsing subsequent tables incorrectly
+                        in_section_2, in_section_25, in_section_3 = False, False, False
                         headers = []
                     continue
 
@@ -135,7 +177,7 @@ class ModelRouter:
                                 keep_alive = int(keep_alive_raw)
                             else:
                                 keep_alive = keep_alive_raw
-                        except:
+                        except Exception:
                             keep_alive = "5m"
                         
                         idx_hw = next((i for i, h in enumerate(headers) if 'HW' in h or 'HARDWARE' in h), -1)
@@ -150,6 +192,10 @@ class ModelRouter:
                         }
             
             self._role_mapping_cache = new_r_cache
+            # Build dataclass cache from dict cache
+            for rk, rv in new_r_cache.items():
+                new_role_config_cache[rk] = self._dict_to_role_config(rv)
+            self._role_config_cache = new_role_config_cache
             logger.info(f"✅ [ROUTER]: Đã nạp {len(new_r_cache)} quy tắc nơ-ron (VRAM-Aware).")
         except Exception as e:
             logger.error(f"❌ [ROUTER-PARSE-ERR]: {e}")

@@ -2,12 +2,12 @@
 **(Dành cho JKAI và các Model khác có thể đọc hiểu & thực thi)**
 
 ## I. MỤC TIÊU
-Đồng hóa toàn bộ kho tri thức thô tại `D:\Docker\N8N\intelligence\archive\import_dump` vào hệ thống 12 kỹ năng chuẩn, xây dựng bản đồ tri thức sống, tự động phân loại, kiểm thử và đánh giá hiệu quả.
+Đồng hóa toàn bộ kho tri thức thô tại `D:\Docker\JKAI\intelligence\archive\import_dump` vào hệ thống 12 kỹ năng chuẩn, xây dựng bản đồ tri thức sống, tự động phân loại, kiểm thử và đánh giá hiệu quả.
 
 ## II. QUY TRÌNH XỬ LÝ CHÍNH (Master's Workflow)
 
 ### B1: QUÉT & NHẬN DIỆN CẤU TRÚC
-1. Duyệt toàn bộ thư mục `D:\Docker\N8N\intelligence\archive\import_dump`
+1. Duyệt toàn bộ thư mục `D:\Docker\JKAI\intelligence\archive\import_dump`
 2. Với MỖI thư mục con (ưu tiên thư mục có nhiều file nhất):
    a. Đếm tổng số file trong thư mục con đó.
    b. Chọn file ĐẦU TIÊN (alphabet) để phân tích "chủ đề".
@@ -30,7 +30,7 @@
 - **🟢 Trường hợp OK**:
     1. Xác định loại kỹ năng (1 trong 12).
     2. Đặt tên thư mục đích: Tiếng Việt không dấu, chữ thường, dấu gạch dưới.
-    3. Tạo thư mục tại: `D:\Docker\N8N\intelligence\<ky_nang>\<ten_thu_muc>\`.
+    3. Tạo thư mục tại: `D:\Docker\JKAI\intelligence\<ky_nang>\<ten_thu_muc>\`.
     4. Lưu bộ hồ sơ (Bộ Tứ cho Skill, hoặc bộ tương ứng cho loại khác).
     5. Cập nhật `knowledge_map.json`.
 

@@ -1,0 +1,113 @@
+Nhân vật
+Tình trạng
+Đường dẫn
+Bàn
+Không họp
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\Ban\desk-ilde.png
+Bàn
+Họp
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\Ban\desk-empty.png
+Master
+Vị trí ghế chủ tich
+Ngồi bình thường
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\Master\ngoi_lang_nghe.png
+Master
+Vị trí ghế chủ tich
+Ngồi khó chịu
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\Master\ngoi_kho_chiu.png
+Master
+Vị trí ghế chủ tich
+Đứng nói
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\Master\dung_trao_doi.png
+Master
+Vị trí ghế chủ tich
+Đứng tranh cải
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\Master\dung_tranh_cai.png
+Trợ lý
+Ghế số 1 bên trái
+Ngồi bình thường
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\1. Tro ly\ngoi_lang_nghe.png
+Trợ lý
+Ghế số 1 bên trái
+Ngồi khó chịu
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\1. Tro ly\ngoi_kho_chiu.png
+Trợ lý
+Ghế số 1 bên trái
+Đứng nói
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\1. Tro ly\dung_trao_doi.png
+Trợ lý
+Ghế số 1 bên trái
+Đứng tranh cải
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\1. Tro ly\dung_tranh_cai.png
+Thư ký
+Ghế số 2 bên trái
+Ngồi bình thường
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\2. Thu ky\ngoi_lang_nghe.png
+Thư ký
+Ghế số 2 bên trái
+Ngồi khó chịu
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\2. Thu ky\ngoi_kho_chiu.png
+Thư ký
+Ghế số 2 bên trái
+Đứng nói
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\2. Thu ky\dung_trao_doi.png
+Thư ký
+Ghế số 2 bên trái
+Đứng tranh cải
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\2. Thu ky\dung_tranh_cai.png
+Ban kế hoạch
+Ghế số 1 bên phải
+Ngồi bình thường
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\6. Planer\ngoi_lang_nghe.png
+Ban kế hoạch
+Ghế số 1 bên phải
+Ngồi khó chịu
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\6. Planer\ngoi_kho_chiu.png
+Ban kế hoạch
+Ghế số 1 bên phải
+Đứng nói
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\6. Planer\dung_trao_doi.png
+Ban kế hoạch
+Ghế số 1 bên phải
+Đứng tranh cải
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\6. Planer\dung_gay_gat.png
+Ban Kiểm soát
+Ghế số 2 bên phải
+Ngồi bình thường
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\7. Critic\ngoi_lang_nghe.png
+Ban Kiểm soát
+Ghế số 2 bên phải
+Ngồi khó chịu
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\7. Critic\ngoi_kho_chiu.png
+Ban Kiểm soát
+Ghế số 2 bên phải
+Đứng nói
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\7. Critic\dung_noi_chuyen.png
+Ban Kiểm soát
+Ghế số 2 bên phải
+Đứng tranh cải
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\7. Critic\dung_tranh_cai.png
+Ban thực thi
+Ghế số 3 bên phải
+Ngồi bình thường
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\8. Executor\ngoi_langnghe.png
+Ban thực thi
+Ghế số 3 bên phải
+Ngồi khó chịu
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\8. Executor\ngoi_khochiu.png
+Ban thực thi
+Ghế số 3 bên phải
+Đứng nói
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\8. Executor\dung_vuive.png
+Ban thực thi
+Ghế số 3 bên phải
+Đứng tranh cải
+D:\Docker\N8N\services\mission-control\frontend\public\phong hop\8. Executor\dung_gaygat.png
+const seats = [
+{ id: 'master', role: 'master', side: 'center', label: 'MASTER', pos: { x: '50%', y: '42.3%', size: '95px', z: 2 } },
+{ id: 'receptionist', role: 'receptionist', side: 'left', label: 'TRỢ LÝ', pos: { x: '53%', y: '50%', size: '178px', z: 10 } },
+{ id: 'legal', role: 'legal', side: 'left', label: 'THƯ KÝ', pos: { x: '49.5%', y: '62%', size: '185px', z: 15 } },
+{ id: 'planner', role: 'planner', side: 'right', label: 'KẾ HOẠCH', pos: { x: '55%', y: '48%', size: '135px', z: 10 } },
+{ id: 'critic', role: 'critic', side: 'right', label: 'KIỂM SOÁT', pos: { x: '53%', y: '59%', size: '170px', z: 15 } },
+{ id: 'executor', role: 'executor', side: 'right', label: 'THỰC THI', pos: { x: '45%', y: '75%', size: '268px', z: 20 } }
+];

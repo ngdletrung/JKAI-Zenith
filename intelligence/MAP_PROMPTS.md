@@ -1,3 +1,14 @@
+<!-- 
+[ZENITH FILE DIRECTIVE]
+- File: MAP_PROMPTS.md
+- Role: Zenith Intelligence Documentation.
+- Ownership: Mr LeeTrung
+- Status: Active | Version: SDS v19.9
+[WORKING PRINCIPLES]:
+1. [HEADER-FIRST]: Antigravity BAT BUOC phai doc khoi header nay truoc khi thao tac.
+2. [SDS-COMPLIANCE]: Moi thay doi phai tuan thu Giao thuc SDS moi nhat.
+3. [NO-EMOJI]: Cam dung emoji trong noi dung tep cau hinh va logic.
+-->
 # 🎭 JKAI Zenith: HỒ SƠ TRÍ TUỆ BIỂU MẪU (MAP_PROMPTS)
 
 Danh mục các Cấu trúc dữ liệu, Phong cách và Biểu mẫu trả lời tiêu chuẩn.

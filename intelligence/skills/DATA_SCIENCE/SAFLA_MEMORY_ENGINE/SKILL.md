@@ -2,7 +2,7 @@
 id: SAFLA_MEMORY_ENGINE
 name_vn: "Cỗ Máy Bộ Nhớ Tự Thức SAFLA"
 version: 4.4.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: DATA_SCIENCE
 intent_pairs:
   - ["ASSIMILATE", "MEMORY"]

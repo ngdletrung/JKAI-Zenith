@@ -1,0 +1,194 @@
+{
+  "id": "m_ZENITH_1780071744_21b53c46",
+  "title": "hãy cho tôi 5 tin tức về hàn quốc mới nhất hôm nay",
+  "goal": "hãy cho tôi 5 tin tức về hàn quốc mới nhất hôm nay",
+  "status": "completed",
+  "ts": 1780071787.8860657,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "hãy cho tôi 5 tin tức về hàn quốc mới nhất hôm nay",
+      "ts": 1780071745.0213995,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1780071744_21b53c46` initialized | Trace: `trace_21b53c46`. Runtime ready.",
+      "ts": 1780071745.0225887,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780071745.224192,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: Pre-routing/Intent-Forcing: Real-time query detected. Executing search directly thưa Master.",
+      "ts": 1780071745.237206,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780071745.238112,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_c92340f5211e",
+      "ts": 1780071745.2389295,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "TAVILY: Initiating global web search for hãy cho tôi 5 tin tức về hàn quốc mới nhất hôm nay 29/05/2026",
+      "ts": 1780071754.2344067,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "WEB_DATA",
+      "msg": "TAVILY-FOUND: Discovered 5 results.\n1. “Mùa Hàn Quốc 2026” - Cánh cửa gặp gỡ văn hóa nghệ thuật Hàn (https://nhandan.vn/mua-han-quoc-2026-canh-cua-gap-go-van-hoa-nghe-thuat-han-quoc-tai-viet-nam-post964796.html)\n2. ⭐️ TIN TỨC THỜI SỰ THẾ GIỚI MỚI NHẤT 27/5/2026 | HOÀNG TRỌNG (https://www.youtube.com/watch?v=PIvkeAWM5DM)\n3. Báo Tuổi Trẻ - Tin tức mới nhất, tin nhanh, tin nóng 24h (https://tuoitre.vn)\n",
+      "ts": 1780071759.186135,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780071759.2606714,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (8402 ký tự)",
+      "ts": 1780071759.2649233,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: DEEP-DISTILLING: Large search data found (8402 chars). Distilling knowledge...",
+      "ts": 1780071759.266395,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi động bộ lọc Cosine TF-IDF siêu tốc thưa Master...",
+      "ts": 1780071759.2680588,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Hoàn tất chưng cất trong 3ms (Cắt từ 8402 còn 2398 ký tự) thưa Master.",
+      "ts": 1780071759.272841,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T16:22:39.285316] [RECEPTIONIST] [Task: ZENITH_1780071744_21b53c46] Đang triệu tập qwen3:0.6b... (Context: 4096)",
+      "ts": 1780071759.2853315,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T16:22:51.999151] [RECEPTIONIST] [Task: ZENITH_1780071744_21b53c46] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780071771.9992287,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T16:22:59.782652] [RECEPTIONIST] [Task: ZENITH_1780071744_21b53c46] H",
+      "ts": 1780071779.7827067,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T16:23:00.817292] [RECEPTIONIST] [Task: ZENITH_1780071744_21b53c46] Hôm nay, 29/05/2026, Hàn Quốc đã xác nhận tên lửa chống hạm No",
+      "ts": 1780071780.8173795,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T16:23:01.818236] [RECEPTIONIST] [Task: ZENITH_1780071744_21b53c46] Hôm nay, 29/05/2026, Hàn Quốc đã xác nhận tên lửa chống hạm Noor của Iran đã tấn công tàu hàng tại eo biển Hormuz. Cụ thể, đây là một tin tức quan trọng",
+      "ts": 1780071781.8182652,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T16:23:02.838745] [RECEPTIONIST] [Task: ZENITH_1780071744_21b53c46] Hôm nay, 29/05/2026, Hàn Quốc đã xác nhận tên lửa chống hạm Noor của Iran đã tấn công tàu hàng tại eo biển Hormuz. Cụ thể, đây là một tin tức quan trọng về sự đối đầu giữa hai cường quốc trong lĩnh vực an ninh. Tuy nhiên, cần lưu ý rằng thông tin này",
+      "ts": 1780071782.8387802,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T16:23:03.868437] [RECEPTIONIST] [Task: ZENITH_1780071744_21b53c46] Hôm nay, 29/05/2026, Hàn Quốc đã xác nhận tên lửa chống hạm Noor của Iran đã tấn công tàu hàng tại eo biển Hormuz. Cụ thể, đây là một tin tức quan trọng về sự đối đầu giữa hai cường quốc trong lĩnh vực an ninh. Tuy nhiên, cần lưu ý rằng thông tin này có nguồn trích dẫn từ các nguồn như [1](https://nhandan.vn/mua-han-quoc-2",
+      "ts": 1780071783.868478,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T16:23:04.896877] [RECEPTIONIST] [Task: ZENITH_1780071744_21b53c46] Hôm nay, 29/05/2026, Hàn Quốc đã xác nhận tên lửa chống hạm Noor của Iran đã tấn công tàu hàng tại eo biển Hormuz. Cụ thể, đây là một tin tức quan trọng về sự đối đầu giữa hai cường quốc trong lĩnh vực an ninh. Tuy nhiên, cần lưu ý rằng thông tin này có nguồn trích dẫn từ các nguồn như [1](https://nhandan.vn/mua-han-quoc-2026-canh-cua-gap-go-van-hoa-nghe-thuat-han-quoc-tai-viet-n",
+      "ts": 1780071784.8969219,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T16:23:05.936181] [RECEPTIONIST] [Task: ZENITH_1780071744_21b53c46] Hôm nay, 29/05/2026, Hàn Quốc đã xác nhận tên lửa chống hạm Noor của Iran đã tấn công tàu hàng tại eo biển Hormuz. Cụ thể, đây là một tin tức quan trọng về sự đối đầu giữa hai cường quốc trong lĩnh vực an ninh. Tuy nhiên, cần lưu ý rằng thông tin này có nguồn trích dẫn từ các nguồn như [1](https://nhandan.vn/mua-han-quoc-2026-canh-cua-gap-go-van-hoa-nghe-thuat-han-quoc-tai-viet-nam-post964796.html) và [4](https://vov.vn/the-gioi/thoi-su",
+      "ts": 1780071785.9362295,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T16:23:06.938500] [RECEPTIONIST] [Task: ZENITH_1780071744_21b53c46] Hôm nay, 29/05/2026, Hàn Quốc đã xác nhận tên lửa chống hạm Noor của Iran đã tấn công tàu hàng tại eo biển Hormuz. Cụ thể, đây là một tin tức quan trọng về sự đối đầu giữa hai cường quốc trong lĩnh vực an ninh. Tuy nhiên, cần lưu ý rằng thông tin này có nguồn trích dẫn từ các nguồn như [1](https://nhandan.vn/mua-han-quoc-2026-canh-cua-gap-go-van-hoa-nghe-thuat-han-quoc-tai-viet-nam-post964796.html) và [4](https://vov.vn/the-gioi/thoi-su-quoc-te-sang-295-iran-tuyen-bo-san-sang-dap-tra-my-post129",
+      "ts": 1780071786.9385662,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T16:23:07.865177] [RECEPTIONIST] [Task: ZENITH_1780071744_21b53c46] Hoàn tất trong 28.58s. (Size: 570 chars)",
+      "ts": 1780071787.8652542,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "💎🫡 [ZENITH]: Hôm nay, 29/05/2026, Hàn Quốc đã xác nhận tên lửa chống hạm Noor của Iran đã tấn công tàu hàng tại eo biển Hormuz. Cụ thể, đây là một tin tức quan trọng về sự đối đầu giữa hai cường quốc trong lĩnh vực an ninh. Tuy nhiên, cần lưu ý rằng thông tin này có nguồn trích dẫn từ các nguồn như [1](https://nhandan.vn/mua-han-quoc-2026-canh-cua-gap-go-van-hoa-nghe-thuat-han-quoc-tai-viet-nam-post964796.html) và [4](https://vov.vn/the-gioi/thoi-su-quoc-te-sang-295-iran-tuyen-bo-san-sang-dap-tra-my-post1295956.vov), cho thấy sự phản ứng của Hàn Quốc trước sự tấn công từ Iran.",
+      "ts": 1780071787.867518,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Hôm nay, 29/05/2026, Hàn Quốc đã xác nhận tên lửa chống hạm Noor của Iran đã tấn công tàu hàng tại eo biển Hormuz. Cụ thể, đây là một tin tức quan trọng về sự đối đầu giữa hai cường quốc trong lĩnh vực an ninh. Tuy nhiên, cần lưu ý rằng thông tin này có nguồn trích dẫn từ các nguồn như [1](https://nhandan.vn/mua-han-quoc-2026-canh-cua-gap-go-van-hoa-nghe-thuat-han-quoc-tai-viet-nam-post964796.html) và [4](https://vov.vn/the-gioi/thoi-su-quoc-te-sang-295-iran-tuyen-bo-san-sang-dap-tra-my-post1295956.vov), cho thấy sự phản ứng của Hàn Quốc trước sự tấn công từ Iran.",
+      "ts": 1780071787.8717,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780071744_21b53c46"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

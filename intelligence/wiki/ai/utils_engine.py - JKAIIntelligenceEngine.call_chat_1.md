@@ -1,0 +1,57 @@
+---
+type: async_method
+file: utils/engine.py
+tags: []
+---
+
+# JKAIIntelligenceEngine.call_chat
+
+async_method at line 756 in class JKAIIntelligenceEngine
+
+## Links to
+- [[get_role_config]]
+- [[any]]
+- [[_check_abort]]
+- [[time]]
+- [[_get_client]]
+- [[search]]
+- [[get]]
+- [[copy]]
+- [[upper]]
+- [[insert]]
+- [[items]]
+- [[isdigit]]
+- [[isinstance]]
+- [[pop]]
+- [[_publish_thought]]
+- [[_get_redis]]
+- [[publish_mission_log]]
+- [[str]]
+- [[json]]
+- [[lower]]
+- [[strip]]
+- [[int]]
+- [[len]]
+- [[error]]
+- [[_exit_neural_gate]]
+- [[info]]
+- [[post]]
+- [[_load_agent_profiles]]
+- [[join]]
+- [[debug]]
+- [[replace]]
+- [[_acquire_neural_lock]]
+- [[stream]]
+- [[aiter_lines]]
+- [[loads]]
+- [[_extract_json_from_text]]
+- [[warning]]
+- [[group]]
+- [[_release_neural_lock]]
+- [[get_embedding_async]]
+- [[search_intel]]
+- [[sub]]
+- [[split]]
+- [[aclose]]
+- [[count]]
+- [[decode]]

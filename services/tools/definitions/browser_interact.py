@@ -1,5 +1,8 @@
 import os
 import requests
+import logging
+
+logger = logging.getLogger("jkai.tools.browser")
 
 def browser_action(url: str, objective: str):
     """
@@ -10,7 +13,7 @@ def browser_action(url: str, objective: str):
         url (str): Địa chỉ trang web cần truy cập.
         objective (str): Mục tiêu cụ thể cần thực hiện trên trang web.
     """
-    print(f"👁️ [JKAI-BROWSER-DEF] Requesting interaction on: {url} for objective: {objective}")
+    logger.info("[JKAI-BROWSER-DEF] Requesting interaction on: %s | objective: %s", url, objective)
     
     BROWSER_URL = os.getenv("BROWSER_SERVICE_URL", "http://ai-browser:8000/interact")
     

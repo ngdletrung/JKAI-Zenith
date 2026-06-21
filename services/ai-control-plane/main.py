@@ -8,6 +8,7 @@ from router import ServiceRouter
 from hitl_manager import HITLManager
 from redis_client import redis_safe, get_redis
 from SOVEREIGN_CORE import SovereignCore
+from steward import steward
 import logging
 import re
 import unicodedata
@@ -74,7 +75,7 @@ async def startup():
         # 🧹 [BOOT-PERSISTENCE]: Historical trace preservation
         # try:
         #     sovereign._flush_all_history()
-        # except: pass
+        # except Exception: pass
 
     tg_token = os.getenv("TELEGRAM_TOKEN")
     master_id = os.getenv("MASTER_ID")
@@ -86,7 +87,7 @@ async def startup():
                     "chat_id": master_id,
                     "text": msg
                 })
-        except: pass
+        except Exception: pass
     
     # Synchronize startup signal to Dashboard
     task_manager._log("SYSTEM", msg.replace("\n\n", " "), stealth=True)
@@ -106,9 +107,14 @@ async def commander_ready():
     return {"status": "ok", "msg": "System Ready"}
 
 @app.post("/commander/flush")
-async def commander_flush():
+async def commander_flush(payload: dict = None):
     """🧹 SYSTEM INITIALIZATION PROTOCOL."""
     sovereign._flush_all_history()
+    if payload and payload.get("session_id"):
+        from core.utils.session_context import get_session_context
+        from redis_client import get_redis
+        sc = get_session_context(get_redis)
+        sc.clear(payload["session_id"])
     return {"status": "ok", "msg": "System Initialization Complete"}
 
 
@@ -123,6 +129,7 @@ def health():
 
 @app.post("/api/submit_task")
 @app.post("/submit")
+@app.post("/run")
 async def submit_task(payload: dict):
     """
     [GATEWAY-INGESTION]: Ingesting and initializing neural runtime.
@@ -170,7 +177,7 @@ async def submit_task(payload: dict):
     raw_trid = payload.get("trace_id")
     trace_id = str(raw_trid) if raw_trid and str(raw_trid) not in ["null", "undefined", "None"] else f"gen_{int(time.time())}"
     
-    mode = str(payload.get("mode", "fast")).lower()
+    mode = str(payload.get("mode", "auto")).lower()
 
     # 🛡️ [MODE-VALIDATION]: Intent mode verification
     if mode not in VALID_MODES:
@@ -201,6 +208,11 @@ async def submit_task(payload: dict):
     payload["trace_id"] = trace_id 
     payload["session_id"] = payload.get("session_id") or trace_id
     redis_safe(lambda r: r.lpush("ai_task_queue", json.dumps(payload)))
+    
+    # Store task metadata (lang, source, etc.) for executor lookup
+    task_lang = payload.get("lang", "vi")
+    redis_safe(lambda r: r.hset(f"task:meta:{task_id}", "lang", task_lang))
+    redis_safe(lambda r: r.expire(f"task:meta:{task_id}", 86400))
     
     msg = f"📥 [GATEWAY] Mission `{task_id}` initialized | Trace: `{trace_id}`. Runtime ready."
     logger.info(msg)

@@ -1,0 +1,50 @@
+{
+  "id": "SYSTEM_XRAY_MONITOR",
+  "name": "Zenith System X-Ray Monitor",
+  "version": "1.0.0",
+  "description": "Supreme infrastructure surveillance: Provides deep visibility into host hardware, GPU utilization, and neural model performance.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "quét thấu thị",
+    "xray hệ thống",
+    "kiểm tra phần cứng",
+    "giám sát gpu",
+    "vệ binh hệ thống",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "thuc",
+    "thong",
+    "nang",
+    "giam",
+    "cung",
+    "dung",
+    "hieu",
+    "thau",
+    "phan",
+    "windows",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "get_diagnostics"
+          ],
+          "default": "get_diagnostics",
+          "description": "Action to perform."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,110 @@
+{
+  "id": "m_ZENITH_1779942037_b4f6c7b1",
+  "title": "Check disk space.",
+  "goal": "Check disk space.",
+  "status": "failed",
+  "ts": 1779942086.413801,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "Check disk space.",
+      "ts": 1779942037.664476,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942037_b4f6c7b1"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1779942037_b4f6c7b1` initialized | Trace: `trace_b4f6c7b1`. Runtime ready.",
+      "ts": 1779942037.6657822,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942037_b4f6c7b1"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 📡 Đang phân tích chỉ thị với chế độ [FAST_PIPELINE] (Input mode: FAST)...",
+      "ts": 1779942037.7241235,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942037_b4f6c7b1"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "🧠 [LLM-FALLBACK]: Reflex không chắc chắn. Đang gọi LLM...",
+      "ts": 1779942037.7821758,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942037_b4f6c7b1"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[INFO] [2026-05-28T04:20:37.789566] [DISPATCHER] [Task: ZENITH_1779942037_b4f6c7b1] Đang triệu tập qwen3:0.6b... (Context: 2048)",
+      "ts": 1779942037.7895882,
+      "source": "DISPATCHER",
+      "task_id": "ZENITH_1779942037_b4f6c7b1"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 📡 Đang phân tích chỉ thị với chế độ [FAST_PIPELINE] (Input mode: FAST)...",
+      "ts": 1779942077.323907,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942037_b4f6c7b1"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "🧠 [LLM-FALLBACK]: Reflex không chắc chắn. Đang gọi LLM...",
+      "ts": 1779942077.6799133,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942037_b4f6c7b1"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "📊 [LATENCY]: 2.02 ms",
+      "ts": 1779942077.6815894,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942037_b4f6c7b1"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 [SOVEREIGN-CORE]: Kích hoạt Não Bộ Tự Trị (Universal ReAct Loop).",
+      "ts": 1779942077.682881,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942037_b4f6c7b1"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🔄 [Thinking] Vòng 1...",
+      "ts": 1779942077.6860156,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942037_b4f6c7b1"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T04:21:17.693728] [RECEPTIONIST] [Task: ZENITH_1779942037_b4f6c7b1] Đang triệu tập qwen2.5-coder:3b... (Context: 2048)",
+      "ts": 1779942077.693761,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942037_b4f6c7b1"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T04:21:17.748096] [RECEPTIONIST] [Task: ZENITH_1779942037_b4f6c7b1] [NEURAL-ADAPT]: Phát hiện `qwen2.5-coder:3b` đang sẵn sàng tại cổng 11434 (GPU). Chuyển hướng nơ-ron ngay lập tức...",
+      "ts": 1779942077.7482193,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942037_b4f6c7b1"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "🚨 [RECEPTIONIST-FAILED]: Receptionist error: Server disconnected without sending a response.",
+      "ts": 1779942086.308311,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942037_b4f6c7b1"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "⚠️ **Sự cố Kết nối Nơ-ron**: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. 🫡 (Chi tiết: Receptionist error: Server disconnected without sending a response.)",
+      "ts": 1779942086.3100126,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942037_b4f6c7b1"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

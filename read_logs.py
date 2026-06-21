@@ -5,7 +5,7 @@ log_paths = [
     r"C:\Users\AdminPC-MMO\.gemini\antigravity\brain\3520ab2f-3b62-4611-9341-f2911be8ee46\.system_generated\logs\transcript.jsonl"
 ]
 
-with open("d:\\Docker\\N8N\\log_summary.txt", "w", encoding="utf-8") as out:
+with open("d:\\Docker\\JKAI\\log_summary.txt", "w", encoding="utf-8") as out:
     for path in log_paths:
         try:
             with open(path, "r", encoding="utf-8") as f:

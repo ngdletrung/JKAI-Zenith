@@ -2,7 +2,7 @@
 id: COUNCIL_OF_MINDS_DEBATE
 name_vn: "Hội Đồng Nơ-ron Zenith"
 version: 1.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: CORE
 intent_pairs:
   - ["DEBATE", "COUNCIL"]

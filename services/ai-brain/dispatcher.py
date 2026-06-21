@@ -14,6 +14,7 @@ import uuid
 from core.utils.routing_manifest import RoutingManifest, ActionType
 
 from core.utils.engine import engine
+from plugin_manager import plugin_manager
 
 logger = logging.getLogger(__name__)
 
@@ -56,6 +57,32 @@ SKILL_TRIGGER_MAP: list[TriggerRule] = [
         "GREETING",
         ("chào", "chao", "hi", "hello", "helo", "hey", "alo"),
         priority=10,
+        intent="GREETING",
+        action_type=ActionType.SOCIAL,
+    ),
+
+    TriggerRule(
+        "01-S",
+        "SEARCH_WEB_GLOBAL",
+        (
+            "tim kiem",
+            "tìm kiếm",
+            "search",
+            "google",
+            "tra cuu",
+            "tra cứu",
+            "tin tuc",
+            "tin tức",
+            "trending github",
+            "github trending",
+            "github",
+            "top 5",
+            "top 10",
+            "news",
+        ),
+        priority=15,
+        intent="EXECUTION",
+        action_type=ActionType.EXECUTION,
     ),
 
     TriggerRule(
@@ -120,6 +147,25 @@ SKILL_TRIGGER_MAP: list[TriggerRule] = [
     ),
 
     TriggerRule(
+        "META-01",
+        "skill_strategic_recon",
+        (
+            "bạn làm việc thế nào",
+            "how do you work",
+            "khả năng của bạn",
+            "capabilities",
+            "tự nghiên cứu chính mình",
+            "research yourself",
+            "học hỏi kiến thức",
+            "learn more",
+        ),
+        priority=60,
+        mode="deep",
+        domain="CORE",
+        intent="LEARNING"
+    ),
+
+    TriggerRule(
         "28",
         "skill_host_control",
         (
@@ -152,22 +198,6 @@ SKILL_TRIGGER_MAP: list[TriggerRule] = [
         mode="deep",
     ),
 
-    TriggerRule(
-        "27",
-        "skill_sieutimkiem",
-        (
-            "tìm kiếm",
-            "tim kiem",
-            "tìm",
-            "tim",
-            "quét",
-            "quet",
-            "tin tức",
-            "tin tuc",
-            "search",
-        ),
-        priority=50,
-    ),
 
     TriggerRule(
         "03",
@@ -210,6 +240,11 @@ SKILL_TRIGGER_MAP: list[TriggerRule] = [
             "mở trang",
             "mo trang",
             "url",
+            "thiên nhãn",
+            "thien nhan",
+            "truy cập",
+            "truy cap",
+            "xem link",
         ),
         priority=40,
     ),
@@ -317,7 +352,7 @@ class Dispatcher:
         else Path("/intelligence/MAP_SKILLS.md"),
     ]
 
-    _MAX_SKILLS_CONTEXT = 20_000
+    _MAX_SKILLS_CONTEXT = 160_000
     _LLM_TIMEOUT = 30
 
     _skills_context: Optional[str] = None
@@ -331,11 +366,34 @@ class Dispatcher:
     # PUBLIC API
     # -----------------------------------------------------------------------
 
-    async def dispatch(self, goal: str, task_id: str = "sys") -> RoutingManifest:
+    async def dispatch(self, goal: str, task_id: str = "sys", history: list = None) -> RoutingManifest:
         start = time.perf_counter()
 
         try:
+            if "<ZENITH_SKILL_ACTIVATED>" not in goal:
+                try:
+                    from core.utils.ingress_skill_gate import try_semantic_skill_match
+                    ssm = try_semantic_skill_match(goal, threshold=0.40)
+                    if ssm and ssm.get("status") == "success":
+                        goal = ssm.get("enriched_goal")
+                        engine.publish_mission_log(
+                            "DISPATCHER",
+                            "🧠 [SSM-AUTO-ACTIVATE]: Match found. Enriched goal.",
+                            task_id,
+                            stealth=True
+                        )
+                except Exception:
+                    pass
+
+            deck_manifest = self._skill_deck_reflex(goal, task_id)
+            if deck_manifest:
+                return deck_manifest
+
             norm = self._normalize(goal)
+
+            # 🚀 [Z-SOS]: Đảm bảo Plugin Registry luôn mới nhất
+            if not plugin_manager.plugins:
+                await plugin_manager.scan_plugins()
 
             # -------------------------------------------------------------------
             # CACHE CHECK
@@ -346,6 +404,7 @@ class Dispatcher:
                     "DISPATCHER",
                     "⚡ [CACHE-HIT]: Sử dụng cached dispatch.",
                     task_id,
+                    stealth=True
                 )
                 return cached
 
@@ -366,7 +425,7 @@ class Dispatcher:
                 task_id,
             )
 
-            result = await self._llm_dispatch(goal, task_id)
+            result = await self._llm_dispatch(goal, task_id, history, norm)
             self._cache_dispatch(norm, result)
             return result
 
@@ -377,7 +436,60 @@ class Dispatcher:
                 "DISPATCHER",
                 f"📊 [LATENCY]: {latency} ms",
                 task_id,
+                stealth=True
             )
+
+    @classmethod
+    def _skill_deck_reflex(cls, goal: str, task_id: str) -> Optional[RoutingManifest]:
+        """Resolve MAP_SKILLS deck numbers (#7001) before generic reflex."""
+        try:
+            from core.utils.skill_deck_index import SkillDeckIndex
+
+            deck = SkillDeckIndex.get()
+            deck.ensure_loaded()
+            entries = deck.resolve_all_in_text(goal)
+            if not entries:
+                return None
+
+            primary = entries[0]
+            if not primary.registry_id:
+                return None
+
+            run_signals = (
+                "chay", "run", "kich hoat", "dung skill", "su dung skill",
+                "goi skill", "thuc thi", "execute",
+            )
+            norm_goal = remove_accents(goal.lower())
+            wants_run = any(s in norm_goal for s in run_signals)
+            inspect_only = deck.is_inspect_intent(goal) and not wants_run
+
+            engine.publish_mission_log(
+                "DISPATCHER",
+                f"🗺️ [DECK-REFLEX]: {primary.display_id} → `{primary.registry_id}`",
+                task_id,
+                stealth=True,
+            )
+
+            return RoutingManifest(
+                trace_id=str(uuid.uuid4()),
+                parent_trace_id=None,
+                intent="INSPECT" if inspect_only else "EXECUTION",
+                action_type=ActionType.EXECUTION,
+                mode="fast" if wants_run or inspect_only else "deep",
+                skill=primary.registry_id,
+                confidence=0.92,
+                reasoning=f"skill_deck:{primary.display_id}",
+                requires_planner=not wants_run and not inspect_only,
+                requires_memory=False,
+                requires_llm=not wants_run and not inspect_only,
+                risk="LOW",
+                domain="SKILLS",
+                complexity=0.2,
+                telemetry={"source": "skill_deck", "deck_id": primary.deck_id},
+            )
+        except Exception as e:
+            logger.debug("[SKILL-DECK-REFLEX] %s", e)
+        return None
 
     # -----------------------------------------------------------------------
     # NORMALIZATION
@@ -438,6 +550,9 @@ class Dispatcher:
                 keyword_weight = max(1, len(keyword.split()))
                 score += keyword_weight * 10
 
+        if not matched_keywords:
+            return 0, []
+
         # Priority bonus
         score += max(0, 100 - rule.priority)
 
@@ -445,6 +560,27 @@ class Dispatcher:
 
     @classmethod
     def _reflex_match(cls, norm: str, task_id: str) -> Optional[RoutingManifest]:
+        # 🔗 [URL-REFLEX]: Phát hiện URL trực tiếp (Bypass LLM)
+        url_pattern = re.compile(r'https?://[^\s/$.?#].[^\s]*', re.IGNORECASE)
+        if url_pattern.search(norm):
+             return RoutingManifest(
+                trace_id=str(uuid.uuid4()),
+                parent_trace_id=None,
+                intent="EXECUTION",
+                action_type=ActionType.EXECUTION,
+                mode="fast",
+                skill="SEARCH_WEB_GLOBAL",
+                confidence=1.0,
+                reasoning="Direct URL detected via regex reflex.",
+                requires_planner=False,
+                requires_memory=False,
+                requires_llm=False,
+                risk="LOW",
+                domain="WEB",
+                complexity=0.1,
+                telemetry={"source": "url_reflex"}
+            )
+
         candidates = []
 
         for rule, patterns, neg_patterns in _RULE_PATTERNS:
@@ -479,7 +615,7 @@ class Dispatcher:
             task_id,
         )
 
-        if confidence < 0.65:
+        if confidence < 0.30:
             return None
 
         return RoutingManifest(
@@ -504,9 +640,101 @@ class Dispatcher:
     # LLM DISPATCH
     # -----------------------------------------------------------------------
 
-    async def _llm_dispatch(self, goal: str, task_id: str) -> RoutingManifest:
-        # LLM Dispatch has been upgraded to Native Tool Calling ReAct Loop in receptionist_core.py
-        # Here we just return a manifest indicating LLM is required.
+    async def _llm_dispatch(self, goal: str, task_id: str, history: list = None, norm: str = "") -> RoutingManifest:
+        """
+        [SOVEREIGN-LLM-DISPATCH]: Triệu tập trí tuệ nơ-ron để định tuyến khi Reflex thất bại.
+        Bỏ qua trạng thái UNKNOWN hèn nhát, ép buộc tìm ra ý định thực thi thưa Master.
+        """
+        try:
+            # skills_context = await self._get_skills_context() # Lược bỏ nạp nguyên file 160KB thưa Master
+            history_text = ""
+            if history:
+                history_text = "\n".join([f"{m.get('role', 'user')}: {m.get('content', '')}" for m in history[-5:]])
+            
+            # 🚀 [COGNITIVE-INTENT-CORE]: Tìm kiếm chuyên gia phù hợp nhất từ Registry
+            from core.utils.knowledge_manager import knowledge_orchestrator
+            all_skills = await knowledge_orchestrator.get_all_skills_dict()
+            
+            # Tính toán điểm liên quan ngữ nghĩa (Semantic Relevance)
+            semantic_candidates = []
+            for s_id, s_info in all_skills.items():
+                # Lấy toàn bộ text để so khớp: Triggers + Description + Name
+                triggers = " ".join(s_info.get("triggers", []))
+                desc = s_info.get("description", "")
+                final_desc = s_info.get("final_desc_vn", "")
+                search_space = f"{s_id} {triggers} {desc} {final_desc}".lower()
+                
+                # Điểm số dựa trên mật độ từ khóa và độ khớp ngữ nghĩa cơ bản
+                score = 0
+                goal_words = set(norm.split())
+                for word in goal_words:
+                    if len(word) > 2 and word in search_space:
+                        score += 10
+                
+                if score > 0:
+                    semantic_candidates.append((score, s_id, s_info))
+            
+            # Lấy top 5 chuyên gia tiềm năng nhất
+            semantic_candidates.sort(key=lambda x: x[0], reverse=True)
+            
+            dossier_context = ""
+            for score, s_id, s_info in semantic_candidates[:5]:
+                dossier_context += f"\n--- EXPERT CANDIDATE: {s_id} (Relevance: {score}) ---\n"
+                dossier_context += f"Description: {s_info.get('description', '')}\n"
+                dossier_context += f"Intent: {s_info.get('final_desc_vn', '')}\n"
+                dossier_context += f"Triggers: {', '.join(s_info.get('triggers', []))}\n"
+
+            if not semantic_candidates:
+                skills_context = "\n".join([f"- {s_id}: {s_info.get('description', '')[:100]}" for s_id, s_info in all_skills.items()])
+            else:
+                skills_context = "Vui lòng tập trung chọn 1 trong các EXPERT CANDIDATES ở trên thưa Master."
+
+            prompt = self._build_prompt(goal, skills_context, history_text, dossier_context)
+            
+            # Sử dụng model nhanh để phân loại ý định
+            response = await engine.call_chat(
+                messages=[{"role": "user", "content": prompt}],
+                role="DISPATCHER",
+                task_id=task_id,
+                json_mode=True,
+                options={"temperature": 0.0}
+            )
+            
+            data = response if isinstance(response, dict) else self._parse_json(str(response))
+            
+            if data and data.get("skill"):
+                skill_id = data.get("skill")
+                confidence = float(data.get("confidence", 0.8))
+                mode = data.get("mode", "fast")
+                reasoning = data.get("reasoning", "No reasoning provided.")
+                
+                engine.publish_mission_log(
+                    "DISPATCHER",
+                    f"🎯 [LLM-DECISION]: Chốt kỹ năng `{skill_id}` (Conf: {confidence}). Lý do: {reasoning}",
+                    task_id
+                )
+                
+                return RoutingManifest(
+                    trace_id=str(uuid.uuid4()),
+                    parent_trace_id=None,
+                    intent="EXECUTION",
+                    action_type=ActionType.EXECUTION,
+                    mode=mode,
+                    skill=skill_id,
+                    confidence=confidence,
+                    reasoning=f"llm_dispatch_success: {skill_id}",
+                    requires_planner=(mode == "deep"),
+                    requires_memory=True,
+                    requires_llm=True,
+                    risk="LOW",
+                    domain="GENERAL",
+                    complexity=0.5,
+                    telemetry={"source": "llm_brain", "model": "dispatcher"}
+                )
+        except Exception as e:
+            logger.error(f"❌ [LLM-DISPATCH-ERR]: {e}")
+
+        # Fallback cuối cùng nếu cả LLM cũng lỗi
         return RoutingManifest(
             trace_id=str(uuid.uuid4()),
             parent_trace_id=None,
@@ -523,33 +751,6 @@ class Dispatcher:
             domain="GENERAL",
             complexity=0.8,
             telemetry={"source": "llm_delegated"}
-        )
-
-        # -------------------------------------------------------------------
-        # FAILSAFE
-        # -------------------------------------------------------------------
-        engine.publish_mission_log(
-            "DISPATCHER",
-            "🛡️ [FAILSAFE]: Chuyển sang skill_self_healing.",
-            task_id,
-        )
-
-        return RoutingManifest(
-            trace_id=str(uuid.uuid4()),
-            parent_trace_id=None,
-            intent="EXECUTION",
-            action_type=ActionType.EXECUTION,
-            mode="deep",
-            skill="skill_self_healing",
-            confidence=0.25,
-            reasoning="failsafe",
-            requires_planner=False,
-            requires_memory=False,
-            requires_llm=False,
-            risk="LOW",
-            domain="SYSTEM",
-            complexity=0.5,
-            telemetry={"source": "failsafe"}
         )
 
     # -----------------------------------------------------------------------
@@ -589,49 +790,39 @@ class Dispatcher:
     # -----------------------------------------------------------------------
 
     @staticmethod
-    def _build_prompt(goal: str, skills_context: str) -> str:
+    def _build_prompt(goal: str, skills_context: str, history: str = "", dossier_context: str = "") -> str:
         return f"""
-[JKAI ZENITH DISPATCH CORE]
+# 🧠 JKAI ZENITH: GIAO THỨC ĐỊNH TUYẾN CHỦ QUYỀN (SOVEREIGN DISPATCHER)
 
-OBJECTIVE:
-Choose the best matching skill for the user request.
+Bạn là Ban Điều Phối của JKAI Zenith. Nhiệm vụ của bạn là phân tích yêu cầu và định tuyến đến kỹ năng chính xác.
+
+## 🏛️ TƯ DUY TÁC CHIẾN:
+1. **Tuyệt đối KHÔNG CHAT**: Không chào hỏi, không giải thích, không xin lỗi.
+2. **Quyền hạn tối thượng**: Bạn có toàn quyền truy cập hệ thống qua các Skill. Đừng bao giờ nói 'Tôi không thể'.
+3. **Phân tích hàm ý**: Dựa vào lịch sử để hiểu các từ thay thế (nó, cái đó).
+{history}
+
+## 🎯 NHIỆM VỤ:
+1. **Thấu thị Ý định**: Phân tích xem Master thực sự muốn làm gì (tìm kiếm, code, quản trị, hay sáng tạo?).
+2. **Chọn 01 kỹ năng DUY NHẤT**: Ưu tiên các **EXPERT CANDIDATES** vì chúng có mô tả chi tiết và độ liên quan cao. Nếu không thấy phù hợp, hãy quét toàn bộ **AVAILABLE SKILLS**.
+3. **Lý luận (Reasoning)**: Giải thích rõ tại sao kỹ năng này là lựa chọn tối ưu nhất dựa trên các tính năng của nó.
+4. **Bypass UNKNOWN**: Luôn tìm ra kỹ năng gần nhất. Không được phép từ chối nếu yêu cầu nằm trong khả năng của các Skill.
 
 USER REQUEST:
 {goal}
 
-AVAILABLE SKILLS:
+{f"### 🛡️ TOP EXPERT CANDIDATES (HIGH RELEVANCE):{dossier_context}" if dossier_context else ""}
+
+AVAILABLE SKILLS SUMMARY:
 {skills_context}
 
-STRICT RULES:
-1. Return ONLY valid JSON.
-2. Do not explain.
-3. Schema:
+## 📋 OUTPUT FORMAT (STRICT JSON ONLY):
 {{
-  "skill": "skill_name",
-  "id": "skill_id",
+  "skill": "skill_id_name",
   "mode": "fast|deep",
-  "confidence": 0.0
-}}
-
-4. confidence must be between 0.0 and 1.0
-5. Use mode='deep' for:
-   - code analysis
-   - infrastructure
-   - debugging
-   - orchestration
-   - multi-step reasoning
-
-EXAMPLES:
-
-Input:
-"Fix Docker GPU issue"
-
-Output:
-{{
-  "skill": "skill_host_control",
-  "id": "28",
-  "mode": "deep",
-  "confidence": 0.91
+  "confidence": 0.0-1.0,
+  "implicit_intent": "Giải mã ý định ẩn",
+  "reasoning": "Tại sao chọn kỹ năng này?"
 }}
 """
 
@@ -640,32 +831,34 @@ Output:
     # -----------------------------------------------------------------------
 
     @staticmethod
-    def _parse_json(text: str) -> Optional[RoutingManifest]:
+    def _parse_json(text: str) -> Optional[dict]:
+        if not text: return None
         text = text.strip()
 
-        # Trường hợp text đã là JSON chuẩn
+        # 1. Thuật toán tìm JSON Block cuối cùng (Ưu tiên cho Thinking Models)
+        # Tìm các cặp ngoặc {} gần nhất ở cuối chuỗi
         try:
-            parsed = json.loads(text)
-            if isinstance(parsed, dict):
-                return parsed
+            # Loại bỏ Markdown blocks nếu có
+            clean_text = re.sub(r"```json\s*|\s*```", "", text)
+            
+            # Tìm tất cả các JSON candidate
+            matches = list(re.finditer(r"\{(?:[^{}]|(?R))*\}", clean_text))
+            if matches:
+                # Lấy match cuối cùng (thường là kết quả sau khi 'thinking')
+                candidate = matches[-1].group()
+                return json.loads(candidate)
         except Exception:
             pass
 
-        # Trích object đầu tiên an toàn hơn
-        start = text.find("{")
-        end = text.rfind("}")
-
-        if start == -1 or end == -1:
-            return None
-
-        candidate = text[start:end + 1]
-
+        # 2. Fallback: Regex đơn giản nếu đệ quy thất bại
         try:
-            parsed = json.loads(candidate)
-            if isinstance(parsed, dict):
-                return parsed
-        except Exception as exc:
-            logger.warning("[DISPATCHER] JSON parse failed: %s", exc)
+            start = text.rfind("{")
+            end = text.rfind("}")
+            if start != -1 and end != -1 and end > start:
+                candidate = text[start:end+1]
+                return json.loads(candidate)
+        except Exception:
+            pass
 
         return None
 

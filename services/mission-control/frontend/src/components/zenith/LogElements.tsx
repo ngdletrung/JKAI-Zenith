@@ -1,6 +1,7 @@
 import React, { memo, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Brain, Zap, FileCode2, Terminal, ChevronRight } from 'lucide-react';
+import { Brain, Zap, FileCode2, Terminal, ChevronRight, ChevronDown, Search, FileText, Loader2 } from 'lucide-react';
+import { useZenithStore } from '../../store/zenithStore';
+import { ZenithService } from '../../services/ZenithService';
 import { MarkdownRenderer } from './MarkdownRenderer';
 
 export const MicroscopeIcon = ({ className }: { className?: string }) => (
@@ -50,19 +51,92 @@ export const SurgicalDiff = memo(({ diff }: { diff: string }) => {
   );
 });
 
-export const ActionBadge = memo(({ label, onClick }: { label: string, onClick?: () => void }) => {
-  const isEditing = label.toLowerCase().includes('edit') || label.toLowerCase().includes('patch');
-  const isExploring = label.toLowerCase().includes('view') || label.toLowerCase().includes('analyz') || label.toLowerCase().includes('explor');
-  const baseLabel = isEditing ? 'Refactoring file' : isExploring ? 'Analyzing file' : label;
+export const ActionBadge = memo(({ label, rawMsg }: { label: string, rawMsg?: string }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const setInspectedFile = useZenithStore(s => s.setInspectedFile);
+  const language = useZenithStore(s => s.language);
+
+  const msg = rawMsg || label;
+  const isEditing = msg.toLowerCase().includes('edit') || msg.toLowerCase().includes('patch') || msg.toLowerCase().includes('writ') || msg.toLowerCase().includes('sửa') || msg.toLowerCase().includes('ghi');
+  const isExploring = msg.toLowerCase().includes('view') || msg.toLowerCase().includes('analyz') || msg.toLowerCase().includes('explor') || msg.toLowerCase().includes('read') || msg.toLowerCase().includes('phân tích') || msg.toLowerCase().includes('đọc');
+  const isSearching = msg.toLowerCase().includes('search') || msg.toLowerCase().includes('find') || msg.toLowerCase().includes('grep') || msg.toLowerCase().includes('tìm');
+
+  // Phân tích tên file từ msg
+  const fileRegex = /([a-zA-Z0-9_\-\.\/]+\.[a-z0-9]+)/i;
+  const match = msg.match(fileRegex);
+  const filePath = match ? match[0].replace(/[`"']/g, '') : '';
+  const fileName = filePath ? filePath.split('/').pop() : '';
+
+  // Phân tích line range (nếu có, e.g. #L123-145)
+  const lineMatch = msg.match(/(?:#L|line\s*)(\d+)(?:-(\d+))?/i);
+  const lineInfo = lineMatch ? `#L${lineMatch[1]}${lineMatch[2] ? `-${lineMatch[2]}` : ''}` : '';
+
+  // Xác định label chính
+  let mainLabel = language === 'vi' ? 'Đang thực thi...' : 'Working...';
+  if (isEditing) {
+    mainLabel = language === 'vi' ? `Cập nhật ${fileName || 'tệp'}` : `Refactored ${fileName || 'file'}`;
+  } else if (isExploring) {
+    mainLabel = language === 'vi' ? `Khảo sát ${fileName || 'tệp'}` : `Exploring ${fileName || 'file'}`;
+  } else if (isSearching) {
+    mainLabel = language === 'vi' ? 'Tìm kiếm mã nguồn' : 'Searching codebase';
+  }
+
+  const handleInspect = async () => {
+    if (!filePath) return;
+    try {
+      const data = await ZenithService.readFile(filePath);
+      if (data?.content) {
+        setInspectedFile({ path: filePath, content: data.content });
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleClick = (e: React.MouseEvent) => {
+    setIsOpen(!isOpen);
+    if (filePath) {
+      handleInspect();
+    }
+  };
 
   return (
-    <button
-      onClick={onClick}
-      className="flex items-center gap-2 py-1.5 px-1 hover:bg-white/[0.02] rounded-lg transition-all group/badge w-fit"
-    >
-      <span className="text-[13px] font-medium text-white/50 group-hover/badge:text-white/80 transition-colors">{baseLabel}</span>
-      <ChevronRight className="w-4 h-4 text-white/30 group-hover/badge:text-white/60 transition-colors" />
-    </button>
+    <div className="my-1.5 ml-14 font-sans text-[12.5px] w-fit max-w-[95%]">
+      {/* Minimalist Header resembling Cursor style */}
+      <div 
+        onClick={handleClick}
+        className="flex items-center gap-1 text-white/40 hover:text-cyan-400 cursor-pointer select-none transition-colors py-0.5 group/badge"
+      >
+        {isOpen ? <ChevronDown className="w-3.5 h-3.5 opacity-60" /> : <ChevronRight className="w-3.5 h-3.5 opacity-60" />}
+        <span className="font-normal transition-colors group-hover/badge:text-cyan-300">{mainLabel}</span>
+        {lineInfo && <span className="opacity-40 text-[10.5px] font-mono ml-0.5">{lineInfo}</span>}
+      </div>
+
+      {/* Collapsible Panel */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden bg-white/[0.01] border-l border-white/5 pl-3.5 ml-1.5 mt-1 flex flex-col gap-1.5"
+          >
+            <div className="text-white/30 font-mono leading-relaxed text-[11px] break-all">
+              {msg}
+            </div>
+            {filePath && (
+              <div 
+                onClick={handleInspect}
+                className="flex items-center gap-1.5 text-sky-400/70 hover:text-sky-300 cursor-pointer text-[10.5px] font-bold"
+              >
+                <FileText className="w-3 h-3" />
+                <span className="underline">{language === 'vi' ? `Mở ${fileName}` : `Open ${fileName}`}</span>
+              </div>
+            )}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 });
 
@@ -71,36 +145,56 @@ export const ReasoningBlock = memo(({ tag, msg }: { tag: string, msg: string }) 
   const roleRaw = (safeTag.includes(':') ? safeTag.split(':')[1] : safeTag).trim();
   const roleUpper = roleRaw.toUpperCase();
   const tagUpper = safeTag.toUpperCase();
-  const isCritic = roleUpper === 'CRITIC' || roleUpper === 'ADVERSARIAL';
   
-  // 💎 [CLI-AESTHETIC]: Các log không quan trọng (tiến trình nền) sẽ có màu xám
   const isImportant = roleUpper === 'MASTER' || roleUpper === 'DISPATCHER' || roleUpper === 'GATEWAY' || roleUpper === 'ERROR' || roleUpper === 'CRITIC' || tagUpper === 'PROGRESS' || tagUpper.includes('THOUGHT') || tagUpper.includes('PLANNING') || tagUpper.includes('TƯ DUY');
   
-  let color = isImportant ? 'text-cyan-400' : 'text-gray-500';
-
+  let color = 'text-cyan-400';
   let displayRole = roleRaw;
-  if (roleUpper.includes('GATEWAY') || roleUpper.includes('RECEPTIONIST')) { color = "text-emerald-400"; displayRole = 'Ban Lễ Tân'; }
-  else if (roleUpper.includes('DISPATCHER')) { color = "text-amber-400"; displayRole = 'Ban Điều Phối'; }
-  else if (roleUpper.includes('PLANNER') || roleUpper.includes('THOUGHT')) { color = "text-indigo-400"; displayRole = 'Ban Kế Hoạch'; }
-  else if (roleUpper.includes('EXECUTOR') || roleUpper.includes('ALPHA') || roleUpper.includes('BETA')) { color = "text-blue-400"; displayRole = 'Ban Thực Thi'; }
-  else if (roleUpper.includes('SUMMARIZER')) { color = "text-fuchsia-400"; displayRole = 'Ban Thư Ký'; }
-  else if (roleUpper.includes('CRITIC') || roleUpper.includes('AUDIT') || roleUpper.includes('REVIEW')) { color = "text-rose-400"; displayRole = 'Ban Kiểm Soát'; }
-  else if (roleUpper.includes('DATA_SCOUT') || roleUpper.includes('RESEARCH') || roleUpper.includes('SEARCH')) { color = "text-sky-400"; displayRole = 'Ban Thông Tin'; }
-  else if (roleUpper.includes('FORGE')) { color = "text-purple-400"; displayRole = 'Ban Công Nghệ'; }
-  else if (roleUpper === 'SYSTEM' || roleUpper === 'SYS_LOG') { displayRole = 'Ban Kỹ Thuật'; }
-  else if (roleUpper === 'ENGINE') { displayRole = 'Trung tâm Điều hành'; }
-  else if (roleUpper === 'MASTER') { color = "text-amber-400"; displayRole = 'Chủ Tịch'; }
+  let bgClass = 'bg-cyan-500/[0.02] border-cyan-500/10';
+  
+  const isZenith = (msg && (msg.includes('ZENITH') || msg.includes('💎🫡'))) || (tag && tag.includes('ZENITH'));
 
-  let cleanMsg = msg.replace(/^(?:[^\w\s]*)\s*\[.*?\]:\s*/g, '').trim();
+  if (roleUpper.includes('GATEWAY') || roleUpper.includes('RECEPTIONIST') || isZenith) { 
+    color = "text-emerald-400"; displayRole = 'Ban Trợ Lý'; bgClass = 'bg-emerald-500/[0.02] border-emerald-500/10';
+  } else if (roleUpper.includes('PLANNER') || roleUpper.includes('THOUGHT')) { 
+    color = "text-indigo-400"; displayRole = 'Ban Kế Hoạch'; bgClass = 'bg-indigo-500/[0.02] border-indigo-500/10';
+  } else if (roleUpper.includes('EXECUTOR') || roleUpper.includes('ALPHA') || roleUpper.includes('BETA') || roleUpper === 'PROGRESS' || roleUpper === 'TIẾN TRÌNH' || roleUpper === 'TIẾN_TRÌNH') { 
+    color = "text-blue-400"; displayRole = 'Ban Thực Thi'; bgClass = 'bg-blue-500/[0.02] border-blue-500/10';
+  } else if (roleUpper === 'JKAI' || roleUpper === 'MISSION_RESULT' || roleUpper === 'RESULT' || roleUpper === 'DONE') {
+    color = "text-cyan-400"; displayRole = 'JKAI'; bgClass = 'bg-cyan-500/[0.02] border-cyan-500/10';
+  } else if (roleUpper.includes('SUMMARIZER') || roleUpper.includes('SYNTHESIS') || roleUpper.includes('LEGAL') || roleUpper.includes('THU_KY')) { 
+    color = "text-fuchsia-400"; displayRole = 'Ban Thư Ký'; bgClass = 'bg-fuchsia-500/[0.02] border-fuchsia-500/10';
+  } else if (roleUpper.includes('CRITIC') || roleUpper.includes('AUDIT') || roleUpper.includes('REVIEW') || roleUpper.includes('GUARDRAIL')) { 
+    color = "text-rose-400"; displayRole = 'Ban Kiểm Soát'; bgClass = 'bg-rose-500/[0.02] border-rose-500/10';
+  } else if (
+    roleUpper.includes('DATA_SCOUT') || roleUpper.includes('RESEARCH') || roleUpper.includes('SEARCH') || 
+    roleUpper.includes('ANTIGRAVITY') || roleUpper.includes('FORGE') ||
+    roleUpper.includes('CREATOR') || roleUpper.includes('KIẾN TẠO') || roleUpper.includes('KIENTAO') || 
+    roleUpper.includes('TÌNH BÁO') || roleUpper.includes('TINHBAO')
+  ) { 
+    color = "text-sky-400"; displayRole = 'Ban Hành Chính'; bgClass = 'bg-sky-500/[0.02] border-sky-500/10';
+  } else if (roleUpper === 'MASTER' || roleUpper.includes('MASTER') || roleUpper.includes('USER')) { 
+    color = "text-amber-400"; displayRole = 'Master'; bgClass = 'bg-amber-500/[0.02] border-amber-500/10';
+  } else {
+    color = "text-sky-400"; displayRole = 'Ban Hành Chính'; bgClass = 'bg-sky-500/[0.02] border-sky-500/10';
+  }
+
+  let cleanMsg = msg;
+  if (!tagUpper.includes('PROGRESS') && !tagUpper.includes('EXECUTOR')) {
+    cleanMsg = msg.replace(/^(?:[^\w\s]*)\s*\[(DEBUG|TRACE|LOG|INFO|SYS)\]:\s*/g, '').trim();
+  }
+  
   cleanMsg = cleanMsg.replace(/^Đang /i, 'Đang ').replace(/^Đã /i, 'Đã ');
 
-  // Loại bỏ các hộp màu mè, hiển thị trực tiếp một dòng CLI
   return (
-    <div className={`font-mono text-[12px] leading-relaxed my-1 flex gap-2 ${isImportant ? 'opacity-100' : 'opacity-70'}`}>
-      <span className={`${color} font-semibold shrink-0`}>{displayRole}:</span>
-      <span className={isImportant ? 'text-white/90 italic' : 'text-gray-400 italic'}>
+    <div className={`my-2 p-2.5 rounded-xl border ${bgClass} leading-relaxed transition-all hover:bg-white/[0.01]`}>
+      <div className="flex items-center gap-2 mb-1.5">
+        <span className={`text-[9px] font-black uppercase tracking-wider ${color}`}>{displayRole}</span>
+        <span className="text-[7.5px] px-1 py-0.2 rounded-full bg-white/5 text-white/30 font-mono">BÁO CÁO NỘI BỘ</span>
+      </div>
+      <div className={`text-[12px] font-medium leading-relaxed font-mono ${isImportant ? 'text-white/80' : 'text-slate-400'}`}>
         <MarkdownRenderer content={cleanMsg || msg} />
-      </span>
+      </div>
     </div>
   );
 });

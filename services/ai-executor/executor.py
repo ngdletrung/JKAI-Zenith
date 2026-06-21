@@ -47,11 +47,20 @@ class Executor:
         )
         self.policy_engine = get_policy_engine(failure_memory.get_tool_failure_rate)
         self._session_failures = 0
+        self._local_loop_cache = {}
 
     def _get_redis(self):
         # Tránh lỗi circular import
         import redis
         return redis.Redis(host=os.getenv("REDIS_HOST", "redis"), port=6379, db=0, decode_responses=True)
+
+    def _get_task_lang(self, task_id: str) -> str:
+        try:
+            r = self._get_redis()
+            lang = r.hget(f"task:meta:{task_id}", "lang")
+            return lang if lang in ("vi", "en") else "vi"
+        except Exception:
+            return "vi"
 
     # ── PUBLIC API ────────────────────────────────────────────────────────────
 
@@ -67,6 +76,8 @@ class Executor:
                                      SurgicalExecutionStage, HarvestStage
         
         start_time = time.time()
+        
+        lang = self._get_task_lang(task_id)
         
         pipeline = ExecutionPipeline([
             PreflightStage(),
@@ -86,7 +97,8 @@ class Executor:
             "assigned_agent": assigned_agent,
             "policy_override": policy_override,
             "start_time": start_time,
-            "executor_instance": self
+            "executor_instance": self,
+            "lang": lang,
         }
         
         try:
@@ -130,8 +142,8 @@ class Executor:
                 else:
                     self._log("CRDT", f"⚠️ [TIMEOUT]: {current_role} buộc phải tiếp quản quyền ghi từ {owner}.", task_id)
             
-            # Đặt phong ấn mới
-            crdt.acquire_lock(current_role)
+            # Đặt phong ấn mới (acquire_lock() dùng self.node_id từ constructor, không cần tham số)
+            crdt.acquire_lock()
             state["crdt_obj"] = crdt # Giữ để release sau
 
     async def _resolve_execution_policy(self, tool_name: str, args: dict, task_id: str, override: dict) -> ExecutionPolicy:
@@ -163,38 +175,61 @@ class Executor:
         return policy.use_critic
 
     async def _reflect_suitability(self, tool_name: str, args: dict, task_id: str, policy: ExecutionPolicy):
+        # 🛡️ [CORE-EXEMPTION]: Bỏ qua Guardrail cho các kỹ năng hệ thống cốt lõi (Tự chẩn đoán, tự sửa lỗi)
+        exempt_tools = ["skill_tucaitien", "skill_tusualoi", "skill_self_healing", "SKILL_TUCAITIEN", "SKILL_TUSUALOI"]
+        if any(t in tool_name for t in exempt_tools):
+            self._log("CRITIC", f"✅ [CORE EXEMPT]: Kỹ năng lõi `{tool_name}` được tự động phê duyệt.", task_id)
+            return
+
         check_prompt = f"Mục tiêu: {args.get('expert_mindset', 'N/A')}\nCông cụ: {tool_name}\n\nPhù hợp không thưa Đặc vụ? Trả về 'REJECT: lý do' hoặc 'APPROVE'."
         current_role = os.getenv("EXECUTOR_ROLE", "ALPHA").upper()
         critic_role = f"CRITIC_{current_role}" if current_role in ["ALPHA", "BETA"] else "CRITIC"
         suitability = await engine.call_chat([{"role": "user", "content": check_prompt}], role=critic_role, task_id=task_id)
+        self._log("CRITIC", f"🧐 [Suitability Check]: {suitability}", task_id)
         if "REJECT" in suitability.upper():
             raise GuardrailException(f"Executor REJECT: {suitability}")
 
     async def _execute_with_retry(self, tool_name: str, args: dict, task_id: str, policy: ExecutionPolicy) -> Any:
-        # 🛡️ [HARDENED-LOOP-PROTECTION]: Băm JSON đã sắp xếp
+        # 🛡️ [HARDENED-LOOP-PROTECTION]: Băm JSON đã sắp xếp thưa Master
         args_str = json.dumps(args, sort_keys=True)
         loop_key = f"zenith:loop:{task_id}:{tool_name}:{hashlib.md5(args_str.encode()).hexdigest()}"
         try:
-            loop_count = int(self._get_redis().incr(loop_key))
-            self._get_redis().expire(loop_key, 3600)
-            if loop_count > 2:
-                self._log("GUARDRAIL", f"🛑 [LOOP-DETECTED]: Ngắt mạch lặp nơ-ron cho `{tool_name}`.", task_id)
-                return {"status": "error", "msg": "Neural Loop Protection Triggered."}
-        except: pass
+            r = None
+            try:
+                r = self._get_redis()
+                if r: r.ping()
+            except Exception:
+                r = None
+
+            loop_count = 0
+            if r:
+                loop_count = int(r.incr(loop_key))
+                r.expire(loop_key, 3600)
+            else:
+                self._local_loop_cache[loop_key] = self._local_loop_cache.get(loop_key, 0) + 1
+                loop_count = self._local_loop_cache[loop_key]
+
+            if loop_count > 3:
+                self._log("GUARDRAIL", f"🛑 [LOOP-DETECTED]: Ngắt mạch lặp nơ-ron tại Executor cho `{tool_name}`.", task_id)
+                return {"status": "error", "msg": f"Neural Circuit Breaker: Tool `{tool_name}` is repeating excessively with identical parameters. Execution blocked to prevent resource exhaustion."}
+        except Exception: pass
 
         last_error = None
         for attempt in range(policy.max_retry):
             try:
                 self._check_abort(task_id)
                 args["task_id"] = task_id
+                args["trace_id"] = getattr(policy, "trace_id", "system")
                 result = await asyncio.wait_for(self.router.call_tool(tool_name, **args), timeout=policy.timeout)
                 if not (isinstance(result, dict) and result.get("status") == "error"): return result
                 last_error = result.get("msg") or str(result)
                 # Phân loại lỗi
                 fail_type = self._classify_failure(last_error)
                 if fail_type == FailureType.AUTH: break # Lỗi quyền không retry
+            except (asyncio.TimeoutError, TimeoutError):
+                last_error = "TimeoutError (quá thời gian phản hồi)"
             except Exception as e:
-                last_error = str(e)
+                last_error = str(e).strip() or type(e).__name__ or "Unknown error"
                 if "abort" in last_error.lower(): raise
 
         self._session_failures += 1
@@ -209,8 +244,77 @@ class Executor:
         if any(x in err for x in ["schema", "validation", "format", "missing"]): return FailureType.SCHEMA
         return FailureType.UNKNOWN
 
+    @staticmethod
+    def _classify_action(tool_name: str, lang: str = "vi", past_tense: bool = True) -> str:
+        tool = tool_name.lower().replace("_", "").replace("-", "")
+        prefix_vi = "đã" if past_tense else "đang"
+        prefix_en = "ed" if past_tense else "ing"
+        vi = {
+            "khámphá": "khám phá", "explore": "khám phá", "scout": "khám phá",
+            "scan": "quét", "list": "xem danh sách", "ls": "liệt kê", "dir": "liệt kê",
+            "read": "đọc file", "readfile": "đọc file", "cat": "đọc file",
+            "view": "xem file", "inspect": "kiểm tra",
+            "edit": "sửa file", "editfile": "sửa file", "patch": "vá",
+            "replace": "thay thế", "modify": "sửa",
+            "write": "tạo file", "writefile": "tạo file", "create": "tạo",
+            "save": "lưu", "append": "thêm",
+            "delete": "xoá", "remove": "xoá", "rm": "xoá",
+            "bash": "chạy lệnh", "exec": "chạy lệnh", "run": "chạy",
+            "shell": "chạy lệnh", "systemcmd": "chạy lệnh", "codeexecution": "chạy code",
+            "search": "tìm kiếm", "websearch": "tìm web", "find": "tìm",
+            "copy": "sao chép", "cp": "sao chép", "move": "di chuyển",
+            "mv": "di chuyển", "rename": "đổi tên",
+            "install": "cài đặt", "setup": "thiết lập", "config": "cấu hình",
+            "build": "biên dịch", "compile": "biên dịch",
+            "test": "kiểm tra", "check": "kiểm tra", "verify": "xác minh",
+            "analyze": "phân tích", "audit": "kiểm toán", "review": "xem xét",
+            "pythonrepl": "chạy code python", "python": "chạy code python",
+            "filewarden": "quản lý file", "fileops": "thao tác file",
+            "sync": "đồng bộ", "dongbo": "đồng bộ",
+            "ollama": "gọi AI", "llm": "gọi AI", "llmanalysis": "phân tích AI",
+            "browser": "duyệt web", "browsercontrol": "duyệt web",
+            "askuser": "hỏi Master",
+            "skilltucaitien": "tự cải tiến", "skilltusualoi": "tự sửa lỗi",
+            "selfhealing": "tự sửa lỗi",
+        }
+        en = {
+            "khámphá": "explore", "explore": "explore", "scout": "explore",
+            "scan": "scan", "list": "list", "ls": "list", "dir": "list",
+            "read": "read file", "readfile": "read file", "cat": "read file",
+            "view": "view file", "inspect": "inspect",
+            "edit": "edit file", "editfile": "edit file", "patch": "patch",
+            "replace": "replace", "modify": "modify",
+            "write": "write file", "writefile": "write file", "create": "create",
+            "save": "save", "append": "append",
+            "delete": "delete", "remove": "remove", "rm": "remove",
+            "bash": "run command", "exec": "run command", "run": "run",
+            "shell": "run command", "systemcmd": "run command", "codeexecution": "execute code",
+            "search": "search", "websearch": "search web", "find": "find",
+            "copy": "copy", "cp": "copy", "move": "move",
+            "mv": "move", "rename": "rename",
+            "install": "install", "setup": "setup", "config": "configure",
+            "build": "build", "compile": "compile",
+            "test": "test", "check": "check", "verify": "verify",
+            "analyze": "analyze", "audit": "audit", "review": "review",
+            "pythonrepl": "run python", "python": "run python",
+            "filewarden": "manage file", "fileops": "file ops",
+            "sync": "sync", "dongbo": "sync",
+            "ollama": "call LLM", "llm": "call LLM", "llmanalysis": "LLM analysis",
+            "browser": "browse", "browsercontrol": "browse",
+            "askuser": "ask user",
+            "skilltucaitien": "self-improve", "skilltusualoi": "self-heal",
+            "selfhealing": "self-heal",
+        }
+        lookup = vi if lang.startswith("vi") else en
+        prefix = prefix_vi if lang.startswith("vi") else prefix_en
+        for key, val in lookup.items():
+            if key in tool:
+                return f"{prefix} {val}"
+        fallback = "thực thi" if lang.startswith("vi") else "execute"
+        return f"{prefix} {fallback}"
+
     async def _harvest_and_verify(self, tool_name: str, result: Any, task_id: str, 
-                                 policy: ExecutionPolicy, start_time: float, args: dict) -> dict:
+                                 policy: ExecutionPolicy, start_time: float, args: dict, lang: str = "vi") -> dict:
         latency_ms = (time.time() - start_time) * 1000
         is_success = isinstance(result, dict) and result.get("status") != "error"
         
@@ -241,10 +345,14 @@ class Executor:
             content = result.get("content") or result.get("data") or result.get("path")
             if content: engine.set_insight(task_id, f"res_{tool_name}", content)
             
-            # Elite Logging
-            path_arg = args.get("path") or args.get("TargetFile") or ""
-            target = os.path.basename(str(path_arg)) or tool_name
-            self._log("EXECUTOR", f"Successfully executed {target}.", task_id)
+            path_arg = args.get("path") or args.get("TargetFile") or args.get("file_path") or args.get("target") or ""
+            action = self._classify_action(tool_name, lang, past_tense=True)
+            if path_arg:
+                self._log("EXECUTOR", f"*[{action}]* `{path_arg}`", task_id)
+            elif result.get("output") or result.get("msg"):
+                self._log("EXECUTOR", f"*[{action}]* `{tool_name}`", task_id)
+            else:
+                self._log("EXECUTOR", f"*[{action}]* ...", task_id)
             return {"status": "success", "output": result}
         
         return result
@@ -327,6 +435,7 @@ class Executor:
         # 2. Cognitive paths
         prompt = f"Lỗi loại {fail_type}: {error_msg}. Đề xuất args mới cho {step['tool']}. Trả về JSON."
         correction = await engine.call_chat([{"role": "user", "content": prompt}], role="CRITIC", json_mode=True)
+        self._log("SYSTEM", f"🛠️ [Self-Heal Suggestion]: {correction}", task_id)
         if isinstance(correction, dict):
             action_desc = f"Áp dụng mã tự phục hồi (Code Fix) cho công cụ {step['tool']}. Thay đổi: {json.dumps(correction, ensure_ascii=False)}"
             is_approved = await guard.ensure_approval(task_id, action_desc, is_core=True)

@@ -2,7 +2,7 @@
 id: SYSTEM_XRAY_MONITOR
 name_vn: "Vệ Binh X-Ray Tối Thượng"
 version: 1.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: CORE
 intent_pairs:
   - ["MONITOR", "SYSTEM"]

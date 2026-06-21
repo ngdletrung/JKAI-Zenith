@@ -15,7 +15,7 @@ class MessageAssembler:
     """
     def __init__(self, agent_name: str = "JKAI"):
         self.agent_name = agent_name
-        self._max_history = 30 # Tăng lên vì đã có bộ nén
+        self._max_history = 50 # Session context: server-side history via Redis
         self._max_knowledge_len = 15000 
         self._max_memory_len = 8000
         from core.utils.context_compressor import ContextCompressor

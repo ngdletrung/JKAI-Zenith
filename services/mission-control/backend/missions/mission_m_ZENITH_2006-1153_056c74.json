@@ -1,0 +1,168 @@
+{
+  "id": "m_ZENITH_2006-1153_056c74",
+  "title": "vì sao JKAI lại hay lỗi vậy ?",
+  "goal": "vì sao JKAI lại hay lỗi vậy ?\n\n[KẾT QUẢ]\n❌ [PLANNER ERROR]: Không thể lập kế hoạch - Stage ForgeStage timed out after 300 seconds.",
+  "status": "completed",
+  "ts": 1781931567.2772112,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "vì sao JKAI lại hay lỗi vậy ?",
+      "ts": 1781931198.5869641,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_2006-1153_056c74` initialized | Trace: `trace_056c74`. Runtime ready.",
+      "ts": 1781931198.5906165,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: DEEP — lỗi/debug.",
+      "ts": 1781931208.0954127,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=debug pipeline=deep_full mode=deep tags=-",
+      "ts": 1781931208.1004345,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1781931208.1026647,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: DeepPipeline T2–T6 (full)",
+      "ts": 1781931208.1226285,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [DEEP-PIPELINE]: Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1781931208.1414993,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T04:53:28.174221] [MINI_PLANNER] [Task: ZENITH_2006-1153_056c74] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1781931208.1742392,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T04:53:29.441070] [MINI_PLANNER] [Task: ZENITH_2006-1153_056c74] Đang triệu tập deepseek-r1:latest... (Context: 8192)",
+      "ts": 1781931209.4410872,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T04:53:30.734105] [MINI_PLANNER] [Task: ZENITH_2006-1153_056c74] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1781931210.7341225,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T04:54:26.450003] [MINI_PLANNER] [Task: ZENITH_2006-1153_056c74] {\n  \"domain\": \"AI Domain\"\n}",
+      "ts": 1781931266.4500155,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T04:54:26.456919] [MINI_PLANNER] [Task: ZENITH_2006-1153_056c74] Hoàn tất trong 57.02s. (Size: 28 chars)",
+      "ts": 1781931266.4569347,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧭 [META-PLANNER]: Routed to Domain Agent 'Generalist' (Domain: CORE | Complexity: MEDIUM | Mode: SEQUENTIAL)",
+      "ts": 1781931266.6886373,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1781931266.6915758,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức và bối cảnh nhất thể...",
+      "ts": 1781931266.6973684,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1781931267.175909,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER`...",
+      "ts": 1781931513.561053,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-06-20T04:58:33.632020] [PLANNER] [Task: ZENITH_2006-1153_056c74] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1781931513.6320434,
+      "source": "PLANNER",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-06-20T04:58:34.567676] [PLANNER] [Task: ZENITH_2006-1153_056c74] Đang triệu tập deepseek-r1:latest... (Context: 8192)",
+      "ts": 1781931514.5676937,
+      "source": "PLANNER",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-06-20T04:59:25.439552] [PLANNER] [Task: ZENITH_2006-1153_056c74] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1781931565.4395835,
+      "source": "PLANNER",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "🚨 [T2/T3 FAULT]: Stage ForgeStage timed out after 300 seconds.",
+      "ts": 1781931567.156491,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1153_056c74"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "❌ [PLANNER ERROR]: Không thể lập kế hoạch - Stage ForgeStage timed out after 300 seconds.",
+      "ts": 1781931567.1654806,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1153_056c74"
+    }
+  ],
+  "artifacts": {
+    "plan": "vì sao JKAI lại hay lỗi vậy ?",
+    "walkthrough": "❌ [PLANNER ERROR]: Không thể lập kế hoạch - Stage ForgeStage timed out after 300 seconds.",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

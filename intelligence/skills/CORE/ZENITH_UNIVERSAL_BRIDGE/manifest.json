@@ -1,0 +1,64 @@
+{
+  "id": "ZENITH_UNIVERSAL_BRIDGE",
+  "name": "Zenith Universal Bridge",
+  "name_vn": "**Cầu nối Vạn năng**: Giao thức kết nối nơ-ron đa tầng (MCP-Inside).",
+  "version": "1.0.0",
+  "author": "JKAI ZENITH Forge",
+  "domain": "CORE",
+  "priority": "HIGHEST",
+  "description": "Cung cấp hạ tầng kết nối trực tiếp giữa các kỹ năng, cho phép trao đổi ngữ cảnh và kết quả mà không cần thông qua Orchestrator trung tâm.",
+  "intent_pairs": [
+    [
+      "BRIDGE",
+      "CONNECT"
+    ],
+    [
+      "SYNC",
+      "CONTEXT"
+    ]
+  ],
+  "schema": {
+    "parameters": {
+      "type": "object",
+      "properties": {
+        "source_skill": {
+          "type": "string",
+          "description": "ID kỹ năng nguồn."
+        },
+        "target_skill": {
+          "type": "string",
+          "description": "ID kỹ năng đích."
+        },
+        "payload": {
+          "type": "object",
+          "description": "Dữ liệu cần chuyển giao."
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "request",
+            "notify",
+            "stream"
+          ],
+          "default": "request"
+        }
+      },
+      "required": [
+        "source_skill",
+        "target_skill",
+        "payload"
+      ]
+    }
+  },
+  "related_skills": [
+    "SYSTEM_CORE_EXECUTOR",
+    "HIVE_MIND"
+  ],
+  "triggers": [
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "id": "m_ZENITH_1780120246_ab9a3d53",
+  "title": "hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay",
+  "goal": "hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay",
+  "status": "completed",
+  "ts": 1780120321.33525,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay",
+      "ts": 1780120246.0985694,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1780120246_ab9a3d53` initialized | Trace: `trace_ab9a3d53`. Runtime ready.",
+      "ts": 1780120246.100171,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780120246.8642194,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: Pre-routing/Intent-Forcing: Real-time query detected. Executing search directly thưa Master.",
+      "ts": 1780120246.8782346,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780120246.8792064,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_fa39130812b4",
+      "ts": 1780120246.8802867,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "TAVILY: Initiating global web search for hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay 30/05/2026",
+      "ts": 1780120256.7408051,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    },
+    {
+      "tag": "WEB_DATA",
+      "msg": "TAVILY-FOUND: Discovered 5 results.\n1. Tin tức tình hình Campuchia mới nhất hôm nay trên VnExpress (https://vnexpress.net/chu-de/campuchia-2360)\n2. , Campuchia : Ông Hun Sen ký luật mới: Nam thanh niên Campuc (https://cafef.vn/campuchia.html)\n3. Campuchia tôn vinh những “chứng nhân lịch sử” trong Ngày Tự  (https://nhandan.vn/campuchia-ton-vinh-nhung-chung-nhan-lich-su-trong-ngay-tu-do-bao-chi-the-gioi-post959737.html)\n",
+      "ts": 1780120259.505291,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780120259.6172183,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (9417 ký tự)",
+      "ts": 1780120259.6225064,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: DEEP-DISTILLING: Large search data found (9417 chars). Distilling knowledge...",
+      "ts": 1780120259.6237094,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi động bộ lọc Cosine TF-IDF siêu tốc thưa Master...",
+      "ts": 1780120259.625285,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Hoàn tất chưng cất trong 3ms (Cắt từ 9417 còn 2381 ký tự) thưa Master.",
+      "ts": 1780120259.681916,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T05:51:00.643650] [RECEPTIONIST] [Task: ZENITH_1780120246_ab9a3d53] Đang triệu tập qwen3:4b... (Context: 2048)",
+      "ts": 1780120260.6436894,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T05:51:02.382460] [RECEPTIONIST] [Task: ZENITH_1780120246_ab9a3d53] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780120262.382477,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T05:52:01.302312] [RECEPTIONIST] [Task: ZENITH_1780120246_ab9a3d53] Ngày 30/05/2026: Quốc vương Campuchia mắc ung thư\nNgày 30/05/2026: Dò tìm hơn 100 quả mìn, chuột \"anh hùng\" được dựng tượng ở Campuchia\nNgày 30/05/2026: Chính phủ Campuchia công bố quyết định tăng cường độ kiểm tra biên giới\nNgày 30/05/2026: Các nhà khoa học Campuchia phát hiện một loài côn trùng mới có khả năng gây bệnh cho người\nNgày 30/05/2026: Tổ chức quốc tế UNDP công bố hỗ trợ cho Campuchia trong lĩnh vực giáo dục",
+      "ts": 1780120321.3023477,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T05:52:01.304709] [RECEPTIONIST] [Task: ZENITH_1780120246_ab9a3d53] Hoàn tất trong 60.66s. (Size: 423 chars)",
+      "ts": 1780120321.3047256,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "💎🫡 [ZENITH]: Ngày 30/05/2026: Quốc vương Campuchia mắc ung thư\nNgày 30/05/2026: Dò tìm hơn 100 quả mìn, chuột \"anh hùng\" được dựng tượng ở Campuchia\nNgày 30/05/2026: Chính phủ Campuchia công bố quyết định tăng cường độ kiểm tra biên giới\nNgày 30/05/2026: Các nhà khoa học Campuchia phát hiện một loài côn trùng mới có khả năng gây bệnh cho người\nNgày 30/05/2026: Tổ chức quốc tế UNDP công bố hỗ trợ cho Campuchia trong lĩnh vực giáo dục",
+      "ts": 1780120321.308,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Ngày 30/05/2026: Quốc vương Campuchia mắc ung thư\nNgày 30/05/2026: Dò tìm hơn 100 quả mìn, chuột \"anh hùng\" được dựng tượng ở Campuchia\nNgày 30/05/2026: Chính phủ Campuchia công bố quyết định tăng cường độ kiểm tra biên giới\nNgày 30/05/2026: Các nhà khoa học Campuchia phát hiện một loài côn trùng mới có khả năng gây bệnh cho người\nNgày 30/05/2026: Tổ chức quốc tế UNDP công bố hỗ trợ cho Campuchia trong lĩnh vực giáo dục",
+      "ts": 1780120321.3135664,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780120246_ab9a3d53"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

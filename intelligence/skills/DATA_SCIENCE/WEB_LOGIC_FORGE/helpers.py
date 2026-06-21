@@ -23,7 +23,7 @@ async def wait_for_selector_smart(page, selector, timeout=10000):
         try:
             await page.wait_for_selector(selector, timeout=timeout/2)
             return True
-        except:
+        except Exception:
             return False
 
 # --- [AI LEARNED HELPERS WILL BE APPENDED BELOW] ---

@@ -120,7 +120,7 @@ class QdrantClientWrapper:
         """Truy luc tri thuc tuong dong."""
         if not query_embedding: return []
         target_collection = collection or self.collection_name
-        await self.ensure_collection(target_collection)
+        await self.ensure_collection(target_collection, vector_size=len(query_embedding))
         
         payload = {
             "vector": query_embedding,

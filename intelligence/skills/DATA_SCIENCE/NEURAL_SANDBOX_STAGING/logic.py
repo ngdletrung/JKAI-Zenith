@@ -52,7 +52,7 @@ class NeuralSandbox:
         try:
             subprocess.run(["docker", "rm", "-f", self.container_name], check=True, capture_output=True)
             return True
-        except:
+        except Exception:
             return False
 
 def run_test_surgery(code_snippet):

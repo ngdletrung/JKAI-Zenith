@@ -1,0 +1,48 @@
+{
+  "id": "SPEC_DRIVEN_DEVELOPMENT",
+  "name": "Spec Driven Development",
+  "version": "1.0.0",
+  "description": "Generates technical specifications and PRD documents prior to implementation.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "phát triển hướng đặc tả",
+    "spec driven",
+    "viết đặc tả",
+    "tạo PRD",
+    "overview",
+    "when to use",
+    "the gated workflow",
+    "phase 1  specify",
+    "objective",
+    "spec",
+    "what",
+    "code",
+    "human",
+    "requirements",
+    "task",
+    "test",
+    "before",
+    "tests",
+    "criteria",
+    "nghien cuu",
+    "phan tich",
+    "ke hoach",
+    "plan",
+    "y tuong"
+  ],
+  "domain": "RESEARCH",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "feature": {
+          "type": "string",
+          "description": "The feature or requirement description."
+        }
+      },
+      "required": [
+        "feature"
+      ]
+    }
+  }
+}

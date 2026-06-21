@@ -1,0 +1,53 @@
+{
+  "id": "SKILL_SYS_17_LOAD_BALANCE",
+  "name": "Zenith Intelligent Load Balancer",
+  "version": "1.0.0",
+  "description": "Traffic orchestration core: Efficiently distributes incoming network traffic across a group of backend servers or containers to optimize resource use and response time.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "điều phối tải",
+    "load balancer",
+    "cân bằng tải",
+    "traffic orchestration",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "thong",
+    "luong",
+    "master",
+    "dung",
+    "phoi",
+    "phan",
+    "nguoi",
+    "nhat",
+    "nang",
+    "server",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "service_name": {
+          "type": "string",
+          "description": "The service group to balance."
+        },
+        "algorithm": {
+          "type": "string",
+          "enum": [
+            "round-robin",
+            "least-connections"
+          ],
+          "description": "Balancing algorithm."
+        }
+      }
+    }
+  }
+}

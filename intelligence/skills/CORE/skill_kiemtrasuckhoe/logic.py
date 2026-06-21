@@ -7,10 +7,10 @@ import sys
 import time
 
 # Đảm bảo nạp được các module từ core
-try:
-    from core.utils.engine import engine
-except ImportError:
-    pass)))))
+project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
+if project_root not in sys.path:
+    sys.path.append(project_root)
+
 from core.utils.engine import engine
 from redis_client import redis_safe
 
@@ -56,7 +56,7 @@ async def get_gpu_info():
             raw_ram = lines[2].strip().split()[-1]
             vram_gb = round(int(raw_ram) / (1024**3), 2)
             return {"name": "AMD Radeon RX 6600", "total_vram": f"{vram_gb} GB"}
-    except: pass
+    except Exception: pass
     return {"name": "Unknown", "total_vram": "N/A"}
 
 async def get_system_ram():
@@ -71,7 +71,7 @@ async def get_system_ram():
             total = round(int(parts[0]) / (1024**2), 2)
             free = round(int(parts[1]) / (1024**2), 2)
             return {"total": f"{total} GB", "free": f"{free} GB", "used_pct": f"{round((1-free/total)*100, 1)}%"}
-    except: pass
+    except Exception: pass
     return {"total": "N/A", "free": "N/A"}
 
 async def get_docker_status():
@@ -86,7 +86,7 @@ async def get_docker_status():
                 name, status = line.split('|')
                 containers.append({"name": name, "status": status})
         return containers
-    except: return []
+    except Exception: return []
 
 async def get_loaded_models():
     """Kiểm tra các model đang cư trú trong VRAM/RAM."""
@@ -96,7 +96,7 @@ async def get_loaded_models():
             if resp.status_code == 200:
                 models = resp.json().get("models", [])
                 return [{"name": m['name'], "size": f"{round(m['size']/(1024**3), 2)} GB"} for m in models]
-    except: pass
+    except Exception: pass
     return []
 
 async def check_system_health():
@@ -118,7 +118,7 @@ async def check_system_health():
             data = json.loads(l)
             if data.get("tag") in ["ERROR", "FAILURE"]:
                 errors.append(data.get("msg"))
-        except: pass
+        except Exception: pass
 
     status = "HEALTHY" if not errors and all("Up" in c['status'] for c in containers if c['name'].startswith('jkai')) else "STABLE_WITH_ISSUES"
     if not containers: status = "WARNING_IDLE" # Không có container nào chạy

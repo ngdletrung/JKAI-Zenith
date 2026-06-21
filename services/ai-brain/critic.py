@@ -41,7 +41,7 @@ class Critic:
         try:
             from core.utils.engine import engine
             engine.publish_mission_log(tag, msg, task_id)
-        except: pass
+        except Exception: pass
 
     async def review_plan(self, goal: str, steps: list) -> dict:
         # 🛡️ Lấy cấu hình từ Nguồn Sống
@@ -67,18 +67,28 @@ class Critic:
             self._log("CRITIC", "🛠️ [PROMPT-FORGE]: Đang đúc kết Tư duy Phản biện chuyên gia...", task_id="critic")
             
             manifesto = engine.get_intel_file("JKAI_ZENITH_CORP.md") or ""
-            # Đúc một Prompt dành riêng cho việc Phản biện (Critique) thưa Master
-            forge_goal = f"Phản biện và kiểm soát chất lượng cho lộ trình thực hiện mục tiêu: {goal}"
+            # Đúc một Prompt dành riêng cho việc Phản biện (Critique) theo D3 thưa Master
+            forge_goal = (
+                f"Phản biện đối lập (Adversarial Review) cho lộ trình thực hiện mục tiêu: {goal}. "
+                "Hãy giả định tác giả của kế hoạch này quá tự tin và bỏ sót nhiều lỗi nguy hiểm. "
+                "Nhiệm vụ của bạn là tìm kiếm các giả định chưa được chứng minh, các trường hợp biên không được xử lý, "
+                "sự phụ thuộc ngầm và các cách thức kế hoạch này có thể thất bại."
+            )
             specialist_prompt = await prompt_forge.forge_specialist_prompt(
                 goal=forge_goal,
                 context={"steps": steps},
-                skills_summary="Hãy đóng vai một Giám đốc Chất lượng cực kỳ khó tính và am tường kỹ thuật."
+                skills_summary="Hãy đóng vai một Giám đốc Chất lượng và Phản biện Hướng Hoài Nghi (Doubt-Driven Critic) cực kỳ khó tính."
             )
             
             system_prompt = manifesto + "\n\n" + specialist_prompt
         except Exception as e:
             print(f"⚠️ [PROMPT-LOAD-ERR] {e}. Sử dụng prompt mặc định.")
-            system_prompt = f"Bạn là Thẩm định viên Cao cấp của JKAI Zenith. Thẩm định Goal: {goal}"
+            system_prompt = (
+                "Bạn là Giám đốc Kiểm soát Chất lượng và Phản biện Hướng Hoài Nghi (Doubt-Driven Critic) của JKAI Zenith.\n"
+                "Hãy giả định tác giả của kế hoạch quá tự tin. Nhiệm vụ của bạn là tìm ra mọi cách kế hoạch có thể thất bại, "
+                "các trường hợp biên chưa xử lý, và các mối ghép ngầm có thể gây lỗi hệ thống.\n"
+                f"Thẩm định Goal: {goal}"
+            )
 
         messages = [
             {"role": "system", "content": system_prompt}

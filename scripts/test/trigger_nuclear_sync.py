@@ -5,7 +5,7 @@ import httpx
 from pathlib import Path
 
 # Thêm đường dẫn để import các module core
-sys.path.append(os.getenv("WORKSPACE_ROOT", "D:/Docker/N8N"))
+sys.path.append(os.getenv("WORKSPACE_ROOT", "D:/Docker/JKAI"))
 
 # Găm cứng biến môi trường cho Host Windows
 os.environ["OLLAMA_HOST"] = "http://localhost:11434"
@@ -31,7 +31,7 @@ async def main():
     assimilator = JKAI_Assimilator()
     
     # Chỉnh hướng Assimilator vào thẳng thư mục skills
-    target_path = Path(os.getenv("WORKSPACE_ROOT", "D:/Docker/N8N") + "/intelligence/archive/import_dump/everything-claude-code-main/skills")
+    target_path = Path(os.getenv("WORKSPACE_ROOT", "D:/Docker/JKAI") + "/intelligence/archive/import_dump/everything-claude-code-main/skills")
     assimilator.import_dir = target_path
     
     print(f"[TARGET] Dang tan cong vao: {target_path}")

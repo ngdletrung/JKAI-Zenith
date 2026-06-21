@@ -46,7 +46,7 @@ class HardwareScheduler:
                     asyncio.current_task().set_name(f"cpu_lock:{unique_request_id}")
                     # Lưu lại lane đã nhận vào Redis để giải phóng chính xác
                     redis_safe(lambda r: r.set(f"task_cpu_lane:{unique_request_id}", acquired_lane, ex=wait_timeout))
-                except: pass
+                except Exception: pass
                 return True
             
             await asyncio.sleep(0.5)
@@ -61,7 +61,7 @@ class HardwareScheduler:
             name = asyncio.current_task().get_name()
             if "cpu_lock:" in name:
                 unique_request_id = name.split("cpu_lock:")[-1]
-        except: pass
+        except Exception: pass
 
         def _release(r):
             if unique_request_id:
@@ -106,7 +106,7 @@ class HardwareScheduler:
                             r.sadd("cpu:loaded_models", m["name"])
                             r.expire("cpu:loaded_models", 3600)
                     return loaded_in_ollama
-        except: pass
+        except Exception: pass
         return []
 
     async def flush_all_models(self, r):
@@ -180,7 +180,7 @@ class HardwareScheduler:
                 redis_safe(lambda r: r.set(f"task_lane:{unique_request_id}", lane_key, ex=wait_timeout))
                 try:
                     asyncio.current_task().set_name(unique_request_id)
-                except: pass
+                except Exception: pass
                 return True
             
             await asyncio.sleep(1.0)
@@ -204,7 +204,7 @@ class HardwareScheduler:
         try:
             name = asyncio.current_task().get_name()
             if ":" in name: unique_request_id = name
-        except: pass
+        except Exception: pass
 
         def _release(r):
             if unique_request_id:
@@ -221,113 +221,195 @@ class HardwareScheduler:
 
     async def resolve_smart_fallback(self, failed_model: str, router, fallback_roles: list) -> Optional[dict]:
         """
-        🧠 [UNIFIED-SMART-FALLBACK v4.0]: Quản lý dự phòng thông minh tập trung.
-        Tôn trọng ĐÚNG phần cứng được chỉ định trong rule_hardware.md:
-          - Role cấu hình GPU/VRAM → chỉ tìm fallback trong GPU Ollama (port 11434)
-          - Role cấu hình CPU/RAM  → chỉ tìm fallback trong CPU Ollama (port 11435)
-
-        Ưu tiên theo chiến thuật 3 tầng:
-          Tầng 1 — HOT (đang nạp sẵn trong đúng phần cứng): Tránh độ trễ nạp.
-          Tầng 2 — AVAILABLE (có sẵn trong thư viện đúng phần cứng): Cần warm-up ngắn.
-          Tầng 3 — ORDERED (thứ tự ưu tiên vai trò, đúng phần cứng): Cứu cánh tối hậu.
+        🧠 [UNIFIED-SMART-FALLBACK v5.0]: Quản lý dự phòng thông minh tập trung và đồng bộ.
+        Tôn trọng ĐÚNG phần cứng được chỉ định trong rule_hardware.md Mục 3.
+        Ưu tiên theo chiến thuật:
+          - Chỉ được phép chọn các model đã được định nghĩa và nạp sẵn ở rule_hardware.md Mục 3.
+          - Chọn model khác đang rảnh ở GPU trước.
+          - Nếu hết model rảnh GPU, chuyển sang chọn model đang rảnh ở CPU.
+          - Chú ý ưu tiên tính năng tương đồng (capability) và dung lượng tương đồng (size).
+          - Nếu tất cả model Mục 3 không khả dụng, mới tải một mô hình mới từ Ollama lên GPU/CPU làm cứu cánh cuối cùng.
 
         Args:
-            failed_model: Tên model vừa thất bại để loại trừ.
-            router: Instance ModelRouter để phân giải động vai trò từ rule_hardware.md.
-            fallback_roles: Danh sách thứ tự ưu tiên vai trò dự phòng (e.g. ["RESERVE_AGENT", "CHAT"]).
+          failed_model: Tên model vừa thất bại để loại trừ.
+          router: Instance của JKAIIntelligenceEngine để phân giải động vai trò từ rule_hardware.md.
+          fallback_roles: Danh sách thứ tự ưu tiên vai trò dự phòng (e.g. ["RESERVE_AGENT", "CHAT"]).
 
         Returns:
-            dict {"role": str, "model": str, "hardware": str} hoặc None nếu kiệt sức.
+          dict {"role": str, "model": str, "hardware": str} hoặc None nếu kiệt lực.
         """
         import os
+        import re
         ollama_gpu_host = os.getenv('OLLAMA_HOST_GPU', 'http://host.docker.internal:11434')
         ollama_cpu_host = os.getenv('OLLAMA_HOST_CPU', 'http://host.docker.internal:11435')
 
-        # Bước 1: Phân giải động danh sách ứng viên từ Router
-        role_candidates = []
-        for role_name in fallback_roles:
-            fb_cfg = router.get_role_config(role_name)
-            if fb_cfg and fb_cfg.get("model"):
-                hw = fb_cfg.get("hardware", "CPU/RAM")
-                role_candidates.append({
-                    "role": role_name,
-                    "model": fb_cfg.get("model"),
-                    "hardware": hw,
-                    # Chọn đúng Ollama host theo phần cứng được chỉ định
-                    "ollama_host": ollama_gpu_host if "GPU" in hw.upper() else ollama_cpu_host
-                })
+        # 1. Trích xuất tất cả các mô hình có sẵn ở rule_hardware.md Mục 3 (đã load sẵn)
+        section_3_models = [] # Dùng list để tránh ghi đè role (Role Collision)
+        if hasattr(router, '_role_mapping_cache') and router._role_mapping_cache:
+            for role_name, cfg in router._role_mapping_cache.items():
+                if hasattr(cfg, 'model') and cfg.model:
+                    section_3_models.append({
+                        "role": role_name,
+                        "model": cfg.model,
+                        "hardware": getattr(cfg, 'hardware', 'CPU/RAM')
+                    })
 
-        def _is_failed(model_name: str) -> bool:
-            return model_name == failed_model or model_name.split(":")[0] == failed_model.split(":")[0]
+        # Neu cache rong, thu load lai
+        if not section_3_models:
+            try:
+                if hasattr(router, "_parse_rules"):
+                    router._parse_rules()
+                elif hasattr(router, "_get_smart_params"):
+                    router._get_smart_params()
+                for role_name, cfg in router._role_mapping_cache.items():
+                    if hasattr(cfg, 'model') and cfg.model:
+                        section_3_models.append({
+                            "role": role_name,
+                            "model": cfg.model,
+                            "hardware": getattr(cfg, 'hardware', 'CPU/RAM')
+                        })
+            except Exception as e:
+                logger.warning(f"⚠️ [SMART-FALLBACK]: Không thể load role mapping cache: {e}")
 
-        def _in_set(model_name: str, model_set: set) -> bool:
-            return model_name in model_set or model_name.split(":")[0] in model_set
+        # 2. Định nghĩa hàm phân loại đặc tính và dung lượng của mô hình
+        def _classify_model(m_name: str) -> dict:
+            name_lower = m_name.lower()
+            
+            # Phân loại Đặc tính (Capability)
+            capability = "GENERAL"
+            if any(k in name_lower for k in ["r1", "thinking", "reason"]):
+                capability = "REASONING"
+            elif any(k in name_lower for k in ["coder", "code", "granite-code"]):
+                capability = "CODING"
+            elif any(k in name_lower for k in ["embed", "minilm"]):
+                capability = "EMBEDDING"
+            elif any(k in name_lower for k in ["vision", "moondream"]):
+                capability = "VISION"
+                
+            # Phân loại Dung lượng (Parameter Size)
+            size_val = 8.0 # mặc định 8B
+            match = re.search(r'(\d+\.?\d*)[b]', name_lower)
+            if match:
+                try:
+                    size_val = float(match.group(1))
+                except Exception:
+                    pass
+            else:
+                if "tiny" in name_lower or "0.6b" in name_lower or "0.5b" in name_lower:
+                    size_val = 0.5
+                elif "mini" in name_lower or "3b" in name_lower:
+                    size_val = 3.0
+                elif "4b" in name_lower:
+                    size_val = 4.0
+                elif "14b" in name_lower:
+                    size_val = 14.0
+                elif "32b" in name_lower:
+                    size_val = 32.0
+                elif "70b" in name_lower:
+                    size_val = 70.0
+                    
+            return {"capability": capability, "size": size_val}
 
-        # Bước 2: Truy xuất HOT & AVAILABLE cho từng host riêng biệt
-        # (Cache theo host để tránh gọi trùng)
-        host_hot_cache: dict[str, set] = {}
-        host_available_cache: dict[str, set] = {}
+        # Phân loại mô hình lỗi
+        failed_class = _classify_model(failed_model)
 
-        async def _fetch_host_models(host: str):
-            if host in host_hot_cache:
-                return
-            hot = set()
-            avail = set()
+        # 3. Định nghĩa hàm tính điểm tương thích tương đồng
+        def _score_candidate(candidate_name: str) -> float:
+            cand_class = _classify_model(candidate_name)
+            # Khớp đặc tính (capability): cộng 10 điểm
+            cap_score = 10.0 if cand_class["capability"] == failed_class["capability"] else 0.0
+            # Chênh lệch dung lượng: trừ 0.5 điểm cho mỗi 1B chênh lệch
+            size_diff = abs(cand_class["size"] - failed_class["size"])
+            size_score = -size_diff * 0.5
+            return cap_score + size_score
+
+        def _is_failed(m_name: str) -> bool:
+            return m_name.lower() == failed_model.lower() or m_name.split(":")[0].lower() == failed_model.split(":")[0].lower()
+
+        def _is_compatible(candidate_name: str) -> bool:
+            cand_class = _classify_model(candidate_name)
+            cand_cap = cand_class["capability"]
+            fail_cap = failed_class["capability"]
+            
+            # Embedding models only fallback to Embedding models, and vice versa
+            if fail_cap == "EMBEDDING":
+                return cand_cap == "EMBEDDING"
+            if cand_cap == "EMBEDDING":
+                return fail_cap == "EMBEDDING"
+                
+            # Vision models only fallback to Vision models, and vice versa
+            if fail_cap == "VISION":
+                return cand_cap == "VISION"
+            if cand_cap == "VISION":
+                return fail_cap == "VISION"
+                
+            # General text, reasoning, or coding models can fallback to each other
+            return cand_cap in ["GENERAL", "REASONING", "CODING"]
+
+        # 4. Truy xuất trạng thái thực tế của Ollama GPU & CPU
+        gpu_hot = set()
+        gpu_available = set()
+        cpu_hot = set()
+        cpu_available = set()
+
+        async def _fetch_models(host: str, hot_set: set, avail_set: set):
             try:
                 async with httpx.AsyncClient(timeout=5.0) as client:
                     ps_resp = await client.get(f"{host}/api/ps")
                     if ps_resp.status_code == 200:
                         for m in ps_resp.json().get("models", []):
-                            hot.add(m["name"])
-                            hot.add(m["name"].split(":")[0])
-
+                            hot_set.add(m["name"])
+                            hot_set.add(m["name"].split(":")[0])
                     tags_resp = await client.get(f"{host}/api/tags")
                     if tags_resp.status_code == 200:
                         for m in tags_resp.json().get("models", []):
-                            avail.add(m["name"])
-                            avail.add(m["name"].split(":")[0])
+                            avail_set.add(m["name"])
+                            avail_set.add(m["name"].split(":")[0])
             except Exception as e:
-                logger.warning(f"⚠️ [SMART-FALLBACK]: Lỗi kết nối {host}: {e}")
-            host_hot_cache[host] = hot
-            host_available_cache[host] = avail
+                logger.warning(f"⚠️ [SMART-FALLBACK]: Không thể kết nối Ollama {host}: {e}")
 
-        # Fetch models cho từng host cần thiết
-        needed_hosts = set(c["ollama_host"] for c in role_candidates)
-        for h in needed_hosts:
-            await _fetch_host_models(h)
+        await _fetch_models(ollama_gpu_host, gpu_hot, gpu_available)
+        await _fetch_models(ollama_cpu_host, cpu_hot, cpu_available)
+        # 5. CHIẾN THUẬT CASCADING 4 TẦNG TUYỆT ĐỐI (GPU -> CPU)
+        # Ưu tiên các model đang "nóng" (HOT) để phản hồi tức thì thưa Master.
+        
+        # Tầng 1: GPU HOT (Mục 3)
+        gpu_hot_candidates = [m for m in section_3_models if 'GPU' in m.get("hardware", "").upper() and not _is_failed(m["model"]) and _is_compatible(m["model"]) and (m["model"] in gpu_hot or m["model"].split(":")[0] in gpu_hot)]
+        if gpu_hot_candidates:
+            gpu_hot_candidates.sort(key=lambda x: _score_candidate(x["model"]), reverse=True)
+            chosen = gpu_hot_candidates[0]
+            logger.info(f"✅ [SMART-FALLBACK] Tầng 1 (GPU HOT - Mục 3): {chosen['model']} (Role: {chosen['role']})")
+            return chosen
 
-        # Tầng 1: HOT — nạp sẵn ĐÚNG phần cứng
-        for candidate in role_candidates:
-            m = candidate["model"]
-            host = candidate["ollama_host"]
-            hw = candidate["hardware"]
-            hot_set = host_hot_cache.get(host, set())
-            if not _is_failed(m) and _in_set(m, hot_set):
-                logger.info(f"✅ [SMART-FALLBACK] Tầng 1 HOT [{hw}]: role={candidate['role']} model={m} host={host}")
-                return {**candidate, "note": f"Nơ-ron sẵn sàng thực chiến HOT [{hw}]."}
+        # Tầng 2: CPU HOT (Mục 3)
+        cpu_hot_candidates = [m for m in section_3_models if 'CPU' in m.get("hardware", "").upper() and not _is_failed(m["model"]) and _is_compatible(m["model"]) and (m["model"] in cpu_hot or m["model"].split(":")[0] in cpu_hot)]
+        if cpu_hot_candidates:
+            cpu_hot_candidates.sort(key=lambda x: _score_candidate(x["model"]), reverse=True)
+            chosen = cpu_hot_candidates[0]
+            logger.info(f"✅ [SMART-FALLBACK] Tầng 2 (CPU HOT - Mục 3): {chosen['model']} (Role: {chosen['role']})")
+            return chosen
 
-        # Tầng 2: AVAILABLE — có sẵn trong thư viện ĐÚNG phần cứng
-        for candidate in role_candidates:
-            m = candidate["model"]
-            host = candidate["ollama_host"]
-            hw = candidate["hardware"]
-            avail_set = host_available_cache.get(host, set())
-            if not _is_failed(m) and _in_set(m, avail_set):
-                logger.info(f"✅ [SMART-FALLBACK] Tầng 2 AVAILABLE [{hw}]: role={candidate['role']} model={m} host={host}")
-                return {**candidate, "note": f"Nơ-ron dự bị từ Thư viện AVAILABLE [{hw}]."}
+        # Tầng 3: GPU AVAILABLE (Mục 3) - Cần thời gian nạp từ ổ đĩa
+        gpu_avail_candidates = [m for m in section_3_models if 'GPU' in m.get("hardware", "").upper() and not _is_failed(m["model"]) and _is_compatible(m["model"]) and (m["model"] in gpu_available or m["model"].split(":")[0] in gpu_available)]
+        if gpu_avail_candidates:
+            gpu_avail_candidates.sort(key=lambda x: _score_candidate(x["model"]), reverse=True)
+            chosen = gpu_avail_candidates[0]
+            logger.info(f"✅ [SMART-FALLBACK] Tầng 3 (GPU AVAILABLE - Mục 3): {chosen['model']} (Role: {chosen['role']})")
+            return chosen
 
-        # Tầng 3: ORDERED — cứu cánh theo thứ tự, vẫn giữ đúng phần cứng
-        for candidate in role_candidates:
-            m = candidate["model"]
-            hw = candidate["hardware"]
-            if not _is_failed(m):
-                logger.info(f"✅ [SMART-FALLBACK] Tầng 3 ORDERED [{hw}]: role={candidate['role']} model={m}")
-                return {**candidate, "note": f"Nơ-ron theo thứ tự ưu tiên ORDERED [{hw}]."}
+        # Tầng 4: CPU AVAILABLE (Mục 3) - Cần thời gian nạp từ ổ đĩa
+        cpu_avail_candidates = [m for m in section_3_models if 'CPU' in m.get("hardware", "").upper() and not _is_failed(m["model"]) and _is_compatible(m["model"]) and (m["model"] in cpu_available or m["model"].split(":")[0] in cpu_available)]
+        if cpu_avail_candidates:
+            cpu_avail_candidates.sort(key=lambda x: _score_candidate(x["model"]), reverse=True)
+            chosen = cpu_avail_candidates[0]
+            logger.info(f"✅ [SMART-FALLBACK] Tầng 4 (CPU AVAILABLE - Mục 3): {chosen['model']} (Role: {chosen['role']})")
+            return chosen
 
-        logger.error("❌ [SMART-FALLBACK] OMEGA: Kiệt lực hoàn toàn — không tìm được fallback đúng phần cứng.")
+        # ❌ [HARD-ABORT]: Kiệt lực hoàn toàn. Không tự ý triệu hồi model lạ thưa Master.
+        logger.error("❌ [SMART-FALLBACK] OMEGA: Kiệt lực hoàn toàn - không tìm thấy bất kỳ mô hình dự phòng nào trong Mapping của Master.")
         return None
 
-    # Legacy bridge — giữ tương thích với code cũ còn sót lại
+    # Legacy bridge - giu tuong thich voi code cu con sot lai
     async def get_autonomous_fallback(self, role: str, failed_model: str) -> dict:
         return {}
 

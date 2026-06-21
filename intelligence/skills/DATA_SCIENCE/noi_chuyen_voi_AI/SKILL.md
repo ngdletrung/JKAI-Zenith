@@ -2,7 +2,7 @@
 id: noi_chuyen_voi_AI
 name_vn: "Nói Chuyện Với AI"
 version: 1.5.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: DATA_SCIENCE
 intent_pairs:
   - ["SUMMON", "GODS"]

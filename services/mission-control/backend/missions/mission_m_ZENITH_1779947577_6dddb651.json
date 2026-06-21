@@ -1,0 +1,54 @@
+{
+  "id": "m_ZENITH_1779947577_6dddb651",
+  "title": "Hãy cho tôi biết múi giờ mặc định của hệ thống này.",
+  "goal": "Hãy cho tôi biết múi giờ mặc định của hệ thống này.",
+  "status": "failed",
+  "ts": 1779947812.2215397,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "Hãy cho tôi biết múi giờ mặc định của hệ thống này.",
+      "ts": 1779947577.4977467,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779947577_6dddb651"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1779947577_6dddb651` initialized | Trace: `trace_6dddb651`. Runtime ready.",
+      "ts": 1779947577.499158,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779947577_6dddb651"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 📡 Đang phân tích chỉ thị với chế độ [FAST_PIPELINE] (Input mode: FAST)...",
+      "ts": 1779947670.5566823,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779947577_6dddb651"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 📡 Đang phân tích chỉ thị với chế độ [FAST_PIPELINE] (Input mode: FAST)...",
+      "ts": 1779947723.8198285,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779947577_6dddb651"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "🚨 [RECEPTIONIST-FAILED]: Receptionist error: Server disconnected without sending a response.",
+      "ts": 1779947812.1338637,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779947577_6dddb651"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "⚠️ **Sự cố Kết nối Nơ-ron**: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. 🫡 (Chi tiết: Receptionist error: Server disconnected without sending a response.)",
+      "ts": 1779947812.1362495,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779947577_6dddb651"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

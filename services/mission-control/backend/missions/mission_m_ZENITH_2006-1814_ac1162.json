@@ -1,0 +1,35 @@
+{
+  "id": "m_ZENITH_2006-1814_ac1162",
+  "title": "/sync",
+  "goal": "/sync\n\n[KẾT QUẢ]\n🔄 [SYNC] Sync pipeline: 7/8 phases OK in 2.1s\n  ✅ **migrate**: Da migrage 0 file tu knowledge/vault vao wiki/.\n  ✅ **import**: Khong co file nao trong Import.\n  ✅ **assimilate**: Kho lưu trữ sạch.\n  ❌ **knowledge_brain**: 'JKAIIntelligenceEngine' object has no attribute 'start_mission'\n  ✅ **distill**: Distiller unavailable: No module named 'services'\n  ✅ **rag_ingest**: RAG ingest unavailable: No module named 'rag'\n  ✅ **registry**: {'updated': 72, 'unmapped_deck_rows': 33, 'deck_entries': 148, 'registry_path': '/intelligence/registry_Map_skills.json'}\n  ✅ **cleanup**: redis: 0 keys; gc: ok",
+  "status": "completed",
+  "ts": 1781954099.156801,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "/sync",
+      "ts": 1781954094.2635956,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1814_ac1162"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_2006-1814_ac1162` initialized | Trace: `trace_ac1162`. Runtime ready.",
+      "ts": 1781954094.2661736,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1814_ac1162"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "🔄 [SYNC] Sync pipeline: 7/8 phases OK in 2.1s\n  ✅ **migrate**: Da migrage 0 file tu knowledge/vault vao wiki/.\n  ✅ **import**: Khong co file nao trong Import.\n  ✅ **assimilate**: Kho lưu trữ sạch.\n  ❌ **knowledge_brain**: 'JKAIIntelligenceEngine' object has no attribute 'start_mission'\n  ✅ **distill**: Distiller unavailable: No module named 'services'\n  ✅ **rag_ingest**: RAG ingest unavailable: No module named 'rag'\n  ✅ **registry**: {'updated': 72, 'unmapped_deck_rows': 33, 'deck_entries': 148, 'registry_path': '/intelligence/registry_Map_skills.json'}\n  ✅ **cleanup**: redis: 0 keys; gc: ok",
+      "ts": 1781954099.1044388,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1814_ac1162"
+    }
+  ],
+  "artifacts": {
+    "plan": "/sync",
+    "walkthrough": "🔄 [SYNC] Sync pipeline: 7/8 phases OK in 2.1s\n  ✅ **migrate**: Da migrage 0 file tu knowledge/vault vao wiki/.\n  ✅ **import**: Khong co file nao trong Import.\n  ✅ **assimilate**: Kho lưu trữ sạch.\n  ❌ **knowledge_brain**: 'JKAIIntelligenceEngine' object has no attribute 'start_mission'\n  ✅ **distill**: Distiller unavailable: No module named 'services'\n  ✅ **rag_ingest**: RAG ingest unavailable: No module named 'rag'\n  ✅ **registry**: {'updated': 72, 'unmapped_deck_rows': 33, 'deck_entries': 148, 'registry_path': '/intelligence/registry_Map_skills.json'}\n  ✅ **cleanup**: redis: 0 keys; gc: ok",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "id": "SKILL_LEGACY_SOUL",
+  "name": "Zenith Legacy Soul Filter",
+  "version": "1.0.0",
+  "description": "Master's identity alignment core: A cognitive filter that refines AI responses to match the sharp, strategic, and elite persona of Master LeeTrung.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "bản sắc master",
+    "phong thái leetrung",
+    "legacy soul",
+    "tinh chỉnh ngôn từ",
+    "giao thức di sản",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "tinh",
+    "phong",
+    "thai",
+    "trung",
+    "master",
+    "zenith",
+    "nang",
+    "khong",
+    "phan",
+    "chien",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "content": {
+          "type": "string",
+          "description": "The content to refine."
+        }
+      },
+      "required": [
+        "content"
+      ]
+    }
+  }
+}

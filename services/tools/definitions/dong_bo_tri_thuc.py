@@ -1,15 +1,16 @@
 import requests
 import os
 import time
+import logging
+from core.utils import report_formatter as rf
+
+logger = logging.getLogger("jkai.tools.sync")
 
 def sync_nuclear():
     """
     Nuclear Sync: Chiến dịch đồng bộ toàn diện.
-    Quy trình: 
-    1. Gọi Brain Assimilator để sắp xếp tri thức từ archive/import_dump.
-    2. Gọi RAG Service để nạp toàn bộ tri thức đã sắp xếp vào Vector DB.
     """
-    print("🚀 [JKAI-NUCLEAR-SYNC] Bắt đầu Chuỗi phản ứng Đồng bộ...")
+    logger.info("[JKAI-NUCLEAR-SYNC] Bắt đầu Chuỗi phản ứng Đồng bộ...")
     
     BRAIN_URL = os.getenv("AI_BRAIN_URL", "http://ai-brain:8000")
     RAG_URL = os.getenv("RAG_API_URL", "http://rag-service:8000")
@@ -18,7 +19,7 @@ def sync_nuclear():
 
     # --- GIAI ĐOẠN 1: ĐỒNG HÓA ---
     try:
-        print("📥 [STAGE 1] Đang kích hoạt Assimilator...")
+        logger.info("[STAGE 1] Đang kích hoạt Assimilator...")
         resp_assimilate = requests.post(f"{BRAIN_URL}/assimilate", timeout=300)
         if resp_assimilate.status_code == 200:
             data = resp_assimilate.json()
@@ -33,7 +34,7 @@ def sync_nuclear():
 
     # --- GIAI ĐOẠN 2: GHI NHỚ ---
     try:
-        print("🧠 [STAGE 2] Đang nạp tri thức vào Ma trận RAG...")
+        logger.info("[STAGE 2] Đang nạp tri thức vào Ma trận RAG...")
         resp_rag = requests.post(f"{RAG_URL}/ingest/intelligence", timeout=600)
         if resp_rag.status_code == 200:
             data = resp_rag.json()
@@ -43,10 +44,10 @@ def sync_nuclear():
     except Exception as e:
         results.append(f"❌ Ghi nhớ: Thất bại ({str(e)})")
 
-    final_msg = " | ".join(results)
-    print(f"💎 [JKAI-NUCLEAR-SYNC] {final_msg}")
+    bullet_msg = rf.bullet(results)
+    logger.info("[JKAI-NUCLEAR-SYNC] %s", bullet_msg)
     
     return {
-        "status": "success" if "❌" not in final_msg else "partial_error",
-        "message": final_msg
+        "status": "success" if "❌" not in "".join(results) else "partial_error",
+        "message": rf.build([rf.section("Kết quả Đồng bộ Tri thức"), bullet_msg])
     }

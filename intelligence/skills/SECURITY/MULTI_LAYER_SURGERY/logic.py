@@ -1,4 +1,5 @@
 import os
+from core.utils import path_manager
 # =================================================================
 # 🧬 JKAI ZENITH: LOGIC PHẪU THUẬT ĐA TẦNG v31.0 (QUANTUM SURGERY)
 # =================================================================
@@ -62,7 +63,7 @@ def phau_thuat_datang(path: str, chunks: list, validate_syntax: bool = True):
                 }
 
         # 💾 [ATOMIC-COMMIT]: Ghi file an toàn tuyệt đối
-        backup_dir = Path(os.getenv("WORKSPACE_ROOT", "D:/Docker/N8N") + "/archive/backups")
+        backup_dir = Path(os.getenv("WORKSPACE_ROOT", path_manager.get_root()) + "/archive/backups")
         backup_dir.mkdir(parents=True, exist_ok=True)
         ts = int(time.time())
         backup_file = backup_dir / f"{Path(path).name}.{ts}.bak"

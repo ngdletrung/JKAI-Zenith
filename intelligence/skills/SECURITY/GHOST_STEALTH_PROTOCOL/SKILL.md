@@ -2,7 +2,7 @@
 id: GHOST_STEALTH_PROTOCOL
 name_vn: "Giao Thức Tàng Hình Ghost"
 version: 1.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: SECURITY
 intent_pairs:
   - ["ACTIVATE", "STEALTH"]

@@ -1,0 +1,285 @@
+{
+  "id": "m_ZENITH_1780049595_7fff1511",
+  "title": "hãy cho tôi giá vàng hôm nay",
+  "goal": "hãy cho tôi giá vàng hôm nay",
+  "status": "failed",
+  "ts": 1780049643.2856994,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "hãy cho tôi giá vàng hôm nay",
+      "ts": 1780049595.6639922,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1780049595_7fff1511` initialized | Trace: `trace_7fff1511`. Runtime ready.",
+      "ts": 1780049595.6649046,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780049595.8454309,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:16.017190] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780049596.0172162,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:16.618850] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780049596.6188707,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:17.324404] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] {\n    \"name\": \"SEARCH_WEB_GLOBAL\",\n    \"arguments\": {\n        \"extracted_params\": \"giá vàng hôm nay tại Việt Nam\"\n    }\n}",
+      "ts": 1780049597.324438,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:17.327135] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] Hoàn tất trong 1.31s. (Size: 121 chars)",
+      "ts": 1780049597.327151,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780049597.3295674,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: 83288d9e-0bc7-447f-b4bb-e51c4fda3812",
+      "ts": 1780049597.330756,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (10 ký tự)",
+      "ts": 1780049610.524978,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:30.613288] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780049610.6133099,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:31.284036] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780049611.2840712,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:31.994289] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] {\n    \"name\": \"SEARCH_WEB_GLOBAL\",\n    \"arguments\": {\n        \"extracted_params\": \"giá vàng hôm nay tại Việt Nam\"\n    }\n}",
+      "ts": 1780049611.9943228,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:31.996971] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] Hoàn tất trong 1.38s. (Size: 121 chars)",
+      "ts": 1780049611.9970248,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780049611.999357,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: bf3be284-491e-46f2-9825-e20e131ff8b0",
+      "ts": 1780049612.0005362,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (10 ký tự)",
+      "ts": 1780049622.046471,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:42.138482] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780049622.1385047,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:42.914342] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780049622.914376,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:43.619312] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] {\n    \"name\": \"SEARCH_WEB_GLOBAL\",\n    \"arguments\": {\n        \"extracted_params\": \"giá vàng hôm nay tại Việt Nam\"\n    }\n}",
+      "ts": 1780049623.6193626,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:43.625754] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] Hoàn tất trong 1.49s. (Size: 121 chars)",
+      "ts": 1780049623.6257827,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "💎🫡 [ZENITH]: 🚨 [LOOP-DETECTED]: Tham số `SEARCH_WEB_GLOBAL` lặp lại. Đang ngắt mạch thưa Master.",
+      "ts": 1780049623.6290743,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780049625.7065835,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:45.809250] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780049625.8092732,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:46.486549] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780049626.4865851,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:47.047336] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] {\"name\": \"SEARCH_WEB_GLOBAL\", \"arguments\": {\"extracted_params\": \"giá vàng hôm nay tại Việt Nam\"}}",
+      "ts": 1780049627.0473807,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:47.051778] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] Hoàn tất trong 1.24s. (Size: 97 chars)",
+      "ts": 1780049627.0518043,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780049627.0557187,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: 77cae8ec-c596-495b-bdba-02758ee14e4d",
+      "ts": 1780049627.0575337,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (10 ký tự)",
+      "ts": 1780049632.972425,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:53.066694] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780049633.0667148,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:53.069413] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1780049633.0694313,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "💎🫡 [ZENITH]: Mission aborted by Master.",
+      "ts": 1780049633.071448,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780049637.1545348,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:57.252066] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780049637.2520874,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T10:13:57.254448] [RECEPTIONIST] [Task: ZENITH_1780049595_7fff1511] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1780049637.2544699,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "💎🫡 [ZENITH]: Mission aborted by Master.",
+      "ts": 1780049637.256638,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "🚨 [RECEPTIONIST-FAILED]: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist",
+      "ts": 1780049643.2654483,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "⚠️ **Sự cố Kết nối Nơ-ron**: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. 🫡 (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+      "ts": 1780049643.2683241,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780049595_7fff1511"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

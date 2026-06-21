@@ -2,7 +2,7 @@
 id: FIN_10_TAX
 name_vn: "Tư Vấn Thuế & Pháp Lý Tài Chính"
 version: 1.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: FINANCE
 intent_pairs:
   - ["ADVISE", "TAX"]

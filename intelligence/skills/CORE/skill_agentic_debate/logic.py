@@ -17,16 +17,10 @@ class CouncilOfMinds:
         debate_history = []
         current_proposal = ""
         
-        def _log(tag, msg):
-            from redis_client import redis_safe
-            import time
-            log_payload = json.dumps({"tag": tag, "msg": msg, "ts": time.time()}, ensure_ascii=False)
-            redis_safe(lambda r: r.publish("monitor:log_channel", log_payload))
-
-        _log("THOUGHT", f"🧠 [COUNCIL]: Khởi tạo Hội đồng Trí tuệ. Mục tiêu: {goal}")
+        engine.publish_mission_log("COUNCIL", f"🧠 [SOVEREIGN]: Khởi tạo Hội đồng Trí tuệ. Mục tiêu: {goal}")
 
         # B1: ARCHITECT đưa ra bản thiết kế đầu tiên
-        _log("THOUGHT", "🧠 [ARCHITECT]: Đang phác thảo bản thiết kế chiến lược ban đầu...")
+        engine.publish_mission_log("COUNCIL", "🧠 [ARCHITECT]: Đang phác thảo bản thiết kế chiến lược ban đầu...")
         architect_prompt = f"Mục tiêu: {goal}\nBối cảnh: {context}\nHãy đưa ra một giải pháp toàn diện và tối ưu nhất."
         current_proposal = await engine.call_chat(
             messages=[{"role": "user", "content": architect_prompt}],
@@ -36,7 +30,7 @@ class CouncilOfMinds:
 
         for r in range(rounds):
             # B2: CRITIC tìm lỗi và phản biện
-            _log("THOUGHT", f"🧠 [CRITIC]: Đang thực hiện phản biện vòng {r+1}...")
+            engine.publish_mission_log("COUNCIL", f"🧠 [CRITIC]: Đang thực hiện phản biện vòng {r+1}...")
             critic_prompt = f"Mục tiêu: {goal}\nGiải pháp hiện tại: {current_proposal}\nHãy tìm ra các lỗ hổng, rủi ro hoặc điểm chưa tối ưu."
             critic_feedback = await engine.call_chat(
                 messages=[{"role": "user", "content": critic_prompt}],
@@ -45,7 +39,7 @@ class CouncilOfMinds:
             debate_history.append({"role": f"CRITIC (Vòng {r+1})", "content": critic_feedback})
 
             # B3: ARCHITECT điều chỉnh giải pháp
-            _log("THOUGHT", f"🧠 [ARCHITECT]: Đang tiếp thu phản biện và tối ưu hóa bản thiết kế...")
+            engine.publish_mission_log("COUNCIL", f"🧠 [ARCHITECT]: Đang tiếp thu phản biện và tối ưu hóa bản thiết kế...")
             architect_refine_prompt = f"Phản biện từ Critic: {critic_feedback}\nHãy điều chỉnh lại giải pháp của bạn."
             current_proposal = await engine.call_chat(
                 messages=[{"role": "user", "content": architect_refine_prompt}],
@@ -54,7 +48,7 @@ class CouncilOfMinds:
             debate_history.append({"role": f"ARCHITECT (Tối ưu {r+1})", "content": current_proposal})
 
         # B4: ARBITER đưa ra phán quyết cuối cùng
-        _log("THOUGHT", "🧠 [ARBITER]: Đang tổng hợp các luồng tư duy để đưa ra phán quyết cuối cùng...")
+        engine.publish_mission_log("COUNCIL", "🧠 [ARBITER]: Đang tổng hợp các luồng tư duy để đưa ra phán quyết cuối cùng...")
         arbiter_prompt = f"Lịch sử tranh luận: {json.dumps(debate_history, ensure_ascii=False)}\nHãy đưa ra quyết định cuối cùng Elite nhất cho Master."
         final_decision = await engine.call_chat(
             messages=[{"role": "user", "content": arbiter_prompt}],
@@ -71,7 +65,7 @@ class CouncilOfMinds:
 
 **Kết luận Chiến lược**: {final_decision[:300]}...
 """
-        _log("MISSION_RESULT", report)
+        engine.publish_mission_log("COUNCIL", report)
 
         return {
             "status": "success",

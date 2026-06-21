@@ -1,0 +1,175 @@
+{
+  "id": "m_ZENITH_2006-2307_4ea949",
+  "title": "Hãy cho tôi 5 tin tức về Việt Nam mới nhất ở báo thế giới ?",
+  "goal": "Hãy cho tôi 5 tin tức về Việt Nam mới nhất ở báo thế giới ?\n\n[KẾT QUẢ]\nMission aborted by Master.",
+  "status": "completed",
+  "ts": 1781971742.1732917,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "Hãy cho tôi 5 tin tức về Việt Nam mới nhất ở báo thế giới ?",
+      "ts": 1781971668.3117046,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_2006-2307_4ea949` initialized | Trace: `trace_4ea949`. Runtime ready.",
+      "ts": 1781971668.3135579,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=research pipeline=deep mode=deep tags=-",
+      "ts": 1781971738.4841754,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1781971738.4868119,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Đang phác thảo kế hoạch tác chiến...",
+      "ts": 1781971738.4889166,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T16:08:58.529735] [MINI_PLANNER] [Task: ZENITH_2006-2307_4ea949] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1781971738.529754,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T16:08:58.612910] [MINI_PLANNER] [Task: ZENITH_2006-2307_4ea949] Đang triệu tập qwen3.5:4b... (Context: 8192)",
+      "ts": 1781971738.6129317,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T16:08:58.615876] [MINI_PLANNER] [Task: ZENITH_2006-2307_4ea949] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1781971738.6158988,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1781971738.9232962,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức và bối cảnh nhất thể...",
+      "ts": 1781971738.926937,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1781971739.0125349,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER`...",
+      "ts": 1781971741.5366542,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-06-20T16:09:01.603302] [PLANNER] [Task: ZENITH_2006-2307_4ea949] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1781971741.603323,
+      "source": "PLANNER",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-06-20T16:09:01.683284] [PLANNER] [Task: ZENITH_2006-2307_4ea949] Đang triệu tập qwen3.5:4b... (Context: 8192)",
+      "ts": 1781971741.6833506,
+      "source": "PLANNER",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-06-20T16:09:01.685829] [PLANNER] [Task: ZENITH_2006-2307_4ea949] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1781971741.6858437,
+      "source": "PLANNER",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "⏱️ [FORGE-ATTEMPT-1]: Model `PLANNER` response time: 0.42s.",
+      "ts": 1781971741.958871,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1781971741.9794474,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1781971741.980369,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Pre-routing/Intent-Forcing: Real-time query detected. Executing search directly thưa Master.",
+      "ts": 1781971741.99541,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-06-20T16:09:02.002796] [RECEPTIONIST] [Task: ZENITH_2006-2307_4ea949] Đang triệu tập qwen3:4b... (Context: 4096)",
+      "ts": 1781971742.0028129,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-06-20T16:09:02.004540] [RECEPTIONIST] [Task: ZENITH_2006-2307_4ea949] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1781971742.0045552,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "[ZENITH]: Mission aborted by Master.",
+      "ts": 1781971742.1272542,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Mission aborted by Master.",
+      "ts": 1781971742.1416826,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2307_4ea949"
+    }
+  ],
+  "artifacts": {
+    "plan": "Hãy cho tôi 5 tin tức về Việt Nam mới nhất ở báo thế giới ?",
+    "walkthrough": "Mission aborted by Master.",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

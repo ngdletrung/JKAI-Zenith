@@ -1,0 +1,73 @@
+{
+  "id": "OFFICE_SUITE_MASTER",
+  "name": "Zenith Office Suite Master",
+  "version": "1.0.0",
+  "description": "Professional document production core: Advanced handling, styling, and generation of Microsoft Word and Excel documents with industrial precision.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "viết word",
+    "tạo excel",
+    "đọc tài liệu văn phòng",
+    "office master",
+    "xử lý văn bản chuyên nghiệp",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "chuyen",
+    "lieu",
+    "dang",
+    "word",
+    "bang",
+    "phong",
+    "office",
+    "master",
+    "excel",
+    "nghiep",
+    "kinh doanh",
+    "ban hang",
+    "marketing",
+    "khach hang",
+    "san pham"
+  ],
+  "domain": "BUSINESS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "read",
+            "write_word",
+            "write_excel"
+          ],
+          "description": "Office task to perform."
+        },
+        "title": {
+          "type": "string",
+          "description": "Title for Word document."
+        },
+        "content": {
+          "type": "string",
+          "description": "Content for Word document."
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          },
+          "description": "Data for Excel sheet."
+        },
+        "filename": {
+          "type": "string",
+          "description": "Base filename for the output."
+        }
+      },
+      "required": [
+        "action"
+      ]
+    }
+  }
+}

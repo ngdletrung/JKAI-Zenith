@@ -170,10 +170,10 @@ export const SovereignFileLab: React.FC = () => {
   };
 
   return (
-    <div className="flex h-full w-full bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden text-white">
+    <div className="flex-1 flex min-h-0 w-full bg-black/40 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden text-white">
       {/* Sidebar: File Tree */}
-      <div className="w-72 border-r border-white/10 flex flex-col bg-black/20">
-        <div className="p-4 border-b border-white/10 flex items-center justify-between">
+      <div className="w-72 shrink-0 border-r border-white/10 flex flex-col min-h-0 overflow-hidden bg-black/20">
+        <div className="shrink-0 p-4 border-b border-white/10 flex items-center justify-between">
           <h2 className="text-sm font-bold tracking-widest text-blue-400 flex items-center gap-2">
             <Code size={18} /> SOVEREIGN LAB
           </h2>
@@ -181,7 +181,7 @@ export const SovereignFileLab: React.FC = () => {
             <RefreshCcw size={14} />
           </button>
         </div>
-        <div className="flex-1 overflow-y-auto p-2 scrollbar-thin scrollbar-thumb-white/10">
+        <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-2 scrollbar-thin scrollbar-thumb-white/10">
           {tree ? renderTree(tree) : (
             <div className="p-4 text-center text-gray-500 text-xs animate-pulse">Initializing Neural Tree...</div>
           )}
@@ -189,10 +189,10 @@ export const SovereignFileLab: React.FC = () => {
       </div>
 
       {/* Main Content: Editor */}
-      <div className="flex-1 flex flex-col relative overflow-hidden">
+      <div className="flex-1 flex flex-col min-h-0 relative overflow-hidden">
         {selectedFile ? (
           <>
-            <div className="h-12 border-b border-white/10 flex items-center px-4 bg-black/20 justify-between">
+            <div className="shrink-0 h-12 border-b border-white/10 flex items-center px-4 bg-black/20 justify-between">
               <div className="flex items-center gap-2 truncate">
                 <FileText size={16} className="text-blue-400" />
                 <span className="text-xs font-mono text-gray-400 truncate">{selectedFile}</span>
@@ -206,7 +206,7 @@ export const SovereignFileLab: React.FC = () => {
                 </button>
               </div>
             </div>
-            <div className="flex-1 relative overflow-hidden">
+            <div className="flex-1 min-h-0 relative overflow-hidden">
               {isLoading ? (
                 <div className="absolute inset-0 flex items-center justify-center bg-black/40 backdrop-blur-sm z-10">
                   <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>

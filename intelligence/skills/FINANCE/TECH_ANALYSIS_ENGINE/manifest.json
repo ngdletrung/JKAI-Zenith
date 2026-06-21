@@ -1,0 +1,47 @@
+{
+  "id": "TECH_ANALYSIS_ENGINE",
+  "name": "Tech Analysis Engine",
+  "version": "1.0.0",
+  "description": "id: FIN_02_TECH_ANALYSIS",
+  "author": "JKAI Zenith",
+  "domain": "FINANCE",
+  "triggers": [
+    "tong quan",
+    "phac  o van hanh  operational protocol",
+    "phase 1  investigation  tham  inh",
+    "phase 2  action  thuc thi",
+    "sai lam thuong gap  common pitfalls",
+    "tich",
+    "phan",
+    "thuat",
+    "query",
+    "lieu",
+    "fin_02_tech_analysis",
+    "elite",
+    "truong",
+    "type",
+    "quan",
+    "nhan",
+    "huong",
+    "phase",
+    "toan",
+    "thuong",
+    "tai chinh",
+    "dau tu",
+    "co phieu",
+    "chung khoan",
+    "dong tien"
+  ],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Input query or task description"
+      }
+    },
+    "required": [
+      "query"
+    ]
+  }
+}

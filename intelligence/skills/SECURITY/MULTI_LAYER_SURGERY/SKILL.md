@@ -2,7 +2,7 @@
 id: MULTI_LAYER_SURGERY
 name_vn: "Phẫu Thuật Đa Tầng Quantum"
 version: 31.5.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: SECURITY
 intent_pairs:
   - ["SURGERY", "MULTI_POINT"]

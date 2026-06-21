@@ -2,7 +2,7 @@
 id: SECURITY-AUDIT
 name_vn: "Thẩm định An ninh Hệ thống"
 version: 2.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: SECURITY
 intent_pairs:
   - ["AUDIT", "SECURITY"]

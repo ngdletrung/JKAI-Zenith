@@ -33,5 +33,5 @@ Kỹ năng tự động được đúc bởi Zenith Forge.
 ## ⚠️ SAI LẦM THƯỜNG GẶP (COMMON PITFALLS)
 - **Word Formatting Destruction:** Việc dùng `.text` trực tiếp trên Paragraph hoặc Cell sẽ làm vỡ định dạng font chữ Times New Roman và in đậm/màu chữ của template. BẮT BUỘC phải dùng phương pháp XML Deepcopy dòng và thay thế trên từng Run để giữ nguyên định dạng.
 - **Excel openpyxl insert_rows corruption:** Hàm `insert_rows` của openpyxl không tự động dịch chuyển các ô gộp (`merged_cells`) ở dưới, gây hỏng file Excel khi mở. BẮT BUỘC phải viết hàm phụ trợ duyệt `sheet.merged_cells.ranges` để dịch chuyển thủ công các vùng gộp ô khi chèn dòng.
-- Xem chi tiết hướng dẫn lập trình chuẩn tại tệp tin quy tắc hệ thống: `d:\Docker\N8N\intelligence\rules\rule_Office-GUIDE.md`
+- Xem chi tiết hướng dẫn lập trình chuẩn tại tệp tin quy tắc hệ thống: `d:\Docker\JKAI\intelligence\rules\rule_Office-GUIDE.md`
 

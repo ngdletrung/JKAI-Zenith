@@ -41,7 +41,7 @@ class KnowledgeBrain:
     def _log(self, tag: str, msg: str, task_id: str = "brain"):
         try:
             engine.publish_mission_log(f"BRAIN:{tag}", msg, task_id)
-        except: pass
+        except Exception: pass
 
     async def flush_collection(self, collection: str = None):
         """🧹 [NEURAL-PURGE]: Xóa trắng toàn bộ tri thức của một lãnh thổ."""
@@ -56,12 +56,12 @@ class KnowledgeBrain:
         for sf in sync_files:
             if os.path.exists(sf):
                 try: os.remove(sf)
-                except: pass
+                except Exception: pass
         
         try:
             redis = engine._get_redis()
             redis.delete(f"brain_last_sync:{target}")
-        except: pass
+        except Exception: pass
 
         if target in self.initialized_collections:
             self.initialized_collections.remove(target)
@@ -108,7 +108,7 @@ class KnowledgeBrain:
         try:
             cached = engine._get_redis().get(cache_key)
             if cached: return cached.decode("utf-8") if isinstance(cached, bytes) else cached
-        except: pass
+        except Exception: pass
 
         try:
             embedding = await engine.get_embeddings(query)
@@ -138,7 +138,7 @@ class KnowledgeBrain:
             if tier == 1:
                 result = f"[TIER-1: RAW]\n{raw_knowledge}\n\n[NGUON]: {source_list}"
                 try: engine._get_redis().setex(cache_key, self._cache_ttl, result)
-                except: pass
+                except Exception: pass
                 return result
 
             if tier == 2:
@@ -155,7 +155,7 @@ class KnowledgeBrain:
                 analysis = await engine.call_chat(messages=[{"role": "user", "content": prompt}], role="PLANNER", task_id=task_id)
                 result = f"[TIER-3: STRATEGIC ANALYSIS]\n{analysis}\n\n[NGUON]: {source_list}"
                 try: engine._get_redis().setex(cache_key, self._cache_ttl, result)
-                except: pass
+                except Exception: pass
                 return result
 
         except Exception as e:
@@ -179,7 +179,7 @@ class KnowledgeBrain:
 
     async def sync_all(self, task_id: str = "sys_sync"):
         """🚀 [BLITZ-SYNC]: Dong bo hoa sieu toc tri thuc thua Master."""
-        engine.start_mission(task_id)
+        self._log("SYNC", f"Khoi dong Blitz-Sync cho {task_id}", task_id)
         
         current_time = time.time()
         self._log("SYNC", "Khởi động Giao thức Blitz-Sync Đa tầng...", task_id)
@@ -192,7 +192,7 @@ class KnowledgeBrain:
         files_indexed = 0
 
         for root, _, files in os.walk(settings.INTELLIGENCE_DIR):
-            if any(x in root.lower() for x in ["archive", ".git", "__pycache__", "node_modules", "storage", "vault", "logs", "temp"]): continue
+            if any(x in root.lower() for x in ["archive", ".git", "__pycache__", "node_modules", "storage", "vault", "logs", "temp", "wiki"]): continue
             category = os.path.basename(root)
             rel_folder = os.path.relpath(root, settings.INTELLIGENCE_DIR)
 
@@ -257,7 +257,7 @@ class KnowledgeBrain:
             if not os.path.exists(skill_script):
                 skill_script = os.path.abspath(os.path.join(settings.BASE_DIR, "scripts", "sync_skills_to_qdrant.py"))
             os.system(f"python3 \"{skill_script}\" {task_id} &")
-        except: pass
+        except Exception: pass
 
         res_msg = f"[SYNC-COMPLETE]: Đã phân phối {files_indexed} tệp vào các lãnh thổ nơ-ron!"
         self._log("SYNC", res_msg, task_id)

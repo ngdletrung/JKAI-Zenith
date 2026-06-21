@@ -14,7 +14,7 @@ class PathManager:
         self.last_sync = 0
         # Tọa độ gốc
         self.workspace_root = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-        self.protocol_path = os.path.join(self.workspace_root, "intelligence", "rule_paths.md")
+        self.protocol_path = os.path.join(self.workspace_root, "intelligence", "path_rules.md")
         self._sync()
 
     def _sync(self):
@@ -33,15 +33,20 @@ class PathManager:
             matches = re.findall(r"\|\s*\*\*([A-Z0-9_]+)\*\*\s*\|\s*`([^`]+)`\s*\|", content)
             
             new_paths = {}
-            normalized_root = "d:/Docker/N8N".lower().replace("\\", "/")
+            normalized_root = self.workspace_root.lower().replace("\\", "/")
+            legacy_root = "d:/docker/jkai"
 
             for var, path in matches:
                 input_path_norm = path.lower().replace("\\", "/")
                 
                 if input_path_norm.startswith(normalized_root):
-                    final_path = self.workspace_root + path[len(normalized_root):]
+                    suffix = input_path_norm[len(normalized_root):]
+                    final_path = self.workspace_root + suffix
+                elif input_path_norm.startswith(legacy_root):
+                    suffix = input_path_norm[len(legacy_root):]
+                    final_path = self.workspace_root + suffix
                 else:
-                    final_path = path
+                    final_path = os.path.join(self.workspace_root, path)
                 
                 new_paths[var] = os.path.normpath(final_path)
             

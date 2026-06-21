@@ -1,0 +1,47 @@
+{
+  "id": "SKILL_FIN_06_PORTFOLIO",
+  "name": "Skill Fin 06 Portfolio",
+  "version": "1.0.0",
+  "description": "name_vn: \"Tối Ưu Danh Mục Đầu Tư\"",
+  "author": "JKAI Zenith",
+  "domain": "FINANCE",
+  "triggers": [
+    "tong quan",
+    "phac  o van hanh  operational protocol",
+    "phase 1  investigation  tham  inh",
+    "phase 2  action  thuc thi",
+    "sai lam thuong gap  common pitfalls",
+    "danh",
+    "quan",
+    "rebalance",
+    "phan",
+    "thuong",
+    "fin_06_portfolio",
+    "portfolio",
+    "type",
+    "risk_level",
+    "master",
+    "phase",
+    "toan",
+    "tuong",
+    "trung",
+    "name_vn",
+    "tai chinh",
+    "dau tu",
+    "co phieu",
+    "chung khoan",
+    "dong tien"
+  ],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Input query or task description"
+      }
+    },
+    "required": [
+      "query"
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "id": "PLANNING_AND_TASK_BREAKDOWN",
+  "name": "Planning And Task Breakdown",
+  "version": "1.0.0",
+  "description": "Decomposes specifications into atomic, dependency-ordered tasks.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "lập kế hoạch tác vụ",
+    "task breakdown",
+    "chia nhỏ tác vụ",
+    "overview",
+    "when to use",
+    "the planning process",
+    "step 1  enter plan mode",
+    "step 2  identify the dependency graph",
+    "task",
+    "tasks",
+    "build",
+    "implementation",
+    "plan",
+    "planning",
+    "acceptance",
+    "criteria",
+    "step",
+    "feature",
+    "nghien cuu",
+    "phan tich",
+    "ke hoach",
+    "y tuong"
+  ],
+  "domain": "RESEARCH",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "spec_content": {
+          "type": "string",
+          "description": "Content of the spec to breakdown."
+        }
+      },
+      "required": [
+        "spec_content"
+      ]
+    }
+  }
+}

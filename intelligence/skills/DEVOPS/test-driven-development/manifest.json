@@ -1,0 +1,47 @@
+{
+  "id": "TEST_DRIVEN_DEVELOPMENT",
+  "name": "Test Driven Development",
+  "version": "1.0.0",
+  "description": "Runs Red-Green-Refactor testing cycle prior to writing production code.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "phát triển hướng kiểm thử",
+    "TDD",
+    "red green refactor",
+    "overview",
+    "when to use",
+    "the tdd cycle",
+    "step 1  red   write a failing test",
+    "step 2  green   make it pass",
+    "test",
+    "tests",
+    "task",
+    "title",
+    "expect",
+    "const",
+    "write",
+    "code",
+    "step",
+    "input",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "test_target": {
+          "type": "string",
+          "description": "The logic or file to test."
+        }
+      },
+      "required": [
+        "test_target"
+      ]
+    }
+  }
+}

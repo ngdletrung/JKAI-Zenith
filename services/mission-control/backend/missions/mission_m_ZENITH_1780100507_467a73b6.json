@@ -1,0 +1,166 @@
+{
+  "id": "m_ZENITH_1780100507_467a73b6",
+  "title": "hãy cho tôi 5 tin tức về IRAN mới nhất hôm nay",
+  "goal": "hãy cho tôi 5 tin tức về IRAN mới nhất hôm nay",
+  "status": "completed",
+  "ts": 1780100615.0715144,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "hãy cho tôi 5 tin tức về IRAN mới nhất hôm nay",
+      "ts": 1780100507.3317435,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1780100507_467a73b6` initialized | Trace: `trace_467a73b6`. Runtime ready.",
+      "ts": 1780100507.3334029,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780100507.6603532,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: Pre-routing/Intent-Forcing: Real-time query detected. Executing search directly thưa Master.",
+      "ts": 1780100507.6753163,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780100507.6766834,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_3d805a6e1dbe",
+      "ts": 1780100507.6776078,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "TAVILY: Initiating global web search for hãy cho tôi 5 tin tức về IRAN mới nhất hôm nay 30/05/2026",
+      "ts": 1780100520.7151294,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "WEB_DATA",
+      "msg": "TAVILY-FOUND: Discovered 5 results.\n1. YouTube (https://www.youtube.com/watch?v=XWYQmKlCqKM)\n2. Tin tức thế giới 30-5: Iran bác bỏ tuyên bố của ông Trump (https://cuoi.tuoitre.vn/tin-tuc-the-gioi-30-5-iran-bac-bo-tuyen-bo-cua-ong-trump-ong-putin-noi-ve-chien-tranh-voi-chau-au-2026053005392465.htm)\n3. Nóng thế giới ngày 30/5: Mỹ - Iran đạt thỏa thuận, chờ ông T (https://vov.vn/the-gioi/nong-the-gioi-ngay-305-my-iran-dat-thoa-thuan-cho-ong-trump-phe-chuan-post1296020.vov)\n",
+      "ts": 1780100526.0575645,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780100526.1810138,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (9863 ký tự)",
+      "ts": 1780100526.1875756,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: DEEP-DISTILLING: Large search data found (9863 chars). Distilling knowledge...",
+      "ts": 1780100526.189229,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi động bộ lọc Cosine TF-IDF siêu tốc thưa Master...",
+      "ts": 1780100526.190898,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Hoàn tất chưng cất trong 3ms (Cắt từ 9863 còn 1936 ký tự) thưa Master.",
+      "ts": 1780100526.249034,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T00:22:07.100968] [RECEPTIONIST] [Task: ZENITH_1780100507_467a73b6] Đang triệu tập qwen3:4b... (Context: 4096)",
+      "ts": 1780100527.100986,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T00:22:08.745779] [RECEPTIONIST] [Task: ZENITH_1780100507_467a73b6] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780100528.7458131,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T00:23:31.903218] [RECEPTIONIST] [Task: ZENITH_1780100507_467a73b6] [",
+      "ts": 1780100611.9032512,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T00:23:32.921580] [RECEPTIONIST] [Task: ZENITH_1780100507_467a73b6] [Ngày 30/05/2026] TOÀN CẢNH MỸ - IRAN Mới Nhất 30/05/2026 | ĐIỂM",
+      "ts": 1780100612.9216056,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T00:23:33.937345] [RECEPTIONIST] [Task: ZENITH_1780100507_467a73b6] [Ngày 30/05/2026] TOÀN CẢNH MỸ - IRAN Mới Nhất 30/05/2026 | ĐIỂM NÓNG THẾ GIỚI Cập Nhật | Chiến Sự Mỹ Iran.  \n[Ngày 30/05/2026] Tin tức thế giới 30-5: Iran",
+      "ts": 1780100613.937376,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T00:23:34.943113] [RECEPTIONIST] [Task: ZENITH_1780100507_467a73b6] [Ngày 30/05/2026] TOÀN CẢNH MỸ - IRAN Mới Nhất 30/05/2026 | ĐIỂM NÓNG THẾ GIỚI Cập Nhật | Chiến Sự Mỹ Iran.  \n[Ngày 30/05/2026] Tin tức thế giới 30-5: Iran bác bỏ tuyên bố của ông Trump.  \n[Ngày 30/05/2026] Nóng thế giới ngày 30/5: Mỹ - Iran đạt thỏa thuận, chờ",
+      "ts": 1780100614.9431489,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T00:23:35.037523] [RECEPTIONIST] [Task: ZENITH_1780100507_467a73b6] Hoàn tất trong 87.94s. (Size: 267 chars)",
+      "ts": 1780100615.0375557,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "💎🫡 [ZENITH]: [Ngày 30/05/2026] TOÀN CẢNH MỸ - IRAN Mới Nhất 30/05/2026 | ĐIỂM NÓNG THẾ GIỚI Cập Nhật | Chiến Sự Mỹ Iran.  \n[Ngày 30/05/2026] Tin tức thế giới 30-5: Iran bác bỏ tuyên bố của ông Trump.  \n[Ngày 30/05/2026] Nóng thế giới ngày 30/5: Mỹ - Iran đạt thỏa thuận, chờ ôn...",
+      "ts": 1780100615.0402296,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Ngày 30/05/2026] TOÀN CẢNH MỸ - IRAN Mới Nhất 30/05/2026 | ĐIỂM NÓNG THẾ GIỚI Cập Nhật | Chiến Sự Mỹ Iran.  \n[Ngày 30/05/2026] Tin tức thế giới 30-5: Iran bác bỏ tuyên bố của ông Trump.  \n[Ngày 30/05/2026] Nóng thế giới ngày 30/5: Mỹ - Iran đạt thỏa thuận, chờ ôn...",
+      "ts": 1780100615.046534,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780100507_467a73b6"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

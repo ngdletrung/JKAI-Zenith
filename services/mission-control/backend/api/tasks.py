@@ -1,5 +1,5 @@
 import json, time, uuid, os
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from flask import Blueprint, jsonify, request, Response, stream_with_context
 import requests, logging
 from werkzeug.utils import secure_filename
@@ -26,8 +26,10 @@ def submit_task():
     raw_mid = data.get("mission_id")
     mission_id = str(raw_mid) if raw_mid and str(raw_mid) not in ["null", "undefined", "None"] else "default"
     # 🆔 [ID-GUARDIAN]: UUID + Timestamp để triệt tiêu hoàn toàn xung đột
-    uid = uuid.uuid4().hex[:8]
-    task_id = f"{mission_id}_{int(time.time())}_{uid}"
+    uid = uuid.uuid4().hex[:6]
+    now = datetime.now(timezone(timedelta(hours=7))) # Giờ Việt Nam
+    date_code = now.strftime('%d%m-%H%M') # e.g. 3105-0936
+    task_id = f"{mission_id}_{date_code}_{uid}"
     
     # 🏰 [MISSION-STORAGE-ISOLATION]: Tách biệt hoàn toàn không gian dữ liệu
     mission_root = os.path.join(os.getcwd(), 'missions', mission_id)
@@ -54,11 +56,15 @@ def submit_task():
             # Xóa file cũ nếu sứ mệnh này không có artifact đó (hoặc sứ mệnh mới)
             if os.path.exists(path):
                 try: os.remove(path)
-                except: pass
+                except Exception: pass
 
     saved_files = []
     import base64
     MAX_FILE_SIZE = 20 * 1024 * 1024 # 🛡️ [RESOURCE-GUARD]: Giới hạn 20MB
+    
+    # 🧠 [RAG-INJECTION]: Nén nội dung file văn bản để gửi thẳng vào context
+    attached_files_content = ""
+    MAX_EXTRACT_SIZE = 50000 # Giới hạn 50KB text mỗi file
     
     for f in files_data:
         try:
@@ -79,6 +85,14 @@ def submit_task():
                 
                 with open(file_path, "wb") as wb:
                     wb.write(decoded_data)
+                
+                # 🧠 [RAG-INJECTION]: Thử bóc tách Text nếu là file văn bản
+                if len(decoded_data) < MAX_EXTRACT_SIZE:
+                    try:
+                        text_val = decoded_data.decode("utf-8")
+                        attached_files_content += f"\n\n--- [FILE: {name}] ---\n{text_val}\n"
+                    except UnicodeDecodeError:
+                        pass # Bỏ qua nếu là file nhị phân (PDF, PNG, v.v.)
                 
                 # ⚡ [REDIS-ACCELERATION]: Đẩy vào bộ nhớ nóng dùng chung
                 # Key: mission_data:{mission_id}:file:{filename}
@@ -101,14 +115,21 @@ def submit_task():
     logger.info(f"🚀 [TASK-SUBMIT]: ID={task_id}, Trace={trace_id}, Mission={mission_id}")
     
     images = data.get("images", [])
+    # Nén thẳng nội dung file vào Goal để đảm bảo mô hình chắc chắn đọc được
+    final_goal = f"{goal}\n\n{attached_files_content}".strip() if attached_files_content else goal
+
     payload = {
-        "task_id": task_id, 
+        "task_id": task_id,
         "trace_id": trace_id,
-        "goal": goal, 
-        "mode": mode, 
-        "images": images, 
-        "source": "Web", 
-        "attached_files": saved_files
+        "goal": final_goal,
+        "mode": mode,
+        "lang": data.get("lang", "vi"),
+        "images": images,
+        "source": "Web",
+        "attached_files": saved_files,
+        "attached_files_content": attached_files_content.strip(),
+        "mission_id": mission_id,
+        "parent_mission_id": data.get("parent_mission_id"),
     } 
     
     # 🏛️ [CENTRAL-GATEWAY]: Gửi tới Đầu mối ai-control-plane với Timeout kép
@@ -163,3 +184,38 @@ def stream_proxy():
             "Connection": "keep-alive",
         }
     )
+
+
+@bp.route("/api/geolocation", methods=["POST"])
+def update_geolocation():
+    """
+    [GEOLOCATION-UPDATE]: Cap nhat toa do dinh vi chinh xac tu Browser.
+    Luu vao Redis de cac dac vu va engine chia se dong thoi thoi gian thuc.
+    """
+    data = request.get_json(silent=True) or {}
+    lat = data.get("latitude")
+    lon = data.get("longitude")
+    address = data.get("address")
+    accuracy = data.get("accuracy")
+    altitude = data.get("altitude")
+    heading = data.get("heading")
+    speed = data.get("speed")
+    
+    if lat is not None and lon is not None:
+        geo_data = {
+            "latitude": lat,
+            "longitude": lon,
+            "accuracy": accuracy,
+            "altitude": altitude,
+            "heading": heading,
+            "speed": speed,
+            "address": address or "",
+            "timestamp": time.time()
+        }
+        # Luu vao Redis de chia se giua tat ca cac container
+        redis_safe(lambda r: r.set("user:precise_geolocation", json.dumps(geo_data)))
+        logger.info(f"GEOLOCATION-UPDATE: Saved browser location: {lat}, {lon} - accuracy: {accuracy}m - address: {address}")
+        return jsonify({"ok": True, "msg": "Location synced successfully."})
+        
+    return jsonify({"ok": False, "error": "Invalid location data"}), 400
+

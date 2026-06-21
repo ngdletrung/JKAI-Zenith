@@ -1,16 +1,16 @@
 import requests
 import os
+import logging
+from typing import Optional
 
-def n8n_control(action: str, params: dict = {}):
+logger = logging.getLogger("jkai.tools.n8n")
+
+def n8n_control(action: str, params: Optional[dict] = None):
     """
     N8N Automation Control: Quyền năng điều khiển các quy trình tự động hóa n8n.
-    
-    Actions:
-    - 'list_workflows': Liệt kê danh sách các workflow hiện có.
-    - 'trigger_workflow': Kích hoạt thực thi một workflow cụ thể.
-    - 'get_execution': Kiểm tra trạng thái thực thi của một task.
     """
-    print(f"🤖 [JKAI-N8N] Thực hiện hành động: {action}")
+    params = params or {}
+    logger.info("[JKAI-N8N] Thực hiện hành động: %s", action)
     
     N8N_URL = os.getenv("N8N_API_URL", "http://n8n-main:5678/api/v1")
     API_KEY = os.getenv("N8N_API_KEY")

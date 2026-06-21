@@ -6,13 +6,13 @@ def fix_text(text):
         # Core logic: undo UTF-8 bytes misinterpreted as CP1252
         # This is the most common corruption pattern on Windows
         return text.encode('cp1252').decode('utf-8')
-    except:
+    except Exception:
         result = ""
         for char in text:
             try:
                 # Try to fix character by character for mixed files
                 result += char.encode('cp1252').decode('utf-8')
-            except:
+            except Exception:
                 result += char
         return result
 
@@ -64,7 +64,7 @@ def walk_and_repair(root_dir):
     return repaired_count
 
 if __name__ == "__main__":
-    base_dir = os.getenv("WORKSPACE_ROOT", "D:/Docker/N8N")
+    base_dir = os.getenv("WORKSPACE_ROOT", "D:/Docker/JKAI")
     # Added all likely directories
     subdirs = ['services', 'shared', 'intelligence', 'core']
     

@@ -35,6 +35,8 @@ class PolicyResolutionStage(ExecutionStage):
         
         engine.publish_progress(83, f"⚖️ [T4: SURGERY] [{tool_name}] Đang áp dụng chính sách thực thi...", "policy", task_id)
         policy = await executor._resolve_execution_policy(tool_name, args, task_id, override)
+        # 🔗 [TRACE-ALIGNMENT]: Đảm bảo trace_id được truyền xuyên suốt nơ-ron
+        setattr(policy, "trace_id", state.get("trace_id", "system"))
         state["policy"] = policy
         return state
 
@@ -71,9 +73,17 @@ class SurgicalExecutionStage(ExecutionStage):
     async def run(self, state: Dict[str, Any]) -> Dict[str, Any]:
         executor = state["executor_instance"]
         tool_name = state["tool_name"]
+        args = state["args"]
         task_id = state["task_id"]
         
-        engine.publish_progress(90, f"⚔️ [T4: SURGERY] [{tool_name}] Bắt đầu can thiệp thực địa...", "execution", task_id)
+        action = executor._classify_action(tool_name, state.get("lang", "vi"), past_tense=False)
+        path_arg = args.get("path") or args.get("TargetFile") or args.get("file_path") or args.get("target") or ""
+        if path_arg:
+            engine.publish_mission_log("EXECUTOR", f"*[{action}]* `{path_arg}`", task_id)
+        else:
+            engine.publish_mission_log("EXECUTOR", f"*[{action}]* `{tool_name}`", task_id)
+        
+        engine.publish_progress(90, f"⚔️ [T4: SURGERY] [{tool_name}] Bắt đầu thực thi ...", "execution", task_id)
         result = await executor._execute_with_retry(
             tool_name, state["args"], task_id, state["policy"]
         )
@@ -86,7 +96,7 @@ class HarvestStage(ExecutionStage):
         executor = state["executor_instance"]
         final_res = await executor._harvest_and_verify(
             state["tool_name"], state["result"], state["task_id"], 
-            state["policy"], state["start_time"], state["args"]
+            state["policy"], state["start_time"], state["args"], state.get("lang", "vi")
         )
         state["final_response"] = final_res
         return state

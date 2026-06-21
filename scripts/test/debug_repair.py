@@ -10,14 +10,14 @@ def fix_text(text):
             if pending_bytes:
                 try:
                     result += pending_bytes.decode('utf-8')
-                except:
+                except Exception:
                     result += pending_bytes.decode('cp1252', errors='replace')
                 pending_bytes = bytearray()
             result += char
     if pending_bytes:
         try:
             result += pending_bytes.decode('utf-8')
-        except:
+        except Exception:
             result += pending_bytes.decode('cp1252', errors='replace')
     return result
 
@@ -34,7 +34,7 @@ def fix_file(path):
     return False
 
 if __name__ == "__main__":
-    target = os.getenv("WORKSPACE_ROOT", "D:/Docker/N8N") + '/services/ai-brain'
+    target = os.getenv("WORKSPACE_ROOT", "D:/Docker/JKAI") + '/services/ai-brain'
     count = 0
     for root, _, files in os.walk(target):
         for file in files:

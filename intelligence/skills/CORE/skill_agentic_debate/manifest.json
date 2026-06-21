@@ -1,0 +1,53 @@
+{
+  "id": "SKILL_AGENTIC_DEBATE",
+  "name": "Zenith Agentic Debate",
+  "version": "1.0.0",
+  "description": "Multi-agent cognitive consensus: Facilitates iterative debates between Architect, Critic, and Arbiter roles to reach superior solutions.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "tranh luận đặc vụ",
+    "hội đồng trí tuệ",
+    "agentic debate",
+    "phản biện đa chiều",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "phan",
+    "quyet",
+    "bien",
+    "cung",
+    "giai",
+    "nhieu",
+    "phap",
+    "tranh",
+    "nang",
+    "thuc",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "goal": {
+          "type": "string",
+          "description": "The objective or problem to debate."
+        },
+        "rounds": {
+          "type": "integer",
+          "default": 2,
+          "description": "Number of debate rounds."
+        }
+      },
+      "required": [
+        "goal"
+      ]
+    }
+  }
+}

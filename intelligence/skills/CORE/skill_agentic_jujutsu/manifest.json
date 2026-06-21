@@ -1,0 +1,53 @@
+{
+  "id": "SKILL_AGENTIC_JUJUTSU",
+  "name": "Zenith Agentic Jujutsu",
+  "version": "1.0.0",
+  "description": "Quantum-resistant reasoning management: Tracks, seals, and verifies the integrity of AI thought trajectories using advanced cryptographic fingerprints.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "nhu thuật đặc vụ",
+    "niêm phong lượng tử",
+    "truy vết tư duy",
+    "agentic jujutsu",
+    "kiểm định bất biến",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "toan",
+    "thong",
+    "niem",
+    "tinh",
+    "bien",
+    "thuc",
+    "kiem",
+    "phong",
+    "thuat",
+    "jujutsu",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "track_trajectory",
+            "verify_integrity"
+          ],
+          "description": "Action to perform."
+        }
+      },
+      "required": [
+        "action"
+      ]
+    }
+  }
+}

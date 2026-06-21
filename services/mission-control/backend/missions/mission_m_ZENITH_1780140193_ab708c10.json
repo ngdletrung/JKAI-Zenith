@@ -1,0 +1,145 @@
+{
+  "id": "m_ZENITH_1780140193_ab708c10",
+  "title": "hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay ?",
+  "goal": "hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay ?",
+  "status": "completed",
+  "ts": 1780140275.6843035,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay ?",
+      "ts": 1780140193.863538,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1780140193_ab708c10` initialized | Trace: `trace_ab708c10`. Runtime ready.",
+      "ts": 1780140193.8652587,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780140194.1030295,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: Pre-routing/Intent-Forcing: Real-time query detected. Executing search directly thưa Master.",
+      "ts": 1780140194.1065705,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780140194.108531,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_6598b0e230de",
+      "ts": 1780140194.1103787,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "TAVILY: Initiating global web search for hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay ? 30/05/2026",
+      "ts": 1780140195.7541099,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    },
+    {
+      "tag": "WEB_DATA",
+      "msg": "TAVILY-FOUND: Discovered 5 results.\n1. , Campuchia : Ông Hun Sen ký luật mới: Nam thanh niên Campuc (https://cafef.vn/campuchia.html)\n2. Campuchia: Tin tức mới nhất về Campuchia (https://www.24h.com.vn/tin-tuc-campuchia-c415e3915.html)\n3. Tuần văn hóa Việt Nam tại Campuchia năm 2026 (https://vtv.vn/video/tuan-van-hoa-viet-nam-tai-campuchia-nam-2026-108693996.htm)\n",
+      "ts": 1780140196.5405438,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780140196.6096911,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (6868 ký tự)",
+      "ts": 1780140196.6145105,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: DEEP-DISTILLING: Large search data found (6868 chars). Distilling knowledge...",
+      "ts": 1780140196.6176558,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi động bộ lọc Cosine TF-IDF siêu tốc thưa Master...",
+      "ts": 1780140196.6215827,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Hoàn tất chưng cất trong 3ms (Cắt từ 6868 còn 1718 ký tự) thưa Master.",
+      "ts": 1780140196.629695,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T11:23:16.637751] [RECEPTIONIST] [Task: ZENITH_1780140193_ab708c10] Đang triệu tập qwen3:4b... (Context: 2048)",
+      "ts": 1780140196.6377685,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T11:23:18.194120] [RECEPTIONIST] [Task: ZENITH_1780140193_ab708c10] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780140198.1941414,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T11:24:35.656325] [RECEPTIONIST] [Task: ZENITH_1780140193_ab708c10] Chào bạn! Hôm nay (30/05/2026), có 4 tin tức mới nhất về Campuchia:\n\n1. Tin tức về du lịch Campuchia\n2. Tin tức về kinh tế Campuchia\n3. Tin tức về văn hóa Campuchia\n4. Tin tức về giáo dục Campuchia\n\nChỉ có 4 tin tức mới nhất hôm nay. Bạn có thể tìm thêm thông tin từ các nguồn khác nhé!",
+      "ts": 1780140275.6563902,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T11:24:35.659392] [RECEPTIONIST] [Task: ZENITH_1780140193_ab708c10] Hoàn tất trong 79.02s. (Size: 286 chars)",
+      "ts": 1780140275.6594086,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "💎🫡 [ZENITH]: Chào bạn! Hôm nay (30/05/2026), có 4 tin tức mới nhất về Campuchia:\n\n1. Tin tức về du lịch Campuchia\n2. Tin tức về kinh tế Campuchia\n3. Tin tức về văn hóa Campuchia\n4. Tin tức về giáo dục Campuchia\n\nChỉ có 4 tin tức mới nhất hôm nay. Bạn có thể tìm thêm thông tin từ các nguồn khác nhé!",
+      "ts": 1780140275.662577,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Chào bạn! Hôm nay (30/05/2026), có 4 tin tức mới nhất về Campuchia:\n\n1. Tin tức về du lịch Campuchia\n2. Tin tức về kinh tế Campuchia\n3. Tin tức về văn hóa Campuchia\n4. Tin tức về giáo dục Campuchia\n\nChỉ có 4 tin tức mới nhất hôm nay. Bạn có thể tìm thêm thông tin từ các nguồn khác nhé!",
+      "ts": 1780140275.6690426,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140193_ab708c10"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

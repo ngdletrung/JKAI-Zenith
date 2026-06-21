@@ -27,10 +27,7 @@ COPY . .
 EXPOSE 9999
 EXPOSE 9998
 
-# 🚀 Script khởi động kép
-RUN echo '#!/bin/sh\n\
-    cd /app/frontend && npm run dev -- --host 0.0.0.0 --port 9999 &\n\
-    cd /app/backend && gunicorn -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker -w 1 --bind 0.0.0.0:9998 main:app\n\
-    ' > /app/start.sh && chmod +x /app/start.sh
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
 
 CMD ["/app/start.sh"]

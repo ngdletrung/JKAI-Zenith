@@ -1,13 +1,13 @@
 import React, { memo, useMemo, useCallback } from 'react';
 import { motion } from 'framer-motion';
-import { Brain, Zap, ShieldCheck, MessageSquare, Target, Activity, Bot, Settings, Hexagon, Radar, RotateCcw, FileCode2, AlertTriangle, Plus, Search, Globe } from 'lucide-react';
+import { Brain, Zap, ShieldCheck, MessageSquare, Target, Activity, Bot, Settings, Hexagon, Radar, RotateCcw, FileCode2, AlertTriangle, Plus } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useZenithStore, AgentLog } from '../../store/zenithStore';
 import { ZenithService } from '../../services/ZenithService';
 import { useAgentController } from '../../hooks/useAgentController';
 import { MarkdownRenderer } from './MarkdownRenderer';
 import { NuclearApprovalPad } from './NuclearApprovalPad';
-import { ToolBlock, ActionBadge, ReasoningBlock, MicroscopeIcon } from './LogElements';
+import { ToolBlock, ActionBadge, ReasoningBlock, MicroscopeIcon, SurgicalDiff } from './LogElements';
 
 export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasoning?: boolean }) => {
   const setInspectedFile = useZenithStore(s => s.setInspectedFile);
@@ -30,8 +30,6 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
     tag.includes('TƯ DUY') ||
     tag === 'GATEWAY' ||
     tag === 'DISPATCHER' ||
-    tag === 'DISPATCHER_LLM' ||
-    tag === 'RECEPTIONIST' ||
     tag === 'DEBUG' ||
     (tag === 'SYSTEM' && (msg.includes('[') || msg.includes('📡')))
   ) && !forceReasoning && !isUser;
@@ -67,6 +65,28 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
     }
     return fps;
   }, [msg, isUser, isReasoning, language, handleInspect]);
+
+  if (tag === 'FILE-EDIT') {
+    try {
+      const data = JSON.parse(msg);
+      const filePath = data.path || '';
+      return (
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="my-3 ml-14 max-w-[95%]">
+          <button
+            type="button"
+            onClick={() => handleInspect(filePath)}
+            className="mb-2 text-[11px] font-bold text-sky-400 hover:text-sky-300 flex items-center gap-2"
+          >
+            <FileCode2 className="w-4 h-4" />
+            {language === 'vi' ? `Đã sửa: ${filePath}` : `Edited: ${filePath}`}
+          </button>
+          {data.diff ? <SurgicalDiff diff={data.diff} /> : null}
+        </motion.div>
+      );
+    } catch {
+      /* fall through */
+    }
+  }
 
   if (tag === 'LATENCY') {
     return (
@@ -105,8 +125,8 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
 
   if (isAction) {
     return (
-      <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} className="my-1 ml-14">
-        <ActionBadge label={l.action || msg} onClick={footprints[0]?.onClick} />
+      <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }}>
+        <ActionBadge label={l.action || msg} rawMsg={msg} />
       </motion.div>
     );
   }
@@ -114,7 +134,7 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
   // 💎 [EXECUTIVE-OFFICE-PROTOCOL]: Định danh Chuyên nghiệp
   const renderIdentity = () => {
     if (isUser) {
-      const label = tag === 'MASTER_WEB' ? 'MASTER (WEB)' : tag === 'MASTER_TELE' ? 'MASTER (TELE)' : 'MASTER';
+      const label = tag === 'MASTER_WEB' ? 'Master (Web)' : tag === 'MASTER_TELE' ? 'Master (Tele)' : 'Master';
       return (
         <div className="flex items-center gap-2">
           {/* 👑 [IMPERIAL-CROWN]: Biểu tượng vương miện tinh xảo */}
@@ -128,19 +148,6 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
       );
     }
 
-    // 👑 [SOVEREIGN-VOICE]: Chỉ JKAI duy nhất đại diện cho Nhật ký điều hành
-    if (tag === 'JKAI') {
-      return (
-        <div className="flex items-center gap-2">
-          {/* 🧠 [NEURAL-CORE]: Biểu tượng Lõi Trí tuệ tinh xảo */}
-          <div className="p-1 rounded-lg bg-cyan-500/20 border border-cyan-500/40 shadow-[0_0_10px_rgba(34,211,238,0.2)]">
-            <Brain className="w-4 h-4 text-cyan-400" />
-          </div>
-          <span className="glow-text-jkai text-cyan-400 font-black tracking-[0.2em] uppercase text-[11px]">JKAI</span>
-        </div>
-      );
-    }
-
     // 🔬 [GRANULAR-ELITE-DISPLAY]: Định danh ban ngành
     const source = (l as any).source;
     
@@ -148,41 +155,38 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
     let DeptIcon = Hexagon;
     let deptColor = "text-cyan-400";
     
+    const isZenithSystemLog = tag === 'JKAI' && msg.includes('💎🫡 [ZENITH]');
+
     if (tag.includes('GATEWAY')) { DeptIcon = Radar; deptColor = "text-emerald-400"; }
     else if (tag.includes('RECEPTIONIST')) { DeptIcon = Bot; deptColor = "text-sky-400"; }
     else if (tag.includes('DISPATCHER')) { DeptIcon = Zap; deptColor = "text-amber-400"; }
     else if (tag.includes('PLANNER')) { DeptIcon = Brain; deptColor = "text-indigo-400"; }
     else if (tag.includes('AUDIT')) { DeptIcon = ShieldCheck; deptColor = "text-rose-400"; }
     else if (tag.includes('FORGE')) { DeptIcon = Settings; deptColor = "text-purple-400"; }
-    else if (tag === 'WEB_SEARCH' || tag === 'BRAIN_QUERY' || tag === 'GREP' || tag === 'SMART_INDEX') { DeptIcon = Search; deptColor = "text-violet-400"; }
-    else if (tag.includes('BRAIN') || tag === 'SYSTEM') { DeptIcon = Brain; deptColor = "text-cyan-400"; }
-    else if (tag === 'ENGINE' || tag === 'MISSION_RESULT') { DeptIcon = Target; deptColor = "text-blue-400"; }
-    else if (tag === 'SUMMARIZER') { DeptIcon = FileCode2; deptColor = "text-fuchsia-400"; }
+    else if (tag.includes('BRAIN') || tag === 'SYSTEM' || isZenithSystemLog) { DeptIcon = Hexagon; deptColor = "text-cyan-400"; }
+    else if (tag === 'ENGINE') { DeptIcon = Target; deptColor = "text-blue-400"; }
+    else if (tag === 'JKAI' || tag === 'MISSION_RESULT' || tag === 'RESULT' || tag === 'DONE') { DeptIcon = Brain; deptColor = "text-cyan-400"; }
+    else if (tag.includes('SUMMARIZER') || tag.includes('LEGAL') || tag.includes('SYNTHESIS') || tag.includes('THU_KY') || tag === 'CHAT_INTEL') { DeptIcon = FileCode2; deptColor = "text-fuchsia-400"; }
     else if (isError) { DeptIcon = AlertTriangle; deptColor = "text-rose-500"; }
 
     let displayTag = tag;
     if (language === 'vi') {
-      if (tag.includes('GATEWAY') || tag.includes('RECEPTIONIST')) displayTag = 'Ban Lễ Tân';
-      else if (tag.includes('DISPATCHER')) displayTag = 'Ban Điều Phối';
-      else if (tag.includes('PLANNER')) displayTag = 'Ban Kế Hoạch';
-      else if (tag.includes('EXECUTOR')) displayTag = 'Ban Thực Thi';
-      else if (tag.includes('SUMMARIZER')) displayTag = 'Ban Thư Ký';
-      else if (tag.includes('CRITIC') || tag.includes('AUDIT')) displayTag = 'Ban Kiểm Soát';
-      else if (tag === 'WEB_SEARCH' || tag === 'BRAIN_QUERY' || tag === 'GREP' || tag === 'SMART_INDEX') displayTag = 'Ban Hành Chính';
-      else if (tag.includes('DATA_SCOUT') || tag.includes('RESEARCH') || tag.includes('SEARCH')) displayTag = 'Ban Thông Tin';
-      else if (tag === 'SYSTEM' || tag === 'SYS_LOG') displayTag = 'Ban Kỹ Thuật';
-      else if (tag === 'ENGINE') displayTag = 'Trung tâm Điều hành';
+      if (isZenithSystemLog) displayTag = 'Ban Hành Chính';
+      else if (tag.includes('GATEWAY') || tag.includes('RECEPTIONIST')) displayTag = 'Ban Trợ Lý';
+      else if (tag.includes('PLANNER') || tag.includes('THOUGHT')) displayTag = 'Ban Kế Hoạch';
+      else if (tag.includes('EXECUTOR') || tag.includes('ALPHA') || tag.includes('BETA') || tag === 'PROGRESS') displayTag = 'Ban Thực Thi';
+      else if (tag === 'JKAI' || tag === 'MISSION_RESULT' || tag === 'RESULT' || tag === 'DONE') displayTag = 'JKAI';
+      else if (tag.includes('SUMMARIZER') || tag.includes('SYNTHESIS') || tag.includes('LEGAL') || tag.includes('THU_KY') || tag === 'CHAT_INTEL') displayTag = 'Ban Thư Ký';
+      else displayTag = 'Ban Hành Chính';
     } else {
-      if (tag.includes('GATEWAY') || tag.includes('RECEPTIONIST')) displayTag = 'Reception Desk';
-      else if (tag.includes('DISPATCHER')) displayTag = 'Coordination Dept';
-      else if (tag.includes('PLANNER')) displayTag = 'Planning Dept';
-      else if (tag.includes('EXECUTOR')) displayTag = 'Execution Dept';
-      else if (tag.includes('SUMMARIZER')) displayTag = 'Secretariat';
-      else if (tag.includes('CRITIC') || tag.includes('AUDIT')) displayTag = 'Audit Dept';
-      else if (tag === 'WEB_SEARCH' || tag === 'BRAIN_QUERY' || tag === 'GREP' || tag === 'SMART_INDEX') displayTag = 'Administrative Dept';
-      else if (tag.includes('DATA_SCOUT') || tag.includes('RESEARCH') || tag.includes('SEARCH')) displayTag = 'Intelligence Dept';
-      else if (tag === 'SYSTEM' || tag === 'SYS_LOG') displayTag = 'Tech Ops';
-      else if (tag === 'ENGINE') displayTag = 'Operations Center';
+      if (isZenithSystemLog) displayTag = 'Administrative Dept';
+      else if (tag.includes('GATEWAY') || tag.includes('RECEPTIONIST')) displayTag = 'Assistant Dept';
+      else if (tag.includes('PLANNER') || tag.includes('THOUGHT')) displayTag = 'Planning Dept';
+      else if (tag.includes('EXECUTOR') || tag.includes('ALPHA') || tag.includes('BETA') || tag === 'PROGRESS') displayTag = 'Execution Dept';
+      else if (tag === 'JKAI' || tag === 'MISSION_RESULT' || tag === 'RESULT' || tag === 'DONE') displayTag = 'JKAI';
+      else if (tag.includes('SUMMARIZER') || tag.includes('SYNTHESIS') || tag.includes('LEGAL') || tag.includes('THU_KY') || tag === 'CHAT_INTEL') displayTag = 'Secretariat';
+      else if (tag.includes('CRITIC') || tag.includes('AUDIT') || tag.includes('GUARDRAIL') || tag.includes('REVIEW')) displayTag = 'Audit Dept';
+      else displayTag = 'Administrative Dept';
     }
 
     return (
@@ -201,35 +205,48 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
   };
 
   // 💎 [AESTHETIC-LOGIC]: Khôi phục Bong bóng Chat nhưng giữ Typography tinh giản
-  const isPremium = tag === 'JKAI' || isUser;
-  const containerStyle = isPremium ? "mb-8" : "mb-2";
+  const isPremium = isUser || tag === 'JKAI';
+  const containerStyle = isPremium ? "mb-1" : "mb-0.5";
   
   // 🌈 [SERVICE-COLOR-MAPPING]: Bản đồ sắc màu ban ngành
-  let colorClass = "cyan";
+  let colorClass: 'cyan' | 'emerald' | 'sky' | 'amber' | 'indigo' | 'rose' | 'purple' | 'blue' | 'fuchsia' = "cyan";
   if (tag.includes('GATEWAY')) colorClass = "emerald";
   else if (tag.includes('RECEPTIONIST')) colorClass = "sky";
   else if (tag.includes('DISPATCHER')) colorClass = "amber";
   else if (tag.includes('PLANNER')) colorClass = "indigo";
   else if (tag.includes('AUDIT')) colorClass = "rose";
   else if (tag.includes('FORGE')) colorClass = "purple";
-  else if (tag === 'ENGINE' || tag === 'MISSION_RESULT') colorClass = "blue";
-  else if (tag === 'SUMMARIZER') colorClass = "fuchsia";
+  else if (tag === 'ENGINE') colorClass = "blue";
+  else if (tag === 'JKAI' || tag === 'MISSION_RESULT' || tag === 'RESULT' || tag === 'DONE') colorClass = "cyan";
+  else if (tag.includes('SUMMARIZER') || tag.includes('LEGAL') || tag.includes('SYNTHESIS') || tag.includes('THU_KY') || tag === 'CHAT_INTEL') colorClass = "fuchsia";
   else if (isUser) colorClass = "amber";
   else if (isError) colorClass = "rose";
+
+  const colorMap = {
+    cyan: { bg: 'bg-cyan-500/[0.04]', border: 'border-cyan-500/20', text: 'text-cyan-50/90' },
+    emerald: { bg: 'bg-emerald-500/[0.04]', border: 'border-emerald-500/20', text: 'text-emerald-50/90' },
+    sky: { bg: 'bg-sky-500/[0.04]', border: 'border-sky-500/20', text: 'text-sky-50/90' },
+    amber: { bg: 'bg-amber-500/[0.04]', border: 'border-amber-500/20', text: 'text-amber-50/90' },
+    indigo: { bg: 'bg-indigo-500/[0.04]', border: 'border-indigo-500/20', text: 'text-indigo-50/90' },
+    rose: { bg: 'bg-rose-500/[0.04]', border: 'border-rose-500/20', text: 'text-rose-50/90' },
+    purple: { bg: 'bg-purple-500/[0.04]', border: 'border-purple-500/20', text: 'text-purple-50/90' },
+    blue: { bg: 'bg-blue-500/[0.04]', border: 'border-blue-500/20', text: 'text-blue-50/90' },
+    fuchsia: { bg: 'bg-fuchsia-500/[0.04]', border: 'border-fuchsia-500/20', text: 'text-fuchsia-50/90' }
+  };
 
   const bubbleMaxWidth = "max-w-[98%]";
   const bubbleStyle = isPremium 
     ? "px-5 py-3 rounded-[1.5rem]" 
     : "px-3 py-1.5 rounded-xl font-medium tracking-tight";
   
-  const textColor = isUser ? 'text-amber-50' : isPremium ? 'text-white/95' : `text-${colorClass}-50/90`;
+  const textColor = isUser ? 'text-amber-50' : isPremium ? 'text-white/95' : colorMap[colorClass].text;
   
   const bgStyle = isUser 
     ? 'message-master bg-amber-500/[0.2] backdrop-blur-md border-[3px] border-amber-400 shadow-[0_0_40px_rgba(251,191,36,0.25)] ring-1 ring-amber-400/50' 
     : tag === 'JKAI'
     ? 'message-jkai bg-cyan-500/[0.15] backdrop-blur-md border-[3px] border-cyan-400 shadow-[0_0_35px_rgba(34,211,238,0.25)] ring-1 ring-cyan-400/50'
     : isError ? 'bg-rose-500/10 border border-rose-500/30 shadow-[0_0_15px_rgba(244,63,94,0.04)]' 
-    : `bg-${colorClass}-500/[0.04] border border-${colorClass}-500/20 shadow-[0_0_10px_rgba(var(--${colorClass}-rgb),0.02)]`;
+    : `${colorMap[colorClass].bg} border ${colorMap[colorClass].border}`;
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`animate-slide-up group/log ${containerStyle}`}>
@@ -242,8 +259,8 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
         )}
 
         <div className={`relative group flex-1 flex flex-col ${isUser ? 'items-end' : 'items-start'} min-w-0`}>
-          <div className={`relative transition-all duration-500 w-full ${bubbleStyle} ${bgStyle}`}>
-            <div className={`relative z-10 prose prose-invert max-w-none !max-w-full leading-relaxed text-[14px] ${textColor}`}>
+          <div className={`relative transition-all duration-500 w-fit max-w-[85%] ${bubbleStyle} ${bgStyle}`}>
+            <div className={`relative z-10 prose prose-invert compact-prose max-w-none !max-w-full leading-relaxed text-[13px] ${textColor}`}>
               {isTool ? <ToolBlock msg={msg} /> : !msg.trim() ? <Radar className="animate-spin text-cyan-400" /> : <MarkdownRenderer content={msg} />}
             </div>
             {(!isUser && !isError && (l.is_core === true || l.type === 'CODE')) && <NuclearApprovalPad language={language} task_id={(l as any).task_id} />}

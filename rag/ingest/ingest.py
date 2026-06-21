@@ -16,7 +16,8 @@ except ImportError as e:
     sys.exit(1)
 
 # Lấy URL từ environment hoặc dùng mặc định
-RAG_API = os.getenv("RAG_API_URL", "http://rag-service:8000/ingest/text")
+_base_url = os.getenv("RAG_API_URL", "http://rag-service:8000")
+RAG_API = f"{_base_url.rstrip('/')}/ingest/text" if "/ingest/text" not in _base_url else _base_url
 
 def get_file_hash(file_path: Path) -> str:
     return hashlib.md5(file_path.read_bytes()).hexdigest()

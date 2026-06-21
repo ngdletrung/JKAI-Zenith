@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { io, Socket } from 'socket.io-client';
 import { useZenithStore, TaskLog } from '../store/zenithStore';
+import { ZenithService } from '../services/ZenithService';
 import toast from 'react-hot-toast';
 
 // ─── UTILITIES ────────────────────────────────────────────────────────────────
@@ -25,9 +26,9 @@ const ANATOMY_MAP: Record<string, { x: number; y: number; scale?: number }> = {
   executor: { x: 0, y: 0, scale: 1.05 },
   receptionist: { x: -145, y: 35, scale: 0.8 },
   legal: { x: 145, y: 35, scale: 0.8 },
-  planner_hand: { x: -170, y: 110, scale: 0.8 },
   critic_hand: { x: 170, y: 110, scale: 0.8 },
   memory: { x: 0, y: 80, scale: 0.9 },
+  'executor-2': { x: 0, y: 120, scale: 0.95 },
   executor_hip: { x: -65, y: 180, scale: 0.8 },
   'agent-06': { x: 65, y: 180, scale: 0.8 },
   'agent-07': { x: -75, y: 290, scale: 0.8 },
@@ -48,7 +49,7 @@ const TAG = {
   BAN_KIEM_SOAT: 'BAN KIỂM SOÁT',
   STEWARD: 'STEWARD',
   RECEPTIONIST: 'RECEPTIONIST',
-  BAN_LE_TAN: 'BAN LỄ TÂN',
+  BAN_LE_TAN: 'BAN TRỢ LÝ',
   EXECUTOR: 'EXECUTOR',
   BAN_THUC_THI: 'BAN THỰC THI',
   CHAT_INTEL: 'CHAT_INTEL',
@@ -64,23 +65,19 @@ const TAG = {
 } as const;
 
 /** Sets được precompute — Set.has() = O(1) thay vì Array.includes() = O(n) */
-const TERMINAL_TAGS = new Set([TAG.DONE, TAG.RESULT, TAG.MISSION_RESULT, TAG.JKAI, TAG.CHAT_INTEL, TAG.RECEPTIONIST]);
-const RESULT_TAGS = new Set([TAG.RESULT, TAG.DONE, TAG.JKAI, TAG.MISSION_RESULT, TAG.CHAT_INTEL, TAG.RECEPTIONIST]);
-const RUNNING_TAGS = new Set([TAG.THOUGHT, TAG.EXECUTOR, TAG.CRITIC, TAG.ADVERSARIAL, TAG.SYSTEM, TAG.STEWARD, TAG.TU_DUY, TAG.BAN_KE_HOACH, TAG.PLANNER, TAG.BAN_KIEM_SOAT, TAG.PHAN_BIEN]);
-const HISTORY_TAGS = new Set([TAG.JKAI, TAG.RESULT, TAG.DONE, TAG.CHAT_INTEL, TAG.MISSION_RESULT, TAG.RECEPTIONIST]);
-
-// Sets thay vì inline arrays trong onLog
-const PLANNER_TAGS = new Set([TAG.THOUGHT, TAG.TU_DUY, TAG.PLANNER, TAG.BAN_KE_HOACH]);
-const CRITIC_TAGS = new Set([TAG.CRITIC, TAG.PHAN_BIEN, TAG.BAN_KIEM_SOAT]);
-const RECEPTIONIST_TAGS = new Set([TAG.STEWARD, TAG.RECEPTIONIST, TAG.BAN_LE_TAN]);
-const EXECUTOR_TAGS = new Set([TAG.EXECUTOR, TAG.BAN_THUC_THI]);
-const MASTER_TAGS = new Set([TAG.CHAT_INTEL, TAG.JKAI]);
-const MEMORY_TAGS = new Set([TAG.MEMORY, TAG.QUAN_GIA]);
+const TERMINAL_TAGS = new Set<string>([TAG.DONE, TAG.RESULT, TAG.MISSION_RESULT, TAG.JKAI, TAG.CHAT_INTEL]);
+const RESULT_TAGS = new Set<string>([TAG.RESULT, TAG.DONE, TAG.JKAI, TAG.MISSION_RESULT, TAG.CHAT_INTEL, TAG.RECEPTIONIST]);
+const RUNNING_TAGS = new Set<string>([
+  TAG.THOUGHT, TAG.EXECUTOR, TAG.CRITIC, TAG.ADVERSARIAL, TAG.SYSTEM, TAG.STEWARD,
+  TAG.TU_DUY, TAG.BAN_KE_HOACH, TAG.PLANNER, TAG.BAN_KIEM_SOAT, TAG.PHAN_BIEN, TAG.RECEPTIONIST,
+  'SUMMARIZER', 'SYNTHESIS', 'LEGAL', 'BAN_THU_KY', 'BAN THƯ KÝ'
+]);
+const HISTORY_TAGS = new Set<string>([TAG.JKAI, TAG.RESULT, TAG.DONE, TAG.CHAT_INTEL, TAG.MISSION_RESULT, TAG.RECEPTIONIST]);
 
 const CANCELLATION_KEYWORDS = ['disconnected', 'cancelled', 'stopped', 'timeout', 'connection'] as const;
 const MODIFIED_FILE_KEYWORDS = ['edited', 'wrote', 'đã sửa'] as const;
 
-const SIDE_NODE_IDS = ['planner', 'critic', 'hitl', 'executor', 'bridge', 'eye', 'memory', 'receptionist', 'legal'] as const;
+const SIDE_NODE_IDS = ['planner', 'critic', 'hitl', 'executor', 'executor-2', 'bridge', 'eye', 'memory', 'receptionist', 'legal'] as const;
 
 const THINKING_PHRASES: Partial<Record<string, string[]>> = {
   [TAG.THOUGHT]: ['JKAI: Thinking'],
@@ -98,9 +95,10 @@ const ARTIFACT_FILE_MAP: Record<string, string> = {
 const BASE_NODES = [
   { id: 'brain', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'ZENITH CORE', status: 'RUNNING', icon: 'brain', msg: 'Đang khởi động Não bộ...' } },
   { id: 'planner', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'NEURAL PLANNER', status: 'IDLE', icon: 'planner' } },
-  { id: 'critic', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'ELITE CRITIC', status: 'IDLE', icon: 'critic' } },
-  { id: 'executor', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'MISSION EXECUTOR', status: 'IDLE', icon: 'executor' } },
-  { id: 'receptionist', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'BAN TRỢ LÝ', status: 'IDLE', icon: 'receptionist' } },
+  { id: 'critic', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'Ban Kiểm Soát', status: 'IDLE', icon: 'critic' } },
+  { id: 'executor', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'Ban Thực Thi Alpha', status: 'IDLE', icon: 'executor' } },
+  { id: 'executor-2', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'Ban Thực Thi Beta', status: 'IDLE', icon: 'executor' } },
+  { id: 'receptionist', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'Ban Trợ Lý', status: 'IDLE', icon: 'receptionist' } },
   { id: 'legal', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'Ban Thư Ký', status: 'IDLE', icon: 'legal' } },
   { id: 'memory', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'MEMORY CORE', status: 'IDLE', icon: 'memory' } },
 ] as const;
@@ -112,21 +110,24 @@ const BASE_EDGES = [
   { id: 'e-e-m', source: 'executor', target: 'memory', animated: true },
   { id: 'e-e-r', source: 'executor', target: 'receptionist', animated: true },
   { id: 'e-e-l', source: 'executor', target: 'legal', animated: true },
+  { id: 'e2-b', source: 'executor-2', target: 'brain', animated: true },
 ] as const;
 
 // ─── SOCKET — module-level singleton ─────────────────────────────────────────
 
 /**
  * Socket khởi tạo một lần, dùng chung toàn app.
- * transports: ['websocket', 'polling'] — tránh bị chặn bởi proxy.
+ * Qua Vite proxy: cùng origin (9999) → backend 9998 /socket.io
+ * polling fallback: tránh timeout khi WS handshake chậm (Docker cold start).
  */
 const socket: Socket = io({
+  path: '/socket.io',
   reconnectionAttempts: 20,
   reconnectionDelay: 1000,
   reconnectionDelayMax: 5000,
-  timeout: 20000,
+  timeout: 30000,
   autoConnect: true,
-  transports: ['websocket'], // Ép dùng websocket để ổn định nhất
+  transports: ['websocket', 'polling'],
 });
 
 socket.on('connect', () => {
@@ -134,8 +135,8 @@ socket.on('connect', () => {
   toast.success('Neural Bridge Online.', { id: 'ZENITH_BRIDGE', icon: '📡' });
 });
 socket.on('connect_error', (err) => {
-  console.error('⚠️ [ZENITH-CORE] Bridge Fault:', err);
-  toast.error(`Neural Bridge Fault: ${err.message}`, { id: 'ZENITH_BRIDGE', icon: '⚠️' });
+  // Transient: backend chưa sẵn sàng hoặc StrictMode reconnect — không toast mỗi lần
+  console.warn('⚠️ [ZENITH-CORE] Bridge retry:', err.message);
 });
 socket.on('reconnect', (attempt) => {
   console.log('🔄 [ZENITH-CORE] Neural Bridge Re-established after', attempt, 'attempts.');
@@ -153,7 +154,17 @@ interface NodeUpdate {
   status: string;
   msg?: string | null;
   intensity?: string;
+  tag?: string;
 }
+
+// Sets thay vì inline arrays trong onLog
+const PLANNER_TAGS = new Set<string>([TAG.THOUGHT, TAG.TU_DUY, TAG.PLANNER, TAG.BAN_KE_HOACH]);
+const CRITIC_TAGS = new Set<string>([TAG.CRITIC, TAG.PHAN_BIEN, TAG.BAN_KIEM_SOAT]);
+const RECEPTIONIST_TAGS = new Set<string>([TAG.STEWARD, TAG.RECEPTIONIST, TAG.BAN_LE_TAN]);
+const EXECUTOR_TAGS = new Set<string>([TAG.EXECUTOR, TAG.BAN_THUC_THI]);
+const MASTER_TAGS = new Set<string>([TAG.CHAT_INTEL]);
+const MEMORY_TAGS = new Set<string>([TAG.MEMORY, TAG.QUAN_GIA]);
+const SUMMARIZER_TAGS = new Set<string>(['SUMMARIZER', 'SYNTHESIS', 'LEGAL', 'BAN_THU_KY', 'BAN THƯ KÝ']);
 
 // ─── applyAnatomyLayout ───────────────────────────────────────────────────────
 
@@ -179,6 +190,7 @@ function applyAnatomyLayout(nodes: any[], updates: NodeUpdate[]): any[] {
       if (
         n.data.status !== upd.status ||
         (upd.msg !== undefined && n.data.msg !== upd.msg) ||
+        (upd.tag !== undefined && n.data.tag !== upd.tag) ||
         (upd.intensity !== undefined && n.data.intensity !== upd.intensity) ||
         n.data.cycles !== nextCycles
       ) {
@@ -188,8 +200,10 @@ function applyAnatomyLayout(nodes: any[], updates: NodeUpdate[]): any[] {
             ...n.data,
             status: upd.status,
             msg: upd.msg ?? n.data.msg,
+            tag: upd.tag ?? n.data.tag,
             intensity: upd.intensity ?? n.data.intensity ?? 'calm',
             cycles: nextCycles,
+            ts: Date.now(), // 🚀 Lưu lại dấu mốc thời gian cập nhật thực tế!
           },
         };
       }
@@ -200,9 +214,10 @@ function applyAnatomyLayout(nodes: any[], updates: NodeUpdate[]): any[] {
       activeNode &&
       next.data.status === 'RUNNING' &&
       next.id !== activeNode.id &&
-      next.id !== 'brain'
+      next.id !== 'brain' &&
+      !updateMap.has(next.id)
     ) {
-      next = { ...next, data: { ...next.data, status: 'DONE', msg: null } };
+      next = { ...next, data: { ...next.data, status: 'DONE', msg: null, ts: Date.now() } };
     }
 
     return next;
@@ -212,7 +227,7 @@ function applyAnatomyLayout(nodes: any[], updates: NodeUpdate[]): any[] {
   return updated.map(n => {
     const cfg = ANATOMY_MAP[n.id] ?? { x: 0, y: 0, scale: 0.8 };
     const active = n.data.status === 'RUNNING' || n.data.status === 'WAITING' || n.data.status === 'DONE';
-    const hide = !active && n.id !== 'brain' && n.id !== 'executor';
+    const hide = !active && n.id !== 'brain' && n.id !== 'executor' && n.id !== 'executor-2';
     const scale = cfg.scale ?? 0.8;
 
     if (
@@ -239,7 +254,7 @@ function applyAnatomyLayout(nodes: any[], updates: NodeUpdate[]): any[] {
 
 // ─── HOOK ─────────────────────────────────────────────────────────────────────
 
-export function useTaskWebSocket() {
+export function useTaskWebSocket(onNewLog?: (log: TaskLog) => void) {
   const [dagNodes, setDagNodes] = useState<any[]>(() => applyAnatomyLayout([...BASE_NODES], []));
   const [dagEdges, setDagEdges] = useState<any[]>([...BASE_EDGES]);
   const isConnected = useZenithStore(s => s.isConnected);
@@ -264,13 +279,31 @@ export function useTaskWebSocket() {
     };
     const onConnectError = (err: unknown) => {
       setIsConnected(false);
-      console.error('❌ [JKAI] Connection Error:', err);
+      const msg = err instanceof Error ? err.message : String(err);
+      console.warn('⚠️ [JKAI] Bridge retry:', msg);
     };
 
     // Sync trạng thái ngay nếu socket đã connected khi mount
     if (socket.connected) {
       setIsConnected(true);
     }
+
+    // 📋 [PLAN BOARD] Fetch pending proposals on mount
+    fetch('/api/proposals').then(async res => {
+      if (!res.ok) return null;
+      const contentType = res.headers.get('content-type');
+      if (contentType && contentType.includes('application/json')) {
+        return res.json();
+      }
+      return null;
+    }).then(data => {
+      if (data?.proposals) {
+        useZenithStore.getState().setBackgroundProposals(data.proposals);
+        if (data.proposals.length > 0 && useZenithStore.getState().rightTab !== 'plan') {
+          useZenithStore.getState().setUnreadTab('plan', data.proposals.length);
+        }
+      }
+    }).catch(err => console.error('[JKAI] Failed to fetch initial proposals:', err));
 
     socket.on('connect', onConnect);
     socket.on('disconnect', onDisconnect);
@@ -289,7 +322,7 @@ export function useTaskWebSocket() {
     };
 
     // FIX: clearInterval trong cleanup để không leak timer sau unmount
-    const throttleTimer = setInterval(flushBuffers, 80);
+    const throttleTimer = setInterval(flushBuffers, 250);
 
     // ── onLog ────────────────────────────────────────────────────────────────
     const onLog = (data: any) => {
@@ -298,10 +331,23 @@ export function useTaskWebSocket() {
       const log: TaskLog = data.payload ?? data;
       if (!log?.tag) return;
 
+      // 📡 [BRIDGE-CALLBACK]: Trigger callback for external hooks (e.g. Voice)
+      if (onNewLog) onNewLog(log);
+
       // Normalise id / timestamp
-      if (!log.id) log.id = `log_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`;
       if (log.ts && log.ts < 2_000_000_000) log.ts = log.ts * 1000;
       if (!log.ts) log.ts = Date.now();
+
+      if (!log.id) {
+        const tag = (log.tag || 'SYS').toUpperCase();
+        const msg = log.msg || '';
+        if (['THOUGHT', 'PROGRESS', 'PLANNER', 'TƯ DUY', 'BAN KẾ HOẠCH'].includes(tag) && log.task_id) {
+          log.id = `stream_${tag}_${log.task_id}`;
+        } else {
+          const cleanMsg = msg.trim();
+          log.id = `hash_${tag}_${cleanMsg.length}_${cleanMsg.slice(0, 30)}_${log.ts}`;
+        }
+      }
 
       const tag = (log.tag as string).toUpperCase();
       const msg = log.msg ?? '';
@@ -319,11 +365,22 @@ export function useTaskWebSocket() {
         return;
       }
 
-      // ── isStopping guard — TRƯỚC khi push vào buffer ─────────────────────
-      // FIX: guard phải đứng trước logBuffer.push để log không bị leak
+      // ── isStopping guard ─────────────────────────────────────────────────
+      // [FIX-P1]: Giữ guard CHO ĐẾN KHI backend xác nhận dừng thực sự.
+      // Guard cũ: reset ngay sau log đầu → log tiếp theo set 'running' → nút dừng biến mất.
+      // Guard mới: chỉ tắt khi nhận ERROR cancellation HOẶC terminal tag từ backend.
       const store = useZenithStore.getState();
       if (store.isStopping) {
-        store.setStopping(false);
+        const m_stop = (msg ?? '').toLowerCase();
+        const isBackendConfirmedStop =
+          (tag === TAG.ERROR && CANCELLATION_KEYWORDS.some(k => m_stop.includes(k))) ||
+          TERMINAL_TAGS.has(tag);
+
+        if (isBackendConfirmedStop) {
+          store.setStopping(false);
+          store.setStatus('idle');
+        }
+        // Trong mọi trường hợp: không xử lý log, không update DAG khi đang dừng
         return;
       }
 
@@ -353,16 +410,44 @@ export function useTaskWebSocket() {
       // ── DAG node updates — vào pendingNodeUpdates (flushed mỗi 80 ms) ─────
       const shortMsg = truncate(msg);
 
-      if (PLANNER_TAGS.has(tag)) pendingNodeUpdates.push({ id: 'planner', status: 'RUNNING', msg: shortMsg });
-      else if (CRITIC_TAGS.has(tag)) pendingNodeUpdates.push({ id: 'critic', status: 'RUNNING', msg: shortMsg });
-      else if (RECEPTIONIST_TAGS.has(tag)) pendingNodeUpdates.push({ id: 'receptionist', status: 'RUNNING', msg: shortMsg });
-      else if (MASTER_TAGS.has(tag)) pendingNodeUpdates.push({ id: 'brain', status: 'RUNNING', msg: shortMsg });
-      else if (MEMORY_TAGS.has(tag)) pendingNodeUpdates.push({ id: 'memory', status: 'RUNNING', msg: 'Truy xuất: ' + truncate(msg, 20) });
-      else if (EXECUTOR_TAGS.has(tag)) {
-        // FIX: dùng 'executor' (tồn tại trong BASE_NODES) làm fallback,
-        // chỉ route sang sub-id khi chắc chắn chúng đã được đăng ký trong graph.
-        const targetId = m.includes('beta') || m.includes('executor-2') ? 'executor' : 'executor';
-        pendingNodeUpdates.push({ id: targetId, status: 'RUNNING', msg: shortMsg });
+      const upperTag = String(tag || '').toUpperCase();
+
+      if (MASTER_TAGS.has(tag)) {
+        pendingNodeUpdates.push({ id: 'brain', status: 'RUNNING', msg: shortMsg, tag });
+      } else if (PLANNER_TAGS.has(tag)) {
+        pendingNodeUpdates.push({ id: 'planner', status: 'RUNNING', msg: shortMsg, tag });
+      } else if (CRITIC_TAGS.has(tag) || upperTag.includes('AUDIT') || upperTag.includes('REVIEW') || upperTag.includes('GUARDRAIL') || (upperTag.includes('CRITIC') && (upperTag.includes('ALPHA') || upperTag.includes('BETA')))) {
+        pendingNodeUpdates.push({ id: 'critic', status: 'RUNNING', msg: shortMsg, tag });
+      } else if (MEMORY_TAGS.has(tag)) {
+        pendingNodeUpdates.push({ id: 'memory', status: 'RUNNING', msg: 'Truy xuất: ' + truncate(msg, 20), tag });
+      } else if (EXECUTOR_TAGS.has(tag) || (upperTag.includes('EXECUTOR') && (upperTag.includes('ALPHA') || upperTag.includes('BETA'))) || upperTag === 'ALPHA' || upperTag === 'BETA') {
+        const targetId = upperTag.includes('BETA') ? 'executor-2' : 'executor';
+        pendingNodeUpdates.push({ id: targetId, status: 'RUNNING', msg: shortMsg, tag });
+      } else if (
+        SUMMARIZER_TAGS.has(tag) || 
+        upperTag.includes('SYSTEM') || upperTag.includes('ADMIN') || upperTag.includes('HANH_CHINH')
+      ) {
+        // Route "Ban Thư Ký" và "Ban Hành Chính" sang Ban Thư ký (legal node - Ghế số 2)
+        pendingNodeUpdates.push({ id: 'legal', status: 'RUNNING', msg: shortMsg, tag });
+      } else if (
+        RECEPTIONIST_TAGS.has(tag) || 
+        upperTag.includes('GATEWAY') || upperTag.includes('LE_TAN') ||
+        upperTag.includes('RESULT') || upperTag.includes('DONE') || upperTag.includes('MISSION_RESULT') ||
+        upperTag.includes('RESEARCH') || upperTag.includes('SCOUT') || upperTag.includes('SEARCH') ||
+        upperTag.includes('ANTIGRAVITY') || upperTag.includes('FORGE') || upperTag.includes('KIENTAO') || upperTag.includes('KIẾN TẠO') ||
+        upperTag.includes('TINHBAO') || upperTag.includes('TÌNH BÁO') || upperTag.includes('CREATOR') ||
+        tag === 'JKAI'
+      ) {
+        // Route "Ban Trợ Lý" sang Ban Trợ Lý (receptionist node - Ghế số 1)
+        // Lưu ý: Chỉ định tuyến tag JKAI khi là câu trả lời cuối (không chứa tiền tố ZENITH của hệ thống)
+        if (tag === 'JKAI' && msg.includes('💎🫡 [ZENITH]')) {
+          pendingNodeUpdates.push({ id: 'legal', status: 'RUNNING', msg: shortMsg, tag });
+        } else {
+          pendingNodeUpdates.push({ id: 'receptionist', status: 'RUNNING', msg: shortMsg, tag });
+        }
+      } else {
+        // Mặc định cho các tag khác -> Chuyển về Ban Thư Ký / Ban Hành Chính (legal node)
+        pendingNodeUpdates.push({ id: 'legal', status: 'RUNNING', msg: shortMsg, tag });
       }
 
       // ── Terminal — RESULT / DONE ───────────────────────────────────────────
@@ -372,7 +457,14 @@ export function useTaskWebSocket() {
           pendingNodeUpdates.push({ id: 'brain', status: 'DONE', msg: msg || 'Hoàn tất tác vụ' });
           toast.success('Nhiệm vụ hoàn tất.', { id: 'ZENITH_PULSE', icon: '💎' });
         }
+        if (msg && msg.length > 80) {
+          useZenithStore.getState().updateArtifact('walkthrough', msg);
+        }
         SIDE_NODE_IDS.forEach(id => pendingNodeUpdates.push({ id, status: 'DONE', msg: null }));
+      }
+
+      if (tag === TAG.JKAI && msg && msg.length > 120 && !msg.includes('💎🫡 [ZENITH]')) {
+        useZenithStore.getState().updateArtifact('walkthrough', msg);
       }
 
       // ── Terminal — ERROR ───────────────────────────────────────────────────
@@ -410,10 +502,10 @@ export function useTaskWebSocket() {
 
     // ── Artifact watcher ──────────────────────────────────────────────────────
     const onArtifactNew = async (data: any) => {
-      const { setUnreadTab, rightTab, updateArtifact } = useZenithStore.getState();
+      const { incrementUnreadTab, rightTab, updateArtifact } = useZenithStore.getState();
       const tabType: string = data.type;
 
-      if (rightTab !== tabType) setUnreadTab(tabType, true);
+      if (rightTab !== tabType) incrementUnreadTab(tabType);
 
       const filename = ARTIFACT_FILE_MAP[tabType];
       if (!filename) return;
@@ -446,17 +538,97 @@ export function useTaskWebSocket() {
 
     socket.on('hardware_pulse', onHardwarePulse);
     socket.on('artifact_new', onArtifactNew);
+    
+    // ── Proposals Watcher ───────────────────────────────────────────────────
+    socket.on('file_edit', async (data: any) => {
+      if (!data?.path) return;
+      const store = useZenithStore.getState();
+      const edit = {
+        path: String(data.path),
+        diff: String(data.diff || ''),
+        ts: data.ts || Date.now() / 1000,
+        task_id: data.task_id,
+      };
+      const openTab = data.open_tab !== false;
+      store.registerFileEdit(edit, openTab);
+      if (openTab) {
+        try {
+          const r = await ZenithService.readFile(edit.path);
+          if (r?.content) store.setInspectedFile({ path: edit.path, content: r.content });
+        } catch {
+          /* ignore */
+        }
+      }
+    });
+
+    socket.on('proposal_created', (data: any) => {
+      const payload = data?.payload || data?.proposal;
+      if (payload) {
+        const store = useZenithStore.getState();
+        store.addBackgroundProposal(payload);
+        if (store.rightTab !== 'plan') {
+          const count = store.backgroundProposals.length + 1;
+          store.setUnreadTab('plan', count);
+        }
+        toast(`Đề xuất mới: ${payload.source_module} - ${payload.title}`, { 
+          icon: '🔮',
+          duration: 5000,
+          style: {
+            background: 'rgba(112, 26, 117, 0.8)',
+            border: '1px solid rgba(217, 70, 239, 0.5)',
+            color: '#fff'
+          }
+        });
+      }
+    });
+
+    socket.on('proposal_resolved', (data: any) => {
+      if (data?.proposal_id) {
+        const store = useZenithStore.getState();
+        store.removeBackgroundProposal(data.proposal_id);
+        const count = Math.max(0, store.backgroundProposals.length - 1);
+        store.setUnreadTab('plan', count);
+      }
+    });
+
     socket.on('hitl_pending_event', (data: any) => {
       const store = useZenithStore.getState();
       try {
          const parsed = typeof data === 'string' ? JSON.parse(data) : data;
          if (parsed?.event === 'hitl_created') {
-             store.setPendingHitlId(parsed.payload?.proposal_id || parsed.proposal_id);
+             const p = parsed.payload;
+             // 🛡️ [CORE-ONLY-GATE]: Chỉ hiện Overlay cho lệnh can thiệp hệ thống
+             if (p?.is_core === true || p?.type === 'AUTH_REQUIRED') {
+                store.setPendingHitlId(p?.proposal_id || parsed.proposal_id);
+             }
          } else if (parsed?.event === 'hitl_resolved') {
-             // Only clear if it matches
              if (store.pendingHitlId === parsed.proposal_id) store.setPendingHitlId(null);
          }
       } catch (e) {}
+    });
+
+    socket.on('mission_saved', async (data: any) => {
+      console.log('[ZENITH-SYNC] Mission saved event:', data);
+      window.dispatchEvent(new CustomEvent('zenith:reload-missions'));
+      if (data?.id) {
+        try {
+          const full = await ZenithService.getMission(data.id);
+          if (full && !full.error) {
+            const arts = full.artifacts || {};
+            const { updateArtifact } = useZenithStore.getState();
+            if (arts.walkthrough) updateArtifact('walkthrough', String(arts.walkthrough));
+            if (arts.plan) updateArtifact('plan', String(arts.plan));
+            if (arts.tasks) updateArtifact('tasks', String(arts.tasks));
+          }
+        } catch {
+          /* ignore */
+        }
+      }
+      if (data?.id && (data.id.startsWith('tele_') || data.id.startsWith('m_tele_') || data.id.startsWith('ZENITH_') || data.id.startsWith('m_ZENITH_'))) {
+        toast.success('He thong dong bo: Da cap nhat tien trinh tac vu Telegram thua Master!', {
+          id: `TELE_SYNC_${data.id}`
+        });
+      }
     });
 
     // ── Cleanup ───────────────────────────────────────────────────────────────
@@ -468,9 +640,12 @@ export function useTaskWebSocket() {
       socket.off('connect_error', onConnectError);
       socket.off('log', onLog);
       socket.off('log_batch', onLogBatch);
+      socket.off('log_batch:operational');
+      socket.off('log_batch:progress');
       socket.off('hardware_pulse', onHardwarePulse);
       socket.off('artifact_new', onArtifactNew);
       socket.off('hitl_pending_event');
+      socket.off('mission_saved');
     };
   }, []); // deps rỗng — chỉ chạy 1 lần (socket là singleton)
 
@@ -494,7 +669,7 @@ export function useTaskWebSocket() {
 
     // Reset DAG khi bắt đầu task mới
     if (!isAppend || dagNodesRef.current.length === 0) {
-      const initialNodes = (BASE_NODES as any[]).map(n => {
+      const initialNodes = ([...BASE_NODES] as any[]).map(n => {
         if (n.id === 'brain') return { ...n, hidden: false, data: { ...n.data, status: 'RUNNING', msg: goal } };
         if (n.id === 'receptionist') return { ...n, hidden: false, data: { ...n.data, status: 'WAITING', msg: 'Đang tiếp nhận nhiệm vụ...' } };
         return { ...n, hidden: true };
@@ -518,6 +693,8 @@ export function useTaskWebSocket() {
           content: l.msg,
         }));
 
+      const sessionId = state.sessionId;
+
       const res = await fetch('/api/submit_task', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -525,7 +702,9 @@ export function useTaskWebSocket() {
         body: JSON.stringify({
           goal,
           mode,
+          lang: state.language,
           mission_id: currentMissionId,
+          session_id: sessionId,
           history,
           artifacts: state.currentArtifacts ?? {},
           images: options.images ?? [],

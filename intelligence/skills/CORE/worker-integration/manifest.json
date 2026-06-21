@@ -1,0 +1,51 @@
+{
+  "id": "WORKER_INTEGRATION",
+  "name": "Zenith Worker Integration",
+  "version": "1.0.0",
+  "description": "Onboarding and connectivity core: Seamlessly integrates new agents and third-party tools into the Zenith Hive ecosystem.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "tích hợp đặc vụ",
+    "worker integration",
+    "kết nối công cụ mới",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "zenith",
+    "cong",
+    "hoac",
+    "khong",
+    "giao",
+    "viec",
+    "dich",
+    "thanh",
+    "quyen",
+    "thiet",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "target_id": {
+          "type": "string",
+          "description": "ID of the agent or tool to integrate."
+        },
+        "config": {
+          "type": "object",
+          "description": "Integration configuration parameters."
+        }
+      },
+      "required": [
+        "target_id"
+      ]
+    }
+  }
+}

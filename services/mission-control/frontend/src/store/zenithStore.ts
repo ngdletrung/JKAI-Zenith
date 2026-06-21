@@ -15,6 +15,27 @@ export interface Proposal {
   ts: number;
 }
 
+export interface FileEditEvent {
+  path: string;
+  diff: string;
+  ts: number;
+  task_id?: string;
+}
+
+export interface BackgroundProposal {
+  id: string;
+  task_id: string;
+  title: string;
+  description: string;
+  source_module: string;
+  proposal_type: 'KNOWLEDGE_DISTILL' | 'SELF_SURGERY' | 'HITL_REALTIME' | string;
+  is_red_zone: boolean;
+  execute_goal: string;
+  metadata: Record<string, any>;
+  status: 'pending' | 'executing' | 'done';
+  created_at: number;
+}
+
 export interface TaskLog {
   id?: string;
   tag: string;
@@ -24,6 +45,8 @@ export interface TaskLog {
   source?: string; // 🔬 [GRANULAR-SOURCE]: Định danh tệp tin gốc
   type?: string;
   mode?: string;
+  task_id?: string;
+  is_delta?: boolean;
 }
 
 export interface TraceItem {
@@ -32,14 +55,18 @@ export interface TraceItem {
   label: string;
   detail?: string;
   ts: number;
+  duration?: number; // ⏱️ [FIX-FROZEN-TIMER]: Time spent on this task
   status: 'pending' | 'completed';
   logId?: string; // 📡 [LOG-LINK]: ID của log gốc để cuộn đến
 }
 
 export interface AgentLog extends TaskLog {
   id: string;
-  type?: 'user' | 'ai' | 'sys' | 'tool';
+  type?: 'user' | 'ai' | 'sys' | 'tool' | 'CODE';
   action?: string;
+  pct?: number;
+  is_result?: boolean;
+  is_core?: boolean;
 }
 
 // ─── LOCALIZATION DICTIONARY ────────────────────────────────────────────────
@@ -98,7 +125,6 @@ export const Dictionary = {
     cmd_dispatch: 'Dispatch executive command...',
     no_artifact: '# No Documentation Found\nStart a mission to generate Corporate data.',
     artifact_error: '# Error loading documentation',
-    tab_filelab: 'File Lab',
 
     // 🧬 Node Labels
     node_brain: 'EXECUTIVE BOARD',
@@ -112,6 +138,13 @@ export const Dictionary = {
 
     // 🚦 Status Labels
     st_auditing: 'AUDITING',
+    PLANNER: 'blue',
+    CRITIC: 'indigo',
+    DISPATCHER: 'purple',
+    EXECUTOR: 'emerald',
+    AUDIT: 'amber',
+    RISK: 'rose',
+    SYSTEM: 'slate',
     st_stable: 'STABLE',
     st_running: 'RUNNING',
     st_waiting: 'WAITING',
@@ -142,11 +175,11 @@ export const Dictionary = {
     analyze_stream: 'Đang tổng hợp dữ liệu điều hành...',
     awaiting: 'Hệ thống đang túc trực chờ Yêu cầu từ Master.',
     mission_history: 'Lịch sử nhiệm vụ',
-    new_mission: 'Khởi tạo Sứ mệnh mới',
-    placeholder: 'Master yêu cầu Sứ mệnh nào? Nhập lệnh hoặc Mật lệnh...',
-    processing: 'Đang thực thi Giao thức Tập đoàn...',
+    new_mission: 'Khởi tạo nhiệm vụ mới',
+    placeholder: 'Master yêu cầu nhiệm vụ nào không ? ...',
+    processing: 'Đang thực thi nhiệm vụ...',
     copied: 'Đã sao chép Chữ ký',
-    system_online: 'Hệ thống Zenith Trực tuyến',
+    system_online: 'Hệ thống JKAI Zenith đang trực tuyến !',
     active_model: 'Lõi Trí tuệ',
     vram: 'Bộ nhớ Đồ họa',
     uplink_stable: 'Đường truyền: Tối ưu',
@@ -174,14 +207,13 @@ export const Dictionary = {
     hitl_execute: 'Thực thi',
     dismiss_btn: 'Bỏ qua',
     file_copy: 'Sao chép Mã',
-    official_artifact: 'Hồ sơ Sứ mệnh Chính thức',
+    official_artifact: 'Hồ sơ nhiệm vụ chính thức',
     thinking_msg: 'Đang xử lý',
     tab_progress: 'Tiến trình',
     tab_terminal: 'Cửa sổ Lệnh',
     cmd_dispatch: 'Nhập mật khẩu lệnh điều hành...',
-    no_artifact: '# Không tìm thấy Hồ sơ\nKhởi tạo sứ mệnh để tạo dữ liệu Tập đoàn.',
+    no_artifact: '# Không tìm thấy Hồ sơ\nKhởi tạo nhiệm vụ để tạo dữ liệu Tập đoàn.',
     artifact_error: '# Lỗi khi tải hồ sơ',
-    tab_filelab: 'Phòng File',
     node_brain: 'BAN ĐIỀU HÀNH',
     node_planner: 'BAN KẾ HOẠCH',
     node_critic: 'BAN KIỂM SOÁT',
@@ -199,7 +231,7 @@ export const Dictionary = {
     t_processing: 'Đang triển khai giao thức...',
     t_queued: 'Yêu cầu đã được xếp hàng.',
     t_authorized: 'Đã được Master phê duyệt.',
-    t_complete: 'Sứ mệnh hoàn tất. Báo cáo đã sẵn sàng trình Master.',
+    t_complete: 'Nhiệm vụ hoàn tất. Báo cáo đã sẵn sàng trình Master.',
     sub_header: 'Trung tâm Điều hành Lõi JKAI',
     sys_log: 'BAN KỸ THUẬT TẬP ĐOÀN',
     security_log: 'BỘ PHẬN AN NINH'
@@ -223,8 +255,10 @@ export interface ZenithState {
   debateCount: number;
 
   currentMissionId: string | null;
+  sessionId: string;
   history: any[];
   modifiedFiles: string[];
+  fileEdits: FileEditEvent[];
   language: 'en' | 'vi';
   missionGoal: string;
   inputHistory: string[];
@@ -244,7 +278,8 @@ export interface ZenithState {
 
   // 🔬 SURGICAL PRECISION PROTOCOL
   pendingProposals: Proposal[];
-  unreadTabs: Record<string, boolean>;
+  backgroundProposals: BackgroundProposal[];
+  unreadTabs: Record<string, number>;
   pulse: { cpu: number; ram: number; gpu: number; status: string; active_thoughts: string };
   isConnected: boolean;
 
@@ -253,6 +288,7 @@ export interface ZenithState {
     items: TraceItem[];
     isExpanded: boolean;
     lastUpdate: number;
+    startTime?: number; // ⏱️ [MISSION-CHRONOS]: Thời điểm bắt đầu nhiệm vụ
   };
   setTraceExpanded: (val: boolean) => void;
   clearTrace: () => void;
@@ -270,6 +306,7 @@ export interface ZenithState {
   setTab: (tab: RightTab) => void;
   setInspectedFile: (file: { path: string; content: string } | null) => void;
   addModifiedFile: (path: string) => void;
+  registerFileEdit: (edit: FileEditEvent, openPreview?: boolean) => void;
   setThinkingPhrase: (phrase: string) => void;
   toggleReasoning: () => void;
   setStreamView: (view: StreamView) => void;
@@ -295,8 +332,19 @@ export interface ZenithState {
   socketActions: { submitTask: any; resetDAG: any } | null;
   updateArtifact: (key: string, content: string) => void;
   updateManifest: (manifest: any) => void;
-  setUnreadTab: (tab: string, val: boolean) => void;
+  setUnreadTab: (tab: string, val: number) => void;
+  incrementUnreadTab: (tab: string) => void;
+  
+  setBackgroundProposals: (proposals: BackgroundProposal[]) => void;
+  addBackgroundProposal: (proposal: BackgroundProposal) => void;
+  removeBackgroundProposal: (id: string) => void;
+  updateProposalStatus: (id: string, status: 'pending' | 'executing' | 'done') => void;
   setPulse: (pulse: any) => void;
+  setMissionId: (currentMissionId: string | null) => void;
+  setSessionId: (sessionId: string) => void;
+  setHistory: (history: any[]) => void;
+  setSocketActions: (socketActions: { submitTask: any; resetDAG: any } | null) => void;
+  loadMissionData: (data: any) => Promise<void>;
 }
 
 export const useZenithStore = create<ZenithState>()(
@@ -323,8 +371,10 @@ export const useZenithStore = create<ZenithState>()(
         streamView: 'chat',
         debateCount: 0,
         currentMissionId: null,
+        sessionId: typeof crypto !== 'undefined' && crypto.randomUUID ? crypto.randomUUID() : `sess_${Date.now()}_${Math.random().toString(36).slice(2)}`,
         history: [],
         modifiedFiles: [],
+        fileEdits: [],
         language: 'vi', // Default to Vietnamese for Master
         isStopping: false,
         activeSkills: [],
@@ -346,12 +396,14 @@ export const useZenithStore = create<ZenithState>()(
         })(),
         inputHistoryIndex: -1,
         unreadTabs: {},
+        backgroundProposals: [],
         pulse: { cpu: 0, ram: 0, gpu: 0, status: 'STANDBY', active_thoughts: 'IDLE' },
         isConnected: false,
         executionTrace: {
           items: [],
           isExpanded: true,
-          lastUpdate: Date.now()
+          lastUpdate: Date.now(),
+          startTime: Date.now()
         },
 
         setTraceExpanded: (isExpanded) => set(s => ({
@@ -360,7 +412,7 @@ export const useZenithStore = create<ZenithState>()(
         })),
         clearTrace: () => set(s => ({
           ...s,
-          executionTrace: { items: [], isExpanded: true, lastUpdate: Date.now() }
+          executionTrace: { items: [], isExpanded: true, lastUpdate: Date.now(), startTime: Date.now() }
         })),
 
         setGoal: (goal) => set(s => ({ ...s, goal })),
@@ -375,7 +427,24 @@ export const useZenithStore = create<ZenithState>()(
         setInputHistoryIndex: (inputHistoryIndex) => set(s => ({ ...s, inputHistoryIndex })),
         setMissionGoal: (missionGoal) => set(s => ({ ...s, missionGoal })),
         setLanguage: (language) => set(s => ({ ...s, language })),
-        setStatus: (status) => set(s => ({ ...s, status })),
+        setStatus: (status) => set(s => {
+          let updatedTraceItems = s.executionTrace.items;
+          if (status !== 'running' && updatedTraceItems.length > 0) {
+            const lastIdx = updatedTraceItems.length - 1;
+            if (updatedTraceItems[lastIdx].type === 'thought' && !updatedTraceItems[lastIdx].duration) {
+              updatedTraceItems = [...updatedTraceItems];
+              updatedTraceItems[lastIdx] = {
+                ...updatedTraceItems[lastIdx],
+                duration: Math.max(1, Math.floor((Date.now() - updatedTraceItems[lastIdx].ts) / 1000))
+              };
+            }
+          }
+          return { 
+            ...s, 
+            status,
+            executionTrace: { ...s.executionTrace, items: updatedTraceItems }
+          };
+        }),
         setStopping: (isStopping) => set(s => ({ ...s, isStopping })),
         setBooting: (isBooting) => set(s => ({ ...s, isBooting })),
         setPaused: (isPaused) => set(s => ({ ...s, isPaused })),
@@ -395,57 +464,122 @@ export const useZenithStore = create<ZenithState>()(
           if (!log.id) {
             const tag = log.tag?.toUpperCase() || 'SYS';
             const msg = log.msg || '';
-            // 🛡️ [CONTENT-HASH-ID]: Tạo ID dựa trên nội dung để tránh lặp vòng
-            log.id = `hash_${tag}_${msg.length}_${msg.slice(0, 30)}_${log.ts || '0'}`;
+            // 🛡️ [DETERMINISTIC-STREAM-ID]: For streaming logs (THOUGHT/PROGRESS), use a stable ID to prevent re-mounting/flashing
+            if (['THOUGHT', 'PROGRESS', 'PLANNER', 'TƯ DUY', 'BAN KẾ HOẠCH'].includes(tag) && log.task_id) {
+              log.id = `stream_${tag}_${log.task_id}`;
+            } else {
+              log.id = `hash_${tag}_${msg.length}_${msg.slice(0, 20)}_${normalizedTs}`;
+            }
           }
 
-          // 🚦 [LOG-ROUTING-PROTOCOL]: Tự động phân luồng nơ-ron
-          const tag = log.tag?.toUpperCase() || 'SYS';
-          const isHighPriority = ['MASTER', 'MASTER_WEB', 'MASTER_TELE', 'JKAI', 'MISSION_RESULT', 'ERROR'].includes(tag);
-
-          const technicalTags = ['DEBUG', 'THOUGHT', 'PLANNER', 'DISPATCHER', 'RECEPTIONIST', 'TRACE', 'LATENCY', 'FORGE_V3', 'STEWARD'];
-          const isTechnicalMsg = /\[(DEBUG|DELEGATED|DELEGATION|GATEWAY|MEMORY|EXEC|SKILL|PLAN|TASK)\]/i.test(log.msg || '');
-
-          // 🧭 [TRACE-EXTRACTION]: Trích xuất dấu vết thực thi
-          const msg = log.msg || '';
           let traceItem: TraceItem | null = null;
+          const tag = log.tag?.toUpperCase() || 'SYS';
+          const msg = log.msg || '';
 
-          if (tag.includes('EXECUTOR') || tag.includes('THỰC THI')) {
-            if (msg.includes('`')) {
-              const match = msg.match(/`([^`]+)`/);
-              if (match) {
-                const label = match[1];
-                traceItem = { id: `tr-${Date.now()}`, type: 'file', label, ts: Date.now(), status: 'completed' };
-                if (label.includes('.') && !label.includes('/')) traceItem.type = 'file';
-                else if (label.includes('/') || label.includes('\\')) traceItem.type = 'folder';
-              }
+          if (tag === 'SEARCH_RESULT' || msg.includes('Found')) {
+            const countMatch = msg.match(/Found (\d+) results/i);
+            const count = countMatch ? countMatch[1] : '';
+            const lastTrace = s.executionTrace.items.slice().reverse().find(i => i.type === 'search');
+            if (lastTrace) {
+              // Update last search item's detail with result count
+              traceItem = null; // Don't create new, update existing via detail below
             }
-          } else if (tag.includes('SEARCH') || tag.includes('TRUY TÌM')) {
-            const match = msg.match(/`([^`]+)`/) || msg.match(/searching (.*)/i);
-            if (match) {
-              traceItem = { id: `tr-${Date.now()}`, type: 'search', label: match[1], ts: Date.now(), status: 'completed' };
+          } else if (
+            tag.includes('THOUGHT') || tag.includes('TƯ DUY') || 
+            tag.includes('PLANNER') || tag.includes('RECEPTIONIST') || 
+            tag.includes('ZENITH') || tag.includes('SYSTEM') ||
+            tag.includes('MINI_PLANNER') || tag.includes('BAN KẾ HOẠCH') || 
+            tag.includes('BAN THƯ KÝ') || tag.includes('BAN TRỢ LÝ')
+          ) {
+            let cleanMsg = msg
+              .replace(/\[Task:\s*[^\]]+\]/gi, '')
+              .replace(/\[ROUTING\]:/gi, '')
+              .replace(/\[NEURAL-SYNC\]:/gi, '')
+              .trim();
+            if (cleanMsg && cleanMsg.length > 2) {
+              traceItem = {
+                id: `tr-${Date.now()}-${Math.random().toString(36).slice(2, 5)}`,
+                type: 'thought',
+                label: cleanMsg.length > 90 ? cleanMsg.slice(0, 90) + '...' : cleanMsg,
+                detail: msg,
+                ts: Date.now(),
+                status: 'completed'
+              };
             }
-          } else if (tag.includes('THOUGHT') || tag.includes('TƯ DUY')) {
-            traceItem = { id: `tr-${Date.now()}`, type: 'thought', label: 'Tư duy hệ thống', detail: msg.slice(0, 50), ts: Date.now(), status: 'completed' };
           }
+
 
           let newTrace = s.executionTrace;
           if (traceItem) {
+            const currentItems = [...s.executionTrace.items];
+            const lastIdx = currentItems.length - 1;
+            // ⏱️ [FIX-FROZEN-TIMER]: Khi thêm 1 trace mới, chốt thời gian cho thought trước đó
+            if (lastIdx >= 0 && currentItems[lastIdx].type === 'thought' && !currentItems[lastIdx].duration) {
+              currentItems[lastIdx] = { 
+                ...currentItems[lastIdx], 
+                duration: Math.max(1, Math.floor((Date.now() - currentItems[lastIdx].ts) / 1000)) 
+              };
+            }
             newTrace = {
               ...s.executionTrace,
-              items: [...s.executionTrace.items, traceItem].slice(-10),
+              items: [...currentItems, traceItem].slice(-200),
               lastUpdate: Date.now(),
               isExpanded: true
             };
           }
 
-          // 🏛️ [DUAL-ROUTING-PROTOCOL]: Master và JKAI sẽ được ghi vào cả hai luồng
-          if (isHighPriority) {
-            const updatedOps = [...s.operationalLogs];
-            const updatedProg = [...s.progressLogs];
+          // Log filtering and routing is suspended per Master's request.
+          // Both streams (operationalLogs and progressLogs) are kept 100% synchronized and identical thưa Master.
+          const updatedOps = [...s.operationalLogs];
+          const updatedProg = [...s.progressLogs];
 
-            if (!updatedOps.some(ex => ex.id === log.id)) updatedOps.push(log);
-            if (!updatedProg.some(ex => ex.id === log.id)) updatedProg.push(log);
+          // Stealth Wipe Protocol
+          if ((log as any).stealth && (tag === 'AUTH' || tag === 'AUTHENTICATION')) {
+            for (let i = updatedOps.length - 1; i >= 0; i--) {
+              if (updatedOps[i].type === 'user') {
+                updatedOps[i] = { ...updatedOps[i], msg: "🔐 [GIAO THỨC BẢO MẬT ĐÃ KÍCH HOẠT - DẤU VẾT ĐÃ ĐƯỢC THANH TẨY]" };
+                break;
+              }
+            }
+            for (let i = updatedProg.length - 1; i >= 0; i--) {
+              if (updatedProg[i].type === 'user') {
+                updatedProg[i] = { ...updatedProg[i], msg: "🔐 [GIAO THỨC BẢO MẬT ĐÃ KÍCH HOẠT - DẤU VẾT ĐÃ ĐƯỢC THANH TẨY]" };
+                break;
+              }
+            }
+          }
+
+          const opIdx = updatedOps.findIndex(el => el.id === log.id);
+          const progIdx = updatedProg.findIndex(el => el.id === log.id);
+          const existsInOps = opIdx !== -1;
+          const existsInProg = progIdx !== -1;
+
+          if (existsInOps || existsInProg) {
+            if (existsInOps) {
+              const existingLog = updatedOps[opIdx];
+              const isNewer = (log.ts || 0) > (existingLog.ts || 0);
+              const isSameButFullFlush = (log.ts || 0) === (existingLog.ts || 0) && !log.is_delta;
+              if (isNewer || isSameButFullFlush) {
+                const existingMsg = existingLog.msg;
+                const newMsg = log.is_delta ? (existingMsg + log.msg) : log.msg;
+                updatedOps[opIdx] = { ...existingLog, msg: newMsg, ts: log.ts };
+              }
+            } else {
+              updatedOps.push(log);
+            }
+
+            if (existsInProg) {
+              const existingLog = updatedProg[progIdx];
+              const isNewer = (log.ts || 0) > (existingLog.ts || 0);
+              const isSameButFullFlush = (log.ts || 0) === (existingLog.ts || 0) && !log.is_delta;
+              if (isNewer || isSameButFullFlush) {
+                const existingMsg = existingLog.msg;
+                const newMsg = log.is_delta ? (existingMsg + log.msg) : log.msg;
+                updatedProg[progIdx] = { ...existingLog, msg: newMsg, ts: log.ts };
+              }
+            } else {
+              updatedProg.push(log);
+            }
 
             return {
               ...s,
@@ -455,50 +589,37 @@ export const useZenithStore = create<ZenithState>()(
             };
           }
 
-          const effectiveTarget = (target === 'operational' && (technicalTags.some(t => tag.includes(t)) || isTechnicalMsg))
-            ? 'progress'
-            : target;
-
-          const targetKey = effectiveTarget === 'progress' ? 'progressLogs' : 'operationalLogs';
-          const logsToUpdate = s[targetKey];
-
-          // 📌 [PIN-UPDATE-PROTOCOL]: Nếu cùng ID và là log stream (THOUGHT/PROGRESS), cập nhật tại chỗ
-          const existingIdx = logsToUpdate.findIndex(existing => existing.id === log.id);
-          if (existingIdx !== -1) {
-            const existingLog = logsToUpdate[existingIdx];
-            // Chỉ cập nhật nội dung nếu là THOUGHT (stream realtime) hoặc PROGRESS
-            if (existingLog.tag.includes('THOUGHT') || existingLog.tag === 'PROGRESS') {
-              const updatedLogs = [...logsToUpdate];
-              updatedLogs[existingIdx] = { ...existingLog, msg: log.msg, ts: log.ts };
-              return { ...s, [targetKey]: updatedLogs, executionTrace: newTrace };
-            }
-            // Các log khác cùng ID → bỏ qua (duplicate guard)
-            return s;
-          }
-
-          // 💎 [PROGRESS-IN-PLACE]: Nếu là tin nhắn tiến độ, hãy cập nhật dòng cũ thay vì tạo mới
-          if (tag === 'PROGRESS' && logsToUpdate.length > 0) {
-            const lastLog = logsToUpdate[logsToUpdate.length - 1];
-            if (lastLog.tag === 'PROGRESS' && lastLog.task_id === log.task_id) {
-              const updatedLogs = [...logsToUpdate];
-              updatedLogs[logsToUpdate.length - 1] = { ...lastLog, ...log };
-              return { ...s, [targetKey]: updatedLogs, executionTrace: newTrace };
-            }
-          }
-
-          // 🛡️ [STEALTH-WIPE-PROTOCOL]: Command cipher purification
-          if ((log as any).stealth && (tag === 'AUTH' || tag === 'AUTHENTICATION')) {
-            const updatedLogs = [...logsToUpdate];
-            for (let i = updatedLogs.length - 1; i >= 0; i--) {
-              if (updatedLogs[i].type === 'user') {
-                updatedLogs[i] = { ...updatedLogs[i], msg: "🔐 [GIAO THỨC BẢO MẬT ĐÃ KÍCH HOẠT - DẤU VẾT ĐÃ ĐƯỢC THANH TẨY]" };
-                break;
+          // Progress in Place Protocol
+          if (tag === 'PROGRESS' && updatedProg.length > 0) {
+            const lastLogProg = updatedProg[updatedProg.length - 1];
+            if (lastLogProg.tag === 'PROGRESS' && lastLogProg.task_id === log.task_id) {
+              updatedProg[updatedProg.length - 1] = { ...lastLogProg, ...log };
+              
+              if (updatedOps.length > 0) {
+                const lastLogOps = updatedOps[updatedOps.length - 1];
+                if (lastLogOps.tag === 'PROGRESS' && lastLogOps.task_id === log.task_id) {
+                  updatedOps[updatedOps.length - 1] = { ...lastLogOps, ...log };
+                }
               }
+
+              return {
+                ...s,
+                operationalLogs: updatedOps.slice(-200),
+                progressLogs: updatedProg.slice(-2000),
+                executionTrace: newTrace
+              };
             }
-            return { ...s, [targetKey]: [...updatedLogs, log].slice(-200), executionTrace: newTrace };
           }
 
-          return { ...s, [targetKey]: [...logsToUpdate, log].sort((a, b) => (a.ts || 0) - (b.ts || 0)).slice(-200), executionTrace: newTrace };
+          updatedOps.push(log);
+          updatedProg.push(log);
+
+          return {
+            ...s,
+            operationalLogs: updatedOps.sort((a, b) => (a.ts || 0) - (b.ts || 0)).slice(-200),
+            progressLogs: updatedProg.sort((a, b) => (a.ts || 0) - (b.ts || 0)).slice(-2000),
+            executionTrace: newTrace
+          };
         }),
         addLogs: (newLogsBatch, target = 'operational') => set((s) => {
           const processedBatch = newLogsBatch.map(nl => {
@@ -508,7 +629,16 @@ export const useZenithStore = create<ZenithState>()(
             const rawTs = nl.ts || Date.now();
             const normalizedTs = rawTs < 1e10 ? rawTs * 1000 : rawTs;
             const timeStr = new Date(normalizedTs).toLocaleTimeString();
-            const contentId = nl.id || `hash_${tag}_${msg.length}_${msg.slice(0, 20)}_${normalizedTs}`;
+            
+            let contentId = nl.id;
+            if (!contentId) {
+              const tag = (nl.tag || 'SYS').toUpperCase();
+              if (['THOUGHT', 'PROGRESS', 'PLANNER', 'TƯ DUY', 'BAN KẾ HOẠCH'].includes(tag) && nl.task_id) {
+                contentId = `stream_${tag}_${nl.task_id}`;
+              } else {
+                contentId = `hash_${tag}_${msg.length}_${msg.slice(0, 20)}_${normalizedTs}`;
+              }
+            }
 
             return {
               ...nl,
@@ -540,58 +670,120 @@ export const useZenithStore = create<ZenithState>()(
 
             if (existsInOps || existsInProg) {
               // Streamable: cập nhật nội dung mà không tạo log mới
-              if (existsInOps)  updatedOps[opIdx]   = { ...updatedOps[opIdx],   msg: nl.msg, ts: nl.ts };
-              if (existsInProg) updatedProg[progIdx] = { ...updatedProg[progIdx], msg: nl.msg, ts: nl.ts };
-              else              updatedProg.push(nl); // đảm bảo cũng có ở progress
+              if (existsInOps) {
+                const existingLog = updatedOps[opIdx];
+                const isNewer = (nl.ts || 0) > (existingLog.ts || 0);
+                const isSameButFullFlush = (nl.ts || 0) === (existingLog.ts || 0) && !nl.is_delta;
+                if (isNewer || isSameButFullFlush) {
+                  const existingMsg = existingLog.msg;
+                  const newMsg = nl.is_delta ? (existingMsg + nl.msg) : nl.msg;
+                  updatedOps[opIdx] = { ...existingLog, msg: newMsg, ts: nl.ts };
+                }
+              } else {
+                updatedOps.push(nl);
+              }
+
+              if (existsInProg) {
+                const existingLog = updatedProg[progIdx];
+                const isNewer = (nl.ts || 0) > (existingLog.ts || 0);
+                const isSameButFullFlush = (nl.ts || 0) === (existingLog.ts || 0) && !nl.is_delta;
+                if (isNewer || isSameButFullFlush) {
+                  const existingMsg = existingLog.msg;
+                  const newMsg = nl.is_delta ? (existingMsg + nl.msg) : nl.msg;
+                  updatedProg[progIdx] = { ...existingLog, msg: newMsg, ts: nl.ts };
+                }
+              } else {
+                updatedProg.push(nl);
+              }
               continue;
             }
 
             // 🔍 [EXECUTION-TRACE]: Trích xuất dấu vết thực thi cho ExecutionTrace widget
-            if (tag.includes('SEARCH') || tag.includes('THOUGHT') || tag.includes('PLANNER')) {
-              let traceType: TraceItem['type'] = 'command';
-              if (tag.includes('SEARCH')) traceType = 'search';
-              else if (tag.includes('THOUGHT') || tag.includes('PLANNER')) traceType = 'thought';
-              else if (msg.includes('`')) traceType = 'file';
-              newTraceItems.push({
+            let traceItem: TraceItem | null = null;
+            if (tag.includes('EXECUTOR') || tag.includes('THỰC THI')) {
+              if (msg.includes('`')) {
+                const match = msg.match(/`([^`]+)`/);
+                if (match) {
+                  const label = match[1];
+                  traceItem = {
+                    id: `tr-${Date.now()}-${Math.random()}`,
+                    type: label.includes('.') && !label.includes('/') ? 'file' : (label.includes('/') || label.includes('\\') ? 'folder' : 'file'),
+                    label,
+                    ts: nl.ts || Date.now(),
+                    status: 'completed',
+                    logId: nl.id
+                  };
+                  if (msg.includes('Edited') || msg.includes('Wrote') || msg.includes('Patch')) {
+                    s.addModifiedFile(label);
+                  }
+                }
+              } else if (msg.includes('Ran command') || msg.includes('Executing')) {
+                const match = msg.match(/`([^`]+)`/);
+                if (match) {
+                  traceItem = {
+                    id: `tr-${Date.now()}-${Math.random()}`,
+                    type: 'command',
+                    label: match[1],
+                    ts: nl.ts || Date.now(),
+                    status: 'completed',
+                    logId: nl.id
+                  };
+                }
+              }
+            } else if (tag.includes('SEARCH') || tag.includes('TRUY TÌM') || tag.includes('TRUY_TIM')) {
+              const match = msg.match(/`([^`]+)`/) || msg.match(/searching (.*)/i);
+              if (match) {
+                traceItem = {
+                  id: `tr-${Date.now()}-${Math.random()}`,
+                  type: 'search',
+                  label: match[1],
+                  ts: nl.ts || Date.now(),
+                  status: 'completed',
+                  logId: nl.id
+                };
+              }
+            } else if (msg.includes('TAVILY') && (msg.includes('search') || msg.includes('Initiating'))) {
+              const tavilyMatch = msg.match(/TAVILY[^:]*:\s*Initiating[^"'`]*for\s+(.+)/i) || msg.match(/TAVILY[^:]*:\s*(.+)/i);
+              const label = tavilyMatch ? tavilyMatch[1].slice(0, 80) : msg.slice(0, 80);
+              traceItem = {
                 id: `tr-${Date.now()}-${Math.random()}`,
-                type: traceType,
-                label: traceType === 'thought' ? 'System Reasoning' : msg.slice(0, 50),
-                detail: traceType === 'thought' ? msg : undefined,
-                ts: Date.now(),
+                type: 'search',
+                label: `TAVILY: Initiating global web search for "${label}"`,
+                ts: nl.ts || Date.now(),
                 status: 'completed',
                 logId: nl.id
-              });
+              };
+            } else if (tag.includes('THOUGHT') || tag.includes('PLANNER') || tag.includes('TƯ DUY')) {
+              traceItem = {
+                id: `tr-${Date.now()}-${Math.random()}`,
+                type: 'thought',
+                label: s.language === 'vi' ? 'Hệ thống đang tư duy' : 'System Reasoning',
+                detail: msg,
+                ts: nl.ts || Date.now(),
+                status: 'completed',
+                logId: nl.id
+              };
             }
 
-            // ════════════════════════════════════════════════════════
-            // 🎯 [3-CHANNEL ROUTING ENGINE - FRONTEND]
-            // Ưu tiên 1: Dùng channels[] do backend khai báo tường minh
-            // Ưu tiên 2: Fallback heuristics từ tag (legacy backward-compat)
-            // ════════════════════════════════════════════════════════
-            const logChannels: string[] | null = (nl as any).channels ?? null;
-
-            if (logChannels !== null) {
-              // ── EXPLICIT ROUTING (new system) ──────────────────────
-              if (logChannels.includes('executive')) updatedOps.push(nl);
-              if (logChannels.includes('progress'))  updatedProg.push(nl);
-              // 'telegram' không ảnh hưởng đến UI state — chỉ backend xử lý
-            } else {
-              // ── LEGACY ROUTING (backward-compatible) ───────────────
-              // Executive: Master/JKAI/Error/MissionResult
-              const executiveTags = ['MASTER', 'JKAI', 'MISSION_RESULT', 'ERROR'];
-              const goesExec = executiveTags.includes(tag) || tag.startsWith('MASTER') || (nl as any).is_result;
-
-              if (goesExec) {
-                updatedOps.push(nl);
-                updatedProg.push(nl);
-              } else {
-                // Technical logs → chỉ Progress
-                const isTech = technicalTags.some(t => tag.includes(t)) || /\[(DEBUG|DELEGATED|DELEGATION|GATEWAY|MEMORY|EXEC|SKILL|PLAN|TASK)\]/i.test(msg);
-                const targetKey = (target === 'operational' && isTech) ? 'progress' : target;
-                if (targetKey === 'progress') updatedProg.push(nl);
-                else updatedOps.push(nl);
+            if (traceItem) {
+              if (!newTraceItems.some(ti => ti.logId === nl.id)) {
+                // ⏱️ [FIX-FROZEN-TIMER]: Chốt thời gian cho trace thought trước đó nếu chưa có
+                const lastIdx = newTraceItems.length - 1;
+                if (lastIdx >= 0 && newTraceItems[lastIdx].type === 'thought' && !newTraceItems[lastIdx].duration) {
+                  newTraceItems[lastIdx].duration = Math.max(1, Math.floor((Date.now() - newTraceItems[lastIdx].ts) / 1000));
+                }
+                newTraceItems.push(traceItem);
+              } else if (traceItem.type === 'thought') {
+                const existingIdx = newTraceItems.findIndex(ti => ti.logId === nl.id);
+                if (existingIdx !== -1) {
+                  newTraceItems[existingIdx] = { ...newTraceItems[existingIdx], detail: msg, ts: nl.ts || Date.now() };
+                }
               }
             }
+
+            // Master requested to temporarily remove all routing and filtering for testing:
+            updatedOps.push(nl);
+            updatedProg.push(nl);
           }
 
 
@@ -599,17 +791,20 @@ export const useZenithStore = create<ZenithState>()(
             ...s,
             operationalLogs: updatedOps.sort((a, b) => (a.ts || 0) - (b.ts || 0)).slice(-200),
             progressLogs: updatedProg.sort((a, b) => (a.ts || 0) - (b.ts || 0)).slice(-2000),
-            executionTrace: { ...s.executionTrace, items: newTraceItems.slice(-10), lastUpdate: Date.now(), isExpanded: true }
+            executionTrace: { ...s.executionTrace, items: newTraceItems.slice(-200), lastUpdate: Date.now(), isExpanded: true }
           };
         }),
         setTab: (rightTab) => set(s => ({ ...s, rightTab })),
         setInspectedFile: (inspectedFile) => set(s => ({ ...s, inspectedFile })),
         addModifiedFile: (path) => set(s => ({
           ...s,
-          modifiedFiles: Array.from(new Set([...s.operationalLogs.filter(l => l.msg?.toLowerCase().includes('edited') || l.msg?.toLowerCase().includes('wrote')).map(l => {
-            const m = l.msg?.match(/([a-zA-Z0-9_\-\.\/]+\.[a-z0-9]+)/i);
-            return m ? m[0] : null;
-          }).filter(Boolean) as string[], path]))
+          modifiedFiles: Array.from(new Set([...s.modifiedFiles, path]))
+        })),
+        registerFileEdit: (edit, openPreview = true) => set(s => ({
+          ...s,
+          fileEdits: [edit, ...s.fileEdits].slice(0, 40),
+          modifiedFiles: Array.from(new Set([...s.modifiedFiles, edit.path])),
+          rightTab: openPreview ? 'changes' : s.rightTab,
         })),
         setThinkingPhrase: (thinkingPhrase) => set(s => ({ ...s, thinkingPhrase })),
         toggleReasoning: () => set((s) => ({ ...s, showReasoning: !s.showReasoning })),
@@ -652,13 +847,15 @@ export const useZenithStore = create<ZenithState>()(
           }],
           progressLogs: [],
           modifiedFiles: [],
+        fileEdits: [],
           currentMissionId: null,
           activeAgent: null,
           activeSkills: [],
           missionGoal: ''
         })),
-        setMissionId: (currentMissionId) => set(s => ({ ...s, currentMissionId })),
-        setHistory: (history) => set(s => ({ ...s, history })),
+        setMissionId: (currentMissionId: string | null) => set(s => ({ ...s, currentMissionId })),
+        setSessionId: (sessionId: string) => set(s => ({ ...s, sessionId })),
+        setHistory: (history: any[]) => set(s => ({ ...s, history })),
         loadMissionData: async (data: any) => {
           // 🛡️ [DUAL-STREAM-SYNC]: Bi-directional stream synchronization
           const [opsResp, progResp] = await Promise.all([
@@ -670,49 +867,71 @@ export const useZenithStore = create<ZenithState>()(
             progResp.json()
           ]);
 
-          const historyLogs = Array.isArray(data.logs) ? data.logs : [];
+          const rawHistoryLogs = Array.isArray(data.logs) ? data.logs : [];
+          // ⏳ [TIMESTAMP-NORMALIZATION]: Chuẩn hóa giây sang mili-giây giống như socket thưa Master
+          const historyLogs = rawHistoryLogs.map((log: any) => {
+            const newLog = { ...log };
+            if (newLog.ts && newLog.ts < 2_000_000_000) {
+              newLog.ts = newLog.ts * 1000;
+            }
+            return newLog;
+          });
+
           const serverOpsLogs = Array.isArray(opsData.logs) ? opsData.logs : [];
           const serverProgLogs = Array.isArray(progData.logs) ? progData.logs : [];
 
-          // 🏛️ [OPS-MERGE]: Operational log consolidation
-          const mergedOps = [...historyLogs];
-          serverOpsLogs.forEach((sl: any) => {
-            let logObj = sl;
-            if (typeof sl === 'string') {
-              const match = sl.match(/\[(.*?)\] \[(.*?)\] (.*)/);
-              if (match) {
-                logObj = { ts: Date.now(), tag: match[2], msg: match[3], timeStr: match[1] };
-              } else {
-                logObj = { ts: Date.now(), tag: 'SYS', msg: sl };
-              }
-            }
-            if (!mergedOps.some(ml => ml.msg === logObj.msg && (ml.timeStr === logObj.timeStr || ml.ts === logObj.ts))) {
-              mergedOps.push(logObj);
-            }
-          });
+          const isCompleted = data.status === 'completed';
+          let mergedOps: any[] = [];
+          let mergedProg: any[] = [];
 
-          // 🔬 [PROG-MERGE]: Technical trace consolidation
-          const mergedProg = [...historyLogs];
-          serverProgLogs.forEach((sl: any) => {
-            if (!mergedProg.some(ml => ml.msg === sl.msg && ml.ts === sl.ts)) {
-              mergedProg.push(sl);
-            }
-          });
+          if (isCompleted) {
+            // 🛡️ [HISTORY-ISOLATION-GUARD]: Nếu sứ mệnh đã xong, giữ nguyên log thật lịch sử, loại bỏ rác hệ thống hiện thời thưa Master
+            mergedOps = [...historyLogs];
+            mergedProg = [...historyLogs];
+          } else {
+            // 🏛️ [OPS-MERGE]: Operational log consolidation
+            mergedOps = [...historyLogs];
+            serverOpsLogs.forEach((sl: any) => {
+              let logObj = sl;
+              if (typeof sl === 'string') {
+                const match = sl.match(/\[(.*?)\] \[(.*?)\] (.*)/);
+                if (match) {
+                  logObj = { ts: Date.now(), tag: match[2], msg: match[3], timeStr: match[1] };
+                } else {
+                  logObj = { ts: Date.now(), tag: 'SYS', msg: sl };
+                }
+              }
+              if (logObj.ts && logObj.ts < 2_000_000_000) logObj.ts = logObj.ts * 1000;
+              if (!mergedOps.some(ml => ml.msg === logObj.msg && (ml.timeStr === logObj.timeStr || ml.ts === logObj.ts))) {
+                mergedOps.push(logObj);
+              }
+            });
+
+            // 🔬 [PROG-MERGE]: Technical trace consolidation
+            mergedProg = [...historyLogs];
+            serverProgLogs.forEach((sl: any) => {
+              const logObj = { ...sl };
+              if (logObj.ts && logObj.ts < 2_000_000_000) logObj.ts = logObj.ts * 1000;
+              if (!mergedProg.some(ml => ml.msg === logObj.msg && ml.ts === logObj.ts)) {
+                mergedProg.push(logObj);
+              }
+            });
+          }
 
           set(s => ({
             ...s,
             currentMissionId: data.id,
             goal: s.goal || data.goal || '',
             missionGoal: data.goal || '',
-            operationalLogs: mergedOps.sort((a, b) => (a.ts || 0) - (b.ts || 0)).slice(-200),
-            progressLogs: mergedProg.sort((a, b) => (a.ts || 0) - (b.ts || 0)).slice(-2000),
+            operationalLogs: mergedOps.sort((a, b) => (a.ts || 0) - (b.ts || 0)).slice(isCompleted ? -1000 : -200),
+            progressLogs: mergedProg.sort((a, b) => (a.ts || 0) - (b.ts || 0)).slice(isCompleted ? -2000 : -2000),
             status: s.status === 'running' ? 'running' : 'idle',
             currentArtifacts: data.artifacts || {},
             modifiedFiles: data.modifiedFiles || []
           }));
         },
         socketActions: null,
-        setSocketActions: (socketActions) => set(s => ({ ...s, socketActions })),
+        setSocketActions: (socketActions: { submitTask: any; resetDAG: any } | null) => set(s => ({ ...s, socketActions })),
         updateArtifact: (key, content) => set(s => ({
           ...s,
           currentArtifacts: { ...s.currentArtifacts, [key]: content }
@@ -730,10 +949,26 @@ export const useZenithStore = create<ZenithState>()(
               stars: 5,
               reason: manifest.reason || ''
             },
-            activeSkills: manifest.skills || []
+            activeSkills: manifest.skills || [],
+            modifiedFiles: manifest.modified_files || s.modifiedFiles
           }));
         },
         setUnreadTab: (tab, val) => set(s => ({ ...s, unreadTabs: { ...s.unreadTabs, [tab]: val } })),
+        incrementUnreadTab: (tab) => set(s => ({ ...s, unreadTabs: { ...s.unreadTabs, [tab]: (s.unreadTabs[tab] || 0) + 1 } })),
+        
+        setBackgroundProposals: (proposals) => set(s => ({ ...s, backgroundProposals: proposals })),
+        addBackgroundProposal: (proposal) => set(s => ({ 
+          ...s, 
+          backgroundProposals: [proposal, ...s.backgroundProposals] 
+        })),
+        removeBackgroundProposal: (id) => set(s => ({ 
+          ...s, 
+          backgroundProposals: s.backgroundProposals.filter(p => p.id !== id) 
+        })),
+        updateProposalStatus: (id, status) => set(s => ({
+          ...s,
+          backgroundProposals: s.backgroundProposals.map(p => p.id === id ? { ...p, status } : p)
+        })),
         setPulse: (pulse) => set(s => ({ ...s, pulse })),
       }),
       {
@@ -747,6 +982,7 @@ export const useZenithStore = create<ZenithState>()(
           inputHistory: state.inputHistory,
           streamView: state.streamView,
           currentMissionId: state.currentMissionId,
+          sessionId: state.sessionId,
           missionGoal: state.missionGoal
         }),
       }

@@ -1,0 +1,327 @@
+{
+  "id": "m_tele_1779927017",
+  "title": "Hảy kiểm tra n8n-main bị offline",
+  "goal": "Hảy kiểm tra n8n-main bị offline",
+  "status": "completed",
+  "ts": 1779927314.475952,
+  "logs": [
+    {
+      "tag": "MASTER_TELE",
+      "msg": "Hảy kiểm tra n8n-main bị offline",
+      "ts": 1779927017.2443576,
+      "source": "SYSTEM",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `tele_1779927017` initialized | Trace: `gen_1779927017`. Runtime ready.",
+      "ts": 1779927017.2458253,
+      "source": "SYSTEM",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 📡 Đang phân tích chỉ thị với chế độ [FAST_PIPELINE] (Input mode: FAST)...",
+      "ts": 1779927017.4031966,
+      "source": "SYSTEM",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "🧠 [LLM-FALLBACK]: Reflex không chắc chắn. Đang gọi LLM...",
+      "ts": 1779927021.0564716,
+      "source": "SYSTEM",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[INFO] [2026-05-28T00:10:21.255154] [DISPATCHER] [Task: tele_1779927017] Đang triệu tập phi4-mini:latest... (Context: 2048)",
+      "ts": 1779927021.2551863,
+      "source": "DISPATCHER",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[METRIC] [2026-05-28T00:10:21.270782] [DISPATCHER] [Task: tele_1779927017] [NEURAL-SUMMON]: Đặc vụ `phi4-mini:latest` vắng mặt toàn diện. Đang triệu tập gấp vào Engine CPU...",
+      "ts": 1779927021.2707996,
+      "source": "DISPATCHER",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[INFO] [2026-05-28T00:11:33.747600] [DISPATCHER] [Task: tele_1779927017] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1779927093.7476363,
+      "source": "DISPATCHER",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[INFO] [2026-05-28T00:11:55.194917] [DISPATCHER] [Task: tele_1779927017] {\n  \"skill\": \"#1016\",\n  \"mode\": \"deep\",\n  \"confidence\": 0.9,\n  \"implicit_intent\": \"Giải mã ý định ẩn\",\n  \"reasoning\": \"Yêu cầu xử lý big data, phân tích dữ liệu lớn và kết nối với các hệ thống lưu trữ dữ liệu lớn như HDFS, S3 hoặc cơ sở dữ liệu NoSQL quy mô lớn. Kỹ năng này phù hợp vì nó bao gồm Distributed Spark Processing, Real-time Data Streaming và Massive Storage Connectivity.\"\n}",
+      "ts": 1779927115.1949706,
+      "source": "DISPATCHER",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[INFO] [2026-05-28T00:11:55.198260] [DISPATCHER] [Task: tele_1779927017] [PHÂN TÍCH CHIẾN LƯỢC]:\nYêu cầu xử lý big data, phân tích dữ liệu lớn và kết nối với các hệ thống lưu trữ dữ liệu lớn như HDFS, S3 hoặc cơ sở dữ liệu NoSQL quy mô lớn. Kỹ năng này phù hợp vì nó bao gồm Distributed Spark Processing, Real-time Data Streaming và Massive Storage Connectivity.",
+      "ts": 1779927115.198297,
+      "source": "DISPATCHER",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[INFO] [2026-05-28T00:11:55.199919] [DISPATCHER] [Task: tele_1779927017] Hoàn tất trong 93.94s. (Size: 387 chars)",
+      "ts": 1779927115.199935,
+      "source": "DISPATCHER",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "📊 [LATENCY]: 97673.83 ms",
+      "ts": 1779927115.202805,
+      "source": "SYSTEM",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 💾 [SEMANTIC-CACHE-STORE]: Đã lưu định tuyến mới vào Qdrant cho câu lệnh.",
+      "ts": 1779927115.2214937,
+      "source": "SYSTEM",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 [SOVEREIGN-CORE]: Kích hoạt Não Bộ Tự Trị (Universal ReAct Loop).",
+      "ts": 1779927115.226071,
+      "source": "SYSTEM",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🔄 [Thinking] Vòng 1...",
+      "ts": 1779927115.229009,
+      "source": "SYSTEM",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:11:55.293008] [RECEPTIONIST] [Task: tele_1779927017] Đang triệu tập qwen3:4b... (Context: 4096)",
+      "ts": 1779927115.2930317,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:11:55.306132] [RECEPTIONIST] [Task: tele_1779927017] [NEURAL-SUMMON]: Đặc vụ `qwen3:4b` vắng mặt toàn diện. Đang triệu tập gấp vào Engine GPU...",
+      "ts": 1779927115.306175,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:12:09.253347] [RECEPTIONIST] [Task: tele_1779927017] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1779927129.253381,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:12:35.811439] [RECEPTIONIST] [Task: tele_1779927017] Hoàn tất trong 40.52s. (Size: 0 chars)",
+      "ts": 1779927155.811462,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:12:35.813953] [RECEPTIONIST] [Task: tele_1779927017] 🛠️ [NATIVE-TOOL-CALL]: Nơ-ron quyết định sử dụng 1 công cụ.",
+      "ts": 1779927155.8139744,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Kích hoạt `UNKNOWN`: {'skill_id': '1016', 'extracted_params': 'n8n-main bị offline'}",
+      "ts": 1779927155.816262,
+      "source": "SYSTEM",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🔄 [Thinking] Vòng 2...",
+      "ts": 1779927155.8182287,
+      "source": "SYSTEM",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:12:35.879826] [RECEPTIONIST] [Task: tele_1779927017] Đang triệu tập qwen3:4b... (Context: 4096)",
+      "ts": 1779927155.8798454,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:12:36.241998] [RECEPTIONIST] [Task: tele_1779927017] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1779927156.2420185,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:13:06.557856] [RECEPTIONIST] [Task: tele_1779927017] Hoàn tất trong 30.68s. (Size: 0 chars)",
+      "ts": 1779927186.5578735,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:13:06.559398] [RECEPTIONIST] [Task: tele_1779927017] 🛠️ [NATIVE-TOOL-CALL]: Nơ-ron quyết định sử dụng 1 công cụ.",
+      "ts": 1779927186.5594137,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Kích hoạt `UNKNOWN`: {'extracted_params': 'n8n-main bị offline', 'skill_id': '1006'}",
+      "ts": 1779927186.5609968,
+      "source": "SYSTEM",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🔄 [Thinking] Vòng 3...",
+      "ts": 1779927186.5621831,
+      "source": "SYSTEM",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:13:06.567922] [RECEPTIONIST] [Task: tele_1779927017] Đang triệu tập qwen3:4b... (Context: 4096)",
+      "ts": 1779927186.567938,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:13:06.839530] [RECEPTIONIST] [Task: tele_1779927017] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1779927186.8395898,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:13:45.771135] [RECEPTIONIST] [Task: tele_1779927017] Hoàn tất trong 39.20s. (Size: 0 chars)",
+      "ts": 1779927225.7711644,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:13:45.773987] [RECEPTIONIST] [Task: tele_1779927017] 🛠️ [NATIVE-TOOL-CALL]: Nơ-ron quyết định sử dụng 1 công cụ.",
+      "ts": 1779927225.7740169,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Kích hoạt `UNKNOWN`: {'extracted_params': 'n8n-main bị offline', 'skill_id': '1001'}",
+      "ts": 1779927225.7781234,
+      "source": "SYSTEM",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🔄 [Thinking] Vòng 4...",
+      "ts": 1779927225.7799888,
+      "source": "SYSTEM",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:13:45.789580] [RECEPTIONIST] [Task: tele_1779927017] Đang triệu tập qwen3:4b... (Context: 4096)",
+      "ts": 1779927225.7896066,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:13:46.134038] [RECEPTIONIST] [Task: tele_1779927017] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1779927226.1340716,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:14:30.765964] [RECEPTIONIST] [Task: tele_1779927017] Hoàn tất trong 44.98s. (Size: 0 chars)",
+      "ts": 1779927270.7659838,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:14:30.767722] [RECEPTIONIST] [Task: tele_1779927017] 🛠️ [NATIVE-TOOL-CALL]: Nơ-ron quyết định sử dụng 1 công cụ.",
+      "ts": 1779927270.7677412,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Kích hoạt `UNKNOWN`: {'extracted_params': 'n8n-main bị offline', 'skill_id': '1002'}",
+      "ts": 1779927270.7695801,
+      "source": "SYSTEM",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🔄 [Thinking] Vòng 5...",
+      "ts": 1779927270.771481,
+      "source": "SYSTEM",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:14:30.778456] [RECEPTIONIST] [Task: tele_1779927017] Đang triệu tập qwen3:4b... (Context: 4096)",
+      "ts": 1779927270.7784731,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:14:33.560757] [RECEPTIONIST] [Task: tele_1779927017] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1779927273.5608053,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:15:14.437328] [RECEPTIONIST] [Task: tele_1779927017] Hoàn tất trong 43.66s. (Size: 0 chars)",
+      "ts": 1779927314.437348,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T00:15:14.440185] [RECEPTIONIST] [Task: tele_1779927017] 🛠️ [NATIVE-TOOL-CALL]: Nơ-ron quyết định sử dụng 1 công cụ.",
+      "ts": 1779927314.4402206,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Kích hoạt `UNKNOWN`: {'extracted_params': 'n8n-main bị offline', 'skill_id': '1006'}",
+      "ts": 1779927314.442668,
+      "source": "SYSTEM",
+      "task_id": "tele_1779927017"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Thưa Master, tôi đã cố gắng tra cứu công cụ nhưng xảy ra lỗi nội bộ ở vòng lặp suy nghĩ.",
+      "ts": 1779927314.4496372,
+      "source": "SYSTEM",
+      "task_id": "tele_1779927017"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

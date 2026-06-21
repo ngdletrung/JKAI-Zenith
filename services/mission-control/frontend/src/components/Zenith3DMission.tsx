@@ -1,50 +1,98 @@
 import React, { useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { MarkdownRenderer } from './zenith/MarkdownRenderer';
 
-// ─── 💬 ELITE STRATEGIC MESSAGE FLOW (v60.0 - Dual Executor Sync) ───────────
-const getStrategicMessage = (message: string, role: string, status: string) => {
+// ─── 💬 ELITE STRATEGIC MESSAGE FLOW (v61.0 - Pure Action Mapping) ───────────
+const getStrategicMessage = (message: any, role: string, status: string) => {
   const s = String(status || '').toUpperCase();
 
-  // 🛡️ Ẩn bong bóng hoàn toàn khi nhàn rỗi (chưa chạy task)
-  if (s === 'IDLE') return null;
+  // 🛡️ Ẩn bong bóng hoàn toàn khi nhàn rỗi hoặc đã hoàn thành tác vụ
+  if (s === 'IDLE' || s === 'DONE') return null;
 
-  let cleanMsg = message || '';
-  
+  let cleanMsg = '';
+  if (message && typeof message === 'object') {
+    cleanMsg = String(message.msg || message.message || message.text || '');
+  } else {
+    cleanMsg = String(message || '');
+  }
+
   // 🏛️ [ZENITH-SURGICAL-STRIPPER]: Phẫu thuật triệt để phần kỹ thuật
-  // Loại bỏ toàn bộ từ đầu đến dấu hai chấm cuối cùng của tiền tố định danh
   if (cleanMsg.includes('🧠')) {
     const parts = cleanMsg.split(':');
     if (parts.length > 1) {
-      // Lấy toàn bộ phần sau dấu hai chấm đầu tiên
       cleanMsg = parts.slice(1).join(':').trim();
     }
   }
 
-  // 🛡️ [RECEPTIONIST-SPECIFIC]: Tránh để Trợ lý hiện các thông báo định tuyến
-  if (role === 'receptionist') {
-    if (cleanMsg.includes('📡 [ROUTING]') || cleanMsg.includes('🚀 Đang triệu tập')) {
-      return "Đang điều phối nơ-ron...";
+  // Loại bỏ các thẻ kỹ thuật trong ngoặc vuông: [INFO], [RECEPTIONIST], [Task: ...], [Ngày 28/05/2026]
+  cleanMsg = cleanMsg.replace(/\[.*?\]:?\s*/g, '').trim();
+  // Loại bỏ ký tự đặc biệt ở đầu nếu có
+  cleanMsg = cleanMsg.replace(/^[^a-zA-Z0-9\s\p{L}]+/gu, '').trim();
+
+  const lowerMsg = cleanMsg.toLowerCase();
+
+  // 🧠 [ZENITH-INTELLIGENT-TRANSLATOR]: Ánh xạ thông minh các hành động sang câu tiếng Việt tự nhiên, phù hợp tác vụ đang thực thi
+  if (lowerMsg.includes('searching') || lowerMsg.includes('tavily') || lowerMsg.includes('search_web') || lowerMsg.includes('tìm kiếm')) {
+    const match = cleanMsg.match(/(?:for|query|tìm kiếm)\s+['"“]?(.*?)['"”]?$/i);
+    const query = match ? match[1].trim() : '';
+    if (query) {
+      return `Đang truy vấn thông tin toàn cầu về: "${query}"`;
     }
+    return "Đang thực hiện truy vấn thông tin toàn cầu...";
   }
 
-  cleanMsg = cleanMsg.replace(/\[.*?\]:?\s*/g, '');
-  cleanMsg = cleanMsg.trim();
-
-  if (role === 'receptionist' && !cleanMsg) {
-    if (s === 'RUNNING' || s === 'EXECUTING' || s === 'IDLE') {
-      return "Đang tiếp nhận yêu cầu...";
+  if (lowerMsg.includes('writing file') || lowerMsg.includes('write_to_file') || lowerMsg.includes('cập nhật tệp')) {
+    const fileMatch = cleanMsg.match(/(?:file|tệp|path)\s+['"“]?([a-zA-Z0-9_.\-/]+)['"”]?/i);
+    const file = fileMatch ? fileMatch[1].split('/').pop() : '';
+    if (file) {
+      return `Đang tiến hành ghi tệp tin hệ thống: "${file}"`;
     }
+    return "Đang lưu tệp tin hệ thống...";
   }
 
-  if (!cleanMsg) {
-    if (s === 'RUNNING' || s === 'EXECUTING') {
-      if (role === 'master') return "Đang quan sát toàn cục JKAI...";
-      return "Đang thực thi nhiệm vụ...";
+  if (lowerMsg.includes('reading file') || lowerMsg.includes('view_file') || lowerMsg.includes('đọc tệp')) {
+    const fileMatch = cleanMsg.match(/(?:file|tệp|path)\s+['"“]?([a-zA-Z0-9_.\-/]+)['"”]?/i);
+    const file = fileMatch ? fileMatch[1].split('/').pop() : '';
+    if (file) {
+      return `Đang phân tích dữ liệu từ tệp: "${file}"`;
     }
-    return null;
+    return "Đang đọc dữ liệu tệp tin hệ thống...";
   }
-  return cleanMsg;
-};
+
+  if (lowerMsg.includes('compiling') || lowerMsg.includes('building') || lowerMsg.includes('biên dịch')) {
+    return "Đang biên dịch và kiểm duyệt chất lượng mã nguồn...";
+  }
+
+  if (lowerMsg.includes('hoàn tất trong') || lowerMsg.includes('completed in') || lowerMsg.includes('done')) {
+    const timeMatch = cleanMsg.match(/(\d+(?:\.\d+)?\s*s)/i);
+    if (timeMatch) {
+      return `Đã hoàn tất xuất sắc tác vụ trong ${timeMatch[1]}!`;
+    }
+    return "Đã hoàn tất tiến trình xử lý tác vụ!";
+  }
+
+  if (lowerMsg.includes('error') || lowerMsg.includes('failed') || lowerMsg.includes('lỗi')) {
+    return "Phát hiện sự cố hệ thống, đang cấu hình khắc phục...";
+  }
+
+  // Nếu thông điệp chứa nội dung thực thi thực tế hữu ích (như kết quả tìm kiếm, tóm tắt, phê duyệt...)
+  if (cleanMsg.length > 0) {
+    if (cleanMsg.length > 120) {
+      return cleanMsg.slice(0, 117).trim() + '...';
+    }
+    return cleanMsg;
+  }
+
+  // 🎯 Các phương án mặc định tương ứng với từng Ban khi không có log text chi tiết
+  if (role === 'receptionist') return "Đang tiếp nhận và điều hành hệ thống...";
+  if (role === 'planner') return "Đang phân rã kế hoạch tác chiến tối ưu...";
+  if (role === 'critic') return "Đang rà soát rủi ro và phê duyệt kết quả...";
+  if (role === 'summarizer') return "Đang đúc rút tri thức và tổng hợp báo cáo...";
+  if (role.startsWith('executor')) return "Đang triển khai thực thi tác vụ...";
+  if (role === 'master') return "Đang giám sát và chỉ đạo vận hành hệ thống...";
+
+  return "Đang xử lý...";
+};;
 
 // ─── 🎭 ZENITH ASSET RESOLVER (v46.0 - Alpha/Beta Split) ────────────────────────
 const getAgentVisualStates = (role: string) => {
@@ -79,7 +127,7 @@ const getAgentVisualStates = (role: string) => {
 // ─── 🏛️ STATIC SEATS CONFIGURATION ───────────────────────────────────────────
 const SEATS = [
   {
-    id: 'master', role: 'master', label: 'Chủ Tịch', side: 'center', order: 0,
+    id: 'master', role: 'master', label: 'Master', side: 'center', order: 0,
     posMatrix: {
       IDLE: { x: '35%', y: '44%', size: '30%', z: 10 },
       RUNNING: { x: '20%', y: '45%', size: '47%', z: 10 },
@@ -88,7 +136,7 @@ const SEATS = [
     }
   },
   {
-    id: 'receptionist', role: 'receptionist', label: 'Ban Lễ Tân', side: 'left', order: 1,
+    id: 'receptionist', role: 'receptionist', label: 'Ban Trợ Lý', side: 'left', order: 1,
     posMatrix: {
       IDLE: { x: '54%', y: '52%', size: '52%', z: 20 },
       RUNNING: { x: '37%', y: '52%', size: '55%', z: 20 },
@@ -207,7 +255,7 @@ const AgentAvatar = ({ seat, status, opacity, activeState }: any) => {
 };
 
 // ─── 💬 HIGH-Z FLOATING SPEECH BUBBLE (Relocated above Agent Heads) ────────────
-const FloatingSpeechBubble = ({ seat, status, message, showMsg, sortedByRecency }: any) => {
+const FloatingSpeechBubble = React.forwardRef(({ seat, status, message, tag, showMsg, sortedByRecency }: any, ref: any) => {
   const { id, label, posMatrix, role, side, order } = seat;
   const displayMsg = getStrategicMessage(message, role, status);
 
@@ -250,6 +298,7 @@ const FloatingSpeechBubble = ({ seat, status, message, showMsg, sortedByRecency 
 
   return (
     <div
+      ref={ref}
       className="absolute transition-all duration-300 ease-out pointer-events-none flex flex-col items-center"
       style={{
         top: `${topPos}%`,
@@ -279,8 +328,8 @@ const FloatingSpeechBubble = ({ seat, status, message, showMsg, sortedByRecency 
           </div>
           
           {/* Content */}
-          <p className="leading-relaxed font-semibold text-[10.5px] text-white/90 break-words text-left px-0.5 max-h-[85px] overflow-y-auto custom-scroll-tiny">
-            {displayMsg}
+          <div className="leading-relaxed font-semibold text-[10.5px] text-white/90 break-words text-left px-0.5 max-h-[85px] overflow-y-auto custom-scroll-tiny">
+            <MarkdownRenderer content={displayMsg} />
             {id === 'receptionist' && (
               <span className="inline-flex ml-1">
                 <span className="animate-bounce mx-0.5">.</span>
@@ -288,13 +337,13 @@ const FloatingSpeechBubble = ({ seat, status, message, showMsg, sortedByRecency 
                 <span className="animate-bounce delay-200 mx-0.5">.</span>
               </span>
             )}
-          </p>
+          </div>
 
         </motion.div>
       </div>
     </div>
   );
-};
+});
 
 export const Zenith3DMission = ({ nodes = [] }: any) => {
   const safeNodes = nodes || [];
@@ -317,8 +366,10 @@ export const Zenith3DMission = ({ nodes = [] }: any) => {
       
       const mappingKeywords = [
         'master', 'receptionist', 'receptionist_agent', 
-        'summarizer', 'planner', 'critic', 'reviewer', 
-        'executor-1', 'ai-executor-1', 'executor-2', 'ai-executor-2'
+        'summarizer', 'planner', 
+        'critic', 'critic-alpha', 'critic-beta', 'critic_alpha', 'critic_beta', 'reviewer', 
+        'executor', 'executor-alpha', 'executor_alpha', 'executor-1', 'ai-executor-1', 'executor_1',
+        'executor-2', 'ai-executor-2'
       ];
       
       mappingKeywords.forEach(keyword => {
@@ -334,11 +385,11 @@ export const Zenith3DMission = ({ nodes = [] }: any) => {
     const mapping: Record<string, string[]> = {
       'master': ['master'],
       'receptionist': ['receptionist', 'receptionist_agent'],
-      'summarizer': ['summarizer'],
+      'summarizer': ['summarizer', 'legal'],
       'planner': ['planner'],
-      'critic': ['critic', 'reviewer'],
-      'executor-alpha': ['executor-1', 'ai-executor-1'],
-      'executor-beta': ['executor-2', 'ai-executor-2']
+      'critic': ['critic', 'critic-alpha', 'critic-beta', 'critic_alpha', 'critic_beta', 'reviewer'],
+      'executor-alpha': ['executor', 'executor-alpha', 'executor_alpha', 'executor-1', 'ai-executor-1', 'executor_1'],
+      'executor-beta': ['executor-2', 'ai-executor-2', 'executor-beta', 'executor_beta']
     };
     
     const searchTerms = mapping[id] || [id.toLowerCase()];
@@ -365,6 +416,12 @@ export const Zenith3DMission = ({ nodes = [] }: any) => {
     return latestLog || node?.data?.msg || node?.data?.message || null;
   }, [resolveNode]);
 
+  const getAgentTag = useCallback((id: string) => {
+    const node = resolveNode(id);
+    if (!node) return null;
+    return node?.data?.tag || null;
+  }, [resolveNode]);
+
   const getAgentOpacity = useCallback((id: string) => {
     if (DEBUG_CALIBRATION) return 1;
     const node = resolveNode(id);
@@ -382,6 +439,36 @@ export const Zenith3DMission = ({ nodes = [] }: any) => {
       })
       .sort((a, b) => a.ts - b.ts);
   }, [resolveNode]);
+
+  // 💎 [LATEST-ACTIVE-SEAT]: Tìm kiếm seat ID hoạt động gần nhất để hiển thị bong bóng thoại duy nhất
+  const latestActiveSeatId = useMemo(() => {
+    const activeSeats = SEATS.filter(s => {
+      const status = getAgentStatus(s.id);
+      if (status === 'IDLE' || status === 'DONE') return false;
+      const msg = getAgentMessage(s.id);
+      return !!getStrategicMessage(msg, s.role, status);
+    });
+
+    if (activeSeats.length === 0) return null;
+
+    let maxTs = -1;
+    let latestId = null;
+
+    activeSeats.forEach(s => {
+      const node = resolveNode(s.id);
+      const logs = node?.data?.logs || [];
+      const lastTs = Math.max(
+        logs.length > 0 ? logs[logs.length - 1].ts : 0,
+        node?.data?.ts || 0
+      );
+      if (lastTs > maxTs) {
+        maxTs = lastTs;
+        latestId = s.id;
+      }
+    });
+
+    return latestId || activeSeats[0]?.id || null;
+  }, [resolveNode, getAgentStatus, getAgentMessage]);
 
   // Xác định trạng thái activeState thực tế cho từng agent
   const getActiveState = useCallback((statusStr: string): 'IDLE' | 'RUNNING' | 'STRESSED' | 'ARGUING' => {
@@ -435,16 +522,20 @@ export const Zenith3DMission = ({ nodes = [] }: any) => {
         {/* Speech Bubbles Overlay (z-index 110+, floats above table & avatars) */}
         <div className="absolute inset-0 w-full h-full pointer-events-none z-[110]">
           <AnimatePresence mode="popLayout">
-            {isMeeting && SEATS.map((seat) => (
-              <FloatingSpeechBubble
-                key={`bubble-${seat.id}`}
-                seat={seat}
-                status={getAgentStatus(seat.id)}
-                message={getAgentMessage(seat.id)}
-                showMsg={DEBUG_SHOW_MSG}
-                sortedByRecency={sortedByRecency}
-              />
-            ))}
+            {isMeeting && SEATS.map((seat) => {
+              const isSelected = seat.id === latestActiveSeatId;
+              return isSelected ? (
+                <FloatingSpeechBubble
+                  key={`bubble-${seat.id}`}
+                  seat={seat}
+                  status={getAgentStatus(seat.id)}
+                  message={getAgentMessage(seat.id)}
+                  tag={getAgentTag(seat.id)}
+                  showMsg={DEBUG_SHOW_MSG}
+                  sortedByRecency={sortedByRecency}
+                />
+              ) : null;
+            })}
           </AnimatePresence>
         </div>
 

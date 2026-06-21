@@ -1,0 +1,58 @@
+{
+  "id": "SKILL_NEURAL_AUDIT",
+  "name": "Zenith Neural Auditor",
+  "version": "1.0.0",
+  "description": "Post-mission evaluation core: Analyzes execution logs, extracts strategic lessons, and evolves AI wisdom for future tasks.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "thẩm định nơ ron",
+    "neural audit",
+    "phân tích nhiệm vụ",
+    "rút kinh nghiệm chiến lược",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "thuc",
+    "thanh",
+    "neural",
+    "khong",
+    "phan",
+    "zenith",
+    "audit",
+    "cong",
+    "nhan",
+    "nhiem",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "task_id": {
+          "type": "string",
+          "description": "ID of the audited task."
+        },
+        "mission_goal": {
+          "type": "string",
+          "description": "Original goal of the mission."
+        },
+        "execution_log": {
+          "type": "string",
+          "description": "Logs of the mission execution."
+        }
+      },
+      "required": [
+        "task_id",
+        "mission_goal",
+        "execution_log"
+      ]
+    }
+  }
+}

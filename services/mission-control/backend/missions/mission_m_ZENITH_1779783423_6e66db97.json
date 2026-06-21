@@ -1,0 +1,222 @@
+{
+  "id": "m_ZENITH_1779783423_6e66db97",
+  "title": "Hãy xem https://github.com/assafelovic/gpt-researcher có gì hơn JKAI",
+  "goal": "Hãy xem https://github.com/assafelovic/gpt-researcher có gì hơn JKAI",
+  "status": "failed",
+  "ts": 1779783462.471788,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "Hãy xem https://github.com/assafelovic/gpt-researcher có gì hơn JKAI",
+      "ts": 1779783423.213483,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1779783423_6e66db97` initialized | Trace: `trace_6e66db97`. Runtime ready.",
+      "ts": 1779783423.214863,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 📡 Đang phân tích chỉ thị với chế độ [FAST_PIPELINE] (Input mode: AUTO)...",
+      "ts": 1779783423.248432,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ [SEMANTIC-CACHE-HIT]: Khôi phục định tuyến từ Qdrant (Score: 1.0000) trong 0ms.",
+      "ts": 1779783423.3717659,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "COGNITIVE TRACE",
+      "msg": "{\"intent\": \"EXECUTION\", \"action_type\": \"EXECUTION\", \"confidence\": 0.8, \"risk\": \"LOW\", \"planner\": false, \"reasoning\": \"llm_dispatch_success: generate_image\"}",
+      "ts": 1779783423.375186,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: [REFLEX-MATCH]: Auto execute `generate_image`. Bypass Planner.",
+      "ts": 1779783423.3762655,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: generate_image(...) - TraceID: 6b030fac-9ea4-48fd-b744-457df31849bc",
+      "ts": 1779783423.3772247,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "📝 [T6]: Ban Thư Ký đang soạn Báo cáo từ phản xạ...",
+      "ts": 1779783429.3681371,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[INFO] [2026-05-26T08:17:09.376086] [SUMMARIZER] [Task: ZENITH_1779783423_6e66db97] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1779783429.376108,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[INFO] [2026-05-26T08:17:09.459476] [SUMMARIZER] [Task: ZENITH_1779783423_6e66db97] Đang triệu tập deepseek-r1:latest... (Context: 4096)",
+      "ts": 1779783429.4594972,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[INFO] [2026-05-26T08:17:10.317625] [SUMMARIZER] [Task: ZENITH_1779783423_6e66db97] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1779783430.317656,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[INFO] [2026-05-26T08:17:13.508076] [SUMMARIZER] [Task: ZENITH_1779783423_6e66db97] [SIGNAL]: Đã nhận lệnh Dừng khẩn cấp từ Master. Ngắt kết nối nơ-ron ngay lập tức .",
+      "ts": 1779783433.5081053,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[INFO] [2026-05-26T08:17:13.511575] [SUMMARIZER] [Task: ZENITH_1779783423_6e66db97] Hoàn tất trong 4.05s. (Size: 0 chars)",
+      "ts": 1779783433.5115936,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [FAST-ROUTE]: Kích hoạt Giao thức Phản xạ Nhất thể.",
+      "ts": 1779783433.519589,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "DATA_SCOUT",
+      "msg": "[INFO] [2026-05-26T08:17:13.537002] [DATA_SCOUT] [Task: ZENITH_1779783423_6e66db97] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1779783433.5370262,
+      "source": "DATA_SCOUT",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[INFO] [2026-05-26T08:17:13.551736] [SUMMARIZER] [Task: ZENITH_1779783423_6e66db97] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1779783433.551759,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "DATA_SCOUT",
+      "msg": "[INFO] [2026-05-26T08:17:13.596208] [DATA_SCOUT] [Task: ZENITH_1779783423_6e66db97] Đang triệu tập qwen2.5:0.5b... (Context: 2048)",
+      "ts": 1779783433.5962286,
+      "source": "DATA_SCOUT",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[INFO] [2026-05-26T08:17:13.618726] [SUMMARIZER] [Task: ZENITH_1779783423_6e66db97] Đang triệu tập deepseek-r1:latest... (Context: 4096)",
+      "ts": 1779783433.6187463,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "DATA_SCOUT",
+      "msg": "[INFO] [2026-05-26T08:17:13.630359] [DATA_SCOUT] [Task: ZENITH_1779783423_6e66db97] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1779783433.6303785,
+      "source": "DATA_SCOUT",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[INFO] [2026-05-26T08:17:13.639114] [SUMMARIZER] [Task: ZENITH_1779783423_6e66db97] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1779783433.639131,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-05-26T08:17:26.077942] [PLANNER] [Task: ZENITH_1779783423_6e66db97] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1779783446.0779624,
+      "source": "PLANNER",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-05-26T08:17:26.138903] [PLANNER] [Task: ZENITH_1779783423_6e66db97] Đang triệu tập deepseek-r1:latest... (Context: 4096)",
+      "ts": 1779783446.1389325,
+      "source": "PLANNER",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-05-26T08:17:26.152935] [PLANNER] [Task: ZENITH_1779783423_6e66db97] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1779783446.1529534,
+      "source": "PLANNER",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-05-26T08:17:36.906164] [PLANNER] [Task: ZENITH_1779783423_6e66db97] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1779783456.9061823,
+      "source": "PLANNER",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-05-26T08:17:36.966939] [PLANNER] [Task: ZENITH_1779783423_6e66db97] Đang triệu tập deepseek-r1:latest... (Context: 4096)",
+      "ts": 1779783456.9669607,
+      "source": "PLANNER",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-05-26T08:17:36.980459] [PLANNER] [Task: ZENITH_1779783423_6e66db97] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1779783456.9805107,
+      "source": "PLANNER",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-05-26T08:17:42.423212] [PLANNER] [Task: ZENITH_1779783423_6e66db97] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1779783462.4232302,
+      "source": "PLANNER",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-05-26T08:17:42.438101] [PLANNER] [Task: ZENITH_1779783423_6e66db97] Đang triệu tập deepseek-r1:latest... (Context: 4096)",
+      "ts": 1779783462.4381163,
+      "source": "PLANNER",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-05-26T08:17:42.451255] [PLANNER] [Task: ZENITH_1779783423_6e66db97] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1779783462.4512732,
+      "source": "PLANNER",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "⚠️ **Lỗi phản xạ**: Không thể tạo lộ trình thực thi chớp nhoáng (FAST) cho yêu cầu này. Master vui lòng tinh chỉnh lại yêu cầu hoặc thử lại ạ. 🫡",
+      "ts": 1779783462.4580114,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779783423_6e66db97"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

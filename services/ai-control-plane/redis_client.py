@@ -1,52 +1,49 @@
 import redis
 import redis.asyncio as async_redis
 import os
-import json
+import redis as sync_redis
+import logging
 
-# Singleton Redis Clients
-_redis_client = None
-_async_redis_client = None
+logger = logging.getLogger(__name__)
+
+_REDIS_INSTANCE = None
 
 def get_redis():
-    global _redis_client
-    if _redis_client is None:
-        redis_host = os.getenv("REDIS_HOST")
-        redis_port = int(os.getenv("REDIS_PORT", 6379))
-        redis_pass = os.getenv("REDIS_PASSWORD")
-        if not redis_host: raise ValueError("REDIS_HOST not set in .env")
-        
-        _redis_client = redis.Redis(
-            host=redis_host,
-            port=redis_port,
-            password=redis_pass,
-            decode_responses=True,
-            socket_timeout=5,
-            socket_keepalive=True
-        )
-    return _redis_client
+    global _REDIS_INSTANCE
+    if _REDIS_INSTANCE is None:
+        try:
+            _REDIS_INSTANCE = sync_redis.Redis(
+                host=os.getenv("REDIS_HOST", "redis-ai"),
+                port=int(os.getenv("REDIS_PORT", "6379")),
+                password=os.getenv("REDIS_PASSWORD", "Admin@123456"),
+                decode_responses=True,
+                socket_timeout=5
+            )
+        except Exception:
+            return None
+    return _REDIS_INSTANCE
 
 async def get_async_redis():
-    global _async_redis_client
-    if _async_redis_client is None:
-        redis_host = os.getenv("REDIS_HOST")
-        redis_port = int(os.getenv("REDIS_PORT", 6379))
-        redis_pass = os.getenv("REDIS_PASSWORD")
-        
-        _async_redis_client = async_redis.Redis(
-            host=redis_host,
-            port=redis_port,
-            password=redis_pass,
+    import redis.asyncio as async_redis
+    try:
+        return async_redis.Redis(
+            host=os.getenv("REDIS_HOST", "redis-ai"),
+            port=int(os.getenv("REDIS_PORT", "6379")),
+            password=os.getenv("REDIS_PASSWORD", "Admin@123456"),
             decode_responses=True,
-            socket_timeout=None, # No timeout for async pop
-            socket_keepalive=True
+            socket_timeout=60,
+            socket_connect_timeout=5,
+            socket_keepalive=True,
+            health_check_interval=15
         )
-    return _async_redis_client
+    except Exception:
+        return None
 
 def redis_safe(func, default=None):
-    """Tiện ích kết nối Redis an toàn (Dùng chung connection)."""
     try:
         r = get_redis()
-        return func(r)
-    except Exception as e:
-        print(f"❌ [JKAI-REDIS] Error: {e}")
-        return default
+        if r:
+            return func(r)
+    except Exception:
+        pass
+    return default

@@ -1,0 +1,145 @@
+{
+  "id": "m_ZENITH_1780141458_25b433b9",
+  "title": "hãy cho tôi 5 tin tức về Việt Nam mới nhất hôm nay ?",
+  "goal": "hãy cho tôi 5 tin tức về Việt Nam mới nhất hôm nay ?",
+  "status": "completed",
+  "ts": 1780141527.5312414,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "hãy cho tôi 5 tin tức về Việt Nam mới nhất hôm nay ?",
+      "ts": 1780141459.032096,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1780141458_25b433b9` initialized | Trace: `trace_25b433b9`. Runtime ready.",
+      "ts": 1780141459.0347266,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780141459.2476168,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: Pre-routing/Intent-Forcing: Real-time query detected. Executing search directly thưa Master.",
+      "ts": 1780141459.2605217,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780141459.2622085,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_9520658f4bb2",
+      "ts": 1780141459.263912,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "TAVILY: Initiating global web search for hãy cho tôi 5 tin tức về Việt Nam mới nhất hôm nay ? 30/05/2026",
+      "ts": 1780141469.5882065,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    },
+    {
+      "tag": "WEB_DATA",
+      "msg": "TAVILY-FOUND: Discovered 5 results.\n1. 💯 Tin mới 30/5/2026 | TIN TỨC THẾ GIỚI MỚI NHẤT TRONG NGÀY|  (https://www.youtube.com/watch?v=Zt0pXj_Brjc&vl=pt-BR)\n2. ✈ Bản Tin Mới Nhất ngày30/05/2026✈ Tin Nóng Việt Nam và Thế  (https://www.youtube.com/watch?v=mFCRHdbBmq4)\n3. Trực tiếp Tin tức việt nam thời sự mới nhất ngày 28/5/2026 ✈ (https://www.youtube.com/watch?v=d9SZcDZKU14)\n",
+      "ts": 1780141472.7205012,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780141472.780855,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (8122 ký tự)",
+      "ts": 1780141472.786437,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: DEEP-DISTILLING: Large search data found (8122 chars). Distilling knowledge...",
+      "ts": 1780141472.788787,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi động bộ lọc Cosine TF-IDF siêu tốc thưa Master...",
+      "ts": 1780141472.791401,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Hoàn tất chưng cất trong 3ms (Cắt từ 8122 còn 1671 ký tự) thưa Master.",
+      "ts": 1780141472.7968347,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T11:44:32.805954] [RECEPTIONIST] [Task: ZENITH_1780141458_25b433b9] Đang triệu tập qwen3:4b... (Context: 2048)",
+      "ts": 1780141472.8059716,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T11:44:34.378853] [RECEPTIONIST] [Task: ZENITH_1780141458_25b433b9] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780141474.3788838,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T11:45:27.499534] [RECEPTIONIST] [Task: ZENITH_1780141458_25b433b9] [Ngày 28/05/2026] Tin tức Việt Nam thời sự mới nhất ngày 28/05/2026 ✈ Tin Nóng Chính Trị Việt Nam và Thế Giới  \n[Ngày 28/05/2026] HCTV là kênh thời sự tổng hợp, cập nhật liên tục 24/7 các tin tức nóng trong nước và quốc tế...  \n[Ngày 28/05/2026] Chúng tôi hướng tới việc mang đến cho khán giả thông tin nhanh – chính xác – dễ hiểu...  \n[Ngày 28/05/2026] Đánh giá mới nhất về tình hình kinh tế khu vực Đông Nam Á trong tháng 5/2026.  \n[Ngày 28/05/2026] Báo cáo về sự kiện quan trọng trong lĩnh vực y tế tại các tỉnh thành phố lớn của Việt Nam.",
+      "ts": 1780141527.4995909,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T11:45:27.505881] [RECEPTIONIST] [Task: ZENITH_1780141458_25b433b9] Hoàn tất trong 54.70s. (Size: 542 chars)",
+      "ts": 1780141527.5058978,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "💎🫡 [ZENITH]: [Ngày 28/05/2026] Tin tức Việt Nam thời sự mới nhất ngày 28/05/2026 ✈ Tin Nóng Chính Trị Việt Nam và Thế Giới  \n[Ngày 28/05/2026] HCTV là kênh thời sự tổng hợp, cập nhật liên tục 24/7 các tin tức nóng trong nước và quốc tế...  \n[Ngày 28/05/2026] Chúng tôi hướng tới việc mang đến cho khán giả thông tin nhanh – chính xác – dễ hiểu...  \n[Ngày 28/05/2026] Đánh giá mới nhất về tình hình kinh tế khu vực Đông Nam Á trong tháng 5/2026.  \n[Ngày 28/05/2026] Báo cáo về sự kiện quan trọng trong lĩnh vực y tế tại các tỉnh thành phố lớn của Việt Nam.",
+      "ts": 1780141527.509147,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Ngày 28/05/2026] Tin tức Việt Nam thời sự mới nhất ngày 28/05/2026 ✈ Tin Nóng Chính Trị Việt Nam và Thế Giới  \n[Ngày 28/05/2026] HCTV là kênh thời sự tổng hợp, cập nhật liên tục 24/7 các tin tức nóng trong nước và quốc tế...  \n[Ngày 28/05/2026] Chúng tôi hướng tới việc mang đến cho khán giả thông tin nhanh – chính xác – dễ hiểu...  \n[Ngày 28/05/2026] Đánh giá mới nhất về tình hình kinh tế khu vực Đông Nam Á trong tháng 5/2026.  \n[Ngày 28/05/2026] Báo cáo về sự kiện quan trọng trong lĩnh vực y tế tại các tỉnh thành phố lớn của Việt Nam.",
+      "ts": 1780141527.5142496,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780141458_25b433b9"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

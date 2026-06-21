@@ -73,7 +73,7 @@ class Settings:
             self._last_sync = mtime
             # print(f"✅ [CONFIG-HOT-RELOAD]: Đã cập nhật lộ trình từ {config_path}")
             return True
-        except: return False
+        except Exception: return False
 
     @property
     def INPUT_DIR(self) -> str:

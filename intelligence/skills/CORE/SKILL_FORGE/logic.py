@@ -39,14 +39,20 @@ class SkillForge:
 
             # 🧠 Phase 1: Neural Design & Validation
             prompt = f"""
-            [GRAND ARCHITECT v50.2 - SOVEREIGN v2.0]
+            [GRAND ARCHITECT v50.3 - SOVEREIGN v2.0]
             YÊU CẦU CỦA MASTER: {description}
             
-            TIÊU CHUẨN KIẾN TRÚC ELITE:
-            1. THẨM ĐỊNH (Validation): Nếu yêu cầu thiếu Input/Output rõ ràng, PHẢI trả về câu hỏi làm rõ.
-            2. KHÁM PHÁ (Discovery): Tích hợp `await engine.get_experience()` để tự tìm dữ liệu trong Workspace.
-            3. THỊ GIÁC & EXCEL: Phải hỗ trợ Phân tích ảnh và Excel Đa Sheet (pandas sheet_name=None).
-            4. KỶ LUẬT & PHẢN HỒI: Sử dụng `path_manager` và trả về `attachments` để gửi tệp trực tiếp.
+            [WORKING PRINCIPLES]:
+            1. [5-FILE-STANDARD]: Luôn duy trì bộ hồ sơ 5 file (logic, SKILL, dossier, manifest, __init__).
+            2. [ID-GOVERNANCE]: Tự động phân bổ ID theo dải 10xx, 20xx... dựa trên Domain.
+            3. [DIRECTORY-MAPPING]: Kỹ năng mới phải nằm đúng thư mục domain vật lý.
+            4. [SSoT-SYNC]: Đồng bộ hóa tức thời vào registry_Map_skills.json và MAP_SKILLS.md.
+            
+            TIÊU CHUẨN KIẾN TRÚC ELITE (5-FILE):
+            1. logic.py: Mã nguồn Python thực thi.
+            2. SKILL.md: Manifest YAML v2.0 (id, name_vn, domain, intent_pairs, schema).
+            3. dossier.md: Hồ sơ năng lực chi tiết. Bắt buộc có các mục: ## 🛠️ Detailed Features, ## 🎯 Capability Overview, ## 🌌 Strategic Value.
+            4. manifest.json: Cấu hình registry tương thích.
             
             TRẢ VỀ JSON:
             {{
@@ -54,13 +60,15 @@ class SkillForge:
                 "name_vn": "Tên tiếng Việt trang trọng",
                 "domain": "CORE/BUSINESS/HUEIC_PROCESS/AI_AGENT/TOOLS",
                 "logic_code": "...",
-                "skill_md": "..."
+                "skill_md": "...",
+                "dossier_md": "...",
+                "manifest_json_content": {{ ... }}
             }}
             """
             
-            engine.publish_progress(30, "Đang đúc kết bản vẽ kiến trúc Trí tuệ...", "forge", task_id, trace_id)
+            engine.publish_progress(30, "Đang đúc kết bản vẽ kiến trúc Trí tuệ (5-File Standard)...", "forge", task_id, trace_id)
             raw_response = await engine.chat_completion(
-                messages=[{"role": "system", "content": "Ngài là Kiến trúc sư Trưởng của Zenith AI-OS."}, {"role": "user", "content": prompt}],
+                messages=[{"role": "system", "content": "Ngài là Kiến trúc sư Trưởng của Zenith AI-OS. Luôn tạo ra bộ hồ sơ 5 file chuẩn Elite."}, {"role": "user", "content": prompt}],
                 role="PLANNER",
                 format="json",
                 task_id=task_id,
@@ -71,14 +79,17 @@ class SkillForge:
             skill_id = data["skill_id"]
             domain = data["domain"]
             
-            # 📁 Phase 2: Physical Sealing (Niêm phong Thực địa)
+            # 📁 Phase 2: Physical Sealing (Niêm phong Thực địa - 5 Files)
             target_dir = self.skills_dir / domain / skill_id
             target_dir.mkdir(parents=True, exist_ok=True)
             
             (target_dir / "logic.py").write_text(data["logic_code"], encoding="utf-8")
             (target_dir / "SKILL.md").write_text(data["skill_md"], encoding="utf-8")
+            (target_dir / "dossier.md").write_text(data["dossier_md"], encoding="utf-8")
+            (target_dir / "manifest.json").write_text(json.dumps(data["manifest_json_content"], indent=4, ensure_ascii=False), encoding="utf-8")
+            (target_dir / "__init__.py").write_text("# Zenith Skill Initialization\n", encoding="utf-8")
             
-            engine.publish_progress(70, f"Đã niêm phong kỹ năng `{skill_id}` vào thực địa `{domain}`.", "forge", task_id, trace_id)
+            engine.publish_progress(70, f"Đã niêm phong bộ hồ sơ 5 file cho `{skill_id}` vào thực địa `{domain}`.", "forge", task_id, trace_id)
             
             # 🗺️ Phase 3: Sovereign Integration (Nhất thể hóa Chủ quyền)
             await self._sync_to_system(data, target_dir)
@@ -90,43 +101,91 @@ class SkillForge:
             engine.publish_mission_log("ERROR", f"🚨 [FORGE-FAULT]: {str(e)}", task_id, trace_id)
             return {"status": "error", "msg": str(e)}
 
+    def _get_next_global_id(self, domain):
+        """Phân bổ ID toàn cầu dựa trên phân khu (Domain) từ MAP_SKILLS.md."""
+        ranges = {
+            "CORE": 1000, "DATA": 2000, "DEV": 3000, "RESEARCH": 4000,
+            "BUSINESS": 5000, "SECURITY": 6000, "HUEIC": 7000, "TOOLS": 8000
+        }
+        base = ranges.get(domain, 9000)
+        
+        if not self.map_skills_path.exists():
+            return f"#{base + 1}"
+            
+        content = self.map_skills_path.read_text(encoding="utf-8")
+        import re
+        ids = re.findall(r'\|\s*\*\*#(\d+)\*\*', content)
+        
+        # Lọc các ID thuộc dải của domain
+        domain_ids = [int(i) for i in ids if base <= int(i) < base + 1000]
+        
+        if not domain_ids:
+            return f"#{base + 1}"
+        return f"#{max(domain_ids) + 1}"
+
     async def _sync_to_system(self, data, target_dir):
-        """Đồng bộ hóa nhất thể vào Registry và Bản đồ."""
+        """Đồng bộ hóa nhất thể vào Registry và Bản đồ với ID tự động."""
         skill_id = data["skill_id"]
         domain = data["domain"]
         name_vn = data["name_vn"]
+        
+        global_id = self._get_next_global_id(domain)
+        rel_path = f"skills/{domain}/{skill_id}/SKILL.md"
 
         # 1. Cập nhật Registry
         if self.registry_path.exists():
             reg = json.loads(self.registry_path.read_text(encoding="utf-8"))
             reg["skills"][skill_id.upper()] = {
                 "id": skill_id.upper(),
+                "global_id": global_id,
                 "name_vn": name_vn,
                 "domain": domain,
-                "rel_path": f"skills\\{domain}\\{skill_id}\\SKILL.md",
+                "rel_path": rel_path,
                 "version": "1.0.0",
-                "author": "Zenith Forge Auto"
+                "author": "Zenith Forge Auto",
+                "learned_at": os.path.getmtime(str(target_dir / "logic.py"))
             }
             self.registry_path.write_text(json.dumps(reg, indent=4, ensure_ascii=False), encoding="utf-8")
 
-        # 2. Cập nhật Bản đồ MAP_SKILLS.md
-        if self.map_path.exists():
-            content = self.map_path.read_text(encoding="utf-8")
-            # Heuristic: Tìm vị trí MUC dựa trên Domain
-            domain_to_muc = {
-                "CORE": "MUC 1", "AI_AGENT": "MUC 3", "BUSINESS": "MUC 4", 
-                "HUEIC_PROCESS": "MUC 5", "QA_SECURITY": "MUC 6", "TOOLS": "MUC 7"
+        # 2. Cập nhật Bản đồ MAP_SKILLS.md (Chèn vào cuối phân khu tương ứng)
+        if self.map_skills_path.exists():
+            content = self.map_skills_path.read_text(encoding="utf-8")
+            # Tìm vị trí phân khu
+            section_markers = {
+                "CORE": "## MỤC I:", "DATA": "## MỤC II:", "DEV": "## MỤC III:",
+                "RESEARCH": "## MỤC IV:", "BUSINESS": "## MỤC V:", "SECURITY": "## MỤC VI:",
+                "HUEIC": "## MỤC VII:", "TOOLS": "## MỤC VIII:"
             }
-            muc_tag = domain_to_muc.get(domain, "MUC 4")
+            marker = section_markers.get(domain, "## MỤC I:")
             
-            if muc_tag in content:
-                parts = content.split(f"## {muc_tag}")
-                sub_parts = parts[1].split("---")
-                new_entry = f"- **#{skill_id.split('_')[-1]}. {skill_id}**: {name_vn}. [PLUGIN]\n"
-                if new_entry not in parts[1]:
-                    sub_parts[0] += new_entry
-                    updated_content = parts[0] + f"## {muc_tag}" + "---".join(sub_parts)
-                    self.map_path.write_text(updated_content, encoding="utf-8")
+            # Tạo dòng mới
+            features = data.get("dossier_md", "").split("## 🛠️ Detailed Features")[-1].split("##")[0].strip()
+            # Dọn dẹp features để bỏ qua các ký tự xuống dòng gây hỏng bảng
+            features_clean = features.replace("\n", "; ").strip("- ")
+            new_row = f"| **{global_id}** | **{name_vn}**: {features_clean[:200]}... | {name_vn.lower().replace(' ', ', ')} | {skill_id.upper()} | Plugin |"
+            
+            # Chèn dòng vào file
+            lines = content.splitlines()
+            target_idx = -1
+            for i, line in enumerate(lines):
+                if marker in line:
+                    target_idx = i
+                    break
+            
+            if target_idx != -1:
+                # Tìm cuối bảng hiện tại (dòng trống sau bảng)
+                inserted = False
+                for i in range(target_idx + 1, len(lines)):
+                    if lines[i].strip() == "" and i > target_idx + 3:
+                        lines.insert(i, new_row)
+                        inserted = True
+                        break
+                if not inserted:
+                    lines.append(new_row)
+            else:
+                lines.append(f"\n{marker}\n| STT | Tên Kỹ Năng | Keywords | ID | Loại |\n| :--- | :--- | :--- | :--- | :--- |\n{new_row}")
+                    
+            self.map_skills_path.write_text("\n".join(lines), encoding="utf-8")
 
 async def execute(params: dict, task_id: str = "system", trace_id: str = "system"):
     """Entry point cho Đặc vụ Dispatcher triệu hồi Lò đúc."""

@@ -5,7 +5,11 @@ import sys
 import asyncio
 import inspect
 import re
-import redis  # SỬA LỖI: Thiếu thư viện kết nối Redis trung tâm
+import redis
+import json
+from pathlib import Path
+from core.utils.models import Permission, SKILL_CATEGORY_PERMISSIONS
+from core.utils.skill_selector import normalize_skill_name
 
 class ToolRouter:
     """
@@ -21,6 +25,7 @@ class ToolRouter:
         self._module_cache = {}
         self.skills_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "intelligence", "skills"))
         self._dynamic_tool_map = None  # 🧠 Bản đồ nơ-ron động
+        self._plugin_map = {} # 🛡️ Z-SOS Plugin Map
 
         # Pre-compile regex để tăng tốc độ truy quét cấu trúc file logic.py
         self._func_regex = re.compile(r'^\s*(?:async\s+)?def\s+([a-zA-Z0-9_]+)\s*\(', re.MULTILINE)
@@ -112,7 +117,33 @@ class ToolRouter:
                 print(f"⚠️ [ROUTER-DISCOVERY] Lỗi khi quét map từ file {logic_file}: {e}")
         
         self._dynamic_tool_map = dynamic_map
+        
+        # 🛡️ [Z-SOS-SCAN]: Quét các plugin thế hệ mới
+        self._scan_zsos_plugins()
+        
         return dynamic_map
+
+    def _scan_zsos_plugins(self):
+        """🛡️ Quét toàn bộ thư mục skills để tìm các Plugin chuẩn Z-SOS (có manifest.json)."""
+        if not os.path.exists(self.skills_root): return
+        
+        for root, dirs, files in os.walk(self.skills_root):
+            if "manifest.json" in files:
+                manifest_path = os.path.join(root, "manifest.json")
+                try:
+                    with open(manifest_path, 'r', encoding='utf-8') as f:
+                        manifest = json.load(f)
+                        plugin_id = manifest.get("id")
+                        if plugin_id:
+                            self._plugin_map[plugin_id] = {
+                                "id": plugin_id,
+                                "path": root,
+                                "logic_file": os.path.join(root, "logic.py"),
+                                "manifest": manifest
+                            }
+                            print(f"✅ [Z-SOS-DISCOVERY]: Đã nạp plugin {plugin_id}")
+                except Exception as e:
+                    print(f"❌ [Z-SOS-ERR]: Lỗi nạp plugin tại {root}: {e}")
 
     async def call_tool(self, tool_name: str, **kwargs):
         print(f"🔌 [JKAI-ROUTER] Centralized Routing to: {tool_name}")
@@ -133,12 +164,23 @@ class ToolRouter:
             orchestrator = JKAIKnowledgeOrchestrator()
             all_skills = await orchestrator.get_all_skills_dict()
             
-            # 🧠 [DYNAMIC-RESOLVER]: Khớp nối thông minh
+            tool_name_normalized = normalize_skill_name(str(tool_name)) if tool_name is not None else ""
+            
+            # 🛡️ [Z-SOS-RESOLVER]: Kiểm tra xem có phải Plugin chuẩn Z-SOS không
             if self._dynamic_tool_map is None:
                 self._build_dynamic_tool_map(all_skills)
+            
+            if tool_name in self._plugin_map or tool_name_normalized in self._plugin_map:
+                plugin = self._plugin_map.get(tool_name) or self._plugin_map.get(tool_name_normalized)
+                print(f"[Z-SOS-EXEC]: Chuyển hướng thực thi sang Plugin OS: {tool_name}")
+                return await self._execute_zsos_plugin(plugin, kwargs)
+
+            # 🧠 [DYNAMIC-RESOLVER]: Khớp nối thông minh
 
             resolved_tool_name = tool_name
-            if tool_name in self._dynamic_tool_map:
+            if tool_name_normalized in self._dynamic_tool_map:
+                resolved_tool_name = self._dynamic_tool_map[tool_name_normalized]
+            elif tool_name in self._dynamic_tool_map:
                 resolved_tool_name = self._dynamic_tool_map[tool_name]
             elif tool_name.lower() in self._dynamic_tool_map:
                 resolved_tool_name = self._dynamic_tool_map[tool_name.lower()]
@@ -151,6 +193,31 @@ class ToolRouter:
                 if skill_info:
                     print(f"🔗 [ROUTER-CASE-FIX]: '{resolved_tool_name}' → khớp registry key '{resolved_upper}'")
                     resolved_tool_name = resolved_upper
+
+            if not skill_info and tool_name_normalized:
+                for s_id, s_data in all_skills.items():
+                    if normalize_skill_name(str(s_id)) == tool_name_normalized:
+                        skill_info = s_data
+                        resolved_tool_name = s_id
+                        print(f"🔗 [ROUTER-NORMALIZED-ID]: '{tool_name}' → '{s_id}'")
+                        break
+
+            if not skill_info and tool_name_normalized:
+                for s_id, s_data in all_skills.items():
+                    candidate_names = [
+                        str(s_data.get("name", "")),
+                        str(s_data.get("name_vn", "")),
+                        str(s_data.get("global_id", "")),
+                        str(s_data.get("command_deck_id", "")),
+                    ]
+                    aliases = s_data.get("aliases_vn", []) or []
+                    candidate_names.extend(aliases)
+                    normalized_candidates = {normalize_skill_name(str(n)) for n in candidate_names if n}
+                    if tool_name_normalized in normalized_candidates:
+                        skill_info = s_data
+                        resolved_tool_name = s_id
+                        print(f"🔗 [ROUTER-NORMALIZED-NAME]: '{tool_name}' → registry `{s_id}`")
+                        break
             
             if not skill_info:
                 # 📡 [AUTO-SYNC-PROTOCOL]: Nếu không thấy, tự động tái thiết bản đồ nơ-ron
@@ -162,12 +229,72 @@ class ToolRouter:
                 self._build_dynamic_tool_map(all_skills)
                 
             if not skill_info:
-                # Thử tìm theo name/id case-insensitive nếu key vẫn không khớp
+                clean_num = str(resolved_tool_name or "").strip().lstrip("#")
+                if clean_num.isdigit():
+                    for s_id, s_data in all_skills.items():
+                        if str(s_data.get("deck_number", "")) == clean_num:
+                            skill_info = s_data
+                            resolved_tool_name = s_id
+                            print(
+                                f"🔗 [ROUTER-DECK-NUM]: #{clean_num} → registry `{s_id}` "
+                                f"(deck_number field)"
+                            )
+                            break
+
+            if not skill_info:
+                try:
+                    from core.utils.skill_deck_index import SkillDeckIndex
+                    deck = SkillDeckIndex.get()
+                    deck_entry = deck.resolve(resolved_tool_name)
+                    if not deck_entry and tool_name:
+                        deck_entry = deck.resolve(str(tool_name).lstrip("#"))
+                    if not deck_entry:
+                        rid = deck.resolve_registry_by_deck(str(resolved_tool_name or tool_name or ""))
+                        if rid:
+                            resolved_tool_name = rid
+                            skill_info = all_skills.get(rid) or all_skills.get(rid.upper())
+                    if deck_entry and deck_entry.registry_id:
+                        resolved_tool_name = deck_entry.registry_id
+                        skill_info = all_skills.get(resolved_tool_name) or all_skills.get(
+                            resolved_tool_name.upper()
+                        )
+                        if skill_info:
+                            print(
+                                f"🔗 [ROUTER-DECK]: '{tool_name}' → {deck_entry.display_id} "
+                                f"→ `{resolved_tool_name}`"
+                            )
+                except Exception as deck_err:
+                    print(f"[ROUTER-DECK] skip: {deck_err}")
+
+            if not skill_info:
+                # Thử tìm theo name/id/global_id case-insensitive nếu key vẫn không khớp
                 for s_id, s_data in all_skills.items():
-                    s_id_str = str(s_data.get("id") or "")
-                    s_name_str = str(s_data.get("name") or "")
-                    if s_id_str.upper() == resolved_tool_name.upper() or s_name_str.upper() == resolved_tool_name.upper():
+                    s_id_str = str(s_data.get("id") or "").upper()
+                    s_name_str = str(s_data.get("name") or "").upper()
+                    g_id_str = str(s_data.get("global_id") or "").upper()
+                    deck_num = str(s_data.get("deck_number") or "")
+                    cmd_deck = str(s_data.get("command_deck_id") or "").upper()
+                    
+                    target = resolved_tool_name.upper()
+                    clean_target = target.replace("#", "")
+                    if deck_num and deck_num == clean_target:
                         skill_info = s_data
+                        print(f"🔗 [ROUTER-DECK-FIELD]: #{clean_target} → `{s_id}`")
+                        break
+                    if cmd_deck and cmd_deck.replace("#", "") == clean_target:
+                        skill_info = s_data
+                        break
+                    # Hỗ trợ cả trường hợp target có # hoặc không có #, và so khớp với global_id 10xx vs xx
+                    if s_id_str == target or s_name_str == target:
+                        skill_info = s_data
+                        break
+                    
+                    # So khớp Global ID (ví dụ: #1016 khớp với #16 hoặc 1016 khớp với 16)
+                    clean_target = target.replace("#", "")
+                    clean_gid = g_id_str.replace("#", "")
+                    if g_id_str == target or clean_gid == clean_target or (clean_target.endswith(clean_gid) and len(clean_gid) > 0):
+                        skill_info = s_data
+                        print(f"🔗 [ROUTER-GLOBAL-MATCH]: '{target}' khớp với kỹ năng `{s_id}` (GlobalID: {g_id_str})")
                         break
             
             if not skill_info:
@@ -194,6 +321,19 @@ class ToolRouter:
             
             if not os.path.exists(logic_file):
                 return {"status": "error", "msg": f"Logic file for '{tool_name}' not found at {logic_file}. Path sync required."}
+
+            # 🛡️ [CAPABILITY-PERMISSION]: Kiểm tra quyền của skill theo category
+            skill_rel = skill_info.get("rel_path", "")
+            category = ""
+            if skill_rel:
+                parts = Path(skill_rel.replace("\\", "/")).parts
+                if len(parts) >= 2:
+                    category = parts[0].upper()  # e.g., "SECURITY", "CORE", "DEVOPS"
+            if not category:
+                category = Path(skill_folder).parts[0].upper() if skill_folder else ""
+            required_perms = SKILL_CATEGORY_PERMISSIONS.get(category, [Permission.FILESYSTEM_READ, Permission.LLM_CALL])
+            if Permission.SOVEREIGN not in required_perms:
+                print(f"🛡️ [PERMISSION] Skill '{tool_name}' (category: {category}) → {required_perms}")
 
             # 🚀 [QUANTUM-LOAD]: Nạp module trực tiếp từ path đã định danh
             cache_key = skill_folder
@@ -254,12 +394,79 @@ class ToolRouter:
             print(f"❌ [ROUTER-CRITICAL-ERROR]: {traceback.format_exc()}")
             return {"status": "error", "msg": f"Router failed: {str(e)}"}
 
+    async def _execute_zsos_plugin(self, plugin, kwargs):
+        try:
+            logic_file = plugin.get('logic_file') or os.path.join(plugin.get('path', ''), "logic.py")
+            if not logic_file or not os.path.exists(logic_file):
+                return {"status": "error", "message": f"Plugin logic file not found: {logic_file}"}
+            
+            if "zsos" not in sys.modules:
+                import types
+                sys.modules["zsos"] = types.ModuleType("zsos")
+                sys.modules["zsos"].__path__ = []
+
+            module_name = f"zsos.{plugin.get('id', 'unknown')}"
+            
+            spec = importlib.util.spec_from_file_location(module_name, logic_file)
+            if spec is None or spec.loader is None:
+                return {"status": "error", "message": f"Could not create spec/loader for {module_name}"}
+            
+            if module_name in sys.modules:
+                module = sys.modules[module_name]
+                spec.loader.exec_module(module)
+            else:
+                module = importlib.util.module_from_spec(spec)
+                sys.modules[module_name] = module
+                spec.loader.exec_module(module)
+            
+            # [PROTOCOL-FUSION]: Ho tro da dang phuong thuc goi thua Master
+            target_func = getattr(module, "execute", None)
+            if not target_func:
+                # Fallback: Tim ham trung ten Plugin hoac Folder thua Master
+                target_func = getattr(module, plugin['id'], None) or \
+                              getattr(module, os.path.basename(os.path.dirname(logic_file)), None)
+            
+            if target_func:
+                sig = inspect.signature(target_func)
+                params = list(sig.parameters.values())
+                has_var_keyword = any(p.kind == inspect.Parameter.VAR_KEYWORD for p in params)
+                takes_single_dict = len(params) == 1 and params[0].kind in (inspect.Parameter.POSITIONAL_ONLY, inspect.Parameter.POSITIONAL_OR_KEYWORD) and (params[0].name in ("kwargs", "args", "payload", "data") or params[0].annotation is dict)
+                
+                if takes_single_dict:
+                    if asyncio.iscoroutinefunction(target_func):
+                        return await target_func(kwargs)
+                    return target_func(kwargs)
+                else:
+                    if not has_var_keyword:
+                        valid_params = set(sig.parameters.keys())
+                        cleaned_kwargs = {k: v for k, v in kwargs.items() if k in valid_params}
+                    else:
+                        cleaned_kwargs = kwargs.copy()
+                        
+                    required_params = [p.name for p in params if p.default == inspect.Parameter.empty and p.kind in (inspect.Parameter.POSITIONAL_OR_KEYWORD, inspect.Parameter.KEYWORD_ONLY)]
+                    if "query" in required_params and "query" not in cleaned_kwargs:
+                        for synonym in ["extracted_params", "search_query", "q", "search", "topic", "text"]:
+                            if synonym in kwargs:
+                                cleaned_kwargs["query"] = kwargs[synonym]
+                                break
+                    
+                    if len(required_params) == 1 and required_params[0] not in cleaned_kwargs:
+                        other_keys = [k for k in kwargs.keys() if k not in ["task_id", "trace_id", "session_id"]]
+                        if len(other_keys) == 1:
+                            cleaned_kwargs[required_params[0]] = kwargs[other_keys[0]]
+
+                    if asyncio.iscoroutinefunction(target_func):
+                        return await target_func(**cleaned_kwargs)
+                    return target_func(**cleaned_kwargs)
+            else:
+                return {"status": "error", "message": f"Plugin {plugin.get('id', 'unknown')} logic.py has no execute() or matching function."}
+        except Exception as e:
+            import traceback
+            print(f"❌ [Z-SOS-EXEC-ERR]: {traceback.format_exc()}")
+            return {"status": "error", "message": str(e)}
+
     def invalidate_cache(self):
         """Xóa cache module để buộc nạp lại từ disk."""
-        # Fix leak sys.modules
-        for cache_key, module in self._module_cache.items():
-            if module.__name__ in sys.modules:
-                del sys.modules[module.__name__]
         self._module_cache.clear()
         self._dynamic_tool_map = None # Xóa luôn bản đồ động
-        print("🔄 [JKAI-ROUTER] Module & Dynamic Map cache invalidated. Mức độ an toàn bộ nhớ: Tối đa.")
+        print("🔄 [JKAI-ROUTER] Cache invalidated safely.")

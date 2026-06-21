@@ -1,12 +1,23 @@
+<!-- 
+[ZENITH FILE DIRECTIVE]
+- File: rule_hardware.md
+- Role: Hardware Affinity & Resource Allocation Rules.
+- Ownership: Mr LeeTrung
+- Status: Active | Version: SDS v19.9
+[WORKING PRINCIPLES]:
+1. [PHYSICAL-LIMITS]: Tuyệt đối tuân thủ giới hạn 8GB VRAM và 44 Threads của Xeon.
+2. [NUMA-DISCIPLINE]: Giữ CPU_OLLAMA_NUMA=1 để tối ưu hóa bộ nhớ đệm L3.
+3. [THROTTLING]: Tự động hạ tải nếu nhiệt độ hoặc RAM vượt ngưỡng an toàn.
+-->
 # 🧬 JKAI ZENITH: GIAO THỨC PHẦN CỨNG SINGULARITY v1.0 (CORE-DIRECTIVE)
 > "Phần cứng là thân thể, Phần mềm là linh hồn, Singularity là sự Nhất thể."
 
 ## 🛠️ 1. Resource Strategy (ROCm & Xeon Optimization)
 - **CPU**: Intel Xeon E5-2699 v4 (22 Cores / 44 Threads)
 - **RAM**: 128GB (High-Cap Reasoning Matrix)
-- **GPU**: AMD Radeon RX 6600 (8GB VRAM - ROCm Native)
-- **AI_THREADS**: 22 (Giới hạn tài nguyên thực thi AI)
-- **CPU_RESERVE**: 4 (Dự phòng cho Tổng Giám Đốc và hệ điều hành)
+- **GPU**: AMD Radeon RX 6600 (8GB VRAM - Vulkan Native)
+- **AI_THREADS**: 20 (Giới hạn tài nguyên thực thi AI tối ưu)
+- **CPU_RESERVE**: 2 (Dự phòng cho Tổng Giám Đốc và hệ điều hành)
 - **GUARDIAN_INTERVAL**: 180 (Tần suất quét sức khỏe hệ thống - giây)
 - **Strategy**: 
      - **Proactive Pulse**: Hệ thống Watchdog tự động quét tài nguyên và tự giải phóng VRAM khi phát hiện chồng lấn.
@@ -19,14 +30,14 @@
 
 | Model Name | Memory | Context | Temp | GPU Offload | top_p | repeat_penalty | Status | Target Role |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **qwen3.5:latest** | 6.6 GB | 8192 | 0.4 | **OFFLINE** | 0.9 | 1.1 | **CPU/RAM** | RESERVE AGENTS |
-| **phi4-mini:latest** | 2.5 GB | 8192 | 0.3 | **OFFLINE** | 0.9 | 1.1 | **CPU/RAM** | SUMMARIZER |
-| **deepseek-r1:latest** | 5.2 GB | 8192 | 0.0 | **100%** | 0.9 | 1.1 | **GPU/VRAM** | UNIFIED SOVEREIGN |
-| **gemma4:latest** | 9.6 GB | 8192 | 0.0 | **OFFLINE** | 0.9 | 1.1 | **CPU/RAM** | SUPREME CRITIC |
-| **qwen2.5:1.5b** | 986 MB | 4096 | 0.2 | **OFFLINE** | 0.9 | 1.1 | **CPU/RAM** | DATA SCOUT |
-| **moondream:latest** | 1.7 GB | 2048 | 0.2 | **OFFLINE** | 0.9 | 1.1 | **CPU/RAM** | NEURAL EYE |
-| **gemini-3.5-flash** | Cloud | 1048576 | 0.4 | **OFFLINE** | 0.9 | 1.1 | **CLOUD** | CLOUD LONG CONTEXT |
-| **claude-3-5-sonnet** | Cloud | 2000000 | 0.5 | **OFFLINE** | 0.9 | 1.1 | **CLOUD** | CLOUD COGNITIVE |
+| **gemma4:12b-it-qat** | 7.2 GB | 8192 | 0.05 | **100% SOLO** | 0.90 | 1.05 | **GPU/VRAM** | PLANNER / CRITIC / CRITIC_ALPHA / EXECUTOR_ALPHA |
+| **qwen3:4b** | 2.5 GB | 4096 | 0.10 | **OFFLINE** | 0.90 | 1.10 | **CPU/RAM** | RECEPTIONIST / CHAT |
+| **llama3.2:3b** | 2.0 GB | 2048 | 0.40 | **OFFLINE** | 0.90 | 1.10 | **CPU/RAM** | EXECUTOR / SUMMARIZER |
+| **phi4-mini:latest** | 2.5 GB | 4096 | 0.20 | **OFFLINE** | 0.88 | 1.10 | **CPU/RAM** | CRITIC_BETA / TRANSLATOR / SUMMARIZER |
+| **qwen3:0.6b** | 0.5 GB | 2048 | 0.10 | **OFFLINE** | 0.90 | 1.10 | **CPU/RAM** | DISPATCHER / COMPRESSOR / DATA_SCOUT / EXECUTOR_BETA |
+| **nomic-embed-text** | 0.3 GB | 1024 | 0.00 | **OFFLINE** | 1.00 | 1.00 | **CPU/RAM** | EMBEDDER |
+| **qwen3.5:latest** | 6.6 GB | 4096 | 0.45 | **OFFLINE** | 0.92 | 1.10 | **CPU/RAM** | RESERVE_AGENT |
+| **moondream:latest** | 1.7 GB | 2048 | 0.10 | **OFFLINE** | 0.90 | 1.10 | **CPU/RAM** | VISION (Neural Eye) |
 
 ---
 
@@ -41,7 +52,7 @@
 | **qwen2.5-coder:14b** | 9.0 GB | 8192 | 0.0 | **OFFLINE** | 0.9 | 1.1 | **CPU/RAM** | CODE_EXPERT |
 | **qwen2.5:0.5b** | 397 MB | 4096 | 0.0 | **OFFLINE** | 0.9 | 1.1 | **CPU/RAM** | FAST_HELPER |
 | **moondream:latest** | 1.7 GB | 2048 | 0.2 | **OFFLINE** | 0.9 | 1.1 | **CPU/RAM** | NEURAL EYE |
-| **nomic-embed-text:latest** | 274 MB | 2048 | 0.0 | **GPU/VRAM** | 1.0 | 1.0 | **ONLINE** | EMBEDDER |
+| **nomic-embed-text:latest** | 274 MB | 2048 | 0.0 | **OFFLINE** | 1.0 | 1.0 | **CPU/RAM** | EMBEDDER |
 | **all-minilm:latest** | 45 MB | 2048 | 0.0 | **OFFLINE** | 1.0 | 1.0 | **CPU/RAM** | EMBEDDER_MINI |
 | **gemma4:e2b** | 7.2 GB | 8192 | 0.0 | **OFFLINE** | 0.9 | 1.1 | **CPU/RAM** | REASONING_LITE |
 | **granite-code:3b** | 2.0 GB | 8192 | 0.0 | **OFFLINE** | 0.9 | 1.1 | **CPU/RAM** | CODE_LITE |
@@ -53,8 +64,8 @@
 | **gemma4-opt:latest** | 9.6 GB | 8192 | 0.0 | **OFFLINE** | 0.9 | 1.1 | **CPU/RAM** | STRICT_CRITIC |
 | **deepseek-r1-32b-opt:latest** | 19 GB | 16384 | 0.0 | **OFFLINE** | 0.9 | 1.1 | **CPU/RAM** | SUPREME STRATEGIST |
 | **qwen25-coder-14b-opt:latest** | 9.0 GB | 8192 | 0.0 | **OFFLINE** | 0.9 | 1.1 | **CPU/RAM** | CODE_EXPERT |
-| **qwen3.5:latest** | 6.6 GB | 8192 | 0.4 | **ONLINE** | 0.9 | 1.1 | **GPU/VRAM** | PRIMARY EXECUTOR |
-| **deepseek-r1:latest** | 5.2 GB | 8192 | 0.0 | **ONLINE** | 0.9 | 1.1 | **GPU/VRAM** | REASONING_EXPERT |
+| **qwen3.5:latest** | 6.6 GB | 8192 | 0.4 | **OFFLINE** | 0.9 | 1.1 | **CPU/RAM** | RESERVE_AGENT |
+| **deepseek-r1:latest** | 5.2 GB | 8192 | 0.0 | **OFFLINE** | 0.9 | 1.1 | **CPU/RAM** | REASONING_EXPERT |
 | **Qwen3:8b** | 5.2 GB | 8192 | 0.0 | **OFFLINE** | 0.9 | 1.1 | **CPU/RAM** | GENERAL_PURPOSE |
 | **mistral-nemo:latest** | 7.1 GB | 8192 | 0.0 | **OFFLINE** | 0.9 | 1.1 | **CPU/RAM** | GENERAL_PURPOSE |
 | **deepseek-r1:32b** | 19 GB | 16384 | 0.0 | **OFFLINE** | 0.9 | 1.1 | **CPU/RAM** | SUPREME STRATEGIST |
@@ -87,23 +98,23 @@
 
 [OLLAMA_ENVIRONMENT]
 # --- GLOBAL ---
-OLLAMA_KEEP_ALIVE=-1
+OLLAMA_KEEP_ALIVE=10m
 OLLAMA_FLASH_ATTENTION=1
-OLLAMA_KV_CACHE_TYPE=q8_0
+OLLAMA_KV_CACHE_TYPE=q4_0
 
-# --- GPU ENGINE (Port 11434 - ROCm) ---
+# --- GPU ENGINE (Port 11434 - Vulkan) ---
 GPU_OLLAMA_NUM_PARALLEL=2
-GPU_OLLAMA_MAX_LOADED_MODELS=2
-GPU_OLLAMA_GPU_OVERHEAD=134217728
+GPU_OLLAMA_MAX_LOADED_MODELS=5
+GPU_OLLAMA_GPU_OVERHEAD=536870912
 
 # --- CPU ENGINE (Port 11435 - RAM) ---
 CPU_OLLAMA_NUM_PARALLEL=2
-CPU_OLLAMA_MAX_LOADED_MODELS=10
+CPU_OLLAMA_MAX_LOADED_MODELS=12
 CPU_OLLAMA_NUMA=1
-CPU_OLLAMA_NUM_THREAD=20
-CPU_OPENBLAS_NUM_THREADS=20
-CPU_OMP_NUM_THREADS=20
-# OLLAMA_NUM_THREAD khóa chặt luồng tính toán vào 14 nhân vật lý thực, kết hợp NUMA=1 để chống Context Switching
+CPU_OLLAMA_NUM_THREAD=12
+CPU_OPENBLAS_NUM_THREADS=12
+CPU_OMP_NUM_THREADS=12
+# OLLAMA_NUM_THREAD khoa chat luong tinh toan vao 6 nhan vat ly, tranh hien tuong Context Switching va nghen bang thong RAM
 
 ---
 
@@ -112,27 +123,29 @@ CPU_OMP_NUM_THREADS=20
 > CRITICAL: engine.py tim chinh xac chuoi "3. Active Role Mapping" de bat dau parse bang nay (engine.py dong 395).
 > Moi thay doi ten section phai dong bo voi engine.py.
 
-| Role | Active Model | Hardware | num_ctx | Temp | num_gpu | top_p | repeat_penalty | KEEP_ALIVE | Active Profile |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| EMBEDDER | nomic-embed-text:latest | **GPU/VRAM** | 1024 | 0.0 | 100 | 1.0 | 1.0 | **-1** | STABLE_SYNC |
-| RECEPTIONIST | tomng/nanbeige4.1:3b-q4_K_M  | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
-| CHAT | tomng/nanbeige4.1:3b-q4_K_M  | **CPU/RAM** | 8192 | 0.55 | 0 | 0.92 | 1.08 | **-1** | RAM_OPTIMIZED |
-| SUMMARIZER | deepseek-r1:latest | **GPU/VRAM** | 4096 | 0.05 | 100 | 0.80 | 1.10 | **-1** | ELITE_REASONING |
-| DISPATCHER | tomng/nanbeige4.1:3b-q4_K_M  | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
-| CRITIC | tomng/nanbeige4.1:3b-q4_K_M  | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
-| PLANNER | deepseek-r1:latest | **GPU/VRAM** | 4096 | 0.05 | 100 | 0.85 | 1.05 | **-1** | ELITE_REASONING |
-| CRITIC_ALPHA | deepseek-r1:latest | **GPU/VRAM** | 4096 | 0.05 | 100 | 0.80 | 1.10 | **-1** | ELITE_REASONING |
-| CRITIC_BETA | tomng/nanbeige4.1:3b-q4_K_M  | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
-| DATA_SCOUT | tomng/nanbeige4.1:3b-q4_K_M  | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
-| EXECUTOR_ALPHA | deepseek-r1:latest | **GPU/VRAM** | 4096 | 0.0 | 100 | 0.85 | 1.05 | **-1** | ELITE_REASONING |
-| EXECUTOR_BETA | fauxpaslife/nanbeige4.1-python-deepthink:3b | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
-| EXECUTOR | fauxpaslife/nanbeige4.1-python-deepthink:3b | **CPU/RAM** | 8192 | 0.30 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
-| RESERVE_AGENT | tomng/nanbeige4.1:3b-q4_K_M | **CPU/RAM** | 8192 | 0.45 | 0 | 0.92 | 1.10 | **-1** | RAM_OPTIMIZED |
-| COMPRESSOR | qwen3:0.6b | **GPU/VRAM** | 4096 | 0.1 | 100 | 0.90 | 1.10 | **-1** | REFLEX_GALAXY |
-| VISION | moondream:latest | **CPU/RAM** | 2048 | 0.1 | 0 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
-| VOICE | faster-whisper | **CPU/RAM** | 1024 | 0.0 | 0 | 1.0 | 1.0 | **-1** | STABLE_SYNC |
-| TRANSLATOR | qwen3.5:latest | **CPU/RAM** | 8192 | 0.2 | 0 | 0.88 | 1.10 | **-1** | RAM_OPTIMIZED |
-| GRAPHIC_MASTER | SDXL-Turbo-ROCm | **GPU/VRAM** | 0 | 0.0 | 100 | -1 | -1 | 0 | ULTRA_ART |
+| Role | Active Model | Hardware | num_ctx | Temp | num_gpu | num_thread | top_p | repeat_penalty | KEEP_ALIVE | Active Profile |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| VOICE | faster-whisper | **CPU/RAM** | 512 | 0.00 | 0 | 0 | 1.00 | 1.00 | **-1** | OFFLINE_RESERVE |
+| VISION | moondream:latest | **CPU/RAM** | 2048 | 0.10 | 0 | 12 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
+| RECEPTIONIST | qwen3:4b | **CPU/RAM** | 2048 | 0.10 | 0 | 12 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
+| RECEPT_ASK_USER | qwen3:0.6b | **CPU/RAM** | 2048 | 0.10 | 0 | 12 | 0.90 | 1.10 | **-1** | OFFLINE_RESERVE |
+| CHAT | qwen3:4b | **CPU/RAM** | 2048 | 0.40 | 0 | 12 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
+| DISPATCHER | qwen3:0.6b | **CPU/RAM** | 2048 | 0.00 | 0 | 12 | 0.90 | 1.10 | **-1** | OFFLINE_RESERVE |
+| DATA_SCOUT | qwen3:0.6b | **CPU/RAM** | 2048 | 0.20 | 0 | 12 | 0.90 | 1.10 | **-1** | OFFLINE_RESERVE |
+| COMPRESSOR | qwen3:0.6b | **CPU/RAM** | 2048 | 0.10 | 0 | 12 | 0.90 | 1.10 | **-1** | OFFLINE_RESERVE |
+| PLANNER | deepseek-r1:latest | **GPU/VRAM** | 8192 | 0.05 | 100 | 0 | 0.90 | 1.05 | **-1** | ELITE_REASONING |
+| CRITIC | deepseek-r1:latest | **GPU/VRAM** | 8192 | 0.05 | 100 | 0 | 0.90 | 1.05 | **-1** | ELITE_REASONING |
+| CRITIC_ALPHA | deepseek-r1:latest | **GPU/VRAM** | 8192 | 0.05 | 100 | 0 | 0.90 | 1.05 | **-1** | ELITE_REASONING |
+| EXECUTOR_ALPHA | deepseek-r1:latest | **GPU/VRAM** | 8192 | 0.00 | 100 | 0 | 0.85 | 1.05 | **-1** | ELITE_REASONING |
+| EXECUTOR | deepseek-r1:latest | **GPU/VRAM** | 8192 | 0.05 | 100 | 0 | 0.85 | 1.05 | **-1** | RAM_OPTIMIZED |
+| EXECUTOR_BETA | qwen3:4b | **CPU/RAM** | 2048 | 0.20 | 0 | 12 | 0.90 | 1.10 | **-1** | OFFLINE_RESERVE |
+| CICE | qwen3:0.6b | **CPU/RAM** | 2048 | 0.10 | 0 | 12 | 0.90 | 1.10 | **-1** | OFFLINE_RESERVE |
+| SUMMARIZER | phi4-mini:latest | **CPU/RAM** | 2048 | 0.10 | 0 | 12 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
+| CRITIC_BETA | phi4-mini:latest | **CPU/RAM** | 2048 | 0.30 | 0 | 12 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED |
+| TRANSLATOR | phi4-mini:latest | **CPU/RAM** | 2048 | 0.20 | 0 | 12 | 0.88 | 1.10 | **-1** | RAM_OPTIMIZED |
+| EMBEDDER | nomic-embed-text:latest | **CPU/RAM** | 1024 | 0.00 | 0 | 12 | 1.00 | 1.00 | **-1** | OFFLINE_RESERVE |
+| GRAPHIC_MASTER | SDXL-Turbo-ROCm | **GPU/VRAM** | 0 | 0.00 | 100 | 0 | -1 | -1 | 0 | ULTRA_ART |
+| RESERVE_AGENT | qwen3.5:latest | **CPU/RAM** | 2048 | 0.45 | 0 | 12 | 0.92 | 1.10 | 0 | RAM_OPTIMIZED |
 
 ---
 

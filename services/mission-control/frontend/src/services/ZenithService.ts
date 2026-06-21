@@ -47,6 +47,15 @@ export const ZenithService = {
       return {};
     }
   },
+  async getSystemDigest() {
+    try {
+      const r = await fetch(`${API_BASE}/api/system_digest`);
+      return r.ok ? r.json() : { status: 'error' };
+    } catch (e) {
+      console.error('Digest error:', e);
+      return { status: 'error' };
+    }
+  },
   async saveMission(data: any) {
     return fetch(`${API_BASE}/api/mission/save`, {
       method: 'POST',
@@ -63,16 +72,48 @@ export const ZenithService = {
       return [];
     });
   },
-  async listDir() {
+  async listDir(): Promise<{ nodes: any[]; error?: string }> {
     try {
       const r = await fetch(`${API_BASE}/api/system/explorer`);
-      if (!r.ok) return [];
-      const data = await r.json();
-      return Array.isArray(data) ? data : (data?.children || []);
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) {
+        return { nodes: [], error: data?.error || `HTTP ${r.status}` };
+      }
+      if (data?.error) {
+        return { nodes: [], error: String(data.error) };
+      }
+      if (Array.isArray(data)) {
+        return { nodes: data };
+      }
+      if (data?.children && Array.isArray(data.children)) {
+        return { nodes: data.children };
+      }
+      if (data?.type === 'directory' && data?.name) {
+        return { nodes: [data] };
+      }
+      return { nodes: [] };
     } catch (e) {
       console.error('List dir error:', e);
-      return [];
+      return { nodes: [], error: 'Không kết nối được explorer (/api/system/explorer).' };
     }
+  },
+  async fetchArtifact(type: 'plan' | 'tasks' | 'walkthrough' | 'registry') {
+    try {
+      const r = await fetch(`${API_BASE}/api/commander/artifact?type=${encodeURIComponent(type)}`);
+      if (!r.ok) return '';
+      const data = await r.json();
+      return typeof data?.content === 'string' ? data.content : '';
+    } catch (e) {
+      console.error('Fetch artifact error:', e);
+      return '';
+    }
+  },
+  async prefetchArtifacts() {
+    const keys = ['plan', 'tasks', 'walkthrough'] as const;
+    const entries = await Promise.all(
+      keys.map(async (k) => [k, await ZenithService.fetchArtifact(k)] as const)
+    );
+    return Object.fromEntries(entries) as Record<string, string>;
   },
   async getMission(id: string) {
     return fetch(`${API_BASE}/api/mission/${id}?t=${Date.now()}`, { cache: 'no-store' }).then(r => r.json()).catch(e => {

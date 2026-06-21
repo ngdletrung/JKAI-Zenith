@@ -1,0 +1,168 @@
+{
+  "id": "m_ZENITH_2006-1256_72161e",
+  "title": "Hãy rà soát các lỗi mà JKAI đang bị ?",
+  "goal": "Hãy rà soát các lỗi mà JKAI đang bị ?\n\n[KẾT QUẢ]\n❌ [PLANNER ERROR]: Không thể lập kế hoạch - Stage ForgeStage timed out after 300 seconds.",
+  "status": "completed",
+  "ts": 1781935329.070032,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "Hãy rà soát các lỗi mà JKAI đang bị ?",
+      "ts": 1781934965.7725694,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_2006-1256_72161e` initialized | Trace: `trace_72161e`. Runtime ready.",
+      "ts": 1781934965.7754343,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: DEEP — lỗi/debug.",
+      "ts": 1781934970.7122676,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=debug pipeline=deep_full mode=deep tags=-",
+      "ts": 1781934970.717991,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1781934970.7201438,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: DeepPipeline T2–T6 (full)",
+      "ts": 1781934970.7304077,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [DEEP-PIPELINE]: Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1781934970.7603745,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T05:56:10.779539] [MINI_PLANNER] [Task: ZENITH_2006-1256_72161e] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1781934970.7795637,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T05:56:10.859415] [MINI_PLANNER] [Task: ZENITH_2006-1256_72161e] Đang triệu tập deepseek-r1:latest... (Context: 8192)",
+      "ts": 1781934970.8594995,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T05:56:12.561475] [MINI_PLANNER] [Task: ZENITH_2006-1256_72161e] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1781934972.5614905,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T05:57:24.190195] [MINI_PLANNER] [Task: ZENITH_2006-1256_72161e] {\n  \"domain\": \"system_monitoring\"\n}",
+      "ts": 1781935044.1902049,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T05:57:24.194805] [MINI_PLANNER] [Task: ZENITH_2006-1256_72161e] Hoàn tất trong 73.34s. (Size: 36 chars)",
+      "ts": 1781935044.1948204,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧭 [META-PLANNER]: Routed to Domain Agent 'Generalist' (Domain: CORE | Complexity: MEDIUM | Mode: SEQUENTIAL)",
+      "ts": 1781935044.420217,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1781935044.4227173,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức và bối cảnh nhất thể...",
+      "ts": 1781935044.4282603,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1781935044.878234,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER`...",
+      "ts": 1781935239.0073113,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-06-20T06:00:39.072658] [PLANNER] [Task: ZENITH_2006-1256_72161e] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1781935239.0726962,
+      "source": "PLANNER",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-06-20T06:00:39.982049] [PLANNER] [Task: ZENITH_2006-1256_72161e] Đang triệu tập deepseek-r1:latest... (Context: 8192)",
+      "ts": 1781935239.9820695,
+      "source": "PLANNER",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-06-20T06:01:26.961022] [PLANNER] [Task: ZENITH_2006-1256_72161e] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1781935286.9610412,
+      "source": "PLANNER",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "🚨 [T2/T3 FAULT]: Stage ForgeStage timed out after 300 seconds.",
+      "ts": 1781935329.021371,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1256_72161e"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "❌ [PLANNER ERROR]: Không thể lập kế hoạch - Stage ForgeStage timed out after 300 seconds.",
+      "ts": 1781935329.028327,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1256_72161e"
+    }
+  ],
+  "artifacts": {
+    "plan": "Hãy rà soát các lỗi mà JKAI đang bị ?",
+    "walkthrough": "❌ [PLANNER ERROR]: Không thể lập kế hoạch - Stage ForgeStage timed out after 300 seconds.",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

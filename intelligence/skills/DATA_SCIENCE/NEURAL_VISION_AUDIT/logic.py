@@ -3,6 +3,7 @@ import httpx
 import logging
 import asyncio
 from core.utils.engine import engine
+from core.utils import report_formatter as rf
 
 logger = logging.getLogger("jkai.neural_eye")
 
@@ -21,7 +22,7 @@ async def capture_vision(url: str, task_id: str = "vision"):
             if resp.status_code == 200:
                 data = resp.json()
                 filename = data.get("filename")
-                engine.publish_mission_log("EYE", f"✅ [EYE-SUCCESS]: Đã chụp ảnh thành công. Tệp tin: `{filename}`", task_id)
+                engine.publish_mission_log("EYE", rf.build([rf.section("EYE-SUCCESS"), f"Đã chụp ảnh thành công. Tệp tin: `{filename}`"]), task_id)
                 
                 # 📡 [QUANTUM-LEAP]: Triệu hồi Trí tuệ Thị giác (Vision Analysis)
                 vision_url = browser_url.replace("/screenshot", "/vision")
@@ -37,7 +38,7 @@ async def capture_vision(url: str, task_id: str = "vision"):
                 analysis = "Mắt Thần không thể phân tích nội dung hình ảnh vào lúc này."
                 if vision_resp.status_code == 200:
                     analysis = vision_resp.json().get("analysis", analysis)
-                    engine.publish_mission_log("EYE", f"📊 [EYE-REPORT]: {analysis}", task_id)
+                    engine.publish_mission_log("EYE", rf.build([rf.section("EYE-REPORT"), analysis]), task_id)
                 
                 return {
                     "status": "success",

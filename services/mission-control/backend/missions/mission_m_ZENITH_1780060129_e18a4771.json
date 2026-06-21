@@ -1,0 +1,61 @@
+{
+  "id": "m_ZENITH_1780060129_e18a4771",
+  "title": "hãy cho tôi giá vàng hôm nay",
+  "goal": "hãy cho tôi giá vàng hôm nay",
+  "status": "failed",
+  "ts": 1780060142.4479012,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "hãy cho tôi giá vàng hôm nay",
+      "ts": 1780060129.7630117,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780060129_e18a4771"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1780060129_e18a4771` initialized | Trace: `trace_e18a4771`. Runtime ready.",
+      "ts": 1780060129.7648156,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780060129_e18a4771"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780060129.987302,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780060129_e18a4771"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780060132.210698,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780060129_e18a4771"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780060136.3895152,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780060129_e18a4771"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "🚨 [RECEPTIONIST-FAILED]: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist",
+      "ts": 1780060142.4302564,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780060129_e18a4771"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "⚠️ **Sự cố Kết nối Nơ-ron**: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. 🫡 (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+      "ts": 1780060142.4322946,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780060129_e18a4771"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

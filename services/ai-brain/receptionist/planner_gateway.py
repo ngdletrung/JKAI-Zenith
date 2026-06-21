@@ -12,7 +12,7 @@ class PlannerGateway:
         try:
             enhanced_msg = f"💎🫡 [ZENITH]: {msg}" if tag == "ZENITH" else msg
             engine.publish_mission_log(tag, enhanced_msg, task_id, stealth=stealth)
-        except: pass
+        except Exception: pass
 
     async def request_plan(self, goal: str, images: list, history: list, task_id: str, cap_token: dict) -> dict:
         """Yêu cầu Planner lập kế hoạch với Capability Token."""

@@ -1,0 +1,89 @@
+{
+  "id": "m_ZENITH_1780140690_bfc2ce71",
+  "title": "hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay ?",
+  "goal": "hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay ?",
+  "status": "completed",
+  "ts": 1780140697.1027524,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay ?",
+      "ts": 1780140690.9597013,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140690_bfc2ce71"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1780140690_bfc2ce71` initialized | Trace: `trace_bfc2ce71`. Runtime ready.",
+      "ts": 1780140690.9628272,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140690_bfc2ce71"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780140691.1896667,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140690_bfc2ce71"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: Pre-routing/Intent-Forcing: Real-time query detected. Executing search directly thưa Master.",
+      "ts": 1780140691.1927097,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140690_bfc2ce71"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780140691.194825,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140690_bfc2ce71"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_851853adbf4e",
+      "ts": 1780140691.1967163,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140690_bfc2ce71"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (38 ký tự)",
+      "ts": 1780140697.0666955,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140690_bfc2ce71"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T11:31:37.078381] [RECEPTIONIST] [Task: ZENITH_1780140690_bfc2ce71] Đang triệu tập qwen3:4b... (Context: 2048)",
+      "ts": 1780140697.0783987,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780140690_bfc2ce71"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T11:31:37.081497] [RECEPTIONIST] [Task: ZENITH_1780140690_bfc2ce71] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1780140697.0815153,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780140690_bfc2ce71"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "💎🫡 [ZENITH]: Mission aborted by Master.",
+      "ts": 1780140697.0846548,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140690_bfc2ce71"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Mission aborted by Master.",
+      "ts": 1780140697.0898378,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140690_bfc2ce71"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

@@ -6,10 +6,10 @@ import time
 # Thêm thư mục hiện tại vào path để import ingest
 sys.path.insert(0, os.path.dirname(__file__))
 
-from ingest import ingest_folder
+from ingest.ingest import ingest_folder
 
 if __name__ == "__main__":
-    documents_folder = os.getenv("DOCUMENTS_FOLDER", "/storage/documents")
+    documents_folder = os.getenv("DOCUMENTS_FOLDER", "/app/knowledge_base")
     
     print(f"[{time.strftime('%Y-%m-%d %H:%M:%S')}] Starting auto ingest from: {documents_folder}")
     

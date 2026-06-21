@@ -2,7 +2,7 @@
 id: FIN_07_ANOMALY
 name_vn: "Phát Hiện Gian Lận Tài Chính"
 version: 1.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: FINANCE
 intent_pairs:
   - ["DETECT", "FRAUD"]

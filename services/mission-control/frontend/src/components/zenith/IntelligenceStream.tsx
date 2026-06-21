@@ -2,7 +2,7 @@ import React, { memo, useState, useEffect, useRef, useCallback, useMemo } from '
 import { motion, AnimatePresence } from 'framer-motion';
 import { Brain, MessageSquare, History, Plus, Paperclip, Send, Square, Bot, Zap, Swords, ChevronUp, ChevronDown, Trash2, Target, FileText, X, Radar, Database, Search, Calendar, Clock, Archive } from 'lucide-react';
 import toast from 'react-hot-toast';
-import { useZenithStore, Dictionary } from '../../store/zenithStore';
+import { useZenithStore, Dictionary, CognitiveMode } from '../../store/zenithStore';
 import { ZenithService } from '../../services/ZenithService';
 import { useAgentController } from '../../hooks/useAgentController';
 import { LogItem } from './LogItem';
@@ -12,6 +12,7 @@ export const IntelligenceStream = memo(() => {
   const setGoal = useZenithStore(s => s.setGoal);
   const status = useZenithStore(s => s.status);
   const setStatus = useZenithStore(s => s.setStatus);
+  const isStopping = useZenithStore(s => s.isStopping);
   const cognitiveMode = useZenithStore(s => s.cognitiveMode);
   const attachedFiles = useZenithStore(s => s.attachedFiles);
   const streamView = useZenithStore(s => s.streamView);
@@ -24,6 +25,8 @@ export const IntelligenceStream = memo(() => {
   const language = useZenithStore(s => s.language);
 
   const clearTrace = useZenithStore(s => s.clearTrace);
+  const executionTrace = useZenithStore(s => s.executionTrace);
+  const hasTraceItems = !!(executionTrace && executionTrace.items && executionTrace.items.length > 0);
   const setFiles = useZenithStore(s => s.setFiles);
   const setMode = useZenithStore(s => s.setMode);
   const inputHistory = useZenithStore(s => s.inputHistory);
@@ -61,31 +64,40 @@ export const IntelligenceStream = memo(() => {
 
   const dict = Dictionary[language as keyof typeof Dictionary] || Dictionary.en;
 
-  const visibleLogs = useMemo(() => {
-    if (streamView === 'process') return progressLogs;
-    if (streamView === 'full') {
-      // 🧬 [NEURAL-FUSION]: Hợp nhất cả hai luồng
-      const merged = [...operationalLogs];
-      progressLogs.forEach(pl => {
-        if (!merged.some(ol => ol.id === pl.id)) merged.push(pl);
+  const visibleLogs = useMemo(() => { 
+      if (streamView === 'process') 
+      return progressLogs; if (streamView === 'full') { 
+      // 🧬 [NEURAL-FUSION]: Hợp nhất cả hai luồng 
+      const merged = [...operationalLogs]; 
+      progressLogs.forEach(pl => { if (!merged.some(ol => ol.id === pl.id)) merged.push(pl); }); 
+      return merged.sort((a, b) => (a.ts || 0) - (b.ts || 0)); } 
+      
+      // Ở Nhật ký điều hành, hiển thị log của MASTER, JKAI và gộp thêm các log hành động quan trọng từ progressLogs
+      const ops = operationalLogs.filter(l => {
+        const tag = (l.tag || '').toUpperCase();
+        return tag.startsWith('MASTER') || tag === 'JKAI' || tag === 'DONE' || tag === 'RESULT' || l.type === 'user';
+      });
+
+      const actions = progressLogs.filter(pl => {
+        const tag = (pl.tag || '').toUpperCase();
+        const msg = (pl.msg || '').toLowerCase();
+        // Lọc các log hành động thực thi, tìm kiếm, đọc/sửa file
+        const isTargetAction = ['EXECUTOR', 'SEARCH', 'RESEARCH', 'FILE', 'TOOL'].includes(tag);
+        const hasActionKeyword = msg.includes('read') || msg.includes('view') || msg.includes('edit') || 
+                                 msg.includes('patch') || msg.includes('write') || msg.includes('analyz') ||
+                                 msg.includes('explor') || msg.includes('search') || msg.includes('find') ||
+                                 msg.includes('phân tích') || msg.includes('sửa') || msg.includes('truy xuất');
+        return isTargetAction && hasActionKeyword;
+      });
+
+      const merged = [...ops];
+      actions.forEach(act => {
+        if (!merged.some(m => m.id === act.id)) {
+          merged.push(act);
+        }
       });
       return merged.sort((a, b) => (a.ts || 0) - (b.ts || 0));
-    }
-    // 👑 [EXECUTIVE-PURIFICATION v2]: Nhật ký Điều hành chỉ giữ lại:
-    //   - Câu hỏi của Master
-    //   - Câu trả lời cuối cùng của JKAI (không phải bản nháp trung gian)
-    //   - Kết quả Nhiệm vụ và Lỗi
-    //   Tất cả THOUGHT/SUMMARIZER/PLANNER trung gian -> TAB TIẦN TRÌNH
-    return operationalLogs.filter(l => {
-      const tag = l.tag?.toUpperCase() || 'SYS';
-      return (
-        tag === 'JKAI' || 
-        tag.startsWith('MASTER') || 
-        tag === 'ERROR' || 
-        tag === 'MISSION_RESULT'
-      );
-    });
-  }, [streamView, operationalLogs, progressLogs]);
+    }, [streamView, operationalLogs, progressLogs]);
 
   // 🏁 [ANSWER-INDEX-DETECTOR]: Xác định vị trí bắt đầu của câu trả lời để chèn Nhật ký tiến trình
   const firstAnswerIndex = useMemo(() => {
@@ -103,7 +115,7 @@ export const IntelligenceStream = memo(() => {
     // 2. Tìm câu trả lời đầu tiên xuất hiện SAU câu hỏi Master cuối cùng
     const ansIdx = visibleLogs.slice(lastMasterIndex + 1).findIndex(l => {
       const tag = l.tag?.toUpperCase() || '';
-      return tag === 'JKAI' || tag === 'SUMMARIZER' || tag === 'MISSION_RESULT';
+      return tag === 'JKAI' || tag === 'SUMMARIZER';
     });
     
     return ansIdx === -1 ? -1 : (lastMasterIndex + 1 + ansIdx);
@@ -117,9 +129,13 @@ export const IntelligenceStream = memo(() => {
   const userScrolledRef = useRef(false);
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // 🛡️ [SMOOTH-SCROLL-THROTTLE]: Tránh "giật" UI khi log về quá nhanh
+  const lastScrollTime = useRef(0);
   useEffect(() => {
-    if (!userScrolledRef.current) {
+    const now = Date.now();
+    if (!userScrolledRef.current && now - lastScrollTime.current > 100) {
       messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+      lastScrollTime.current = now;
     }
   }, [visibleLogs, technicalLogs]);
 
@@ -167,9 +183,9 @@ export const IntelligenceStream = memo(() => {
       loadMissionData(data);
       wasAtBottom.current = true;
       setShowHistory(false);
-      toast.success('Neural records loaded!', { id: 'ZENITH_PULSE' });
+      toast.success(language === 'vi' ? 'Hồ sơ thần kinh đã tải!' : 'Neural records loaded!', { id: 'ZENITH_PULSE' });
     } catch {
-      toast.error('Lỗi khi tải dữ liệu', { id: 'ZENITH_PULSE' });
+      toast.error(language === 'vi' ? 'Lỗi khi tải dữ liệu' : 'Error loading records', { id: 'ZENITH_PULSE' });
     }
   };
 
@@ -204,6 +220,16 @@ export const IntelligenceStream = memo(() => {
   useEffect(() => {
     if (showHistory) loadMissions();
   }, [showHistory, loadMissions]);
+
+  useEffect(() => {
+    const handleReload = () => {
+      loadMissions();
+    };
+    window.addEventListener('zenith:reload-missions', handleReload);
+    return () => {
+      window.removeEventListener('zenith:reload-missions', handleReload);
+    };
+  }, [loadMissions]);
 
   // 🚀 [AUTO-INIT]: Khởi động Sứ mệnh mới hoặc khôi phục Sứ mệnh đang chạy khi mount/reload
   useEffect(() => {
@@ -290,17 +316,19 @@ export const IntelligenceStream = memo(() => {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="absolute inset-0 z-40 bg-[#060910] flex flex-col border-l border-white/10 shadow-2xl"
+              className="absolute inset-0 z-40 bg-[#060910] flex flex-col min-h-0 overflow-hidden border-l border-white/10 shadow-2xl"
             >
-              <div className="flex items-center justify-between p-6 border-b border-white/5">
+              <div className="shrink-0 flex items-center justify-between p-6 border-b border-white/5">
                 <div className="flex items-center gap-6">
                   <div className="flex items-center gap-3">
                     <div className="p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/20 shadow-[0_0_15px_rgba(245,158,11,0.1)]">
                       <Archive className="w-5 h-5 text-amber-400" />
                     </div>
-                    <div>
-                      <h3 className="text-sm font-black text-white uppercase tracking-[0.2em]">Mission History</h3>
-                      <p className="text-[10px] text-amber-500/40 font-bold uppercase tracking-widest">Lịch sử nhiệm vụ</p>
+                     <div>
+                      <h3 className="text-sm font-black text-white uppercase tracking-[0.2em]">{dict.mission_history || 'Mission History'}</h3>
+                      <p className="text-[10px] text-amber-500/40 font-bold uppercase tracking-widest">
+                        {language === 'vi' ? 'Lịch sử nhiệm vụ' : 'Archived Mission Log Files'}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -323,11 +351,13 @@ export const IntelligenceStream = memo(() => {
                   </button>
                 </div>
               </div>
-              <div className="flex-1 overflow-y-auto p-4 custom-scroll space-y-3">
+              <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden p-4 custom-scroll space-y-3">
                 {missions.length === 0 ? (
                   <div className="h-full flex flex-col items-center justify-center opacity-10 gap-4">
                     <Database className="w-10 h-10" />
-                    <span className="text-[10px] font-black uppercase tracking-widest">No Missions Recorded</span>
+                    <span className="text-[10px] font-black uppercase tracking-widest">
+                      {language === 'vi' ? 'Chưa ghi nhận sứ mệnh nào' : 'No Missions Recorded'}
+                    </span>
                   </div>
                 ) : (
                   missions.map((m) => (
@@ -369,7 +399,7 @@ export const IntelligenceStream = memo(() => {
           <div
             ref={scrollRef}
             onScroll={handleScroll}
-            className="absolute inset-0 overflow-y-auto px-6 pt-6 space-y-6 custom-scroll scroll-smooth"
+            className="absolute inset-0 overflow-y-auto px-6 pt-6 space-y-3 custom-scroll scroll-smooth"
             style={{ paddingBottom: '40px' }}
           >
             {visibleLogs.length === 0 ? (
@@ -378,7 +408,7 @@ export const IntelligenceStream = memo(() => {
                 <p className="text-[11px] font-black uppercase tracking-[0.8em]">{dict.awaiting}</p>
               </div>
             ) : (
-              <div className="flex flex-col gap-6 pb-20">
+              <div className="flex flex-col gap-2.5 pb-20">
                 {(() => {
                   const elements: React.ReactNode[] = [];
                   
@@ -387,15 +417,17 @@ export const IntelligenceStream = memo(() => {
                     visibleLogs.forEach((l: any, i: number) => {
                       elements.push(<LogItem key={l.id || i} l={l} forceReasoning={streamView === 'full'} />);
                     });
-                    elements.push(
-                      <div key="exec-trace-holder" className="flex flex-col gap-1.5 px-2 py-1">
-                        <ExecutionTrace />
-                      </div>
-                    );
+                    if (hasTraceItems) {
+                      elements.push(
+                        <div key="exec-trace-holder" className="flex flex-col gap-1.5 px-2 py-1">
+                          <ExecutionTrace />
+                        </div>
+                      );
+                    }
                   } else {
                     // Nếu đã có câu trả lời, chèn trace NGAY TRƯỚC câu trả lời đó
                     visibleLogs.forEach((l: any, i: number) => {
-                      if (i === firstAnswerIndex) {
+                      if (i === firstAnswerIndex && hasTraceItems) {
                         elements.push(
                           <div key="exec-trace-holder" className="flex flex-col gap-1.5 px-2 py-1">
                             <ExecutionTrace />
@@ -555,14 +587,30 @@ export const IntelligenceStream = memo(() => {
                   <History className="w-[20px] h-[20px]" />
                 </button>
 
+                {/* [FIX-P2]: 3 trạng thái rõ ràng: stopping → loading disabled, running → stop, idle → send */}
                 <button
-                  onClick={status === 'running' ? () => { stopAgent(); setStatus('idle'); } : () => runAgent()}
-                  className={`p-3 rounded-xl transition-all shadow-xl ${status === 'running'
-                    ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
-                    : 'bg-sky-500 text-white hover:scale-105 active:scale-95 shadow-sky-500/20'
-                    }`}
+                  disabled={isStopping}
+                  onClick={
+                    isStopping
+                      ? undefined
+                      : status === 'running'
+                        ? () => stopAgent()
+                        : () => runAgent()
+                  }
+                  className={`p-3 rounded-xl transition-all shadow-xl ${
+                    isStopping
+                      ? 'bg-orange-500/20 text-orange-400 border border-orange-500/30 opacity-70 cursor-wait'
+                      : status === 'running'
+                        ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30'
+                        : 'bg-sky-500 text-white hover:scale-105 active:scale-95 shadow-sky-500/20'
+                  }`}
                 >
-                  {status === 'running' ? <Square className="w-[20px] h-[20px]" /> : <Send className="w-[20px] h-[20px]" />}
+                  {isStopping
+                    ? <span className="w-[20px] h-[20px] flex items-center justify-center"><span className="w-3 h-3 border-2 border-orange-400 border-t-transparent rounded-full animate-spin" /></span>
+                    : status === 'running'
+                      ? <Square className="w-[20px] h-[20px]" />
+                      : <Send className="w-[20px] h-[20px]" />
+                  }
                 </button>
               </div>
             </div>

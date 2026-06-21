@@ -1,0 +1,19 @@
+[
+    {
+        "name": "skill_create",
+        "description": "Tự động tạo cấu trúc Bộ Tứ Elite cho một kỹ năng mới.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "skill_name": { "type": "string", "description": "Tên kỹ năng (tiếng Việt không dấu)" },
+                "description": { "type": "string", "description": "Mô tả ý tưởng kỹ năng" }
+            },
+            "required": ["skill_name", "description"]
+        }
+    },
+    {
+        "name": "skill_health",
+        "description": "Kiểm tra sức khỏe hệ thống (RAM, GPU, Disk).",
+        "parameters": { "type": "object", "properties": {} }
+    }
+]

@@ -1,0 +1,173 @@
+{
+  "id": "m_ZENITH_1779942149_12f37a90",
+  "title": "Write a python script to calculate fibonacci.",
+  "goal": "Write a python script to calculate fibonacci.",
+  "status": "completed",
+  "ts": 1779942149.9772916,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "Write a python script to calculate fibonacci.",
+      "ts": 1779942149.0956635,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1779942149_12f37a90` initialized | Trace: `trace_12f37a90`. Runtime ready.",
+      "ts": 1779942149.0972214,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 📡 Đang phân tích chỉ thị với chế độ [FAST_PIPELINE] (Input mode: FAST)...",
+      "ts": 1779942149.1481287,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "🧠 [LLM-FALLBACK]: Reflex không chắc chắn. Đang gọi LLM...",
+      "ts": 1779942149.2065642,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "📊 [LATENCY]: 1.81 ms",
+      "ts": 1779942149.2080688,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 [SOVEREIGN-CORE]: Kích hoạt Não Bộ Tự Trị (Universal ReAct Loop).",
+      "ts": 1779942149.2102356,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🔄 [Thinking] Vòng 1...",
+      "ts": 1779942149.2133253,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T04:22:29.222429] [RECEPTIONIST] [Task: ZENITH_1779942149_12f37a90] Đang triệu tập gemini-3.5-flash... (Context: 2048)",
+      "ts": 1779942149.2224503,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T04:22:29.339136] [RECEPTIONIST] [Task: ZENITH_1779942149_12f37a90] Error: [API-ERR] Server/API trả về mã 429. [{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota e",
+      "ts": 1779942149.339164,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T04:22:29.340850] [RECEPTIONIST] [Task: ZENITH_1779942149_12f37a90] Error: [NEURAL-ENGINE-ERR] Error: [API-ERR] Server/API trả về mã 429. [{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota e",
+      "ts": 1779942149.340873,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T04:22:29.429080] [RECEPTIONIST] [Task: ZENITH_1779942149_12f37a90] Đang triệu tập gemini-3.5-flash... (Context: 2048)",
+      "ts": 1779942149.4291167,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T04:22:29.553667] [RECEPTIONIST] [Task: ZENITH_1779942149_12f37a90] Error: [API-ERR] Server/API trả về mã 429. [{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota e",
+      "ts": 1779942149.5536869,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T04:22:29.555319] [RECEPTIONIST] [Task: ZENITH_1779942149_12f37a90] Error: [NEURAL-ENGINE-ERR] Error: [API-ERR] Server/API trả về mã 429. [{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota e",
+      "ts": 1779942149.5553327,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "WARN",
+      "msg": "💰 [COST-GOVERNOR]: Task ZENITH_1779942149_12f37a90 đã vượt ngân sách. Dừng retry.",
+      "ts": 1779942149.5572476,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚠️ [NEURAL-VOID]: Model trả về phản hồi rỗng. Đang kích hoạt Sốc Nơ-ron (Neural Shock)...",
+      "ts": 1779942149.5581312,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T04:22:29.566634] [RECEPTIONIST] [Task: ZENITH_1779942149_12f37a90] Đang triệu tập gemini-3.5-flash... (Context: 2048)",
+      "ts": 1779942149.566656,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T04:22:29.720583] [RECEPTIONIST] [Task: ZENITH_1779942149_12f37a90] Error: [API-ERR] Server/API trả về mã 429. [{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota e",
+      "ts": 1779942149.720602,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T04:22:29.722184] [RECEPTIONIST] [Task: ZENITH_1779942149_12f37a90] Error: [NEURAL-ENGINE-ERR] Error: [API-ERR] Server/API trả về mã 429. [{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota e",
+      "ts": 1779942149.7222006,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T04:22:29.815130] [RECEPTIONIST] [Task: ZENITH_1779942149_12f37a90] Đang triệu tập gemini-3.5-flash... (Context: 2048)",
+      "ts": 1779942149.815167,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T04:22:29.955287] [RECEPTIONIST] [Task: ZENITH_1779942149_12f37a90] Error: [API-ERR] Server/API trả về mã 429. [{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota e",
+      "ts": 1779942149.955306,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T04:22:29.956856] [RECEPTIONIST] [Task: ZENITH_1779942149_12f37a90] Error: [NEURAL-ENGINE-ERR] Error: [API-ERR] Server/API trả về mã 429. [{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota e",
+      "ts": 1779942149.9568758,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "WARN",
+      "msg": "💰 [COST-GOVERNOR]: Task ZENITH_1779942149_12f37a90 đã vượt ngân sách. Dừng retry.",
+      "ts": 1779942149.958611,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "None",
+      "ts": 1779942149.9630368,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942149_12f37a90"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

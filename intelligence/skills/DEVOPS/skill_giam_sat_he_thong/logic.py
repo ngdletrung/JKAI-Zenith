@@ -2,6 +2,7 @@ import os
 import psutil
 import time
 import json
+from core.utils import report_formatter as rf
 
 class ZenithTelemetry:
     """
@@ -26,7 +27,11 @@ class ZenithTelemetry:
             "status": "💎 ELITE OPERATIONAL" if cpu_usage < 80 else "⚠️ HIGH LOAD"
         }
         
-        return f"📊 [BÁO CÁO GIÁM SÁT]: Hệ thống đang vận hành ở trạng thái {stats['status']}.\n{json.dumps(stats, indent=2)}"
+        return rf.build([
+            rf.section("BÁO CÁO GIÁM SÁT"),
+            rf.kvdict(stats),
+            f"Hệ thống đang vận hành ở trạng thái {stats['status']}"
+        ])
 
     async def quet_loi_log_tu_dong(self):
         """Tự động rà soát log để tìm dấu hiệu bất thường."""

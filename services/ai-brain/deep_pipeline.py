@@ -35,12 +35,11 @@ class DeepPipeline:
     def __init__(self):
         # 🧠 [PLANNING-INIT]: Đúc kết các Stage T2+T3
         from planning_pipeline import (
-            ReconStage, ContextStage, ForgeStage, PolicyStage, PlanningPipeline
+            ReconStage, ContextStage, ForgeStage, DAGOptimizerStage, PolicyStage, PlanningPipeline
         )
         self._planning = PlanningPipeline(stages=[
-            ReconStage(), ContextStage(), ForgeStage(), PolicyStage()
+            ReconStage(), ContextStage(), ForgeStage(), DAGOptimizerStage(), PolicyStage()
         ])
-
     async def execute(
         self,
         goal: str,
@@ -68,6 +67,29 @@ class DeepPipeline:
         )
 
         # ═══════════════════════════════════════════
+        # T1.5: Meta-Planner (Level 3 AI OS Routing)
+        # ═══════════════════════════════════════════
+        try:
+            from meta_planner import MetaPlanner
+            meta_planner = MetaPlanner()
+            routing_decision = await meta_planner.route_task(goal, context, task_id)
+            domain = routing_decision.get("domain", "CORE")
+            agent_role = routing_decision.get("agent_role", "Generalist")
+            complexity = routing_decision.get("complexity", "MEDIUM")
+            execution_mode = routing_decision.get("execution_mode", "SEQUENTIAL")
+            
+            engine.publish_mission_log(
+                "SYSTEM",
+                f"🧭 [META-PLANNER]: Routed to Domain Agent '{agent_role}' (Domain: {domain} | Complexity: {complexity} | Mode: {execution_mode})",
+                task_id, trace_id, stealth=True
+            )
+        except Exception as e:
+            logger.warning(f"⚠️ [META-PLANNER FAULT]: {e}. Falling back to GENERAL domain.")
+            domain = "GENERAL"
+            complexity = "MEDIUM"
+            execution_mode = "SEQUENTIAL"
+
+        # ═══════════════════════════════════════════
         # T2 + T3: Recon → Context → Forge → Policy
         # ═══════════════════════════════════════════
         initial_state = {
@@ -77,7 +99,9 @@ class DeepPipeline:
             "planner_instance": planner_instance,
             "context": context,
             "mode": mode,
-            "complexity": context.get("complexity", "complex"),
+            "complexity": complexity,
+            "execution_mode": execution_mode,
+            "domain": domain,
         }
 
         try:
@@ -95,6 +119,7 @@ class DeepPipeline:
             "PLANNER",
             f"📊 [BLUEPRINT SEALED]: {len(steps)} bước thực thi đã được đúc kết.",
             task_id, trace_id,
+            stealth=True
         )
 
         if not steps:
@@ -127,9 +152,27 @@ class DeepPipeline:
                     execution_results = exec_data.get("results", [])
                     engine.publish_mission_log(
                         "EXECUTOR",
-                        f"✅ [T4]: Thực thi hoàn tất — {len(execution_results)} kết quả.",
+                        f"✅ [T4]: Thuc thi hoan tat — {len(execution_results)} ket qua.",
                         task_id, trace_id,
                     )
+                    
+                    # 🏹 [SILENT-FAILURE HUNTER]: Phat hien ket qua rong hoac loi ngam thua Master
+                    from core.utils.failure_memory import failure_memory, FailureStage
+                    for res in execution_results:
+                        if isinstance(res, dict) and res.get("status") == "success":
+                            output = res.get("output", {})
+                            if isinstance(output, dict) and (
+                                ("results" in output and not output["results"]) or
+                                ("content" in output and len(output["content"]) < 50)
+                            ):
+                                await failure_memory.record_failure(
+                                    task_id=task_id,
+                                    goal=goal,
+                                    task_type=context.get("task_type", "general"),
+                                    failure_stage=FailureStage.TOOL_EXECUTION,
+                                    error_detail=f"Silent Failure (DEEP): Tool `{res.get('tool')}` tra ve ket qua rong.",
+                                    failed_tools=[res.get("tool", "unknown")]
+                                )
                 else:
                     engine.publish_mission_log(
                         "WARN", f"⚠️ [T4]: Executor trả về {resp.status_code}.", task_id, trace_id
@@ -142,52 +185,102 @@ class DeepPipeline:
         # T5: CRITIC kiểm duyệt kết quả thực thi
         # ═══════════════════════════════════════════
         judicial_review = {}
+
         try:
             engine.publish_mission_log(
-                "CRITIC", "⚖️ [T5]: Khởi động phiên Thẩm định Tư pháp...", task_id, trace_id
+                "CRITIC",
+                "⚖️ [T5]: Khởi động phiên Thẩm định Tư pháp...",
+                task_id,
+                trace_id
             )
-            judicial_review = await engine.call_chat(
-                messages=[{
-                    "role": "user",
-                    "content": (
-                        f"[JUDICIAL REVIEW - EVIDENCE BASED]\n"
-                        f"Objective: {goal}\n"
-                        f"Blueprint (first 5 steps): {json.dumps(steps[:5], ensure_ascii=False)}\n"
-                        f"Actual Execution Results: {self._compress_results(execution_results)}\n\n"
-                        "══════════════════════════════════════════\n"
-                        "[CRITIC PROTOCOL]\n"
-                        "══════════════════════════════════════════\n"
-                        "You are a Judicial Critic. Evaluate the execution based ONLY on evidence above.\n\n"
-                        "[CORE DIRECTIVES]\n"
-                        "1. If Execution Results are empty or contain errors, verdict MUST be FAIL.\n"
-                        "2. NEVER assume success. NEVER fabricate results.\n"
-                        "3. Base your verdict solely on Actual Execution Results.\n"
-                        "4. Respond with ONLY valid JSON, no other text:\n"
-                        '{"verdict": "SUCCESS|PARTIAL|FAIL", "accuracy_score": 0.0-1.0, "feedback": "Specific evidence-based reason"}'
-                    )
-                }],
-                role="CRITIC",
-                json_mode=True,
-                task_id=task_id,
-                trace_id=trace_id,
+
+            critic_soul = (
+                await engine.get_brain_knowledge("agent_critic.md")
+                or "You are a Judicial Critic."
             )
-            if isinstance(judicial_review, str):
-                try:
-                    judicial_review = json.loads(judicial_review)
-                except Exception:
-                    judicial_review = {"verdict": "SUCCESS", "accuracy_score": 0.8, "feedback": judicial_review}
+
+            # Nếu executor không tạo bằng chứng thực tế
+            if not self._has_valid_evidence(execution_results):
+
+                judicial_review = {
+                    "verdict": "FAIL",
+                    "accuracy_score": 0.0,
+                    "feedback": "Executor produced no valid evidence."
+                }
+
+            else:
+
+                judicial_review = await engine.call_chat(
+                    messages=[{
+                        "role": "user",
+                        "content": (
+                            f"{critic_soul}\n\n"
+                            f"[PHẦN XÉT XỬ - EVIDENCE BASED]\n"
+                            f"Mục tiêu: {goal}\n"
+                            f"Kế hoạch (5 bước đầu): {json.dumps(steps[:5], ensure_ascii=False)}\n"
+                            f"Bằng chứng thực thi thực tế: {self._compress_results(execution_results)}\n\n"
+                            "══════════════════════════════════════════\n"
+                            "NHIỆM VỤ: Thẩm định dựa trên bằng chứng thực tế.\n"
+                            "Nếu không có bằng chứng, verdict PHẢI là FAIL.\n"
+                            'Trả về JSON: {"verdict":"SUCCESS|PARTIAL|FAIL","accuracy_score":0.0-1.0,"feedback":"reason"}'
+                        )
+                    }],
+                    role="CRITIC",
+                    json_mode=True,
+                    task_id=task_id,
+                    trace_id=trace_id,
+                )
+
+                # Model trả string
+                if isinstance(judicial_review, str):
+                    try:
+                        judicial_review = json.loads(judicial_review)
+                    except Exception:
+                        judicial_review = {
+                            "verdict": "PARTIAL",
+                            "accuracy_score": 0.5,
+                            "feedback": judicial_review
+                        }
+
+                # Model trả format lỗi
+                if not isinstance(judicial_review, dict):
+                    judicial_review = {
+                        "verdict": "PARTIAL",
+                        "accuracy_score": 0.5,
+                        "feedback": "Invalid critic response."
+                    }
 
             engine.publish_mission_log(
                 "CRITIC",
-                f"⚖️ [T5]: Phán quyết — {judicial_review.get('verdict', 'N/A')} "
-                f"(Score: {judicial_review.get('accuracy_score', 0):.2f})",
-                task_id, trace_id,
+                f"⚖️ [T5]: Phán quyết — {judicial_review.get('verdict','N/A')} "
+                f"(Score: {judicial_review.get('accuracy_score',0):.2f})",
+                task_id,
+                trace_id,
             )
-        except Exception as e:
-            logger.warning(f"⚠️ [DEEP-T5-ERR]: {e}")
-            engine.publish_mission_log("WARN", f"⚠️ [T5 FAULT]: {e} — Tự động phê duyệt.", task_id, trace_id)
-            judicial_review = {"verdict": "SUCCESS", "accuracy_score": 1.0, "feedback": "Auto-approved."}
 
+        except Exception as e:
+
+            logger.warning(f"⚠️ [DEEP-T5-ERR]: {e}")
+
+            engine.publish_mission_log(
+                "WARN",
+                f"⚠️ [T5 FAULT]: {e} — Critic unavailable.",
+                task_id,
+                trace_id
+            )
+
+            if not self._has_valid_evidence(execution_results):
+                judicial_review = {
+                    "verdict": "FAIL",
+                    "accuracy_score": 0.0,
+                    "feedback": f"Critic crashed and no execution evidence exists. {e}"
+                }
+            else:
+                judicial_review = {
+                    "verdict": "PARTIAL",
+                    "accuracy_score": 0.5,
+                    "feedback": f"Critic crashed but execution evidence exists. {e}"
+                }
         # ═══════════════════════════════════════════
         # T6: SUMMARIZER tóm tắt và trả kết quả
         # ═══════════════════════════════════════════
@@ -472,3 +565,42 @@ class DeepPipeline:
             pass
             
         return json.dumps(results, ensure_ascii=False)
+
+
+async def plan_only(
+    goal: str,
+    task_id: str,
+    planner_instance: Any,
+    context: Dict = None,
+    history: List = None,
+    trace_id: str = "system",
+    mode: str = "deep",
+) -> Dict[str, Any]:
+    """
+    T2–T3 planning entry (Recon → Forge → DAG → Policy) without T4–T6 execution.
+    Used by receptionist and any caller that needs a Blueprint with assigned_agent fields.
+    """
+    dp = DeepPipeline()
+    initial_state = {
+        "goal": goal,
+        "task_id": task_id,
+        "trace_id": trace_id,
+        "planner_instance": planner_instance,
+        "context": context or {},
+        "mode": mode,
+        "history": history or [],
+    }
+    try:
+        from meta_planner import MetaPlanner
+        routing = await MetaPlanner().route_task(goal, initial_state["context"], task_id)
+        initial_state["domain"] = routing.get("domain", "CORE")
+        initial_state["context"]["agent_role"] = routing.get("agent_role")
+        initial_state["context"]["domain"] = initial_state["domain"]
+        initial_state["complexity"] = routing.get("complexity", "MEDIUM")
+        initial_state["execution_mode"] = routing.get("execution_mode", "SEQUENTIAL")
+    except Exception as e:
+        logger.warning(f"⚠️ [PLAN-ONLY META]: {e}")
+        initial_state["domain"] = "CORE"
+
+    plan_state = await dp._planning.execute(initial_state)
+    return plan_state.get("final_plan") or {"steps": [], "status": "failed"}

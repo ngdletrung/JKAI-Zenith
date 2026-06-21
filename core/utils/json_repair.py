@@ -3,247 +3,375 @@ import re
 import logging
 from typing import Any, Optional
 
-logger = logging.getLogger('JSON-Repair')
+logger = logging.getLogger("JSONRepair")
+
+
+# ==========================================================
+# JSON BLOCK EXTRACTION
+# ==========================================================
 
 def extract_first_json_block(text: str) -> Optional[str]:
     """
-    🔍 [BLOCK-EXTRACTION v2.5]: Trích xuất khối JSON đầu tiên bằng thuật toán quét cặp ngoặc (stack-based).
-    Khắc phục triệt để lỗi greedy của regex và bỏ qua các ngoặc bên trong string literal.
+    Trích xuất object/array JSON đầu tiên bằng state machine.
+    Hỗ trợ:
+      - nested {}
+      - nested []
+      - escaped quotes
+      - braces trong string
     """
-    stack = []
+
     start = None
+    stack = []
+
     in_string = False
     escaped = False
-    
+
     for i, ch in enumerate(text):
+
         if in_string:
+
             if escaped:
                 escaped = False
-            elif ch == '\\':
+
+            elif ch == "\\":
                 escaped = True
+
             elif ch == '"':
                 in_string = False
+
             continue
-            
+
         if ch == '"':
             in_string = True
             continue
-            
-        if ch in "{[":
+
+        if ch == "{":
             if start is None:
                 start = i
-            stack.append("}" if ch == "{" else "]")
+            stack.append("}")
+
+        elif ch == "[":
+            if start is None:
+                start = i
+            stack.append("]")
+
         elif ch in "}]":
+
             if not stack:
                 continue
+
             if ch == stack[-1]:
                 stack.pop()
+
                 if not stack and start is not None:
-                    return text[start:i+1]
-    
-    # Nếu có điểm bắt đầu nhưng không đóng được trọn vẹn, vẫn trả về từ start để thực hiện repair
+                    return text[start:i + 1]
+
     if start is not None:
         return text[start:]
+
     return None
 
-def normalize_quotes_and_literals(text: str) -> str:
-    """
-    🔄 [NORMALIZER]: Đồng hóa single quotes sang double quotes một cách an toàn và sửa đổi literals.
-    Chỉ chuyển đổi dấu nháy đơn khi ở NGOÀI dấu nháy kép (tránh phá hỏng dấu nháy đơn hợp lệ bên trong chuỗi).
-    """
-    # 1. Đồng hóa Python literals sang JSON
-    text = (text
-        .replace(": None", ": null")
-        .replace(": True", ": true")
-        .replace(": False", ": false")
-        .replace("True,", "true,")
-        .replace("False,", "false,")
-        .replace("None,", "null,")
+
+# ==========================================================
+# CLEANUP
+# ==========================================================
+
+def remove_markdown(text: str) -> str:
+
+    text = re.sub(
+        r"```(?:json)?",
+        "",
+        text,
+        flags=re.IGNORECASE
     )
-    
-    # 2. Xử lý single quotes
+
+    text = text.replace("```", "")
+
+    text = re.sub(
+        r"<think>.*?</think>",
+        "",
+        text,
+        flags=re.DOTALL | re.IGNORECASE
+    )
+
+    return text.strip()
+
+
+def escape_control_chars(text: str) -> str:
+
+    out = []
+
+    for ch in text:
+
+        code = ord(ch)
+
+        if code < 32 and ch not in "\n\r\t":
+            out.append(f"\\u{code:04x}")
+        else:
+            out.append(ch)
+
+    return "".join(out)
+
+
+# ==========================================================
+# PYTHON → JSON LITERAL CONVERSION
+# ==========================================================
+
+def normalize_python_literals(text: str) -> str:
+    """
+    Chỉ sửa token ngoài string.
+    """
+
     result = []
-    in_double_string = False
-    in_single_string = False
+
+    in_string = False
     escaped = False
-    
-    i = 0
-    n = len(text)
-    while i < n:
-        ch = text[i]
-        if escaped:
+
+    token = ""
+
+    def flush_token():
+
+        nonlocal token
+
+        if token == "True":
+            result.append("true")
+
+        elif token == "False":
+            result.append("false")
+
+        elif token == "None":
+            result.append("null")
+
+        else:
+            result.append(token)
+
+        token = ""
+
+    for ch in text:
+
+        if in_string:
+
             result.append(ch)
-            escaped = False
-            i += 1
+
+            if escaped:
+                escaped = False
+
+            elif ch == "\\":
+                escaped = True
+
+            elif ch == '"':
+                in_string = False
+
             continue
-            
-        if ch == '\\':
-            result.append(ch)
-            escaped = True
-            i += 1
-            continue
-            
+
         if ch == '"':
-            if not in_single_string:
-                in_double_string = not in_double_string
+
+            flush_token()
+
+            in_string = True
             result.append(ch)
-            i += 1
             continue
-            
-        if ch == "'":
-            if not in_double_string:
-                # Chuyển đổi single quote sang double quote
-                result.append('"')
-                in_single_string = not in_single_string
-            else:
-                result.append(ch)
-            i += 1
-            continue
-            
-        result.append(ch)
-        i += 1
-        
+
+        if ch.isalnum() or ch == "_":
+
+            token += ch
+
+        else:
+
+            flush_token()
+            result.append(ch)
+
+    flush_token()
+
     return "".join(result)
 
+
+# ==========================================================
+# TRAILING COMMA REPAIR
+# ==========================================================
+
+def remove_trailing_commas(text: str) -> str:
+
+    previous = None
+
+    while previous != text:
+
+        previous = text
+
+        text = re.sub(
+            r',\s*([}\]])',
+            r'\1',
+            text
+        )
+
+    return text
+
+
+# ==========================================================
+# STRUCTURAL BALANCING
+# ==========================================================
+
+def balance_json(text: str) -> str:
+
+    stack = []
+
+    in_string = False
+    escaped = False
+
+    for ch in text:
+
+        if in_string:
+
+            if escaped:
+                escaped = False
+
+            elif ch == "\\":
+                escaped = True
+
+            elif ch == '"':
+                in_string = False
+
+            continue
+
+        if ch == '"':
+            in_string = True
+            continue
+
+        if ch == "{":
+            stack.append("}")
+
+        elif ch == "[":
+            stack.append("]")
+
+        elif stack and ch == stack[-1]:
+            stack.pop()
+
+    while stack:
+        text += stack.pop()
+
+    return text
+
+
+# ==========================================================
+# STRING TRUNCATION REPAIR
+# ==========================================================
+
+def close_unterminated_string(text: str) -> str:
+
+    in_string = False
+    escaped = False
+
+    for ch in text:
+
+        if in_string:
+
+            if escaped:
+                escaped = False
+
+            elif ch == "\\":
+                escaped = True
+
+            elif ch == '"':
+                in_string = False
+
+        else:
+
+            if ch == '"':
+                in_string = True
+
+    if in_string:
+        text += '"'
+
+    return text
+
+
+# ==========================================================
+# MAIN REPAIR
+# ==========================================================
+
 def repair_json(raw_text: str) -> str:
-    """
-    🧪 [NEURAL-SURGERY v2.5 - PRODUCTION]: Sửa chữa JSON Hermes nâng cao.
-    Kiến trúc 4 lớp bảo vệ: Trích xuất chính xác → Chuẩn hóa chuỗi → Sửa chữa cấu trúc dở dang → Cân bằng cấu trúc.
-    """
-    if not raw_text or not raw_text.strip():
+
+    if not raw_text:
         return "{}"
 
-    # 1. Loại bỏ markdown code blocks & thinking tags
-    clean_text = re.sub(r'```(?:json)?\s*|\s*```', '', raw_text, flags=re.IGNORECASE).strip()
-    clean_text = re.sub(r'<think>.*?</think>', '', clean_text, flags=re.DOTALL).strip()
-    
-    # 2. Control characters cleanup (chỉ loại bỏ các ký tự điều khiển ASCII phi in)
-    clean_text = "".join(ch if ord(ch) >= 32 or ch in "\n\r\t" else f"\\u{ord(ch):04x}" for ch in clean_text)
+    text = remove_markdown(raw_text)
 
-    # 3. Trích xuất khối JSON tiềm năng đầu tiên
-    candidate = extract_first_json_block(clean_text) or clean_text
+    text = escape_control_chars(text)
 
-    # 4. Chuẩn hóa nháy và literals
-    candidate = normalize_quotes_and_literals(candidate)
+    candidate = extract_first_json_block(text)
 
-    # 5. Fix unescaped newlines inside strings (Heuristic)
-    candidate = re.sub(r'(".*?)(?<!\\)\n(.*?")', lambda m: m.group(1) + "\\n" + m.group(2), candidate, flags=re.DOTALL)
+    if candidate is None:
+        return "{}"
 
-    # 6. Loại bỏ trailing commas
-    candidate = re.sub(r',\s*([}\]])', r'\1', candidate)
-    candidate = re.sub(r',\s*$', '', candidate)
+    candidate = normalize_python_literals(candidate)
 
-    # 7. Truncation repair (Sửa chữa phần đuôi bị cụt dở dang)
-    in_string = False
-    escaped = False
-    for ch in candidate:
-        if in_string:
-            if escaped:
-                escaped = False
-            elif ch == '\\':
-                escaped = True
-            elif ch == '"':
-                in_string = False
-            continue
-        if ch == '"':
-            in_string = True
-            
-    if in_string:
-        candidate += '"'  # Tự động đóng chuỗi chưa hoàn thành
+    candidate = remove_trailing_commas(candidate)
 
-    # Nếu kết thúc bằng dấu phẩy hoặc dấu hai chấm dở dang, cắt bỏ
-    candidate = candidate.strip()
-    if candidate.endswith(',') or candidate.endswith(':'):
-        last_comma = candidate.rfind(',')
-        if last_comma != -1:
-            candidate = candidate[:last_comma].rstrip()
+    candidate = close_unterminated_string(candidate)
 
-    # 8. Structural balancing (Cân bằng ngoặc an toàn bên ngoài các chuỗi ký tự)
-    in_string = False
-    escaped = False
-    open_braces = 0
-    close_braces = 0
-    open_brackets = 0
-    close_brackets = 0
-    
-    for ch in candidate:
-        if in_string:
-            if escaped:
-                escaped = False
-            elif ch == '\\':
-                escaped = True
-            elif ch == '"':
-                in_string = False
-            continue
-            
-        if ch == '"':
-            in_string = True
-            continue
-            
-        if ch == '{':
-            open_braces += 1
-        elif ch == '}':
-            close_braces += 1
-        elif ch == '[':
-            open_brackets += 1
-        elif ch == ']':
-            close_brackets += 1
-            
-    if open_braces > close_braces:
-        candidate += '}' * (open_braces - close_braces)
-    if open_brackets > close_brackets:
-        candidate += ']' * (open_brackets - close_brackets)
+    candidate = balance_json(candidate)
 
     return candidate.strip()
 
-def repair_tool_call_arguments(arguments: str) -> str:
-    """
-    ⚔️ [TOOL-CALL-REPAIR]: Tinh hoa Hermes - Vá lỗi tham số tool call.
-    Đảm bảo arguments luôn là một chuỗi JSON hợp lệ trước khi thực thi.
-    """
-    if not arguments or arguments.strip() in ("", "{}", "[]"):
-        return "{}"
-    
-    try:
-        obj = json.loads(arguments)
-        if not isinstance(obj, dict):
-            return "{}"
-        return arguments
-    except json.JSONDecodeError:
-        logger.info("🛠️ [TOOL-CALL-REPAIR]: Đang vá lỗi tham số tool call...")
-        repaired = repair_json(arguments)
-        try:
-            obj = json.loads(repaired)
-            if isinstance(obj, dict):
-                return repaired
-            return "{}"
-        except Exception as e:
-            logger.warning(f"❌ [TOOL-CALL-REPAIR-FAILED]: Lỗi: {e}")
-            return "{}"
 
-def safe_json_loads(text: str, fallback: Any = None) -> Any:
-    """
-    🛡️ [SAFE-LOAD]: Nạp JSON an toàn với cơ chế tự sửa lỗi.
-    """
+# ==========================================================
+# SAFE LOADS
+# ==========================================================
+
+def safe_json_loads(
+    text: str,
+    fallback: Any = None
+) -> Any:
+
     if not text:
         return fallback or {}
-        
-    try:
-        cleaned = text
-        if isinstance(cleaned, str):
-            cleaned = re.sub(r'<think>.*?</think>', '', cleaned, flags=re.DOTALL).strip()
-            cleaned = re.sub(r'```json\s*|\s*```', '', cleaned).strip()
-        return json.loads(cleaned)
-    except json.JSONDecodeError:
-        try:
-            repaired = repair_json(text)
-            return json.loads(repaired)
-        except Exception as e:
-            logger.warning(f"❌ [JSON-REPAIR-FAILED]: Không thể cứu vãn JSON. Lỗi: {e}")
-            return fallback or text
 
-def extract_json_from_text(text: str) -> Any:
-    """
-    🔍 [EXTRACTOR]: Trích xuất JSON từ một đoạn văn bản.
-    """
-    return safe_json_loads(text)
+    try:
+        return json.loads(text)
+
+    except Exception:
+
+        repaired = repair_json(text)
+
+        try:
+            return json.loads(repaired)
+
+        except Exception as e:
+
+            logger.warning(
+                f"JSON repair failed: {e}"
+            )
+
+            return fallback or {}
+
+
+# ==========================================================
+# TOOL CALL REPAIR
+# ==========================================================
+
+def repair_tool_call_arguments(
+    arguments: str
+) -> str:
+
+    if not arguments:
+        return "{}"
+
+    try:
+
+        obj = json.loads(arguments)
+
+        return arguments if isinstance(obj, dict) else "{}"
+
+    except Exception:
+
+        repaired = repair_json(arguments)
+
+        try:
+
+            obj = json.loads(repaired)
+
+            return repaired if isinstance(obj, dict) else "{}"
+
+        except Exception:
+
+            return "{}"

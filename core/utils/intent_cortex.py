@@ -154,9 +154,9 @@ _TOKEN_MULTIPLIER: dict[ExecutionMode, float] = {
 }
 
 _MODEL_HINT: list[Tuple[float, str]] = [
-    (0.75, "deepseek-r1:latest"),
-    (0.45, "qwen3:4b"),
-    (0.00, "qwen3:0.6b"),
+    (0.75, "PLANNER"),
+    (0.45, "CRITIC"),
+    (0.00,  "COMPRESSOR"),
 ]
 
 # =====================================================================
@@ -277,6 +277,16 @@ def _score_complexity(goal: str, discovery: dict[str, Any]) -> float:
     if any(p in goal for p in SEMANTIC_HEAVY_PATTERNS):
         score += 0.20
 
+    # 🚀 [DEEP-MODE-FORCING]: Kích hoạt độ phức tạp tuyệt đối cho các tác vụ hệ thống/phân tích thưa Master
+    FORCE_DEEP_PATTERNS = [
+        "tạo file", "xóa file", "tạo tệp", "xóa tệp", "bash", "cmd", "terminal", 
+        "phân tích", "phan tich", "thống kê", "thong ke", "báo cáo", "bao cao",
+        "viết code", "lập trình", "sửa lỗi", "debug", "audit", "tạo script",
+        "run command", "chạy lệnh"
+    ]
+    if any(p in goal for p in FORCE_DEEP_PATTERNS):
+        score += 1.0  # Ép điểm tuyệt đối để đẩy thẳng sang DELIBERATIVE (DEEP MODE)
+
     return round(min(score, 1.0), 3)
 
 
@@ -387,7 +397,7 @@ class RoutingManifest:
 # SECTION 6 · Orchestration Core Control Interface
 # =====================================================================
 
-_CLARIFICATION_THRESHOLD = 0.40
+_CLARIFICATION_THRESHOLD = 0.65
 _MULTI_AGENT_THRESHOLD = 0.60
 
 class IntentCortex:

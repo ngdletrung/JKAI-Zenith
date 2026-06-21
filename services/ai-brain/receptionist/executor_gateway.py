@@ -12,23 +12,31 @@ class ExecutionRequest:
 
 class ExecutorGateway:
     """
-    🛠️ TẬP ĐOÀN JKAI ZENITH - EXECUTOR GATEWAY
-    Giao tiếp an toàn và thực thi lệnh qua Capability Token.
+    JKAI Zenith - Executor Gateway
+    Secure execution broker using capability tokens.
     """
     def __init__(self, http_client):
         self.http_client = http_client
 
     def _log(self, tag, msg, task_id="manual", stealth=False):
         try:
-            enhanced_msg = f"💎🫡 [ZENITH]: {msg}" if tag == "ZENITH" else msg
+            enhanced_msg = f"[ZENITH]: {msg}" if tag == "ZENITH" else msg
             engine.publish_mission_log(tag, enhanced_msg, task_id, stealth=stealth)
-        except: pass
+        except Exception: pass
 
     async def execute_tool(self, request: ExecutionRequest, task_id: str) -> str:
-        """Gọi Executor với Execution Contract chặt chẽ."""
-        self._log("EXECUTOR", f"🛠️ Thực thi an toàn: {request.tool_name}(...) - TraceID: {request.trace_id}", task_id)
+        """Executes the requested tool under secure capability contract and publishes outcomes."""
+        self._log("EXECUTOR", f"Safe execution: {request.tool_name}(...) - TraceID: {request.trace_id}", task_id)
+        is_success = False
+        output = "No output."
         try:
-            # Truyền Capability Token để xác thực phân quyền ở đầu kia
+            # 🚀 [HYBRID ROUTING]: Chuyển hướng sang OpenHands nếu là nhiệm vụ đặc biệt
+            if request.tool_name.upper().startswith("OPENHANDS"):
+                from .openhands_provider import openhands_provider
+                res = await openhands_provider.execute_mission(request.tool_args.get("query", ""), task_id)
+                return res.get("output") or res.get("message")
+
+            # Resolve url of executor service dynamically
             from core.utils.registry import registry
             executor_url = registry.get_service_url('executor')
             resp = await self.http_client.post(f"{executor_url}/call_tool", json={
@@ -40,16 +48,44 @@ class ExecutorGateway:
             }, timeout=request.timeout)
             
             data = resp.json()
-            # Xử lý nhu cầu auth từ Executor
+            # Handle authorization demands
             if data.get("status") == "needs_auth":
-                return f"⚠️ **[XÁC THỰC CHỦ QUYỀN]**: Thao tác `{request.tool_name}` vào vùng nhạy cảm đã bị chặn. Cần Mật Mã Tối Thượng thưa Master."
+                return f"[SOVEREIGN-AUTH-REQUIRED]: Action '{request.tool_name}' on restricted area blocked. Master credentials required."
             
-            return data.get("output", "No output.")
+            if data.get("status") == "error":
+                is_success = False
+                output = data.get("msg") or data.get("error") or data.get("output") or "Unknown executor error."
+            else:
+                output = data.get("output", "No output.")
+                if isinstance(output, dict) and output.get("status") == "error":
+                    is_success = False
+                    output = output.get("msg") or output.get("error") or str(output)
+                elif isinstance(output, str) and ("Thất bại sau" in output or "error" in output.lower()):
+                    is_success = False
+                else:
+                    is_success = True
+                
+            return output
         except Exception as e:
-            return f"Error calling executor: {e}"
+            output = f"Error calling executor: {e}"
+            is_success = False
+            return output
+        finally:
+            # Publish telemetry event to real-time cognitive bus
+            try:
+                from redis_client import get_redis
+                r_conn = get_redis()
+                if r_conn:
+                    event_payload = json.dumps({
+                        "intent": request.tool_name,
+                        "is_success": is_success
+                    }, ensure_ascii=False)
+                    r_conn.publish("zenith:cognitive_events", event_payload)
+            except Exception as publish_err:
+                print(f"[EXECUTOR-GATEWAY-WARN] Failed to publish cognitive event: {publish_err}")
 
     async def request_sovereign_auth(self, action: str, params: dict, task_id: str):
-        """Kích hoạt Pad xác thực trên giao diện Frontend"""
+        """Triggers frontend authorization prompt panel."""
         payload = {"action": action}
         payload.update(params)
         try:
@@ -60,4 +96,4 @@ class ExecutorGateway:
                 "args": payload,
                 "task_id": task_id
             })
-        except: pass
+        except Exception: pass

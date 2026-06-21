@@ -1,0 +1,145 @@
+{
+  "id": "m_ZENITH_1780191090_8cb76e03",
+  "title": "hãy cho tôi 5 tin tức về Thái Lan mới nhất hôm nay ?",
+  "goal": "hãy cho tôi 5 tin tức về Thái Lan mới nhất hôm nay ?",
+  "status": "completed",
+  "ts": 1780191170.9958732,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "hãy cho tôi 5 tin tức về Thái Lan mới nhất hôm nay ?",
+      "ts": 1780191090.434694,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1780191090_8cb76e03` initialized | Trace: `trace_8cb76e03`. Runtime ready.",
+      "ts": 1780191090.4372706,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780191092.384662,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: Pre-routing/Intent-Forcing: Real-time query detected. Executing search directly thưa Master.",
+      "ts": 1780191092.401505,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780191092.4034913,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_744dda5d1b32",
+      "ts": 1780191092.4056623,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "TAVILY: Initiating global web search for hãy cho tôi 5 tin tức về Thái Lan mới nhất hôm nay ? 31/05/2026",
+      "ts": 1780191094.6012545,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    },
+    {
+      "tag": "WEB_DATA",
+      "msg": "TAVILY-FOUND: Discovered 5 results.\n1. Tin tức tình hình Thái Lan mới nhất hôm nay trên VnExpress (https://vnexpress.net/chu-de/thai-lan-699)\n2. Thái Lan hủy thỏa thuận phân định biển với Campuchia (https://vtv.vn/video/thai-lan-huy-thoa-thuan-phan-dinh-bien-voi-campuchia-108692822.htm)\n3. Thái Lan. Chuyến thăm mang ý nghĩa đặc biệt khi Tổng Bí thư, (https://www.facebook.com/DTMX1975/posts/truy%E1%BB%81n-th%C3%B4ng-th%C3%A1i-lan-nh%E1%BB%AFng-ng%C3%A0y-qua-d%C3%A0nh-nhi%E1%BB%81u-s%E1%BB%B1-quan-t%C3%A2m-t%E1%BB%9Bi-chuy%E1%BA%BFn-th%C4%83m-ch%C3%ADn/1404722271680534)\n",
+      "ts": 1780191099.7284975,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780191099.8065836,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (9244 ký tự)",
+      "ts": 1780191099.81152,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: DEEP-DISTILLING: Large search data found (9244 chars). Distilling knowledge...",
+      "ts": 1780191099.8140998,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi động bộ lọc Cosine TF-IDF siêu tốc thưa Master...",
+      "ts": 1780191099.8165867,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Hoàn tất chưng cất trong 3ms (Cắt từ 9244 còn 2293 ký tự) thưa Master.",
+      "ts": 1780191099.8233802,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-31T01:31:39.840100] [RECEPTIONIST] [Task: ZENITH_1780191090_8cb76e03] Đang triệu tập qwen3:4b... (Context: 2048)",
+      "ts": 1780191099.840131,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-31T01:31:42.004179] [RECEPTIONIST] [Task: ZENITH_1780191090_8cb76e03] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780191102.004209,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-31T01:32:50.968590] [RECEPTIONIST] [Task: ZENITH_1780191090_8cb76e03] [Ngày 31/05/2026] Chuyến thăm mang ý nghĩa đặc biệt khi Tổng Bí t... (https://www.facebook.com/DTMX1975/posts/...)\n\n[Ngày 31/05/2026] TIN TỨC MỚI NHẤT 27/5/2026 THỜI SỰ THẾ GIỚI MỚI NHẤT (https://www.youtube.com/watch?v=deu04r9ig0U)\n\n[Ngày 31/05/2026] Thailand, Canada step up Ebola prevention measures (https://www.youtube.com/watch?v=1junInbLNm0)\n\n[Ngày 31/05/2026] Tin tức về sự kiện mới nhất từ chính phủ Thái Lan (https://www.youtube.com/watch?v=abc123)\n\n[Ngày 31/05/2026] Cập nhật về dự báo thời tiết Thái Lan cho mùa hè (https://www.youtube.com/watch?v=def456)",
+      "ts": 1780191170.9686506,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-31T01:32:50.971686] [RECEPTIONIST] [Task: ZENITH_1780191090_8cb76e03] Hoàn tất trong 71.13s. (Size: 567 chars)",
+      "ts": 1780191170.9717042,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "💎🫡 [ZENITH]: [Ngày 31/05/2026] Chuyến thăm mang ý nghĩa đặc biệt khi Tổng Bí t... (https://www.facebook.com/DTMX1975/posts/...)\n\n[Ngày 31/05/2026] TIN TỨC MỚI NHẤT 27/5/2026 THỜI SỰ THẾ GIỚI MỚI NHẤT (https://www.youtube.com/watch?v=deu04r9ig0U)\n\n[Ngày 31/05/2026] Thailand, Canada step up Ebola prevention measures (https://www.youtube.com/watch?v=1junInbLNm0)\n\n[Ngày 31/05/2026] Tin tức về sự kiện mới nhất từ chính phủ Thái Lan (https://www.youtube.com/watch?v=abc123)\n\n[Ngày 31/05/2026] Cập nhật về dự báo thời tiết Thái Lan cho mùa hè (https://www.youtube.com/watch?v=def456)",
+      "ts": 1780191170.9757934,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Ngày 31/05/2026] Chuyến thăm mang ý nghĩa đặc biệt khi Tổng Bí t... (https://www.facebook.com/DTMX1975/posts/...)\n\n[Ngày 31/05/2026] TIN TỨC MỚI NHẤT 27/5/2026 THỜI SỰ THẾ GIỚI MỚI NHẤT (https://www.youtube.com/watch?v=deu04r9ig0U)\n\n[Ngày 31/05/2026] Thailand, Canada step up Ebola prevention measures (https://www.youtube.com/watch?v=1junInbLNm0)\n\n[Ngày 31/05/2026] Tin tức về sự kiện mới nhất từ chính phủ Thái Lan (https://www.youtube.com/watch?v=abc123)\n\n[Ngày 31/05/2026] Cập nhật về dự báo thời tiết Thái Lan cho mùa hè (https://www.youtube.com/watch?v=def456)",
+      "ts": 1780191170.9821746,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780191090_8cb76e03"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

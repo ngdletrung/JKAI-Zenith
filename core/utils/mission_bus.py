@@ -131,7 +131,7 @@ class MissionBus:
             start_ts = redis_safe(lambda r: r.get(f"zenith:task_timer:{task_id}"))
             if start_ts:
                 try: duration = time.time() - float(start_ts)
-                except: pass
+                except Exception: pass
 
         # ── Tag parsing ──────────────────────────────────────────────
         tag_upper    = tag.upper()
@@ -220,29 +220,10 @@ class MissionBus:
         # Nếu channels=None → legacy tag-based routing (backward-compatible).
         # ══════════════════════════════════════════════════════════════
 
-        if channels is not None:
-            # ── EXPLICIT ROUTING (recommended) ───────────────────────
-            go_executive = CH_EXECUTIVE in channels
-            go_progress  = CH_PROGRESS  in channels
-            go_telegram  = CH_TELEGRAM  in channels and self.tg_callback and not stealth and not is_heartbeat
-
-        else:
-            # ── LEGACY ROUTING: suy luận từ tag (backward-compatible) ─
-            # Kênh Executive (Nhật ký điều hành): Nhận toàn bộ log ngoại trừ Progress/Thought
-            go_executive = (
-                primary_tag not in ["PROGRESS", "THOUGHT", "HEARTBEAT"]
-                and not payload.get("is_internal")
-            )
-
-            # Kênh Progress (Tiến trình): Chỉ nhận Progress, Thought và Heartbeat
-            go_progress = primary_tag in ["PROGRESS", "THOUGHT", "HEARTBEAT"]
-
-            # Kênh Telegram: Mirror những sự kiện quan trọng (Executive + Progress)
-            go_telegram = (
-                self.tg_callback and
-                not stealth and
-                not is_heartbeat
-            )
+        # Master requested to temporarily remove all routing and filtering for testing:
+        go_executive = True
+        go_progress  = True
+        go_telegram  = self.tg_callback and not stealth and not is_heartbeat
 
         # ── KÊNH 1: EXECUTIVE (Nhật ký Điều hành) ───────────────────
         if go_executive and not stealth:
@@ -282,7 +263,7 @@ class MissionBus:
                             asyncio.run(self.tg_callback(msg_to_send))
                         else:
                             self.tg_callback(msg_to_send)
-                    except: pass
+                    except Exception: pass
 
                 if HAS_GEVENT:
                     gevent.spawn(_send)
@@ -293,11 +274,11 @@ class MissionBus:
                             loop.create_task(self.tg_callback(msg_to_send))
                         else:
                             threading.Thread(target=_send).start()
-                    except:
+                    except Exception:
                         threading.Thread(target=_send).start()
                 else:
                     threading.Thread(target=_send).start()
-            except: pass
+            except Exception: pass
 
         return clean_msg
 

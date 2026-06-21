@@ -1,0 +1,14 @@
+{
+  "name": "OPENHANDS_MISSION",
+  "description": "Uỷ thác các nhiệm vụ lập trình và nghiên cứu phức tạp cho Ban Thực Thi Chuyên Biệt OpenHands. Dùng cho các yêu cầu đòi hỏi môi trường Linux cô lập, tái cấu trúc nhiều tệp tin hoặc cài đặt thư viện mới.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Chỉ thị chi tiết cho OpenHands (ví dụ: 'Hãy tạo một dự án React mới trong thư mục sandbox và cài đặt Tailwind CSS')."
+      }
+    },
+    "required": ["query"]
+  }
+}

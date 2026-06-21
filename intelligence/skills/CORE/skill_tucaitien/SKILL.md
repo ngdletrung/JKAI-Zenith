@@ -9,7 +9,14 @@ intent_pairs:
   - SKILL_TUCAITIEN
 name_vn: Kỹ năng Skill tucaitien
 priority: NORMAL
-related_skills: []
+related_skills:
+  - OMNI_SEARCH_ENGINE
+  - SELF_HEALING_SENTINEL
+  - SKILL_TUSUALOI
+  - COGNITIVE_SCHEDULER
+  - CAPABILITY_BROKER
+  - REPO_SURGEON
+  - SKILL_DECK_INDEX
 version: 1.0.0
 ---
 
@@ -22,8 +29,7 @@ Kỹ năng tự động được đúc bởi Zenith Forge.
 - `__init__`
 - `phau_thuat_logic`
 - `tu_nang_cap_ban_than`
-- `phau_thuat_logic`
-- `tu_nang_cap_ban_than`
+
 
 ## ⚖️ GIAO THỨC VẬN HÀNH
 - Tự động thực thi theo logic trong `logic.py`.

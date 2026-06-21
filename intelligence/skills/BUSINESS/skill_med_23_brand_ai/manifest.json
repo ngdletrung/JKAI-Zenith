@@ -1,0 +1,52 @@
+{
+  "id": "SKILL_MED_23_BRAND_AI",
+  "name": "Zenith AI Branding Architect",
+  "version": "1.0.0",
+  "description": "Brand identity core: Designs, manages, and protects the digital brand persona of Master LeeTrung and the Zenith Corporation.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "nhận diện thương hiệu",
+    "brand ai",
+    "branding architect",
+    "kiến tạo thương hiệu",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "thuong",
+    "hieu",
+    "brand",
+    "tinh",
+    "dung",
+    "master",
+    "hinh",
+    "khong",
+    "thiet",
+    "nhan",
+    "kinh doanh",
+    "ban hang",
+    "marketing",
+    "khach hang",
+    "san pham"
+  ],
+  "domain": "BUSINESS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "brand_name": {
+          "type": "string",
+          "description": "Name of the brand."
+        },
+        "core_values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Core values of the brand."
+        }
+      }
+    }
+  }
+}

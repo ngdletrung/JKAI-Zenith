@@ -1,0 +1,47 @@
+{
+  "id": "AUTONOMOUS_WEB_RECON",
+  "name": "Autonomous Web Recon",
+  "version": "1.0.0",
+  "description": "Cung cấp khả năng nghiên cứu đối thủ, thị trường và công nghệ một cách tự trị hoàn toàn. Không chỉ dừng lại ở việc tìm kiếm, đặc vụ này có khả năng duyệt nhiều trang web, tự sửa lỗi khi gặp captcha ho",
+  "author": "JKAI Zenith",
+  "domain": "RESEARCH",
+  "triggers": [
+    "thong tin chung",
+    "muc tieu chien luoc",
+    "tinh nang cot loi",
+    "cach su dung",
+    "giao thuc an ninh",
+    "nghien",
+    "thong",
+    "buoc",
+    "cach",
+    "nang",
+    "dung",
+    "duyet",
+    "hanh",
+    "trinh",
+    "chung",
+    "tieu",
+    "truong",
+    "kiem",
+    "trang",
+    "thanh",
+    "nghien cuu",
+    "phan tich",
+    "ke hoach",
+    "plan",
+    "y tuong"
+  ],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Input query or task description"
+      }
+    },
+    "required": [
+      "query"
+    ]
+  }
+}

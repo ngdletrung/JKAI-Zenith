@@ -36,10 +36,10 @@ class FastPipeline:
     def __init__(self):
         # 🧠 [PLANNING-INIT]: Đúc kết các Stage T2+T3
         from planning_pipeline import (
-            ReconStage, ContextStage, ForgeStage, PolicyStage, PlanningPipeline
+            ReconStage, ContextStage, ForgeStage, DAGOptimizerStage, PolicyStage, PlanningPipeline
         )
         self._planning = PlanningPipeline(stages=[
-            ReconStage(), ContextStage(), ForgeStage(), PolicyStage()
+            ReconStage(), ContextStage(), ForgeStage(), DAGOptimizerStage(), PolicyStage()
         ])
 
     async def execute(
@@ -95,6 +95,7 @@ class FastPipeline:
             "PLANNER",
             f"📊 [BLUEPRINT SEALED]: {len(steps)} bước thực thi đã được đúc kết.",
             task_id, trace_id,
+            stealth=True
         )
 
         if not steps:
@@ -125,9 +126,28 @@ class FastPipeline:
                     execution_results = exec_data.get("results", [])
                     engine.publish_mission_log(
                         "EXECUTOR",
-                        f"✅ [T4]: Thực thi hoàn tất — {len(execution_results)} kết quả.",
+                        f"✅ [T4]: Thuc thi hoan tat — {len(execution_results)} ket qua.",
                         task_id, trace_id,
                     )
+                    
+                    # 🏹 [SILENT-FAILURE HUNTER]: Phat hien ket qua rong hoac loi ngam thua Master
+                    from core.utils.failure_memory import failure_memory, FailureStage
+                    for res in execution_results:
+                        if isinstance(res, dict) and res.get("status") == "success":
+                            output = res.get("output", {})
+                            # Neu tim kiem web hoac cao web ma ket qua rong thi la Silent Failure
+                            if isinstance(output, dict) and (
+                                ("results" in output and not output["results"]) or
+                                ("content" in output and len(output["content"]) < 50)
+                            ):
+                                await failure_memory.record_failure(
+                                    task_id=task_id,
+                                    goal=goal,
+                                    task_type=context.get("task_type", "general"),
+                                    failure_stage=FailureStage.TOOL_EXECUTION,
+                                    error_detail=f"Silent Failure: Tool `{res.get('tool')}` tra ve ket qua rong hoac qua ngan.",
+                                    failed_tools=[res.get("tool", "unknown")]
+                                )
                 else:
                     engine.publish_mission_log(
                         "WARN", f"⚠️ [T4]: Executor trả về {resp.status_code}.", task_id, trace_id

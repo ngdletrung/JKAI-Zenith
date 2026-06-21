@@ -26,8 +26,10 @@ class ReconStage(PlanningStage):
             engine.publish_progress(10, "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...", "recon", task_id, trace_id)
             
             # 1. Skill DNA Recon
-            skill_dna = await planner._recon_skills(goal, "", task_id)
+            domain = state.get("domain", "GENERAL")
+            skill_dna, top_k_ids = await planner._recon_skills(goal, "", task_id, domain)
             state["skill_dna"] = skill_dna
+            state["top_k_ids"] = top_k_ids
             
             # 2. Failure Memory Pre-flight
             from core.utils.failure_memory import failure_memory
@@ -81,10 +83,22 @@ class ForgeStage(PlanningStage):
             fast_mode=(mode == "fast")
         )
         
-        system_prompt = await planner._build_system_prompt(
-            neural_context, 
-            specialist_prompt, 
-            skill_dna
+        from planner import _FEW_SHOT_EXAMPLES
+        agent_role = context.get("agent_role") if isinstance(context, dict) else None
+        nc = neural_context if isinstance(neural_context, dict) else {}
+        system_prompt = planner._build_system_prompt(
+            nc.get("manifesto", ""),
+            specialist_prompt,
+            skill_dna,
+            nc.get("level", "medium"),
+            nc.get("budget", 5),
+            False,
+            "",
+        )
+        system_prompt = (
+            system_prompt
+            + f"\n\n{planner._format_agent_registry(agent_role)}"
+            + f"\n\n<FEW_SHOT>\n{_FEW_SHOT_EXAMPLES}\n</FEW_SHOT>"
         )
         
         messages = [{"role": "system", "content": system_prompt}, {"role": "user", "content": goal}]
@@ -96,7 +110,13 @@ class ForgeStage(PlanningStage):
             if attempt == 2:
                 messages.append({
                     "role": "user",
-                    "content": "⚠️ [ESCALATION]: Previous response was not valid JSON. You MUST respond with ONLY a valid, strict JSON object. No explanations, no markdown block wrappers."
+                    "content": (
+                        "⚠️ [ESCALATION]: Bước trước không phải JSON Object hợp lệ. "
+                        "Bạn PHẢI trả về một JSON OBJECT (không phải Array) với cấu trúc chính xác: "
+                        '{"thought": "<string>", "pre_computation_reflection": "<string>", "steps": [{"id": "step_01", "tool": "<valid_tool_id>", "args": {}, "description": "<string>", "assigned_agent": "agent_executor_alpha.md", "hardware_target": "ALPHA", "expert_mindset": "<string>", "verification": "<string>"}], '
+                        '"rationale": "<string>", "failure_speculation": "<string>", "ambiguous": false}. '
+                        "Không có markdown, không có giải thích bên ngoài JSON."
+                    )
                 })
             elif attempt == 3:
                 messages.append({
@@ -112,13 +132,46 @@ class ForgeStage(PlanningStage):
             )
             
             start_time = time.time()
-            raw_res = await engine.call_chat(
-                messages, 
-                role=current_role, 
-                format="json" if attempt < 3 else None, 
-                task_id=task_id, 
-                trace_id=trace_id
-            )
+            # [FIX-ARCH]: Truyền schema=Blueprint.model_json_schema() giống generate_plan()
+            # để model biết chính xác format cần trả về thay vì tự đoán
+            from planner import Blueprint as _BlueprintSchema
+            schema = _BlueprintSchema.model_json_schema() if attempt < 3 else None
+            
+            # 🛡️ [DYNAMIC TOOL ENUM]: Build schema dynamically
+            if schema:
+                try:
+                    available_tools = state.get("top_k_ids", [])
+                    if not available_tools:
+                        reg_path = "d:/Docker/JKAI/intelligence/registry_Map_skills.json"
+                        if not os.path.exists(reg_path):
+                            reg_path = "/workspace/intelligence/registry_Map_skills.json"
+                        with open(reg_path, "r", encoding="utf-8") as f:
+                            import json
+                            reg_data = json.load(f)
+                            available_tools = [
+                                "OMNI_SEARCH_ENGINE",
+                                "READ_FILE",
+                                "LLM_ANALYSIS"
+                                ]
+                    planner._inject_plan_schema_enums(schema, available_tools)
+                except Exception as e:
+                    logger.debug(f"[DYNAMIC-SCHEMA] ForgeStage failed to inject enum: {e}")
+
+            try:
+                raw_res = await asyncio.wait_for(
+                    engine.call_chat(
+                        messages,
+                        role=current_role,
+                        schema=schema,
+                        format="json" if attempt < 3 else None,
+                        task_id=task_id,
+                        trace_id=trace_id
+                    ),
+                    timeout=90.0
+                )
+            except asyncio.TimeoutError:
+                logger.warning(f"⚠️ [FORGE-ATTEMPT-{attempt}-TIMEOUT]: Model `{current_role}` timed out after 90s.")
+                raise
             latency = time.time() - start_time
             engine.publish_mission_log("LATENCY", f"⏱️ [FORGE-ATTEMPT-{attempt}]: Model `{current_role}` response time: {round(latency, 2)}s.", task_id, trace_id)
             
@@ -139,9 +192,36 @@ class ForgeStage(PlanningStage):
                         raise ValueError("Không tìm thấy JSON.")
                     parsed_json = json.loads(json_str)
 
-                # 🛡️ [SCHEMA-FIREWALL]: Rào chắn lọc sạch ảo giác trước khi validate
+                # [FIX-ARCH]: Normalization layer — xử lý Array trước khi đẩy lên Schema Firewall.
+                # Model đôi khi trả về danh sách bước thô (Array) thay vì Blueprint dict.
+                # Nếu Array chứa item có 'tool' hợp lệ → tự bọc thành Blueprint.
+                # Nếu Array là rác thuần (lý thuyết, không tool) → raise để retry với message rõ ràng.
+                if isinstance(parsed_json, list):
+                    has_tool_steps = any(
+                        isinstance(item, dict) and item.get("tool")
+                        for item in parsed_json
+                    )
+                    if has_tool_steps:
+                        logger.warning("[FORGE-NORMALIZE]: Model trả Array có steps. Tự bọc thành Blueprint dict.")
+                        parsed_json = {
+                            "thought": "Auto-normalized from array response.",
+                            "steps": parsed_json,
+                            "rationale": "Recovered from raw array output.",
+                            "failure_speculation": "Model ignored Blueprint schema.",
+                            "ambiguous": False,
+                        }
+                    else:
+                        raise ValueError(
+                            "You returned a JSON Array of theoretical steps without 'tool' fields. "
+                            "Return a JSON OBJECT with keys: 'thought', 'steps' (each step needs 'tool'), "
+                            "'rationale', 'failure_speculation', 'ambiguous'."
+                        )
+
                 if not isinstance(parsed_json, dict):
-                    raise ValueError("Blueprint response must be a JSON dictionary.")
+                    raise ValueError(
+                        "Response must be a JSON OBJECT, not an array or primitive. "
+                        'Return: {"thought": "...", "steps": [...], "rationale": "...", "ambiguous": false}'
+                    )
                 
                 if "ambiguous" not in parsed_json:
                     parsed_json["ambiguous"] = False
@@ -158,7 +238,8 @@ class ForgeStage(PlanningStage):
                 # Chuẩn hóa từng bước thực thi để loại bỏ lỗi truyền nhận tham số
                 cleaned_steps = []
                 for i, step in enumerate(parsed_json["steps"]):
-                    if not isinstance(step, dict): continue
+                    if not isinstance(step, dict):
+                        raise ValueError(f"CRITICAL ERROR: Step {i} is a STRING instead of a JSON OBJECT. You MUST format steps as objects: {{\"id\": \"...\", \"tool\": \"...\", \"args\": {{...}}}}. Fix this immediately!")
                     if "id" not in step: step["id"] = f"step_{i}"
                     if "tool" not in step: step["tool"] = "OMNI_SEARCH_ENGINE"
                     if "args" not in step: step["args"] = {}
@@ -185,7 +266,7 @@ class ForgeStage(PlanningStage):
                 # 🛡️ [TOOL-SANITY-FIREWALL]: Ngăn chặn AI bịa ra tool ảo (Hallucination)
                 try:
                     import json
-                    reg_path = "d:/Docker/N8N/intelligence/registry_Map_skills.json"
+                    reg_path = "d:/Docker/JKAI/intelligence/registry_Map_skills.json"
                     if not os.path.exists(reg_path):
                         reg_path = "/workspace/intelligence/registry_Map_skills.json"
                     
@@ -229,15 +310,20 @@ class ForgeStage(PlanningStage):
 
                 from planner import Blueprint
                 blueprint = Blueprint.model_validate(parsed_json)
+                planner._normalize_blueprint_agents(
+                    blueprint, context.get("agent_role") if isinstance(context, dict) else None
+                )
                 
                 # 🛡️ [EMPTY-PLAN-SHIELD]: Nếu không có bước nào và kế hoạch không yêu cầu làm rõ, tự phục hồi
                 if not blueprint.steps and not blueprint.ambiguous:
-                    from planner import PlanStep
+                    from planner import PlanStep, HardwareTarget
                     blueprint.steps = [PlanStep(
                         id="auto_recovery_01",
                         tool="OMNI_SEARCH_ENGINE",
                         args={"query": goal},
                         description=f"Auto-recovery: omni search (Tavily/Cloud/Browse) for: {goal}",
+                        assigned_agent="agent_executor_beta.md",
+                        hardware_target=HardwareTarget.BETA,
                         expert_mindset="Execute immediately using the best available search source.",
                         verification="Search results obtained from at least one source."
                     )]
@@ -253,6 +339,74 @@ class ForgeStage(PlanningStage):
                 if attempt == 3: raise e
         
         return state
+
+class DAGOptimizerStage(PlanningStage):
+    """Phẫu thuật đồ thị phụ thuộc (DAG Optimization & Race Condition Prevention)."""
+    async def run(self, state: Dict[str, Any]) -> Dict[str, Any]:
+        try:
+            blueprint_obj = state["blueprint_obj"]
+            task_id = state["task_id"]
+            trace_id = state.get("trace_id", "system")
+            
+            engine.publish_progress(70, "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...", "dag", task_id, trace_id)
+            
+            steps = blueprint_obj.steps
+            
+            # 1. Cycle Detection (Topological Sort)
+            adj = {s.id: set(s.depends_on) for s in steps}
+            in_degree = {s.id: 0 for s in steps}
+            for s_id, deps in adj.items():
+                for d in deps:
+                    if d in in_degree:
+                        in_degree[s_id] += 1
+            
+            q = [k for k, v in in_degree.items() if v == 0]
+            visited = 0
+            while q:
+                curr = q.pop(0)
+                visited += 1
+                for s_id, deps in adj.items():
+                    if curr in deps:
+                        in_degree[s_id] -= 1
+                        if in_degree[s_id] == 0:
+                            q.append(s_id)
+            
+            if visited != len(steps) and len(steps) > 1:
+                engine.publish_mission_log("WARN", "⚠️ [DAG-FAULT]: Phát hiện đồ thị vòng lặp vô tận (Deadlock). Đang bẻ gãy liên kết...", task_id, trace_id)
+                for i in range(1, len(steps)):
+                    steps[i].depends_on = [steps[i-1].id]
+                    steps[i].parallel = False
+                steps[0].depends_on = []
+                steps[0].parallel = False
+
+            # 2. Race Condition Prevention (CRDT Pre-flight)
+            write_tools = {"WRITE_TO_FILE", "REPLACE_FILE_CONTENT", "MULTI_REPLACE_FILE_CONTENT", "FILE_WARDEN", "PYTHON_REPL"}
+            target_map = {}
+            for s in steps:
+                if str(s.tool).upper() in write_tools:
+                    args = s.args or {}
+                    target = args.get("path") or args.get("TargetFile") or args.get("target")
+                    if target:
+                        if target in target_map:
+                            prev_step_id = target_map[target]
+                            if prev_step_id not in s.depends_on:
+                                s.depends_on.append(prev_step_id)
+                                s.parallel = False
+                                engine.publish_mission_log("INFO", f"🛡️ [DAG-CRDT]: Đã vá Race Condition cho `{target}` (Ép {s.id} đợi {prev_step_id})", task_id, trace_id, stealth=True)
+                        target_map[target] = s.id
+
+            # 3. Auto-Parallelization
+            read_tools = {"OMNI_SEARCH_ENGINE", "SEARCH_WEB_GLOBAL", "READ_FILE", "VIEW_FILE", "LIST_DIR"}
+            for s in steps:
+                if str(s.tool).upper() in read_tools and not s.depends_on:
+                    s.parallel = True
+                    
+            state["blueprint_obj"] = blueprint_obj
+            return state
+            
+        except Exception as e:
+            engine.publish_mission_log("ERROR", f"🚨 [STAGE-FAULT]: DAGOptimizerStage thất bại - {str(e)}", state.get("task_id", "sys"), state.get("trace_id", "system"))
+            raise e
 
 class PolicyStage(PlanningStage):
     """Chấp pháp và hoàn thiện."""
@@ -272,8 +426,12 @@ class PolicyStage(PlanningStage):
             # 2. Inject Prevention Steps
             if "pre_flight" in state:
                 from planner import Blueprint
+                from core.utils.failure_memory import PreFlightWarning
+                pre_flight_data = state["pre_flight"]
+                if isinstance(pre_flight_data, PreFlightWarning):
+                    pre_flight_data = pre_flight_data.warnings
                 temp_obj = Blueprint.model_validate(final_plan)
-                final_obj = planner._inject_prevention_steps(temp_obj, state["pre_flight"])
+                final_obj = planner._inject_prevention_steps(temp_obj, pre_flight_data)
                 final_plan = final_obj.model_dump()
                 
             state["final_plan"] = final_plan
@@ -322,8 +480,9 @@ class PlanningPipeline:
             if isinstance(recon_res, Exception):
                 logger.error(f"🚨 [PARTIAL-FAILURE]: Nhánh ReconStage lỗi: {recon_res}")
                 recon_res = {
-                    "skill_dna": "[SKILL DNA]: Fallback global search active.", 
-                    "pre_flight": []
+                    "skill_dna": "[SKILL DNA]: Fallback global search active.",
+                    "pre_flight": [],
+                    "top_k_ids": ["OMNI_SEARCH_ENGINE"]
                 }
             if isinstance(context_res, Exception):
                 logger.error(f"🚨 [PARTIAL-FAILURE]: Nhánh ContextStage lỗi: {context_res}")
@@ -339,6 +498,7 @@ class PlanningPipeline:
             state["skill_dna"] = recon_res.get("skill_dna")
             state["pre_flight"] = recon_res.get("pre_flight")
             state["neural_context"] = context_res.get("neural_context")
+            state["top_k_ids"] = recon_res.get("top_k_ids", [])
         else:
             # Luồng tuần tự dự phòng
             for stage in self.stages:

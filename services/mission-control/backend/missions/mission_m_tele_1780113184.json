@@ -1,0 +1,96 @@
+{
+  "id": "m_tele_1780113184",
+  "title": "Phân tích xe. Có gi hay",
+  "goal": "Phân tích xe. Có gi hay",
+  "status": "completed",
+  "ts": 1780113232.7991776,
+  "logs": [
+    {
+      "tag": "MASTER_TELE",
+      "msg": "Phân tích xe. Có gi hay",
+      "ts": 1780113184.3616934,
+      "source": "SYSTEM",
+      "task_id": "tele_1780113184"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `tele_1780113184` initialized | Trace: `gen_1780113184`. Runtime ready.",
+      "ts": 1780113184.3633695,
+      "source": "SYSTEM",
+      "task_id": "tele_1780113184"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780113184.545678,
+      "source": "SYSTEM",
+      "task_id": "tele_1780113184"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T03:53:04.622271] [RECEPTIONIST] [Task: tele_1780113184] Đang triệu tập qwen3:4b... (Context: 2048)",
+      "ts": 1780113184.6222892,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1780113184"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T03:53:32.439168] [RECEPTIONIST] [Task: tele_1780113184] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780113212.4392505,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1780113184"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T03:53:50.519909] [RECEPTIONIST] [Task: tele_1780113184] [SIGNAL]: Đã nhận lệnh Dừng khẩn cấp từ Master. Ngắt kết nối nơ-ron ngay lập tức .",
+      "ts": 1780113230.5199518,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1780113184"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T03:53:50.524198] [RECEPTIONIST] [Task: tele_1780113184] Hoàn tất trong 45.90s. (Size: 0 chars)",
+      "ts": 1780113230.524217,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1780113184"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780113232.6760297,
+      "source": "SYSTEM",
+      "task_id": "tele_1780113184"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T03:53:52.766281] [RECEPTIONIST] [Task: tele_1780113184] Đang triệu tập qwen3:4b... (Context: 2048)",
+      "ts": 1780113232.7663145,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1780113184"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T03:53:52.769426] [RECEPTIONIST] [Task: tele_1780113184] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1780113232.7694454,
+      "source": "RECEPTIONIST",
+      "task_id": "tele_1780113184"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "💎🫡 [ZENITH]: Mission aborted by Master.",
+      "ts": 1780113232.7710755,
+      "source": "SYSTEM",
+      "task_id": "tele_1780113184"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Mission aborted by Master.",
+      "ts": 1780113232.7752588,
+      "source": "SYSTEM",
+      "task_id": "tele_1780113184"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

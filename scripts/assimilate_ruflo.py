@@ -4,8 +4,8 @@ import re
 from pathlib import Path
 
 # Cấu hình đường dẫn thưa Master
-RUFLO_SKILLS_DIR = Path(r"d:\Docker\N8N\files\ruflo-main\.agents\skills")
-JKAI_SKILLS_DIR = Path(r"d:\Docker\N8N\intelligence\skills")
+RUFLO_SKILLS_DIR = Path(r"d:\Docker\JKAI\files\ruflo-main\.agents\skills")
+JKAI_SKILLS_DIR = Path(r"d:\Docker\JKAI\intelligence\skills")
 
 def assimilate():
     print("[ASSIMILATION]: Bat dau can quet di san Ruflo theo quy tac 4 file thua Master...")

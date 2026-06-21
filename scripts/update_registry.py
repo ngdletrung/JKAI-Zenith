@@ -2,8 +2,8 @@ import os
 import json
 from pathlib import Path
 
-JKAI_SKILLS_DIR = Path(r"d:\Docker\N8N\intelligence\skills")
-REGISTRY_PATH = Path(r"d:\Docker\N8N\intelligence\registry.json")
+JKAI_SKILLS_DIR = Path(r"d:\Docker\JKAI\intelligence\skills")
+REGISTRY_PATH = Path(r"d:\Docker\JKAI\intelligence\registry.json")
 
 def update_registry():
     print("[REGISTRY]: Dang cap nhat danh sach ky nang...")

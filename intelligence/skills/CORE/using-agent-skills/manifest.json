@@ -1,0 +1,50 @@
+{
+  "id": "USING_AGENT_SKILLS",
+  "name": "Using Agent Skills",
+  "version": "1.0.0",
+  "description": "Orchestrates active skills and coordinates multi-agent swarm operations.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "quản trị bầy đàn",
+    "using agent skills",
+    "bản đồ kỹ năng",
+    "overview",
+    "skill discovery",
+    "core operating behaviors",
+    "1  surface assumptions",
+    "2  manage confusion actively",
+    "code",
+    "skill",
+    "before",
+    "skills",
+    "task",
+    "spec",
+    "build",
+    "right",
+    "what",
+    "need",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "list",
+            "status"
+          ],
+          "description": "Action to perform."
+        }
+      },
+      "required": [
+        "action"
+      ]
+    }
+  }
+}

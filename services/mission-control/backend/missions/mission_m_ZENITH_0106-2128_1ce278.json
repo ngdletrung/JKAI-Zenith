@@ -1,0 +1,33 @@
+{
+  "id": "m_ZENITH_0106-2128_1ce278",
+  "title": "/help",
+  "goal": "/help",
+  "status": "completed",
+  "ts": 1780324132.464075,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "/help",
+      "ts": 1780324132.3169105,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0106-2128_1ce278"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_0106-2128_1ce278` initialized | Trace: `trace_1ce278`. Runtime ready.",
+      "ts": 1780324132.3199854,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0106-2128_1ce278"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "🏛️ **BỘ TƯ LỆNH JKAI ZENITH**\n\n🔹 **NHÓM LỆNH VẬN HÀNH (HỆ THỐNG)**\n- `/status`: 📊 Kiểm tra sức khỏe của các lõi AI.\n- `/sync`: 🔄 Kích hoạt tiến trình đồng hóa tri thức.\n- `/reset` (hoặc `/clear`): 🧹 Xóa bộ nhớ ngữ cảnh hiện tại để bắt đầu task mới.\n- **Command Deck**: số 4 chữ số trên MAP (VD `#1002`, `#7001`). Tra cứu: `skill #1002 có gì hay`.\n- `/insights`: 💡 Trích xuất top 10 tư duy chiến lược gần nhất từ Vỏ não.\n\n🔹 **NHÓM LỆNH HÀNH ĐỘNG (SKILLS)**\n- `/search [từ khóa]`: 🔍 Tìm kỹ năng toàn cục (VD: `/search docker`, `/search #1002`).\n- `/search_skill [từ khóa]`: 🔍 Tra cứu Command Deck (VD: `/search_skill docker`).\n- `/run_skill [#ID]`: 🚀 Chạy kỹ năng theo số MAP (VD: `/run_skill #7001`, `/run_skill #1002`).\n  _(Số deck thường 4 chữ số: #10xx, #70xx — không dùng #09 ngắn.)_\n\n🔹 **NHÓM LỆNH ỨNG CỨU VÀ CẢI TIẾN**\n- `/tusualoi`: 🛡️ Giám định + MAP/agents + **rà repo** + **xác minh** (py_compile/compileall/test).\n  Tự sửa repo khi SyntaxError hoặc chỉ thị *sửa/fix*.\n- Chat báo lỗi (traceback, *lỗi*, *sửa lỗi*) → tự **DEEP** (không cần `/deep`).\n- Thư mục trong **gốc JKAI** (scratch/projects, services/…, demo/…): `kiểm tra lỗi scratch/projects/app_loi_di` hoặc `sửa services/ai-brain/planner.py`.\n- `/tusualoi --fix`: thêm docker restart.\n- `/tusualoi --audit-only`: chỉ xem (không remediation, không patch repo).\n- `/tucaitien` / `/tucaitien System`: đề xuất + audit repo (dry-run).\n- `/tucaitien <skill>`: file thử `logic_candidate.py` + sandbox.\n- `/tucaitien --apply <skill>`: promote skill; `--apply System` sửa repo nếu SyntaxError.\n  Thử nghiệm: `scratch/sandbox/evolution_candidates/` và `repo_candidates/`.\n- Tab **Changes** + diff từng dòng khi agent sửa file (Surgical Diff).\n- `/cancel` (hoặc `/stop`): 🛑 Ngắt mạch khẩn cấp mọi tiến trình AI.\n\n💡 **Ghi chú**: Gõ `/help_secret` để xem danh sách Lệnh Đặc Quyền của Tổng Giám Đốc.",
+      "ts": 1780324132.4468563,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0106-2128_1ce278"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

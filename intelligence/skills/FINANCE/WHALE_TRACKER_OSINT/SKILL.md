@@ -2,7 +2,7 @@
 id: FIN_03_WHALE_TRACK
 name_vn: "Truy Vết Cá Mập Crypto"
 version: 1.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: FINANCE
 intent_pairs:
   - ["TRACK", "WHALE"]

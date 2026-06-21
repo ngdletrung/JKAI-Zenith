@@ -13,7 +13,7 @@ class MemoryGateway:
         try:
             enhanced_msg = f"💎🫡 [ZENITH]: {msg}" if tag == "ZENITH" else msg
             engine.publish_mission_log(tag, enhanced_msg, task_id, stealth=stealth)
-        except: pass
+        except Exception: pass
 
     def get_session_id(self, task_id: str) -> str:
         session_id = task_id

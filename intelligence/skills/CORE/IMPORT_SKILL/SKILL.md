@@ -2,7 +2,7 @@
 id: IMPORT_SKILL
 name_vn: "Nhập Khẩu Kỹ Năng Mới (Import Skill)"
 version: 2.1.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: CORE
 intent_pairs:
   - ["SYNC", "KNOWLEDGE"]

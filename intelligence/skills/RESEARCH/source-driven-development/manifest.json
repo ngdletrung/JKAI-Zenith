@@ -1,0 +1,48 @@
+{
+  "id": "source-driven-development",
+  "name": "Source-Driven Development",
+  "version": "1.0.0",
+  "description": "Supreme documentation validation core: Verifies specifications, APIs, and frameworks against official documentation to prevent hallucinated code patterns.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "phát triển hướng tài liệu",
+    "source driven",
+    "tra cứu tài liệu",
+    "chứng thực API",
+    "overview",
+    "when to use",
+    "the process",
+    "step 1  detect stack and versions",
+    "step 2  fetch official documentation",
+    "docs",
+    "react",
+    "code",
+    "documentation",
+    "pattern",
+    "patterns",
+    "official",
+    "user",
+    "useactionstate",
+    "data",
+    "nghien cuu",
+    "phan tich",
+    "ke hoach",
+    "plan",
+    "y tuong"
+  ],
+  "domain": "RESEARCH",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "The API or library name to search in documentation."
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
+  }
+}

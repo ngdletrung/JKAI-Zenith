@@ -1,0 +1,222 @@
+{
+  "id": "m_ZENITH_1779949088_26e1fa91",
+  "title": "Hãy cho tôi biết múi giờ mặc định của hệ thống này.",
+  "goal": "Hãy cho tôi biết múi giờ mặc định của hệ thống này.",
+  "status": "completed",
+  "ts": 1779949093.2195184,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "Hãy cho tôi biết múi giờ mặc định của hệ thống này.",
+      "ts": 1779949088.1122513,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1779949088_26e1fa91` initialized | Trace: `trace_26e1fa91`. Runtime ready.",
+      "ts": 1779949088.1130626,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 📡 Đang phân tích chỉ thị với chế độ [FAST_PIPELINE] (Input mode: FAST)...",
+      "ts": 1779949088.1432045,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "🧠 [LLM-FALLBACK]: Reflex không chắc chắn. Đang gọi LLM...",
+      "ts": 1779949090.3341386,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[INFO] [2026-05-28T06:18:11.786070] [DISPATCHER] [Task: ZENITH_1779949088_26e1fa91] Đang triệu tập gemini-1.5-flash... (Context: default)",
+      "ts": 1779949091.7861166,
+      "source": "DISPATCHER",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[ERROR] [2026-05-28T06:18:12.142468] [DISPATCHER] [Task: ZENITH_1779949088_26e1fa91] Error: [API-ERR] Server/API trả về mã 404. [{\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash is not found for API version v1main, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.\",\n    \"status\": \"NOT_FOUND\"\n  }\n}\n]",
+      "ts": 1779949092.1425009,
+      "source": "DISPATCHER",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[ERROR] [2026-05-28T06:18:12.144695] [DISPATCHER] [Task: ZENITH_1779949088_26e1fa91] Error: [NEURAL-ENGINE-ERR] Error: [API-ERR] Server/API trả về mã 404. [{\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash is not found for API version v1main, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.\",\n    \"status\": \"NOT_FOUND\"\n  }\n}\n]",
+      "ts": 1779949092.1447244,
+      "source": "DISPATCHER",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[INFO] [2026-05-28T06:18:12.242300] [DISPATCHER] [Task: ZENITH_1779949088_26e1fa91] Đang triệu tập gemini-1.5-flash... (Context: default)",
+      "ts": 1779949092.2423205,
+      "source": "DISPATCHER",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[ERROR] [2026-05-28T06:18:12.367253] [DISPATCHER] [Task: ZENITH_1779949088_26e1fa91] Error: [API-ERR] Server/API trả về mã 404. [{\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash is not found for API version v1main, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.\",\n    \"status\": \"NOT_FOUND\"\n  }\n}\n]",
+      "ts": 1779949092.3672843,
+      "source": "DISPATCHER",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[ERROR] [2026-05-28T06:18:12.368801] [DISPATCHER] [Task: ZENITH_1779949088_26e1fa91] Error: [NEURAL-ENGINE-ERR] Error: [API-ERR] Server/API trả về mã 404. [{\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash is not found for API version v1main, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.\",\n    \"status\": \"NOT_FOUND\"\n  }\n}\n]",
+      "ts": 1779949092.3688183,
+      "source": "DISPATCHER",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "WARN",
+      "msg": "💰 [COST-GOVERNOR]: Task ZENITH_1779949088_26e1fa91 đã vượt ngân sách. Dừng retry.",
+      "ts": 1779949092.3703182,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "📊 [LATENCY]: 4112.98 ms",
+      "ts": 1779949092.3715508,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 [SOVEREIGN-CORE]: Kích hoạt Não Bộ Tự Trị (Universal ReAct Loop).",
+      "ts": 1779949092.3727663,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🔄 [Thinking] Vòng 1...",
+      "ts": 1779949092.3748837,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T06:18:12.380878] [RECEPTIONIST] [Task: ZENITH_1779949088_26e1fa91] Đang triệu tập gemini-1.5-flash... (Context: 8192)",
+      "ts": 1779949092.3808937,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T06:18:12.543089] [RECEPTIONIST] [Task: ZENITH_1779949088_26e1fa91] Error: [API-ERR] Server/API trả về mã 404. [{\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash is not found for API version v1main, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.\",\n    \"status\": \"NOT_FOUND\"\n  }\n}\n]",
+      "ts": 1779949092.5431123,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T06:18:12.544666] [RECEPTIONIST] [Task: ZENITH_1779949088_26e1fa91] Error: [NEURAL-ENGINE-ERR] Error: [API-ERR] Server/API trả về mã 404. [{\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash is not found for API version v1main, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.\",\n    \"status\": \"NOT_FOUND\"\n  }\n}\n]",
+      "ts": 1779949092.5446794,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T06:18:12.635346] [RECEPTIONIST] [Task: ZENITH_1779949088_26e1fa91] Đang triệu tập gemini-1.5-flash... (Context: 8192)",
+      "ts": 1779949092.6353643,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T06:18:12.780544] [RECEPTIONIST] [Task: ZENITH_1779949088_26e1fa91] Error: [API-ERR] Server/API trả về mã 404. [{\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash is not found for API version v1main, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.\",\n    \"status\": \"NOT_FOUND\"\n  }\n}\n]",
+      "ts": 1779949092.7805614,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T06:18:12.782499] [RECEPTIONIST] [Task: ZENITH_1779949088_26e1fa91] Error: [NEURAL-ENGINE-ERR] Error: [API-ERR] Server/API trả về mã 404. [{\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash is not found for API version v1main, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.\",\n    \"status\": \"NOT_FOUND\"\n  }\n}\n]",
+      "ts": 1779949092.7825332,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "WARN",
+      "msg": "💰 [COST-GOVERNOR]: Task ZENITH_1779949088_26e1fa91 đã vượt ngân sách. Dừng retry.",
+      "ts": 1779949092.784853,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚠️ [NEURAL-VOID]: Model trả về phản hồi rỗng. Đang kích hoạt Sốc Nơ-ron (Neural Shock)...",
+      "ts": 1779949092.786093,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T06:18:12.845648] [RECEPTIONIST] [Task: ZENITH_1779949088_26e1fa91] Đang triệu tập gemini-1.5-flash... (Context: 8192)",
+      "ts": 1779949092.8456697,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T06:18:12.976227] [RECEPTIONIST] [Task: ZENITH_1779949088_26e1fa91] Error: [API-ERR] Server/API trả về mã 404. [{\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash is not found for API version v1main, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.\",\n    \"status\": \"NOT_FOUND\"\n  }\n}\n]",
+      "ts": 1779949092.9762595,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T06:18:12.979283] [RECEPTIONIST] [Task: ZENITH_1779949088_26e1fa91] Error: [NEURAL-ENGINE-ERR] Error: [API-ERR] Server/API trả về mã 404. [{\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash is not found for API version v1main, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.\",\n    \"status\": \"NOT_FOUND\"\n  }\n}\n]",
+      "ts": 1779949092.9793143,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T06:18:13.073239] [RECEPTIONIST] [Task: ZENITH_1779949088_26e1fa91] Đang triệu tập gemini-1.5-flash... (Context: 8192)",
+      "ts": 1779949093.073262,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T06:18:13.190516] [RECEPTIONIST] [Task: ZENITH_1779949088_26e1fa91] Error: [API-ERR] Server/API trả về mã 404. [{\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash is not found for API version v1main, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.\",\n    \"status\": \"NOT_FOUND\"\n  }\n}\n]",
+      "ts": 1779949093.1905334,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T06:18:13.192552] [RECEPTIONIST] [Task: ZENITH_1779949088_26e1fa91] Error: [NEURAL-ENGINE-ERR] Error: [API-ERR] Server/API trả về mã 404. [{\n  \"error\": {\n    \"code\": 404,\n    \"message\": \"models/gemini-1.5-flash is not found for API version v1main, or is not supported for generateContent. Call ModelService.ListModels to see the list of available models and their supported methods.\",\n    \"status\": \"NOT_FOUND\"\n  }\n}\n]",
+      "ts": 1779949093.1926048,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "WARN",
+      "msg": "💰 [COST-GOVERNOR]: Task ZENITH_1779949088_26e1fa91 đã vượt ngân sách. Dừng retry.",
+      "ts": 1779949093.1951587,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "None",
+      "ts": 1779949093.2015207,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779949088_26e1fa91"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

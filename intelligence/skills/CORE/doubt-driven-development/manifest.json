@@ -1,0 +1,52 @@
+{
+  "id": "DOUBT_DRIVEN_DEVELOPMENT",
+  "name": "Doubt Driven Development",
+  "version": "1.0.0",
+  "description": "Runs adversarial D3 reviews on plans, architecture, and code changes.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "phát triển hướng hoài nghi",
+    "doubt driven",
+    "adversarial review",
+    "phản biện D3",
+    "overview",
+    "when to use",
+    "loading constraints",
+    "the process",
+    "step 1  claim   surface what stands",
+    "step",
+    "artifact",
+    "user",
+    "reviewer",
+    "claim",
+    "contract",
+    "prompt",
+    "review",
+    "skill",
+    "code",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "claim": {
+          "type": "string",
+          "description": "The claim to verify."
+        },
+        "contract": {
+          "type": "string",
+          "description": "The contract/specs it must satisfy."
+        }
+      },
+      "required": [
+        "claim",
+        "contract"
+      ]
+    }
+  }
+}

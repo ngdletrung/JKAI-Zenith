@@ -1,0 +1,47 @@
+{
+  "id": "SECURITY_AUDIT",
+  "name": "Security Audit",
+  "version": "1.0.0",
+  "description": "name_vn: \"Thẩm định An ninh Hệ thống\"",
+  "author": "JKAI Zenith",
+  "domain": "SECURITY",
+  "triggers": [
+    "tong quan",
+    "phac  o van hanh  operational protocol",
+    "phase 1  investigation  tham  inh",
+    "phase 2  action  thuc thi",
+    "sai lam thuong gap  common pitfalls",
+    "ninh",
+    "tham",
+    "thong",
+    "security",
+    "target_path",
+    "hoac",
+    "nguy",
+    "hiem",
+    "security-audit",
+    "zenith",
+    "audit",
+    "kiem",
+    "quet",
+    "type",
+    "chuyen",
+    "bao mat",
+    "an ninh",
+    "hack",
+    "tan cong",
+    "lo hong"
+  ],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Input query or task description"
+      }
+    },
+    "required": [
+      "query"
+    ]
+  }
+}

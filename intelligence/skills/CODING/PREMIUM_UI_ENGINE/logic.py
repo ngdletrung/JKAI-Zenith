@@ -6,6 +6,7 @@ import asyncio
 # Đảm bảo nạp được core engine
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))))
 from core.utils.engine import engine
+from core.utils import path_manager
 
 # =================================================================
 # 🎨 JKAI ZENITH: LOGIC KIẾN TRÚC SƯ GIAO DIỆN (PREMIUM UI ENGINE)
@@ -13,7 +14,7 @@ from core.utils.engine import engine
 # =================================================================
 
 DESIGN_TOKENS = """
-[ANTIGRAVITY DESIGN SYSTEM]
+[JKAI ZENITH DESIGN SYSTEM]
 - Typography: "Inter", "Outfit", "SF Pro Display", sans-serif. Không bao giờ dùng font mặc định.
 - Colors:
     + Background: #0B0E14 (Deep Void)
@@ -35,7 +36,7 @@ async def generate_ui(component_request: str, task_id: str = None):
     """
     print(f"[JKAI-UI] Designing component: {component_request}")
 
-    prompt = f"""Bạn là Kiến trúc sư Giao diện (UI Architect) mang bản sắc "Antigravity".
+    prompt = f"""Bạn là Kiến trúc sư Giao diện (UI Architect) mang bản sắc "JKAI ZENITH".
 Nhiệm vụ: Viết code HTML/CSS/JS thuần cho: "{component_request}"
 
 DESIGN TOKENS BẮT BUỘC PHẢI TUÂN THỦ:
@@ -67,9 +68,10 @@ Code của bạn (bắt đầu bằng <!DOCTYPE html>):"""
         elif "```" in code:
             code = code.split("```")[1].split("```")[0].strip()
 
-        # Lưu kết quả
+        # Luu ket qua
         safe_name = component_request.replace(" ", "_")[:25]
-        output_file = fos.getenv("WORKSPACE_ROOT", "D:/Docker/N8N") + "/intelligence/vault/UI_{safe_name}.html"
+        vault_dir = path_manager.get("VAULT_DIR") or os.path.join(path_manager.get_root(), "intelligence", "vault")
+        output_file = os.path.normpath(os.path.join(vault_dir, f"UI_{safe_name}.html"))
         os.makedirs(os.path.dirname(output_file), exist_ok=True)
         with open(output_file, "w", encoding="utf-8") as f:
             f.write(code)

@@ -18,7 +18,7 @@ class ZenithStateMachine:
         if self._redis is None:
             try:
                 self._redis = redis.Redis(host=self.redis_host, port=6379, db=0, password=os.getenv("REDIS_PASSWORD"))
-            except:
+            except Exception:
                 pass
         return self._redis
 
@@ -50,7 +50,7 @@ class ZenithStateMachine:
             r = self._get_redis()
             if r:
                 r.delete(f"{self.prefix}{task_id}")
-        except:
+        except Exception:
             pass
 
 state_machine = ZenithStateMachine()

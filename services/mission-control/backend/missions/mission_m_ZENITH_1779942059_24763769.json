@@ -1,0 +1,110 @@
+{
+  "id": "m_ZENITH_1779942059_24763769",
+  "title": "Read README.md.",
+  "goal": "Read README.md.",
+  "status": "failed",
+  "ts": 1779942086.4370253,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "Read README.md.",
+      "ts": 1779942059.8457778,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942059_24763769"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1779942059_24763769` initialized | Trace: `trace_24763769`. Runtime ready.",
+      "ts": 1779942059.8471904,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942059_24763769"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 📡 Đang phân tích chỉ thị với chế độ [FAST_PIPELINE] (Input mode: FAST)...",
+      "ts": 1779942059.9171567,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942059_24763769"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "🧠 [LLM-FALLBACK]: Reflex không chắc chắn. Đang gọi LLM...",
+      "ts": 1779942059.9828627,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942059_24763769"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "[INFO] [2026-05-28T04:20:59.990175] [DISPATCHER] [Task: ZENITH_1779942059_24763769] Đang triệu tập qwen3:0.6b... (Context: 2048)",
+      "ts": 1779942059.990196,
+      "source": "DISPATCHER",
+      "task_id": "ZENITH_1779942059_24763769"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 📡 Đang phân tích chỉ thị với chế độ [FAST_PIPELINE] (Input mode: FAST)...",
+      "ts": 1779942077.2933881,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942059_24763769"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "🧠 [LLM-FALLBACK]: Reflex không chắc chắn. Đang gọi LLM...",
+      "ts": 1779942077.6325932,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942059_24763769"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "📊 [LATENCY]: 2.06 ms",
+      "ts": 1779942077.6344123,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942059_24763769"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 [SOVEREIGN-CORE]: Kích hoạt Não Bộ Tự Trị (Universal ReAct Loop).",
+      "ts": 1779942077.635983,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942059_24763769"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🔄 [Thinking] Vòng 1...",
+      "ts": 1779942077.6383595,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942059_24763769"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T04:21:17.645629] [RECEPTIONIST] [Task: ZENITH_1779942059_24763769] Đang triệu tập qwen2.5-coder:3b... (Context: 2048)",
+      "ts": 1779942077.6456556,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942059_24763769"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T04:21:17.732398] [RECEPTIONIST] [Task: ZENITH_1779942059_24763769] [NEURAL-ADAPT]: Phát hiện `qwen2.5-coder:3b` đang sẵn sàng tại cổng 11434 (GPU). Chuyển hướng nơ-ron ngay lập tức...",
+      "ts": 1779942077.7324932,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942059_24763769"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "🚨 [RECEPTIONIST-FAILED]: Receptionist error: Server disconnected without sending a response.",
+      "ts": 1779942086.3396509,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942059_24763769"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "⚠️ **Sự cố Kết nối Nơ-ron**: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. 🫡 (Chi tiết: Receptionist error: Server disconnected without sending a response.)",
+      "ts": 1779942086.3409996,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942059_24763769"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

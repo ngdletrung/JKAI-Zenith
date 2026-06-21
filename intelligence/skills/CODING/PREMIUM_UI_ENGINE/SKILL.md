@@ -2,7 +2,7 @@
 id: PREMIUM_UI_ENGINE
 name_vn: "Kiến Trúc Sư Giao Diện Cao Cấp"
 version: 1.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: CODING
 intent_pairs:
   - ["DESIGN", "UI"]

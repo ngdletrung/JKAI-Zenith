@@ -1,0 +1,20 @@
+{
+  "id": "skill_id",
+  "name": "Human Readable Name",
+  "version": "1.0.0",
+  "domain": "CORE|CODING|RESEARCH|FINANCE|...",
+  "description": "Short description of what the skill does.",
+  "triggers": ["keyword1", "phrase 1"],
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "param1": {
+        "type": "string",
+        "description": "Description of param1"
+      }
+    },
+    "required": ["param1"]
+  },
+  "output_format": "Expected return format (e.g. JSON, Markdown, Text)",
+  "author": "Antigravity / Master LeeTrung"
+}

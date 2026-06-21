@@ -1,5 +1,5 @@
 import os
-# 🛡️ [SELF-HEALING-DYNAMIC-LOADER]: Tự động phát hiện và cài đặt phụ thuộc nếu thiếu thưa Master
+# 🛡️ [SELF-HEALING-DYNAMIC-LOADER]: Tự động phát hiện và cài đặt phụ thuộc nếu thiếu
 try:
     from pptx import Presentation
     from pptx.util import Inches, Pt
@@ -13,7 +13,7 @@ except ImportError:
     logger.warning("⚠️ [SELF-HEALING]: Phát hiện thiếu thư viện 'python-pptx'. Tự trị khởi động tiến trình cài đặt tự động...")
     try:
         subprocess.check_call([sys.executable, "-m", "pip", "install", "python-pptx"])
-        logger.info("✅ [SELF-HEALING]: Cài đặt 'python-pptx' thành công thưa Master! Tiến hành nạp lại...")
+        logger.info("✅ [SELF-HEALING]: Cài đặt 'python-pptx' thành công Tiến hành nạp lại...")
         from pptx import Presentation
         from pptx.util import Inches, Pt
         from pptx.dml.color import RGBColor

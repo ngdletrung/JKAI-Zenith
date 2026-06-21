@@ -1,0 +1,96 @@
+{
+  "id": "m_ZENITH_1779942070_e449166d",
+  "title": "Top 5 GitHub Trending repositories today.",
+  "goal": "Top 5 GitHub Trending repositories today.",
+  "status": "failed",
+  "ts": 1779942086.4293313,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "Top 5 GitHub Trending repositories today.",
+      "ts": 1779942070.3681912,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942070_e449166d"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1779942070_e449166d` initialized | Trace: `trace_e449166d`. Runtime ready.",
+      "ts": 1779942070.3694282,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942070_e449166d"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 📡 Đang phân tích chỉ thị với chế độ [FAST_PIPELINE] (Input mode: FAST)...",
+      "ts": 1779942074.9543762,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942070_e449166d"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "⚡ [REFLEX]: skill=SEARCH_WEB_GLOBAL | score=135 | confidence=0.90 | matched=['github trending', 'github', 'top 5']",
+      "ts": 1779942077.2575867,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942070_e449166d"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "📊 [LATENCY]: 2130.4 ms",
+      "ts": 1779942077.25934,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942070_e449166d"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 💾 [SEMANTIC-CACHE-STORE]: Đã lưu định tuyến mới vào Qdrant cho câu lệnh.",
+      "ts": 1779942077.365745,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942070_e449166d"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 [SOVEREIGN-CORE]: Kích hoạt Não Bộ Tự Trị (Universal ReAct Loop).",
+      "ts": 1779942077.3702288,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942070_e449166d"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🔄 [Thinking] Vòng 1...",
+      "ts": 1779942077.3842266,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942070_e449166d"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T04:21:17.673763] [RECEPTIONIST] [Task: ZENITH_1779942070_e449166d] Đang triệu tập qwen2.5-coder:3b... (Context: 2048)",
+      "ts": 1779942077.673787,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942070_e449166d"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T04:21:17.738059] [RECEPTIONIST] [Task: ZENITH_1779942070_e449166d] [NEURAL-ADAPT]: Phát hiện `qwen2.5-coder:3b` đang sẵn sàng tại cổng 11434 (GPU). Chuyển hướng nơ-ron ngay lập tức...",
+      "ts": 1779942077.7380986,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942070_e449166d"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "🚨 [RECEPTIONIST-FAILED]: Receptionist error: Server disconnected without sending a response.",
+      "ts": 1779942086.3853307,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942070_e449166d"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "⚠️ **Sự cố Kết nối Nơ-ron**: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. 🫡 (Chi tiết: Receptionist error: Server disconnected without sending a response.)",
+      "ts": 1779942086.3865943,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942070_e449166d"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

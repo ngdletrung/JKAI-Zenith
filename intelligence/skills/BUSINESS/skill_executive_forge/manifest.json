@@ -1,0 +1,25 @@
+{
+  "id": "SKILL_EXECUTIVE_FORGE",
+  "name": "Executive Forge",
+  "version": "1.0.0",
+  "domain": "BUSINESS",
+  "description": "Kỹ năng thực thi chuyên biệt Executive Forge thưa Master.",
+  "triggers": [
+    "skill_executive_forge",
+    "skill_executive_forge"
+  ],
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "goal": {
+        "type": "string",
+        "description": "Yêu cầu thực thi"
+      }
+    },
+    "required": [
+      "goal"
+    ]
+  },
+  "output_format": "Markdown",
+  "author": "Antigravity / Master LeeTrung"
+}

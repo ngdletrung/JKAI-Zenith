@@ -1,0 +1,53 @@
+{
+  "id": "context-engineering",
+  "name": "Context Engineering",
+  "version": "1.0.0",
+  "description": "Supreme context and token optimization core: Manages long-term session logs, reduces context overhead, and performs intelligent history pruning to conserve Xeon CPU performance.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "quản trị ngữ cảnh",
+    "context engineering",
+    "nén token",
+    "dọn dẹp bối cảnh",
+    "overview",
+    "when to use",
+    "the context hierarchy",
+    "level 1  rules files",
+    "tech stack",
+    "context",
+    "files",
+    "spec",
+    "test",
+    "task",
+    "relevant",
+    "auth",
+    "existing",
+    "validation",
+    "file",
+    "nghien cuu",
+    "phan tich",
+    "ke hoach",
+    "plan",
+    "y tuong"
+  ],
+  "domain": "RESEARCH",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "prune",
+            "analyze",
+            "compress"
+          ],
+          "description": "The context operation to perform."
+        }
+      },
+      "required": [
+        "action"
+      ]
+    }
+  }
+}

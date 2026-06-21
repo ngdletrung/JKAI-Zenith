@@ -2,7 +2,7 @@
 id: FIN_04_VALUATION
 name_vn: "Định Giá Doanh Nghiệp Vĩ Mô"
 version: 1.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: FINANCE
 intent_pairs:
   - ["VALUATE", "COMPANY"]

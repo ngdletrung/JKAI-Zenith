@@ -1,0 +1,35 @@
+{
+  "id": "m_ZENITH_1906-2132_9e188a",
+  "title": "/tucaitien Kiểm tra xem vì sao sau khi phê duyệt có log \"21:31:19 19/0",
+  "goal": "/tucaitien Kiểm tra xem vì sao sau khi phê duyệt có log \"21:31:19 19/06\n[JKAI]\nPLAN BOARD: Master phe duyet [SELF-SURGERY] Đề xuất sửa file: web_search_service.py. Khoi dong Deep Pipeline...\" như ko thấy task chạy ở tiến trình\n\n[KẾT QUẢ]\n🧪 **[DRY-RUN]** ❌ [EXECUTOR ERROR]: Thất bại sau 2 lần: {'output': '[ERROR]: Khong tim thay ma nguon cua Kiểm.', 'status': 'error'}",
+  "status": "completed",
+  "ts": 1781879571.8398614,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "/tucaitien Kiểm tra xem vì sao sau khi phê duyệt có log \"21:31:19 19/06\n[JKAI]\nPLAN BOARD: Master phe duyet [SELF-SURGERY] Đề xuất sửa file: web_search_service.py. Khoi dong Deep Pipeline...\" như ko thấy task chạy ở tiến trình",
+      "ts": 1781879553.9412415,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1906-2132_9e188a"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1906-2132_9e188a` initialized | Trace: `trace_9e188a`. Runtime ready.",
+      "ts": 1781879553.944801,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1906-2132_9e188a"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "🧪 **[DRY-RUN]** ❌ [EXECUTOR ERROR]: Thất bại sau 2 lần: {'output': '[ERROR]: Khong tim thay ma nguon cua Kiểm.', 'status': 'error'}",
+      "ts": 1781879571.772274,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1906-2132_9e188a"
+    }
+  ],
+  "artifacts": {
+    "plan": "/tucaitien Kiểm tra xem vì sao sau khi phê duyệt có log \"21:31:19 19/06",
+    "walkthrough": "🧪 **[DRY-RUN]** ❌ [EXECUTOR ERROR]: Thất bại sau 2 lần: {'output': '[ERROR]: Khong tim thay ma nguon cua Kiểm.', 'status': 'error'}",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

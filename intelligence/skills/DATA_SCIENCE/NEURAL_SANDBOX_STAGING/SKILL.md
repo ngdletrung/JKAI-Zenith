@@ -2,7 +2,7 @@
 id: NEURAL_SANDBOX_STAGING
 name_vn: "Phòng Thử Nghiệm Cô Lập Sandbox"
 version: 1.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: DATA_SCIENCE
 intent_pairs:
   - ["RUN", "SANDBOX"]

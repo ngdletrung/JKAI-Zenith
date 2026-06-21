@@ -1,0 +1,53 @@
+{
+  "id": "NEURAL_SANDBOX_STAGING",
+  "name": "Zenith Neural Sandbox Staging",
+  "version": "1.0.0",
+  "description": "Secure isolation core: Provides an invisible, network-isolated Docker environment (Sandbox) to test code snippets and patches before deployment.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "thử nghiệm sandbox",
+    "neural sandbox",
+    "chạy code cô lập",
+    "kiểm chứng bản vá",
+    "sandbox staging",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "khong",
+    "toan",
+    "thuc",
+    "hoac",
+    "code",
+    "dung",
+    "sandbox",
+    "truong",
+    "thong",
+    "chay",
+    "data",
+    "du lieu",
+    "phan tich du lieu",
+    "ml",
+    "machine learning"
+  ],
+  "domain": "DATA_SCIENCE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "code_snippet": {
+          "type": "string",
+          "description": "The Python code to test inside the sandbox."
+        }
+      },
+      "required": [
+        "code_snippet"
+      ]
+    }
+  },
+  "calls": [
+    "SKILL_SYSTEM_CORE",
+    "NEURAL_LINK_AGGREGATOR"
+  ]
+}

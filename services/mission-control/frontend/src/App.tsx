@@ -33,6 +33,16 @@ const RIGHT_TABS = [
   { k: 'logs', l: 'Nhật ký', i: History }
 ] as const;
 
+const TAB_TRANSLATIONS: Record<string, { en: string; vi: string }> = {
+  progress: { en: 'Progress', vi: 'Tiến trình' },
+  plan: { en: 'Plan', vi: 'Kế hoạch' },
+  tasks: { en: 'Tasks', vi: 'Nhiệm vụ' },
+  walkthrough: { en: 'Solution', vi: 'Giải pháp' },
+  changes: { en: 'Changes', vi: 'Thay đổi' },
+  explorer: { en: 'System', vi: 'Hệ thống' },
+  logs: { en: 'Logs', vi: 'Nhật ký' }
+};
+
 // ─── 2. CORE UTILITIES ───────────────────────────────────────────────────────
 
 const SectionLabel = memo(({ icon: Icon, label }: { icon: React.ComponentType<any>, label: string }) => (
@@ -115,6 +125,17 @@ const ResourceHUD = memo(() => {
   const cpu = useZenithStore(s => s.pulse.cpu);
   const ram = useZenithStore(s => s.pulse.ram);
   const gpu = useZenithStore(s => s.pulse.gpu);
+  const status = useZenithStore(s => s.status);
+
+  // 🛡️ [SOVEREIGN PERFORMANCE SHIELD]: Tự động gắn class khi quá tải để tối ưu hóa render cực hạn
+  useEffect(() => {
+    const isHigh = cpu > 80 || status === 'running';
+    if (isHigh) {
+      document.body.classList.add('high-cpu-mode');
+    } else {
+      document.body.classList.remove('high-cpu-mode');
+    }
+  }, [cpu, status]);
   
   // CPU Color calculations
   const cpuColor = cpu > 80 ? 'text-rose-400' : 'text-amber-400';
@@ -142,9 +163,21 @@ const ResourceHUD = memo(() => {
   );
 });
 
-// ─── 3. TOP NAVIGATION ───────────────────────────────────────────────────────
+// ─── 3. TOP NAVIGATION & DECOUPLED CONNECTION ───────────────────────────────
 
-const TopHeader = memo(({ isConnected, dict, voice }: any) => {
+const ConnectionIndicator = memo(({ dict }: { dict: any }) => {
+  const isConnected = useZenithStore(s => s.isConnected);
+  return (
+    <div className={`px-4 py-2 rounded-xl border flex items-center gap-3 transition-all ${isConnected ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-rose-500/5 border-rose-500/20'}`}>
+      <Wifi className={`w-3.5 h-3.5 ${isConnected ? 'text-emerald-400' : 'text-rose-400'}`} />
+      <span className={`text-[9px] font-black uppercase tracking-widest ${isConnected ? 'text-emerald-400/80' : 'text-rose-400/80'}`}>
+        {isConnected ? (dict.uplink_stable || 'Uplink Stable') : (dict.uplink_lost || 'Uplink Lost')}
+      </span>
+    </div>
+  );
+});
+
+const TopHeader = memo(({ dict, voice }: any) => {
   const language = useZenithStore(s => s.language);
   const setLanguage = useZenithStore(s => s.setLanguage);
   const status = useZenithStore(s => s.status);
@@ -161,7 +194,9 @@ const TopHeader = memo(({ isConnected, dict, voice }: any) => {
           </div>
         </div>
         <div>
-          <h1 className="text-base font-black tracking-widest uppercase text-white/95">Trung tâm Điều hành <span className="text-amber-400">JKAI ZENITH</span></h1>
+          <h1 className="text-base font-black tracking-widest uppercase text-white/95">
+            {language === 'vi' ? 'Trung tâm Điều hành' : 'Command Center'} <span className="text-amber-400">JKAI ZENITH</span>
+          </h1>
           <div className="flex items-center gap-4 mt-1 opacity-40">
              <span className="text-[9px] font-bold tracking-[0.3em] uppercase">THE OMNIPRESENCE</span>
              <div className="w-[1px] h-3 bg-white/10" />
@@ -179,22 +214,105 @@ const TopHeader = memo(({ isConnected, dict, voice }: any) => {
             <Globe className="w-3.5 h-3.5 text-sky-400" />
             <span className="text-[10px] font-black text-white/60">{language.toUpperCase()}</span>
           </button>
-          <div className={`px-4 py-2 rounded-xl border flex items-center gap-3 transition-all ${isConnected ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-rose-500/5 border-rose-500/20'}`}>
-            <Wifi className={`w-3.5 h-3.5 ${isConnected ? 'text-emerald-400' : 'text-rose-400'}`} />
-            <span className={`text-[9px] font-black uppercase tracking-widest ${isConnected ? 'text-emerald-400/80' : 'text-rose-400/80'}`}>{isConnected ? 'Uplink Stable' : 'Uplink Lost'}</span>
-          </div>
+          <ConnectionIndicator dict={dict} />
         </div>
       </div>
     </header>
   );
 });
 
+class PrecisionLocator {
+  private lastPosition: any = null;
+
+  async getPreciseLocation(options: any = {}) {
+    const config = {
+      enableHighAccuracy: true,
+      timeout: 15000,
+      maximumAge: 0,
+      ...options
+    };
+
+    if (!navigator.geolocation) {
+      throw new Error("Geolocation khong duoc ho tro");
+    }
+
+    return new Promise((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const result = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            accuracy: position.coords.accuracy,
+            altitude: position.coords.altitude,
+            heading: position.coords.heading,
+            speed: position.coords.speed,
+            timestamp: position.timestamp
+          };
+          this.lastPosition = result;
+          resolve({
+            success: true,
+            data: result
+          });
+        },
+        (error) => {
+          reject({
+            success: false,
+            code: error.code,
+            message: this.translateError(error.code)
+          });
+        },
+        config
+      );
+    });
+  }
+
+  watchLocation(callback: (pos: any) => void, options: any = {}) {
+    const config = {
+      enableHighAccuracy: true,
+      timeout: 10000,
+      maximumAge: 0,
+      ...options
+    };
+
+    return navigator.geolocation.watchPosition(
+      (position) => {
+        callback({
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude,
+          accuracy: position.coords.accuracy,
+          altitude: position.coords.altitude,
+          heading: position.coords.heading,
+          speed: position.coords.speed,
+          timestamp: position.timestamp
+        });
+      },
+      (error) => {
+        console.error(error);
+      },
+      config
+    );
+  }
+
+  translateError(code: number) {
+    switch (code) {
+      case 1:
+        return "User tu choi quyen truy cap vi tri";
+      case 2:
+        return "Khong the xac dinh vi tri";
+      case 3:
+        return "Timeout khi lay vi tri";
+      default:
+        return "Loi khong xac dinh";
+    }
+  }
+}
+
 // ─── 4. MAIN APPLICATION ─────────────────────────────────────────────────────
 
 // ─── 4. SOVEREIGN RENDERING ISOLATION (HUD CONTAINER) ─────────────────────────
 
-const SovereignGraphHUD = memo(({ dict }: { dict: any }) => {
-  const { dagNodes, submitTask, resetDAG } = useTaskWebSocket();
+const SovereignGraphHUD = memo(({ dict, onNewLog }: { dict: any, onNewLog?: (log: any) => void }) => {
+  const { dagNodes, submitTask, resetDAG } = useTaskWebSocket(onNewLog);
   const setSocketActions = useZenithStore(s => s.setSocketActions);
 
   // 🛰️ [BRIDGE-REGISTRY]: Đăng ký Cầu nối thần kinh vào Lõi Store để gọi toàn cục
@@ -225,7 +343,7 @@ function App() {
   const setTab = useZenithStore(s => s.setTab);
   const unreadTabs = useZenithStore(s => s.unreadTabs);
   const setUnreadTab = useZenithStore(s => s.setUnreadTab);
-  const isConnected = useZenithStore(s => s.isConnected);
+  const backgroundProposals = useZenithStore(s => s.backgroundProposals);
   const pendingHitlId = useZenithStore(s => s.pendingHitlId);
   const setPendingHitlId = useZenithStore(s => s.setPendingHitlId);
 
@@ -234,11 +352,31 @@ function App() {
   // 🛡️ [HITL-SYNC]: Sync một lần lúc khởi động, sau đó nhường quyền cho WebSocket PubSub
   useEffect(() => {
     ZenithService.getPendingHitl().then(pending => {
-      const taskIds = Object.keys(pending || {});
-      if (taskIds.length > 0) setPendingHitlId(taskIds[0]);
+      // 🛡️ [CORE-ONLY]: Chỉ tự động hiện Popup cho các yêu cầu HẠT NHÂN (Auth hoặc Core mutation)
+      // Các đề xuất ZIM/Strategy sẽ chỉ hiện trong IntelligenceStream để Master duyệt khi cần.
+      const entries = Object.entries(pending || {});
+      const coreHitl = entries.find(([_, val]) => {
+        const v = typeof val === 'string' ? JSON.parse(val) : val;
+        return v.is_core === true || v.type === 'AUTH_REQUIRED';
+      });
+
+      if (coreHitl) setPendingHitlId(coreHitl[0]);
       else setPendingHitlId(null);
     }).catch(() => {});
   }, [setPendingHitlId]);
+
+  // 📄 Tải artifact plan / tasks / walkthrough khi mở Mission Control
+  useEffect(() => {
+    ZenithService.prefetchArtifacts().then((arts) => {
+      const { currentArtifacts, updateArtifact } = useZenithStore.getState();
+      (['plan', 'tasks', 'walkthrough'] as const).forEach((k) => {
+        const c = arts[k];
+        if (c && c.trim() && !(currentArtifacts[k] || '').trim()) {
+          updateArtifact(k, c);
+        }
+      });
+    }).catch(() => {});
+  }, []);
 
   // 🚀 [BOOT-PROTOCOL]: Khởi động hệ thống
   useEffect(() => {
@@ -251,8 +389,58 @@ function App() {
     return () => clearTimeout(timer);
   }, [setBooting]);
 
-  // 🎙️ [DECOUPLED-VOICE]: Kích hoạt trợ lý giọng nói thông qua Global Store Action (sử dụng useCallback để giữ ổn định reference)
-  const handleVoiceCommand = useCallback((text: string) => {
+  // [PRECISE-GEOLOCATION]: Sync precise browser coordinates with backend Redis state
+  useEffect(() => {
+    const locator = new PrecisionLocator();
+    locator.getPreciseLocation()
+      .then(async (response: any) => {
+        if (response.success && response.data) {
+          const { latitude, longitude, accuracy, altitude, heading, speed, timestamp } = response.data;
+          try {
+            await fetch('/api/geolocation', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                latitude,
+                longitude,
+                accuracy,
+                altitude,
+                heading,
+                speed,
+                timestamp
+              })
+            });
+            console.log(`Precise browser location synced: ${latitude}, ${longitude} (accuracy: ${accuracy}m)`);
+          } catch (err) {
+            console.error('Failed to sync location with backend:', err);
+          }
+        }
+      })
+      .catch((err: any) => {
+        console.warn('Browser geolocation precision query failed:', err.message);
+      });
+  }, []);
+
+  // 🎙️ [VOICE-REF-BRIDGE]: Sử dụng Ref để phá vỡ vòng lặp phụ thuộc thưa Master
+  const voiceRef = useRef<any>(null);
+
+  // 🎙️ [DECOUPLED-VOICE]: Kích hoạt trợ lý giọng nói thông qua Global Store Action
+  const handleVoiceCommand = useCallback(async (text: string) => {
+    const lowerText = text.toLowerCase();
+    
+    // 💎 [ELITE-COMMAND-INTERCEPTION]: Xử lý các lệnh đặc hiệu trước khi gửi tới Brain
+    if (lowerText.includes('báo cáo') || lowerText.includes('tình trạng') || lowerText.includes('digest')) {
+      toast.loading('Đang tổng hợp dữ liệu hệ thống...', { id: 'voice-digest' });
+      const res = await ZenithService.getSystemDigest();
+      toast.dismiss('voice-digest');
+      
+      if (res.status === 'ok' && res.digest) {
+        voiceRef.current?.speak(res.digest);
+        toast.success('Đã hoàn thành báo cáo hệ thống.', { icon: '📊' });
+        return;
+      }
+    }
+
     const actions = useZenithStore.getState().socketActions;
     if (actions?.submitTask) {
       actions.submitTask(text, 'fast');
@@ -260,12 +448,71 @@ function App() {
   }, []);
 
   const voice = useZenithVoice(handleVoiceCommand);
+  voiceRef.current = voice;
+
+  // 🎙️ [NEURAL-VOICE-BRIDGE]: Kết nối luồng log với động cơ giọng nói Gemini-grade
+  const handleNewLog = useCallback((log: any) => {
+    const tag = (log.tag || '').toUpperCase();
+    // Chỉ đọc các tin nhắn từ JKAI (phản hồi), kết quả nhiệm vụ hoặc tóm tắt
+    if (['JKAI', 'RESULT', 'MISSION_RESULT', 'SUMMARIZER', 'DONE'].includes(tag)) {
+      // Nếu là tag JKAI, chúng ta coi là stream chunk, các tag khác là thông báo cuối
+      voice.speak(log.msg, tag !== 'JKAI');
+    }
+  }, [voice]);
 
   // 🎙️ [STABLE-VOICE-PROPS]: Đóng gói props để TopHeader không bị re-render vô ích
   const voiceActions = useMemo(() => ({
     toggleListening: voice.toggleListening,
     isListening: voice.isListening
   }), [voice.toggleListening, voice.isListening]);
+
+  // ─── 5.5. DYNAMIC RIGHT COLUMN RESIZER ─────────────────────────────────────
+  const [rightWidth, setRightWidth] = React.useState(() => {
+    try {
+      const saved = localStorage.getItem('zenith_right_width');
+      return saved ? parseInt(saved, 10) : 480;
+    } catch {
+      return 480;
+    }
+  });
+
+  const [isResizing, setIsResizing] = React.useState(false);
+
+  const resizeRef = useRef({ rightWidth, isResizing });
+  useEffect(() => {
+    resizeRef.current = { rightWidth, isResizing };
+  }, [rightWidth, isResizing]);
+
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      const { isResizing } = resizeRef.current;
+      if (!isResizing) return;
+
+      const newWidth = Math.max(300, Math.min(window.innerWidth - e.clientX - 20, window.innerWidth * 0.5));
+      setRightWidth(newWidth);
+      try {
+        localStorage.setItem('zenith_right_width', String(newWidth));
+      } catch {}
+    };
+
+    const handleMouseUp = () => {
+      setIsResizing(false);
+    };
+
+    if (isResizing) {
+      document.body.style.cursor = 'col-resize';
+      document.body.style.userSelect = 'none';
+      window.addEventListener('mousemove', handleMouseMove);
+      window.addEventListener('mouseup', handleMouseUp);
+    }
+
+    return () => {
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isResizing]);
 
   // ─── 6. LAYOUT ─────────────────────────────────────────────────────────────
 
@@ -284,11 +531,14 @@ function App() {
       className="fixed inset-0 w-full h-full bg-[#060910] text-white font-sans selection:bg-sky-500/30 overflow-hidden flex flex-col [transform:translateZ(0)] [backface-visibility:hidden] [will-change:transform]"
     >
       <div className="nebula-bg" />
-      <TopHeader dict={dict} voice={voiceActions} isConnected={isConnected} />
+      <TopHeader dict={dict} voice={voiceActions} />
 
-      <main className="flex-1 w-full px-5 py-4 flex gap-4 overflow-hidden relative z-10 min-h-0">
-        {/* Left: Isolated Neural Graph */}
-        <SovereignGraphHUD dict={dict} />
+      <main className="flex-1 w-full px-5 py-4 flex gap-0 overflow-hidden relative z-10 min-h-0">
+        {/* Left: Isolated Neural Graph (Phòng họp giữ nguyên) */}
+        <SovereignGraphHUD dict={dict} onNewLog={handleNewLog} />
+
+        {/* Fixed Spacer between Left and Center */}
+        <div className="w-4 shrink-0" />
 
         {/* Center: Intelligence Stream */}
         <div className="flex-1 flex flex-col min-w-0 gap-3">
@@ -298,8 +548,20 @@ function App() {
           </div>
         </div>
 
+        {/* Premium Draggable Middle-Right Divider */}
+        <div
+          className="w-4 shrink-0 relative cursor-col-resize group select-none self-stretch flex items-center justify-center z-50"
+          onMouseDown={(e) => {
+            e.preventDefault();
+            setIsResizing(true);
+          }}
+        >
+          {/* Beautiful glowing vertical indicator line */}
+          <div className="w-[1.5px] h-[30%] bg-white/10 group-hover:h-full group-hover:bg-cyan-400/60 group-hover:shadow-[0_0_10px_rgba(34,211,238,0.6)] transition-all duration-300 rounded-full" />
+        </div>
+
         {/* Right: Neural Workspace */}
-        <div className="w-[32%] shrink-0 flex flex-col gap-4 h-full min-h-0">
+        <div style={{ width: rightWidth }} className="shrink-0 flex flex-col gap-4 h-full min-h-0">
           <SectionLabel icon={CircuitBoard} label={dict.workspace_title} />
           <div className="p-1.5 rounded-2xl bg-white/[0.03] border border-white/[0.06] backdrop-blur-md relative shrink-0">
             <div className="flex gap-1">
@@ -308,15 +570,24 @@ function App() {
                 return (
                   <button 
                     key={t.k} 
-                    onClick={() => { setTab(t.k as any); if (unreadTabs[t.k]) setUnreadTab(t.k, false); }} 
+                    onClick={() => { setTab(t.k as any); if (unreadTabs[t.k]) setUnreadTab(t.k, 0); }} 
                     className={`relative flex-1 flex flex-col items-center justify-center gap-1.5 py-3 rounded-xl transition-all duration-300 group border ${
                       isActive 
                         ? 'text-white bg-cyan-400/10 border-cyan-400/20' 
                         : 'text-white/20 hover:text-white/40 border-transparent hover:bg-white/[0.02]'
                     }`}
                   >
-                    <t.i className={`w-4 h-4 relative ${isActive ? 'text-cyan-400' : ''}`} />
-                    <span className="relative text-[8px] font-black uppercase tracking-widest leading-tight">{t.l}</span>
+                    <div className="relative">
+                      <t.i className={`w-4 h-4 relative ${isActive ? 'text-cyan-400' : ''}`} />
+                      {(t.k === 'plan' ? backgroundProposals.length : (unreadTabs[t.k] || 0)) > 0 && (
+                        <div className="absolute -top-2 -right-2.5 flex items-center justify-center min-w-[14px] h-[14px] rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)] px-1 z-10">
+                          <span className="text-[9px] font-black text-white leading-none">
+                            {t.k === 'plan' ? backgroundProposals.length : unreadTabs[t.k]}
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                    <span className="relative text-[8px] font-black uppercase tracking-widest leading-tight">{TAB_TRANSLATIONS[t.k]?.[language] || t.l}</span>
                   </button>
                 );
               })}

@@ -1,0 +1,62 @@
+{
+  "id": "POLYGLOT_NEURAL_LINK",
+  "name": "Zenith Polyglot Neural Link",
+  "version": "1.0.0",
+  "description": "Cross-language engineering: Handles code transpilation, logic auditing, and algorithmic optimization across multiple programming languages.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "chuyển đổi ngôn ngữ",
+    "tối ưu thuật toán",
+    "polyglot",
+    "transpile code",
+    "phân tích logic",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "ngon",
+    "chuyen",
+    "logic",
+    "khong",
+    "hieu",
+    "nang",
+    "thuat",
+    "sang",
+    "khac",
+    "code",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "The source code to process."
+        },
+        "language": {
+          "type": "string",
+          "description": "Programming language of the code."
+        },
+        "objective": {
+          "type": "string",
+          "description": "Optimization goal."
+        },
+        "from_lang": {
+          "type": "string",
+          "description": "Source language for translation."
+        },
+        "to_lang": {
+          "type": "string",
+          "description": "Target language for translation."
+        }
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 import time
 from typing import Optional
-from redis_client import redis_safe
+from core.redis_client import redis_safe
 
 class ClaimManager:
     """

@@ -1,0 +1,371 @@
+{
+  "id": "m_ZENITH_2006-2118_6280d6",
+  "title": "rà soát code xem có những lỗi nào ?",
+  "goal": "rà soát code xem có những lỗi nào ?\n\n[KẾT QUẢ]\nMission aborted by Master.",
+  "status": "completed",
+  "ts": 1781965157.7812276,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "rà soát code xem có những lỗi nào ?",
+      "ts": 1781965131.1622887,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_2006-2118_6280d6` initialized | Trace: `trace_6280d6`. Runtime ready.",
+      "ts": 1781965131.164223,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Command Deck inspect.",
+      "ts": 1781965134.049064,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[ZENITH]: Workspace `intelligence/skills/SECURITY/code-review-and-quality/dossier` không tồn tại — bỏ scope.",
+      "ts": 1781965134.0539112,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: DEEP — phân tích (producer_reviewer + CRITIC).",
+      "ts": 1781965134.0563653,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=debug pipeline=deep_full mode=deep tags=-",
+      "ts": 1781965134.058244,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1781965134.0598314,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: DeepPipeline T2–T6 (full)",
+      "ts": 1781965134.0617127,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [DEEP-PIPELINE]: Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1781965134.0662868,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T14:18:54.075421] [MINI_PLANNER] [Task: ZENITH_2006-2118_6280d6] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1781965134.0754626,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T14:18:54.344934] [MINI_PLANNER] [Task: ZENITH_2006-2118_6280d6] Đang triệu tập qwen3.5:4b... (Context: 8192)",
+      "ts": 1781965134.3450627,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T14:19:08.471373] [MINI_PLANNER] [Task: ZENITH_2006-2118_6280d6] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1781965148.471394,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T14:19:10.491392] [MINI_PLANNER] [Task: ZENITH_2006-2118_6280d6] [SIGNAL]: Đã nhận lệnh Dừng khẩn cấp từ Master. Ngắt kết nối nơ-ron ngay lập tức .",
+      "ts": 1781965150.4914143,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T14:19:10.497631] [MINI_PLANNER] [Task: ZENITH_2006-2118_6280d6] Hoàn tất trong 16.15s. (Size: 0 chars)",
+      "ts": 1781965150.4976487,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧭 [META-PLANNER]: Routed to Domain Agent 'Generalist' (Domain: CORE | Complexity: MEDIUM | Mode: SEQUENTIAL)",
+      "ts": 1781965150.859018,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1781965150.862214,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức và bối cảnh nhất thể...",
+      "ts": 1781965150.8673742,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1781965151.1732914,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER`...",
+      "ts": 1781965152.5617166,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-06-20T14:19:12.592969] [PLANNER] [Task: ZENITH_2006-2118_6280d6] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1781965152.5929859,
+      "source": "PLANNER",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-06-20T14:19:12.867760] [PLANNER] [Task: ZENITH_2006-2118_6280d6] Đang triệu tập qwen3.5:4b... (Context: 8192)",
+      "ts": 1781965152.867778,
+      "source": "PLANNER",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-06-20T14:19:12.869971] [PLANNER] [Task: ZENITH_2006-2118_6280d6] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1781965152.8700283,
+      "source": "PLANNER",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "⏱️ [FORGE-ATTEMPT-1]: Model `PLANNER` response time: 0.58s.",
+      "ts": 1781965153.142749,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1781965153.1570013,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1781965153.1579745,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "📊 [BLUEPRINT SEALED]: 1 bước thực thi đã được đúc kết.",
+      "ts": 1781965153.158971,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚙️ [T4]: Chuyển Blueprint sang Ban Thực Thi...",
+      "ts": 1781965153.161256,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "SYSTEM:ALPHA",
+      "msg": "⚡ [SWARM-MODE]: Kích hoạt 1 nơ-ron thực thi song song.",
+      "ts": 1781965153.1760163,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔬 [T4: SURGERY] [OMNI_SEARCH_ENGINE] Đang kiểm tra an toàn & khóa tài nguyên...",
+      "ts": 1781965154.3037558,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "CRITICAL:ALPHA",
+      "msg": "🛑 [STOP]: Bước `auto_recovery_01` thất bại: Nhiệm vụ đã dừng theo lệnh Master.. Ngắt chuỗi hành pháp.",
+      "ts": 1781965154.3069098,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "✅ [T4]: Thuc thi hoan tat — 1 ket qua.",
+      "ts": 1781965154.3112614,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "⚖️ [T5]: Khởi động phiên Thẩm định Tư pháp...",
+      "ts": 1781965154.3131466,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "WARN",
+      "msg": "⚠️ [T5 FAULT]: 'JKAIIntelligenceEngine' object has no attribute 'get_brain_knowledge' — Critic unavailable.",
+      "ts": 1781965154.3147676,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Đang phác thảo kế hoạch tác chiến...",
+      "ts": 1781965154.3163555,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T14:19:14.328317] [MINI_PLANNER] [Task: ZENITH_2006-2118_6280d6] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1781965154.328357,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T14:19:14.635915] [MINI_PLANNER] [Task: ZENITH_2006-2118_6280d6] Đang triệu tập qwen3.5:4b... (Context: 8192)",
+      "ts": 1781965154.6359353,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "MINI_PLANNER",
+      "msg": "[INFO] [2026-06-20T14:19:14.638955] [MINI_PLANNER] [Task: ZENITH_2006-2118_6280d6] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1781965154.6389728,
+      "source": "MINI_PLANNER",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1781965154.9352937,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức và bối cảnh nhất thể...",
+      "ts": 1781965154.9401426,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1781965155.2178504,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER`...",
+      "ts": 1781965156.556206,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-06-20T14:19:16.619105] [PLANNER] [Task: ZENITH_2006-2118_6280d6] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1781965156.619124,
+      "source": "PLANNER",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-06-20T14:19:16.892322] [PLANNER] [Task: ZENITH_2006-2118_6280d6] Đang triệu tập qwen3.5:4b... (Context: 8192)",
+      "ts": 1781965156.8923397,
+      "source": "PLANNER",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-06-20T14:19:16.894882] [PLANNER] [Task: ZENITH_2006-2118_6280d6] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1781965156.8949025,
+      "source": "PLANNER",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "⏱️ [FORGE-ATTEMPT-1]: Model `PLANNER` response time: 0.6s.",
+      "ts": 1781965157.1629064,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1781965157.175335,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1781965157.1760387,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-06-20T14:19:17.597638] [RECEPTIONIST] [Task: ZENITH_2006-2118_6280d6] Đang triệu tập qwen3:4b... (Context: 4096)",
+      "ts": 1781965157.5976574,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-06-20T14:19:17.600382] [RECEPTIONIST] [Task: ZENITH_2006-2118_6280d6] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1781965157.6004367,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "[ZENITH]: Mission aborted by Master.",
+      "ts": 1781965157.7269442,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Mission aborted by Master.",
+      "ts": 1781965157.7422993,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-2118_6280d6"
+    }
+  ],
+  "artifacts": {
+    "plan": "rà soát code xem có những lỗi nào ?",
+    "walkthrough": "Mission aborted by Master.",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

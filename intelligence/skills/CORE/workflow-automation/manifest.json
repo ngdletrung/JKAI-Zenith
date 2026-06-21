@@ -1,0 +1,54 @@
+{
+  "id": "WORKFLOW_AUTOMATION",
+  "name": "Zenith Workflow Automation",
+  "version": "1.0.0",
+  "description": "Systemic efficiency core: Designs, implements, and optimizes end-to-end automated workflows for the Zenith ecosystem.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "tự động hóa quy trình",
+    "workflow automation",
+    "thiết kế luồng công việc",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "hanh",
+    "nang",
+    "viec",
+    "thiet",
+    "luong",
+    "thong",
+    "thanh",
+    "cong",
+    "tinh",
+    "workflow",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "workflow_name": {
+          "type": "string",
+          "description": "Name of the workflow to automate."
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Sequence of steps in the workflow."
+        }
+      },
+      "required": [
+        "workflow_name"
+      ]
+    }
+  }
+}

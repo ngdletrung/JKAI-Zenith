@@ -15,9 +15,23 @@
 import re
 import asyncio
 import logging
+import unicodedata
 from typing import List, Dict, Any, Optional, Tuple
 
 logger = logging.getLogger("jkai.skill_selector")
+
+
+def normalize_skill_name(text: str) -> str:
+    """Normalize skill/tool names for registry and router matching."""
+    if not isinstance(text, str) or not text:
+        return ""
+    value = text.strip()
+    value = unicodedata.normalize("NFD", value)
+    value = "".join(ch for ch in value if unicodedata.category(ch) != "Mn")
+    value = value.replace("đ", "d").replace("Đ", "D")
+    value = re.sub(r"[^\w\s\-#]", "", value)
+    value = re.sub(r"\s+", "_", value)
+    return value.upper()
 
 # ─────────────────────────────────────────────────────────────
 # [L0] NECESSITY GATE - Inspired by DeepSeek
@@ -225,7 +239,7 @@ async def select_skills(
     try:
         from core.utils.engine import engine
         engine.publish_mission_log("SKILL-SELECTOR", f"🎯 [SELECTOR-v2] Đang phân tích: `{goal[:60]}...`", task_id, stealth=True)
-    except:
+    except Exception:
         pass
 
     # ─── L0: NECESSITY GATE ───
@@ -356,7 +370,7 @@ Trả về JSON định dạng chuẩn xác: {{"selected_id": "ID_KỸ_NĂNG_Đ�
             f"✅ [SELECTOR-v2] Top-{len(top_candidates)}: {found_names} | Max confidence: {max_conf:.0%}",
             task_id, stealth=True
         )
-    except:
+    except Exception:
         pass
 
     return {

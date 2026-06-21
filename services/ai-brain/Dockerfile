@@ -2,13 +2,17 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-# 1. Copy requirements first for caching
+# 1. Install system deps (git for REPO-CLONE)
+RUN apt-get update && apt-get install -y --no-install-recommends git && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# 2. Copy requirements first for caching
 COPY requirements.txt .
 
-# 2. Install dependencies
+# 3. Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# 3. Copy source code last
+# 4. Copy source code last
 COPY . .
 
 CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

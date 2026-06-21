@@ -2,7 +2,7 @@
 id: SUPER_DATA_SCIENCE
 name_vn: "Siêu Năng Lực Khoa Học Dữ Liệu"
 version: 5.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: DATA_SCIENCE
 intent_pairs:
   - ["ANALYZE", "DATA"]

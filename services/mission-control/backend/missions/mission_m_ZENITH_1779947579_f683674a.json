@@ -1,0 +1,54 @@
+{
+  "id": "m_ZENITH_1779947579_f683674a",
+  "title": "Check health status of all services in Zenith.",
+  "goal": "Check health status of all services in Zenith.",
+  "status": "failed",
+  "ts": 1779947812.1812997,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "Check health status of all services in Zenith.",
+      "ts": 1779947579.4938185,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779947579_f683674a"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1779947579_f683674a` initialized | Trace: `trace_f683674a`. Runtime ready.",
+      "ts": 1779947579.4949393,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779947579_f683674a"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 📡 Đang phân tích chỉ thị với chế độ [FAST_PIPELINE] (Input mode: FAST)...",
+      "ts": 1779947672.5453143,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779947579_f683674a"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 📡 Đang phân tích chỉ thị với chế độ [FAST_PIPELINE] (Input mode: FAST)...",
+      "ts": 1779947723.843292,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779947579_f683674a"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "🚨 [RECEPTIONIST-FAILED]: Receptionist error: Server disconnected without sending a response.",
+      "ts": 1779947812.1214213,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779947579_f683674a"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "⚠️ **Sự cố Kết nối Nơ-ron**: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. 🫡 (Chi tiết: Receptionist error: Server disconnected without sending a response.)",
+      "ts": 1779947812.1226144,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779947579_f683674a"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

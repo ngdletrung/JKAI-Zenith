@@ -3,6 +3,7 @@ import httpx
 import re
 import asyncio
 from typing import List, Optional
+from core.utils.model_router import ModelRouter
 
 class Embedder:
     _instance = None
@@ -20,6 +21,7 @@ class Embedder:
         self.timeout = int(os.getenv("EMBED_TIMEOUT", "30"))
         from core.config import settings
         self.rules_path = os.path.join(settings.INTELLIGENCE_DIR, "rule_hardware.md")
+        self._router = ModelRouter(self.rules_path)
         self._rules_cache = None
         self._rules_last_mtime = 0
         self._embedding_cache = {}  # 🧠 [NEURAL-CACHE]: Lưu trữ vector để tránh tính toán trùng lặp
@@ -27,11 +29,12 @@ class Embedder:
         self._semaphore = asyncio.Semaphore(5)  # 🛡️ [CONCURRENCY-GUARD]: Giới hạn 5 luồng embedding song song
         
     def _get_rules_from_file(self):
-        """Elite Logic: Trích xuất thông tin từ rule_hardware.md với cơ chế Caching."""
+        """Elite Logic: Trích xuất thông tin từ rule_hardware.md thông qua ModelRouter."""
         params = {
             "model": None, 
             "num_gpu": None, 
-            "num_ctx": None
+            "num_ctx": None,
+            "num_thread": None,
         }
         
         if not os.path.exists(self.rules_path): return params
@@ -41,64 +44,17 @@ class Embedder:
             if self._rules_cache and mtime <= self._rules_last_mtime:
                 return self._rules_cache
 
-            with open(self.rules_path, "r", encoding="utf-8") as f:
-                content = f.read()
-            
-            # 💎 [NEURAL-HEADER-PARSER]: Tự động ánh xạ cột.
-            lines = [l.strip() for l in content.split('\n') if '|' in l]
-            if len(lines) < 3: return params
+            self._router._refresh_rules_if_needed()
+            embed_cfg = self._router.get_role_config("EMBEDDER")
+            if not embed_cfg:
+                return params
 
-            profiles = {}
-            in_section_25 = False
-            in_section_3 = False
-            headers = []
+            params["model"] = embed_cfg.get("model")
+            opts = embed_cfg.get("options", {})
+            params["num_ctx"] = opts.get("num_ctx", 2048)
+            params["num_gpu"] = opts.get("num_gpu", 0)
+            params["num_thread"] = opts.get("num_thread", 0)
 
-            for line in content.split('\n'):
-                line = line.strip()
-                if "2.5." in line: in_section_25 = True; in_section_3 = False; headers = []; continue
-                if "3." in line: in_section_3 = True; in_section_25 = False; headers = []; continue
-                if not (in_section_25 or in_section_3) or not line.startswith('|') or ':---' in line: continue
-                
-                parts = [p.replace('**', '').replace('`', '').strip() for p in line.split('|')]
-                if not parts[0]: parts.pop(0)
-                if parts and not parts[-1]: parts.pop()
-                
-                if "ROLE" in line.upper() or "PROFILE NAME" in line.upper():
-                    headers = [h.strip().upper() for h in parts]
-                    continue
-                
-                if in_section_25 and headers:
-                    p_data = {headers[i]: parts[i] for i in range(len(parts)) if i < len(headers)}
-                    p_name = p_data.get("PROFILE NAME", "").upper()
-                    if p_name:
-                        profiles[p_name] = {
-                            "num_ctx": int(re.findall(r'\d+', p_data.get("NUM_CTX", "2048"))[0]),
-                            "num_gpu": int(re.findall(r'\d+', p_data.get("NUM_GPU", "0"))[0]),
-                            "num_thread": int(re.findall(r'\d+', p_data.get("NUM_THREAD", "0"))[0])
-                        }
-                    continue
-
-                if in_section_3 and "EMBEDDER" in line.upper() and headers:
-                    row_data = {headers[i]: parts[i] for i in range(len(parts)) if i < len(headers)}
-                    
-                    if "ACTIVE MODEL" in row_data: params["model"] = row_data["ACTIVE MODEL"]
-                    
-                    # [PROFILE-SYNC]: Ưu tiên Mapping, sau đó đến Profile
-                    ctx_val = row_data.get("NUM_CTX", "N/A")
-                    gpu_val = row_data.get("NUM_GPU", "N/A")
-                    thr_val = row_data.get("NUM_THREAD", "N/A")
-                    prof_name = row_data.get("ACTIVE PROFILE", "").upper()
-                    
-                    if ctx_val.isdigit(): params["num_ctx"] = int(ctx_val)
-                    elif prof_name in profiles: params["num_ctx"] = profiles[prof_name]["num_ctx"]
-                    
-                    if gpu_val.isdigit(): params["num_gpu"] = int(gpu_val)
-                    elif prof_name in profiles: params["num_gpu"] = profiles[prof_name]["num_gpu"]
-
-                    if thr_val.isdigit(): params["num_thread"] = int(thr_val)
-                    elif prof_name in profiles: params["num_thread"] = profiles[prof_name]["num_thread"]
-                    break
-            
             self._rules_cache = params
             self._rules_last_mtime = mtime
         except Exception as e:
@@ -133,40 +89,62 @@ class Embedder:
             rules = self._get_rules_from_file()
             target_model = model or rules["model"]
             opts = self._get_options(rules)
-            max_retries = 3
-            retry_delay = 1.0
             
-            for attempt in range(max_retries):
-                try:
-                    client = self._get_async_client()
-                    resp = await client.post(
-                        self.ollama_url,
-                        json={
-                            "model": target_model, 
-                            "prompt": text,
-                            "options": opts
-                        }
-                    )
-                    
-                    if resp.status_code == 200:
-                        vector = resp.json().get("embedding")
-                        # 🧠 [CACHE-STORE]
-                        if vector and len(self._embedding_cache) < self._max_cache_size:
-                            self._embedding_cache[cache_key] = vector
-                        return vector
-                    
-                    if resp.status_code in [500, 503, 429] and attempt < max_retries - 1:
-                        await asyncio.sleep(retry_delay * (attempt + 1))
-                        continue
-                    
-                    return None
-                except (httpx.ConnectError, httpx.RemoteProtocolError, httpx.ReadTimeout):
-                    if attempt < max_retries - 1:
-                        await asyncio.sleep(retry_delay * (attempt + 1))
-                        continue
-                    return None
-                except Exception: return None
-            return None
+            # ✂️ [NEURAL-CHUNKING]: Tự động chia nhỏ văn bản nếu quá dài (Tránh lỗi 500 Ollama)
+            # Nomic-embed-text có giới hạn khoảng 2048 tokens, ta chọn 4000 chars (~1000 tokens) cho an toàn.
+            MAX_CHARS = 4000
+            if len(text) > MAX_CHARS:
+                chunks = [text[i:i+MAX_CHARS] for i in range(0, len(text), MAX_CHARS)]
+                all_vectors = []
+                for chunk in chunks:
+                    v = await self._call_ollama_embed(chunk, target_model, opts)
+                    if v: all_vectors.append(v)
+                
+                if not all_vectors: return None
+                
+                # 🧬 [VECTOR-FUSION]: Trung bình cộng các vector thành phần (Pure Python)
+                dim = len(all_vectors[0])
+                mean_vector = [0.0] * dim
+                for v in all_vectors:
+                    for i in range(dim):
+                        mean_vector[i] += v[i]
+                
+                count = len(all_vectors)
+                for i in range(dim):
+                    mean_vector[i] /= count
+                
+                return mean_vector
+            else:
+                return await self._call_ollama_embed(text, target_model, opts)
+
+    async def _call_ollama_embed(self, text: str, model: str, opts: dict) -> Optional[List[float]]:
+        max_retries = 3
+        retry_delay = 1.0
+        for attempt in range(max_retries):
+            try:
+                client = self._get_async_client()
+                resp = await client.post(
+                    self.ollama_url,
+                    json={
+                        "model": model, 
+                        "prompt": text,
+                        "options": opts
+                    }
+                )
+                
+                if resp.status_code == 200:
+                    return resp.json().get("embedding")
+                
+                if resp.status_code in [500, 503, 429] and attempt < max_retries - 1:
+                    await asyncio.sleep(retry_delay * (attempt + 1))
+                    continue
+                return None
+            except Exception:
+                if attempt < max_retries - 1:
+                    await asyncio.sleep(retry_delay * (attempt + 1))
+                    continue
+                return None
+        return None
 
     def get_embedding(self, text: str) -> Optional[List[float]]:
         """Lấy vector tri thức (Sync - Dùng cho các service truyền thống)."""
@@ -179,39 +157,60 @@ class Embedder:
 
         rules = self._get_rules_from_file()
         opts = self._get_options(rules)
+        target_model = rules["model"]
+        
+        MAX_CHARS = 4000
+        if len(text) > MAX_CHARS:
+            chunks = [text[i:i+MAX_CHARS] for i in range(0, len(text), MAX_CHARS)]
+            all_vectors = []
+            for chunk in chunks:
+                v = self._call_ollama_embed_sync(chunk, target_model, opts)
+                if v: all_vectors.append(v)
+            
+            if not all_vectors: return None
+            
+            dim = len(all_vectors[0])
+            mean_vector = [0.0] * dim
+            for v in all_vectors:
+                for i in range(dim):
+                    mean_vector[i] += v[i]
+            
+            count = len(all_vectors)
+            for i in range(dim):
+                mean_vector[i] /= count
+                
+            return mean_vector
+        else:
+            return self._call_ollama_embed_sync(text, target_model, opts)
+
+    def _call_ollama_embed_sync(self, text: str, model: str, opts: dict) -> Optional[List[float]]:
         import time
         max_retries = 3
         retry_delay = 1.0
-        
         for attempt in range(max_retries):
             try:
                 client = self._get_sync_client()
                 resp = client.post(
                     self.ollama_url,
                     json={
-                        "model": rules["model"], 
+                        "model": model, 
                         "prompt": text,
                         "options": opts
                     }
                 )
                 
                 if resp.status_code == 200:
-                    vector = resp.json().get("embedding")
-                    # 🧠 [CACHE-STORE]
-                    if vector and len(self._embedding_cache) < self._max_cache_size:
-                        self._embedding_cache[cache_key] = vector
-                    return vector
+                    return resp.json().get("embedding")
                 
                 if resp.status_code in [500, 503, 429] and attempt < max_retries - 1:
                     time.sleep(retry_delay * (attempt + 1))
                     continue
                 return None
-            except (httpx.ConnectError, httpx.RemoteProtocolError, httpx.ReadTimeout):
+            except Exception:
                 if attempt < max_retries - 1:
                     time.sleep(retry_delay * (attempt + 1))
                     continue
                 return None
-            except Exception: return None
         return None
 
     def __call__(self, text: str) -> Optional[List[float]]:

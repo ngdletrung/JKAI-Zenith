@@ -2,7 +2,7 @@
 id: FINANCE_CASHFLOW_DIAGNOSIS
 name_vn: "Chẩn Đoán Dòng Tiền Tài Chính"
 version: 1.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: FINANCE
 intent_pairs:
   - ["DIAGNOSE", "CASHFLOW"]

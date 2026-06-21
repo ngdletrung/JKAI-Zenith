@@ -63,7 +63,7 @@ def wait_for_internet(timeout=60):
             import socket
             socket.create_connection(("api.telegram.org", 443), timeout=5)
             return True
-        except:
+        except Exception:
             time.sleep(2)
     return False
 
@@ -93,6 +93,25 @@ def escape_html(text):
     if not text: return ""
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
+def translate_markdown_to_html(md: str) -> str:
+    if not md: return ""
+    html = escape_html(md)
+    # Convert Markdown Bold (**text**) to HTML Bold (<b>text</b>)
+    html = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', html)
+    # Convert Markdown Italic (*text*) to HTML Italic (<i>text</i>) safely without breaking double asterisks
+    html = re.sub(r'(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)', r'<i>\1</i>', html)
+    # Convert Inline Code (`code`) to HTML Code (<code>code</code>)
+    html = re.sub(r'`(.*?)`', r'<code>\1</code>', html)
+    # Convert Bullet Points (starts with "- " or "* ") to "• "
+    html = re.sub(r'^\s*[-*]\s+', '• ', html, flags=re.MULTILINE)
+    # Convert Markdown Headers (## Header) to HTML Bold (<b>Header</b>)
+    html = re.sub(r'^#{1,6}\s+(.+)$', r'<b>\1</b>', html, flags=re.MULTILINE)
+    # Convert separator lines (---, ———, ___ 10+) to strikethrough
+    html = re.sub(r'^[\s]*[—\-_]{10,}[\s]*$', '<s>───</s>', html, flags=re.MULTILINE)
+    # Convert pipe table separator rows (| --- | --- |) — remove to reduce noise
+    html = re.sub(r'^\|[\s\-:]+\|[\s\-:|]+\|$', '', html, flags=re.MULTILINE)
+    return html
+
 def generate_voice(text, chat_id):
     if len(text) > 300: return None
     try:
@@ -111,7 +130,7 @@ def generate_voice(text, chat_id):
 # ==========================================
 # 🧠 XỬ LÝ LỆNH TRUNG TÂM (CORE LOGIC)
 # ==========================================
-def execute_neural_command(goal, images=None, mode="fast"):
+def execute_neural_command(goal, images=None, mode="auto"):
     try:
         task_id = f"tele_{int(time.time())}"
         
@@ -133,8 +152,9 @@ def execute_neural_command(goal, images=None, mode="fast"):
         with httpx.Client(timeout=600.0) as client:
             res = client.post(f"{CONTROL_PLANE_URL}/api/submit_task", json=payload)
             data = res.json() if res.status_code == 200 else {}
+            mode_label = {"fast": "FAST (Phản xạ)", "deep": "DEEP (Tư duy sâu)", "auto": "AUTO"}.get(mode, mode.upper())
             if res.status_code == 200:
-                safe_send_message(MASTER_ID, f"✅ <b>HỆ THỐNG:</b> Đã tiếp nhận yêu cầu <i>(Mode: {mode.upper()})</i>. Đang khởi tạo luồng tư duy...", parse_mode="HTML")
+                safe_send_message(MASTER_ID, f"✅ <b>HỆ THỐNG:</b> Đã tiếp nhận yêu cầu <i>(Mode: {mode_label})</i>. Đang khởi tạo luồng tư duy...", parse_mode="HTML")
             else:
                 safe_send_message(MASTER_ID, f"⚠️ <b>LỖI HỆ THỐNG:</b> Không thể kết nối Trung tâm <i>(Mã lỗi: {res.status_code})</i>. Đang chuyển vào hàng chờ...", parse_mode="HTML")
     except Exception as e:
@@ -154,12 +174,29 @@ def flush_non_pinned_logs():
         if not non_pinned_buffer:
             non_pinned_timer = None
             return
-        combined_text = "\n\n".join(non_pinned_buffer)
+        
+        # Group messages ensuring each combined block is under 4000 characters
+        chunks = []
+        current_chunk = []
+        current_len = 0
+        for msg in non_pinned_buffer:
+            if current_len + len(msg) + 1 > 4000:
+                if current_chunk:
+                    chunks.append("\n".join(current_chunk))
+                current_chunk = [msg]
+                current_len = len(msg)
+            else:
+                current_chunk.append(msg)
+                current_len += len(msg) + 1
+        if current_chunk:
+            chunks.append("\n".join(current_chunk))
+            
         non_pinned_buffer.clear()
         non_pinned_timer = None
     
-    # Gửi qua safe_send_message
-    safe_send_message(MASTER_ID, combined_text, parse_mode="HTML")
+    for chunk in chunks:
+        if chunk.strip():
+            safe_send_message(MASTER_ID, chunk, parse_mode="HTML")
 
 def queue_non_pinned_log(text):
     """📥 [BUFFER-QUEUE]: Gom log tiến trình để gửi gộp."""
@@ -176,13 +213,126 @@ def send_immediate_log(text, markup=None):
     with non_pinned_lock:
         if non_pinned_timer:
             non_pinned_timer.cancel()
+            
+        chunks = []
         if non_pinned_buffer:
-            combined_text = "\n\n".join(non_pinned_buffer)
+            current_chunk = []
+            current_len = 0
+            for msg in non_pinned_buffer:
+                if current_len + len(msg) + 1 > 4000:
+                    if current_chunk:
+                        chunks.append("\n".join(current_chunk))
+                    current_chunk = [msg]
+                    current_len = len(msg)
+                else:
+                    current_chunk.append(msg)
+                    current_len += len(msg) + 1
+            if current_chunk:
+                chunks.append("\n".join(current_chunk))
             non_pinned_buffer.clear()
-            safe_send_message(MASTER_ID, combined_text, parse_mode="HTML")
         non_pinned_timer = None
     
+    for chunk in chunks:
+        if chunk.strip():
+            safe_send_message(MASTER_ID, chunk, parse_mode="HTML")
+            
     safe_send_message(MASTER_ID, text, parse_mode="HTML", reply_markup=markup)
+
+# ==========================================
+# 🏛️ ĐỊNH DANH BAN NGÀNH DOANH NGHIỆP
+# ==========================================
+def get_corporate_metadata(tag: str, source: str = "") -> dict:
+    tag_upper = tag.upper()
+    src_upper = source.upper() if source else ""
+    
+    # 👑 [MASTER / CHỦ TỊCH]
+    if tag_upper.startswith("MASTER"):
+        return {
+            "dept_name": "VĂN PHÒNG CHỦ TỊCH HỘI ĐỒNG QUẢN TRỊ",
+            "clearance": "⚡ CHỈ THỊ THƯỢNG KHẨN (SUPREME DIRECTIVE)",
+            "serial_prefix": "JKAI-CHAIRMAN-",
+            "emoji": "👑"
+        }
+    
+    # 🧠 [JKAI TỔNG TRỢ LÝ TỐI CAO]
+    if tag_upper == "JKAI":
+        return {
+            "dept_name": "BAN ĐIỀU HÀNH TRUNG ƯƠNG (CENTRAL OPS BOARD)",
+            "clearance": "💎 NGHỊ QUYẾT TOÀN DIỆN (EXECUTIVE DECREE)",
+            "serial_prefix": "JKAI-CORE-",
+            "emoji": "💎"
+        }
+        
+    # 🌌 [ANTIGRAVITY]
+    if tag_upper == "ANTIGRAVITY":
+        return {
+            "dept_name": "PHÂN KHU KIẾN TẠO KIẾN TRÚC & TƯ DUY",
+            "clearance": "🌌 ĐỀ XUẤT CẤU TRÚC (ARCHITECTURAL INITIATIVE)",
+            "serial_prefix": "JKAI-ANTIGRAV-",
+            "emoji": "🌌"
+        }
+
+    # 🛎️ [BAN TRỢ LÝ]
+    if "GATEWAY" in tag_upper or "RECEPTIONIST" in tag_upper or "GATEWAY" in src_upper or "RECEPTIONIST" in src_upper:
+        return {
+            "dept_name": "BAN TRỢ LÝ & ĐỐI NGOẠI TẬP ĐOÀN",
+            "clearance": "🟢 THÔNG THƯỜNG (PUBLIC ACCESSIBLE)",
+            "serial_prefix": "JKAI-RECEPT-",
+            "emoji": "🛎️"
+        }
+
+    # 🎯 [BAN KẾ HOẠCH]
+    if "PLANNER" in tag_upper or "THOUGHT" in tag_upper or "PLANNER" in src_upper or "THOUGHT" in src_upper:
+        return {
+            "dept_name": "PHÒNG HOẠCH ĐỊNH CHIẾN LƯỢC & THIẾT LỘ TRÌNH",
+            "clearance": "🔵 PHƯƠNG ÁN CHIẾN LƯỢC (STRATEGIC PLAN)",
+            "serial_prefix": "JKAI-PLAN-",
+            "emoji": "🎯"
+        }
+
+    # ⚙️ [BAN THỰC THI]
+    if "EXECUTOR" in tag_upper or "ALPHA" in tag_upper or "BETA" in tag_upper or "EXECUTOR" in src_upper or "ALPHA" in src_upper or "BETA" in src_upper:
+        return {
+            "dept_name": "BAN THỰC THI & TRIỂN KHAI KỸ THUẬT",
+            "clearance": "🟡 LƯU HÀNH NỘI BỘ (INTERNAL ONLY)",
+            "serial_prefix": "JKAI-EXEC-",
+            "emoji": "⚙️"
+        }
+
+    # 🛡️ [BAN KIỂM SOÁT]
+    if "CRITIC" in tag_upper or "AUDIT" in tag_upper or "REVIEW" in tag_upper or "CRITIC" in src_upper or "AUDIT" in src_upper or "REVIEW" in src_upper:
+        return {
+            "dept_name": "BAN KIỂM SOÁT NỘI BỘ & AN NINH TẬP ĐOÀN",
+            "clearance": "🔴 TỐI MẬT (HIGHLY CONFIDENTIAL)",
+            "serial_prefix": "JKAI-AUDIT-",
+            "emoji": "🛡️"
+        }
+
+    # ✍️ [BAN THƯ KÝ]
+    if "SUMMARIZER" in tag_upper or "SUMMARIZER" in src_upper:
+        return {
+            "dept_name": "BAN THƯ KÝ & TỔNG HỢP VĂN PHÒNG ĐIỀU HÀNH",
+            "clearance": "🟡 LƯU HÀNH NỘI BỘ (INTERNAL ONLY)",
+            "serial_prefix": "JKAI-SEC-",
+            "emoji": "✍️"
+        }
+
+    # 🚨 [SỰ CỐ KHẨN]
+    if tag_upper == "ERROR":
+        return {
+            "dept_name": "BAN KIỂM SOÁT & KHẮC PHỤC SỰ CỐ KHẨN CẤP",
+            "clearance": "🚨 SỰ CỐ KHẨN CẤP (EMERGENCY ALARM)",
+            "serial_prefix": "JKAI-ERR-",
+            "emoji": "🚨"
+        }
+
+    # 📡 [BAN ĐIỀU PHỐI / HÀNH CHÍNH]
+    return {
+        "dept_name": "BAN ĐIỀU PHỐI & HÀNH CHÍNH NỘI BỘ",
+        "clearance": "⚙️ THÔNG TIN HỆ THỐNG (SYSTEM STATUS)",
+        "serial_prefix": "JKAI-ADMIN-",
+        "emoji": "📡"
+    }
 
 # ==========================================
 # 🛰️ ĐỘI TUẦN TRA LOG (LISTENER)
@@ -190,15 +340,51 @@ def send_immediate_log(text, markup=None):
 def log_listener():
     print("🛰️ [JKAI-TELEGRAM] Mobile Command Center ONLINE.")
     
-    # 🧠 Cache to prevent any duplication (FIFO sliding window list of processed log IDs & hashes)
+    # Cache to prevent any duplication (FIFO sliding window list of processed log IDs & hashes)
     processed_ids = []
     processed_messages = []
     pin_map = {}
 
+    # Thread-safe caches and variables for smooth streaming on Telegram
+    pinned_content_cache = {}
+    pinned_ts_cache = {}
+    last_edit_time = {}
+    pending_texts = {}
+    pending_markups = {}
+    active_timers = {}
+    stream_lock = threading.Lock()
+
+    def flush_pin(p_id):
+        with stream_lock:
+            if p_id not in pin_map:
+                return
+            txt = pending_texts.get(p_id)
+            mkup = pending_markups.get(p_id)
+            if not txt:
+                return
+            try:
+                bot.edit_message_text(
+                    chat_id=MASTER_ID,
+                    message_id=pin_map[p_id],
+                    text=txt,
+                    parse_mode="HTML",
+                    reply_markup=mkup
+                )
+                last_edit_time[p_id] = time.time()
+            except Exception as err:
+                if "message is not modified" not in str(err).lower():
+                    print(f"❌ [TELE-THROTTLE-FLUSH-ERR]: {err}")
+            finally:
+                active_timers.pop(p_id, None)
+
     while True:
         try:
             pubsub = redis_client.pubsub()
-            pubsub.subscribe("monitor:log_channel", "monitor:progress_channel")
+            pubsub.subscribe("monitor:log_channel")
+            # [DEDUP-FIX]: Chỉ subscribe monitor:log_channel.
+            # engine.py publish cùng payload vào cả log_channel VÀ progress_channel,
+            # subscribe cả 2 sẽ nhận mỗi log 2 lần → Telegram hiển thị trùng lặp.
+            # progress_channel dành riêng cho Frontend Dashboard (streaming progress bar).
             print("📡 [TELE-SYNC]: Kết nối Redis Pub/Sub thành công.")
             
             for message in pubsub.listen():
@@ -206,12 +392,39 @@ def log_listener():
                     try:
                         data = json.loads(message['data'])
                         
-                        # 🛡️ Deduplication Protocol using Stable IDs
+                        # Deduplication Protocol using Stable IDs
                         log_id = data.get("id")
-                        clean_msg = data.get("msg", "").strip()
+                        pin_id = data.get("pin_id")
+                        is_pin = bool(pin_id)
+                        
+                        raw_msg = data.get("msg", "")
+                        
+                        is_dup_packet = False
+                        with stream_lock:
+                            if is_pin:
+                                last_ts = pinned_ts_cache.get(pin_id, 0.0)
+                                current_ts = float(data.get("ts", 0.0))
+                                
+                                is_newer = current_ts > last_ts
+                                is_same_but_full_flush = (abs(current_ts - last_ts) < 1e-5) and not data.get("is_delta", False)
+                                
+                                if is_newer or is_same_but_full_flush:
+                                    current_content = pinned_content_cache.get(pin_id, "")
+                                    if data.get("is_delta", False):
+                                        new_content = current_content + raw_msg
+                                    else:
+                                        new_content = raw_msg
+                                    pinned_content_cache[pin_id] = new_content
+                                    pinned_ts_cache[pin_id] = current_ts
+                                    clean_msg = new_content.strip()
+                                else:
+                                    is_dup_packet = True
+                            else:
+                                clean_msg = raw_msg.strip()
+                        
                         if not clean_msg: continue
                         
-                        # 💎 [AESTHETIC-TELE-MSG]: Lọc triệt để mọi thẻ [TAG] ở đầu dòng
+                        # Lọc triệt để mọi thẻ [TAG] ở đầu dòng
                         prev_msg = None
                         while clean_msg != prev_msg:
                             prev_msg = clean_msg
@@ -219,29 +432,25 @@ def log_listener():
                         clean_msg = clean_msg.strip()
                         if not clean_msg: continue
                         
-                        pin_id = data.get("pin_id")
-                        is_pin = bool(pin_id)
-
                         # Allow stealth logs on Telegram only if they are pinned (updating in-place)
                         if data.get("stealth", False) and not is_pin:
                             continue
 
-                        # 1. Deduplicate by ID (bypass for pinned streaming updates)
+                        # 1. Track ID for future auditing (log not blocked — root cause fixed upstream)
                         if not is_pin and log_id:
-                            if log_id in processed_ids:
-                                continue
-                            processed_ids.append(log_id)
-                            if len(processed_ids) > 500:
-                                processed_ids.pop(0)
+                            if log_id not in processed_ids:
+                                processed_ids.append(log_id)
+                                if len(processed_ids) > 500:
+                                    processed_ids.pop(0)
                         
                         tag = data.get("tag", "SYSTEM").upper()
                         task_id = data.get("task_id", "manual")
 
-                        # 2. Deduplicate by Content Hash (bypass for pinned streaming updates)
+                        # 2. Dedup hash for safety (root cause = subscribing 2 channels fixed, this is secondary guard)
                         if not is_pin:
                             msg_hash = hashlib.md5(f"{task_id}:{data.get('tag')}:{clean_msg}".encode()).hexdigest()
                             if msg_hash in processed_messages:
-                                continue
+                                continue  # Safety guard: skip truly identical messages
                             processed_messages.append(msg_hash)
                             if len(processed_messages) > 500:
                                 processed_messages.pop(0)
@@ -260,118 +469,122 @@ def log_listener():
                         prefix = "👑" if tag in ["MASTER", "MASTER_WEB", "MASTER_TELE"] else "🧠" if tag in ["JKAI", "MISSION_RESULT", "DONE", "RESULT", "THOUGHT"] else "🚨" if tag in ["ERROR", "CRITICAL", "WARN"] else "⚙️" if tag == "SYSTEM" else "📈" if tag in ["HEARTBEAT", "PROGRESS"] else "⚡"
                         
                         raw_tag = tag.upper()
+                        is_zenith_msg = "ZENITH" in raw_msg or "ZENITH" in task_id
                         if "GATEWAY" in raw_tag or "RECEPTIONIST" in raw_tag:
-                            action_label = "Ban Lễ Tân"
-                        elif "DISPATCHER" in raw_tag or "ROUTING" in raw_tag:
-                            action_label = "Ban Điều Phối"
+                            action_label = "Ban Trợ Lý"
                         elif "PLANNER" in raw_tag or "THOUGHT" in raw_tag:
                             action_label = "Ban Kế Hoạch"
                         elif "EXECUTOR" in raw_tag or "ALPHA" in raw_tag or "BETA" in raw_tag:
                             action_label = "Ban Thực Thi"
-                        elif "SUMMARIZER" in raw_tag:
+                        elif "SUMMARIZER" in raw_tag or "SYNTHESIS" in raw_tag:
                             action_label = "Ban Thư Ký"
-                        elif "CRITIC" in raw_tag or "AUDIT" in raw_tag or "REVIEW" in raw_tag:
+                        elif "CRITIC" in raw_tag or "AUDIT" in raw_tag or "REVIEW" in raw_tag or "GUARDRAIL" in raw_tag:
                             action_label = "Ban Kiểm Soát"
-                        elif "DATA_SCOUT" in raw_tag or "RESEARCH" in raw_tag or "SEARCH" in raw_tag or "LATENCY" in raw_tag or "PERFORMANCE" in raw_tag or "METRICS" in raw_tag or "SIEUTIMKIEM" in raw_tag or "TIMKIEM" in raw_tag:
-                            action_label = "Ban Hành Chính"
-                        elif "SYSTEM" in raw_tag or "SYS_LOG" in raw_tag or "NEURAL" in raw_tag:
-                            action_label = "Ban Kỹ Thuật"
-                        elif "ENGINE" in raw_tag or "CORE" in raw_tag:
-                            action_label = "Trung tâm Điều hành"
+                        elif (
+                            "DATA_SCOUT" in raw_tag or "RESEARCH" in raw_tag or "SEARCH" in raw_tag or 
+                            "ANTIGRAVITY" in raw_tag or "FORGE" in raw_tag or
+                            "CREATOR" in raw_tag or "KIẾN TẠO" in raw_tag or "KIENTAO" in raw_tag or 
+                            "TÌNH BÁO" in raw_tag or "TINHBAO" in raw_tag
+                        ):
+                            action_label = "Ban Trợ Lý"
                         elif "MASTER" in raw_tag or "USER" in raw_tag:
-                            action_label = "Ban Giám Đốc"
-                        elif "MISSION_RESULT" in raw_tag or "RESULT" in raw_tag:
-                            action_label = "Kết quả"
+                            action_label = "Chủ Tịch"
+                        elif "MISSION_RESULT" in raw_tag or "RESULT" in raw_tag or "DONE" in raw_tag or "JKAI" in raw_tag:
+                            action_label = "JKAI"
                         else:
-                            action_label = data.get('action') or tag.replace('_', ' ').title()
+                            action_label = "Ban Hành Chính"
                         
-                        # Keep full length for dynamic pinned updates
-                        short_msg = clean_msg[:4000] if is_pin else (clean_msg[:300] + "..." if len(clean_msg) > 300 else clean_msg)
+                        # Keep full length for dynamic pinned updates (safely under 4000 characters)
+                        short_msg = clean_msg[:3800] if is_pin else (clean_msg[:300] + "..." if len(clean_msg) > 300 else clean_msg)
                         
                         is_thought = "THOUGHT]" in clean_msg or "THOUGHT:" in data.get("full_tag", "") or (is_pin and bool(data.get("source")))
                         
+                        source_role = data.get("source", "") or tag
                         if is_pin and (tag == "THOUGHT" or is_thought):
-                            # Lấy role name từ source field
-                            role_name = data.get("source", "") or tag
-                            
-                            # Loại bỏ tiền tố "🧠 [ROLE THOUGHT]:" để lấy nội dung thuần
                             short_msg = re.sub(r'^🧠\s*\[.*?THOUGHT\]:\s*', '', short_msg)
-                            
-                            if not role_name or role_name == "THOUGHT":
-                                role_name = "MODEL"
-                            role_name = role_name.upper()
-                            
-                            display_role = role_name
-                            if "GATEWAY" in role_name or "RECEPTIONIST" in role_name:
-                                display_role = "Ban Lễ Tân"
-                            elif "DISPATCHER" in role_name or "ROUTING" in role_name:
-                                display_role = "Ban Điều Phối"
-                            elif "PLANNER" in role_name or "THOUGHT" in role_name:
-                                display_role = "Ban Kế Hoạch"
-                            elif "EXECUTOR" in role_name or "ALPHA" in role_name or "BETA" in role_name:
-                                display_role = "Ban Thực Thi"
-                            elif "SUMMARIZER" in role_name:
-                                display_role = "Ban Thư Ký"
-                            elif "CRITIC" in role_name or "AUDIT" in role_name or "REVIEW" in role_name:
-                                display_role = "Ban Kiểm Soát"
-                            elif "DATA_SCOUT" in role_name or "RESEARCH" in role_name or "SEARCH" in role_name or "LATENCY" in role_name or "PERFORMANCE" in role_name or "METRICS" in role_name or "SIEUTIMKIEM" in role_name or "TIMKIEM" in role_name:
-                                display_role = "Ban Hành Chính"
-                            elif "SYSTEM" in role_name or "SYS_LOG" in role_name or "NEURAL" in role_name:
-                                display_role = "Ban Kỹ Thuật"
-                            elif "ENGINE" in role_name or "CORE" in role_name:
-                                display_role = "Trung tâm Điều hành"
-                            elif "MASTER" in role_name or "USER" in role_name:
-                                display_role = "Ban Giám Đốc"
-                            elif "MISSION_RESULT" in role_name or "RESULT" in role_name:
-                                display_role = "Kết quả"
-                            
-                            # Convert markdown-like structures to beautiful Telegram HTML
-                            formatted_msg = escape_html(short_msg)
-                            formatted_msg = formatted_msg.replace("*[Đang suy nghĩ]*", "<b>[Đang suy nghĩ]</b>")
-                            formatted_msg = formatted_msg.replace("*[Đang suy nghĩ...]*", "<b>[Đang suy nghĩ...]</b>")
-                            formatted_msg = formatted_msg.replace("*[Đang trả lời...]*", "<b>[Đang trả lời...]</b>")
-                            
-                            # Replace Markdown bold **text** with HTML <b>text</b> (100% safe)
-                            formatted_msg = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', formatted_msg)
-                            
-                            # Convert blockquote lines to beautiful, sovereign vertical bars (100% safe)
-                            formatted_msg = formatted_msg.replace("&gt; ", "┃ ").replace("&gt;", "┃ ")
-                            
-                            final_text = f"🏢 <b>{display_role}</b>:\n{formatted_msg}"
-                        elif tag in ["MASTER", "MASTER_WEB", "MASTER_TELE", "JKAI", "MISSION_RESULT", "DONE", "RESULT", "ERROR", "CRITICAL", "SYSTEM"]:
-                            final_text = f"{prefix} <b>{tag}</b>:\n{escape_html(clean_msg)}"
+                            if not source_role or source_role == "THOUGHT":
+                                source_role = "MODEL"
+                        
+                        meta = get_corporate_metadata(tag, source_role)
+                        
+                        from datetime import datetime
+                        now_ts = data.get("ts") or time.time()
+                        dt = datetime.fromtimestamp(now_ts)
+                        date_str = dt.strftime("%Y%m%d")
+                        formatted_time = dt.strftime("%d/%m/%Y %H:%M:%S")
+                        
+                        log_id = data.get("id")
+                        if log_id:
+                            hash_str = str(log_id)[-4:].upper()
                         else:
-                            # Đảm bảo Tên Ban: Nội dung cho các log hành động
-                            final_text = f"🏢 <b>{action_label}</b>: {escape_html(short_msg)}"
+                            content_hash = hashlib.md5(f"{tag}:{clean_msg}".encode("utf-8")).hexdigest()
+                            hash_str = content_hash[-4:].upper()
+                        
+                        doc_serial = f"{meta['serial_prefix']}{date_str}-{hash_str}"
+                        
+                        header_title = "BÁO CÁO NGHIỆP VỤ"
+                        if tag in ["ERROR", "CRITICAL"]:
+                            header_title = "BÁO CÁO SỰ CỐ KHẨN"
+                        elif tag == "WARN":
+                            header_title = "CẢNH BÁO HOẠT ĐỘNG"
+                        elif tag in ["AUTH", "SECURITY"]:
+                            header_title = "THẨM ĐỊNH BẢO MẬT"
+                        elif tag.startswith("MASTER") or tag == "USER":
+                            header_title = "CHỈ THỊ THƯỢNG KHẨN"
+                        elif tag == "ZENITH":
+                            header_title = "BÁO CÁO CHIẾN LƯỢC"
+                        elif tag in ["MISSION_RESULT", "DONE", "RESULT"]:
+                            header_title = "BÁO CÁO KẾT QUẢ SỨ MỆNH"
 
-                        if tag == "ZENITH": 
-                            final_text = f"💎 <b>[ZENITH]</b>:\n{escape_html(clean_msg)}"
-                        elif tag == "WARN": 
-                            final_text = f"⚠️ <b>[CẢNH BÁO]</b>:\n{escape_html(clean_msg)}"
-                        elif tag in ["AUTH", "SECURITY"]: 
-                            final_text = f"🔐 <b>[BẢO MẬT]</b>:\n{escape_html(clean_msg)}"
+                        formatted_msg = translate_markdown_to_html(short_msg)
+                        formatted_msg = formatted_msg.replace("<i>[Đang suy nghĩ]</i>", "<b>[Đang suy nghĩ]</b>")
+                        formatted_msg = formatted_msg.replace("<i>[Đang suy nghĩ...]</i>", "<b>[Đang suy nghĩ...]</b>")
+                        formatted_msg = formatted_msg.replace("<i>[Đang trả lời...]</i>", "<b>[Đang trả lời...]</b>")
+                        formatted_msg = formatted_msg.replace("&gt; ", "┃ ").replace("&gt;", "┃ ")
+
+                        final_text = (
+                            f"{prefix} <b>[{action_label}]</b> <code>({formatted_time.split(' ')[1]})</code>:\n"
+                            f"{formatted_msg}"
+                        )
 
                         # 🔄 IN-PLACE MESSAGE EDIT!
-                        if is_pin and pin_id in pin_map:
-                            try:
-                                bot.edit_message_text(
-                                    chat_id=MASTER_ID,
-                                    message_id=pin_map[pin_id],
-                                    text=final_text,
-                                    parse_mode="HTML",
-                                    reply_markup=markup
-                                )
+                        with stream_lock:
+                            if is_pin and pin_id in pin_map:
+                                pending_texts[pin_id] = final_text
+                                pending_markups[pin_id] = markup
+                                
+                                now_time = time.time()
+                                time_since_last_edit = now_time - last_edit_time.get(pin_id, 0)
+                                
+                                if time_since_last_edit > 1.2:
+                                    if pin_id in active_timers:
+                                        active_timers[pin_id].cancel()
+                                        del active_timers[pin_id]
+                                    try:
+                                        bot.edit_message_text(
+                                            chat_id=MASTER_ID,
+                                            message_id=pin_map[pin_id],
+                                            text=final_text,
+                                            parse_mode="HTML",
+                                            reply_markup=markup
+                                        )
+                                        last_edit_time[pin_id] = now_time
+                                    except Exception as edit_err:
+                                        if "message is not modified" not in str(edit_err).lower():
+                                            print(f"❌ [TELE-EDIT-ERR] {edit_err}")
+                                else:
+                                    if pin_id not in active_timers:
+                                        t = threading.Timer(1.2 - time_since_last_edit, flush_pin, args=[pin_id])
+                                        active_timers[pin_id] = t
+                                        t.start()
                                 continue
-                            except Exception as edit_err:
-                                if "message is not modified" in str(edit_err).lower():
-                                    continue
-                                # Fallback to sending a new message if the message was deleted
-                                pass
 
                         if is_pin:
                             msg_obj = safe_send_message(MASTER_ID, final_text, parse_mode="HTML", reply_markup=markup)
                             if msg_obj:
-                                pin_map[pin_id] = msg_obj.message_id
+                                with stream_lock:
+                                    pin_map[pin_id] = msg_obj.message_id
+                                    last_edit_time[pin_id] = time.time()
                         elif markup or tag in ["MISSION_RESULT", "DONE", "ERROR", "CRITICAL", "MASTER", "MASTER_TELE", "MASTER_WEB"]:
                             send_immediate_log(final_text, markup=markup)
                         else:
@@ -402,26 +615,31 @@ def handle_callback(call):
 @bot.message_handler(commands=['start', 'help'])
 def cmd_help(message):
     if message.from_user.id != MASTER_ID: return
-    help_text = (
-        "🏛️ <b>BỘ TƯ LỆNH JKAI ZENITH</b>\n\n"
-        "<b>🔹 NHÓM LỆNH VẬN HÀNH (HỆ THỐNG)</b>\n"
-        "• <code>/status</code> - 📊 Kiểm tra sức khỏe của các lõi AI.\n"
-        "• <code>/sync</code> - 🔄 Kích hoạt tiến trình đồng hóa tri thức.\n"
-        "• <code>/reset</code> (hoặc <code>/clear</code>) - 🧹 Xóa bộ nhớ ngữ cảnh hiện tại để bắt đầu task mới.\n"
-        "• <code>/insights</code> - 💡 Trích xuất top 10 tư duy chiến lược gần nhất từ Vỏ não.\n\n"
-        "<b>🔹 NHÓM LỆNH HÀNH ĐỘNG (SKILLS)</b>\n"
-        "• <code>/search_skill [từ khóa]</code> - 🔍 Tra cứu các kỹ năng (VD: <i>/search_skill docker</i>).\n"
-        "• <code>/run_skill [#ID]</code> - 🚀 Chạy cưỡng bức một kỹ năng (VD: <i>/run_skill #09</i>).\n\n"
-        "<b>🔹 NHÓM LỆNH ỨNG CỨU VÀ CẢI TIẾN</b>\n"
-        "• <code>/tusualoi</code> - 🛡️ Đặc quyền toàn hệ thống để tìm và tự động vá lỗi.\n"
-        "• <code>/tucaitien</code> - 🧬 Kích hoạt lõi tiến hóa, tự viết lại mã nguồn để tối ưu hóa.\n"
-        "• <code>/cancel</code> (hoặc <code>/stop</code>) - 🛑 Ngắt mạch khẩn cấp mọi tiến trình AI.\n\n"
-        "💡 <b>MẸO:</b>\n"
-        "- Thêm <code>[DEEP]</code> ở đầu câu để ép AI suy nghĩ sâu.\n"
-        "- Gửi Voice hoặc Ảnh để gọi Giao thức Nhãn thần/Thính giác.\n"
-        "- Gõ <code>/help_secret</code> để xem danh sách Lệnh Đặc Quyền của Tổng Giám Đốc."
-    )
-    safe_send_message(MASTER_ID, help_text, parse_mode="HTML")
+    try:
+        task_id = f"tele_{int(time.time())}"
+        payload = {
+            "task_id": task_id,
+            "goal": "/help",
+            "mode": "fast",
+            "source": "TELEGRAM",
+            "ts": time.time()
+        }
+        with httpx.Client(timeout=15.0) as client:
+            res = client.post(f"{CONTROL_PLANE_URL}/execute", json=payload)
+            if res.status_code == 200:
+                data = res.json()
+                answer = data.get("answer") or data.get("msg") or "Không có câu trả lời thưa Master."
+                formatted_help = translate_markdown_to_html(answer)
+                
+                # 💎 [AESTHETIC-UPGRADE]: Thêm lời chào nồng nhiệt nếu là lệnh /start
+                if message.text.startswith('/start'):
+                    formatted_help = f"🚀 <b>Khởi động Giao thức Chủ quyền. Chào mừng Master LeeTrung trở lại!</b>\n\n{formatted_help}"
+                
+                safe_send_message(MASTER_ID, formatted_help, parse_mode="HTML")
+            else:
+                safe_send_message(MASTER_ID, f"⚠️ <b>LỖI HỆ THỐNG:</b> Không thể kết nối Trung tâm <i>(Mã lỗi: {res.status_code})</i>.", parse_mode="HTML")
+    except Exception as e:
+        safe_send_message(MASTER_ID, f"❌ <b>LỖI KẾT NỐI:</b> {str(e)}", parse_mode="HTML")
 
 @bot.message_handler(commands=['cancel', 'stop'])
 def cmd_stop(message):
@@ -527,8 +745,11 @@ def process_media_group(media_group_id):
                     print(f"❌ [MEDIA-GROUP-DOC-ERR]: {doc_err}")
         
         base_goal = " ".join(captions)
-        mode = "fast"
-        if base_goal.upper().startswith("[DEEP]"):
+        mode = "auto"
+        if base_goal.upper().startswith("[FAST]"):
+            mode = "fast"
+            base_goal = base_goal[6:].strip()
+        elif base_goal.upper().startswith("[DEEP]"):
             mode = "deep"
             base_goal = base_goal[6:].strip()
             
@@ -541,7 +762,7 @@ def process_media_group(media_group_id):
                 if desc:
                     vision_descriptions.append(f"[Ảnh {idx+1}]: {desc}")
             try: bot.delete_message(MASTER_ID, status_msg.message_id)
-            except: pass
+            except Exception: pass
             
         goal = base_goal
         if not goal:
@@ -601,8 +822,11 @@ def handle_photo(message):
         encoded_string = base64.b64encode(downloaded_file).decode('utf-8')
         
         goal = message.caption or "[IMAGE_ONLY]"
-        mode = "fast"
-        if goal.upper().startswith("[DEEP]"):
+        mode = "auto"
+        if goal.upper().startswith("[FAST]"):
+            mode = "fast"
+            goal = goal[6:].strip()
+        elif goal.upper().startswith("[DEEP]"):
             mode = "deep"
             goal = goal[6:].strip()
             
@@ -650,13 +874,16 @@ def handle_all(message):
     input_hash = hashlib.sha256(text.encode()).hexdigest()
     if input_hash == MASTER_HASH:
         try: bot.delete_message(message.chat.id, message.message_id)
-        except: pass
+        except Exception: pass
         # Chuyển về Brain xử lý xác thực ngầm
         execute_neural_command(text)
         return
 
-    mode = "fast"
-    if text.upper().startswith("[DEEP]"):
+    mode = "auto"
+    if text.upper().startswith("[FAST]"):
+        mode = "fast"
+        text = text[6:].strip()
+    elif text.upper().startswith("[DEEP]"):
         mode = "deep"
         text = text[6:].strip()
     

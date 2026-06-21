@@ -2,12 +2,13 @@ import os
 import yaml
 import json
 import re
+from core.utils import path_manager
 
 # =================================================================
 # 🌐 JKAI ZENITH: LOGIC THẤU THỊ KIẾN TRÚC (DEEP PROJECT CONTEXT)
 # =================================================================
 
-def scan_system_architecture(root_path: str = os.getenv("WORKSPACE_ROOT", "D:/Docker/N8N")):
+def scan_system_architecture(root_path: str = os.getenv("WORKSPACE_ROOT", path_manager.get_root())):
     """
     Phân tích toàn diện kiến trúc hệ thống: Docker, Network, Volumes và Logic.
     """

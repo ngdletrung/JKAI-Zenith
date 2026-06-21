@@ -2,6 +2,7 @@ import os
 import sys
 import json
 import asyncio
+from core.utils import path_manager
 
 # Ép mã hóa UTF-8 cho Console Windows
 if sys.platform == "win32":
@@ -17,12 +18,11 @@ else:
     os.environ["REDIS_HOST"] = "localhost"
     os.environ["OLLAMA_HOST"] = "http://localhost:11434"
 
-# Đảm bảo nạp được core engine
+# Dam bao nap duoc core engine
 try:
     from core.utils.engine import engine
 except ImportError:
-    pass)))))
-from core.utils.engine import engine
+    pass
 
 # =================================================================
 # 🏛️ JKAI ZENITH: SOVEREIGN ADVISORY ENGINE (v1.0 Elite)
@@ -40,7 +40,7 @@ async def run_sovereign_analysis(goal: str, task_id: str = "sovereign_task"):
     
     context_data = ""
     for f_path in context_files:
-        full_path = os.path.join(os.getenv("WORKSPACE_ROOT", "D:/Docker/N8N"), f_path)
+        full_path = os.path.join(os.getenv("WORKSPACE_ROOT", path_manager.get_root()), f_path)
         if os.path.exists(full_path):
             with open(full_path, "r", encoding="utf-8") as f:
                 context_data += f"\n---\nFILE: {f_path}\n{f.read()[:2000]}"
@@ -54,6 +54,8 @@ Hãy sử dụng toàn bộ trí tuệ nơ-ron chiến lược để:
 
 NGỮ CẢNH HỆ THỐNG:
 {context_data}
+
+YÊU CẦU ĐỊNH DẠNG: Trình bày kết quả theo format chuẩn: dùng ## cho section header, bảng markdown (| cột1 | cột2 |) cho dữ liệu, --- cho separator, gạch đầu dòng cho danh sách.
 """
 
     # 3. Gọi PLANNER (Dựa trên Hiến pháp rule_hardware.md)
@@ -64,11 +66,9 @@ NGỮ CẢNH HỆ THỐNG:
             task_id=task_id
         )
         
-        # 4. Lưu kết quả vào Vault Chiến lược
-        if os.path.exists("/.dockerenv"):
-            vault_path = f"/intelligence/reports/SOVEREIGN_STRATEGY_{task_id}.md"
-        else:
-            vault_path = fos.getenv("WORKSPACE_ROOT", "D:/Docker/N8N") + "/intelligence/reports/SOVEREIGN_STRATEGY_{task_id}.md"
+        # 4. Luu ket qua vao Vault Chien luoc
+        reports_dir = path_manager.get("REPORTS_DIR") or os.path.join(path_manager.get_root(), "intelligence", "reports")
+        vault_path = os.path.normpath(os.path.join(reports_dir, f"SOVEREIGN_STRATEGY_{task_id}.md"))
         
         os.makedirs(os.path.dirname(vault_path), exist_ok=True)
         with open(vault_path, "w", encoding="utf-8") as f:

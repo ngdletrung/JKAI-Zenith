@@ -41,6 +41,7 @@ YÊU CẦU:
 1. Văn phong: Uy nghiêm, hào sảng, chuyên nghiệp (Văn phong Chính phủ/Tập đoàn lớn).
 2. Cấu trúc: {structure} (Bao gồm: Đặt vấn đề, Phân tích kỹ thuật, Dự toán ngân sách, Kết luận).
 3. MECE: Đảm bảo không chồng chéo, không bỏ sót.
+4. Trình bày kết quả theo format chuẩn: dùng ## cho section header, bảng markdown (| cột1 | cột2 |) cho dữ liệu, --- cho separator, gạch đầu dòng cho danh sách.
 
 Hãy viết nội dung báo cáo hoàn chỉnh!"""
 

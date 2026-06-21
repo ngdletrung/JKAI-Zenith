@@ -2,7 +2,7 @@
 id: QUANTUM_CODE_AUDIT
 name_vn: "Thẩm Định Mã Nguồn Quantum"
 version: 31.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: SECURITY
 intent_pairs:
   - ["AUDIT", "CODE"]

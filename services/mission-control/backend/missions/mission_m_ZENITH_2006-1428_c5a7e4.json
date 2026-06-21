@@ -1,0 +1,35 @@
+{
+  "id": "m_ZENITH_2006-1428_c5a7e4",
+  "title": "/help",
+  "goal": "/help\n\n[KẾT QUẢ]\n🏛️ **BỘ TƯ LỆNH JKAI ZENITH**\n\n🔹 **NHÓM LỆNH VẬN HÀNH (HỆ THỐNG)**\n- `/status`: 📊 Kiểm tra sức khỏe của các lõi AI.\n- `/sync`: 🔄 Kích hoạt tiến trình đồng hóa tri thức.\n- `/reset` (hoặc `/clear`): 🧹 Xóa bộ nhớ ngữ cảnh hiện tại để bắt đầu task mới.\n- **Command Deck**: số 4 chữ số trên MAP (VD `#1002`, `#7001`). Tra cứu: `skill #1002 có gì hay`.\n- `/insights`: 💡 Trích xuất top 10 tư duy chiến lược gần nhất từ Vỏ não.\n\n🔹 **NHÓM LỆNH HÀNH ĐỘNG (SKILLS)**\n- `/search [từ khóa]`: 🔍 Tìm kỹ năng toàn cục (VD: `/search docker`, `/search #1002`).\n- `/search_skill [từ khóa]`: 🔍 Tra cứu Command Deck (VD: `/search_skill docker`).\n- `/run_skill [#ID]`: 🚀 Chạy kỹ năng theo số MAP (VD: `/run_skill #7001`, `/run_skill #1002`).\n  _(Chỉ `/run_skill` yêu cầu ID #xxxx; các lệnh khác không cần skill ID chính xác.)_\n\n🔹 **NHÓM LỆNH ỨNG CỨU VÀ CẢI TIẾN**\n- `/tusualoi`: 🛡️ Giám định + MAP/agents + **rà repo** + **xác minh** (py_compile/compileall/test).\n  Tự sửa repo khi SyntaxError hoặc chỉ thị *sửa/fix*.\n- Chat báo lỗi (traceback, *lỗi*, *sửa lỗi*) → tự **DEEP** (không cần `/deep`).\n- Thư mục trong **gốc JKAI** (scratch/projects, services/…, demo/…): `kiểm tra lỗi scratch/projects/app_loi_di` hoặc `sửa services/ai-brain/planner.py`.\n- `/tusualoi --fix`: thêm docker restart.\n- `/tusualoi --audit-only`: chỉ xem (không remediation, không patch repo).\n- `/tucaitien`: 📋 Rà soát toàn diện hệ thống, tạo kế hoạch cải tiến tối ưu vào tab **Kế Hoạch** để Master phê duyệt.\n- `/tucaitien_<skill_id>`: 📋 Rà soát riêng một kỹ năng (VD: `/tucaitien_#1001`), tạo kế hoạch vào tab **Kế Hoạch** để Master phê duyệt.\n- Tab **Changes** + diff từng dòng khi agent sửa file (Surgical Diff).\n- `/cancel` (hoặc `/stop`): 🛑 Ngắt mạch khẩn cấp mọi tiến trình AI.\n\n💡 **Ghi chú**: Gõ `/help_secret` để xem danh sách Lệnh Đặc Quyền của Tổng Giám Đốc.",
+  "status": "completed",
+  "ts": 1781940534.6252441,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "/help",
+      "ts": 1781940531.8540163,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1428_c5a7e4"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_2006-1428_c5a7e4` initialized | Trace: `trace_c5a7e4`. Runtime ready.",
+      "ts": 1781940531.8575861,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1428_c5a7e4"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "🏛️ **BỘ TƯ LỆNH JKAI ZENITH**\n\n🔹 **NHÓM LỆNH VẬN HÀNH (HỆ THỐNG)**\n- `/status`: 📊 Kiểm tra sức khỏe của các lõi AI.\n- `/sync`: 🔄 Kích hoạt tiến trình đồng hóa tri thức.\n- `/reset` (hoặc `/clear`): 🧹 Xóa bộ nhớ ngữ cảnh hiện tại để bắt đầu task mới.\n- **Command Deck**: số 4 chữ số trên MAP (VD `#1002`, `#7001`). Tra cứu: `skill #1002 có gì hay`.\n- `/insights`: 💡 Trích xuất top 10 tư duy chiến lược gần nhất từ Vỏ não.\n\n🔹 **NHÓM LỆNH HÀNH ĐỘNG (SKILLS)**\n- `/search [từ khóa]`: 🔍 Tìm kỹ năng toàn cục (VD: `/search docker`, `/search #1002`).\n- `/search_skill [từ khóa]`: 🔍 Tra cứu Command Deck (VD: `/search_skill docker`).\n- `/run_skill [#ID]`: 🚀 Chạy kỹ năng theo số MAP (VD: `/run_skill #7001`, `/run_skill #1002`).\n  _(Chỉ `/run_skill` yêu cầu ID #xxxx; các lệnh khác không cần skill ID chính xác.)_\n\n🔹 **NHÓM LỆNH ỨNG CỨU VÀ CẢI TIẾN**\n- `/tusualoi`: 🛡️ Giám định + MAP/agents + **rà repo** + **xác minh** (py_compile/compileall/test).\n  Tự sửa repo khi SyntaxError hoặc chỉ thị *sửa/fix*.\n- Chat báo lỗi (traceback, *lỗi*, *sửa lỗi*) → tự **DEEP** (không cần `/deep`).\n- Thư mục trong **gốc JKAI** (scratch/projects, services/…, demo/…): `kiểm tra lỗi scratch/projects/app_loi_di` hoặc `sửa services/ai-brain/planner.py`.\n- `/tusualoi --fix`: thêm docker restart.\n- `/tusualoi --audit-only`: chỉ xem (không remediation, không patch repo).\n- `/tucaitien`: 📋 Rà soát toàn diện hệ thống, tạo kế hoạch cải tiến tối ưu vào tab **Kế Hoạch** để Master phê duyệt.\n- `/tucaitien_<skill_id>`: 📋 Rà soát riêng một kỹ năng (VD: `/tucaitien_#1001`), tạo kế hoạch vào tab **Kế Hoạch** để Master phê duyệt.\n- Tab **Changes** + diff từng dòng khi agent sửa file (Surgical Diff).\n- `/cancel` (hoặc `/stop`): 🛑 Ngắt mạch khẩn cấp mọi tiến trình AI.\n\n💡 **Ghi chú**: Gõ `/help_secret` để xem danh sách Lệnh Đặc Quyền của Tổng Giám Đốc.",
+      "ts": 1781940534.5683365,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1428_c5a7e4"
+    }
+  ],
+  "artifacts": {
+    "plan": "/help",
+    "walkthrough": "🏛️ **BỘ TƯ LỆNH JKAI ZENITH**\n\n🔹 **NHÓM LỆNH VẬN HÀNH (HỆ THỐNG)**\n- `/status`: 📊 Kiểm tra sức khỏe của các lõi AI.\n- `/sync`: 🔄 Kích hoạt tiến trình đồng hóa tri thức.\n- `/reset` (hoặc `/clear`): 🧹 Xóa bộ nhớ ngữ cảnh hiện tại để bắt đầu task mới.\n- **Command Deck**: số 4 chữ số trên MAP (VD `#1002`, `#7001`). Tra cứu: `skill #1002 có gì hay`.\n- `/insights`: 💡 Trích xuất top 10 tư duy chiến lược gần nhất từ Vỏ não.\n\n🔹 **NHÓM LỆNH HÀNH ĐỘNG (SKILLS)**\n- `/search [từ khóa]`: 🔍 Tìm kỹ năng toàn cục (VD: `/search docker`, `/search #1002`).\n- `/search_skill [từ khóa]`: 🔍 Tra cứu Command Deck (VD: `/search_skill docker`).\n- `/run_skill [#ID]`: 🚀 Chạy kỹ năng theo số MAP (VD: `/run_skill #7001`, `/run_skill #1002`).\n  _(Chỉ `/run_skill` yêu cầu ID #xxxx; các lệnh khác không cần skill ID chính xác.)_\n\n🔹 **NHÓM LỆNH ỨNG CỨU VÀ CẢI TIẾN**\n- `/tusualoi`: 🛡️ Giám định + MAP/agents + **rà repo** + **xác minh** (py_compile/compileall/test).\n  Tự sửa repo khi SyntaxError hoặc chỉ thị *sửa/fix*.\n- Chat báo lỗi (traceback, *lỗi*, *sửa lỗi*) → tự **DEEP** (không cần `/deep`).\n- Thư mục trong **gốc JKAI** (scratch/projects, services/…, demo/…): `kiểm tra lỗi scratch/projects/app_loi_di` hoặc `sửa services/ai-brain/planner.py`.\n- `/tusualoi --fix`: thêm docker restart.\n- `/tusualoi --audit-only`: chỉ xem (không remediation, không patch repo).\n- `/tucaitien`: 📋 Rà soát toàn diện hệ thống, tạo kế hoạch cải tiến tối ưu vào tab **Kế Hoạch** để Master phê duyệt.\n- `/tucaitien_<skill_id>`: 📋 Rà soát riêng một kỹ năng (VD: `/tucaitien_#1001`), tạo kế hoạch vào tab **Kế Hoạch** để Master phê duyệt.\n- Tab **Changes** + diff từng dòng khi agent sửa file (Surgical Diff).\n- `/cancel` (hoặc `/stop`): 🛑 Ngắt mạch khẩn cấp mọi tiến trình AI.\n\n💡 **Ghi chú**: Gõ `/help_secret` để xem danh sách Lệnh Đặc Quyền của Tổng Giám Đốc.",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

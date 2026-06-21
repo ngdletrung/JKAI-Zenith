@@ -2,7 +2,7 @@
 id: SKILL_FORGE
 name_vn: "Lò Đúc Kỹ Năng Sovereign"
 version: 32.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: CORE
 intent_pairs:
   - ["FORGE", "SKILL"]

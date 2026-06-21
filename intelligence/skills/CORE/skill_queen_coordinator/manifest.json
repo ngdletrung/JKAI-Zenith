@@ -1,0 +1,55 @@
+{
+  "id": "SKILL_QUEEN_COORDINATOR",
+  "name": "Zenith Queen Coordinator",
+  "version": "1.0.0",
+  "description": "Sovereign hive orchestrator: Manages agent hierarchy, resource allocation, and hive coherence through centralized governance.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "nữ hoàng điều phối",
+    "queen coordinator",
+    "quản trị quân đoàn",
+    "điều phối tài nguyên",
+    "báo cáo hoàng gia",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "thong",
+    "tinh",
+    "viec",
+    "toan",
+    "quan",
+    "hoang",
+    "phoi",
+    "thanh",
+    "phan",
+    "zenith",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "establish_dominance",
+            "allocate_resources",
+            "monitor_hive_health",
+            "royal_report"
+          ],
+          "description": "Action to perform."
+        }
+      },
+      "required": [
+        "action"
+      ]
+    }
+  }
+}

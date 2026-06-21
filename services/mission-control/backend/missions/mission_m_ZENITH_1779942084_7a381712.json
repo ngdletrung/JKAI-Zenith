@@ -1,0 +1,222 @@
+{
+  "id": "m_ZENITH_1779942084_7a381712",
+  "title": "List files in services/.",
+  "goal": "List files in services/.",
+  "status": "completed",
+  "ts": 1779942094.4431424,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "List files in services/.",
+      "ts": 1779942084.9726224,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1779942084_7a381712` initialized | Trace: `trace_7a381712`. Runtime ready.",
+      "ts": 1779942084.9749522,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 📡 Đang phân tích chỉ thị với chế độ [FAST_PIPELINE] (Input mode: FAST)...",
+      "ts": 1779942085.0458317,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "🧠 [LLM-FALLBACK]: Reflex không chắc chắn. Đang gọi LLM...",
+      "ts": 1779942085.1090665,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "📊 [LATENCY]: 1.86 ms",
+      "ts": 1779942085.1106005,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 [SOVEREIGN-CORE]: Kích hoạt Não Bộ Tự Trị (Universal ReAct Loop).",
+      "ts": 1779942085.1122754,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🔄 [Thinking] Vòng 1...",
+      "ts": 1779942085.1144943,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T04:21:25.121321] [RECEPTIONIST] [Task: ZENITH_1779942084_7a381712] Đang triệu tập qwen2.5-coder:3b... (Context: 2048)",
+      "ts": 1779942085.1213422,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T04:21:25.129531] [RECEPTIONIST] [Task: ZENITH_1779942084_7a381712] [NEURAL-ADAPT]: Phát hiện `qwen2.5-coder:3b` đang sẵn sàng tại cổng 11434 (GPU). Chuyển hướng nơ-ron ngay lập tức...",
+      "ts": 1779942085.1295528,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 📡 Đang phân tích chỉ thị với chế độ [FAST_PIPELINE] (Input mode: FAST)...",
+      "ts": 1779942092.5789266,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "🧠 [LLM-FALLBACK]: Reflex không chắc chắn. Đang gọi LLM...",
+      "ts": 1779942092.6964498,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "DISPATCHER",
+      "msg": "📊 [LATENCY]: 2.34 ms",
+      "ts": 1779942092.6982782,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🧠 [SOVEREIGN-CORE]: Kích hoạt Não Bộ Tự Trị (Universal ReAct Loop).",
+      "ts": 1779942092.7001867,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: 🔄 [Thinking] Vòng 1...",
+      "ts": 1779942092.7029274,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T04:21:32.710388] [RECEPTIONIST] [Task: ZENITH_1779942084_7a381712] Đang triệu tập gemini-3.5-flash... (Context: 2048)",
+      "ts": 1779942092.7104292,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T04:21:33.286426] [RECEPTIONIST] [Task: ZENITH_1779942084_7a381712] Error: [API-ERR] Server/API trả về mã 403. [{\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"Your API key was reported as leaked. Please use another API key.\",\n    \"status\": \"PERMISSION_DENIED\"\n  }\n}\n]",
+      "ts": 1779942093.2864509,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T04:21:33.288278] [RECEPTIONIST] [Task: ZENITH_1779942084_7a381712] Error: [NEURAL-ENGINE-ERR] Error: [API-ERR] Server/API trả về mã 403. [{\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"Your API key was reported as leaked. Please use another API key.\",\n    \"status\": \"PERMISSION_DENIED\"\n  }\n}\n]",
+      "ts": 1779942093.2882936,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T04:21:33.437418] [RECEPTIONIST] [Task: ZENITH_1779942084_7a381712] Đang triệu tập gemini-3.5-flash... (Context: 2048)",
+      "ts": 1779942093.4374413,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T04:21:33.785776] [RECEPTIONIST] [Task: ZENITH_1779942084_7a381712] Error: [API-ERR] Server/API trả về mã 403. [{\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"Your API key was reported as leaked. Please use another API key.\",\n    \"status\": \"PERMISSION_DENIED\"\n  }\n}\n]",
+      "ts": 1779942093.7858095,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T04:21:33.787666] [RECEPTIONIST] [Task: ZENITH_1779942084_7a381712] Error: [NEURAL-ENGINE-ERR] Error: [API-ERR] Server/API trả về mã 403. [{\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"Your API key was reported as leaked. Please use another API key.\",\n    \"status\": \"PERMISSION_DENIED\"\n  }\n}\n]",
+      "ts": 1779942093.7876823,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "WARN",
+      "msg": "💰 [COST-GOVERNOR]: Task ZENITH_1779942084_7a381712 đã vượt ngân sách. Dừng retry.",
+      "ts": 1779942093.789639,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚠️ [NEURAL-VOID]: Model trả về phản hồi rỗng. Đang kích hoạt Sốc Nơ-ron (Neural Shock)...",
+      "ts": 1779942093.7905252,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T04:21:33.797725] [RECEPTIONIST] [Task: ZENITH_1779942084_7a381712] Đang triệu tập gemini-3.5-flash... (Context: 2048)",
+      "ts": 1779942093.7977464,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T04:21:34.154159] [RECEPTIONIST] [Task: ZENITH_1779942084_7a381712] Error: [API-ERR] Server/API trả về mã 403. [{\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"Your API key was reported as leaked. Please use another API key.\",\n    \"status\": \"PERMISSION_DENIED\"\n  }\n}\n]",
+      "ts": 1779942094.1541803,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T04:21:34.156103] [RECEPTIONIST] [Task: ZENITH_1779942084_7a381712] Error: [NEURAL-ENGINE-ERR] Error: [API-ERR] Server/API trả về mã 403. [{\n  \"error\": {\n    \"code\": 403,\n    \"message\": \"Your API key was reported as leaked. Please use another API key.\",\n    \"status\": \"PERMISSION_DENIED\"\n  }\n}\n]",
+      "ts": 1779942094.1561186,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-28T04:21:34.268301] [RECEPTIONIST] [Task: ZENITH_1779942084_7a381712] Đang triệu tập gemini-3.5-flash... (Context: 2048)",
+      "ts": 1779942094.2683241,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T04:21:34.421319] [RECEPTIONIST] [Task: ZENITH_1779942084_7a381712] Error: [API-ERR] Server/API trả về mã 429. [{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota e",
+      "ts": 1779942094.4213376,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[ERROR] [2026-05-28T04:21:34.423563] [RECEPTIONIST] [Task: ZENITH_1779942084_7a381712] Error: [NEURAL-ENGINE-ERR] Error: [API-ERR] Server/API trả về mã 429. [{\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota e",
+      "ts": 1779942094.423585,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "WARN",
+      "msg": "💰 [COST-GOVERNOR]: Task ZENITH_1779942084_7a381712 đã vượt ngân sách. Dừng retry.",
+      "ts": 1779942094.4256063,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942084_7a381712"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "None",
+      "ts": 1779942094.4307253,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779942084_7a381712"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

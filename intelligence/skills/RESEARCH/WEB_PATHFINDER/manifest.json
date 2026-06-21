@@ -1,0 +1,53 @@
+{
+  "id": "WEB_PATHFINDER",
+  "name": "Zenith Web Pathfinder",
+  "version": "1.0.0",
+  "description": "Semantic navigation core: Uses AI reasoning to find the shortest path to a goal on a website, managing clicks, scrolls, and interactions.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "hoa tiêu dẫn đường web",
+    "web pathfinder",
+    "tìm đường trên web",
+    "điều hướng tự động",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "trang",
+    "tieu",
+    "uong",
+    "nhat",
+    "cung",
+    "thuc",
+    "buoc",
+    "kiem",
+    "nang",
+    "truc",
+    "nghien cuu",
+    "phan tich",
+    "ke hoach",
+    "plan",
+    "y tuong"
+  ],
+  "domain": "RESEARCH",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "Starting URL."
+        },
+        "goal": {
+          "type": "string",
+          "description": "The goal to reach (e.g., 'find the checkout button')."
+        }
+      },
+      "required": [
+        "url",
+        "goal"
+      ]
+    }
+  }
+}

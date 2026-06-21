@@ -1,4 +1,13 @@
-from runtime.state_machine import StateMachine, TaskState
+# [ZENITH FILE DIRECTIVE]
+# - File: services/ai-brain/runtime/execution_loop.py
+# - Role: Cognitive Execution Fabric Loop
+# - Ownership: Mr LeeTrung
+# - Status: Active | Version: SDS v18.0
+# [WORKING PRINCIPLES]:
+# - Tuan thu nghiem ngat No-Emoji va Zero-Noise.
+# - Ket noi dong bo voi RollbackManager de tu dong kich hoat Saga compensating actions khi gap su co.
+
+from core.kernel.state_machine import TaskState, StateTransitionGraph
 from runtime.tool_registry import ToolRegistry
 from runtime.sandbox import SandboxedExecutor
 from runtime.execution_journal import JournalStore
@@ -9,12 +18,25 @@ from runtime.scheduler import RuntimeScheduler
 from runtime.circuit_breaker import CircuitBreaker
 from runtime.execution_context import ExecutionProposal
 from runtime.capability_validator import CapabilityToken
+from runtime.rollback_manager import RollbackManager
+
+class StateMachine:
+    """Backward-compatible StateMachine wrapper leveraging StateTransitionGraph."""
+    def __init__(self, initial_state: TaskState = TaskState.RECEIVED):
+        self.current_state = initial_state
+        self.history = [initial_state]
+
+    def transition(self, new_state: TaskState) -> bool:
+        StateTransitionGraph.validate_transition(self.current_state, new_state)
+        self.current_state = new_state
+        self.history.append(new_state)
+        return True
 
 class ExecutionFabric:
     """
-    ⚡ KHÔNG GIAN THỰC THI (Cognitive Execution Fabric)
-    Nơi Runtime tước quyền điều khiển của LLM và tự ra quyết định.
-    LLM đề xuất (Proposal) -> Runtime duyệt và chạy.
+    KHOANG THUC THI (Cognitive Execution Fabric)
+    Noi Runtime tuoc quyen dieu khien cua LLM va tu quyet dinh thuc thi.
+    LLM de xuat (Proposal) -> Runtime duyet va chay.
     """
     def __init__(self, 
                  registry: ToolRegistry,
@@ -24,7 +46,8 @@ class ExecutionFabric:
                  verifier: VerifierLayer,
                  commit_manager: CommitManager,
                  scheduler: RuntimeScheduler,
-                 circuit_breaker: CircuitBreaker):
+                 circuit_breaker: CircuitBreaker,
+                 rollback_manager: RollbackManager = None):
         
         self.registry = registry
         self.sandbox = sandbox
@@ -34,9 +57,10 @@ class ExecutionFabric:
         self.commit_manager = commit_manager
         self.scheduler = scheduler
         self.circuit_breaker = circuit_breaker
+        self.rollback_manager = rollback_manager or RollbackManager(sandbox)
 
     def run_proposal(self, proposal: ExecutionProposal, token: CapabilityToken):
-        """Hành quyết bản đề xuất của Planner."""
+        """Hanh quyet ban de xuat cua Planner."""
         trace_id = proposal.trace_id
         
         # 1. State: RECEIVED
@@ -49,7 +73,7 @@ class ExecutionFabric:
             tool_name = step.get("tool")
             args = step.get("args", {})
             
-            # Kiểm tra Cầu Dao
+            # Kiem tra Cau Dao
             if self.circuit_breaker.is_open(tool_name):
                 state.transition(TaskState.QUARANTINED)
                 raise Exception(f"Subsystem {tool_name} is QUARANTINED due to consecutive failures.")
@@ -63,18 +87,18 @@ class ExecutionFabric:
             
             # 3. State: POLICY_CHECKED
             state.transition(TaskState.POLICY_CHECKED)
-            # Kiểm tra quyền tối thiểu (Sẽ throw Error nếu vi phạm)
+            # Kiem tra quyen toi thieu (Se throw Error neu vi pham)
             for perm in tool_def.permissions:
                 if perm not in token.permissions:
                     state.transition(TaskState.QUARANTINED)
                     raise Exception(f"Capability Violation: Missing {perm}")
             
-            # 4. State: SANDBOX_PREPARED (Kèm check chống Double Execute)
+            # 4. State: SANDBOX_PREPARED (Kem check chong Double Execute)
             state.transition(TaskState.SANDBOX_PREPARED)
             idem_key = self.idempotency.generate_key(trace_id, tool_name, args)
             
             if tool_def.idempotent and not self.idempotency.check_and_lock(idem_key, timeout=tool_def.timeout):
-                # Đã thực thi rồi, bỏ qua
+                # Da thuc thi roi, bo qua
                 continue
 
             self.scheduler.record_tool_call(trace_id)
@@ -104,10 +128,32 @@ class ExecutionFabric:
                         state_before=TaskState.EXECUTING.name,
                         state_after=TaskState.COMMITTED.name
                     )
+                    # Publish successful event to real-time cognitive bus
+                    try:
+                        import json
+                        from redis_client import get_redis
+                        r_conn = get_redis()
+                        if r_conn:
+                            r_conn.publish("zenith:cognitive_events", json.dumps({"intent": tool_name, "is_success": True}))
+                    except Exception as publish_err:
+                        print(f"[EXECUTION-LOOP-WARN] Failed to publish event: {publish_err}")
             except Exception as e:
                 self.circuit_breaker.record_failure(tool_name)
                 state.transition(TaskState.FAILED)
-                # TODO: Trigger Rollback Manager nếu cần
+                # Publish failure event to real-time cognitive bus
+                try:
+                    import json
+                    from redis_client import get_redis
+                    r_conn = get_redis()
+                    if r_conn:
+                        r_conn.publish("zenith:cognitive_events", json.dumps({"intent": tool_name, "is_success": False}))
+                except Exception as publish_err:
+                    print(f"[EXECUTION-LOOP-WARN] Failed to publish failure event: {publish_err}")
+                # Kich hoat Saga compensation hoan tac giao dich hoac don dep khi co su co
+                try:
+                    self.rollback_manager.execute_compensation(trace_id, tool_name)
+                except Exception as rollback_err:
+                    print(f"[ROLLBACK-ERROR]: Failed to execute compensation for '{tool_name}' on trace {trace_id}: {rollback_err}")
                 raise e
                 
         state.transition(TaskState.COMPLETED)

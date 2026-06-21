@@ -30,22 +30,15 @@ class SemanticMemory:
         elif "minilm" in self.embedding_model: self.vector_size = 384
 
     async def _get_embedding(self, text: str) -> List[float]:
-        """Tạo vector từ văn bản qua Ollama với thời gian chờ ngắn."""
+        """Tạo vector từ văn bản qua Unified Embedder (Hỗ trợ Chunking & Context-Guard) thưa Master."""
         try:
+            from core.utils.embed import embedder
             # Nomic yêu cầu prefix để đạt độ chính xác cao nhất
             prompt = f"search_document: {text}"
-            resp = await self.client.post(
-                f"{self.ollama_url}/api/embeddings",
-                json={"model": self.embedding_model, "prompt": prompt},
-                timeout=60.0 # Tăng lên 60 giây để tránh ReadTimeout trên CPU thưa Master
-            )
-            if resp.status_code != 200:
-                return []
-            return resp.json()["embedding"]
+            vector = await embedder.get_embedding_async(prompt, model=self.embedding_model)
+            return vector if vector else []
         except Exception as e:
-            import traceback
             print(f"❌ [MEMORY-EMBED-ERR] {str(e)}")
-            traceback.print_exc()
             return []
 
     async def init_collection(self):
@@ -122,7 +115,7 @@ class SemanticMemory:
             )
             results = resp.json().get("result", [])
             return [{"id": r["id"], "tag": r["payload"].get("tag"), "summary": r["payload"].get("text")[:100], "score": r["score"]} for r in results if r["score"] > 0.6]
-        except: return []
+        except Exception: return []
 
     async def get_details(self, ids: List[int]) -> List[Dict]:
         """Lớp 3: Truy xuất chi tiết ký ức theo ID thưa Master."""
@@ -133,7 +126,7 @@ class SemanticMemory:
             )
             results = resp.json().get("result", [])
             return [r["payload"] for r in results]
-        except: return []
+        except Exception: return []
 
     async def search(self, query: str, limit: int = 5) -> List[Dict]:
         """Tìm kiếm tương thích ngược thưa Master."""

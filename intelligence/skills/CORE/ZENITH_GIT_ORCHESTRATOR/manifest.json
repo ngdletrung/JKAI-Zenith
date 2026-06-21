@@ -1,0 +1,70 @@
+{
+  "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/ZENITH_GIT_ORCHESTRATOR/manifest.json - Role: Z-SOS Manifest for Git Workflow - Ownership: Mr LeeTrung - Status: Active | Version: SDS v1.0 ",
+  "id": "ZENITH_GIT_ORCHESTRATOR",
+  "name": "Zenith Git Orchestrator",
+  "version": "1.0.0",
+  "description": "Sovereign Git Management: Automates semantic commits, branch orchestration, and PR generation. Ensures Conventional Commits standards and maintains clean version history.",
+  "author": "JKAI-Zenith",
+  "triggers": [
+    "git commit",
+    "git branch",
+    "push code",
+    "semantic commit",
+    "conventional commits",
+    "tạo branch",
+    "quản lý git",
+    "pull request",
+    "overview",
+    "core mechanisms  co che nong cot",
+    "1  semantic commit generation  sinh commit nghia ngu",
+    "2  branch strategy  chien luoc nhanh",
+    "3  pr   documentation  ho so su menh",
+    "commit",
+    "thay",
+    "hoac",
+    "zenith",
+    "file",
+    "zenith_git_orchestrator",
+    "quan",
+    "khong",
+    "thong",
+    "tich",
+    "skill",
+    "agent"
+  ],
+  "domain": "CORE",
+  "config": {
+    "commit_standard": "conventional",
+    "branch_prefix": {
+      "feature": "feat/",
+      "bugfix": "fix/",
+      "refactor": "refactor/",
+      "chore": "chore/"
+    },
+    "auto_signoff": true
+  },
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "operation": {
+          "type": "string",
+          "enum": [
+            "semantic_commit",
+            "create_branch",
+            "prepare_pr",
+            "analyze_diff"
+          ],
+          "description": "The Git operation to perform."
+        },
+        "context": {
+          "type": "string",
+          "description": "A brief description of the work done to generate the commit message."
+        }
+      },
+      "required": [
+        "operation"
+      ]
+    }
+  }
+}

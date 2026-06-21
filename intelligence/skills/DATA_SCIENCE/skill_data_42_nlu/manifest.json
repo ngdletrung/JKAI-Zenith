@@ -1,0 +1,53 @@
+{
+  "id": "SKILL_DATA_42_NLU",
+  "name": "Zenith NLU Intelligence",
+  "version": "1.0.0",
+  "description": "Natural Language Understanding core: Extracts intent, entities, and sentiment from human language to enable sophisticated interaction and automation.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "hiểu ngôn ngữ nlu",
+    "trích xuất ý định",
+    "phân tích thực thể",
+    "sentiment analysis",
+    "nlu processor",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "nguoi",
+    "nhan",
+    "hieu",
+    "viec",
+    "nang",
+    "master",
+    "phan",
+    "zenith",
+    "thuc",
+    "cach",
+    "data",
+    "du lieu",
+    "phan tich du lieu",
+    "ml",
+    "machine learning"
+  ],
+  "domain": "DATA_SCIENCE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "The input text to analyze."
+        },
+        "language": {
+          "type": "string",
+          "description": "Input language (optional)."
+        }
+      },
+      "required": [
+        "text"
+      ]
+    }
+  }
+}

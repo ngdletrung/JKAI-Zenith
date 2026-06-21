@@ -66,7 +66,7 @@ class NeuralRuntime:
             self._health_cache = status
             self._last_health_check = now
             return status
-        except:
+        except Exception:
             self._health_cache = False
             self._last_health_check = now
             return False
@@ -278,7 +278,7 @@ class NeuralRuntime:
                 self._vector_size_cache[model] = size
                 return size
             return 768
-        except:
+        except Exception:
             return 768
 
     def parse_thinking(self, full_content: str) -> Dict[str, str]:

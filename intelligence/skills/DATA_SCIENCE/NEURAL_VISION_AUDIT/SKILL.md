@@ -2,7 +2,7 @@
 id: NEURAL_VISION_AUDIT
 name_vn: "Mắt Thần Thấu Thị Giao Diện"
 version: 1.2.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: DATA_SCIENCE
 intent_pairs:
   - ["CAPTURE", "VISION"]

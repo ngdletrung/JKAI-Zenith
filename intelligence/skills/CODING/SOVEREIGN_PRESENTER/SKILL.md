@@ -2,7 +2,7 @@
 id: SOVEREIGN_PRESENTER
 name_vn: "Chuyên Gia Trình Diễn Chủ Quyền"
 version: 1.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: CODING
 intent_pairs:
   - ["CREATE", "PRESENTATION"]

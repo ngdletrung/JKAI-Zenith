@@ -67,7 +67,7 @@ class ZenithMonologue:
                     if len(active_models) > 0:
                         model_names = ", ".join([m['name'] for m in active_models])
                         return False, f"Models đang hoạt động: {model_names}"
-        except: pass
+        except Exception: pass
 
         return True, "Hệ thống rảnh rỗi."
 
@@ -177,6 +177,7 @@ KẾT QUẢ PHẢI LÀ JSON:
             "message": message,
             "type": "STRATEGY",
             "urgency": insight.get("urgency", 3),
+            "is_core": False,
             "ts": time.time(),
             "source": "ZIM_INTERNAL"
         }

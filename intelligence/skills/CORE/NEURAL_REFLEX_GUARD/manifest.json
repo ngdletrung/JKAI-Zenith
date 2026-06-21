@@ -1,0 +1,52 @@
+{
+  "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/NEURAL_REFLEX_GUARD/manifest.json - Role: Z-SOS Manifest for Autonomic Reflex - Ownership: Mr LeeTrung - Status: Active | Version: SDS v1.0 ",
+  "id": "NEURAL_REFLEX_GUARD",
+  "name": "Zenith Neural Reflex Guard",
+  "version": "1.0.0",
+  "description": "Autonomic Nervous System core: Automatically triggers linting, testing, and building sequences after code changes to ensure 100% integrity.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "phản xạ tự trị",
+    "kiểm tra tự động",
+    "lint and test",
+    "reflex guard",
+    "verify changes",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "kiem",
+    "master",
+    "thay",
+    "neural_reflex_guard",
+    "phan",
+    "hien",
+    "chay",
+    "zenith",
+    "dossier",
+    "autonomic",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Path to the directory or file to verify."
+        },
+        "auto_fix": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to attempt automatic fixes for lint errors."
+        }
+      }
+    }
+  }
+}

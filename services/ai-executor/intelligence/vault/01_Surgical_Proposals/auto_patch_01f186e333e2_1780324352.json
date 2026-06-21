@@ -1,0 +1,6 @@
+{
+  "target_file": "src/utils/file_operations.py",
+  "reason": "Lỗi do thiếu import module 'os' trong file_operations.py. Đoạn code sử dụng os.abspath() nhưng chưa import os hoặc import sai cách.",
+  "proposed_code": "from pathlib import Path\n\n# Hoặc nếu cần sử dụng os.abspath()\nimport os\n\n# Ví dụ sử dụng os.abspath()\ndoc_path = os.path.abspath(doc_path)",
+  "impact": "Sau khi sửa, hệ thống sẽ có thể truy cập và xử lý đường dẫn file ổn định hơn, tránh lỗi AttributeError và đảm bảo tính liên tục của dịch vụ."
+}

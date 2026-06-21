@@ -1,0 +1,56 @@
+{
+  "id": "STRATEGIC_CONTENT_FORGE",
+  "name": "Zenith Strategic Content Forge",
+  "version": "1.0.0",
+  "description": "Elite writing core: Drafts high-level project descriptions and technical reports with corporate-grade precision and Word export capabilities.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "soạn thảo báo cáo",
+    "thuyết minh dự án",
+    "strategic writing",
+    "viết báo cáo chiến lược",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "chien",
+    "strategic",
+    "nang",
+    "dung",
+    "luoc",
+    "chuyen",
+    "lieu",
+    "viet",
+    "nhung",
+    "thuat",
+    "kinh doanh",
+    "ban hang",
+    "marketing",
+    "khach hang",
+    "san pham"
+  ],
+  "domain": "BUSINESS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "topic": {
+          "type": "string",
+          "description": "Topic of the report."
+        },
+        "context": {
+          "type": "string",
+          "description": "Additional context or data."
+        },
+        "structure": {
+          "type": "string",
+          "description": "Desired structure of the report."
+        }
+      },
+      "required": [
+        "topic"
+      ]
+    }
+  }
+}

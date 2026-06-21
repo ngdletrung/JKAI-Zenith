@@ -15,7 +15,7 @@ class AuthInterceptor:
         try:
             enhanced_msg = f"💎🫡 [ZENITH]: {msg}" if tag == "ZENITH" else msg
             engine.publish_mission_log(tag, enhanced_msg, task_id, stealth=stealth)
-        except: pass
+        except Exception: pass
 
     def _clean_vn_accents(self, s: str) -> str:
         patterns = {
@@ -81,7 +81,7 @@ class AuthInterceptor:
                             if ("AUTH" in p_data.get("type", "") or p_data.get("is_core")) and p_data.get("ts", 0) > latest_ts:
                                 latest_ts = p_data.get("ts", 0)
                                 latest_proposal_id = pid
-                        except: continue
+                        except Exception: continue
                     
                     if latest_proposal_id:
                         self.redis_conn.set(f"hitl_approve:{latest_proposal_id}", "true", ex=300)
@@ -107,7 +107,7 @@ class AuthInterceptor:
                                 latest_ts = p_data.get("ts", 0)
                                 latest_proposal_id = pid
                                 p_type = p_data.get("type", "HÀNH ĐỘNG")
-                        except: continue
+                        except Exception: continue
                     
                     if latest_proposal_id:
                         self.redis_conn.set(f"hitl_approve:{latest_proposal_id}", "true", ex=300)

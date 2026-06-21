@@ -1,4 +1,4 @@
-from .receptionist_core import Receptionist as CoreReceptionist
+from receptionist.receptionist_core import Receptionist as CoreReceptionist
 from infrastructure.container import container
 
 class Receptionist(CoreReceptionist):

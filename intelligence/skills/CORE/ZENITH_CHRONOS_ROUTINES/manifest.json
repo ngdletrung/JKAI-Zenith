@@ -1,0 +1,75 @@
+{
+  "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/ZENITH_CHRONOS_ROUTINES/manifest.json - Role: Z-SOS Manifest for Autonomous Scheduling - Ownership: Mr LeeTrung - Status: Active | Version: SDS v1.0 ",
+  "id": "ZENITH_CHRONOS_ROUTINES",
+  "name": "Zenith Chronos Routines",
+  "version": "1.0.0",
+  "description": "Autonomous Task Orchestrator: Manages scheduled routines, background system maintenance, and event-driven automation for the Zenith ecosystem.",
+  "author": "JKAI-Zenith",
+  "triggers": [
+    "lập lịch tác vụ",
+    "chạy định kỳ",
+    "chronos routine",
+    "background task",
+    "tự động hóa sự kiện",
+    "schedule task",
+    "daily checkup",
+    "overview",
+    "philosophy  tinh hoa zenith",
+    "operational protocol  3 phases",
+    "phase 1  investigation  tham  inh",
+    "phase 2  action  thuc thi",
+    "thuc",
+    "routine",
+    "chay",
+    "zenith",
+    "khong",
+    "thong",
+    "zenith_chronos_routines",
+    "tien",
+    "nang",
+    "tinh",
+    "skill",
+    "agent",
+    "tac vu"
+  ],
+  "domain": "CORE",
+  "config": {
+    "max_concurrent_routines": 5,
+    "persistence_mode": "sqlite",
+    "log_level": "verbose"
+  },
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "add",
+            "remove",
+            "list",
+            "trigger",
+            "pause",
+            "resume"
+          ],
+          "description": "Action to perform on the routines."
+        },
+        "routine_id": {
+          "type": "string",
+          "description": "Unique identifier for the routine."
+        },
+        "schedule": {
+          "type": "string",
+          "description": "Cron-style schedule string or interval (e.g., 'every 24h', '0 8 * * *')."
+        },
+        "task_payload": {
+          "type": "object",
+          "description": "The command or skill payload to execute."
+        }
+      },
+      "required": [
+        "action"
+      ]
+    }
+  }
+}

@@ -1,29 +1,30 @@
-# 📑 QUY TRÌNH TÁC CHIẾN (WORKFLOW): TỰ CẢI TIẾN & TIẾN HÓA
+# [ZENITH FILE DIRECTIVE]
+# - File: workflow.md
+# - Role: Standard Operating Procedure (Workflow) for skill_tucaitien
+# - Status: Optimized | Version: Zenith v6.0
 
-Quy trình này quy định cách JKAI ZENITH tự nâng cấp bản thân mà không gây rủi ro cho hệ thống hiện tại.
+## 1. Lưu Đồ Tiến Trình Nâng Cấp Hệ Thống
 
----
+Tiến trình nâng cấp kỹ năng tự cải tiến tuân thủ nghiêm ngặt 5 giai đoạn khép kín nhằm bảo đảm tính toàn vẹn hệ thống:
 
-### 🏥 CHU TRÌNH TỰ KHÁM (SELF-DIAGNOSIS)
-1. **BÁO CÁO**: Chạy `kiem_tra_suc_khoe` để thu thập dữ liệu về hiệu năng và lỗi hệ thống.
-2. **SÀNG LỌC**: Xác định các điểm yếu (ví dụ: một tool chạy quá chậm, hoặc thiếu tool xử lý định dạng file mới).
-3. **ĐỀ XUẤT**: CEO tổng hợp và trình Chủ tịch phương án cải tiến (thêm tool hay sửa code).
+```mermaid
+graph TD
+    A[Khởi chạy /tucaitien] --> B[Sao chép & Chạy JKAI_MAP_graph.py tại gốc]
+    B --> C[Dọn dẹp tệp map_graph tại gốc]
+    C --> D[Lấy ngữ cảnh liên kết vĩ mô từ JKAI_MAP_GRAPH.md]
+    D --> E[Gọi OmniSearch truy vấn tri thức tối ưu hóa]
+    E --> F[Thiết lập phiên giao dịch ACID & Tạo sao lưu .bak]
+    F --> G[LLM thiết kế mã nguồn mới bám sát SDS Header]
+    G --> H[Thẩm định cú pháp tĩnh AST]
+    H --> I[Chạy thử nghiệm cô lập trong Sandbox]
+    I -->|Lỗi Runtime / Crash| J[Kích hoạt Rollback khôi phục nguyên bản]
+    I -->|Thành công 100%| K{Chế độ Dry Run?}
+    K -->|True| L[Rollback & Báo cáo Diff chi tiết]
+    K -->|False| M[Commit ghi đè file production & Xóa file .bak]
+```
 
----
+## 2. Quy Tắc An Toàn Trung Ương
 
-### 🧬 CHU TRÌNH TỰ TIẾN HÓA (SELF-EVOLUTION)
-*Áp dụng khi được Chủ tịch phê duyệt tạo kỹ năng mới.*
-
-1. **KIẾN TẠO**: Dùng `tao_ky_nang` để dựng khung **Bộ Tứ Elite** (Manual, Schema, Workflow, Logic).
-2. **LẬP TRÌNH**: Dùng `phau_thuat_tep` hoặc `ghi_tep` để viết mã nguồn Python cho công cụ mới.
-3. **HỌC TẬP**: Dùng `dong_bo_tri_thuc` để nạp các manual mới vào bộ nhớ RAG của CTO.
-4. **THỬ NGHIỆM**: Chạy lệnh `doc_tep` và `chay_lenh_docker` để kiểm tra năng lực vừa được tạo ra.
-
----
-
-### ⚠️ QUY TẮC AN TOÀN TRUNG ƯƠNG
-- Tuyệt đối không tự ý xóa các module cũ khi chưa có lệnh của Chủ tịch.
-- Mọi kỹ năng mới phải nằm trong thư mục `/intelligence/skills/`.
-
----
-*TIẾN HÓA LÀ CON ĐƯỜNG DUY NHẤT!* 💎🧠🦾
+*   **Ranh giới Tác chiến**: Mọi hoạt động sửa đổi tệp tin phải được quản lý bởi `cognitive_transaction_manager` để bảo đảm tính hoàn vẹn, không cho phép sửa đổi mồ côi ngoài luồng giao dịch.
+*   **Chính sách Zero-Trust**: Hộp cát Sandbox cô lập phải được áp dụng thời hạn chạy tối đa (timeout) không quá 5 giây và bị chặn đứng tuyệt đối mọi câu lệnh gọi tiến trình hệ thống trái phép từ Policy Proof Engine.
+*   **Vệ sinh Hệ thống**: Bất kỳ tệp tin phụ trợ hoặc tập lệnh sinh bản đồ tạm thời nào được ghi vào thư mục gốc của dự án đều phải được đăng ký trong cấu trúc `try...finally` để dọn dẹp triệt để ngay lập tức sau khi hoàn thành công việc.

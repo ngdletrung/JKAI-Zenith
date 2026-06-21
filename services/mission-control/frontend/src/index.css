@@ -17,11 +17,24 @@
   --glass-bg: rgba(255, 255, 255, 0.01);
   --glass-bg-hover: rgba(0, 242, 255, 0.02);
   --glow-zenith: 0 0 25px rgba(0, 242, 255, 0.15);
+  
+  /* 🏛️ [ZENITH-LIQUID-GLASS]: Tích hợp tinh hoa ECC */
+  --zenith-glass-bg: rgba(15, 15, 20, 0.7);
+  --zenith-glass-border: rgba(255, 255, 255, 0.1);
+  --zenith-glass-accent: #00f2ff;
+  --zenith-glass-glow: rgba(0, 242, 255, 0.2);
+  --zenith-blur: blur(12px);
+  --zenith-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  --ecc-liquid-surface: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.1),
+    rgba(255, 255, 255, 0.05)
+  );
 }
 
 body {
   margin: 0;
-  font-family: 'Outfit', 'Inter', sans-serif;
+  font-family: 'Outfit', 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   background: var(--bg-deep);
   color: #e2e8f0;
@@ -146,7 +159,7 @@ body {
   background: rgba(255, 255, 255, 0.01);
   border: 1px dashed rgba(255, 255, 255, 0.05);
   border-radius: 12px;
-  font-family: 'JetBrains Mono', monospace;
+  font-family: 'JetBrains Mono', 'Cascadia Code', 'Segoe UI Mono', monospace;
   font-size: 11px;
   color: rgba(255, 255, 255, 0.3);
   letter-spacing: 0.05em;
@@ -178,13 +191,29 @@ body {
   font-weight: 900;
 }
 
+.glow-text-antigravity {
+  background: linear-gradient(to right, #6366f1, #818cf8, #a5b4fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.6));
+  font-weight: 900;
+}
+
+.message-antigravity {
+  background: rgba(99, 102, 241, 0.03);
+  border: 1px solid rgba(99, 102, 241, 0.15);
+  border-radius: 4px 20px 20px 20px;
+  box-shadow: 0 4px 30px rgba(99, 102, 241, 0.05);
+  position: relative;
+}
+
 .prose-xs {
   font-size: 13.5px !important;
   line-height: 1.75 !important;
 }
 
 .prose-xs code {
-  font-family: 'JetBrains Mono', monospace !important;
+  font-family: 'JetBrains Mono', 'Cascadia Code', 'Segoe UI Mono', monospace !important;
   font-size: 0.9em !important;
   color: var(--accent-zenith) !important;
   background: rgba(0, 242, 255, 0.08) !important;
@@ -251,7 +280,7 @@ body {
 
 .mermaid .label {
   color: #fff !important;
-  font-family: 'JetBrains Mono', monospace !important;
+  font-family: 'JetBrains Mono', 'Cascadia Code', 'Segoe UI Mono', monospace !important;
   font-size: 11px !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
@@ -331,4 +360,103 @@ body {
 
 .animate-shimmer {
   animation: shimmer 2s infinite linear;
+}
+
+/* 💎 [ECC-LIQUID-GLASS-CORE]: Nhất thể hóa lớp phủ thưa Master */
+.zenith-liquid-glass {
+  background: var(--zenith-glass-bg);
+  backdrop-filter: var(--zenith-blur);
+  -webkit-backdrop-filter: var(--zenith-blur);
+  border: 1px solid var(--zenith-glass-border);
+  box-shadow: var(--zenith-shadow);
+  border-radius: 16px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.zenith-liquid-glass:hover {
+  border-color: var(--zenith-glass-accent);
+  box-shadow: 0 0 20px var(--zenith-glass-glow);
+  transform: translateY(-2px);
+}
+
+.zenith-text-gradient {
+  background: linear-gradient(to right, #ffffff, var(--zenith-glass-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700;
+}
+
+/* ─── COMPACT PROSE FOR LOGS ─── */
+.compact-prose p,
+.compact-prose ul,
+.compact-prose ol,
+.compact-prose li {
+  margin-top: 0.125rem !important;
+  margin-bottom: 0.125rem !important;
+}
+.compact-prose p:first-child,
+.compact-prose ul:first-child,
+.compact-prose ol:first-child,
+.compact-prose li:first-child {
+  margin-top: 0 !important;
+}
+.compact-prose p:last-child,
+.compact-prose ul:last-child,
+.compact-prose ol:last-child,
+.compact-prose li:last-child {
+  margin-bottom: 0 !important;
+}
+
+/* 🛡️ [SOVEREIGN PERFORMANCE SHIELD] - Tối ưu hóa cực hạn khi CPU quá tải */
+.high-cpu-mode .nebula-bg::before {
+  animation: none !important;
+  background: none !important;
+}
+
+.high-cpu-mode .nebula-bg::after {
+  display: none !important;
+  background-image: none !important;
+}
+
+/* Tắt hiệu ứng mờ kính (backdrop-filter) để tiết kiệm băng thông GPU/RAM */
+.high-cpu-mode .glass-panel,
+.high-cpu-mode .zenith-liquid-glass,
+.high-cpu-mode header,
+.high-cpu-mode .message-system,
+.high-cpu-mode .backdrop-blur-3xl,
+.high-cpu-mode .backdrop-blur-md,
+.high-cpu-mode .bg-black\/92 {
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+
+.high-cpu-mode .glass-panel {
+  background: rgba(6, 9, 16, 0.96) !important;
+}
+
+.high-cpu-mode .zenith-liquid-glass {
+  background: rgba(15, 15, 20, 0.98) !important;
+}
+
+.high-cpu-mode header {
+  background: #060910 !important;
+}
+
+/* Tắt các hiệu ứng nháy sáng và spin chuyển động nặng */
+.high-cpu-mode .animate-pulse,
+.high-cpu-mode .animate-breathing,
+.high-cpu-mode .animate-spin-slow,
+.high-cpu-mode .animate-radar-scan,
+.high-cpu-mode .animate-shimmer,
+.high-cpu-mode .animate-bounce,
+.high-cpu-mode .animate-spin {
+  animation: none !important;
+  transform: none !important;
+}
+
+/* Tắt mọi transition mượt (tránh lag và giật khung hình khi vẽ lại liên tục) */
+.high-cpu-mode * {
+  transition: none !important;
+  transition-duration: 0s !important;
+  animation-duration: 0s !important;
 }

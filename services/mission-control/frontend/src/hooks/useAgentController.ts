@@ -102,37 +102,51 @@ export const useAgentController = () => {
   }, [language, setGoal, setStatus, setFiles, resetDebate, addLog]);
 
   const stopAgent = useCallback(async () => {
+    // [FIX]: setStopping(true) kích hoạt guard trong useTaskWebSocket.
+    // Guard giữ status='running' (không flip về idle) cho đến khi backend
+    // thực sự xác nhận dừng qua terminal tag hoặc cancellation ERROR.
+    setStopping(true);
+    toast.loading('Đang ngắt kết nối thần kinh...', { id: 'ZENITH_PULSE' });
+
+    // Timeout fallback: nếu backend không phản hồi trong 15s, tự tắt guard
+    const fallbackTimer = setTimeout(() => {
+      const s = useZenithStore.getState();
+      if (s.isStopping) {
+        s.setStopping(false);
+        s.setStatus('idle');
+        toast.error('Hết thời gian chờ. Buộc dừng UI.', { id: 'ZENITH_PULSE' });
+      }
+    }, 15000);
+
     try {
-      setStopping(true);
-      toast.loading('Đang ngắt kết nối thần kinh...', { id: 'ZENITH_PULSE' });
       await ZenithService.stopAgent();
-
-      setStatus('idle');
-
+      // KHÔNG setStatus('idle') ở đây — P1 guard trong useTaskWebSocket
+      // sẽ tự set khi nhận terminal tag từ backend (hoặc fallbackTimer xử lý)
       addLog({
         id: `stop-${Date.now()}`,
         tag: 'SYSTEM',
-        msg: '🚨 Giao thức dừng đã được kích hoạt. Toàn bộ Đặc vụ đang túc trực chờ lệnh tiếp theo của Master.',
+        msg: '🚨 Giao thức dừng đã được kích hoạt. Đang chờ Backend xác nhận...',
         ts: Date.now() / 1000,
         type: 'ai'
       });
-      toast.success('Hệ thống đã dừng và bảo toàn bối cảnh.', { icon: '🛑', id: 'ZENITH_PULSE' });
+      toast.success('Lệnh dừng đã gửi thành công.', { icon: '🛑', id: 'ZENITH_PULSE' });
     } catch (e) {
-      toast.error('Cưỡng chế dừng UI do lỗi Backend.');
-      setStatus('idle');
-    } finally {
+      // Lỗi kết nối → cưỡng chế dừng UI ngay
+      clearTimeout(fallbackTimer);
       setStopping(false);
+      setStatus('idle');
+      toast.error('Cưỡng chế dừng UI do lỗi Backend.', { id: 'ZENITH_PULSE' });
     }
   }, [setStatus, addLog, setStopping]);
 
   const handleSystemCmd = useCallback(async (cmd: 'poweroff' | 'pause' | 'restart') => {
     try {
-      const res = await ZenithService.sendSystemCmd(cmd);
-      if (res.ok && cmd === 'pause') {
+      const res = await ZenithService.sendSystemCmd(cmd) as Response;
+      if (res && res.ok && cmd === 'pause') {
         const data = await res.json();
         setPaused(data.paused);
         toast.success(data.paused ? 'Hệ thống tạm dừng' : 'Hệ thống đã tiếp tục', { id: 'system-pause' });
-      } else if (res.ok) {
+      } else if (res && res.ok) {
         toast.success(`Nhiệm vụ ${cmd} đã được gửi`);
       }
     } catch {

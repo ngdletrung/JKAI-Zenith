@@ -1,0 +1,36 @@
+[project]
+name = "jkai-zenith"
+version = "19.1"
+description = "JKAI Zenith: Hệ điều hành Trí tuệ Chiến lược"
+requires-python = ">=3.11"
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "B110",  # except: pass
+    "B112",  # except Exception: pass
+    "T201",  # print found
+    "F401",  # unused imports
+    "F841",  # unused variables
+    "E402",  # module level import not at top
+    "E722",  # bare except
+    "W291",  # trailing whitespace
+    "W293",  # blank line whitespace
+]
+ignore = [
+    "E501",  # line too long (handled by formatter)
+    "F403",  # star imports allowed
+]
+
+[tool.ruff.lint.per-file-ignores]
+"scripts/*" = ["T201"]
+"scratch/*" = ["T201", "F401"]
+"tests/*" = ["T201"]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "auto"

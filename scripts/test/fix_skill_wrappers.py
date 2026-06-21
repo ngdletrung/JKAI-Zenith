@@ -11,7 +11,7 @@ import os
 import re
 import sys
 
-SKILLS_ROOT = r"D:\Docker\N8N\intelligence\skills"
+SKILLS_ROOT = r"D:\Docker\JKAI\intelligence\skills"
 
 def fix_logic_file(path):
     with open(path, "r", encoding="utf-8", errors="replace") as f:

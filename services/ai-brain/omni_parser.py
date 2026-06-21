@@ -59,7 +59,8 @@ class UniversalNode:
 
 class LinkDetector:
     _WIKILINK  = re.compile(r"\[\[([^\]|#]+)(?:[|#][^\]]*)?\]\]")   # [[page|alias]] / [[page#section]]
-    _HASHTAG   = re.compile(r"(?<!\w)#([A-Za-z][A-Za-z0-9_]*)")     # #tag (không match #123)
+    # Social hashtags only (#docker). Command Deck skill IDs (#1002) use core.utils.skill_deck_index.
+    _HASHTAG   = re.compile(r"(?<!\w)#([A-Za-z][A-Za-z0-9_]*)")
     _MD_LINK   = re.compile(r"\[[^\]]+\]\(([^)]+)\)")                # [text](path)
     _PY_IMPORT = re.compile(r"^(?:from|import)\s+([\w.]+)", re.M)    # import / from x import
 
@@ -454,8 +455,11 @@ class HtmlParser(BaseParser):
 # 5. OMNI SCANNER
 # ═══════════════════════════════════════════════
 
-# Thư mục cần bỏ qua
-_IGNORE_DIRS = {".git", "__pycache__", "venv", ".venv", "node_modules", ".mypy_cache", "dist", "build", ".gemini"}
+# Thư mục cần bỏ qua (Đồng bộ với BLACK-LIST trong rule_paths.md)
+_IGNORE_DIRS = {
+    ".git", "__pycache__", "venv", ".venv", "node_modules", ".mypy_cache", "dist", "build", ".gemini",
+    "vault", "archive", "outputs", "reports", "proposals", "trajectories", "datasets", "logs", "temp", "cache", ".obsidian"
+}
 
 async def scan_omni_directory(
     directory: str,

@@ -69,7 +69,7 @@ class LexiconStore:
         if self.path.exists():
             try:
                 with self.path.open("r", encoding="utf-8") as f: return json.load(f)
-            except: pass
+            except Exception: pass
         return {"patterns": {}, "promoted_rules": []}
 
     def _save(self) -> None:

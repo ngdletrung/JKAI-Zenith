@@ -1,0 +1,49 @@
+{
+  "id": "SKILL_MED_28_VIRTUAL_EVENT",
+  "name": "Zenith Virtual Event Orchestrator",
+  "version": "1.0.0",
+  "description": "Digital experience core: Manages the planning, execution, and engagement of virtual events, webinars, and online workshops.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "sự kiện ảo",
+    "virtual event",
+    "tổ chức webinar",
+    "workshop online",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "kien",
+    "nguoi",
+    "toan",
+    "truc",
+    "nang",
+    "chuc",
+    "event",
+    "zenith",
+    "dung",
+    "master",
+    "kinh doanh",
+    "ban hang",
+    "marketing",
+    "khach hang",
+    "san pham"
+  ],
+  "domain": "BUSINESS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "event_name": {
+          "type": "string",
+          "description": "Name of the event."
+        },
+        "platform": {
+          "type": "string",
+          "description": "Streaming/Event platform."
+        }
+      }
+    }
+  }
+}

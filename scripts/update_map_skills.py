@@ -6,8 +6,8 @@ import json
 import re
 from pathlib import Path
 
-REGISTRY_PATH = Path(r"d:\Docker\N8N\intelligence\registry.json")
-MAP_SKILLS_PATH = Path(r"d:\Docker\N8N\intelligence\MAP_SKILLS.md")
+REGISTRY_PATH = Path(r"d:\Docker\JKAI\intelligence\registry.json")
+MAP_SKILLS_PATH = Path(r"d:\Docker\JKAI\intelligence\MAP_SKILLS.md")
 
 # Tim so thu tu lon nhat hien tai trong MAP_SKILLS.md
 def get_last_skill_number(content: str) -> int:

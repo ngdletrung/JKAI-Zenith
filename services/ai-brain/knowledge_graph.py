@@ -103,7 +103,7 @@ class UniversalGraph:
       - FIX 2: Module-level singleton → get_universal_graph() factory
       - FIX 3: Sequential upsert → asyncio.gather theo chunk
       - FIX 4: Payload thiếu field → full payload từ node.to_payload()
-      - FIX 5: except: pass → log lỗi cụ thể
+      - FIX 5: except Exception: pass → log lỗi cụ thể
       - FIX 6: Blocking export_to_obsidian → run_in_executor
     """
 

@@ -9,10 +9,7 @@ from typing import List, Dict, Any
 # [PATH-ALIGNMENT]: Tim duong dan goc cua project
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 if project_root not in sys.path:
-    try:
-    from core.utils.engine import engine
-except ImportError:
-    pass
+    sys.path.append(project_root)
 
 from core.utils.engine import engine
 from core.qdrant_client import qdrant_client

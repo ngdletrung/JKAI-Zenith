@@ -281,7 +281,7 @@ class JKAIKnowledgeOrchestrator:
         try:
             res = await engine.call_chat([{"role": "user", "content": prompt}], role="SUMMARIZER", task_id=task_id, json_mode=True)
             if isinstance(res, list): return [query] + res
-        except: pass
+        except Exception: pass
         return [query]
 
     # ─────────────────────────────────────────────────────────────
@@ -316,7 +316,7 @@ class JKAIKnowledgeOrchestrator:
                     if s_id:
                         meta["rel_path"] = str(skill_file.relative_to(self.base_dir))
                         new_registry["skills"][s_id] = meta
-            except: pass
+            except Exception: pass
 
         # 2. Hỗ trợ kỹ năng cũ (schema.json)
         for schema_file in skills_path.rglob("schema.json"):
@@ -328,7 +328,7 @@ class JKAIKnowledgeOrchestrator:
                     meta["id"] = s_id
                     meta["rel_path"] = str(schema_file.relative_to(self.base_dir))
                     new_registry["skills"][s_id] = meta
-            except: pass
+            except Exception: pass
 
         # 🚀 [ATOMIC-WRITE]: Ghi file an toàn
         with open(self.registry_path, "w", encoding="utf-8") as f:

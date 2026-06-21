@@ -9,25 +9,25 @@ if sys.platform == "win32":
     except AttributeError:
         pass
 
-sys.path.append(r'D:\Docker\N8N')
-sys.path.append(r'D:\Docker\N8N\services\ai-brain')
+sys.path.append(r'D:\Docker\JKAI')
+sys.path.append(r'D:\Docker\JKAI\services\ai-brain')
 
 from knowledge_graph import get_universal_graph
 
 async def main():
-    print("🚀 Khởi động UniversalGraph cho Antigravity Map...")
+    print("🚀 Khởi động UniversalGraph cho JKAI Map...")
     g = get_universal_graph()
     
-    # Ép UniversalGraph xuất dữ liệu ra thư mục riêng của Antigravity
-    custom_dir = r"D:\Docker\N8N\ANTIGRAVITY_MAP"
+    # Ép UniversalGraph xuất dữ liệu ra thư mục riêng của JKAI
+    custom_dir = r"D:\Docker\JKAI\JKAI_MAP"
     if not os.path.exists(custom_dir):
         os.makedirs(custom_dir)
         
     dirs = [
-        r"D:\Docker\N8N\core",
-        r"D:\Docker\N8N\services",
-        r"D:\Docker\N8N\intelligence",
-        r"D:\Docker\N8N\scripts"
+        r"D:\Docker\JKAI\core",
+        r"D:\Docker\JKAI\services",
+        r"D:\Docker\JKAI\intelligence",
+        r"D:\Docker\JKAI\scripts"
     ]
     await g.build_and_sync(dirs, obsidian_vault=custom_dir)
     print(f"✅ Đã xuất bản đồ tại {custom_dir}")

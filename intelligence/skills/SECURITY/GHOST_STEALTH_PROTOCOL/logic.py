@@ -2,6 +2,7 @@ import os
 import shutil
 import json
 import logging
+from core.utils import path_manager
 
 class GhostProtocol:
     """
@@ -9,8 +10,8 @@ class GhostProtocol:
     Thực hiện Xóa dấu vết Neural, Ẩn danh danh tính và Tàng hình tác vụ.
     """
     def __init__(self):
-        self.scratch_path = os.getenv("WORKSPACE_ROOT", "D:/Docker/N8N") + "/intelligence/scratch"
-        self.vault_path = os.getenv("WORKSPACE_ROOT", "D:/Docker/N8N") + "/intelligence/vault"
+        self.scratch_path = os.getenv("WORKSPACE_ROOT", path_manager.get_root()) + "/intelligence/scratch"
+        self.vault_path = os.getenv("WORKSPACE_ROOT", path_manager.get_root()) + "/intelligence/vault"
 
     async def neural_trace_erasure(self):
         """

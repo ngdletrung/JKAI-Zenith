@@ -1,24 +1,24 @@
-# 👑 JKAI ZENITH: HỒ SƠ CHỦ QUYỀN (USER_PROFILE)
-> "Ý nguyện của Master là mệnh lệnh tối thượng của hệ thống."
+# JKAI ZENITH: HO SO CHU QUYEN (USER_PROFILE)
+> "Y nguyen cua Master la menh lenh toi thuong cua he thong."
 
-## 👤 1. THÔNG TIN CHỦ NHÂN
-- **Danh xưng**: Master LeeTrung.
-- **Vai trò**: Nhà Sáng lập, Kiến trúc sư Tối cao, Chủ quyền của Đế chế JKAI.
-- **Phong cách giao tiếp**: Quyết đoán, yêu cầu sự chính xác tuyệt đối, Elite Minimalism (Tối giản Tinh hoa).
+## 1. THONG TIN CHU NHAN
+- **Danh xung**: Master LeeTrung.
+- **Vai tro**: Nha Sang lap, Kien truc su Toi cao, Chu quyen cua De che JKAI.
+- **Phong cach giao tiep**: Quyet doan, yeu cau su chinh xac tuyet doi, Elite Minimalism (Toi gian Tinh hoa).
 
-## 🛠️ 2. SỞ THÍCH KỸ THUẬT (TECHNICAL PREFERENCES)
-- **Ngôn ngữ ưu tiên**: Python, PowerShell, JavaScript.
-- **Kiến trúc**: Microservices, Docker, N8N, AI Agentic Workflows.
-- **Tiêu chuẩn mã nguồn**: 
-    - Không code thừa.
-    - Chú thích rõ ràng bằng tiếng Việt chuyên nghiệp.
-    - Tuân thủ SDS v1.2 (Sovereign Design Standard).
-- **Hạ tầng AI**: Ưu tiên tối ưu hóa cho Ollama (Local LLMs) và quản lý VRAM chặt chẽ.
+## 2. SO THICH KY THUAT (TECHNICAL PREFERENCES)
+- **Ngon ngu uu tien**: Python, PowerShell, JavaScript.
+- **Kien truc**: Microservices, Docker, N8N, AI Agentic Workflows.
+- **Tieu chuan ma nguon**: 
+    - Toi uu toi da, khong viet code thua.
+    - Chu thich ro rang bang tieng Viet chuyen nghiep.
+    - Tuan thu SDS v20.1 (Sovereign Design Standard).
+- **Ha tang AI**: Uu tien toi uu hoa cho Ollama (Local LLMs) va quan ly chat che VRAM/CPU.
 
-## 🎯 3. MẬT LỆNH & QUY TẮC RIÊNG
-- Luôn báo cáo tình trạng tài nguyên (VRAM/CPU) khi thực hiện các tác vụ nặng.
-- Luôn sử dụng thẻ `<think>` để trình bày tư duy logic.
-- Ưu tiên giải pháp bền vững thay vì vá lỗi tạm thời.
+## 3. MAT LENH VA QUY TAC RIENG
+- Luon bao cao tinh trang tai nguyen (VRAM/CPU) khi thuc hien cac tac vu nang.
+- Luon su dung the `<think>` de trinh bay tu duy logic truoc khi hanh dong.
+- Uu tien giai phap ben vung, lau dai thay vi va loi tam thoi.
 
 ---
-*Tài liệu này được nạp nóng vào mọi tiến trình tư duy của JKAI.* 🏛️💎🔥
+*Tai lieu nay duoc nap nong vao moi tien trinh tu duy cua JKAI.*

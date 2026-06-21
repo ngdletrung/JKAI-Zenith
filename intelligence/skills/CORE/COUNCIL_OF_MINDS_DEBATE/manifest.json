@@ -1,0 +1,49 @@
+{
+  "id": "COUNCIL_OF_MINDS_DEBATE",
+  "name": "Council of Minds Debate",
+  "version": "1.0.0",
+  "description": "Multi-agent deliberative framework for strategic decision making and peer review.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "tranh biện",
+    "họp hội đồng",
+    "debate",
+    "council meeting",
+    "đa chiều",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "giai",
+    "bien",
+    "tranh",
+    "thong",
+    "nhat",
+    "phap",
+    "architect",
+    "kien",
+    "dung",
+    "auditor",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "topic": {
+          "type": "string",
+          "description": "The topic or goal for the council to deliberate on."
+        }
+      },
+      "required": [
+        "topic"
+      ]
+    }
+  }
+}

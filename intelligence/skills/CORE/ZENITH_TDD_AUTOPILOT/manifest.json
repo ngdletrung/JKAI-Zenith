@@ -1,0 +1,67 @@
+{
+  "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/ZENITH_TDD_AUTOPILOT/manifest.json - Role: Z-SOS Manifest for TDD Orchestration - Ownership: Mr LeeTrung - Status: Active | Version: SDS v1.0 ",
+  "id": "ZENITH_TDD_AUTOPILOT",
+  "name": "Zenith TDD Autopilot",
+  "version": "1.0.0",
+  "description": "Autonomous TDD Cycle Engine: Automates the Red-Green-Refactor loop. Writes tests, detects failures, implements fixes, and verifies correctness without human intervention.",
+  "author": "JKAI-Zenith",
+  "triggers": [
+    "tdd",
+    "viết test",
+    "chạy test",
+    "autopilot test",
+    "vòng lặp tdd",
+    "kiểm thử tự động",
+    "test-driven development",
+    "overview",
+    "the tdd cycle  chu trinh autopilot",
+    "1  phase red  sinh test   xac nhan loi",
+    "2  phase green  thuc thi logic",
+    "3  phase refactor  toi uu hoa",
+    "test",
+    "zenith",
+    "code",
+    "nang",
+    "nhan",
+    "chay",
+    "thuc",
+    "khong",
+    "zenith_tdd_autopilot",
+    "sinh",
+    "skill",
+    "agent",
+    "tac vu"
+  ],
+  "domain": "CORE",
+  "config": {
+    "default_frameworks": {
+      "python": "pytest",
+      "javascript": "jest",
+      "typescript": "jest"
+    },
+    "max_iterations": 5,
+    "auto_refactor": true
+  },
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "target_feature": {
+          "type": "string",
+          "description": "The feature or function to implement via TDD."
+        },
+        "test_path": {
+          "type": "string",
+          "description": "Path where tests should be written."
+        },
+        "logic_path": {
+          "type": "string",
+          "description": "Path where the implementation logic resides."
+        }
+      },
+      "required": [
+        "target_feature"
+      ]
+    }
+  }
+}

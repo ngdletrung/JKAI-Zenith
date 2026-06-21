@@ -15,7 +15,7 @@ class ReasoningBank:
 
     async def memorize(self, goal: str, thought: str, success_score: float = 1.0, tags: List[str] = None):
         """Nhập tâm một mẫu tư duy thành công."""
-        vector = embed(goal)
+        vector = await embed.get_embedding_async(goal)
         if not vector: return
         
         payload = {
@@ -29,7 +29,7 @@ class ReasoningBank:
 
     async def recall(self, goal: str, limit: int = 2) -> List[Dict[str, Any]]:
         """Truy xuất các nơ-ron tư duy tương đồng."""
-        vector = embed(goal)
+        vector = await embed.get_embedding_async(goal)
         if not vector: return []
         
         results = await qdrant_client.search_similar(vector, collection=self.collection, limit=limit)

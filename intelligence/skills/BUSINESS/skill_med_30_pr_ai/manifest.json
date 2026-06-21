@@ -1,0 +1,50 @@
+{
+  "id": "SKILL_MED_30_PR_AI",
+  "name": "Zenith AI PR & Crisis Manager",
+  "version": "1.0.0",
+  "description": "Public relations core: Handles automated press release generation, media sentiment analysis, and rapid crisis response orchestration.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "xử lý khủng hoảng pr",
+    "quan hệ công chúng",
+    "viết thông cáo báo chí",
+    "pr strategy",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "thong",
+    "phan",
+    "cong",
+    "viec",
+    "thanh",
+    "quan",
+    "chung",
+    "zenith",
+    "master",
+    "leetrung",
+    "kinh doanh",
+    "ban hang",
+    "marketing",
+    "khach hang",
+    "san pham"
+  ],
+  "domain": "BUSINESS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "crisis_context": {
+          "type": "string",
+          "description": "Context of the PR issue or crisis."
+        },
+        "tone": {
+          "type": "string",
+          "default": "professional",
+          "description": "Desired PR tone."
+        }
+      }
+    }
+  }
+}

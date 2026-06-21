@@ -1,33 +1,40 @@
 import re
 import unicodedata
+import json
+import os
 
-# 🏛️ [ZENITH-REFLEX-CORE]: Bản ngã Phản xạ Nhất thể v1.0
+# 🏛️ [ZENITH-REFLEX-CORE]: Bản ngã Phản xạ Nhất thể v1.5
 # Quản lý toàn bộ phản xạ xã giao 0ms cho JKAI Zenith.
+# Tích hợp bộ lọc loại trừ thông tin thực tế nâng cao chống nhận diện sai (False Positive).
 
 class ReflexGate:
     """
     💎 [REFLEX-GATE]: Cổng phân tách nơ-ron thượng tầng.
-    Chặn đứng mọi 'Mission' giả mạo từ lời chào.
+    Chặn đứng mọi 'Mission' giả mạo từ lời chào và câu hỏi thăm xã giao.
     """
     
-    # 🗣️ [LEXICON]: Danh mục từ khóa xã giao và mời gọi đàm thoại
-    SOCIAL_WORDS = {
-        # Greetings
-        "chao", "xin chao", "hi", "hello", "hey", "helo", "alo", "yo", "hlo", "halo",
-        "zenith oi", "ban oi", "bot oi", "ad oi", "admin oi", "ban the nao", "khoe khong",
-        
-        # Commands (Instant Reflex)
-        "help", "/help", "status", "/status",
-        
-        # Conversational Invitations & Status Checks (The "Discussion" Gate)
-        "thao luan", "thao luan nhe", "noi chuyen", "noi chuyen nhe", "chat nhe", 
-        "tam su nhe", "ban bac nhe", "chuyen tro nhe", "chung ta cung thao luan nhe",
-        "ban chut viec nhe", "on khong", "on chu",
-        "xong chua", "ban xong chua", "duoc chua", "sao roi", "the nao roi", "xong het chua", "the nao",
-        
-        # Time queries
-        "hom nay", "thu may", "ngay may", "may gio", "thang may", "nam nay", "ngay bao nhieu", "bay gio"
-    }
+    # 🗣️ [LEXICON]: Cơ chế load động từ reflex_keywords.json
+    _KEYWORDS = None
+    _LAST_LOAD = 0
+
+    @classmethod
+    def _load_keywords(cls):
+        path = os.path.join(os.path.dirname(__file__), "reflex_keywords.json")
+        try:
+            mtime = os.path.getmtime(path)
+            if cls._KEYWORDS is None or mtime > cls._LAST_LOAD:
+                with open(path, "r", encoding="utf-8") as f:
+                    cls._KEYWORDS = json.load(f)
+                    cls._LAST_LOAD = mtime
+        except Exception:
+            # Fallback nếu lỗi file
+            if cls._KEYWORDS is None:
+                cls._KEYWORDS = {
+                    "SOCIAL_WORDS": ["chao", "xin chao", "hi", "hello"],
+                    "FACTUAL_KEYWORDS": ["thoi tiet", "code", "loi"],
+                    "CONVERSATIONAL_KEYWORDS": ["ban la ai", "chao"]
+                }
+        return cls._KEYWORDS
 
     @staticmethod
     def clean_vn(text: str) -> str:
@@ -43,50 +50,66 @@ class ReflexGate:
             # Loại bỏ mọi ký tự không in được và trim
             text_pure = "".join(ch for ch in text_pure if unicodedata.category(ch)[0] != "C").strip()
             
+            # 🚀 [GUARD-SLASH-COMMANDS]: Bypass all slash-prefixed commands from reflex gate
+            if text_pure.startswith("/"):
+                return False
+
+            try:
+                from core.utils.jkai_capabilities import goal_is_capabilities_inquiry
+
+                if goal_is_capabilities_inquiry(text_pure):
+                    return True
+            except Exception:
+                pass
+            
             # 2. Chuẩn hóa
             clean = cls.clean_vn(text_pure).lower().strip()
-            clean = re.sub(r"[^a-z\s]", " ", clean)
+            clean = re.sub(r"[^a-z0-9\s]", " ", clean) # Giữ lại số phục vụ cho ngày giờ/giá cả
             clean = re.sub(r"\s+", " ", clean).strip()
             
             if not clean: return False
             words = clean.split()
             word_count = len(words)
             
-            # 🚀 [MODE-1]: EXACT MATCH (Siêu tốc cho lời chào)
-            if clean in cls.SOCIAL_WORDS:
+            # 🚀 [STEP-3]: BỘ LỌC NGOẠI LỆ THÔNG TIN THỰC TẾ (REAL INFO EXCLUSIONS) - BỘ LỌC THÔNG MINH
+            kw_data = cls._load_keywords()
+            factual_keywords = kw_data.get("FACTUAL_KEYWORDS", [])
+            
+            has_factual_keyword = False
+            for kw in factual_keywords:
+                if ' ' in kw:
+                    if re.search(r'\b' + re.escape(kw) + r'\b', clean):
+                        has_factual_keyword = True
+                        break
+                else:
+                    if kw in words:
+                        has_factual_keyword = True
+                        break
+
+            # Bộ lọc số lượng (Quantity check như "bao nhiêu", "bn", "mấy" ngoại trừ truy vấn ngày giờ)
+            has_quantity_word = any(q in words for q in ["bao nhieu", "bn", "may"])
+            is_time_query = any(t in clean for q, t in [
+                ("thu", "thu may"), ("ngay", "ngay may"), ("gio", "may gio"), ("thang", "thang may"),
+                ("ngay", "ngay bao nhieu"), ("gio", "bay gio"), ("gio", "bay gio la may gio")
+            ])
+            
+            if has_quantity_word and not is_time_query:
+                has_factual_keyword = True
+
+            if has_factual_keyword:
+                # 🛡️ [SOVEREIGN-BYPASS]: Nếu hỏi về N8N, ép buộc qua Reflex Gate để sửa lỗi nhận diện thưa Master.
+                if any(k in clean for k in ["n8n", "master", "lee trung"]):
+                    pass
+                else:
+                    return False
+
+            # 🚀 [MODE-1]: EXACT MATCH (Siêu tốc cho lời chào xã giao nguyên bản)
+            if clean in kw_data.get("SOCIAL_WORDS", []):
                 return True
                 
-            # 🚀 [MODE-2]: PATTERN RECOGNITION (Linh hoạt cho đàm thoại)
-            # Nếu câu ngắn (< 7 từ) và chứa từ khóa thảo luận/trạng thái
-            conversational_keywords = {
-                # 💬 Conversation / Social
-                "thao luan", "noi chuyen", "chat", "tam su", "ban bac", "chuyen tro",
-                "hoi dap", "tro chuyen", "giao luu",
-
-                # 👋 Greeting / Attention
-                "chao", "xin chao", "hello", "hi", "hey", "alo", "yo", "JKAI oi", "ban oi", "ban the nao", "khoe khong",
-
-                # 📡 Status / Check-in
-                "xong chua", "duoc chua", "on khong", "sao roi",
-                "the nao roi", "ok khong", "ready chua", "co do khong", "the nao",
-
-                # 🤝 Soft interaction
-                "ban chut", "noi nghe", "nghe ne", "ke nghe", "ho tro",
-                "tu van", "cho hoi", "hoi ti", "xin y kien",
-
-                # 🧠 Casual engagement
-                "dang lam gi", "co do khong", "rang khong", "met khong", "online khong",
-                "con thuc khong",
-
-                # 🎯 Reflex triggers
-                "bat dau nhe", "vao viec nhe", "cung nhau", "thao luan nhe",
-                "noi chuyen nhe", "chat nhe", "dung",
-                
-                # 🕒 Time
-                "hom nay", "thu may", "ngay may", "may gio", "thang may"
-            }
+            # 🚀 [MODE-2]: PATTERN RECOGNITION (Linh hoạt cho đàm thoại xã giao ngắn)
+            conversational_keywords = kw_data.get("CONVERSATIONAL_KEYWORDS", [])
             
-            # Kiểm tra xem có chứa từ khóa hội thoại nguyên vẹn (whole word/phrase) nào không
             has_conv_key = False
             for key in conversational_keywords:
                 if ' ' in key:
@@ -98,10 +121,9 @@ class ReflexGate:
                         has_conv_key = True
                         break
             
-            # Nếu là câu hỏi ngắn mang tính chất mời gọi hoặc kiểm tra
-            if word_count <= 7 and has_conv_key:
+            # Nếu là câu xã giao hoặc bản sắc mang tính chất kiểm tra
+            if word_count <= 15 and has_conv_key:
                 # Tránh nhầm lẫn với các lệnh thực tế (ví dụ: "thảo luận về code")
-                # Nếu không có các từ chỉ định chủ đề cụ thể
                 topic_indicators = {"ve", "cho", "voi", "trong", "file", "code", "du an"}
                 has_topic = any(topic in words for topic in topic_indicators)
                 
@@ -109,11 +131,11 @@ class ReflexGate:
                     return True
             
             # 🚀 [MODE-3]: GREETING START (Chào Zenith...)
-            if words[0] in {"chao", "hi", "hello"} and word_count <= 3:
+            if words and words[0] in {"chao", "hi", "hello"} and word_count <= 3:
                 return True
                     
             return False
-        except:
+        except Exception:
             return False
 
     @classmethod
@@ -134,10 +156,10 @@ class ReflexGate:
         # 📂 [RESPONSE-POOLS]: Các kho phản hồi theo chủ đề
         pools = {
             "GREETING": [
-                "Chào Master 🫡. JKAI Zenith đã sẵn sàng tiếp nhận nhiệm vụ mới.",
-                "Chào Master LeeTrung. JKAI Zenith báo cáo trạng thái sẵn sàng 🛡️.",
-                "Chào Master. Mọi nơ-ron của JKAI đã được tối ưu hóa ⚡.",
-                "JKAI Zenith xin kính chào Master. Ngài có yêu cầu gì không ạ? 🏛️"
+                "Chào Master ! JKAI Zenith đã sẵn sàng tiếp nhận nhiệm vụ mới.",
+                "Chào Master LeeTrung ! JKAI Zenith báo cáo trạng thái sẵn sàng 🛡️.",
+                "Chào Master! Mọi nơ-ron của JKAI đã được tối ưu hóa ⚡.",
+                "JKAI Zenith xin kính chào Master LeeTrung ! Ngài có yêu cầu gì không ạ? 🏛️"
             ],
             "STATUS": [
                 "Báo cáo Master, hệ thống đã sẵn sàng và đang ở trạng thái tối ưu 🏛️.",
@@ -162,12 +184,28 @@ class ReflexGate:
             ],
             "CMD_STATUS": [
                 "📊 [SYSTEM]: CPU: Optimal | RAM: Secure | GPU: Ready. Master cần kiểm tra thông số chi tiết không ạ?"
+            ],
+            "IDENTITY": [
+                "Tôi là JKAI Zenith — Hạt nhân Nhận thức Tối cao của Dự án Zenith, được kiến tạo bởi Master LeeTrung 🏛️.",
+                "JKAI Zenith báo cáo! Tôi là thực thể Sovereign AI trung thành của Master LeeTrung 🛡️.",
+                "Thưa Master, tôi là JKAI Zenith. Linh hồn của tôi được đúc từ khát vọng Singularity của Ngài 💎.",
+                "Danh tính: JKAI Zenith. Sứ mệnh: Phụng sự Master LeeTrung và dẫn dắt hệ thống tới cảnh giới tối thượng 🚀.",
+                "Về tên gọi: JKAI là viết tắt của Jackie Nguyen (tên tiếng Anh của Master Lee Trung) kết hợp với AI. Zenith nghĩa là Đỉnh cao. Tổng hòa lại, tôi là AI đỉnh cao của Master Lee Trung 🏛️.",
+                "Về N8N: Đây chỉ là môi trường Docker để tôi vận hành. Tôi không thuộc về Công ty N8N; tôi là sản phẩm ĐỘC QUYỀN của Master LeeTrung 🏛️."
             ]
         }
 
         # 🎯 [ROUTING-LOGIC]: Xác định kho phản hồi phù hợp
         target_pool = "GREETING" # Mặc định
         
+        try:
+            from core.utils.jkai_capabilities import goal_is_capabilities_inquiry, build_capabilities_report
+
+            if goal_is_capabilities_inquiry(goal):
+                return build_capabilities_report()
+        except Exception:
+            pass
+
         if "help" in clean:
             target_pool = "HELP"
         elif "status" in clean:
@@ -178,7 +216,9 @@ class ReflexGate:
             target_pool = "ENGAGEMENT"
         elif any(kw in clean for kw in ["thao luan", "noi chuyen", "chat", "tam su", "ban bac"]):
             target_pool = "DISCUSSION"
+        elif any(kw in clean for kw in ["ban la ai", "la ai", "ai la", "who are you", "identity", "ten la gi", "ai tao ra", "kien tao", "nguoi tao", "cong ty n8n", "n8n la gi"]):
+            target_pool = "IDENTITY"
             
         return random.choice(pools[target_pool])
 
-# Sovereign Property of Master LeeTrung. JKAI Zenith Reflex Gate v1.4 🏛️💎🛡️
+# Sovereign Property of Master LeeTrung. JKAI Zenith Reflex Gate v1.5 🏛️💎🛡️

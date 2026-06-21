@@ -3,7 +3,7 @@
 # ============================================================
 
 import logging
-from utils.llm import call_llm
+from core.utils.llm import call_llm
 
 logger = logging.getLogger("agent_voting")
 

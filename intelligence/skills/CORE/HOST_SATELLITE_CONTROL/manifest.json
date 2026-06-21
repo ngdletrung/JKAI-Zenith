@@ -1,0 +1,58 @@
+{
+  "id": "HOST_SATELLITE_CONTROL",
+  "name": "Zenith Host Satellite Bridge",
+  "version": "1.0.0",
+  "description": "Physical bridge to the host machine: Enables TTS, screenshots, remote command execution, and mouse control on the host OS.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "điều khiển máy chủ",
+    "host control",
+    "phát âm thanh",
+    "chụp màn hình host",
+    "click chuột",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "host",
+    "dung",
+    "zenith",
+    "tiep",
+    "master",
+    "docker",
+    "truc",
+    "hinh",
+    "tinh",
+    "physical",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "text": {
+          "type": "string",
+          "description": "Text to speak on host"
+        },
+        "command": {
+          "type": "string",
+          "description": "Terminal command to run on host"
+        },
+        "x": {
+          "type": "integer",
+          "description": "X coordinate for mouse click"
+        },
+        "y": {
+          "type": "integer",
+          "description": "Y coordinate for mouse click"
+        }
+      }
+    }
+  }
+}

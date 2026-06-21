@@ -9,6 +9,7 @@ import subprocess
 import logging
 import hashlib
 import time
+from core.utils import path_manager
 
 logger = logging.getLogger("jkai.sovereign")
 
@@ -57,8 +58,10 @@ class SovereignCore:
         
         try:
             # 1. Phát tín hiệu Dừng toàn cầu
+            # [FIX-P0]: TTL 300s (5 phút) thay vì 3s — đảm bảo mọi pipeline dài đều nhận
+            # được tín hiệu dừng trước khi key tự hết hạn
             def _set_stop(r):
-                r.set("agent:stop_signal", "true", ex=3) # Hiệu lực trong 3 giây để ngắt mạch, sau đó tự reset
+                r.set("agent:stop_signal", "true", ex=300)
                 r.delete("ai_task_queue", "user_request_queue", "exec_queue")
                 r.set("agent_status", "IDLE")
             
@@ -70,8 +73,6 @@ class SovereignCore:
                 await self.task_manager.async_redis.delete("hitl_pending")
             
             return {"ok": True, "msg": "✅ Toàn bộ tác vụ đã bị hủy bỏ. Hệ thống đã trở về trạng thái sẵn sàng!"}
-        except Exception as e:
-            return {"ok": False, "msg": f"❌ Lỗi thực thi lệnh dừng: {e}"}
         except Exception as e:
             return {"ok": False, "msg": f"❌ Lỗi kích hoạt lệnh dừng: {e}"}
 
@@ -85,12 +86,12 @@ class SovereignCore:
                 if p_keys:
                     r.delete(*p_keys)
                 r.set("agent_status", "IDLE")
-                # Đặt tín hiệu dừng ngắt mạch 3 giây thay vì xóa, để giết các luồng ngầm thưa Master
-                r.set("agent:stop_signal", "true", ex=3)
+                # [FIX-P0]: 300s — đủ để mọi luồng ngầm đang chạy kịp check và tự dừng
+                r.set("agent:stop_signal", "true", ex=300)
                 r.delete("hitl_pending")
             redis_safe(_flush)
             logger.info("🧹 [SOVEREIGN]: Đã hoàn tất Giao thức Khởi tạo hệ thống.")
-        except: pass
+        except Exception: pass
 
     async def supreme_shutdown(self, provided_key):
         """🔌 GIAO THỨC /SHUTDOWN: Tắt toàn bộ hệ sinh thái."""
@@ -105,7 +106,7 @@ class SovereignCore:
         try:
             subprocess.Popen(["sh", "-c", "sleep 2 && docker-compose down"], start_new_session=True)
             subprocess.Popen(["sh", "-c", "pkill ollama"], start_new_session=True)
-        except: pass
+        except Exception: pass
         return {"ok": True, "msg": "🔌 Hệ thống đang tiến hành chuẩn bị và tắt toàn bộ. Tạm biệt Master!"}
 
     async def change_master_key(self, old_key, new_key):
@@ -138,9 +139,10 @@ class SovereignCore:
 
         logger.critical("🔥 [SOVEREIGN]: KHỞI ĐỘNG THIÊU RỤI TOÀN PHẦN!")
         try:
-            destruct_cmd = 'timeout 3 && rmdir /s /q D:\\Docker\\N8N'
+            root = path_manager.get_root()
+            destruct_cmd = f'timeout 3 && rmdir /s /q {root}'
             subprocess.Popen(["cmd", "/c", destruct_cmd], start_new_session=True)
-        except: pass
+        except Exception: pass
         return {"ok": True, "msg": "🔥 DỮ LIỆU ĐANG ĐƯỢC THIÊU RỤI. TẠM BIỆT MASTER."}
 
     def validate_outbound(self, url):

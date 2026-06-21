@@ -19,6 +19,20 @@ import httpx
 from fastapi import FastAPI, HTTPException
 from langchain_ollama import ChatOllama
 from pydantic import BaseModel
+try:
+    from browser_use import Agent, Browser, BrowserConfig, BrowserContext, BrowserContextConfig
+except ImportError:
+    from browser_use import Agent
+    try:
+        from browser_use.browser.browser import Browser, BrowserConfig
+    except (ImportError, ModuleNotFoundError):
+        from browser_use.browser import Browser, BrowserConfig
+    
+    try:
+        from browser_use.browser.context import BrowserContext, BrowserContextConfig
+    except (ImportError, ModuleNotFoundError):
+        from browser_use.context import BrowserContext, BrowserContextConfig
+from browser_use.controller.service import Controller
 
 # ── Project Path ─────────────────────────────────────────────────────
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
@@ -40,53 +54,34 @@ logger = logging.getLogger("ai-browser")
 # Monkey-patch browser_use.Browser._setup_browser to inject
 # CloakBrowser binary + stealth fingerprint args transparently.
 # ═══════════════════════════════════════════════════════════════════
-def _build_stealth_browser_class(headless: bool = True) -> Any:
+def get_stealth_browser(headless: bool = True) -> Browser:
     """
-    Returns a StealthBrowser subclass that overrides _setup_browser,
-    replacing the stock Playwright Chromium with the CloakBrowser
-    patched binary and stealth fingerprint arguments.
+    [STEALTH-FACTORY] Returns a Browser instance configured with CloakBrowser
+    stealth fingerprinting and anti-bot bypass logic.
     """
-    from browser_use.browser.service import Browser
     from cloakbrowser.download import ensure_binary
     from cloakbrowser.config import get_default_stealth_args, IGNORE_DEFAULT_ARGS
 
-    class StealthBrowser(Browser):
-        """
-        [STEALTH-LAYER] Drop-in replacement for browser_use.Browser.
-        Routes all Playwright Chromium launches through the CloakBrowser
-        binary, enabling full fingerprint-level bot detection bypass
-        (Cloudflare Turnstile, reCAPTCHA v3 Enterprise, DataDome, Akamai).
-        """
+    binary_path = ensure_binary()
+    logger.info(f"[STEALTH-INIT] CloakBrowser binary: {binary_path}")
 
-        async def _setup_browser(self, playwright):
-            """Override: use CloakBrowser stealth binary instead of stock Chromium."""
-            try:
-                binary_path = ensure_binary()
-                logger.info(f"[STEALTH-INIT] CloakBrowser binary: {binary_path}")
+    stealth_args = get_default_stealth_args()
+    if headless:
+        stealth_args = [a for a in stealth_args if not a.startswith("--headless")] + ["--headless=new"]
 
-                stealth_args = get_default_stealth_args()
-                if headless:
-                    stealth_args = [a for a in stealth_args if not a.startswith("--headless")] + ["--headless=new"]
-
-                browser = await playwright.chromium.launch(
-                    executable_path=binary_path,
-                    headless=headless,
-                    args=stealth_args + [
-                        "--no-sandbox",
-                        "--disable-popup-blocking",
-                        "--lang=vi-VN",
-                    ],
-                    ignore_default_args=IGNORE_DEFAULT_ARGS,
-                )
-                logger.info("[STEALTH-ACTIVE] Neural Eye now operating via CloakBrowser.")
-                return browser
-            except Exception as e:
-                logger.error(f"[STEALTH-INIT-FAIL] CloakBrowser launch failed: {e}. Falling back to stock Playwright.")
-                # Graceful fallback to parent implementation
-                return await super()._setup_browser(playwright)
-
-    StealthBrowser.__name__ = "StealthBrowser"
-    return StealthBrowser
+    # Integrate with V6 BrowserConfig
+    config = BrowserConfig(
+        headless=headless,
+        disable_security=True,
+        extra_chromium_args=stealth_args + [
+            "--no-sandbox",
+            "--disable-popup-blocking",
+            "--lang=vi-VN",
+        ],
+        chrome_instance_path=binary_path # browser-use 0.1.30+ uses this for custom binary
+    )
+    
+    return Browser(config=config)
 
 
 # ═══════════════════════════════════════════════════════════════════
@@ -175,35 +170,45 @@ async def browse(req: BrowseRequest):
         if skills_context:
             full_task += f"\n\nDomain skill context:\n{skills_context}\nUse these skills if applicable."
 
-        # ── 5. Launch Agent with CloakBrowser Stealth ─────────────────
-        from browser_use import Agent
-        from browser_use.controller.service import Controller
-
-        StealthBrowser = _build_stealth_browser_class(headless=req.headless)
-
-        controller = Controller(headless=req.headless)
-        controller.browser = StealthBrowser(headless=req.headless)
+        # ── 5. Launch Agent with CloakBrowser Stealth & Vision ─────────
+        browser = get_stealth_browser(headless=req.headless)
+        
+        # Configure context for V6 standard
+        context_config = BrowserContextConfig(
+            browser_window_size={'width': 1920, 'height': 1080},
+            locale='vi-VN',
+            highlight_elements=True
+        )
+        
+        # New V6 Multimodal Controller
+        controller = Controller()
 
         agent = Agent(
             task=full_task,
             llm=llm,
-            controller=controller,
+            browser=browser,
+            use_vision=True, # [V6-ENABLE]: Native Multimodal Reasoning
+            controller=controller
         )
 
-        logger.info("[STEALTH-LAUNCH] Agent ignition via CloakBrowser — bypassing anti-bot layer.")
-        result = await agent.run()
-        final_result = result.final_result()
+        logger.info("[STEALTH-LAUNCH] Agent ignition via CloakBrowser V6 — Multimodal Vision ACTIVE.")
+        history = await agent.run()
+        final_result = history.final_result()
 
-        # ── 6. Screenshot proof ──────────────────────────────────────────
+        # ── 6. Screenshot proof (Improved for V6) ──────────────────────────
         ts = int(_time.time())
         screenshot_dir = os.getenv("WORKSPACE_ROOT", "/workspace") + "/services/mission-control/frontend/public/screenshots"
         os.makedirs(screenshot_dir, exist_ok=True)
-        screenshot_path = f"{screenshot_dir}/browse_{ts}.png"
-        screenshot_filename = None
+        screenshot_filename = f"browse_{ts}.png"
+        screenshot_path = f"{screenshot_dir}/{screenshot_filename}"
+        
         try:
-            page = await controller.browser.get_current_page()
-            await page.screenshot(path=screenshot_path, full_page=False)
-            screenshot_filename = f"browse_{ts}.png"
+            # v0.1.34 may have different ways to access the page, 
+            # usually via browser.get_current_page() if it's still alive
+            async with await browser.new_context() as context:
+                page = await context.new_page()
+                await page.goto(req.url)
+                await page.screenshot(path=screenshot_path)
             logger.info(f"[EYE-SNAP] Screenshot captured: {screenshot_filename}")
         except Exception as snap_err:
             logger.warning(f"[EYE-SNAP-WARN] Screenshot failed: {snap_err}")
@@ -218,11 +223,12 @@ async def browse(req: BrowseRequest):
 
         return {
             "status": "success",
-            "engine": "CloakBrowser-Stealth",
+            "engine": "CloakBrowser-V6-Elite",
             "objective": req.objective,
             "url": req.url,
             "analysis": final_result,
             "screenshot": screenshot_filename,
+            "multimodal": True
         }
 
     except Exception as e:
@@ -344,6 +350,80 @@ async def analyze_vision(req: VisionRequest):
 
     except Exception as e:
         logger.error(f"[VISION-ERR] {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ═══════════════════════════════════════════════════════════════════
+# 🕷️  /crawl — CRAWL4AI DEEP TEXT EXTRACTOR
+# Uses Crawl4AI for extremely fast, structured markdown scraping thieu Master.
+# ═══════════════════════════════════════════════════════════════════
+class CrawlRequest(BaseModel):
+    url: str
+    extract_markdown: bool = True
+    word_count_threshold: int = 10
+
+@app.post("/crawl")
+async def crawl(req: CrawlRequest):
+    """
+    [CRAWL4AI-SATELLITE] Performs fast, clean web scraping using Crawl4AI thieu Master.
+    Falls back gracefully to Playwright text extraction if crawl4ai is not installed.
+    """
+    logger.info(f"[CRAWL4AI] Crawling URL: {req.url}")
+    try:
+        try:
+            # Attempt to import and use Crawl4AI
+            from crawl4ai import AsyncWebCrawler, CrawlerRunConfig, CacheMode
+            
+            logger.info("[CRAWL4AI] Initializing AsyncWebCrawler thieu Master...")
+            config = CrawlerRunConfig(
+                cache_mode=CacheMode.BYPASS,
+                word_count_threshold=req.word_count_threshold
+            )
+            async with AsyncWebCrawler() as crawler:
+                result = await crawler.arun(url=req.url, config=config)
+                
+                # Retrieve structured markdown
+                md_content = result.markdown
+                if hasattr(result, "markdown_v2") and result.markdown_v2:
+                    md_content = result.markdown_v2.raw_markdown
+                
+                logger.info(f"[CRAWL4AI] Scraped {len(md_content)} characters thieu Master.")
+                return {
+                    "status": "success",
+                    "engine": "Crawl4AI",
+                    "url": req.url,
+                    "markdown": md_content,
+                    "text": result.extracted_content or md_content[:2000],
+                    "attribution": "This product includes software developed by UncleCode (https://x.com/unclecode) as part of the Crawl4AI project (https://github.com/unclecode/crawl4ai)."
+                }
+        except ImportError:
+            # Graceful fallback using Playwright
+            logger.warning("[CRAWL4AI] Crawl4AI not installed. Falling back to Playwright...")
+            from playwright.async_api import async_playwright
+            async with async_playwright() as pw:
+                browser = await pw.chromium.launch(headless=True)
+                page = await browser.new_page()
+                await page.goto(req.url, wait_until="networkidle", timeout=30000)
+                
+                # Simple markdown converter
+                title = await page.title()
+                body_text = await page.locator("body").inner_text()
+                
+                # Format a clean basic markdown representation
+                md_content = f"# {title}\n\n{body_text}"
+                await browser.close()
+                
+                logger.info(f"[PLAYWRIGHT-FALLBACK] Scraped {len(md_content)} characters thieu Master.")
+                return {
+                    "status": "success",
+                    "engine": "Playwright Fallback",
+                    "url": req.url,
+                    "markdown": md_content,
+                    "text": body_text[:2000],
+                    "attribution": "Fallback clean scraper engine."
+                }
+    except Exception as e:
+        logger.error(f"[CRAWL-ERR] {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 

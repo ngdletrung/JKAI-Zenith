@@ -7,7 +7,7 @@ import json
 
 def phat_hien_loi_logic(code, language):
     """
-    Sử dụng tư duy Antigravity để quét lỗi logic trong mã nguồn.
+    Sử dụng tư duy JKAI ZENITH để quét lỗi logic trong mã nguồn.
     """
     print(f"🔍 [JKAI-POLYGLOT] Đang phẫu thuật mã nguồn {language}...")
     # Logic thực tế sẽ được AI xử lý thông qua prompt chuyên sâu

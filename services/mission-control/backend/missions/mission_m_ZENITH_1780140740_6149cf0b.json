@@ -1,0 +1,145 @@
+{
+  "id": "m_ZENITH_1780140740_6149cf0b",
+  "title": "hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay ?",
+  "goal": "hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay ?",
+  "status": "completed",
+  "ts": 1780140807.5537667,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay ?",
+      "ts": 1780140740.4489167,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1780140740_6149cf0b` initialized | Trace: `trace_6149cf0b`. Runtime ready.",
+      "ts": 1780140740.4517798,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780140740.6811593,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: Pre-routing/Intent-Forcing: Real-time query detected. Executing search directly thưa Master.",
+      "ts": 1780140740.6840117,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780140740.6856277,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_b31da41e9b89",
+      "ts": 1780140740.6871955,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "TAVILY: Initiating global web search for hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay ? 30/05/2026",
+      "ts": 1780140749.6363375,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    },
+    {
+      "tag": "WEB_DATA",
+      "msg": "TAVILY-FOUND: Discovered 5 results.\n1. , Campuchia : Ông Hun Sen ký luật mới: Nam thanh niên Campuc (https://cafef.vn/campuchia.html)\n2. Campuchia: Tin tức mới nhất về Campuchia (https://www.24h.com.vn/tin-tuc-campuchia-c415e3915.html)\n3. Tuần văn hóa Việt Nam tại Campuchia năm 2026 (https://vtv.vn/video/tuan-van-hoa-viet-nam-tai-campuchia-nam-2026-108693996.htm)\n",
+      "ts": 1780140750.5494652,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780140750.616253,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (6868 ký tự)",
+      "ts": 1780140750.6219692,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: DEEP-DISTILLING: Large search data found (6868 chars). Distilling knowledge...",
+      "ts": 1780140750.6255991,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi động bộ lọc Cosine TF-IDF siêu tốc thưa Master...",
+      "ts": 1780140750.6293504,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Hoàn tất chưng cất trong 3ms (Cắt từ 6868 còn 1718 ký tự) thưa Master.",
+      "ts": 1780140750.637936,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T11:32:30.647243] [RECEPTIONIST] [Task: ZENITH_1780140740_6149cf0b] Đang triệu tập qwen3:4b... (Context: 2048)",
+      "ts": 1780140750.647258,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T11:32:32.210140] [RECEPTIONIST] [Task: ZENITH_1780140740_6149cf0b] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780140752.2103024,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T11:33:27.521799] [RECEPTIONIST] [Task: ZENITH_1780140740_6149cf0b] [Ngày 30/05/2026] Chính phủ Campuchia công bố quyết định mở rộng hợp tác kinh tế với Việt Nam trong năm 2026 - https://www.24h.com.vn/tin-tuc-campuchia-c415e3915.html  \n[Ngày 30/05/2026] Tuần văn hóa Việt Nam tại Campuchia năm 2026 chính thức khai mạc - https://vtv.vn/video/tuan-van-hoa-viet-nam-tai-campuchia-nam-2026-108693996.htm  \n[Ngày 30/05/2026] Báo Baomoi cập nhật tin tức tình hình Campuchia hôm nay - https://baomoi.com/campuchia-tag3985.epi  \n[Ngày 30/05/2026] Tin tức về sự kiện giao lưu văn hóa giữa Việt Nam và Campuchia - https://vnexpress.net/chu-de/campuchia-2360  \n[Ngày 30/05/2026] Đa số tin tức mới nhất về tình hình kinh tế Campuchia trong năm 2026 - https://vnexpress.net/campuchia-2026",
+      "ts": 1780140807.5219107,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T11:33:27.524914] [RECEPTIONIST] [Task: ZENITH_1780140740_6149cf0b] Hoàn tất trong 56.88s. (Size: 709 chars)",
+      "ts": 1780140807.5249305,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "💎🫡 [ZENITH]: [Ngày 30/05/2026] Chính phủ Campuchia công bố quyết định mở rộng hợp tác kinh tế với Việt Nam trong năm 2026 - https://www.24h.com.vn/tin-tuc-campuchia-c415e3915.html  \n[Ngày 30/05/2026] Tuần văn hóa Việt Nam tại Campuchia năm 2026 chính thức khai mạc - https://vtv.vn/video/tuan-van-hoa-viet-nam-tai-campuchia-nam-2026-108693996.htm  \n[Ngày 30/05/2026] Báo Baomoi cập nhật tin tức tình hình Campuchia hôm nay - https://baomoi.com/campuchia-tag3985.epi  \n[Ngày 30/05/2026] Tin tức về sự kiện giao lưu văn hóa giữa Việt Nam và Campuchia - https://vnexpress.net/chu-de/campuchia-2360  \n[Ngày 30/05/2026] Đa số tin tức mới nhất về tình hình kinh tế Campuchia trong năm 2026 - https://vnexpress.net/campuchia-2026",
+      "ts": 1780140807.528421,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Ngày 30/05/2026] Chính phủ Campuchia công bố quyết định mở rộng hợp tác kinh tế với Việt Nam trong năm 2026 - https://www.24h.com.vn/tin-tuc-campuchia-c415e3915.html  \n[Ngày 30/05/2026] Tuần văn hóa Việt Nam tại Campuchia năm 2026 chính thức khai mạc - https://vtv.vn/video/tuan-van-hoa-viet-nam-tai-campuchia-nam-2026-108693996.htm  \n[Ngày 30/05/2026] Báo Baomoi cập nhật tin tức tình hình Campuchia hôm nay - https://baomoi.com/campuchia-tag3985.epi  \n[Ngày 30/05/2026] Tin tức về sự kiện giao lưu văn hóa giữa Việt Nam và Campuchia - https://vnexpress.net/chu-de/campuchia-2360  \n[Ngày 30/05/2026] Đa số tin tức mới nhất về tình hình kinh tế Campuchia trong năm 2026 - https://vnexpress.net/campuchia-2026",
+      "ts": 1780140807.5343618,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780140740_6149cf0b"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

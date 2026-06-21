@@ -1,0 +1,47 @@
+{
+  "id": "ZENITH_HARNESS_AUDIT",
+  "name": "Zenith Harness Audit",
+  "version": "1.0.0",
+  "description": "[ZENITH FILE DIRECTIVE]",
+  "author": "JKAI Zenith",
+  "domain": "CORE",
+  "triggers": [
+    "khi nao su dung",
+    "tieu chuan kiem toan  audit rubric",
+    "lenh thuc thi",
+    "thang  iem  score grading",
+    "kiem",
+    "toan",
+    "thong",
+    "nang",
+    "file",
+    "zenith",
+    "system",
+    "master",
+    "audit",
+    "thuc",
+    "hien",
+    "dien",
+    "core",
+    "skill",
+    "leetrung",
+    "service",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly",
+    "phan tich"
+  ],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Input query or task description"
+      }
+    },
+    "required": [
+      "query"
+    ]
+  }
+}

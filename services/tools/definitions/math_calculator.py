@@ -1,8 +1,11 @@
 import os
+import logging
+
+logger = logging.getLogger("jkai.tools.math")
 
 def calculate_math(expression: str):
     """Thực hiện các phép tính toán học an toàn cho JKAI."""
-    print(f"🧮 [JKAI-MATH] Calculating: {expression}")
+    logger.info("[JKAI-MATH] Calculating: %s", expression)
     try:
         # Sử dụng eval an toàn hoặc bộ thư viện toán học
         # Chú ý: Trong thực tế nên dùng parser an toàn

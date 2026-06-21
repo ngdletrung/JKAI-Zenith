@@ -1,0 +1,47 @@
+{
+  "id": "SKILL_FIN_08_FOREX",
+  "name": "Skill Fin 08 Forex",
+  "version": "1.0.0",
+  "description": "name_vn: \"Giao Dịch Ngoại Hối Elite\"",
+  "author": "JKAI Zenith",
+  "domain": "FINANCE",
+  "triggers": [
+    "tong quan",
+    "phac  o van hanh  operational protocol",
+    "phase 1  investigation  tham  inh",
+    "phase 2  action  thuc thi",
+    "sai lam thuong gap  common pitfalls",
+    "giao",
+    "dich",
+    "ngoai",
+    "phan",
+    "tich",
+    "currency_pair",
+    "quan",
+    "fin_08_forex",
+    "elite",
+    "trade",
+    "forex",
+    "type",
+    "tien",
+    "huong",
+    "toan",
+    "tai chinh",
+    "dau tu",
+    "co phieu",
+    "chung khoan",
+    "dong tien"
+  ],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Input query or task description"
+      }
+    },
+    "required": [
+      "query"
+    ]
+  }
+}

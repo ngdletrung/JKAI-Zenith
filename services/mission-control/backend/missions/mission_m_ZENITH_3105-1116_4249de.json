@@ -1,0 +1,131 @@
+{
+  "id": "m_ZENITH_3105-1116_4249de",
+  "title": "hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay ?",
+  "goal": "hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay ?",
+  "status": "completed",
+  "ts": 1780201031.9679732,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay ?",
+      "ts": 1780201018.591076,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3105-1116_4249de"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_3105-1116_4249de` initialized | Trace: `trace_4249de`. Runtime ready.",
+      "ts": 1780201018.5932293,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3105-1116_4249de"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (REACTIVE)",
+      "ts": 1780201019.3638587,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3105-1116_4249de"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Pre-routing/Intent-Forcing: Real-time query detected. Executing search directly thưa Master.",
+      "ts": 1780201019.3680863,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3105-1116_4249de"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780201019.369791,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3105-1116_4249de"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_5cf2dc666fb8",
+      "ts": 1780201019.3717117,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3105-1116_4249de"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "TAVILY: Initiating global web search for hãy cho tôi 5 tin tức về Campuchia mới nhất hôm nay ? 31/05/2026",
+      "ts": 1780201024.8908644,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3105-1116_4249de"
+    },
+    {
+      "tag": "WEB_DATA",
+      "msg": "TAVILY-FOUND: Discovered 5 results.\n1. Tin tức tình hình Campuchia mới nhất hôm nay trên VnExpress (https://vnexpress.net/chu-de/campuchia-2360)\n2. Campuchia - Tin tức online 24h mới nhất hôm nay (https://baomoi.com/campuchia-tag3985.epi)\n3. Đặc sắc Tuần Văn hóa Việt Nam tại Campuchia năm 2026 (https://nhandan.vn/dac-sac-tuan-van-hoa-viet-nam-tai-campuchia-nam-2026-post964785.html)\n",
+      "ts": 1780201030.8381402,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3105-1116_4249de"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780201030.9033954,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3105-1116_4249de"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (9223 ký tự)",
+      "ts": 1780201030.911614,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3105-1116_4249de"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: DEEP-DISTILLING: Large search data found (9223 chars). Distilling knowledge...",
+      "ts": 1780201030.9136338,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3105-1116_4249de"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi động bộ lọc Cosine TF-IDF siêu tốc thưa Master...",
+      "ts": 1780201030.9167583,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3105-1116_4249de"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Hoàn tất chưng cất trong 3ms (Cắt từ 9223 còn 2365 ký tự) thưa Master.",
+      "ts": 1780201030.971511,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3105-1116_4249de"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-31T04:17:11.931596] [RECEPTIONIST] [Task: ZENITH_3105-1116_4249de] Đang triệu tập qwen3:4b... (Context: 2048)",
+      "ts": 1780201031.9316373,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_3105-1116_4249de"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-31T04:17:11.935326] [RECEPTIONIST] [Task: ZENITH_3105-1116_4249de] [ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .",
+      "ts": 1780201031.9353635,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_3105-1116_4249de"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "[ZENITH]: Mission aborted by Master.",
+      "ts": 1780201031.9399178,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3105-1116_4249de"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Mission aborted by Master.",
+      "ts": 1780201031.9473577,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3105-1116_4249de"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

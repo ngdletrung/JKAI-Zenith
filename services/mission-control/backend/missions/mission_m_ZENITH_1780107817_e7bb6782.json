@@ -1,0 +1,166 @@
+{
+  "id": "m_ZENITH_1780107817_e7bb6782",
+  "title": "hãy cho tôi 5 tin tức về IRAN mới nhất hôm nay",
+  "goal": "hãy cho tôi 5 tin tức về IRAN mới nhất hôm nay",
+  "status": "completed",
+  "ts": 1780107873.9709666,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "hãy cho tôi 5 tin tức về IRAN mới nhất hôm nay",
+      "ts": 1780107817.8701751,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1780107817_e7bb6782` initialized | Trace: `trace_e7bb6782`. Runtime ready.",
+      "ts": 1780107817.8714614,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780107818.6841164,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: Pre-routing/Intent-Forcing: Real-time query detected. Executing search directly thưa Master.",
+      "ts": 1780107818.7046156,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780107818.706031,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_0014550bc512",
+      "ts": 1780107818.7072473,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "TAVILY: Initiating global web search for hãy cho tôi 5 tin tức về IRAN mới nhất hôm nay 30/05/2026",
+      "ts": 1780107827.6050346,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "WEB_DATA",
+      "msg": "TAVILY-FOUND: Discovered 5 results.\n1. Thời sự 30/5:Phòng không Iran “trỗi dậy” ngoạn mục, bắn nổ t (https://www.youtube.com/watch?v=yhj858GVAeI)\n2. Nóng thế giới ngày 30/5: Mỹ - Iran đạt thỏa thuận, chờ ông T (https://vov.vn/the-gioi/nong-the-gioi-ngay-305-my-iran-dat-thoa-thuan-cho-ong-trump-phe-chuan-post1296020.vov)\n3. Tin tức thế giới 30-5: Iran bác bỏ tuyên bố của ông Trump (https://tuoitre.vn/tin-tuc-the-gioi-30-5-iran-bac-bo-tuyen-bo-cua-ong-trump-ong-putin-noi-ve-chien-tranh-voi-chau-au-2026053005392465.htm)\n",
+      "ts": 1780107832.176708,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780107832.3039658,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (9004 ký tự)",
+      "ts": 1780107832.3111527,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: DEEP-DISTILLING: Large search data found (9004 chars). Distilling knowledge...",
+      "ts": 1780107832.3128538,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi động bộ lọc Cosine TF-IDF siêu tốc thưa Master...",
+      "ts": 1780107832.3146355,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚡ Hoàn tất chưng cất trong 3ms (Cắt từ 9004 còn 2007 ký tự) thưa Master.",
+      "ts": 1780107832.390993,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T02:23:52.940055] [RECEPTIONIST] [Task: ZENITH_1780107817_e7bb6782] Đang triệu tập qwen3:4b... (Context: 2048)",
+      "ts": 1780107832.9400759,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T02:23:54.570468] [RECEPTIONIST] [Task: ZENITH_1780107817_e7bb6782] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780107834.5705335,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T02:24:30.425535] [RECEPTIONIST] [Task: ZENITH_1780107817_e7bb6782] [",
+      "ts": 1780107870.4255602,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T02:24:31.431650] [RECEPTIONIST] [Task: ZENITH_1780107817_e7bb6782] [Ngày 30/05/2026] Một số tiếng nổ lớn tại khu vực Bushehr, Iran nghi ngờ là hoạt động đánh chặn của phòng không đối với máy bay thù địch.  \n[Ngày 3",
+      "ts": 1780107871.4316835,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T02:24:32.440961] [RECEPTIONIST] [Task: ZENITH_1780107817_e7bb6782] [Ngày 30/05/2026] Một số tiếng nổ lớn tại khu vực Bushehr, Iran nghi ngờ là hoạt động đánh chặn của phòng không đối với máy bay thù địch.  \n[Ngày 30/05/2026] Iran bác bỏ tuyên bố của ông Trump về thỏa thuận hòa bình theo VnExpress.  \n[Ngày 30/05/2026] Ngoại trưởng Iran Abbas Aragh",
+      "ts": 1780107872.4410057,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T02:24:33.443472] [RECEPTIONIST] [Task: ZENITH_1780107817_e7bb6782] [Ngày 30/05/2026] Một số tiếng nổ lớn tại khu vực Bushehr, Iran nghi ngờ là hoạt động đánh chặn của phòng không đối với máy bay thù địch.  \n[Ngày 30/05/2026] Iran bác bỏ tuyên bố của ông Trump về thỏa thuận hòa bình theo VnExpress.  \n[Ngày 30/05/2026] Ngoại trưởng Iran Abbas Araghchi được cập nhật trên Reuters.  \n[Ngày 30/05/2026] Báo Người Lao Động: Tin tức mới nhất 24h, tin nhanh, nóng nhất.  \n[Ngày",
+      "ts": 1780107873.4435146,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-30T02:24:33.935041] [RECEPTIONIST] [Task: ZENITH_1780107817_e7bb6782] Hoàn tất trong 40.99s. (Size: 464 chars)",
+      "ts": 1780107873.9350603,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "THOUGHT",
+      "msg": "💎🫡 [ZENITH]: [Ngày 30/05/2026] Một số tiếng nổ lớn tại khu vực Bushehr, Iran nghi ngờ là hoạt động đánh chặn của phòng không đối với máy bay thù địch.  \n[Ngày 30/05/2026] Iran bác bỏ tuyên bố của ông Trump về thỏa thuận hòa bình theo VnExpress.  \n[Ngày 30/05/2026] Ngoại trưởng Iran Abbas Araghchi được cập nhật trên Reuters.  \n[Ngày 30/05/2026] Báo Người Lao Động: Tin tức mới nhất 24h, tin nhanh, nóng nhất.  \n[Ngày 30/05/2026] Ông Putin phát biểu về chiến tranh tại châu Âu.",
+      "ts": 1780107873.9379916,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Ngày 30/05/2026] Một số tiếng nổ lớn tại khu vực Bushehr, Iran nghi ngờ là hoạt động đánh chặn của phòng không đối với máy bay thù địch.  \n[Ngày 30/05/2026] Iran bác bỏ tuyên bố của ông Trump về thỏa thuận hòa bình theo VnExpress.  \n[Ngày 30/05/2026] Ngoại trưởng Iran Abbas Araghchi được cập nhật trên Reuters.  \n[Ngày 30/05/2026] Báo Người Lao Động: Tin tức mới nhất 24h, tin nhanh, nóng nhất.  \n[Ngày 30/05/2026] Ông Putin phát biểu về chiến tranh tại châu Âu.",
+      "ts": 1780107873.944027,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780107817_e7bb6782"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

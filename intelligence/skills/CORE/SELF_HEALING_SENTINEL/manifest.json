@@ -1,0 +1,52 @@
+{
+  "id": "SELF_HEALING_SENTINEL",
+  "name": "Zenith Self-Healing Sentinel",
+  "version": "1.0.0",
+  "description": "System guardian and maintenance core: Performs deep diagnostics, health monitoring, log auditing, and suggests recovery procedures.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "kiểm tra hệ thống",
+    "sửa lỗi",
+    "self healing",
+    "audit system",
+    "chiến binh zenith",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "thong",
+    "nhat",
+    "khong",
+    "giam",
+    "toan",
+    "kiem",
+    "thuc",
+    "tinh",
+    "master",
+    "zenith",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "service_name": {
+          "type": "string",
+          "description": "Specific service to check or 'System' for full audit.",
+          "default": "System"
+        },
+        "auto_repair": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable automatic repair (if permitted)."
+        }
+      }
+    }
+  }
+}

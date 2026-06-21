@@ -1,0 +1,43 @@
+{
+  "id": "CLAIMS",
+  "name": "Zenith Claims Logic",
+  "version": "1.0.0",
+  "description": "Legacy cognitive bridge: Forwards queries to the knowledge brain for deep reasoning and claim verification.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "claims",
+    "xác minh yêu cầu",
+    "truy vấn tri thức",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "thuc",
+    "knowledge",
+    "truc",
+    "tiep",
+    "brain",
+    "khong",
+    "nang",
+    "truy",
+    "hien",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "type": "string",
+          "description": "The query or claim to verify."
+        }
+      }
+    }
+  }
+}

@@ -23,7 +23,7 @@ def get_hwid():
         raw_id = f"{board}-{cpu}-{machine}"
         hwid = hashlib.sha256(raw_id.encode()).hexdigest()
         return hwid
-    except:
+    except Exception:
         return "fallback_identity_static_000"
 
 def verify_device_identity(stored_hash):

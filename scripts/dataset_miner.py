@@ -21,7 +21,7 @@ except ImportError:
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger("MINER")
 
-DATASET_DIR = r"D:\Docker\N8N\intelligence\datasets"
+DATASET_DIR = r"D:\Docker\JKAI\intelligence\datasets"
 os.makedirs(DATASET_DIR, exist_ok=True)
 
 def mine_dataset(

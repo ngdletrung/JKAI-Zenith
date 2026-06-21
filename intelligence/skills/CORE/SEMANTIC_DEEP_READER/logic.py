@@ -1,6 +1,7 @@
 import ast
 import json
 import os
+from core.utils import path_manager
 
 class SemanticReader:
     """
@@ -9,7 +10,7 @@ class SemanticReader:
     Trả về danh sách Classes, Functions, Imports và Docstrings thay vì text thô.
     """
     def __init__(self):
-        self.workspace_root = os.getenv("WORKSPACE_ROOT", os.getenv("WORKSPACE_ROOT", "D:/Docker/N8N"))
+        self.workspace_root = os.getenv("WORKSPACE_ROOT", os.getenv("WORKSPACE_ROOT", path_manager.get_root()))
 
     def semantic_read(self, file_path: str) -> dict:
         """

@@ -1,0 +1,42 @@
+{
+  "id": "m_ZENITH_2006-1909_46a143",
+  "title": "/sync",
+  "goal": "/sync",
+  "status": "failed",
+  "ts": 1781957555.8288531,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "/sync",
+      "ts": 1781957344.4229126,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1909_46a143"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_2006-1909_46a143` initialized | Trace: `trace_46a143`. Runtime ready.",
+      "ts": 1781957344.4251716,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1909_46a143"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All connection attempts failed",
+      "ts": 1781957555.7667952,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1909_46a143"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+      "ts": 1781957555.7692974,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2006-1909_46a143"
+    }
+  ],
+  "artifacts": {
+    "plan": "/sync",
+    "walkthrough": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

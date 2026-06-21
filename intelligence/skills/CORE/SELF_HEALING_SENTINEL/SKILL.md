@@ -2,7 +2,7 @@
 id: SELF_HEALING_SENTINEL
 name_vn: "Vệ Binh Tự Phục Hồi"
 version: 1.0.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: CORE
 intent_pairs:
   - ["HEAL", "SYSTEM"]

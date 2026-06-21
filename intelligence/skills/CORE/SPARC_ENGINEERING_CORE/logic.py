@@ -44,8 +44,7 @@ class SPARCWorkflow:
         """
         return await engine.call_chat(
             messages=[{"role": "user", "content": prompt}],
-            role=f"SPARC-{phase}",
-            model="claude-3-5-sonnet" # Ưu tiên Sonnet cho lập trình
+            role=f"SPARC-{phase}"
         )
 
 # Singleton

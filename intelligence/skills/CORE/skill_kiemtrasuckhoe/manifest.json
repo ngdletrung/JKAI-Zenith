@@ -1,0 +1,51 @@
+{
+  "id": "SKILL_KIEMTRASUCKHOE",
+  "name": "Zenith System Physician",
+  "version": "1.0.0",
+  "description": "Full system diagnostic and self-evolution core: Monitors hardware vitals, Docker status, and neural layer health.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "kiểm tra sức khỏe",
+    "system health check",
+    "chẩn đoán sự cố",
+    "tự tiến hóa service",
+    "doctor mode",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "thong",
+    "nang",
+    "giam",
+    "hoac",
+    "zenith",
+    "khong",
+    "phat",
+    "trang",
+    "pulse",
+    "kiem",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "check_health",
+            "evolve_service"
+          ],
+          "default": "check_health",
+          "description": "Action to perform."
+        }
+      }
+    }
+  }
+}

@@ -13,7 +13,7 @@ class EventStore:
     def __init__(self, db_path: str = None):
         if db_path is None:
             # Fallback cho môi trường
-            base_dir = "d:/Docker/N8N/core/data"
+            base_dir = "d:/Docker/JKAI/core/data"
             if not os.path.exists(base_dir): os.makedirs(base_dir, exist_ok=True)
             db_path = os.path.join(base_dir, "zenith_events.db")
         

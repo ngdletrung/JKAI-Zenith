@@ -2,7 +2,7 @@
 id: WEB_PATHFINDER
 name_vn: "Hoa Tiêu Dẫn Đường Web"
 version: 3.6.0
-author: "Antigravity Forge"
+author: "JKAI ZENITH Forge"
 domain: RESEARCH
 intent_pairs:
   - ["NAVIGATE", "WEB"]

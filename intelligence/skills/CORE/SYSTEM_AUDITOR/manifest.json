@@ -1,0 +1,44 @@
+{
+  "id": "SYSTEM_AUDITOR",
+  "name": "Zenith System Integrity Auditor",
+  "version": "1.0.0",
+  "description": "Audits the integrity of the Z-SOS Kernel, Plugin Registry, and System Documentation.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "auditor",
+    "kiểm toán hệ thống",
+    "check integrity",
+    "vệ sĩ hệ thống",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "nang",
+    "registry",
+    "zenith",
+    "thuc",
+    "thong",
+    "khong",
+    "hien",
+    "dossier",
+    "toan",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "fix_issues": {
+          "type": "boolean",
+          "description": "Attempt to auto-fix minor issues found during audit"
+        }
+      }
+    }
+  }
+}

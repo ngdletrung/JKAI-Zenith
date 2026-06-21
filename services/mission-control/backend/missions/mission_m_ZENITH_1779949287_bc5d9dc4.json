@@ -1,0 +1,40 @@
+{
+  "id": "m_ZENITH_1779949287_bc5d9dc4",
+  "title": "Check health status of all services in Zenith.",
+  "goal": "Check health status of all services in Zenith.",
+  "status": "failed",
+  "ts": 1779949291.9964828,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "Check health status of all services in Zenith.",
+      "ts": 1779949287.4479373,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779949287_bc5d9dc4"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1779949287_bc5d9dc4` initialized | Trace: `trace_bc5d9dc4`. Runtime ready.",
+      "ts": 1779949287.448932,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779949287_bc5d9dc4"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "🚨 [RECEPTIONIST-FAILED]: Receptionist error: All connection attempts failed",
+      "ts": 1779949291.9799354,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779949287_bc5d9dc4"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "⚠️ **Sự cố Kết nối Nơ-ron**: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. 🫡 (Chi tiết: Receptionist error: All connection attempts failed)",
+      "ts": 1779949291.9817953,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1779949287_bc5d9dc4"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

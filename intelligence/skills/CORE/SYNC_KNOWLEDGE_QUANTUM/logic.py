@@ -32,7 +32,7 @@ class JKAI_Assimilator:
         try:
             with open(self.registry_path, "r", encoding="utf-8") as f:
                 self.registry = json.load(f)
-        except:
+        except Exception:
             self.registry = {}
             logger.error("❌ [ASSIMILATOR] Could not load registry.json")
 
@@ -281,7 +281,7 @@ class JKAI_Assimilator:
         try:
             clean_json = re.search(r'\{.*\}', response, re.DOTALL)
             return json.loads(clean_json.group()) if clean_json else {"is_ok": False, "reason": "Lỗi định dạng JSON"}
-        except: return {"is_ok": False, "reason": "Không thể phân tích phản hồi AI"}
+        except Exception: return {"is_ok": False, "reason": "Không thể phân tích phản hồi AI"}
 
     async def quarantine_folder(self, folder_path: Path, reason: str):
         """B3: Cách ly Mirror Path."""
@@ -321,9 +321,25 @@ class JKAI_Assimilator:
             # Gọi JKAI để thiết kế Hiến chương Nhất Thể
             suite = await self.generate_elite_suite(original_content, folder_name, profile=profile, task_id=task_id)
             
-            # Lưu tệp tin chuẩn 2-File
+            # Lưu tệp tin chuẩn Z-SOS 3-File
             (dest_dir / "logic.py").write_text(suite.get("logic_py", ""), encoding="utf-8")
             (dest_dir / "SKILL.md").write_text(suite.get("skill_md", ""), encoding="utf-8")
+            
+            # 🛡️ [Z-SOS-AUTHORING]: Tự động tạo Passport và Dossier Elite
+            manifest_data = {
+                "id": folder_name.upper(),
+                "name": folder_name.replace("_", " ").title(),
+                "version": "1.0.0",
+                "description": audit.get("summary", "Kỹ năng được đồng hóa tự động."),
+                "author": "Zenith Assimilator",
+                "triggers": [folder_name.replace("_", " ")],
+                "domain": category.upper()
+            }
+            with open(dest_dir / "manifest.json", "w", encoding="utf-8") as f:
+                json.dump(manifest_data, f, indent=2, ensure_ascii=False)
+            
+            # Ghi dossier từ AI thiết kế (với độ chi tiết cao)
+            (dest_dir / "dossier.md").write_text(suite.get("dossier_md", ""), encoding="utf-8")
             
             # Kiểm tra "Sức khỏe" (Syntax check)
             syntax_ok = self.check_python_syntax(dest_dir / "logic.py")
@@ -367,6 +383,7 @@ class JKAI_Assimilator:
         {{
             "logic_py": "...",
             "skill_md": "...",
+            "dossier_md": "# DOSSIER: [NAME]\n\n## 🌌 Overview\n[Mô tả sâu về bản chất kỹ năng, mục tiêu cốt lõi và bối cảnh sử dụng.]\n\n## 🛠️ Detailed Features\n- **[Tính năng 1]**: [Mô tả chi tiết cách hoạt động, đầu vào/đầu ra và logic xử lý].\n- **[Tính năng 2]**: [Mô tả chi tiết kỹ thuật...].\n\n## 🧠 Reasoning Strategy\n[Phân tích tư duy: Tại sao AI nên chọn kỹ năng này? Nó giải quyết bài toán gì tốt hơn các kỹ năng khác?]\n\n## 💎 Strategic Value\n[Giá trị đối với hệ sinh thái Zenith và Master LeeTrung].\n\n## ⚠️ Edge Cases & Risks\n[Các trường hợp biên và rủi ro cần lưu ý].",
             "gems_extracted": ["Những đoạn code hay nhất đã được tích hợp"]
         }}
         """
@@ -379,7 +396,7 @@ class JKAI_Assimilator:
         try:
             clean_json = re.search(r'\{.*\}', response, re.DOTALL)
             return json.loads(clean_json.group())
-        except: return {}
+        except Exception: return {}
 
     async def _read_file_content(self, file_path: Path) -> str:
         """⚡ INTEL EXTRACTION: Utilizing Core Converter."""
@@ -397,7 +414,7 @@ class JKAI_Assimilator:
             with open(file_path, "r", encoding="utf-8") as f:
                 ast.parse(f.read())
             return True
-        except:
+        except Exception:
             return False
 
     def sanitize_to_unsigned(self, text: str) -> str:
@@ -416,7 +433,7 @@ class JKAI_Assimilator:
             try:
                 with open(map_path, "r", encoding="utf-8") as f:
                     data = json.load(f)
-            except: pass
+            except Exception: pass
             
         entry = {
             "id": str(int(time.time())),
@@ -452,7 +469,7 @@ class JKAI_Assimilator:
                     data = json.load(f)
                     for cat, items in data.get("by_skill", {}).items():
                         cat_stats[cat] = len(items)
-            except: pass
+            except Exception: pass
 
         # 12 Trụ cột của Tập đoàn JKAI Zenith
         pillars = ["agents", "skills", "tools", "rules", "knowledge", "prompts", "commands", "protocols", "training", "vault", "archive", "obsidian"]
@@ -574,7 +591,7 @@ Hệ thống đã được thanh lọc và nạp vào Vector Database chuẩn v1
             else:
                 try:
                     data = json.loads(registry_path.read_text(encoding="utf-8"))
-                except:
+                except Exception:
                     data = {c: {} for c in self.dest_map.keys()}
             
             if category not in data: data[category] = {}
@@ -589,7 +606,7 @@ Hệ thống đã được thanh lọc và nạp vào Vector Database chuẩn v1
                         try:
                             val = int(item.get("id", -1))
                             if val > max_id: max_id = val
-                        except: pass
+                        except Exception: pass
                     
                     new_id = f"{max_id + 1:02}"
                     existing_id = new_id
@@ -630,10 +647,10 @@ Hệ thống đã được thanh lọc và nạp vào Vector Database chuẩn v1
                 new_entry = f"| {stars} | **{filename}** | `./{category}/{filename}` | {notes} |\n"
             
             if not map_path.exists():
-                header = f"# 🛡️ JKAI Zenith: HỒ SƠ TRÍ TUỆ {category.upper()} (MAP_{category.upper()})\n\n"
-                header += "Danh mục tri thức đã được đồng hóa và xếp hạng Elite.\n\n---\n\n"
+                header = f"# 🧠 JKAI Zenith: HỆ THỐNG TRÍ TUỆ NHẤT THỂ (NEURAL MAP_{category.upper()})\n\n"
+                header += "Bản đồ nơ-ron đã được đồng hóa và thiết lập liên kết nơ-ron (GraphRAG Ready).\n\n---\n\n"
                 if category != "skills":
-                    header += "| Xếp hạng | Tên | Đường dẫn | Ghi chú Tính năng |\n|:---:|:---|:---|:---|\n"
+                    header += "| ⚡ Neural Rank | Tên Thực Thể | Đường dẫn | Ghi chú Chiến lược |\n|:---:|:---|:---|:---|\n"
                 content = header
             
             content += new_entry
@@ -738,7 +755,7 @@ Hệ thống đã được thanh lọc và nạp vào Vector Database chuẩn v1
         done_dir.mkdir(parents=True, exist_ok=True)
         try:
             shutil.move(str(item), str(done_dir / item.name))
-        except: pass
+        except Exception: pass
 
 # 🚀 Lazy singleton - chỉ khởi tạo khi được gọi, không crash khi import
 try:

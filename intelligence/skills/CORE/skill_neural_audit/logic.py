@@ -2,6 +2,7 @@ import os
 import json
 import time
 from core.utils.engine import engine
+from core.utils import path_manager
 
 def neural_audit(task_id: str, mission_goal: str, execution_log: str) -> dict:
     """
@@ -22,7 +23,7 @@ def neural_audit(task_id: str, mission_goal: str, execution_log: str) -> dict:
     2. Độ chính xác của logic thực thi.
     3. Bài học chiến lược (Điều gì cần tránh, điều gì cần phát huy).
     
-    TRẢ VỀ BÁO CÁO CHIẾN LƯỢC THEO ĐỊNH DẠNG MARKDOWN ELITE.
+    TRẢ VỀ BÁO CÁO THEO FORMAT CHUẨN: dùng ## cho section, bảng markdown cho dữ liệu có cấu trúc, dấu gạch ngang cho separator, gạch đầu dòng cho danh sách.
     """
     
     # Chúng ta dùng Planner để phân tích lại quá trình của chính nó
@@ -32,8 +33,8 @@ def neural_audit(task_id: str, mission_goal: str, execution_log: str) -> dict:
         task_id=task_id
     )
 
-    # 2. Lưu trữ vào Nhật ký Tiến hóa (Strategic Lessons)
-    lessons_path = os.getenv("WORKSPACE_ROOT", "D:/Docker/N8N") + "/intelligence/strategic_lessons.md"
+    # 2. Luu tru vao Nhat ky Tien hoa (Strategic Lessons)
+    lessons_path = path_manager.get("STRATEGIC_LESSONS_FILE") or os.path.join(path_manager.get_root(), "intelligence", "strategic_lessons.md")
     timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
     
     lesson_entry = f"\n\n## 💎 [MISSION AUDIT] - {timestamp}\n- **Task ID**: {task_id}\n- **Goal**: {mission_goal}\n- **Verdict**: {report}\n---"

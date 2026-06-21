@@ -1,0 +1,49 @@
+{
+  "id": "SEMANTIC_DEEP_READER",
+  "name": "Zenith Semantic Deep Reader",
+  "version": "1.0.0",
+  "description": "Python AST analyzer: Extracts structured metadata (classes, functions, imports, docstrings) from source code without reading raw text.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "đọc mã nguồn",
+    "semantic read",
+    "phân tích python",
+    "ast parse",
+    "thấu hiểu code",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "nguon",
+    "nang",
+    "phan",
+    "code",
+    "truc",
+    "python",
+    "khong",
+    "thay",
+    "tich",
+    "logic",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "description": "Absolute or relative path to the .py file."
+        }
+      },
+      "required": [
+        "file_path"
+      ]
+    }
+  }
+}

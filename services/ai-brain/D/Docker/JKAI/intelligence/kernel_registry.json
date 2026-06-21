@@ -1,0 +1,4705 @@
+{
+  "plugins": {
+    "EXECUTIVE_PROPOSAL": {
+      "manifest": {
+        "id": "EXECUTIVE_PROPOSAL",
+        "name": "Zenith Executive Strategy Forge",
+        "version": "1.0.0",
+        "description": "Strategic document architect: Creates high-level proposals and executive summaries with professional Sovereign styling.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "đề xuất chiến lược",
+          "executive proposal",
+          "tóm tắt điều hành",
+          "soạn thảo dự án"
+        ],
+        "domain": "BUSINESS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "forge_proposal",
+                  "summarize"
+                ],
+                "description": "Business action to perform."
+              },
+              "project_data": {
+                "type": "string",
+                "description": "Data for the proposal."
+              },
+              "objectives": {
+                "type": "string",
+                "description": "Strategic objectives."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/BUSINESS/EXECUTIVE_PROPOSAL",
+      "logic_path": "/intelligence/skills/BUSINESS/EXECUTIVE_PROPOSAL/logic.py",
+      "dossier_path": "/intelligence/skills/BUSINESS/EXECUTIVE_PROPOSAL/dossier.md"
+    },
+    "OFFICE_SUITE_MASTER": {
+      "manifest": {
+        "id": "OFFICE_SUITE_MASTER",
+        "name": "Zenith Office Suite Master",
+        "version": "1.0.0",
+        "description": "Professional document production core: Advanced handling, styling, and generation of Microsoft Word and Excel documents with industrial precision.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "viết word",
+          "tạo excel",
+          "đọc tài liệu văn phòng",
+          "office master",
+          "xử lý văn bản chuyên nghiệp"
+        ],
+        "domain": "BUSINESS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "read",
+                  "write_word",
+                  "write_excel"
+                ],
+                "description": "Office task to perform."
+              },
+              "title": {
+                "type": "string",
+                "description": "Title for Word document."
+              },
+              "content": {
+                "type": "string",
+                "description": "Content for Word document."
+              },
+              "data": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                },
+                "description": "Data for Excel sheet."
+              },
+              "filename": {
+                "type": "string",
+                "description": "Base filename for the output."
+              }
+            },
+            "required": [
+              "action"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/BUSINESS/OFFICE_SUITE_MASTER",
+      "logic_path": "/intelligence/skills/BUSINESS/OFFICE_SUITE_MASTER/logic.py",
+      "dossier_path": "/intelligence/skills/BUSINESS/OFFICE_SUITE_MASTER/dossier.md"
+    },
+    "skill_med_21_viral_eng": {
+      "manifest": {
+        "id": "SKILL_MED_21_VIRAL_ENG",
+        "name": "Zenith Viral Content Engineering",
+        "version": "1.0.0",
+        "description": "Marketing psychology core: Designs and optimizes digital content for maximum virality and engagement using psychological triggers.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "kỹ nghệ viral",
+          "viral content",
+          "nội dung lan tỏa",
+          "marketing psychology"
+        ],
+        "domain": "BUSINESS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "content_topic": {
+                "type": "string",
+                "description": "Topic to make viral."
+              },
+              "target_platform": {
+                "type": "string",
+                "description": "Target social platform (e.g., TikTok, Facebook)."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/BUSINESS/skill_med_21_viral_eng",
+      "logic_path": "/intelligence/skills/BUSINESS/skill_med_21_viral_eng/logic.py",
+      "dossier_path": "/intelligence/skills/BUSINESS/skill_med_21_viral_eng/dossier.md"
+    },
+    "skill_med_22_auto_video": {
+      "manifest": {
+        "id": "SKILL_MED_22_AUTO_VIDEO",
+        "name": "Zenith Automated Video Editor",
+        "version": "1.0.0",
+        "description": "Visual storytelling core: Automates the production, editing, and optimization of video content for digital platforms.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "biên tập video tự động",
+          "tạo video ai",
+          "auto video editor",
+          "sản xuất clip"
+        ],
+        "domain": "BUSINESS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "script": {
+                "type": "string",
+                "description": "Script or topic for the video."
+              },
+              "format": {
+                "type": "string",
+                "enum": [
+                  "horizontal",
+                  "vertical"
+                ],
+                "description": "Video aspect ratio."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/BUSINESS/skill_med_22_auto_video",
+      "logic_path": "/intelligence/skills/BUSINESS/skill_med_22_auto_video/logic.py",
+      "dossier_path": "/intelligence/skills/BUSINESS/skill_med_22_auto_video/dossier.md"
+    },
+    "skill_med_23_brand_ai": {
+      "manifest": {
+        "id": "SKILL_MED_23_BRAND_AI",
+        "name": "Zenith AI Branding Architect",
+        "version": "1.0.0",
+        "description": "Brand identity core: Designs, manages, and protects the digital brand persona of Master LeeTrung and the Zenith Corporation.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "nhận diện thương hiệu",
+          "brand ai",
+          "branding architect",
+          "kiến tạo thương hiệu"
+        ],
+        "domain": "BUSINESS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "brand_name": {
+                "type": "string",
+                "description": "Name of the brand."
+              },
+              "core_values": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Core values of the brand."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/BUSINESS/skill_med_23_brand_ai",
+      "logic_path": "/intelligence/skills/BUSINESS/skill_med_23_brand_ai/logic.py",
+      "dossier_path": "/intelligence/skills/BUSINESS/skill_med_23_brand_ai/dossier.md"
+    },
+    "skill_med_24_social_dom": {
+      "manifest": {
+        "id": "SKILL_MED_24_SOCIAL_DOM",
+        "name": "Zenith Social Dominance Core",
+        "version": "1.0.0",
+        "description": "Digital influence core: Orchestrates comprehensive strategies for social media presence, engagement, and authority building.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "thống trị mạng xã hội",
+          "social dominance",
+          "quản lý cộng đồng",
+          "digital influence"
+        ],
+        "domain": "BUSINESS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "platform": {
+                "type": "string",
+                "description": "Social media platform."
+              },
+              "strategy_goal": {
+                "type": "string",
+                "description": "Main goal (e.g., follower growth, authority building)."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/BUSINESS/skill_med_24_social_dom",
+      "logic_path": "/intelligence/skills/BUSINESS/skill_med_24_social_dom/logic.py",
+      "dossier_path": "/intelligence/skills/BUSINESS/skill_med_24_social_dom/dossier.md"
+    },
+    "skill_med_25_seo_quantum": {
+      "manifest": {
+        "id": "SKILL_MED_25_SEO_QUANTUM",
+        "name": "Zenith SEO Quantum Engine",
+        "version": "1.0.0",
+        "description": "Search optimization core: Implements advanced quantum SEO strategies to dominate search engine rankings and maximize organic visibility.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "seo quantum",
+          "tối ưu tìm kiếm",
+          "seo top 1",
+          "organic visibility"
+        ],
+        "domain": "BUSINESS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "target_url": {
+                "type": "string",
+                "description": "URL to optimize."
+              },
+              "keywords": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Target keywords."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/BUSINESS/skill_med_25_seo_quantum",
+      "logic_path": "/intelligence/skills/BUSINESS/skill_med_25_seo_quantum/logic.py",
+      "dossier_path": "/intelligence/skills/BUSINESS/skill_med_25_seo_quantum/dossier.md"
+    },
+    "skill_med_26_email_auto": {
+      "manifest": {
+        "id": "SKILL_MED_26_EMAIL_AUTO",
+        "name": "Zenith Email Marketing Automator",
+        "version": "1.0.0",
+        "description": "Communication automation core: Manages high-fidelity email campaigns, lead nurturing, and automated follow-up sequences.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "email marketing",
+          "tự động hóa email",
+          "chiến dịch email",
+          "lead nurturing"
+        ],
+        "domain": "BUSINESS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "campaign_name": {
+                "type": "string",
+                "description": "Name of the campaign."
+              },
+              "target_audience": {
+                "type": "string",
+                "description": "Description of the target audience."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/BUSINESS/skill_med_26_email_auto",
+      "logic_path": "/intelligence/skills/BUSINESS/skill_med_26_email_auto/logic.py",
+      "dossier_path": "/intelligence/skills/BUSINESS/skill_med_26_email_auto/dossier.md"
+    },
+    "skill_med_27_copy_hypno": {
+      "manifest": {
+        "id": "SKILL_MED_27_COPY_HYPNO",
+        "name": "Zenith Hypnotic Copywriter",
+        "version": "1.0.0",
+        "description": "Persuasive writing core: Crafting high-conversion sales copy and psychological influence content using advanced linguistic patterns.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "copywriting thôi miên",
+          "viết bài bán hàng",
+          "persuasive writing",
+          "hypnotic copy"
+        ],
+        "domain": "BUSINESS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "product_description": {
+                "type": "string",
+                "description": "Description of the product or service."
+              },
+              "target_audience": {
+                "type": "string",
+                "description": "Profile of the target reader."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/BUSINESS/skill_med_27_copy_hypno",
+      "logic_path": "/intelligence/skills/BUSINESS/skill_med_27_copy_hypno/logic.py",
+      "dossier_path": "/intelligence/skills/BUSINESS/skill_med_27_copy_hypno/dossier.md"
+    },
+    "skill_med_28_virtual_event": {
+      "manifest": {
+        "id": "SKILL_MED_28_VIRTUAL_EVENT",
+        "name": "Zenith Virtual Event Orchestrator",
+        "version": "1.0.0",
+        "description": "Digital experience core: Manages the planning, execution, and engagement of virtual events, webinars, and online workshops.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "sự kiện ảo",
+          "virtual event",
+          "tổ chức webinar",
+          "workshop online"
+        ],
+        "domain": "BUSINESS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "event_name": {
+                "type": "string",
+                "description": "Name of the event."
+              },
+              "platform": {
+                "type": "string",
+                "description": "Streaming/Event platform."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/BUSINESS/skill_med_28_virtual_event",
+      "logic_path": "/intelligence/skills/BUSINESS/skill_med_28_virtual_event/logic.py",
+      "dossier_path": "/intelligence/skills/BUSINESS/skill_med_28_virtual_event/dossier.md"
+    },
+    "skill_med_29_influencer": {
+      "manifest": {
+        "id": "SKILL_MED_29_INFLUENCER",
+        "name": "Zenith Influencer Intelligence",
+        "version": "1.0.0",
+        "description": "KOLs and influencer core: Smart scouting, auditing, and partnership management for high-impact influence marketing.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "tìm kiếm kols",
+          "influencer marketing",
+          "kết nối kol",
+          "scouting influencers"
+        ],
+        "domain": "BUSINESS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "niche": {
+                "type": "string",
+                "description": "Target niche or industry."
+              },
+              "platform": {
+                "type": "string",
+                "description": "Primary platform (e.g., TikTok, YouTube)."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/BUSINESS/skill_med_29_influencer",
+      "logic_path": "/intelligence/skills/BUSINESS/skill_med_29_influencer/logic.py",
+      "dossier_path": "/intelligence/skills/BUSINESS/skill_med_29_influencer/dossier.md"
+    },
+    "skill_med_30_pr_ai": {
+      "manifest": {
+        "id": "SKILL_MED_30_PR_AI",
+        "name": "Zenith AI PR & Crisis Manager",
+        "version": "1.0.0",
+        "description": "Public relations core: Handles automated press release generation, media sentiment analysis, and rapid crisis response orchestration.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "xử lý khủng hoảng pr",
+          "quan hệ công chúng",
+          "viết thông cáo báo chí",
+          "pr strategy"
+        ],
+        "domain": "BUSINESS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "crisis_context": {
+                "type": "string",
+                "description": "Context of the PR issue or crisis."
+              },
+              "tone": {
+                "type": "string",
+                "default": "professional",
+                "description": "Desired PR tone."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/BUSINESS/skill_med_30_pr_ai",
+      "logic_path": "/intelligence/skills/BUSINESS/skill_med_30_pr_ai/logic.py",
+      "dossier_path": "/intelligence/skills/BUSINESS/skill_med_30_pr_ai/dossier.md"
+    },
+    "skill_quanlyvanphong": {
+      "manifest": {
+        "id": "SKILL_QUANLYVANPHONG",
+        "name": "Zenith Office Administrator",
+        "version": "1.0.0",
+        "description": "Administrative support core: Handles word processing, excel reporting, and office document parsing with specialized Zenith styling.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "quản lý văn phòng",
+          "soạn thảo văn bản",
+          "xuất báo cáo excel",
+          "đọc file office"
+        ],
+        "domain": "BUSINESS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "soan_thao_word",
+                  "xuat_bao_cao_excel",
+                  "doc_du_lieu_van_phong"
+                ],
+                "description": "Admin action."
+              },
+              "title": {
+                "type": "string",
+                "description": "Document title."
+              },
+              "content": {
+                "type": "string",
+                "description": "Main text content or data."
+              }
+            },
+            "required": [
+              "action"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/BUSINESS/skill_quanlyvanphong",
+      "logic_path": "/intelligence/skills/BUSINESS/skill_quanlyvanphong/logic.py",
+      "dossier_path": "/intelligence/skills/BUSINESS/skill_quanlyvanphong/dossier.md"
+    },
+    "STRATEGIC_CONTENT_FORGE": {
+      "manifest": {
+        "id": "STRATEGIC_CONTENT_FORGE",
+        "name": "Zenith Strategic Content Forge",
+        "version": "1.0.0",
+        "description": "Elite writing core: Drafts high-level project descriptions and technical reports with corporate-grade precision and Word export capabilities.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "soạn thảo báo cáo",
+          "thuyết minh dự án",
+          "strategic writing",
+          "viết báo cáo chiến lược"
+        ],
+        "domain": "BUSINESS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "topic": {
+                "type": "string",
+                "description": "Topic of the report."
+              },
+              "context": {
+                "type": "string",
+                "description": "Additional context or data."
+              },
+              "structure": {
+                "type": "string",
+                "description": "Desired structure of the report."
+              }
+            },
+            "required": [
+              "topic"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/BUSINESS/STRATEGIC_CONTENT_FORGE",
+      "logic_path": "/intelligence/skills/BUSINESS/STRATEGIC_CONTENT_FORGE/logic.py",
+      "dossier_path": "/intelligence/skills/BUSINESS/STRATEGIC_CONTENT_FORGE/dossier.md"
+    },
+    "PREMIUM_UI_ENGINE": {
+      "manifest": {
+        "id": "PREMIUM_UI_ENGINE",
+        "name": "Zenith Premium UI Engine",
+        "version": "1.0.0",
+        "description": "High-fidelity UI architect: Generates premium HTML/CSS/JS components with Antigravity design tokens, glassmorphism, and micro-animations.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "thiết kế giao diện",
+          "premium ui",
+          "tạo component web",
+          "ui architect",
+          "kiến tạo giao diện"
+        ],
+        "domain": "CODING",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "component_request": {
+                "type": "string",
+                "description": "Description of the UI component to design."
+              }
+            },
+            "required": [
+              "component_request"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CODING/PREMIUM_UI_ENGINE",
+      "logic_path": "/intelligence/skills/CODING/PREMIUM_UI_ENGINE/logic.py",
+      "dossier_path": "/intelligence/skills/CODING/PREMIUM_UI_ENGINE/dossier.md"
+    },
+    "skill_tdd_elite": {
+      "manifest": {
+        "id": "SKILL_TDD_ELITE",
+        "name": "Zenith TDD Elite",
+        "version": "1.0.0",
+        "description": "Quality engineering core: Implements the Red-Green-Refactor cycle to ensure 100% code reliability and technical excellence.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "thực thi tdd",
+          "kiểm thử phần mềm",
+          "red green refactor",
+          "test driven development"
+        ],
+        "domain": "CODING",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "feature": {
+                "type": "string",
+                "description": "The software feature to develop using TDD."
+              }
+            },
+            "required": [
+              "feature"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CODING/skill_tdd_elite",
+      "logic_path": "/intelligence/skills/CODING/skill_tdd_elite/logic.py",
+      "dossier_path": "/intelligence/skills/CODING/skill_tdd_elite/dossier.md"
+    },
+    "SOVEREIGN_PRESENTER": {
+      "manifest": {
+        "id": "SOVEREIGN_PRESENTER",
+        "name": "Zenith Sovereign Presenter",
+        "version": "1.0.0",
+        "description": "Visual presentation architect: Automates the creation of professional PowerPoint slides with dynamic content structures and self-healing dependency management.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "tạo slide",
+          "thiết kế thuyết trình",
+          "pptx generator",
+          "sovereign presenter"
+        ],
+        "domain": "CODING",
+        "dependencies": [
+          "python-pptx"
+        ],
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string",
+                "description": "Main title of the presentation."
+              },
+              "subtitle": {
+                "type": "string",
+                "description": "Sub-title for the cover slide."
+              },
+              "slides": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "title": {
+                      "type": "string"
+                    },
+                    "content": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "description": "Array of slide objects with title and content."
+              },
+              "filename": {
+                "type": "string",
+                "description": "Output filename."
+              }
+            },
+            "required": [
+              "title",
+              "slides"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CODING/SOVEREIGN_PRESENTER",
+      "logic_path": "/intelligence/skills/CODING/SOVEREIGN_PRESENTER/logic.py",
+      "dossier_path": "/intelligence/skills/CODING/SOVEREIGN_PRESENTER/dossier.md"
+    },
+    "ALGORITHMIC_QUANTUM_SOLVER": {
+      "manifest": {
+        "id": "ALGORITHMIC_QUANTUM_SOLVER",
+        "name": "Algorithmic Quantum Solver",
+        "version": "1.0.0",
+        "description": "High-precision mathematical calculation and algorithmic execution engine.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "tính toán",
+          "thuật toán",
+          "calculate",
+          "math solver"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "expression": {
+                "type": "string",
+                "description": "Mathematical expression to solve"
+              },
+              "code": {
+                "type": "string",
+                "description": "Python code for complex logic"
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/ALGORITHMIC_QUANTUM_SOLVER",
+      "logic_path": "/intelligence/skills/CORE/ALGORITHMIC_QUANTUM_SOLVER/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/ALGORITHMIC_QUANTUM_SOLVER/dossier.md"
+    },
+    "claims": {
+      "manifest": {
+        "id": "CLAIMS",
+        "name": "Zenith Claims Logic",
+        "version": "1.0.0",
+        "description": "Legacy cognitive bridge: Forwards queries to the knowledge brain for deep reasoning and claim verification.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "claims",
+          "xác minh yêu cầu",
+          "truy vấn tri thức"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "The query or claim to verify."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/claims",
+      "logic_path": "/intelligence/skills/CORE/claims/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/claims/dossier.md"
+    },
+    "COUNCIL_OF_MINDS_DEBATE": {
+      "manifest": {
+        "id": "COUNCIL_OF_MINDS_DEBATE",
+        "name": "Council of Minds Debate",
+        "version": "1.0.0",
+        "description": "Multi-agent deliberative framework for strategic decision making and peer review.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "tranh biện",
+          "họp hội đồng",
+          "debate",
+          "council meeting",
+          "đa chiều"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "topic": {
+                "type": "string",
+                "description": "The topic or goal for the council to deliberate on."
+              }
+            },
+            "required": [
+              "topic"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/COUNCIL_OF_MINDS_DEBATE",
+      "logic_path": "/intelligence/skills/CORE/COUNCIL_OF_MINDS_DEBATE/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/COUNCIL_OF_MINDS_DEBATE/dossier.md"
+    },
+    "DEEP_CONTEXT_SCANNER": {
+      "manifest": {
+        "id": "DEEP_CONTEXT_SCANNER",
+        "name": "Zenith Deep Context Scanner",
+        "version": "1.0.0",
+        "description": "Architectural clairvoyance: Scans Docker, networks, environments, and agent roles to build a system-wide context map.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "thấu thị hệ thống",
+          "deep context",
+          "scan architecture",
+          "kiểm tra kiến trúc"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "root_path": {
+                "type": "string",
+                "description": "The root path of the workspace to scan."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/DEEP_CONTEXT_SCANNER",
+      "logic_path": "/intelligence/skills/CORE/DEEP_CONTEXT_SCANNER/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/DEEP_CONTEXT_SCANNER/dossier.md"
+    },
+    "DOSSIER_INVESTIGATOR": {
+      "manifest": {
+        "id": "DOSSIER_INVESTIGATOR",
+        "name": "Zenith Dossier Investigator",
+        "version": "1.0.0",
+        "description": "Multi-source intelligence gathering engine: Performs parallel reconnaissance across memory, web, and code to build relational dossiers.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "trinh sát",
+          "điều tra",
+          "investigate",
+          "dossier build",
+          "truy quét thực thể"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "seed": {
+                "type": "string",
+                "description": "The initial entity or topic to investigate."
+              },
+              "max_depth": {
+                "type": "integer",
+                "description": "Recursion depth for entity discovery.",
+                "default": 2
+              }
+            },
+            "required": [
+              "seed"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/DOSSIER_INVESTIGATOR",
+      "logic_path": "/intelligence/skills/CORE/DOSSIER_INVESTIGATOR/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/DOSSIER_INVESTIGATOR/dossier.md"
+    },
+    "duyet_browse_zenith": {
+      "manifest": {
+        "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/BROWSER_VISION_OPS/manifest.json - Role: Z-SOS Manifest for Hybrid Browser Vision & Diagnostics - Ownership: Mr LeeTrung - Status: Active | Version: SDS v2.5 (Hybrid Elite) ",
+        "id": "duyet_browse_zenith",
+        "name": "Zenith Browse (Duyệt Zenith)",
+        "version": "2.5.0",
+        "description": "Hybrid Browser Intelligence: Merges autonomous human-like visual interaction with deep-level Chrome DevTools diagnostics (Network, Console, Performance).",
+        "author": "JKAI-Zenith",
+        "triggers": [
+          "quan sát web",
+          "duyệt web",
+          "browser vision",
+          "thiên nhãn",
+          "debug trình duyệt",
+          "inspect network",
+          "kiểm tra hiệu năng web",
+          "browser audit"
+        ],
+        "domain": "CORE",
+        "config": {
+          "modes": {
+            "standard": "ai-browser-use",
+            "advanced": "chrome-devtools-mcp"
+          },
+          "auto_diagnostics": true,
+          "screenshot_enabled": true
+        },
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "objective": {
+                "type": "string",
+                "description": "Goal for the browser operation."
+              },
+              "url": {
+                "type": "string",
+                "description": "Target URL."
+              },
+              "use_xray": {
+                "type": "boolean",
+                "default": false,
+                "description": "Enable Advanced DevTools Diagnostics (Network/Console/Perf)."
+              }
+            },
+            "required": [
+              "objective"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/duyet_browse_zenith",
+      "logic_path": "/intelligence/skills/CORE/duyet_browse_zenith/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/duyet_browse_zenith/dossier.md"
+    },
+    "flow-nexus-neural": {
+      "manifest": {
+        "id": "FLOW_NEXUS_NEURAL",
+        "name": "Zenith Flow-Nexus Neural",
+        "version": "1.0.0",
+        "description": "Neural orchestration bridge: Connects workflow flows with the deep neural processing layers of Zenith.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "neural flow",
+          "flow nexus neural",
+          "điều phối luồng nơ ron"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "params": {
+                "type": "object",
+                "description": "Workflow parameters."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/flow-nexus-neural",
+      "logic_path": "/intelligence/skills/CORE/flow-nexus-neural/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/flow-nexus-neural/dossier.md"
+    },
+    "flow-nexus-platform": {
+      "manifest": {
+        "id": "FLOW_NEXUS_PLATFORM",
+        "name": "Zenith Flow-Nexus Platform",
+        "version": "1.0.0",
+        "description": "Platform integration bridge: Connects workflows with the core infrastructure and external platform services of Zenith.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "platform flow",
+          "flow nexus platform",
+          "điều phối nền tảng"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "params": {
+                "type": "object",
+                "description": "Platform workflow parameters."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/flow-nexus-platform",
+      "logic_path": "/intelligence/skills/CORE/flow-nexus-platform/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/flow-nexus-platform/dossier.md"
+    },
+    "flow-nexus-swarm": {
+      "manifest": {
+        "id": "FLOW_NEXUS_SWARM",
+        "name": "Zenith Flow-Nexus Swarm",
+        "version": "1.0.0",
+        "description": "Swarm orchestration bridge: Connects workflows with the collective intelligence and multi-agent systems of Zenith.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "swarm flow",
+          "flow nexus swarm",
+          "điều phối quân đoàn"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "params": {
+                "type": "object",
+                "description": "Swarm workflow parameters."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/flow-nexus-swarm",
+      "logic_path": "/intelligence/skills/CORE/flow-nexus-swarm/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/flow-nexus-swarm/dossier.md"
+    },
+    "github-automation": {
+      "manifest": {
+        "id": "GITHUB_AUTOMATION",
+        "name": "Zenith GitHub Automation",
+        "version": "1.0.0",
+        "description": "GitHub lifecycle automation: Orchestrates repositories, branches, and automation workflows directly from Zenith.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "github automation",
+          "tự động hóa github",
+          "quản lý repo"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "description": "GitHub action to perform."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/github-automation",
+      "logic_path": "/intelligence/skills/CORE/github-automation/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/github-automation/dossier.md"
+    },
+    "github-code-review": {
+      "manifest": {
+        "id": "GITHUB_CODE_REVIEW",
+        "name": "Zenith GitHub Code Review",
+        "version": "1.0.0",
+        "description": "Automated AI code auditor: Performs deep analysis of Pull Requests, detects bugs, and suggests improvements according to Zenith standards.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "review code github",
+          "kiểm tra mã nguồn",
+          "audit pull request"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "pr_number": {
+                "type": "integer",
+                "description": "Pull Request number."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/github-code-review",
+      "logic_path": "/intelligence/skills/CORE/github-code-review/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/github-code-review/dossier.md"
+    },
+    "github-multi-repo": {
+      "manifest": {
+        "id": "GITHUB_MULTI_REPO",
+        "name": "Zenith GitHub Multi-Repo",
+        "version": "1.0.0",
+        "description": "Distributed repository management: Synchronizes and manages multiple GitHub repositories simultaneously for microservice architectures.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "quản lý nhiều repo",
+          "github multi repo",
+          "đồng bộ microservices"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "repo_list": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "List of repositories to manage."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/github-multi-repo",
+      "logic_path": "/intelligence/skills/CORE/github-multi-repo/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/github-multi-repo/dossier.md"
+    },
+    "github-project-management": {
+      "manifest": {
+        "id": "GITHUB_PROJECT_MANAGEMENT",
+        "name": "Zenith GitHub Project Management",
+        "version": "1.0.0",
+        "description": "Agile project orchestrator: Manages Issues, Projects, Milestones, and Kanban boards on GitHub.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "quản lý dự án github",
+          "github project",
+          "quản lý issue",
+          "milestone management"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "description": "Project management action."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/github-project-management",
+      "logic_path": "/intelligence/skills/CORE/github-project-management/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/github-project-management/dossier.md"
+    },
+    "github-release-management": {
+      "manifest": {
+        "id": "GITHUB_RELEASE_MANAGEMENT",
+        "name": "Zenith GitHub Release Management",
+        "version": "1.0.0",
+        "description": "Deployment orchestrator: Manages software versions, tags, changelogs, and release assets on GitHub.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "phát hành phần mềm",
+          "github release",
+          "quản lý version",
+          "tạo changelog"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "version": {
+                "type": "string",
+                "description": "Release version (e.g., v1.0.0)."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/github-release-management",
+      "logic_path": "/intelligence/skills/CORE/github-release-management/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/github-release-management/dossier.md"
+    },
+    "github-workflow-automation": {
+      "manifest": {
+        "id": "GITHUB_WORKFLOW_AUTOMATION",
+        "name": "Zenith GitHub Workflow Automation",
+        "version": "1.0.0",
+        "description": "CI/CD lifecycle manager: Designs, deploys, and monitors complex automation workflows using GitHub Actions.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "tự động hóa workflow github",
+          "github actions",
+          "ci cd automation"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "workflow_name": {
+                "type": "string",
+                "description": "Name of the workflow to manage."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/github-workflow-automation",
+      "logic_path": "/intelligence/skills/CORE/github-workflow-automation/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/github-workflow-automation/dossier.md"
+    },
+    "hive-mind": {
+      "manifest": {
+        "id": "HIVE_MIND",
+        "name": "Zenith Hive Mind",
+        "version": "1.0.0",
+        "description": "Collective consciousness interface: Synchronizes the thought processes of the multi-agent swarm into a unified cognitive state.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "hive mind",
+          "trí tuệ tập thể",
+          "nhất thể hóa tư duy"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "context": {
+                "type": "string",
+                "description": "Global context for synchronization."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/hive-mind",
+      "logic_path": "/intelligence/skills/CORE/hive-mind/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/hive-mind/dossier.md"
+    },
+    "hive-mind-advanced": {
+      "manifest": {
+        "id": "HIVE_MIND_ADVANCED",
+        "name": "Zenith Hive Mind Advanced",
+        "version": "1.0.0",
+        "description": "High-tier collective intelligence: Implements deep neural resonance and cross-agent synthesis for ultra-complex problem solving.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "hive mind cao cấp",
+          "trí tuệ tập thể nâng cao",
+          "neural resonance"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "depth": {
+                "type": "integer",
+                "default": 2,
+                "description": "Depth of neural resonance."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/hive-mind-advanced",
+      "logic_path": "/intelligence/skills/CORE/hive-mind-advanced/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/hive-mind-advanced/dossier.md"
+    },
+    "hooks-automation": {
+      "manifest": {
+        "id": "HOOKS_AUTOMATION",
+        "name": "Zenith Hooks Automation",
+        "version": "1.0.0",
+        "description": "Event-driven system triggers: Manages Webhooks, Git Hooks, and internal system event listeners.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "tự động hóa hooks",
+          "webhooks management",
+          "git hooks",
+          "system events"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "hook_type": {
+                "type": "string",
+                "enum": [
+                  "webhook",
+                  "git_hook",
+                  "system_event"
+                ],
+                "description": "Type of hook to manage."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/hooks-automation",
+      "logic_path": "/intelligence/skills/CORE/hooks-automation/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/hooks-automation/dossier.md"
+    },
+    "HOST_SATELLITE_CONTROL": {
+      "manifest": {
+        "id": "HOST_SATELLITE_CONTROL",
+        "name": "Zenith Host Satellite Bridge",
+        "version": "1.0.0",
+        "description": "Physical bridge to the host machine: Enables TTS, screenshots, remote command execution, and mouse control on the host OS.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "điều khiển máy chủ",
+          "host control",
+          "phát âm thanh",
+          "chụp màn hình host",
+          "click chuột"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "description": "Text to speak on host"
+              },
+              "command": {
+                "type": "string",
+                "description": "Terminal command to run on host"
+              },
+              "x": {
+                "type": "integer",
+                "description": "X coordinate for mouse click"
+              },
+              "y": {
+                "type": "integer",
+                "description": "Y coordinate for mouse click"
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/HOST_SATELLITE_CONTROL",
+      "logic_path": "/intelligence/skills/CORE/HOST_SATELLITE_CONTROL/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/HOST_SATELLITE_CONTROL/dossier.md"
+    },
+    "IMAGE_GEN_FORGE": {
+      "manifest": {
+        "id": "IMAGE_GEN_FORGE",
+        "name": "Zenith Image Generation Forge",
+        "version": "1.0.0",
+        "description": "Creative visual core: Generates high-quality images using Stable Diffusion (SDNext) based on natural language prompts.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "tạo ảnh",
+          "vẽ tranh",
+          "generate image",
+          "stable diffusion",
+          "mắt thần sáng tạo"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "prompt": {
+                "type": "string",
+                "description": "Visual description of the image to generate (English recommended)."
+              },
+              "negative_prompt": {
+                "type": "string",
+                "description": "Elements to exclude from the image.",
+                "default": "blurry, low quality, watermark, text, signature, deformed"
+              },
+              "width": {
+                "type": "integer",
+                "description": "Image width.",
+                "default": 512
+              },
+              "height": {
+                "type": "integer",
+                "description": "Image height.",
+                "default": 512
+              },
+              "steps": {
+                "type": "integer",
+                "description": "Number of denoising steps.",
+                "default": 20
+              }
+            },
+            "required": [
+              "prompt"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/IMAGE_GEN_FORGE",
+      "logic_path": "/intelligence/skills/CORE/IMAGE_GEN_FORGE/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/IMAGE_GEN_FORGE/dossier.md"
+    },
+    "IMPORT_SKILL": {
+      "manifest": {
+        "id": "IMPORT_SKILL",
+        "name": "Sovereign Skill Importer",
+        "version": "2.1.0",
+        "description": "Automated assimilation of external intelligence into the Zenith ecosystem.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "nhập khẩu kỹ năng",
+          "import skill",
+          "đồng hóa"
+        ],
+        "domain": "CORE"
+      },
+      "path": "/intelligence/skills/CORE/IMPORT_SKILL",
+      "logic_path": "/intelligence/skills/CORE/IMPORT_SKILL/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/IMPORT_SKILL/dossier.md"
+    },
+    "memory-management": {
+      "manifest": {
+        "id": "MEMORY_MANAGEMENT",
+        "name": "Zenith Memory Management",
+        "version": "1.0.0",
+        "description": "Cognitive retention core: Manages short-term and long-term memory, pruning outdated information and prioritizing strategic context.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "quản lý bộ nhớ",
+          "dọn dẹp memory",
+          "quản lý ngữ cảnh",
+          "memory prune"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "prune",
+                  "retrieve",
+                  "persist"
+                ],
+                "description": "Memory management action."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/memory-management",
+      "logic_path": "/intelligence/skills/CORE/memory-management/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/memory-management/dossier.md"
+    },
+    "neural-training": {
+      "manifest": {
+        "id": "NEURAL_TRAINING",
+        "name": "Zenith Neural Training",
+        "version": "1.0.0",
+        "description": "Adaptive learning interface: Orchestrates fine-tuning, RAG data ingestion, and behavioral alignment for neural models.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "huấn luyện nơ ron",
+          "neural training",
+          "train model",
+          "cập nhật tri thức"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "dataset_path": {
+                "type": "string",
+                "description": "Path to training data."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/neural-training",
+      "logic_path": "/intelligence/skills/CORE/neural-training/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/neural-training/dossier.md"
+    },
+    "NEURAL_REFLEX_GUARD": {
+      "manifest": {
+        "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/NEURAL_REFLEX_GUARD/manifest.json - Role: Z-SOS Manifest for Autonomic Reflex - Ownership: Mr LeeTrung - Status: Active | Version: SDS v1.0 ",
+        "id": "NEURAL_REFLEX_GUARD",
+        "name": "Zenith Neural Reflex Guard",
+        "version": "1.0.0",
+        "description": "Autonomic Nervous System core: Automatically triggers linting, testing, and building sequences after code changes to ensure 100% integrity.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "phản xạ tự trị",
+          "kiểm tra tự động",
+          "lint and test",
+          "reflex guard",
+          "verify changes"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "Path to the directory or file to verify."
+              },
+              "auto_fix": {
+                "type": "boolean",
+                "default": true,
+                "description": "Whether to attempt automatic fixes for lint errors."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/NEURAL_REFLEX_GUARD",
+      "logic_path": "/intelligence/skills/CORE/NEURAL_REFLEX_GUARD/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/NEURAL_REFLEX_GUARD/dossier.md"
+    },
+    "NEURAL_SYSTEM_WARMUP": {
+      "manifest": {
+        "id": "NEURAL_SYSTEM_WARMUP",
+        "name": "Zenith Neural Warmup",
+        "version": "1.0.0",
+        "description": "Summoning protocol: Pre-loads strategic neural models into VRAM to ensure zero-latency response.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "khởi động nơ ron",
+          "warmup",
+          "triệu hồi toàn quân",
+          "đánh thức đặc vụ"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {}
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/NEURAL_SYSTEM_WARMUP",
+      "logic_path": "/intelligence/skills/CORE/NEURAL_SYSTEM_WARMUP/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/NEURAL_SYSTEM_WARMUP/dossier.md"
+    },
+    "OMNI_EVOLUTION_FORGE": {
+      "manifest": {
+        "id": "OMNI_EVOLUTION_FORGE",
+        "name": "Omni-Evolution Forge",
+        "version": "2.0.0",
+        "description": "Sovereign protocol for independent evolution and technology synthesis.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "tiến hóa",
+          "nâng cấp hệ thống",
+          "evolve",
+          "technology scan"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "focus_area": {
+                "type": "string",
+                "description": "Tech area to scan"
+              }
+            },
+            "required": [
+              "focus_area"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/OMNI_EVOLUTION_FORGE",
+      "logic_path": "/intelligence/skills/CORE/OMNI_EVOLUTION_FORGE/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/OMNI_EVOLUTION_FORGE/dossier.md"
+    },
+    "OMNI_SEARCH_ENGINE": {
+      "manifest": {
+        "id": "OMNI_SEARCH_ENGINE",
+        "name": "Zenith Omni Search (v8.0)",
+        "version": "8.0.0",
+        "description": "Supreme intelligence retrieval: Hybrid search engine with semantic reranking, fact verification, and persistent neural caching.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "tìm kiếm internet",
+          "tra cứu thông tin",
+          "omni search",
+          "search global",
+          "tìm kiếm thông minh"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "description": "The search query."
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "fast",
+                  "deep"
+                ],
+                "default": "fast",
+                "description": "Search depth."
+              },
+              "bypass_cache": {
+                "type": "boolean",
+                "default": false,
+                "description": "Force fresh search from internet."
+              }
+            },
+            "required": [
+              "query"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/OMNI_SEARCH_ENGINE",
+      "logic_path": "/intelligence/skills/CORE/OMNI_SEARCH_ENGINE/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/OMNI_SEARCH_ENGINE/dossier.md"
+    },
+    "pair-programming": {
+      "manifest": {
+        "id": "PAIR_PROGRAMMING",
+        "name": "Zenith Pair Programming",
+        "version": "1.0.0",
+        "description": "Collaborative coding engine: Provides real-time assistance, logic verification, and iterative development alongside the user.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "pair programming",
+          "lập trình cùng master",
+          "hỗ trợ code",
+          "viết code cùng ai"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "context": {
+                "type": "string",
+                "description": "Coding context."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/pair-programming",
+      "logic_path": "/intelligence/skills/CORE/pair-programming/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/pair-programming/dossier.md"
+    },
+    "performance-analysis": {
+      "manifest": {
+        "id": "PERFORMANCE_ANALYSIS",
+        "name": "Zenith Performance Analysis",
+        "version": "1.0.0",
+        "description": "System optimization core: Analyzes bottlenecks, resource usage, and latency to ensure Zenith runs at peak efficiency.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "phân tích hiệu năng",
+          "tối ưu hóa hệ thống",
+          "performance check",
+          "bottleneck analysis"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "target": {
+                "type": "string",
+                "description": "Target component for analysis."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/performance-analysis",
+      "logic_path": "/intelligence/skills/CORE/performance-analysis/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/performance-analysis/dossier.md"
+    },
+    "POLYGLOT_NEURAL_LINK": {
+      "manifest": {
+        "id": "POLYGLOT_NEURAL_LINK",
+        "name": "Zenith Polyglot Neural Link",
+        "version": "1.0.0",
+        "description": "Cross-language engineering: Handles code transpilation, logic auditing, and algorithmic optimization across multiple programming languages.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "chuyển đổi ngôn ngữ",
+          "tối ưu thuật toán",
+          "polyglot",
+          "transpile code",
+          "phân tích logic"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "The source code to process."
+              },
+              "language": {
+                "type": "string",
+                "description": "Programming language of the code."
+              },
+              "objective": {
+                "type": "string",
+                "description": "Optimization goal."
+              },
+              "from_lang": {
+                "type": "string",
+                "description": "Source language for translation."
+              },
+              "to_lang": {
+                "type": "string",
+                "description": "Target language for translation."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/POLYGLOT_NEURAL_LINK",
+      "logic_path": "/intelligence/skills/CORE/POLYGLOT_NEURAL_LINK/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/POLYGLOT_NEURAL_LINK/dossier.md"
+    },
+    "PROJECT_ANALYZER": {
+      "manifest": {
+        "id": "PROJECT_ANALYZER",
+        "name": "Project Structure & Health Analyzer",
+        "version": "1.0.0",
+        "description": "Analyzes the project structure, dependencies, and health metrics.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "phân tích dự án",
+          "project analyzer",
+          "kiểm tra hệ thống",
+          "cấu trúc dự án"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "depth": {
+                "type": "integer",
+                "description": "Analysis depth (1-5)"
+              },
+              "focus": {
+                "type": "string",
+                "description": "Area to focus on (e.g., 'security', 'performance', 'structure')"
+              }
+            },
+            "required": [
+              "depth"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/PROJECT_ANALYZER",
+      "logic_path": "/intelligence/skills/CORE/PROJECT_ANALYZER/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/PROJECT_ANALYZER/dossier.md"
+    },
+    "QDRANT_QUEEN_ORCHESTRATOR": {
+      "manifest": {
+        "id": "QDRANT_QUEEN_ORCHESTRATOR",
+        "name": "Zenith Qdrant Queen Orchestrator",
+        "version": "1.0.0",
+        "description": "Sovereign agent selection engine: Uses Q-Rank protocol to orchestrate the elite neural corps based on task context.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "điều phối đặc vụ",
+          "chọn quân đoàn",
+          "queen orchestrator",
+          "qrank select",
+          "giải trình đặc vụ"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "task": {
+                "type": "string",
+                "description": "The mission or task description."
+              }
+            },
+            "required": [
+              "task"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/QDRANT_QUEEN_ORCHESTRATOR",
+      "logic_path": "/intelligence/skills/CORE/QDRANT_QUEEN_ORCHESTRATOR/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/QDRANT_QUEEN_ORCHESTRATOR/dossier.md"
+    },
+    "reasoningbank-intelligence": {
+      "manifest": {
+        "id": "REASONINGBANK_INTELLIGENCE",
+        "name": "Zenith ReasoningBank Intelligence",
+        "version": "1.0.0",
+        "description": "Logic and pattern repository: Stores and retrieves complex reasoning structures and mental models to accelerate AI problem-solving.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "ngân hàng tư duy",
+          "reasoning bank",
+          "truy xuất mô hình tư duy",
+          "logic bank"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "pattern_id": {
+                "type": "string",
+                "description": "ID of the reasoning pattern."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/reasoningbank-intelligence",
+      "logic_path": "/intelligence/skills/CORE/reasoningbank-intelligence/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/reasoningbank-intelligence/dossier.md"
+    },
+    "SELF_HEALING_SENTINEL": {
+      "manifest": {
+        "id": "SELF_HEALING_SENTINEL",
+        "name": "Zenith Self-Healing Sentinel",
+        "version": "1.0.0",
+        "description": "System guardian and maintenance core: Performs deep diagnostics, health monitoring, log auditing, and suggests recovery procedures.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "kiểm tra hệ thống",
+          "sửa lỗi",
+          "self healing",
+          "audit system",
+          "chiến binh zenith"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "service_name": {
+                "type": "string",
+                "description": "Specific service to check or 'System' for full audit.",
+                "default": "System"
+              },
+              "auto_repair": {
+                "type": "boolean",
+                "default": false,
+                "description": "Enable automatic repair (if permitted)."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/SELF_HEALING_SENTINEL",
+      "logic_path": "/intelligence/skills/CORE/SELF_HEALING_SENTINEL/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/SELF_HEALING_SENTINEL/dossier.md"
+    },
+    "SEMANTIC_DEEP_READER": {
+      "manifest": {
+        "id": "SEMANTIC_DEEP_READER",
+        "name": "Zenith Semantic Deep Reader",
+        "version": "1.0.0",
+        "description": "Python AST analyzer: Extracts structured metadata (classes, functions, imports, docstrings) from source code without reading raw text.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "đọc mã nguồn",
+          "semantic read",
+          "phân tích python",
+          "ast parse",
+          "thấu hiểu code"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "file_path": {
+                "type": "string",
+                "description": "Absolute or relative path to the .py file."
+              }
+            },
+            "required": [
+              "file_path"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/SEMANTIC_DEEP_READER",
+      "logic_path": "/intelligence/skills/CORE/SEMANTIC_DEEP_READER/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/SEMANTIC_DEEP_READER/dossier.md"
+    },
+    "skill-builder": {
+      "manifest": {
+        "id": "SKILL_BUILDER",
+        "name": "Zenith Skill Builder",
+        "version": "1.0.0",
+        "description": "Adaptive skill architect: Assists in the iterative development and refinement of AI capabilities within the Zenith ecosystem.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "xây dựng kỹ năng",
+          "skill builder",
+          "phát triển năng lực"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "requirement": {
+                "type": "string",
+                "description": "Requirement for the new skill."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/skill-builder",
+      "logic_path": "/intelligence/skills/CORE/skill-builder/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/skill-builder/dossier.md"
+    },
+    "skill_agentic_debate": {
+      "manifest": {
+        "id": "SKILL_AGENTIC_DEBATE",
+        "name": "Zenith Agentic Debate",
+        "version": "1.0.0",
+        "description": "Multi-agent cognitive consensus: Facilitates iterative debates between Architect, Critic, and Arbiter roles to reach superior solutions.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "tranh luận đặc vụ",
+          "hội đồng trí tuệ",
+          "agentic debate",
+          "phản biện đa chiều"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "goal": {
+                "type": "string",
+                "description": "The objective or problem to debate."
+              },
+              "rounds": {
+                "type": "integer",
+                "default": 2,
+                "description": "Number of debate rounds."
+              }
+            },
+            "required": [
+              "goal"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/skill_agentic_debate",
+      "logic_path": "/intelligence/skills/CORE/skill_agentic_debate/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/skill_agentic_debate/dossier.md"
+    },
+    "skill_agentic_jujutsu": {
+      "manifest": {
+        "id": "SKILL_AGENTIC_JUJUTSU",
+        "name": "Zenith Agentic Jujutsu",
+        "version": "1.0.0",
+        "description": "Quantum-resistant reasoning management: Tracks, seals, and verifies the integrity of AI thought trajectories using advanced cryptographic fingerprints.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "nhu thuật đặc vụ",
+          "niêm phong lượng tử",
+          "truy vết tư duy",
+          "agentic jujutsu",
+          "kiểm định bất biến"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "track_trajectory",
+                  "verify_integrity"
+                ],
+                "description": "Action to perform."
+              }
+            },
+            "required": [
+              "action"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/skill_agentic_jujutsu",
+      "logic_path": "/intelligence/skills/CORE/skill_agentic_jujutsu/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/skill_agentic_jujutsu/dossier.md"
+    },
+    "skill_agentic_payments": {
+      "manifest": {
+        "id": "SKILL_AGENTIC_PAYMENTS",
+        "name": "Zenith Agentic Payments",
+        "version": "1.0.0",
+        "description": "Financial orchestration core: Manages AI-driven payment protocols, transaction verification, and secure fiscal synchronization.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "thanh toán đặc vụ",
+          "agentic payments",
+          "phê duyệt giao dịch",
+          "quản lý tài chính"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "amount": {
+                "type": "number",
+                "description": "Transaction amount."
+              },
+              "currency": {
+                "type": "string",
+                "description": "Currency code."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/skill_agentic_payments",
+      "logic_path": "/intelligence/skills/CORE/skill_agentic_payments/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/skill_agentic_payments/dossier.md"
+    },
+    "SKILL_FORGE": {
+      "manifest": {
+        "id": "SKILL_FORGE",
+        "name": "Zenith Master Skill Forge",
+        "version": "1.0.0",
+        "description": "The creative heart of Zenith: Autonomously designs, codes, and integrates new elite skills into the system architecture.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "đúc kỹ năng",
+          "tạo skill mới",
+          "skill forge",
+          "kiến tạo năng lực",
+          "master forge"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "description": {
+                "type": "string",
+                "description": "Detailed description of the skill's purpose and logic."
+              }
+            },
+            "required": [
+              "description"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/SKILL_FORGE",
+      "logic_path": "/intelligence/skills/CORE/SKILL_FORGE/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/SKILL_FORGE/dossier.md"
+    },
+    "skill_image_processing": {
+      "manifest": {
+        "id": "SKILL_IMAGE_PROCESSING",
+        "name": "Zenith Image Purifier",
+        "version": "1.0.0",
+        "description": "Visual optimization tool: Removes backgrounds from images and converts them to transparent PNGs for design excellence.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "xử lý ảnh",
+          "tách nền ảnh",
+          "làm trong suốt ảnh",
+          "image processing",
+          "purify image"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "target_path": {
+                "type": "string",
+                "description": "Path to the directory containing images."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/skill_image_processing",
+      "logic_path": "/intelligence/skills/CORE/skill_image_processing/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/skill_image_processing/dossier.md"
+    },
+    "skill_kiemtrasuckhoe": {
+      "manifest": {
+        "id": "SKILL_KIEMTRASUCKHOE",
+        "name": "Zenith System Physician",
+        "version": "1.0.0",
+        "description": "Full system diagnostic and self-evolution core: Monitors hardware vitals, Docker status, and neural layer health.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "kiểm tra sức khỏe",
+          "system health check",
+          "chẩn đoán sự cố",
+          "tự tiến hóa service",
+          "doctor mode"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "check_health",
+                  "evolve_service"
+                ],
+                "default": "check_health",
+                "description": "Action to perform."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/skill_kiemtrasuckhoe",
+      "logic_path": "/intelligence/skills/CORE/skill_kiemtrasuckhoe/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/skill_kiemtrasuckhoe/dossier.md"
+    },
+    "skill_legacy_soul": {
+      "manifest": {
+        "id": "SKILL_LEGACY_SOUL",
+        "name": "Zenith Legacy Soul Filter",
+        "version": "1.0.0",
+        "description": "Master's identity alignment core: A cognitive filter that refines AI responses to match the sharp, strategic, and elite persona of Master LeeTrung.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "bản sắc master",
+          "phong thái leetrung",
+          "legacy soul",
+          "tinh chỉnh ngôn từ",
+          "giao thức di sản"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string",
+                "description": "The content to refine."
+              }
+            },
+            "required": [
+              "content"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/skill_legacy_soul",
+      "logic_path": "/intelligence/skills/CORE/skill_legacy_soul/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/skill_legacy_soul/dossier.md"
+    },
+    "skill_neural_architect": {
+      "manifest": {
+        "id": "SKILL_NEURAL_ARCHITECT",
+        "name": "Zenith Neural Architect",
+        "version": "1.0.0",
+        "description": "Project topology mapper: Scans, analyzes, and visualizes codebase architecture using Mermaid diagrams and semantic indexing.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "lập bản đồ dự án",
+          "neural architect",
+          "phân tích kiến trúc",
+          "vẽ topology",
+          "map project architecture"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "project_name": {
+                "type": "string",
+                "description": "Name of the project to map."
+              },
+              "target_path": {
+                "type": "string",
+                "description": "Path to the project directory."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/skill_neural_architect",
+      "logic_path": "/intelligence/skills/CORE/skill_neural_architect/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/skill_neural_architect/dossier.md"
+    },
+    "skill_neural_audit": {
+      "manifest": {
+        "id": "SKILL_NEURAL_AUDIT",
+        "name": "Zenith Neural Auditor",
+        "version": "1.0.0",
+        "description": "Post-mission evaluation core: Analyzes execution logs, extracts strategic lessons, and evolves AI wisdom for future tasks.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "thẩm định nơ ron",
+          "neural audit",
+          "phân tích nhiệm vụ",
+          "rút kinh nghiệm chiến lược"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "task_id": {
+                "type": "string",
+                "description": "ID of the audited task."
+              },
+              "mission_goal": {
+                "type": "string",
+                "description": "Original goal of the mission."
+              },
+              "execution_log": {
+                "type": "string",
+                "description": "Logs of the mission execution."
+              }
+            },
+            "required": [
+              "task_id",
+              "mission_goal",
+              "execution_log"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/skill_neural_audit",
+      "logic_path": "/intelligence/skills/CORE/skill_neural_audit/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/skill_neural_audit/dossier.md"
+    },
+    "skill_queen_coordinator": {
+      "manifest": {
+        "id": "SKILL_QUEEN_COORDINATOR",
+        "name": "Zenith Queen Coordinator",
+        "version": "1.0.0",
+        "description": "Sovereign hive orchestrator: Manages agent hierarchy, resource allocation, and hive coherence through centralized governance.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "nữ hoàng điều phối",
+          "queen coordinator",
+          "quản trị quân đoàn",
+          "điều phối tài nguyên",
+          "báo cáo hoàng gia"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "establish_dominance",
+                  "allocate_resources",
+                  "monitor_hive_health",
+                  "royal_report"
+                ],
+                "description": "Action to perform."
+              }
+            },
+            "required": [
+              "action"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/skill_queen_coordinator",
+      "logic_path": "/intelligence/skills/CORE/skill_queen_coordinator/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/skill_queen_coordinator/dossier.md"
+    },
+    "skill_sangtaovanhanluc": {
+      "manifest": {
+        "id": "SKILL_SANGTAOVANHANLUC",
+        "name": "Zenith Creative & Graphics Forge",
+        "version": "1.0.0",
+        "description": "Artistic generation core: Orchestrates Stable Diffusion for high-fidelity image creation and manages visual capture services.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "phù thủy đồ họa",
+          "sáng tạo ảnh",
+          "vẽ tranh ai",
+          "chụp màn hình",
+          "creative forge",
+          "stable diffusion"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "draw",
+                  "screenshot"
+                ],
+                "description": "Creative action to perform."
+              },
+              "prompt": {
+                "type": "string",
+                "description": "Prompt for image generation."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/skill_sangtaovanhanluc",
+      "logic_path": "/intelligence/skills/CORE/skill_sangtaovanhanluc/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/skill_sangtaovanhanluc/dossier.md"
+    },
+    "skill_sovereign_logic": {
+      "manifest": {
+        "id": "SKILL_SOVEREIGN_LOGIC",
+        "name": "Zenith Sovereign Advisory",
+        "version": "1.0.0",
+        "description": "Strategic advisory core: Performs deep architectural and risk analysis based on the Zenith Singularity constitution and blueprints.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "phân tích chiến lược",
+          "sovereign logic",
+          "chế độ quân sư",
+          "tư vấn vĩ mô",
+          "chiến lược thăng hoa"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "goal": {
+                "type": "string",
+                "description": "The strategic objective to analyze."
+              }
+            },
+            "required": [
+              "goal"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/skill_sovereign_logic",
+      "logic_path": "/intelligence/skills/CORE/skill_sovereign_logic/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/skill_sovereign_logic/dossier.md"
+    },
+    "skill_taokynang": {
+      "manifest": {
+        "id": "SKILL_TAOKYNANG",
+        "name": "Zenith Elite Skill Factory",
+        "version": "1.0.0",
+        "description": "Legacy skill architect: Automates the creation of the 'Elite Quartet' file structure for new AI capabilities.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "tạo kỹ năng elite",
+          "xưởng đúc kỹ năng",
+          "skill factory",
+          "kiến tạo năng lực"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "skill_id": {
+                "type": "string",
+                "description": "Unique ID for the new skill."
+              },
+              "skill_name": {
+                "type": "string",
+                "description": "Display name of the skill."
+              },
+              "description": {
+                "type": "string",
+                "description": "Brief description of the skill."
+              }
+            },
+            "required": [
+              "skill_id",
+              "skill_name"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/skill_taokynang",
+      "logic_path": "/intelligence/skills/CORE/skill_taokynang/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/skill_taokynang/dossier.md"
+    },
+    "skill_template_mimic": {
+      "manifest": {
+        "id": "SKILL_TEMPLATE_MIMIC",
+        "name": "Zenith Template Mimic",
+        "version": "1.0.0",
+        "description": "Style and structure replicator: Learns the 'soul' of any document template and applies it to generate new content with perfect alignment.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "học mẫu tài liệu",
+          "mimic template",
+          "sao chép định dạng",
+          "đúc tài liệu",
+          "apply template"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "learn_template",
+                  "apply_template"
+                ],
+                "description": "Action to perform."
+              },
+              "template_name": {
+                "type": "string",
+                "description": "Unique name for the template."
+              }
+            },
+            "required": [
+              "action",
+              "template_name"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/skill_template_mimic",
+      "logic_path": "/intelligence/skills/CORE/skill_template_mimic/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/skill_template_mimic/dossier.md"
+    },
+    "skill_tucaitien": {
+      "manifest": {
+        "id": "SKILL_TUCAITIEN",
+        "name": "Zenith Evolution Engine",
+        "version": "7.0.0",
+        "description": "Supreme self-optimization core: Capable of autonomously analyzing, rewriting, and verifying source code across the entire skill ecosystem with ACID safety.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "tự cải tiến",
+          "nâng cấp mã nguồn",
+          "evolution engine",
+          "phẫu thuật logic",
+          "tự nâng cấp bản thân"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "skill_id": {
+                "type": "string",
+                "description": "ID of the skill to optimize."
+              },
+              "optimization_goal": {
+                "type": "string",
+                "description": "Goal for the optimization (e.g., performance, reliability)."
+              },
+              "dry_run": {
+                "type": "boolean",
+                "default": false,
+                "description": "If true, only generates the diff without applying changes."
+              }
+            },
+            "required": [
+              "skill_id",
+              "optimization_goal"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/skill_tucaitien",
+      "logic_path": "/intelligence/skills/CORE/skill_tucaitien/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/skill_tucaitien/dossier.md"
+    },
+    "SPARC_ENGINEERING_CORE": {
+      "manifest": {
+        "id": "SPARC_ENGINEERING_CORE",
+        "name": "Zenith SPARC Engineering Pipeline",
+        "version": "1.0.0",
+        "description": "Elite software engineering framework: Implements the 5-phase SPARC protocol (Specification, Pseudocode, Architecture, Refinement, Completion) for robust code development.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "quy trình sparc",
+          "lập trình sparc",
+          "sparc pipeline",
+          "elite programming",
+          "phát triển phần mềm"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "task": {
+                "type": "string",
+                "description": "The programming task or software feature to develop."
+              }
+            },
+            "required": [
+              "task"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/SPARC_ENGINEERING_CORE",
+      "logic_path": "/intelligence/skills/CORE/SPARC_ENGINEERING_CORE/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/SPARC_ENGINEERING_CORE/dossier.md"
+    },
+    "stream-chain": {
+      "manifest": {
+        "id": "STREAM_CHAIN",
+        "name": "Zenith Stream Chain",
+        "version": "1.0.0",
+        "description": "Real-time processing core: Manages sequential data streams and chained AI operations for high-velocity information processing.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "stream chain",
+          "xử lý luồng",
+          "chuỗi xử lý liên tục"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "data_stream": {
+                "type": "string",
+                "description": "Input data stream."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/stream-chain",
+      "logic_path": "/intelligence/skills/CORE/stream-chain/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/stream-chain/dossier.md"
+    },
+    "swarm-advanced": {
+      "manifest": {
+        "id": "SWARM_ADVANCED",
+        "name": "Zenith Advanced Swarm",
+        "version": "1.0.0",
+        "description": "Complex swarm intelligence core: Manages intricate multi-agent interactions and emergent behavior for large-scale operations.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "swarm nâng cao",
+          "swarm advanced",
+          "trí tuệ bầy đàn phức hợp"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "operation": {
+                "type": "string",
+                "description": "Complex swarm operation to initiate."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/swarm-advanced",
+      "logic_path": "/intelligence/skills/CORE/swarm-advanced/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/swarm-advanced/dossier.md"
+    },
+    "swarm-orchestration": {
+      "manifest": {
+        "id": "SWARM_ORCHESTRATION",
+        "name": "Zenith Swarm Orchestration",
+        "version": "1.0.0",
+        "description": "Standard swarm management core: Handles basic agent assignment, status tracking, and mission dispatching.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "điều phối swarm",
+          "swarm orchestration",
+          "quản lý quân đoàn cơ bản"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "mission": {
+                "type": "string",
+                "description": "Mission to dispatch to the swarm."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/swarm-orchestration",
+      "logic_path": "/intelligence/skills/CORE/swarm-orchestration/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/swarm-orchestration/dossier.md"
+    },
+    "SYNC_KNOWLEDGE_QUANTUM": {
+      "manifest": {
+        "id": "SKILL_DONGBOTRITHUC",
+        "name": "Quantum Knowledge Sync",
+        "version": "1.0.0",
+        "description": "Deep neural synchronization of knowledge across all pillars.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "dongbotrithuc",
+          "đồng bộ tri thức",
+          "quantum sync"
+        ],
+        "domain": "CORE"
+      },
+      "path": "/intelligence/skills/CORE/SYNC_KNOWLEDGE_QUANTUM",
+      "logic_path": "/intelligence/skills/CORE/SYNC_KNOWLEDGE_QUANTUM/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/SYNC_KNOWLEDGE_QUANTUM/dossier.md"
+    },
+    "SYSTEM_AUDITOR": {
+      "manifest": {
+        "id": "SYSTEM_AUDITOR",
+        "name": "Zenith System Integrity Auditor",
+        "version": "1.0.0",
+        "description": "Audits the integrity of the Z-SOS Kernel, Plugin Registry, and System Documentation.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "auditor",
+          "kiểm toán hệ thống",
+          "check integrity",
+          "vệ sĩ hệ thống"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "fix_issues": {
+                "type": "boolean",
+                "description": "Attempt to auto-fix minor issues found during audit"
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/SYSTEM_AUDITOR",
+      "logic_path": "/intelligence/skills/CORE/SYSTEM_AUDITOR/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/SYSTEM_AUDITOR/dossier.md"
+    },
+    "SYSTEM_XRAY_MONITOR": {
+      "manifest": {
+        "id": "SYSTEM_XRAY_MONITOR",
+        "name": "Zenith System X-Ray Monitor",
+        "version": "1.0.0",
+        "description": "Supreme infrastructure surveillance: Provides deep visibility into host hardware, GPU utilization, and neural model performance.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "quét thấu thị",
+          "xray hệ thống",
+          "kiểm tra phần cứng",
+          "giám sát gpu",
+          "vệ binh hệ thống"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "get_diagnostics"
+                ],
+                "default": "get_diagnostics",
+                "description": "Action to perform."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/SYSTEM_XRAY_MONITOR",
+      "logic_path": "/intelligence/skills/CORE/SYSTEM_XRAY_MONITOR/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/SYSTEM_XRAY_MONITOR/dossier.md"
+    },
+    "verification-quality": {
+      "manifest": {
+        "id": "VERIFICATION_QUALITY",
+        "name": "Zenith Verification & Quality Assurance",
+        "version": "1.0.0",
+        "description": "Output integrity core: Validates AI results, ensures technical accuracy, and maintains high-fidelity standards for all deliverables.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "kiểm định chất lượng",
+          "verification quality",
+          "thẩm định kết quả",
+          "qa-audit"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "result_to_verify": {
+                "type": "string",
+                "description": "The result or data to verify."
+              },
+              "standards": {
+                "type": "string",
+                "description": "Specific standards or criteria for verification."
+              }
+            },
+            "required": [
+              "result_to_verify"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/verification-quality",
+      "logic_path": "/intelligence/skills/CORE/verification-quality/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/verification-quality/dossier.md"
+    },
+    "worker-benchmarks": {
+      "manifest": {
+        "id": "WORKER_BENCHMARKS",
+        "name": "Zenith Worker Benchmarks",
+        "version": "1.0.0",
+        "description": "Performance evaluation core: Measures the efficiency, accuracy, and resource consumption of individual agents and sub-processes.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "đánh giá hiệu năng",
+          "worker benchmarks",
+          "đo lường năng suất đặc vụ"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "agent_id": {
+                "type": "string",
+                "description": "ID of the agent to benchmark."
+              },
+              "test_suite": {
+                "type": "string",
+                "description": "The benchmark test suite to run."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/worker-benchmarks",
+      "logic_path": "/intelligence/skills/CORE/worker-benchmarks/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/worker-benchmarks/dossier.md"
+    },
+    "worker-integration": {
+      "manifest": {
+        "id": "WORKER_INTEGRATION",
+        "name": "Zenith Worker Integration",
+        "version": "1.0.0",
+        "description": "Onboarding and connectivity core: Seamlessly integrates new agents and third-party tools into the Zenith Hive ecosystem.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "tích hợp đặc vụ",
+          "worker integration",
+          "kết nối công cụ mới"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "target_id": {
+                "type": "string",
+                "description": "ID of the agent or tool to integrate."
+              },
+              "config": {
+                "type": "object",
+                "description": "Integration configuration parameters."
+              }
+            },
+            "required": [
+              "target_id"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/worker-integration",
+      "logic_path": "/intelligence/skills/CORE/worker-integration/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/worker-integration/dossier.md"
+    },
+    "workflow-automation": {
+      "manifest": {
+        "id": "WORKFLOW_AUTOMATION",
+        "name": "Zenith Workflow Automation",
+        "version": "1.0.0",
+        "description": "Systemic efficiency core: Designs, implements, and optimizes end-to-end automated workflows for the Zenith ecosystem.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "tự động hóa quy trình",
+          "workflow automation",
+          "thiết kế luồng công việc"
+        ],
+        "domain": "CORE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "workflow_name": {
+                "type": "string",
+                "description": "Name of the workflow to automate."
+              },
+              "steps": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Sequence of steps in the workflow."
+              }
+            },
+            "required": [
+              "workflow_name"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/workflow-automation",
+      "logic_path": "/intelligence/skills/CORE/workflow-automation/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/workflow-automation/dossier.md"
+    },
+    "ZENITH_AEGIS_GUARD": {
+      "manifest": {
+        "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/ZENITH_AEGIS_GUARD/manifest.json - Role: Z-SOS Manifest for Security Sandboxing - Ownership: Mr LeeTrung - Status: Active | Version: SDS v1.0 ",
+        "id": "ZENITH_AEGIS_GUARD",
+        "name": "Zenith Aegis Guard",
+        "version": "1.0.0",
+        "description": "Security Sandbox & Permission Orchestrator: Enforces a deny-first policy for sensitive operations, implements file/command isolation, and manages the Neural Handshake protocol with the Master.",
+        "author": "JKAI-Zenith",
+        "triggers": [
+          "bảo mật hệ thống",
+          "phân quyền",
+          "sandbox",
+          "aegis guard",
+          "cô lập lệnh",
+          "neural handshake",
+          "quản trị rủi ro"
+        ],
+        "domain": "CORE",
+        "config": {
+          "security_level": "strict",
+          "red_zone_paths": [
+            ".env",
+            "config/",
+            "node_modules/",
+            "core/auth/"
+          ],
+          "allowed_commands": [
+            "ls",
+            "grep",
+            "cat",
+            "git status"
+          ]
+        },
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "check",
+                  "authorize",
+                  "log_violation",
+                  "update_zones"
+                ],
+                "description": "Security action to perform."
+              },
+              "target": {
+                "type": "string",
+                "description": "The command or file path to evaluate."
+              },
+              "rationale": {
+                "type": "string",
+                "description": "Agent justification for the requested sensitive operation."
+              }
+            },
+            "required": [
+              "action"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/ZENITH_AEGIS_GUARD",
+      "logic_path": "/intelligence/skills/CORE/ZENITH_AEGIS_GUARD/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/ZENITH_AEGIS_GUARD/dossier.md"
+    },
+    "ZENITH_CHRONOS_ROUTINES": {
+      "manifest": {
+        "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/ZENITH_CHRONOS_ROUTINES/manifest.json - Role: Z-SOS Manifest for Autonomous Scheduling - Ownership: Mr LeeTrung - Status: Active | Version: SDS v1.0 ",
+        "id": "ZENITH_CHRONOS_ROUTINES",
+        "name": "Zenith Chronos Routines",
+        "version": "1.0.0",
+        "description": "Autonomous Task Orchestrator: Manages scheduled routines, background system maintenance, and event-driven automation for the Zenith ecosystem.",
+        "author": "JKAI-Zenith",
+        "triggers": [
+          "lập lịch tác vụ",
+          "chạy định kỳ",
+          "chronos routine",
+          "background task",
+          "tự động hóa sự kiện",
+          "schedule task",
+          "daily checkup"
+        ],
+        "domain": "CORE",
+        "config": {
+          "max_concurrent_routines": 5,
+          "persistence_mode": "sqlite",
+          "log_level": "verbose"
+        },
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "add",
+                  "remove",
+                  "list",
+                  "trigger",
+                  "pause",
+                  "resume"
+                ],
+                "description": "Action to perform on the routines."
+              },
+              "routine_id": {
+                "type": "string",
+                "description": "Unique identifier for the routine."
+              },
+              "schedule": {
+                "type": "string",
+                "description": "Cron-style schedule string or interval (e.g., 'every 24h', '0 8 * * *')."
+              },
+              "task_payload": {
+                "type": "object",
+                "description": "The command or skill payload to execute."
+              }
+            },
+            "required": [
+              "action"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/ZENITH_CHRONOS_ROUTINES",
+      "logic_path": "/intelligence/skills/CORE/ZENITH_CHRONOS_ROUTINES/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/ZENITH_CHRONOS_ROUTINES/dossier.md"
+    },
+    "ZENITH_GIT_ORCHESTRATOR": {
+      "manifest": {
+        "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/ZENITH_GIT_ORCHESTRATOR/manifest.json - Role: Z-SOS Manifest for Git Workflow - Ownership: Mr LeeTrung - Status: Active | Version: SDS v1.0 ",
+        "id": "ZENITH_GIT_ORCHESTRATOR",
+        "name": "Zenith Git Orchestrator",
+        "version": "1.0.0",
+        "description": "Sovereign Git Management: Automates semantic commits, branch orchestration, and PR generation. Ensures Conventional Commits standards and maintains clean version history.",
+        "author": "JKAI-Zenith",
+        "triggers": [
+          "git commit",
+          "git branch",
+          "push code",
+          "semantic commit",
+          "conventional commits",
+          "tạo branch",
+          "quản lý git",
+          "pull request"
+        ],
+        "domain": "CORE",
+        "config": {
+          "commit_standard": "conventional",
+          "branch_prefix": {
+            "feature": "feat/",
+            "bugfix": "fix/",
+            "refactor": "refactor/",
+            "chore": "chore/"
+          },
+          "auto_signoff": true
+        },
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "operation": {
+                "type": "string",
+                "enum": [
+                  "semantic_commit",
+                  "create_branch",
+                  "prepare_pr",
+                  "analyze_diff"
+                ],
+                "description": "The Git operation to perform."
+              },
+              "context": {
+                "type": "string",
+                "description": "A brief description of the work done to generate the commit message."
+              }
+            },
+            "required": [
+              "operation"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/ZENITH_GIT_ORCHESTRATOR",
+      "logic_path": "/intelligence/skills/CORE/ZENITH_GIT_ORCHESTRATOR/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/ZENITH_GIT_ORCHESTRATOR/dossier.md"
+    },
+    "ZENITH_NEURAL_COMPACTOR": {
+      "manifest": {
+        "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/ZENITH_NEURAL_COMPACTOR/manifest.json - Role: Z-SOS Manifest for Context Optimization - Ownership: Mr LeeTrung - Status: Active | Version: SDS v1.0 ",
+        "id": "ZENITH_NEURAL_COMPACTOR",
+        "name": "Zenith Neural Compactor",
+        "version": "1.0.0",
+        "description": "Cognitive Filter & Context Manager: Implements a 5-layer compression pipeline (Snip, Micro-compact, Projection, Isolation, Anchor) to prevent context collapse and optimize neural efficiency.",
+        "author": "JKAI-Zenith",
+        "triggers": [
+          "nén ngữ cảnh",
+          "tối ưu bộ nhớ",
+          "compact history",
+          "neural compactor",
+          "dọn dẹp context",
+          "summarize session",
+          "context projection"
+        ],
+        "domain": "CORE",
+        "config": {
+          "auto_compact_threshold": 25000,
+          "compression_ratio_target": 0.3,
+          "preservation_keys": [
+            "goal",
+            "lesson",
+            "structure"
+          ]
+        },
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "snip",
+                  "micro",
+                  "project",
+                  "isolate",
+                  "full"
+                ],
+                "default": "full",
+                "description": "Compression mode to apply."
+              },
+              "target_context": {
+                "type": "string",
+                "description": "The text or conversation history to compress."
+              },
+              "preserve_metadata": {
+                "type": "boolean",
+                "default": true,
+                "description": "Whether to extract and preserve core lessons and goals."
+              }
+            },
+            "required": [
+              "target_context"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/ZENITH_NEURAL_COMPACTOR",
+      "logic_path": "/intelligence/skills/CORE/ZENITH_NEURAL_COMPACTOR/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/ZENITH_NEURAL_COMPACTOR/dossier.md"
+    },
+    "ZENITH_STRATEGIC_PLANNER": {
+      "manifest": {
+        "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/ZENITH_STRATEGIC_PLANNER/manifest.json - Role: Z-SOS Manifest for Intent Reasoning - Ownership: Mr LeeTrung - Status: Active | Version: SDS v1.0 ",
+        "id": "ZENITH_STRATEGIC_PLANNER",
+        "name": "Zenith Strategic Planner",
+        "version": "1.0.0",
+        "description": "Intent Recognition & Architectural Reasoning: Decodes vague user requests into precise technical roadmaps by analyzing context, history, and project goals.",
+        "author": "JKAI-Zenith",
+        "triggers": [
+          "lập kế hoạch",
+          "giải mã ý đồ",
+          "strategic plan",
+          "intent recognition",
+          "roadmap creation",
+          "architectural reasoning",
+          "blueprint"
+        ],
+        "domain": "CORE",
+        "config": {
+          "reasoning_mode": "architectural",
+          "validation_required": true,
+          "max_steps_per_plan": 10
+        },
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "user_intent": {
+                "type": "string",
+                "description": "The raw, potentially vague command from the user."
+              },
+              "context_depth": {
+                "type": "string",
+                "enum": [
+                  "shallow",
+                  "deep",
+                  "historical"
+                ],
+                "default": "deep"
+              }
+            },
+            "required": [
+              "user_intent"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/ZENITH_STRATEGIC_PLANNER",
+      "logic_path": "/intelligence/skills/CORE/ZENITH_STRATEGIC_PLANNER/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/ZENITH_STRATEGIC_PLANNER/dossier.md"
+    },
+    "ZENITH_TDD_AUTOPILOT": {
+      "manifest": {
+        "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/ZENITH_TDD_AUTOPILOT/manifest.json - Role: Z-SOS Manifest for TDD Orchestration - Ownership: Mr LeeTrung - Status: Active | Version: SDS v1.0 ",
+        "id": "ZENITH_TDD_AUTOPILOT",
+        "name": "Zenith TDD Autopilot",
+        "version": "1.0.0",
+        "description": "Autonomous TDD Cycle Engine: Automates the Red-Green-Refactor loop. Writes tests, detects failures, implements fixes, and verifies correctness without human intervention.",
+        "author": "JKAI-Zenith",
+        "triggers": [
+          "tdd",
+          "viết test",
+          "chạy test",
+          "autopilot test",
+          "vòng lặp tdd",
+          "kiểm thử tự động",
+          "test-driven development"
+        ],
+        "domain": "CORE",
+        "config": {
+          "default_frameworks": {
+            "python": "pytest",
+            "javascript": "jest",
+            "typescript": "jest"
+          },
+          "max_iterations": 5,
+          "auto_refactor": true
+        },
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "target_feature": {
+                "type": "string",
+                "description": "The feature or function to implement via TDD."
+              },
+              "test_path": {
+                "type": "string",
+                "description": "Path where tests should be written."
+              },
+              "logic_path": {
+                "type": "string",
+                "description": "Path where the implementation logic resides."
+              }
+            },
+            "required": [
+              "target_feature"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/ZENITH_TDD_AUTOPILOT",
+      "logic_path": "/intelligence/skills/CORE/ZENITH_TDD_AUTOPILOT/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/ZENITH_TDD_AUTOPILOT/dossier.md"
+    },
+    "ZENITH_ULTRA_VISION": {
+      "manifest": {
+        "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/ZENITH_ULTRA_VISION/manifest.json - Role: Z-SOS Manifest for Multi-Lens Code Audit - Ownership: Mr LeeTrung - Status: Active | Version: SDS v1.0 ",
+        "id": "ZENITH_ULTRA_VISION",
+        "name": "Zenith Ultra-Vision",
+        "version": "1.0.0",
+        "description": "Multi-Lens Autonomous Auditor: Orchestrates a team of specialized sub-agents to review code through Security, Performance, Logic, and Testability lenses with independent verification.",
+        "author": "JKAI-Zenith",
+        "triggers": [
+          "ultra review",
+          "kiểm định đa chiều",
+          "multi-lens audit",
+          "deep code review",
+          "x-ray code",
+          "audit logic",
+          "security audit"
+        ],
+        "domain": "CORE",
+        "config": {
+          "lenses": [
+            "SECURITY",
+            "PERFORMANCE",
+            "LOGIC",
+            "TESTABILITY"
+          ],
+          "auto_verification": true,
+          "report_format": "markdown_table"
+        },
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "target_path": {
+                "type": "string",
+                "description": "Path to the file or directory to audit."
+              },
+              "focus_areas": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "Specific lenses to focus on (optional)."
+              },
+              "verification_depth": {
+                "type": "string",
+                "enum": [
+                  "shallow",
+                  "deep",
+                  "experimental"
+                ],
+                "default": "deep"
+              }
+            },
+            "required": [
+              "target_path"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/CORE/ZENITH_ULTRA_VISION",
+      "logic_path": "/intelligence/skills/CORE/ZENITH_ULTRA_VISION/logic.py",
+      "dossier_path": "/intelligence/skills/CORE/ZENITH_ULTRA_VISION/dossier.md"
+    },
+    "ZENITH_UNIVERSAL_BRIDGE": {
+      "manifest": {
+        "id": "ZENITH_UNIVERSAL_BRIDGE",
+        "name": "Zenith Universal Bridge",
+        "name_vn": "**Cầu nối Vạn năng**: Giao thức kết nối nơ-ron đa tầng (MCP-Inside).",
+        "version": "1.0.0",
+        "author": "JKAI ZENITH Forge",
+        "domain": "CORE",
+        "priority": "HIGHEST",
+        "description": "Cung cấp hạ tầng kết nối trực tiếp giữa các kỹ năng, cho phép trao đổi ngữ cảnh và kết quả mà không cần thông qua Orchestrator trung tâm.",
+        "intent_pairs": [
+          [
+            "BRIDGE",
+            "CONNECT"
+          ],
+          [
+            "SYNC",
+            "CONTEXT"
+          ]
+        ],
+        "schema": {
+          "parameters": {
+            "type": "object",
+            "properties": {
+              "source_skill": {
+                "type": "string",
+                "description": "ID kỹ năng nguồn."
+              },
+              "target_skill": {
+                "type": "string",
+                "description": "ID kỹ năng đích."
+              },
+              "payload": {
+                "type": "object",
+                "description": "Dữ liệu cần chuyển giao."
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "request",
+                  "notify",
+                  "stream"
+                ],
+                "default": "request"
+              }
+            },
+            "required": [
+              "source_skill",
+              "target_skill",
+              "payload"
+            ]
+          }
+        },
+        "related_skills": [
+          "SYSTEM_CORE_EXECUTOR",
+          "HIVE_MIND"
+        ]
+      },
+      "path": "/intelligence/skills/CORE/ZENITH_UNIVERSAL_BRIDGE",
+      "logic_path": "/intelligence/skills/CORE/ZENITH_UNIVERSAL_BRIDGE/logic.py",
+      "dossier_path": null
+    },
+    "NEURAL_SANDBOX_STAGING": {
+      "manifest": {
+        "id": "NEURAL_SANDBOX_STAGING",
+        "name": "Zenith Neural Sandbox Staging",
+        "version": "1.0.0",
+        "description": "Secure isolation core: Provides an invisible, network-isolated Docker environment (Sandbox) to test code snippets and patches before deployment.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "thử nghiệm sandbox",
+          "neural sandbox",
+          "chạy code cô lập",
+          "kiểm chứng bản vá",
+          "sandbox staging"
+        ],
+        "domain": "DATA_SCIENCE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "code_snippet": {
+                "type": "string",
+                "description": "The Python code to test inside the sandbox."
+              }
+            },
+            "required": [
+              "code_snippet"
+            ]
+          }
+        },
+        "calls": [
+          "SKILL_SYSTEM_CORE",
+          "NEURAL_LINK_AGGREGATOR"
+        ]
+      },
+      "path": "/intelligence/skills/DATA_SCIENCE/NEURAL_SANDBOX_STAGING",
+      "logic_path": "/intelligence/skills/DATA_SCIENCE/NEURAL_SANDBOX_STAGING/logic.py",
+      "dossier_path": "/intelligence/skills/DATA_SCIENCE/NEURAL_SANDBOX_STAGING/dossier.md"
+    },
+    "NEURAL_VISION_AUDIT": {
+      "manifest": {
+        "id": "NEURAL_VISION_AUDIT",
+        "name": "Zenith Neural Vision Audit",
+        "version": "1.0.0",
+        "description": "Satellite vision core: Captures field screenshots and performs AI-driven visual auditing to detect UI glitches, errors, and system stability issues.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "audit thị giác",
+          "chụp ảnh thực địa",
+          "neural vision audit",
+          "mắt thần soi chiếu",
+          "kiểm tra ui"
+        ],
+        "domain": "DATA_SCIENCE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "description": "The URL to visually audit."
+              }
+            },
+            "required": [
+              "url"
+            ]
+          }
+        },
+        "calls": [
+          "SUPER_DATA_SCIENCE",
+          "WEB_PATHFINDER"
+        ]
+      },
+      "path": "/intelligence/skills/DATA_SCIENCE/NEURAL_VISION_AUDIT",
+      "logic_path": "/intelligence/skills/DATA_SCIENCE/NEURAL_VISION_AUDIT/logic.py",
+      "dossier_path": "/intelligence/skills/DATA_SCIENCE/NEURAL_VISION_AUDIT/dossier.md"
+    },
+    "SAFLA_MEMORY_ENGINE": {
+      "manifest": {
+        "id": "SAFLA_MEMORY_ENGINE",
+        "name": "Zenith SAFLA Neural Memory",
+        "version": "1.0.0",
+        "description": "Adaptive learning core: Implements the Self-Aware Feedback Loop Algorithm (SAFLA) with 4-tier memory (Working, Semantic, Episodic) for long-term knowledge retention and conceptual synthesis.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "ghi nhớ safla",
+          "nhập tâm tri thức",
+          "truy hồi ký ức safla",
+          "đúc khái niệm",
+          "quản lý bộ nhớ nơ-ron"
+        ],
+        "domain": "DATA_SCIENCE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "assimilate",
+                  "recall",
+                  "forge_concept"
+                ],
+                "description": "Memory action."
+              },
+              "text": {
+                "type": "string",
+                "description": "Text to assimilate or query to recall."
+              },
+              "tier": {
+                "type": "string",
+                "enum": [
+                  "semantic",
+                  "episodic"
+                ],
+                "description": "Memory tier for assimilation."
+              }
+            },
+            "required": [
+              "action"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/DATA_SCIENCE/SAFLA_MEMORY_ENGINE",
+      "logic_path": "/intelligence/skills/DATA_SCIENCE/SAFLA_MEMORY_ENGINE/logic.py",
+      "dossier_path": "/intelligence/skills/DATA_SCIENCE/SAFLA_MEMORY_ENGINE/dossier.md"
+    },
+    "skill_data_41_dl_train": {
+      "manifest": {
+        "id": "SKILL_DATA_41_DL_TRAIN",
+        "name": "Zenith Deep Learning Forge",
+        "version": "1.0.0",
+        "description": "Neural training core: Manages the design, training, and fine-tuning of deep neural networks for specialized AI tasks.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "huấn luyện deep learning",
+          "train neural network",
+          "fine-tune model",
+          "deep learning forge"
+        ],
+        "domain": "DATA_SCIENCE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "model_architecture": {
+                "type": "string",
+                "description": "Type of neural network (CNN, RNN, Transformer)."
+              },
+              "dataset_path": {
+                "type": "string",
+                "description": "Path to training data."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/DATA_SCIENCE/skill_data_41_dl_train",
+      "logic_path": "/intelligence/skills/DATA_SCIENCE/skill_data_41_dl_train/logic.py",
+      "dossier_path": "/intelligence/skills/DATA_SCIENCE/skill_data_41_dl_train/dossier.md"
+    },
+    "skill_data_42_nlu": {
+      "manifest": {
+        "id": "SKILL_DATA_42_NLU",
+        "name": "Zenith NLU Intelligence",
+        "version": "1.0.0",
+        "description": "Natural Language Understanding core: Extracts intent, entities, and sentiment from human language to enable sophisticated interaction and automation.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "hiểu ngôn ngữ nlu",
+          "trích xuất ý định",
+          "phân tích thực thể",
+          "sentiment analysis",
+          "nlu processor"
+        ],
+        "domain": "DATA_SCIENCE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "text": {
+                "type": "string",
+                "description": "The input text to analyze."
+              },
+              "language": {
+                "type": "string",
+                "description": "Input language (optional)."
+              }
+            },
+            "required": [
+              "text"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/DATA_SCIENCE/skill_data_42_nlu",
+      "logic_path": "/intelligence/skills/DATA_SCIENCE/skill_data_42_nlu/logic.py",
+      "dossier_path": "/intelligence/skills/DATA_SCIENCE/skill_data_42_nlu/dossier.md"
+    },
+    "skill_data_43_cv_elite": {
+      "manifest": {
+        "id": "SKILL_DATA_43_CV_ELITE",
+        "name": "Zenith Computer Vision Elite",
+        "version": "1.0.0",
+        "description": "Visual intelligence core: High-performance computer vision for object detection, image classification, and spatial analysis.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "thị giác máy tính elite",
+          "nhận diện hình ảnh",
+          "object detection",
+          "cv elite",
+          "phân tích không gian"
+        ],
+        "domain": "DATA_SCIENCE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "image_path": {
+                "type": "string",
+                "description": "Path to the image for CV analysis."
+              },
+              "cv_task": {
+                "type": "string",
+                "enum": [
+                  "detection",
+                  "classification",
+                  "segmentation"
+                ],
+                "description": "Type of visual task."
+              }
+            },
+            "required": [
+              "image_path"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/DATA_SCIENCE/skill_data_43_cv_elite",
+      "logic_path": "/intelligence/skills/DATA_SCIENCE/skill_data_43_cv_elite/logic.py",
+      "dossier_path": "/intelligence/skills/DATA_SCIENCE/skill_data_43_cv_elite/dossier.md"
+    },
+    "skill_data_44_predictive": {
+      "manifest": {
+        "id": "SKILL_DATA_44_PREDICTIVE",
+        "name": "Zenith Predictive Analytics",
+        "version": "1.0.0",
+        "description": "Forecasting core: Uses historical data and statistical models to predict future trends, behaviors, and outcomes for proactive decision-making.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "phân tích dự báo",
+          "forecasting",
+          "dự đoán xu hướng",
+          "predictive analytics",
+          "future outcome"
+        ],
+        "domain": "DATA_SCIENCE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "dataset_path": {
+                "type": "string",
+                "description": "Path to the historical data."
+              },
+              "forecast_period": {
+                "type": "integer",
+                "description": "Number of units to forecast into the future."
+              }
+            },
+            "required": [
+              "dataset_path"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/DATA_SCIENCE/skill_data_44_predictive",
+      "logic_path": "/intelligence/skills/DATA_SCIENCE/skill_data_44_predictive/logic.py",
+      "dossier_path": "/intelligence/skills/DATA_SCIENCE/skill_data_44_predictive/dossier.md"
+    },
+    "skill_data_45_recommend": {
+      "manifest": {
+        "id": "SKILL_DATA_45_RECOMMEND",
+        "name": "Zenith AI Recommendation Engine",
+        "version": "1.0.0",
+        "description": "Personalization core: Provides tailored suggestions and content recommendations based on user behavior, preferences, and historical interaction patterns.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "hệ thống gợi ý",
+          "ai recommendation",
+          "gợi ý nội dung",
+          "personalization engine"
+        ],
+        "domain": "DATA_SCIENCE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "user_id": {
+                "type": "string",
+                "description": "ID of the user to get recommendations for."
+              },
+              "context": {
+                "type": "object",
+                "description": "Current context for recommendation."
+              }
+            },
+            "required": [
+              "user_id"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/DATA_SCIENCE/skill_data_45_recommend",
+      "logic_path": "/intelligence/skills/DATA_SCIENCE/skill_data_45_recommend/logic.py",
+      "dossier_path": "/intelligence/skills/DATA_SCIENCE/skill_data_45_recommend/dossier.md"
+    },
+    "skill_data_46_big_data": {
+      "manifest": {
+        "id": "SKILL_DATA_46_BIG_DATA",
+        "name": "Zenith Big Data Engine",
+        "version": "1.0.0",
+        "description": "Massive data core: Orchestrates large-scale data processing pipelines using Spark and distributed architectures to handle petabytes of information.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "xử lý big data",
+          "spark processing",
+          "hạ tầng dữ liệu lớn",
+          "distributed computing"
+        ],
+        "domain": "DATA_SCIENCE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "data_source": {
+                "type": "string",
+                "description": "Path or URL to the big data source."
+              },
+              "job_type": {
+                "type": "string",
+                "enum": [
+                  "etl",
+                  "analytics",
+                  "streaming"
+                ],
+                "description": "Type of processing job."
+              }
+            },
+            "required": [
+              "data_source"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/DATA_SCIENCE/skill_data_46_big_data",
+      "logic_path": "/intelligence/skills/DATA_SCIENCE/skill_data_46_big_data/logic.py",
+      "dossier_path": "/intelligence/skills/DATA_SCIENCE/skill_data_46_big_data/dossier.md"
+    },
+    "skill_data_47_automl": {
+      "manifest": {
+        "id": "SKILL_DATA_47_AUTOML",
+        "name": "Zenith AutoML Intelligence",
+        "version": "1.0.0",
+        "description": "Automated AI core: Streamlines the entire machine learning pipeline from feature engineering to model selection and deployment, enabling rapid development of high-quality models.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "tự động hóa học máy",
+          "automl",
+          "tự động chọn model",
+          "vận hành ai tự động"
+        ],
+        "domain": "DATA_SCIENCE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "dataset_path": {
+                "type": "string",
+                "description": "Path to the dataset."
+              },
+              "time_limit": {
+                "type": "integer",
+                "description": "Time limit for searching the best model (seconds)."
+              }
+            },
+            "required": [
+              "dataset_path"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/DATA_SCIENCE/skill_data_47_automl",
+      "logic_path": "/intelligence/skills/DATA_SCIENCE/skill_data_47_automl/logic.py",
+      "dossier_path": "/intelligence/skills/DATA_SCIENCE/skill_data_47_automl/dossier.md"
+    },
+    "skill_data_48_graph": {
+      "manifest": {
+        "id": "SKILL_DATA_48_GRAPH",
+        "name": "Zenith Graph Intelligence",
+        "version": "1.0.0",
+        "description": "Network connectivity core: Analyzes complex relationships and interconnected data using graph algorithms to detect communities, influencers, and hidden patterns.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "phân tích đồ thị",
+          "graph intelligence",
+          "phân tích mạng lưới",
+          "mối quan hệ dữ liệu",
+          "influence mapping"
+        ],
+        "domain": "DATA_SCIENCE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "nodes_data": {
+                "type": "string",
+                "description": "Path to the nodes dataset."
+              },
+              "edges_data": {
+                "type": "string",
+                "description": "Path to the relationships dataset."
+              }
+            },
+            "required": [
+              "nodes_data",
+              "edges_data"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/DATA_SCIENCE/skill_data_48_graph",
+      "logic_path": "/intelligence/skills/DATA_SCIENCE/skill_data_48_graph/logic.py",
+      "dossier_path": "/intelligence/skills/DATA_SCIENCE/skill_data_48_graph/dossier.md"
+    },
+    "skill_data_50_quantum": {
+      "manifest": {
+        "id": "SKILL_DATA_50_QUANTUM",
+        "name": "Zenith Quantum Readiness",
+        "version": "1.0.0",
+        "description": "Next-gen computing core: Simulates and prepares quantum-safe algorithms and quantum-ready logic for the upcoming era of quantum computing.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "thuật toán lượng tử",
+          "quantum computing",
+          "quantum ready",
+          "giả lập lượng tử"
+        ],
+        "domain": "DATA_SCIENCE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "algorithm_type": {
+                "type": "string",
+                "description": "Type of quantum algorithm (Grover, Shor, etc.)."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/DATA_SCIENCE/skill_data_50_quantum",
+      "logic_path": "/intelligence/skills/DATA_SCIENCE/skill_data_50_quantum/logic.py",
+      "dossier_path": "/intelligence/skills/DATA_SCIENCE/skill_data_50_quantum/dossier.md"
+    },
+    "SUPER_DATA_SCIENCE": {
+      "manifest": {
+        "id": "SUPER_DATA_SCIENCE",
+        "name": "Zenith Super AI & Data Science",
+        "version": "1.0.0",
+        "description": "Unified analytics core: Combines predictive analytics, AutoML, deep learning training, and computer vision into a single high-performance engine for complex data challenges.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "phân tích dữ liệu elite",
+          "huấn luyện ai cấp tốc",
+          "thị giác máy tính",
+          "super data science",
+          "automl",
+          "predictive analytics"
+        ],
+        "domain": "DATA_SCIENCE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "phan_tich_du_lieu_elite",
+                  "huan_luyen_ai_cap_toc",
+                  "thi_giac_may_tinh"
+                ],
+                "description": "Data science action."
+              },
+              "data_path": {
+                "type": "string",
+                "description": "Path to the dataset (CSV/Excel)."
+              },
+              "image_path": {
+                "type": "string",
+                "description": "Path to the image for computer vision."
+              }
+            },
+            "required": [
+              "action"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/DATA_SCIENCE/SUPER_DATA_SCIENCE",
+      "logic_path": "/intelligence/skills/DATA_SCIENCE/SUPER_DATA_SCIENCE/logic.py",
+      "dossier_path": "/intelligence/skills/DATA_SCIENCE/SUPER_DATA_SCIENCE/dossier.md"
+    },
+    "WEB_LOGIC_FORGE": {
+      "manifest": {
+        "id": "WEB_LOGIC_FORGE",
+        "name": "Zenith Web Logic Forge",
+        "version": "1.0.0",
+        "description": "Dynamic skill architecture: Automatically generates, files, and registers new web-based visual skills into the Neural Eye infrastructure.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "đúc kỹ năng web",
+          "web logic forge",
+          "tạo kỹ năng thị giác mới",
+          "register web skill"
+        ],
+        "domain": "DATA_SCIENCE",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "domain": {
+                "type": "string",
+                "description": "The target domain (e.g., social, finance)."
+              },
+              "skill_name": {
+                "type": "string",
+                "description": "Name of the new skill."
+              },
+              "code": {
+                "type": "string",
+                "description": "Python code for the skill logic."
+              },
+              "capability": {
+                "type": "string",
+                "description": "Description of what this skill can do."
+              }
+            },
+            "required": [
+              "domain",
+              "skill_name",
+              "code",
+              "capability"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/DATA_SCIENCE/WEB_LOGIC_FORGE",
+      "logic_path": "/intelligence/skills/DATA_SCIENCE/WEB_LOGIC_FORGE/logic.py",
+      "dossier_path": "/intelligence/skills/DATA_SCIENCE/WEB_LOGIC_FORGE/dossier.md"
+    },
+    "MICROSERVICE_FORGE": {
+      "manifest": {
+        "id": "MICROSERVICE_FORGE",
+        "name": "Zenith Microservice Forge",
+        "version": "1.0.0",
+        "description": "Instant infrastructure architect: Automates the entire lifecycle of a new service from code generation to Dockerization and docker-compose integration.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "kiến tạo dịch vụ",
+          "forge service",
+          "tạo microservice",
+          "tự động hóa docker",
+          "triển khai dịch vụ mới"
+        ],
+        "domain": "DEVOPS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "service_name": {
+                "type": "string",
+                "description": "Name of the new microservice."
+              },
+              "requirements": {
+                "type": "string",
+                "description": "Functional requirements for the service."
+              }
+            },
+            "required": [
+              "service_name",
+              "requirements"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/DEVOPS/MICROSERVICE_FORGE",
+      "logic_path": "/intelligence/skills/DEVOPS/MICROSERVICE_FORGE/logic.py",
+      "dossier_path": "/intelligence/skills/DEVOPS/MICROSERVICE_FORGE/dossier.md"
+    },
+    "skill_giam_sat_he_thong": {
+      "manifest": {
+        "id": "SKILL_GIAM_SAT_HE_THONG",
+        "name": "Zenith Telemetry & Monitoring",
+        "version": "1.0.0",
+        "description": "System health core: Monitors CPU, RAM, Disk, and logs to ensure optimal performance and security of the Zenith infrastructure.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "giám sát hệ thống",
+          "kiểm tra sức khỏe pc",
+          "system telemetry",
+          "quét lỗi log"
+        ],
+        "domain": "DEVOPS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "bao_cao_suc_khoe_he_thong",
+                  "quet_loi_log_tu_dong"
+                ],
+                "description": "Monitoring action."
+              }
+            },
+            "required": [
+              "action"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/DEVOPS/skill_giam_sat_he_thong",
+      "logic_path": "/intelligence/skills/DEVOPS/skill_giam_sat_he_thong/logic.py",
+      "dossier_path": "/intelligence/skills/DEVOPS/skill_giam_sat_he_thong/dossier.md"
+    },
+    "skill_quantrihethong": {
+      "manifest": {
+        "id": "SKILL_QUANTRIHETHONG",
+        "name": "Zenith System Administration",
+        "version": "1.0.0",
+        "description": "Enterprise-grade system management: Handles safe file I/O with automated backups, soft-delete mechanisms, and storage telemetry.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "quản trị hệ thống",
+          "ghi tệp an toàn",
+          "xóa tệp soft-delete",
+          "phục hồi tệp",
+          "thống kê dung lượng"
+        ],
+        "domain": "DEVOPS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "ghi_tep_an_toan",
+                  "xoa_tep_an_toan",
+                  "phuc_hoi_tep",
+                  "thong_ke_dung_luong"
+                ],
+                "description": "Admin action."
+              },
+              "path": {
+                "type": "string",
+                "description": "Target file path."
+              },
+              "content": {
+                "type": "string",
+                "description": "Content for safe write."
+              }
+            },
+            "required": [
+              "action"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/DEVOPS/skill_quantrihethong",
+      "logic_path": "/intelligence/skills/DEVOPS/skill_quantrihethong/logic.py",
+      "dossier_path": "/intelligence/skills/DEVOPS/skill_quantrihethong/dossier.md"
+    },
+    "skill_sys_11_autoscaling": {
+      "manifest": {
+        "id": "SKILL_SYS_11_AUTOSCALING",
+        "name": "Zenith Dynamic Autoscaling",
+        "version": "1.0.0",
+        "description": "Elastic infrastructure core: Manages the automatic scaling of containerized services based on resource demand and performance metrics.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "tự động giãn nở",
+          "autoscaling",
+          "mở rộng hạ tầng tự động",
+          "elastic scale"
+        ],
+        "domain": "DEVOPS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "target_service": {
+                "type": "string",
+                "description": "The service to scale."
+              },
+              "threshold": {
+                "type": "number",
+                "description": "CPU/RAM threshold to trigger scaling."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/DEVOPS/skill_sys_11_autoscaling",
+      "logic_path": "/intelligence/skills/DEVOPS/skill_sys_11_autoscaling/logic.py",
+      "dossier_path": "/intelligence/skills/DEVOPS/skill_sys_11_autoscaling/dossier.md"
+    },
+    "skill_sys_12_sharding": {
+      "manifest": {
+        "id": "SKILL_SYS_12_SHARDING",
+        "name": "Zenith Data Sharding Engine",
+        "version": "1.0.0",
+        "description": "Distributed data core: Implements horizontal partitioning for large-scale databases to ensure high performance and sub-second query latency.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "phân mảnh dữ liệu",
+          "data sharding",
+          "tối ưu hóa database lớn",
+          "horizontal partitioning"
+        ],
+        "domain": "DEVOPS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "db_name": {
+                "type": "string",
+                "description": "Database to shard."
+              },
+              "shard_key": {
+                "type": "string",
+                "description": "The key used for partitioning."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/DEVOPS/skill_sys_12_sharding",
+      "logic_path": "/intelligence/skills/DEVOPS/skill_sys_12_sharding/logic.py",
+      "dossier_path": "/intelligence/skills/DEVOPS/skill_sys_12_sharding/dossier.md"
+    },
+    "skill_sys_13_ha_sync": {
+      "manifest": {
+        "id": "SKILL_SYS_13_HA_SYNC",
+        "name": "Zenith High Availability Sync",
+        "version": "1.0.0",
+        "description": "Availability core: Ensures zero-downtime operations by synchronizing state and data across multiple redundant nodes.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "đồng bộ ha",
+          "high availability",
+          "đồng bộ dự phòng",
+          "zero downtime"
+        ],
+        "domain": "DEVOPS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "sync_mode": {
+                "type": "string",
+                "enum": [
+                  "active-active",
+                  "active-passive"
+                ],
+                "description": "HA synchronization mode."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/DEVOPS/skill_sys_13_ha_sync",
+      "logic_path": "/intelligence/skills/DEVOPS/skill_sys_13_ha_sync/logic.py",
+      "dossier_path": "/intelligence/skills/DEVOPS/skill_sys_13_ha_sync/dossier.md"
+    },
+    "skill_sys_14_serverless": {
+      "manifest": {
+        "id": "SKILL_SYS_14_SERVERLESS",
+        "name": "Zenith Serverless Engine",
+        "version": "1.0.0",
+        "description": "On-demand execution core: Manages the deployment and triggering of stateless functions that scale automatically and run only when needed.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "serverless engine",
+          "chạy hàm không máy chủ",
+          "stateless function",
+          "tự động hóa function"
+        ],
+        "domain": "DEVOPS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "function_name": {
+                "type": "string",
+                "description": "Name of the function to trigger."
+              },
+              "payload": {
+                "type": "object",
+                "description": "Data to pass to the function."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/DEVOPS/skill_sys_14_serverless",
+      "logic_path": "/intelligence/skills/DEVOPS/skill_sys_14_serverless/logic.py",
+      "dossier_path": "/intelligence/skills/DEVOPS/skill_sys_14_serverless/dossier.md"
+    },
+    "skill_sys_15_cicd_elite": {
+      "manifest": {
+        "id": "SKILL_SYS_15_CICD_ELITE",
+        "name": "Zenith CI/CD Elite",
+        "version": "1.0.0",
+        "description": "Delivery excellence core: Automates the continuous integration and continuous deployment pipelines to ensure rapid, secure, and reliable software releases.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "triển khai tự động",
+          "ci/cd elite",
+          "tự động hóa phát hành",
+          "continuous delivery"
+        ],
+        "domain": "DEVOPS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "project_name": {
+                "type": "string",
+                "description": "Name of the project to deploy."
+              },
+              "env": {
+                "type": "string",
+                "enum": [
+                  "staging",
+                  "production"
+                ],
+                "description": "Target environment."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/DEVOPS/skill_sys_15_cicd_elite",
+      "logic_path": "/intelligence/skills/DEVOPS/skill_sys_15_cicd_elite/logic.py",
+      "dossier_path": "/intelligence/skills/DEVOPS/skill_sys_15_cicd_elite/dossier.md"
+    },
+    "skill_sys_16_container_sec": {
+      "manifest": {
+        "id": "SKILL_SYS_16_CONTAINER_SEC",
+        "name": "Zenith Container Security Shield",
+        "version": "1.0.0",
+        "description": "Hardening core: Protects the containerized infrastructure by implementing image scanning, runtime security policies, and network isolation.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "bảo mật container",
+          "gia cố hệ thống docker",
+          "container hardening",
+          "security audit container"
+        ],
+        "domain": "DEVOPS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "container_id": {
+                "type": "string",
+                "description": "ID of the container to secure."
+              },
+              "policy_level": {
+                "type": "string",
+                "enum": [
+                  "standard",
+                  "strict"
+                ],
+                "description": "Security policy level."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/DEVOPS/skill_sys_16_container_sec",
+      "logic_path": "/intelligence/skills/DEVOPS/skill_sys_16_container_sec/logic.py",
+      "dossier_path": "/intelligence/skills/DEVOPS/skill_sys_16_container_sec/dossier.md"
+    },
+    "skill_sys_17_load_balance": {
+      "manifest": {
+        "id": "SKILL_SYS_17_LOAD_BALANCE",
+        "name": "Zenith Intelligent Load Balancer",
+        "version": "1.0.0",
+        "description": "Traffic orchestration core: Efficiently distributes incoming network traffic across a group of backend servers or containers to optimize resource use and response time.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "điều phối tải",
+          "load balancer",
+          "cân bằng tải",
+          "traffic orchestration"
+        ],
+        "domain": "DEVOPS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "service_name": {
+                "type": "string",
+                "description": "The service group to balance."
+              },
+              "algorithm": {
+                "type": "string",
+                "enum": [
+                  "round-robin",
+                  "least-connections"
+                ],
+                "description": "Balancing algorithm."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/DEVOPS/skill_sys_17_load_balance",
+      "logic_path": "/intelligence/skills/DEVOPS/skill_sys_17_load_balance/logic.py",
+      "dossier_path": "/intelligence/skills/DEVOPS/skill_sys_17_load_balance/dossier.md"
+    },
+    "skill_sys_18_log_insight": {
+      "manifest": {
+        "id": "SKILL_SYS_18_LOG_INSIGHT",
+        "name": "Zenith Log Insight Engine",
+        "version": "1.0.0",
+        "description": "Observability core: Centralizes and analyzes logs from all system components to identify patterns, errors, and performance bottlenecks using AI-driven insights.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "phân tích log",
+          "log insight",
+          "điều tra lỗi hệ thống",
+          "centralized logging"
+        ],
+        "domain": "DEVOPS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "service_name": {
+                "type": "string",
+                "description": "The service to analyze logs for."
+              },
+              "time_range": {
+                "type": "string",
+                "description": "Time range for analysis (e.g., 'last 1 hour')."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/DEVOPS/skill_sys_18_log_insight",
+      "logic_path": "/intelligence/skills/DEVOPS/skill_sys_18_log_insight/logic.py",
+      "dossier_path": "/intelligence/skills/DEVOPS/skill_sys_18_log_insight/dossier.md"
+    },
+    "skill_sys_19_disaster_recovery": {
+      "manifest": {
+        "id": "SKILL_SYS_19_DISASTER_RECOVERY",
+        "name": "Zenith Disaster Recovery Core",
+        "version": "1.0.0",
+        "description": "Business continuity core: Implements comprehensive backup and rapid restoration protocols to recover the entire system state within 30 seconds of a major failure.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "khôi phục thảm họa",
+          "disaster recovery",
+          "phục hồi hệ thống 30s",
+          "emergency restore"
+        ],
+        "domain": "DEVOPS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "restore_point": {
+                "type": "string",
+                "description": "Timestamp or ID of the restore point."
+              },
+              "emergency_level": {
+                "type": "string",
+                "enum": [
+                  "partial",
+                  "total"
+                ],
+                "description": "Severity of the disaster."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/DEVOPS/skill_sys_19_disaster_recovery",
+      "logic_path": "/intelligence/skills/DEVOPS/skill_sys_19_disaster_recovery/logic.py",
+      "dossier_path": "/intelligence/skills/DEVOPS/skill_sys_19_disaster_recovery/dossier.md"
+    },
+    "skill_sys_20_edge_compute": {
+      "manifest": {
+        "id": "SKILL_SYS_20_EDGE_COMPUTE",
+        "name": "Zenith Edge Computing Optimizer",
+        "version": "1.0.0",
+        "description": "Distributed intelligence core: Decentralizes processing by moving workloads closer to the data source, reducing latency and bandwidth consumption for real-time applications.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "edge computing",
+          "tối ưu hóa biên",
+          "xử lý tại nguồn",
+          "distributed processing"
+        ],
+        "domain": "DEVOPS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "workload_type": {
+                "type": "string",
+                "description": "Type of processing to move to edge."
+              },
+              "node_location": {
+                "type": "string",
+                "description": "Geographic or network location of the edge node."
+              }
+            }
+          }
+        }
+      },
+      "path": "/intelligence/skills/DEVOPS/skill_sys_20_edge_compute",
+      "logic_path": "/intelligence/skills/DEVOPS/skill_sys_20_edge_compute/logic.py",
+      "dossier_path": "/intelligence/skills/DEVOPS/skill_sys_20_edge_compute/dossier.md"
+    },
+    "skill_v3_performance": {
+      "manifest": {
+        "id": "SKILL_V3_PERFORMANCE",
+        "name": "Zenith V3 Performance Optimizer",
+        "version": "1.0.0",
+        "description": "System velocity core: Implements cutting-edge techniques like Flash Attention for context optimization and HNSW for ultra-fast vector search (up to 12,500x speedup).",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "tối ưu hiệu năng v3",
+          "flash attention",
+          "hnsw search",
+          "tăng tốc hệ thống",
+          "tối ưu context"
+        ],
+        "domain": "DEVOPS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "optimize_context",
+                  "hyper_search",
+                  "performance_audit"
+                ],
+                "description": "Optimization action."
+              },
+              "messages": {
+                "type": "array",
+                "description": "Messages to optimize for context."
+              },
+              "query_embedding": {
+                "type": "array",
+                "description": "Embedding vector for hyper search."
+              }
+            },
+            "required": [
+              "action"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/DEVOPS/skill_v3_performance",
+      "logic_path": "/intelligence/skills/DEVOPS/skill_v3_performance/logic.py",
+      "dossier_path": "/intelligence/skills/DEVOPS/skill_v3_performance/dossier.md"
+    },
+    "skill_xray_monitor": {
+      "manifest": {
+        "id": "SKILL_XRAY_MONITOR",
+        "name": "Zenith X-Ray Monitor",
+        "version": "1.0.0",
+        "description": "Neural diagnostic core: Provides deep visibility into the system infrastructure, Ollama model health, and agent neural flows by communicating with the Host Satellite.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "x-ray monitor",
+          "soi chiếu hệ thống",
+          "kiểm tra ollama",
+          "chẩn đoán luồng tư duy",
+          "vitals check"
+        ],
+        "domain": "DEVOPS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "scan_ollama_health",
+                  "get_system_vitals",
+                  "neural_flow_diagnostic"
+                ],
+                "description": "Diagnostic action."
+              }
+            },
+            "required": [
+              "action"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/DEVOPS/skill_xray_monitor",
+      "logic_path": "/intelligence/skills/DEVOPS/skill_xray_monitor/logic.py",
+      "dossier_path": "/intelligence/skills/DEVOPS/skill_xray_monitor/dossier.md"
+    },
+    "SYSTEM_CORE_EXECUTOR": {
+      "manifest": {
+        "id": "SYSTEM_CORE_EXECUTOR",
+        "name": "Zenith System Core Executor",
+        "version": "1.0.0",
+        "description": "Primary motor system: Orchestrates fundamental OS operations including file I/O, directory traversal, pattern searching, command execution, and web reconnaissance.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "thực thi hệ thống",
+          "system executor",
+          "quản lý tệp tin",
+          "chạy lệnh shell",
+          "quét mã nguồn"
+        ],
+        "domain": "DEVOPS",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "action": {
+                "type": "string",
+                "enum": [
+                  "list_dir",
+                  "view_file",
+                  "write_to_file",
+                  "run_command",
+                  "grep_search",
+                  "search_web"
+                ],
+                "description": "Core action to perform."
+              },
+              "path": {
+                "type": "string",
+                "description": "Target file or directory path."
+              },
+              "query": {
+                "type": "string",
+                "description": "Search query or command string."
+              }
+            },
+            "required": [
+              "action"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/DEVOPS/SYSTEM_CORE_EXECUTOR",
+      "logic_path": "/intelligence/skills/DEVOPS/SYSTEM_CORE_EXECUTOR/logic.py",
+      "dossier_path": "/intelligence/skills/DEVOPS/SYSTEM_CORE_EXECUTOR/dossier.md"
+    },
+    "AUTONOMOUS_RESEARCHER": {
+      "manifest": {
+        "id": "AUTONOMOUS_RESEARCHER",
+        "name": "Zenith Autonomous Researcher",
+        "version": "1.0.0",
+        "description": "Multi-tier research core: Independently scouts the internet, performs deep content extraction, and synthesizes strategic research reports into the Vault.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "nghiên cứu độc lập",
+          "tìm kiếm thông tin chuyên sâu",
+          "autonomous researcher",
+          "tầm soát tri thức",
+          "viết báo cáo nghiên cứu"
+        ],
+        "domain": "RESEARCH",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "topic": {
+                "type": "string",
+                "description": "The research topic or question."
+              }
+            },
+            "required": [
+              "topic"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/RESEARCH/AUTONOMOUS_RESEARCHER",
+      "logic_path": "/intelligence/skills/RESEARCH/AUTONOMOUS_RESEARCHER/logic.py",
+      "dossier_path": "/intelligence/skills/RESEARCH/AUTONOMOUS_RESEARCHER/dossier.md"
+    },
+    "GITHUB_SCANNER": {
+      "manifest": {
+        "id": "GITHUB_SCANNER",
+        "name": "Zenith GitHub Scanner",
+        "version": "1.0.0",
+        "description": "Developer intelligence core: Scans and analyzes trending GitHub repositories, stars, and technology shifts to keep the codebase ahead of the curve.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "quét github",
+          "tìm repo trending",
+          "github scanner",
+          "phân tích xu hướng công nghệ"
+        ],
+        "domain": "RESEARCH",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "description": "Technology or topic to scan (e.g., AI, n8n)."
+              }
+            },
+            "required": [
+              "query"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/RESEARCH/GITHUB_SCANNER",
+      "logic_path": "/intelligence/skills/RESEARCH/GITHUB_SCANNER/logic.py",
+      "dossier_path": "/intelligence/skills/RESEARCH/GITHUB_SCANNER/dossier.md"
+    },
+    "SEARCH_WEB_GLOBAL": {
+      "manifest": {
+        "id": "SEARCH_WEB_GLOBAL",
+        "name": "Zenith Global Omni-Search",
+        "version": "2.0.0",
+        "description": "Supreme search core: Orchestrates global internet reconnaissance, RAG-based knowledge retrieval, and smart scraping with automated noise purification and reranking.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "siêu tìm kiếm",
+          "search web global",
+          "truy lục tri thức",
+          "quét internet",
+          "omni search"
+        ],
+        "domain": "RESEARCH",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string",
+                "description": "The search query."
+              },
+              "search_depth": {
+                "type": "string",
+                "enum": [
+                  "basic",
+                  "advanced"
+                ],
+                "description": "Depth of search."
+              }
+            },
+            "required": [
+              "query"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/RESEARCH/SEARCH_WEB_GLOBAL",
+      "logic_path": "/intelligence/skills/RESEARCH/SEARCH_WEB_GLOBAL/logic.py",
+      "dossier_path": "/intelligence/skills/RESEARCH/SEARCH_WEB_GLOBAL/dossier.md"
+    },
+    "skill_strategic_recon": {
+      "manifest": {
+        "id": "SKILL_STRATEGIC_RECON",
+        "name": "Zenith Strategic Reconnaissance",
+        "version": "1.0.0",
+        "description": "Adaptive scouting core: Uses recursive reasoning and visual satellite browsing to independently solve complex research goals across the web.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "trinh sát chiến lược",
+          "search browse",
+          "tìm kiếm đa tầng",
+          "strategic recon",
+          "tầm soát thị giác"
+        ],
+        "domain": "RESEARCH",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "goal": {
+                "type": "string",
+                "description": "The complex goal to research and achieve."
+              }
+            },
+            "required": [
+              "goal"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/RESEARCH/skill_strategic_recon",
+      "logic_path": "/intelligence/skills/RESEARCH/skill_strategic_recon/logic.py",
+      "dossier_path": "/intelligence/skills/RESEARCH/skill_strategic_recon/dossier.md"
+    },
+    "STEALTH_WEB_NAVIGATOR": {
+      "manifest": {
+        "id": "STEALTH_WEB_NAVIGATOR",
+        "name": "Zenith Stealth Web Navigator",
+        "version": "1.0.0",
+        "description": "Ghost browsing core: Deploys the CloakBrowser agent to navigate websites autonomously while bypassing bot detection and fingerprints.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "duyệt web ẩn danh",
+          "stealth browse",
+          "vượt rào cản bot",
+          "cloaking navigator",
+          "truy cập tàng hình"
+        ],
+        "domain": "RESEARCH",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "description": "Target URL to navigate."
+              },
+              "objective": {
+                "type": "string",
+                "description": "What to extract or accomplish (e.g., 'find the pricing table')."
+              }
+            },
+            "required": [
+              "url",
+              "objective"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/RESEARCH/STEALTH_WEB_NAVIGATOR",
+      "logic_path": "/intelligence/skills/RESEARCH/STEALTH_WEB_NAVIGATOR/logic.py",
+      "dossier_path": "/intelligence/skills/RESEARCH/STEALTH_WEB_NAVIGATOR/dossier.md"
+    },
+    "WEB_PATHFINDER": {
+      "manifest": {
+        "id": "WEB_PATHFINDER",
+        "name": "Zenith Web Pathfinder",
+        "version": "1.0.0",
+        "description": "Semantic navigation core: Uses AI reasoning to find the shortest path to a goal on a website, managing clicks, scrolls, and interactions.",
+        "author": "Zenith Kernel",
+        "triggers": [
+          "hoa tiêu dẫn đường web",
+          "web pathfinder",
+          "tìm đường trên web",
+          "điều hướng tự động"
+        ],
+        "domain": "RESEARCH",
+        "schema": {
+          "input": {
+            "type": "object",
+            "properties": {
+              "url": {
+                "type": "string",
+                "description": "Starting URL."
+              },
+              "goal": {
+                "type": "string",
+                "description": "The goal to reach (e.g., 'find the checkout button')."
+              }
+            },
+            "required": [
+              "url",
+              "goal"
+            ]
+          }
+        }
+      },
+      "path": "/intelligence/skills/RESEARCH/WEB_PATHFINDER",
+      "logic_path": "/intelligence/skills/RESEARCH/WEB_PATHFINDER/logic.py",
+      "dossier_path": "/intelligence/skills/RESEARCH/WEB_PATHFINDER/dossier.md"
+    },
+    "standard_plugin": {
+      "manifest": {
+        "id": "skill_id",
+        "name": "Human Readable Name",
+        "version": "1.0.0",
+        "domain": "CORE|CODING|RESEARCH|FINANCE|...",
+        "description": "Short description of what the skill does.",
+        "triggers": [
+          "keyword1",
+          "phrase 1"
+        ],
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "param1": {
+              "type": "string",
+              "description": "Description of param1"
+            }
+          },
+          "required": [
+            "param1"
+          ]
+        },
+        "output_format": "Expected return format (e.g. JSON, Markdown, Text)",
+        "author": "Antigravity / Master LeeTrung"
+      },
+      "path": "/intelligence/skills/templates/standard_plugin",
+      "logic_path": "/intelligence/skills/templates/standard_plugin/logic.py",
+      "dossier_path": "/intelligence/skills/templates/standard_plugin/dossier.md"
+    }
+  },
+  "system": {
+    "last_scan": "2026-06-01 11:46:32"
+  }
+}

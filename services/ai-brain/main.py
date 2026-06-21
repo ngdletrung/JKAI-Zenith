@@ -1,3 +1,12 @@
+# [ZENITH FILE DIRECTIVE]
+# - File: services/ai-brain/main.py
+# - Role: API Gateway & Intellectual Core (Sovereign Core)
+# - Ownership: Mr LeeTrung
+# - Status: Active | Version: SDS v18.0
+# [WORKING PRINCIPLES]:
+# 1. Bypass heavy audit for fast-mode or general queries to avoid CPU bottleneck.
+# 2. NO emojis in logic and configuration. Zero-noise rule enforced.
+
 import os
 import json
 import time as _time
@@ -21,9 +30,12 @@ from core.utils.engine import engine
 from core.qdrant_client import qdrant_client
 from redis_client import redis_safe
 try:
-    from intelligence.skills.skill_dongbotrithuc.logic import JKAI_Assimilator
+    from intelligence.skills.CORE.SYNC_KNOWLEDGE_QUANTUM.logic import JKAI_Assimilator
 except ModuleNotFoundError:
-    from intelligence.skills.RESEARCH.skill_dongbotrithuc.logic import JKAI_Assimilator
+    try:
+        from intelligence.skills.skill_dongbotrithuc.logic import JKAI_Assimilator
+    except ModuleNotFoundError:
+        from intelligence.skills.RESEARCH.skill_dongbotrithuc.logic import JKAI_Assimilator
 from experience_distiller import distiller
 
 # 👑 [SOVEREIGN-IDENTITY]: Khẳng định đây là Lõi Trí tuệ Gốc thưa Master
@@ -57,7 +69,7 @@ def _publish_log(tag: str, msg: str):
             r.lpush('monitor:log_history', log_payload)
             r.publish('monitor:log_channel', log_payload)
         redis_safe(_redis_op)
-    except: pass
+    except Exception: pass
 
 async def _safe_get_json(request: Request):
     """🛡️ NEURAL SANITIZER: Đảm bảo dữ liệu đầu vào thanh khiết và không có BOM thưa Master."""
@@ -77,24 +89,65 @@ async def startup_event():
     async def delayed_warmup():
         await asyncio.sleep(30)
         await engine.warmup_all_models()
-        # 🌀 [SINGULARITY-PULSE]: Kích hoạt nhịp đập Tự tiến hóa đầu tiên thưa Master
+        
+        # 🔄 [STARTUP-SYNC]: Tự động đồng bộ hóa toàn diện khi khởi động thưa Master
+        try:
+            from core.tools.sync_pipeline import run_sync_pipeline
+            asyncio.create_task(run_sync_pipeline("startup_sync"))
+        except Exception as startup_err:
+            logger.error(f"❌ [STARTUP-SYNC-ERR]: {startup_err}")
+            
         asyncio.create_task(_autonomous_evolution_loop())
+        asyncio.create_task(_import_watcher_loop())
     asyncio.create_task(delayed_warmup())
 
 async def _autonomous_evolution_loop():
     """🌀 [ETERNAL-ZENITH]: Giao thức Tự tiến hóa Vĩnh cửu thưa Master."""
     while True:
         try:
-            # Nghỉ ngơi giữa các nhịp đập nơ-ron (Mặc định 1 giờ thưa Master)
-            await asyncio.sleep(3600) 
+            await asyncio.sleep(3600)
             _publish_log("ZENITH", "🌀 [OMNI-EVOLVE]: Khởi động nhịp đập tự tầm soát hệ thống thưa Master...")
-            
-            # 🧪 Chắt lọc kinh nghiệm và đề xuất bản vá tự động thưa Ngài
             await distiller.distill_recent_tasks()
             _publish_log("ZENITH", "🌀 [OMNI-EVOLVE]: Đã hoàn tất đúc kết nơ-ron. Các đề xuất đã được niêm yết tại Sovereign Guard thưa Master.")
         except Exception as e:
             logger.error(f"❌ [EVOLVE-ERR]: {e}")
             await asyncio.sleep(300)
+
+_import_watcher_lock = False
+async def _import_watcher_loop():
+    """🔍 Auto-import: poll files/Import/ mỗi 30s, tự động chạy import_pipeline khi có file mới."""
+    global _import_watcher_lock
+    from core.utils import path_manager
+    import_dir = path_manager.get("FILES_INPUT") or os.path.join(path_manager.get_root(), "files", "Import")
+    os.makedirs(import_dir, exist_ok=True)
+    known_files = set()
+
+    await asyncio.sleep(60)  # đợi hệ thống ổn định
+
+    while True:
+        try:
+            current = {f.name for f in os.scandir(import_dir) if f.is_file()}
+            new_files = current - known_files
+            if new_files:
+                _publish_log("ZENITH", f"🔍 Phát hiện {len(new_files)} file mới trong Import, tự động đồng bộ...")
+                if not _import_watcher_lock:
+                    _import_watcher_lock = True
+                    try:
+                        from core.tools.sync_pipeline import run_sync_pipeline
+                        result = await run_sync_pipeline("auto_import")
+                        ok = result.get("ok", 0)
+                        total = result.get("total", 0)
+                        _publish_log("ZENITH", f"✅ Auto-sync hoàn tất: {ok}/{total} phases OK ({result.get('msg', '')})")
+                    except Exception as pipe_err:
+                        logger.error(f"[IMPORT-WATCHER] {pipe_err}")
+                    finally:
+                        _import_watcher_lock = False
+                known_files = current
+            else:
+                known_files = current
+        except Exception as e:
+            logger.error(f"[IMPORT-WATCHER-ERR] {e}")
+        await asyncio.sleep(30)
 
 @app.get('/health')
 async def health_check(): return {'status': 'alive'}
@@ -142,12 +195,22 @@ async def plan_task(request: Request):
         return {"steps": [], "ambiguous": False, "error": "Invalid JSON or Encoding thưa Master. 🛡️"}
     sync_hlc_from_payload(data)
     try:
+        ctx = dict(data.get('context') or {})
+        if data.get('domain'):
+            ctx['domain'] = data.get('domain')
+        if data.get('agent_role'):
+            ctx['agent_role'] = data.get('agent_role')
+        if data.get('use_planning_pipeline'):
+            ctx['use_planning_pipeline'] = True
+        if data.get('trace_id'):
+            ctx['trace_id'] = data.get('trace_id')
         result = await planner.generate_plan(
             goal=data.get('goal', ''),
-            context=data.get('context', {}),
+            context=ctx,
             images=data.get('images'),
             history=data.get('history', []),
-            task_id=data.get('task_id', 'system')
+            task_id=data.get('task_id', 'system'),
+            domain=data.get('domain') or ctx.get('domain'),
         )
         return result
     except Exception as e:
@@ -203,11 +266,11 @@ async def memorize_conversation(request: Request):
             from core.utils.embed import embed
             from core.qdrant_client import qdrant_client as qc
             txt = scrubbed["content"]
-            vector = embed(txt[:1000])
+            vector = await embed.get_embedding_async(txt[:1000])
             if vector:
                 await qc.upsert_intel(text=txt, embedding=vector, metadata={"source": f"memory_{task_id}", "type": "memory", "ts": _time.time()})
                 return {"status": "memorized"}
-    except: pass
+    except Exception: pass
     return {"status": "error"}
 
 @app.post('/distill')
@@ -233,6 +296,17 @@ async def distill_knowledge(request: Request):
 async def _neural_council_audit(goal: str, answer: str, task_id: str) -> str:
     """🛡️ [NEURAL-COUNCIL]: Hội đồng nơ-ron đa tầng thẩm định thưa Master."""
     try:
+        # Bypass audit for safety refusals or standard fallback messages thưa Master
+        refusal_keywords = [
+            "xin lỗi", "không thể cung cấp", "thời gian thực", "thông tin mới nhất",
+            "trở ngại", "xin lỗi vì sự bất tiện", "không tìm thấy", "unable to provide",
+            "real-time information", "sorry"
+        ]
+        answer_lower = answer.lower()
+        if any(kw in answer_lower for kw in refusal_keywords):
+            logger.info("🛡️ [NEURAL-COUNCIL]: Refusal/safety response detected. Bypassing audit thưa Master.")
+            return answer
+
         audit_prompt = (
             f"Mục tiêu của Master: {goal}\n"
             f"Câu trả lời dự kiến: {answer}\n\n"
@@ -249,7 +323,7 @@ async def _neural_council_audit(goal: str, answer: str, task_id: str) -> str:
         )
         if isinstance(audit_res, dict) and audit_res.get("final_answer"):
             return audit_res["final_answer"]
-    except: pass
+    except Exception: pass
     return answer
 
 @app.post('/receptionist')
@@ -269,15 +343,24 @@ async def receptionist_task(request: Request):
         task_id=task_id,
         history=data.get('history', []),
         images=data.get('images'),
-        mode=data.get('mode', 'fast')
+        mode=data.get('mode', 'fast'),
+        mission_id=data.get('mission_id'),
+        parent_mission_id=data.get('parent_mission_id'),
+        trace_id=data.get('trace_id'),
     )
     
     raw_answer = result.get('answer', '')
     has_steps = bool(result.get('steps'))
+    is_command = goal.strip().startswith("/")
     
-    # 🔬 [STEP-2]: Chỉ kiểm tra Hội Đồng Nơ-ron cho phản hồi hội thoại thưa Master
-    # Nếu là FAST_PIPELINE (có steps), bỏ qua audit — trả trực tiếp cho Control Plane
-    if has_steps:
+    is_fast_mode = result.get('mode') == 'fast' or data.get('mode') == 'fast'
+    audit_keywords = ['sửa', 'viết', 'tạo', 'xóa', 'chạy', 'cải tiến', 'tối ưu', 'edit', 'write', 'create', 'delete', 'run', 'execute', 'modify', 'update', 'config', 'file', 'sh', 'bash', 'script', 'command', 'cmd', 'docker', 'tusualoi', 'tucaitien']
+    goal_lower = goal.lower()
+    has_audit_keywords = any(kw in goal_lower for kw in audit_keywords)
+    
+    # [STEP-2]: Chỉ kiểm tra Hội Đồng Nơ-ron cho phản hồi hội thoại thưa Master
+    # Nếu là FAST_PIPELINE (có steps), siêu lệnh (command), fast mode, hoặc không có từ khóa nhạy cảm cần thẩm định, bỏ qua audit — trả trực tiếp cho Control Plane
+    if has_steps or is_command or is_fast_mode or not has_audit_keywords:
         return {'status': 'ok', **result}
     
     if len(raw_answer) > 50:

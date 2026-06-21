@@ -1,19 +1,14 @@
 import os
 import requests
+import logging
+
+logger = logging.getLogger("jkai.tools.bridge")
 
 def host_bridge_control(action: str, params: dict = None):
     """
     Host Control Bridge: Quyền năng tương tác trực tiếp với máy tính Master (Windows).
-    CẢNH BÁO: Sử dụng cẩn trọng, chỉ thực hiện khi Master yêu cầu.
-    
-    Các hành động hỗ trợ:
-    - 'screenshot': Chụp ảnh màn hình host.
-    - 'click': Click chuột (x, y).
-    - 'type': Gõ văn bản.
-    - 'speak': Phát giọng nói qua loa.
-    - 'terminal': Chạy lệnh PowerShell trên Windows.
     """
-    print(f"🌉 [JKAI-BRIDGE] Đang thực hiện hành động: {action}")
+    logger.info("[JKAI-BRIDGE] Đang thực hiện hành động: %s", action)
     
     BRIDGE_URL = os.getenv("HOST_BRIDGE_URL", "http://host.docker.internal:9998")
     

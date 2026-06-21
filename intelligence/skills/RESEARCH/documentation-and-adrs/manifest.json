@@ -1,0 +1,47 @@
+{
+  "id": "DOCUMENTATION_AND_ADRS",
+  "name": "Documentation And Adrs",
+  "version": "1.0.0",
+  "description": "Records major technical decisions using Architectural Decision Records (ADRs).",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "ghi nhận kiến trúc",
+    "write ADR",
+    "tạo tài liệu kiến trúc",
+    "overview",
+    "when to use",
+    "architecture decision records  adrs",
+    "when to write an adr",
+    "adr template",
+    "task",
+    "code",
+    "what",
+    "adrs",
+    "agents",
+    "documentation",
+    "decision",
+    "write",
+    "document",
+    "context",
+    "nghien cuu",
+    "phan tich",
+    "ke hoach",
+    "plan",
+    "y tuong"
+  ],
+  "domain": "RESEARCH",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "decision": {
+          "type": "string",
+          "description": "The architectural decision description."
+        }
+      },
+      "required": [
+        "decision"
+      ]
+    }
+  }
+}

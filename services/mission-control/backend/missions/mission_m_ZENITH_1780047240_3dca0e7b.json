@@ -1,0 +1,726 @@
+{
+  "id": "m_ZENITH_1780047240_3dca0e7b",
+  "title": "hãy cho tôi giá vàng hôm nay",
+  "goal": "hãy cho tôi giá vàng hôm nay",
+  "status": "failed",
+  "ts": 1780047422.5502672,
+  "logs": [
+    {
+      "tag": "MASTER",
+      "msg": "hãy cho tôi giá vàng hôm nay",
+      "ts": 1780047240.411815,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1780047240_3dca0e7b` initialized | Trace: `trace_3dca0e7b`. Runtime ready.",
+      "ts": 1780047240.4131978,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780047240.5466142,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:34:00.631618] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780047240.6316419,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:34:01.289872] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780047241.2899082,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:34:02.012602] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] {\n    \"name\": \"SEARCH_WEB_GLOBAL\",\n    \"arguments\": {\n        \"extracted_params\": \"giá vàng hôm nay tại Việt Nam\"\n    }\n}",
+      "ts": 1780047242.0126526,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:34:02.018153] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] Hoàn tất trong 1.39s. (Size: 121 chars)",
+      "ts": 1780047242.0182266,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780047242.0221298,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: 42877fe4-093b-405e-a165-de3ecd069ad5",
+      "ts": 1780047242.023742,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "🔍 [TAVILY]: Đang tầm soát Internet: `giá vàng hôm nay tại Việt Nam`",
+      "ts": 1780047245.2805097,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "WEB_DATA",
+      "msg": "✅ [TAVILY-FOUND]: Đã phát hiện 5 tọa độ thông tin.\n1. [Giá vàng hôm nay - Bảng giá vàng nhẫn, vàng miếng, vàng 9999](https://baomoi.com/tien-ich-gia-vang.epi)\n2. [Giá vàng hôm nay 29/05 - Biểu đồ Giá vàng SJC - Vàng miếng 9](https://giavang.org)\n3. [Giá vàng SJC Việt Nam - Vàng Bạc Đá Quý Sài Gòn - Web giá](https://webgia.com/gia-vang/sjc)\n",
+      "ts": 1780047247.8744283,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780047247.92425,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (8058 ký tự)",
+      "ts": 1780047247.9288857,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:34:08.047951] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780047248.048002,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:34:16.079889] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780047256.0799105,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:34:16.820191] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] ```json\n{\"name\": \"SEARCH_WEB_GLOBAL\", \"arguments\": {\"extracted_params\": \"giá vàng hôm nay tại Việt Nam\"}}\n```",
+      "ts": 1780047256.8202205,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:34:16.822541] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] Hoàn tất trong 8.77s. (Size: 109 chars)",
+      "ts": 1780047256.8225555,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780047256.8252757,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: 6a66e9b0-2658-44d7-8e48-ca77ce6680fa",
+      "ts": 1780047256.8270772,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780047268.9080932,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (8058 ký tự)",
+      "ts": 1780047268.9146957,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPACTION",
+      "msg": "🧠 [CRITICAL-BLOAT]: Phát hiện quá tải ngữ cảnh (4100/4096). Đang kích hoạt Giao thức Nén nơ-ron...",
+      "ts": 1780047268.9171903,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPRESSOR",
+      "msg": "[INFO] [2026-05-29T09:34:28.929705] [COMPRESSOR] [Task: ZENITH_1780047240_3dca0e7b] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1780047268.9297504,
+      "source": "COMPRESSOR",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPRESSOR",
+      "msg": "[INFO] [2026-05-29T09:34:29.001471] [COMPRESSOR] [Task: ZENITH_1780047240_3dca0e7b] Đang triệu tập qwen3:0.6b... (Context: default)",
+      "ts": 1780047269.0014942,
+      "source": "COMPRESSOR",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPRESSOR",
+      "msg": "[INFO] [2026-05-29T09:34:31.804477] [COMPRESSOR] [Task: ZENITH_1780047240_3dca0e7b] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780047271.8045094,
+      "source": "COMPRESSOR",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPRESSOR",
+      "msg": "[INFO] [2026-05-29T09:34:37.742840] [COMPRESSOR] [Task: ZENITH_1780047240_3dca0e7b] ات\n\nNeo Ngữ Cảnh:  \nHệ thống đã thực hiện kiểm tra giá vàng tại Việt Nam thông qua API web, thu thập dữ liệu chính xác và cập nhật thời gian hiện tại. Giá vàng hiện tại là [giá vàng hôm nay tại Việt Nam], đảm bảo thông tin được cập nhật theo thời gian hiện tại.  \n(Chủ đề: Giá vàng, thời gian hiện tại, dữ liệu chính xác)",
+      "ts": 1780047277.742883,
+      "source": "COMPRESSOR",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPRESSOR",
+      "msg": "[INFO] [2026-05-29T09:34:37.747387] [COMPRESSOR] [Task: ZENITH_1780047240_3dca0e7b] Hoàn tất trong 8.75s. (Size: 321 chars)",
+      "ts": 1780047277.7474608,
+      "source": "COMPRESSOR",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPACTION",
+      "msg": "✨ [SUCCESS]: Đã nén 2 tin nhắn thành 1 DNA nơ-ron. Ngữ cảnh mới: ~4160 tokens.",
+      "ts": 1780047277.7532122,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:34:37.836773] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780047277.836836,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:34:45.910739] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780047285.9107726,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:34:46.653853] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] ```json\n{\"name\": \"SEARCH_WEB_GLOBAL\", \"arguments\": {\"extracted_params\": \"giá vàng hôm nay tại Việt Nam\"}}\n```",
+      "ts": 1780047286.6538813,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:34:46.656902] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] Hoàn tất trong 8.82s. (Size: 109 chars)",
+      "ts": 1780047286.6569188,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780047286.659072,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: b1ab32bf-ad34-4208-a2b1-94b98b971c0c",
+      "ts": 1780047286.6600797,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780047296.5582435,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (8058 ký tự)",
+      "ts": 1780047296.5627527,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780047298.6373875,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:34:58.737694] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780047298.7378442,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:35:04.828400] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780047304.8284354,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:35:05.542617] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] {\n    \"name\": \"SEARCH_WEB_GLOBAL\",\n    \"arguments\": {\n        \"extracted_params\": \"giá vàng hôm nay tại Việt Nam\"\n    }\n}",
+      "ts": 1780047305.5426483,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:35:05.545050] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] Hoàn tất trong 6.81s. (Size: 121 chars)",
+      "ts": 1780047305.5451233,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780047305.5479047,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: 93575cfb-1b78-4949-a5c3-35146575961c",
+      "ts": 1780047305.549152,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780047310.2415686,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (8058 ký tự)",
+      "ts": 1780047310.2466486,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:35:10.361067] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780047310.3610876,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:35:18.390799] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780047318.390832,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:35:19.340030] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] ```json\n{\n  \"name\": \"SEARCH_WEB_GLOBAL\",\n  \"arguments\": {\n    \"extracted_params\": \"giá vàng hôm nay tại Việt Nam\"\n  }\n}\n```",
+      "ts": 1780047319.3400564,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:35:19.342139] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] Hoàn tất trong 8.98s. (Size: 123 chars)",
+      "ts": 1780047319.3421574,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780047319.344377,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: 9a9f2972-4fbb-4ce0-8e97-2d96c53b1694",
+      "ts": 1780047319.3453689,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780047327.2884715,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (8058 ký tự)",
+      "ts": 1780047327.2933662,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPACTION",
+      "msg": "🧠 [CRITICAL-BLOAT]: Phát hiện quá tải ngữ cảnh (4103/4096). Đang kích hoạt Giao thức Nén nơ-ron...",
+      "ts": 1780047327.2950497,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPRESSOR",
+      "msg": "[INFO] [2026-05-29T09:35:27.304004] [COMPRESSOR] [Task: ZENITH_1780047240_3dca0e7b] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1780047327.3040261,
+      "source": "COMPRESSOR",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPRESSOR",
+      "msg": "[INFO] [2026-05-29T09:35:27.379007] [COMPRESSOR] [Task: ZENITH_1780047240_3dca0e7b] Đang triệu tập qwen3:0.6b... (Context: default)",
+      "ts": 1780047327.3790243,
+      "source": "COMPRESSOR",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPRESSOR",
+      "msg": "[INFO] [2026-05-29T09:35:28.537451] [COMPRESSOR] [Task: ZENITH_1780047240_3dca0e7b] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780047328.5374901,
+      "source": "COMPRESSOR",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPRESSOR",
+      "msg": "[INFO] [2026-05-29T09:35:34.996629] [COMPRESSOR] [Task: ZENITH_1780047240_3dca0e7b] Giá vàng hôm nay tại Việt Nam được cập nhật theo dữ liệu từ truy cập web, hiện tại giá là X đồng/kg. (Từ: 16:35:27, ngày 29/05/2026, vị trí: Phường Thuận Hóa, Việt Nam)",
+      "ts": 1780047334.9966576,
+      "source": "COMPRESSOR",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPRESSOR",
+      "msg": "[INFO] [2026-05-29T09:35:35.001417] [COMPRESSOR] [Task: ZENITH_1780047240_3dca0e7b] Hoàn tất trong 7.62s. (Size: 168 chars)",
+      "ts": 1780047335.001435,
+      "source": "COMPRESSOR",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPACTION",
+      "msg": "✨ [SUCCESS]: Đã nén 2 tin nhắn thành 1 DNA nơ-ron. Ngữ cảnh mới: ~4125 tokens.",
+      "ts": 1780047335.0061305,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:35:35.093086] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780047335.0931153,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:35:43.125720] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780047343.1257415,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:35:43.884949] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] ```json\n{\"name\": \"SEARCH_WEB_GLOBAL\", \"arguments\": {\"extracted_params\": \"giá vàng hôm nay tại Việt Nam\"}}\n```",
+      "ts": 1780047343.8849752,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:35:43.886823] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] Hoàn tất trong 8.79s. (Size: 109 chars)",
+      "ts": 1780047343.886837,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780047343.8887267,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: 42559ce5-5c87-4edc-b32c-61128a9c4d9d",
+      "ts": 1780047343.8904166,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780047354.9118094,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (8058 ký tự)",
+      "ts": 1780047354.9180512,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: ⚡ Khởi chạy lộ trình: `FAST_PIPELINE (REACTIVE) ⚡`",
+      "ts": 1780047358.9978688,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:35:59.100516] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780047359.1005387,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:36:05.161803] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780047365.1618347,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:36:05.862455] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] {\n    \"name\": \"SEARCH_WEB_GLOBAL\",\n    \"arguments\": {\n        \"extracted_params\": \"giá vàng hôm nay tại Việt Nam\"\n    }\n}",
+      "ts": 1780047365.8625417,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:36:05.865719] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] Hoàn tất trong 6.76s. (Size: 121 chars)",
+      "ts": 1780047365.8657477,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780047365.8692062,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: 7a071650-84b7-4f87-9fe1-14f0087351a3",
+      "ts": 1780047365.8704083,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780047375.9678783,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (8058 ký tự)",
+      "ts": 1780047375.9722495,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:36:16.080746] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780047376.0807724,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:36:24.069665] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780047384.0696871,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:36:24.988463] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] ```json\n{\n  \"name\": \"SEARCH_WEB_GLOBAL\",\n  \"arguments\": {\n    \"extracted_params\": \"giá vàng hôm nay tại Việt Nam\"\n  }\n}\n```",
+      "ts": 1780047384.9884965,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:36:24.990862] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] Hoàn tất trong 8.91s. (Size: 123 chars)",
+      "ts": 1780047384.9909377,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780047384.9928362,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: 31a8bba9-bfc2-40ef-b186-65e4c7ae31af",
+      "ts": 1780047384.993834,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780047390.2749898,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (8058 ký tự)",
+      "ts": 1780047390.2807295,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPACTION",
+      "msg": "🧠 [CRITICAL-BLOAT]: Phát hiện quá tải ngữ cảnh (4103/4096). Đang kích hoạt Giao thức Nén nơ-ron...",
+      "ts": 1780047390.2822518,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPRESSOR",
+      "msg": "[INFO] [2026-05-29T09:36:30.291054] [COMPRESSOR] [Task: ZENITH_1780047240_3dca0e7b] [ROUTING]: Đang chuyển hướng tới EXECUTOR (http://ai-executor-1:8000)...",
+      "ts": 1780047390.291105,
+      "source": "COMPRESSOR",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPRESSOR",
+      "msg": "[INFO] [2026-05-29T09:36:30.365406] [COMPRESSOR] [Task: ZENITH_1780047240_3dca0e7b] Đang triệu tập qwen3:0.6b... (Context: default)",
+      "ts": 1780047390.3654265,
+      "source": "COMPRESSOR",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPRESSOR",
+      "msg": "[INFO] [2026-05-29T09:36:31.455808] [COMPRESSOR] [Task: ZENITH_1780047240_3dca0e7b] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780047391.4558456,
+      "source": "COMPRESSOR",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPRESSOR",
+      "msg": "[INFO] [2026-05-29T09:36:37.576254] [COMPRESSOR] [Task: ZENITH_1780047240_3dca0e7b] ات\n\nGiá vàng hôm nay tại Việt Nam được cập nhật từ các nguồn chính thức, bao gồm thông tin từ trung tâm thương mại và cơ sở dữ liệu quốc gia. (Semantic DNA: Giá vàng hôm nay tại Việt Nam được cập nhật từ trung tâm thương mại và cơ sở dữ liệu quốc gia)",
+      "ts": 1780047397.5763352,
+      "source": "COMPRESSOR",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPRESSOR",
+      "msg": "[INFO] [2026-05-29T09:36:37.581037] [COMPRESSOR] [Task: ZENITH_1780047240_3dca0e7b] Hoàn tất trong 7.22s. (Size: 251 chars)",
+      "ts": 1780047397.5810542,
+      "source": "COMPRESSOR",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "COMPACTION",
+      "msg": "✨ [SUCCESS]: Đã nén 2 tin nhắn thành 1 DNA nơ-ron. Ngữ cảnh mới: ~4146 tokens.",
+      "ts": 1780047397.585457,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:36:37.689230] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] Đang triệu tập qwen2.5-coder:3b... (Context: 8192)",
+      "ts": 1780047397.6892745,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:36:45.755977] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] [NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...",
+      "ts": 1780047405.755994,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:36:46.521019] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] ```json\n{\"name\": \"SEARCH_WEB_GLOBAL\", \"arguments\": {\"extracted_params\": \"giá vàng hôm nay tại Việt Nam\"}}\n```",
+      "ts": 1780047406.5210516,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-05-29T09:36:46.523483] [RECEPTIONIST] [Task: ZENITH_1780047240_3dca0e7b] Hoàn tất trong 8.83s. (Size: 109 chars)",
+      "ts": 1780047406.523497,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "💎🫡 [ZENITH]: ⚙️ Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1780047406.5255795,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: 24014aea-f309-42c3-8a28-2ca6bf485668",
+      "ts": 1780047406.5264242,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "Successfully executed SEARCH_WEB_GLOBAL.",
+      "ts": 1780047416.5211005,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "💎🫡 [ZENITH]: 📥 Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (8058 ký tự)",
+      "ts": 1780047416.5262704,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "🚨 [RECEPTIONIST-FAILED]: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist",
+      "ts": 1780047422.5317206,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "⚠️ **Sự cố Kết nối Nơ-ron**: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. 🫡 (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+      "ts": 1780047422.5334752,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1780047240_3dca0e7b"
+    }
+  ],
+  "artifacts": {
+    "plan": "Lịch sử nơ-ron đã được lưu trữ."
+  }
+}

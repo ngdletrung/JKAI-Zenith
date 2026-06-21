@@ -12,9 +12,9 @@ function Write-KuteLog($msg, $status = "INFO") {
 Write-KuteLog "Dang kich hoat CHE DO KHOI PHUC QUAN DOAN... (^_^)" "PROCESS"
 
 # Don gian la goi lai Guardian de dong bo moi thu theo rule_hardware.md
-if (Test-Path "D:\Docker\N8N\Zenith_Guardian.ps1") {
+if (Test-Path "D:\Docker\JKAI\Zenith_Guardian.ps1") {
     Write-KuteLog "Dang goi Ve si Zenith_Guardian de tai thiet he thong..." "PROCESS"
-    powershell.exe -ExecutionPolicy Bypass -File "D:\Docker\N8N\Zenith_Guardian.ps1"
+    powershell.exe -ExecutionPolicy Bypass -File "D:\Docker\JKAI\Zenith_Guardian.ps1"
 } else {
     Write-KuteLog "Khong tim thay script Guardian! Master vui long kiem tra lai." "ERROR"
 }

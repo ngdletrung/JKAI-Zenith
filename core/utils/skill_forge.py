@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 from typing import Dict, Any, List
 from core.utils.engine import engine
+from core.utils import path_manager
 
 class ZenithSkillForge:
     """
@@ -13,8 +14,9 @@ class ZenithSkillForge:
     Tích hợp Fuzzy Patching, Security Scan và Knowledge Absorption.
     """
     def __init__(self):
-        self.skills_dir = Path("D:/Docker/N8N/intelligence/skills")
-        self.quarantine_dir = Path("D:/Docker/N8N/intelligence/archive/quarantine")
+        root = path_manager.get_root()
+        self.skills_dir = Path(path_manager.get("SKILLS_DIR", os.path.join(root, "intelligence", "skills")))
+        self.quarantine_dir = Path(path_manager.get("QUARANTINE_DIR", os.path.join(root, "intelligence", "archive", "quarantine")))
         # [SECURITY-BLACKLIST]: Các lệnh và mẫu mã nguy hiểm
         self.blacklist = [
             r"rm\s+-rf\s+/", r"os\.remove\(.*\.py\)", r"shutil\.rmtree\(.*core.*\)",

@@ -10,7 +10,7 @@ from pathlib import Path
 # [TERMINAL-UNICODE-FIX]
 if sys.platform == "win32":
     try: sys.stdout.reconfigure(encoding='utf-8')
-    except: pass
+    except Exception: pass
 
 script_dir = Path(__file__).parent.absolute()
 project_root = script_dir.parent
@@ -21,6 +21,7 @@ if str(project_root) not in sys.path:
 
 from core.utils.engine import engine
 from core.qdrant_client import qdrant_client
+from core.utils.embed import embed
 
 async def sync_skills_hierarchical(task_id: str = "sys_sync"):
     engine.publish_mission_log("SYNC", "Khởi động Giao thức Blitz-Skill: Đồng bộ năng lực siêu tốc thưa Master...", task_id)
@@ -70,7 +71,7 @@ async def sync_skills_hierarchical(task_id: str = "sys_sync"):
             })
 
         # ⚡ [PARALLEL-EMBEDDING]: Ma hoa toan bo batch trong mot nhip thưa Master
-        embeddings = await asyncio.gather(*[engine.get_embeddings(text) for text in batch_inputs], return_exceptions=True)
+        embeddings = await asyncio.gather(*[embed.get_embedding_async(text) for text in batch_inputs], return_exceptions=True)
         
         for (meta, vector) in zip(batch_metadata, embeddings):
             if isinstance(vector, Exception) or not vector: continue

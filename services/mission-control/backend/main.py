@@ -93,7 +93,7 @@ def artifact_watcher():
         print("📡 [JKAI] Artifact Watcher (WATCHDOG) ONLINE.")
         try:
             while True: time.sleep(10)
-        except:
+        except Exception:
             observer.stop()
         observer.join()
     else:
@@ -110,7 +110,7 @@ def artifact_watcher():
                             last_mtimes[key] = mtime
                             socketio.emit("artifact_new", {"type": key, "ts": mtime})
                 time.sleep(5)
-            except:
+            except Exception:
                 time.sleep(10)
 
 # ====================== BACKGROUND: Hardware Pulse ➜ SocketIO ======================
@@ -128,7 +128,7 @@ def hardware_pulse_broadcaster():
                     pulse_data = json.load(f)
                     socketio.emit("hardware_pulse", pulse_data)
             time.sleep(2)
-        except:
+        except Exception:
             time.sleep(5)
 
 # ====================== BACKGROUND: Redis ➜ SocketIO Bridge ======================
@@ -148,6 +148,8 @@ def redis_log_broadcaster():
     progress_buffer = []
     processed_progress_ids = []
     processed_progress_hashes = []
+    processed_ops_ids = []
+    processed_ops_hashes = []
     last_flush = time.time()
     
     while True:
@@ -157,8 +159,15 @@ def redis_log_broadcaster():
                 socket_timeout=None, socket_keepalive=True
             )
             pubsub = pubsub_client.pubsub(ignore_subscribe_messages=True)
-            pubsub.subscribe("monitor:log_channel", "monitor:progress_channel", "monitor:pulse_channel", "monitor:hitl_channel")
-            print("✅ [JKAI-NEURAL] Quad Routing Active [ops, progress, pulse, hitl]", flush=True)
+            pubsub.subscribe(
+                "monitor:log_channel",
+                "monitor:progress_channel",
+                "monitor:pulse_channel",
+                "monitor:hitl_channel",
+                "monitor:proposal_channel",
+                "monitor:file_edit_channel",
+            )
+            print("✅ [JKAI-NEURAL] Routing: ops, progress, pulse, hitl, proposals, file_edit", flush=True)
             
             while True:
                 message = pubsub.get_message(timeout=0.02)
@@ -170,6 +179,11 @@ def redis_log_broadcaster():
                         if channel == "monitor:pulse_channel":
                             pulse_data = data.get("data", data)
                             socketio.emit("hardware_pulse", pulse_data)
+                        elif channel == "monitor:file_edit_channel":
+                            socketio.emit("file_edit", data)
+                        elif channel == "monitor:proposal_channel":
+                            # 📋 [PLAN BOARD]: Phát tín hiệu tạo proposal mới cho frontend
+                            socketio.emit("proposal_created", data)
                         elif channel == "monitor:hitl_channel":
                             socketio.emit("hitl_pending_event", data)
                         elif channel == "monitor:progress_channel":
@@ -183,7 +197,8 @@ def redis_log_broadcaster():
                             
                             if not is_streamable and log_id:
                                 if log_id in processed_progress_ids:
-                                    is_dup = True
+                                    # is_dup = True
+                                    pass
                                 else:
                                     processed_progress_ids.append(log_id)
                                     if len(processed_progress_ids) > 1000:
@@ -192,12 +207,15 @@ def redis_log_broadcaster():
                             if not is_streamable and not is_dup:
                                 msg_hash = hashlib.md5(f"{task_id}:{tag}:{msg}".encode()).hexdigest()
                                 if msg_hash in processed_progress_hashes:
-                                    is_dup = True
+                                    # is_dup = True
+                                    pass
                                 else:
                                     processed_progress_hashes.append(msg_hash)
                                     if len(processed_progress_hashes) > 1000:
                                         processed_progress_hashes.pop(0)
                             
+                            # Log filtering suspended per Master's request
+                            is_dup = False
                             if not is_dup:
                                 progress_buffer.append(data)
                         else:
@@ -211,30 +229,35 @@ def redis_log_broadcaster():
                             is_streamable = data.get("pin_id") is not None or tag in ["PROGRESS", "HEARTBEAT"] or "THOUGHT" in tag
                             
                             if not is_streamable and log_id:
-                                if log_id in processed_progress_ids:
-                                    is_dup = True
+                                if log_id in processed_ops_ids:
+                                    # is_dup = True
+                                    pass
                                 else:
-                                    processed_progress_ids.append(log_id)
-                                    if len(processed_progress_ids) > 1000:
-                                        processed_progress_ids.pop(0)
+                                    processed_ops_ids.append(log_id)
+                                    if len(processed_ops_ids) > 1000:
+                                        processed_ops_ids.pop(0)
                             
                             if not is_streamable and not is_dup:
                                 msg_hash = hashlib.md5(f"{task_id}:{tag}:{msg}".encode()).hexdigest()
-                                if msg_hash in processed_progress_hashes:
-                                    is_dup = True
+                                if msg_hash in processed_ops_hashes:
+                                    # is_dup = True
+                                    pass
                                 else:
-                                    processed_progress_hashes.append(msg_hash)
-                                    if len(processed_progress_hashes) > 1000:
-                                        processed_progress_hashes.pop(0)
+                                    processed_ops_hashes.append(msg_hash)
+                                    if len(processed_ops_hashes) > 1000:
+                                        processed_ops_hashes.pop(0)
                             
+                            # Log filtering suspended per Master's request
+                            is_dup = False
                             if not is_dup:
                                 operational_buffer.append(data)
-                                # 🏛️ [PERSISTENCE-SYNC]: Also save missing operational logs to progress history list
-                                try:
-                                    raw_json = message['data']
-                                    pubsub_client.lpush("monitor:progress_history", raw_json)
-                                    pubsub_client.ltrim("monitor:progress_history", 0, 1999)
-                                except: pass
+                                # [PERSISTENCE-SYNC]: Also save missing operational logs to progress history list
+                                if not data.get("is_delta", False):
+                                    try:
+                                        raw_json = message['data']
+                                        pubsub_client.lpush("monitor:progress_history", raw_json)
+                                        pubsub_client.ltrim("monitor:progress_history", 0, 1999)
+                                    except Exception: pass
                     except Exception as e:
                         print(f"[JKAI-CORE] Parse error: {e}")
 
@@ -259,6 +282,11 @@ def verify_nuclear_key(data):
     return True
 
 # ====================== API ROUTES ======================
+@app.route('/api/ping')
+def api_ping():
+    return jsonify({"ok": True})
+
+
 @app.route('/api/system_status')
 def system_status():
     import requests as req
@@ -275,21 +303,21 @@ def system_status():
     try:
         r = req.get(f"{AI_BRAIN_URL}/health", timeout=3)
         if r.status_code == 200: results["brain"] = "Optimal"
-    except: pass
+    except Exception: pass
     try:
         r = req.get(f"{EXECUTOR_URL}/health", timeout=3)
         if r.status_code == 200: results["executor"] = "Ready"
-    except: pass
+    except Exception: pass
     is_redis = redis_safe(lambda r: r.ping(), False)
     if is_redis: results["redis"] = "Online"
     try:
         r = req.get(f"{QDRANT_URL}/readyz", timeout=3)
         if r.status_code == 200: results["qdrant"] = "Active"
-    except: pass
+    except Exception: pass
     try:
         r = req.get(f"{OLLAMA_HOST}/api/tags", timeout=3)
         if r.status_code == 200: results["ollama"] = "Online"
-    except: pass
+    except Exception: pass
     
     # Lấy thông tin Model đang chạy thực tế & Tài nguyên VRAM
     try:
@@ -309,7 +337,7 @@ def system_status():
                 results["model_vram"] = "0GB"
                 results["vram_percent"] = 0
                 results["processor"] = "Standby"
-    except: pass
+    except Exception: pass
 
     # Đếm số lượng Kỹ năng (Skills) thực tế
     try:
@@ -317,12 +345,12 @@ def system_status():
         if os.path.exists(skills_path):
             files = [f for f in os.listdir(skills_path) if f.endswith('.py')]
             results["skills_count"] = len(files)
-    except: pass
+    except Exception: pass
 
     try:
         r = req.get(f"{BROWSER_URL}/health", timeout=3)
         if r.status_code == 200: results["browser"] = "Active"
-    except: pass
+    except Exception: pass
     try:
         import psycopg2
         try:
@@ -350,7 +378,7 @@ def hitl_pending():
     result = {}
     for k, v in pending.items():
         try: result[k] = json.loads(v)
-        except: pass
+        except Exception: pass
     return jsonify(result)
 
 @app.route('/api/hitl_approve', methods=['POST'])
@@ -434,6 +462,119 @@ def hitl_clarify():
     
     return jsonify({"status": "clarified", "task_id": task_id})
 
+# ====================== API: AUTONOMOUS PLAN BOARD ======================
+
+@app.route('/api/proposals')
+def get_proposals():
+    '''Get all pending proposals for Master to review on Plan Tab.'''
+    try:
+        raw = redis_safe(lambda r: r.lrange('zenith:proposals', 0, 99), [])
+        proposals = []
+        for item in raw:
+            try:
+                p = json.loads(item)
+                if p.get('status') == 'pending':
+                    proposals.append(p)
+            except Exception:
+                pass
+        proposals.sort(key=lambda x: x.get('created_at', 0), reverse=True)
+        return jsonify({'proposals': proposals, 'count': len(proposals)})
+    except Exception as e:
+        return jsonify({'proposals': [], 'error': str(e)})
+
+@app.route('/api/proposals/reject', methods=['POST'])
+def reject_proposal():
+    '''Master rejects/deletes a proposal - no execution.'''
+    data = request.get_json(silent=True) or {}
+    proposal_id = data.get('proposal_id')
+    if not proposal_id:
+        return jsonify({'error': 'Missing proposal_id'}), 400
+    try:
+        raw = redis_safe(lambda r: r.lrange('zenith:proposals', 0, 99), [])
+        updated = []
+        removed_title = proposal_id
+        for item in raw:
+            try:
+                p = json.loads(item)
+                if p.get('id') != proposal_id:
+                    updated.append(item)
+                else:
+                    removed_title = p.get('title', proposal_id)
+            except Exception:
+                pass
+        redis_safe(lambda r: r.delete('zenith:proposals'))
+        for item in updated:
+            redis_safe(lambda r: r.rpush('zenith:proposals', item))
+        log_msg = 'PLAN BOARD: Master da xoa de xuat ' + str(removed_title)
+        redis_safe(lambda r: r.publish('monitor:log_channel', json.dumps({'tag': 'ZENITH', 'msg': log_msg, 'ts': time.time()})))
+        socketio.emit('proposal_resolved', {'proposal_id': proposal_id, 'action': 'rejected'})
+        return jsonify({'ok': True, 'proposal_id': proposal_id})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/proposals/execute', methods=['POST'])
+def execute_proposal():
+    '''Master approves proposal - run via Deep Pipeline.'''
+    import requests as req
+    data = request.get_json(silent=True) or {}
+    proposal_id = data.get('proposal_id')
+    code = data.get('code', '')
+    if not proposal_id:
+        return jsonify({'error': 'Missing proposal_id'}), 400
+    try:
+        raw = redis_safe(lambda r: r.lrange('zenith:proposals', 0, 99), [])
+        proposal = None
+        updated = []
+        for item in raw:
+            try:
+                p = json.loads(item)
+                if p.get('id') == proposal_id:
+                    proposal = p
+                    p['status'] = 'executing'
+                    updated.append(json.dumps(p, ensure_ascii=False))
+                else:
+                    updated.append(item)
+            except Exception:
+                pass
+        if not proposal:
+            return jsonify({'error': 'Proposal not found'}), 404
+        if proposal.get('is_red_zone'):
+            if not code:
+                return jsonify({'error': 'Red zone requires nuclear key', 'need_auth': True}), 403
+            if not verify_nuclear_key(data):
+                return jsonify({'error': 'Invalid nuclear key', 'ok': False}), 403
+        redis_safe(lambda r: r.delete('zenith:proposals'))
+        for item in updated:
+            redis_safe(lambda r: r.rpush('zenith:proposals', item))
+        execute_goal = proposal.get('execute_goal') or proposal.get('description', 'Execute proposal')
+        title = proposal.get('title', proposal_id)
+        log_msg = 'PLAN BOARD: Master phe duyet ' + str(title) + '. Khoi dong Deep Pipeline...'
+        redis_safe(lambda r: r.publish('monitor:log_channel', json.dumps({'tag': 'ZENITH', 'msg': log_msg, 'ts': time.time()})))
+        task_payload = {
+            'goal': execute_goal,
+            'mode': 'deep',
+            'source': 'plan_board',
+            'proposal_id': proposal_id,
+            'proposal_type': proposal.get('proposal_type', 'APPROVED'),
+            'metadata': proposal.get('metadata', {})
+        }
+        try:
+            r = req.post(AI_CONTROL_PLANE_URL + '/run', json=task_payload, timeout=10)
+            if r.status_code == 200:
+                result = r.json()
+                new_task_id = result.get('task_id', 'unknown')
+                socketio.emit('proposal_resolved', {'proposal_id': proposal_id, 'action': 'executing', 'task_id': new_task_id})
+                return jsonify({'ok': True, 'task_id': new_task_id, 'proposal_id': proposal_id})
+            else:
+                return jsonify({'ok': False, 'error': 'Control Plane error: ' + str(r.status_code)}), 500
+        except Exception as plane_err:
+            log_fb = 'PLAN BOARD: Control Plane offline. De xuat da ghi nhan.'
+            redis_safe(lambda r: r.publish('monitor:log_channel', json.dumps({'tag': 'ZENITH', 'msg': log_fb, 'ts': time.time()})))
+            socketio.emit('proposal_resolved', {'proposal_id': proposal_id, 'action': 'queued'})
+            return jsonify({'ok': True, 'queued': True, 'proposal_id': proposal_id})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @app.route('/api/docker_logs')
 def docker_logs():
     """Lấy log từ history list (không xóa)."""
@@ -445,7 +586,7 @@ def docker_logs():
                 obj = json.loads(item)
                 ts = time.strftime('%H:%M:%S', time.localtime(obj.get('ts', 0)))
                 lines.append(f"[{ts}] [{obj.get('tag','SYS')}] {obj.get('msg','')}")
-            except: pass
+            except Exception: pass
         return jsonify({"logs": lines[::-1]})
     except Exception as e:
         return jsonify({"logs": [f"Error: {e}"]})
@@ -460,7 +601,7 @@ def progress_logs():
             try:
                 obj = json.loads(item)
                 lines.append(obj)
-            except: pass
+            except Exception: pass
         return jsonify({"logs": lines[::-1]})
     except Exception as e:
         return jsonify({"logs": [], "error": str(e)})
@@ -483,7 +624,7 @@ def trigger_action():
         try:
             files = [f for f in os.listdir(skills_path) if f.endswith('.py')]
             msg = f"🔍 **Neural Scan Complete**: Found {len(files)} active skills.\n" + "\n".join([f"- `{f}`" for f in files[:5]])
-        except:
+        except Exception:
             msg = "🔍 **Neural Scan**: Scanning intelligence layer... All neurons firing normally."
     elif action == 'update_skills':
         msg = "🔄 **Neural Sync**: Capability matrix updated. All tool definitions reloaded."
@@ -644,6 +785,39 @@ def generate_report():
     except Exception as e:
         return jsonify({"ok": False, "msg": str(e)}), 500
 
+@app.route('/api/system_digest')
+def system_digest():
+    """Báo cáo tình trạng hệ thống theo yêu cầu (On-Demand)."""
+    try:
+        task_path = "/intelligence/task.md"
+        if not os.path.exists(task_path):
+            return jsonify({"status": "error", "msg": "Không tìm thấy hồ sơ nhiệm vụ."})
+
+        with open(task_path, 'r', encoding='utf-8') as f:
+            task_content = f.read()
+
+        done = task_content.count("[x]")
+        pending = task_content.count("[ ]")
+        
+        digest_msg = f"Báo cáo Master: Hệ thống đang trong giai đoạn Sovereign Evolution. "
+        digest_msg += f"Hiện có {done} nhiệm vụ đã hoàn tất và {pending} nhiệm vụ đang chờ thực thi. "
+        
+        if "JUDICIAL REFACTOR" in task_content:
+            section = task_content.split("JUDICIAL REFACTOR")[1].split("##")[0]
+            if "[x]" in section:
+                digest_msg += "Hội đồng Phán quyết Judicial đã được kích hoạt thành công. "
+            
+        if "NEURAL LEARNING" in task_content:
+            section = task_content.split("NEURAL LEARNING")[1].split("##")[0]
+            if "[x]" in section:
+                digest_msg += "Vòng lặp tự học Neural đã sẵn sàng đồng hóa tri thức. "
+
+        digest_msg += "Tôi đang đợi chỉ lệnh tiếp theo từ Ngài."
+        
+        return jsonify({"status": "ok", "digest": digest_msg})
+    except Exception as e:
+        return jsonify({"status": "error", "msg": str(e)})
+
 @app.route('/api/system/read_file')
 def read_file_content():
     from flask import request
@@ -662,20 +836,28 @@ def project_explorer():
     root_dir = '/workspace'
     if not os.path.exists(root_dir):
         return jsonify({"error": "Workspace not found"}), 404
-    def get_tree(path):
-        d = {'name': os.path.basename(path), 'path': os.path.relpath(path, root_dir)}
+    _SKIP_DIRS = {
+        '.git', '__pycache__', 'node_modules', '.docker', '.next', 'dist', 'build',
+        '.venv', 'venv', '.cursor', '.gemini', 'models', 'storage', 'missions',
+    }
+    _MAX_DEPTH = int(os.getenv('EXPLORER_MAX_DEPTH', '3'))
+
+    def get_tree(path, depth=0):
+        d = {'name': os.path.basename(path) or 'workspace', 'path': os.path.relpath(path, root_dir).replace('\\', '/')}
         if os.path.isdir(path):
             d['type'] = 'directory'
             children = []
-            try:
-                for f in os.listdir(path):
-                    if f in ['.git', '__pycache__', 'node_modules', '.docker', '.next', 'dist']:
-                        continue
-                    child_path = os.path.join(path, f)
-                    children.append(get_tree(child_path))
-                d['children'] = sorted(children, key=lambda x: (x.get('type') != 'directory', x['name'].lower()))
-            except:
-                d['children'] = []
+            if depth < _MAX_DEPTH:
+                try:
+                    for f in sorted(os.listdir(path)):
+                        if f in _SKIP_DIRS or f.startswith('.'):
+                            continue
+                        child_path = os.path.join(path, f)
+                        children.append(get_tree(child_path, depth + 1))
+                    children = sorted(children, key=lambda x: (x.get('type') != 'directory', x['name'].lower()))
+                except OSError:
+                    children = []
+            d['children'] = children
         else:
             d['type'] = 'file'
             ext = os.path.splitext(path)[1].lower()
@@ -761,7 +943,7 @@ def list_missions():
                         "status": data.get("status", "idle"),
                         "preview": last_msg
                     })
-            except: pass
+            except Exception: pass
         missions.sort(key=lambda x: x['ts'], reverse=True)
         return jsonify(missions)
     except Exception as e:
@@ -817,21 +999,26 @@ def save_mission():
     artifacts = data.get('artifacts', {})
     status = data.get('status', 'idle')
     
-    # 🛡️ CHỈ CẬP NHẬT TỪ THƯ MỤC DOCS NẾU SỨ MỆNH ĐANG CHẠY
-    if status == 'running':
-        docs_dir = os.path.join(os.getcwd(), 'docs')
-        filename_map = {
-            'plan': 'implementation_plan.md',
-            'tasks': 'task.md',
-            'walkthrough': 'walkthrough.md'
-        }
-        for key, filename in filename_map.items():
-            try:
-                path = os.path.join(docs_dir, filename)
-                if os.path.exists(path):
-                    with open(path, 'r', encoding='utf-8') as f:
-                        artifacts[key] = f.read()
-            except: pass
+    # Load and save task documentation artifacts
+    docs_dir = os.getenv("ARTIFACTS_DIR", "/storage/artifacts")
+    if not os.path.exists(docs_dir):
+        fallback_docs = os.path.join(os.getcwd(), 'docs')
+        if os.path.exists(fallback_docs):
+            docs_dir = fallback_docs
+
+    filename_map = {
+        'plan': 'implementation_plan.md',
+        'tasks': 'task.md',
+        'walkthrough': 'walkthrough.md'
+    }
+    for key, filename in filename_map.items():
+        try:
+            path = os.path.join(docs_dir, filename)
+            if os.path.exists(path):
+                with open(path, 'r', encoding='utf-8') as f:
+                    artifacts[key] = f.read()
+        except Exception:
+            pass
             
     data['artifacts'] = artifacts
     data['ts'] = time.time()
@@ -839,6 +1026,12 @@ def save_mission():
     try:
         with open(path, 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=2)
+        socketio.emit("mission_saved", {
+            "id": mid,
+            "title": data.get('title', f"Su menh {mid}"),
+            "status": status,
+            "ts": data.get('ts', time.time())
+        })
         return jsonify({"ok": True, "id": mid})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -896,9 +1089,8 @@ def serve(path):
             if p_keys:
                 r.delete(*p_keys)
             r.set("agent_status", "IDLE")
-            r.delete("hitl_pending")
         redis_safe(_redis_flush)
-    except: pass
+    except Exception: pass
 
     return send_from_directory(app.static_folder, 'index.html')
 
@@ -921,8 +1113,12 @@ def get_artifact():
     if type_ == 'registry':
         docs_path = os.path.join(os.path.dirname(os.getcwd()), 'MISSION_CONTROL_CONTEXT.md')
     else:
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        docs_path = os.path.join(base_dir, 'docs', filename)
+        docs_dir = os.getenv("ARTIFACTS_DIR", "/storage/artifacts")
+        if not os.path.exists(docs_dir):
+            fallback_docs = os.path.join(os.getcwd(), 'docs')
+            if os.path.exists(fallback_docs):
+                docs_dir = fallback_docs
+        docs_path = os.path.join(docs_dir, filename)
     try:
         if os.path.exists(docs_path):
             with open(docs_path, 'r', encoding='utf-8') as f:

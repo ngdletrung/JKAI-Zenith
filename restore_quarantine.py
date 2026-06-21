@@ -4,7 +4,7 @@ import re
 import json
 import sys
 
-BASE_DIR = "/workspace" if os.path.exists("/workspace") else r"D:\Docker\N8N"
+BASE_DIR = "/workspace" if os.path.exists("/workspace") else r"D:\Docker\JKAI"
 QUARANTINE_DIR = os.path.join(BASE_DIR, "intelligence", "archive", "quarantine")
 SKILLS_DIR = os.path.join(BASE_DIR, "intelligence", "skills")
 MAP_SKILLS_FILE = os.path.join(BASE_DIR, "intelligence", "MAP_SKILLS.md")
