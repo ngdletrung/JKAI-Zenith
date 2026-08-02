@@ -104,13 +104,17 @@ class CognitiveContextCompiler:
             "</task_contract>"
         )
 
-        # 4. Mode Instruction
+        # 4. Mode Instruction — all 9 modes defined, none fallback to REACTIVE implicitly
         mode_instructions = {
-            "REACTIVE": "Respond directly and concisely. Minimize unnecessary tool calls.",
-            "ANALYTICAL": "Analyze relationships, bottlenecks, and anomalies before concluding.",
-            "PLANNING": "Formulate a DAG execution plan with clear step dependencies.",
-            "EXECUTION": "Execute tool calls step-by-step and inspect observation outputs.",
-            "RECOVERY": "Analyze failure root cause, check alternative tools, estimate risk, and attempt recovery."
+            "REACTIVE":    "Respond directly and concisely. Minimize unnecessary tool calls.",
+            "ANALYTICAL":  "Analyze relationships, bottlenecks, and anomalies before concluding. Output structured findings.",
+            "PLANNING":    "Formulate a DAG execution plan with clear step dependencies and risk assessments.",
+            "EXECUTION":   "Execute tool calls step-by-step. Inspect every observation before proceeding. Evidence required.",
+            "DEBUGGING":   "Isolate root cause of failure. Trace tool results, state changes, and causality chain. Output diagnosis.",
+            "REFLECTION":  "Review completed trajectory. Identify what succeeded, failed, and what should be remembered. Output structured reflection schema.",
+            "RECOVERY":    "Analyze failure root cause, check alternative tools, estimate risk, and output a concrete recovery plan.",
+            "LEARNING":    "Extract durable knowledge from this mission. Identify patterns, successful heuristics, and failure modes worth persisting to memory.",
+            "EXPLORATION": "Survey the problem space broadly. Generate hypotheses, identify unknowns, and map out possible approaches before committing to one.",
         }
         mode_sec = f"<mode_directive source=\"adaptive_mode\">\n{mode_instructions.get(cognitive_mode.upper(), mode_instructions['REACTIVE'])}\n</mode_directive>"
 
