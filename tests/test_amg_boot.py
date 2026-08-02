@@ -118,6 +118,25 @@ class TestAMGBoot:
         # Larger model should have higher eviction score (more VRAM freed)
         assert score1 > score2
 
+    def test_eviction_score_time_delta(self):
+        """Verify that sooner expiration ISO timestamp produces higher EvictionScore (time-delta invariant)."""
+        from datetime import datetime, timedelta, timezone
+
+        now = datetime.now(timezone.utc)
+        exp_soon = (now + timedelta(seconds=60)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+        exp_later = (now + timedelta(seconds=550)).strftime("%Y-%m-%dT%H:%M:%S.000Z")
+
+        # Same size, same host — only expires_at differs
+        rm_soon = ResidentModel(name="model_soon", host="127.0.0.1:11434", size_vram_mb=2000.0, expires_at=exp_soon)
+        rm_later = ResidentModel(name="model_later", host="127.0.0.1:11434", size_vram_mb=2000.0, expires_at=exp_later)
+        all_rm = [rm_soon, rm_later]
+
+        score_soon = EvictionScorer.compute(rm_soon, all_rm, protected_names=[])
+        score_later = EvictionScorer.compute(rm_later, all_rm, protected_names=[])
+
+        # EMPIRICAL INVARIANT: Model expiring sooner must have higher eviction score
+        assert score_soon > score_later
+
     def test_boot_cache_digest(self, tmp_path):
         cache_file = os.path.join(tmp_path, "test_cache.json")
         cache = BootCache(cache_file=cache_file)
