@@ -25,11 +25,18 @@ from core.kernel.cce import CognitiveContinuityEngine
 from prompt_engine.cognitive_context_compiler import CognitiveContextCompiler
 from prompt_engine.task_contract import TaskContract, DecisionAuthority, CompletionStatus
 
-# ---------------------------------------------------------------------------
-# LLM Caller — single function used by both A and B
-# ---------------------------------------------------------------------------
-LLM_URL   = os.getenv("OLLAMA_HOST", "http://localhost:11434")
-LLM_MODEL = os.getenv("BENCHMARK_MODEL", "qwen3:30b-a3b")
+def get_ollama_url() -> str:
+    raw = os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434")
+    if "0.0.0.0" in raw:
+        raw = raw.replace("0.0.0.0", "127.0.0.1")
+    if "://" not in raw:
+        raw = "http://" + raw
+    if "11434" not in raw:
+        raw = raw + ":11434"
+    return raw.rstrip("/")
+
+LLM_URL   = get_ollama_url()
+LLM_MODEL = os.getenv("BENCHMARK_MODEL", "qwen2.5-coder:3b")
 LLM_TIMEOUT = 60
 LLM_TEMPERATURE = 0.0  # deterministic
 
