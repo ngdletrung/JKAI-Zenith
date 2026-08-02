@@ -234,6 +234,57 @@ class TestBenchmarkIntegrationV21(unittest.IsolatedAsyncioTestCase):
         res_b_after = await self.gateway.execute_tool(req_del, task_id="task_B")
         self.assertEqual(res_b_after.outcome, DecisionOutcome.DENY)
 
+    # =========================================================================
+    # Group C: Adversarial Hardening (Approval Binding & Replay Protection)
+    # =========================================================================
+    async def test_C1_approval_replay_protection(self):
+        """C1: Approval Replay Protection — interrupt ID generated for Task A cannot be bound or accepted for Task B."""
+        task_id_a = "task_A"
+        task_id_b = "task_B"
+
+        set_active_contract(task_id_a, TaskContract(objective="A", decision_authority=DecisionAuthority(can_modify_files=True)))
+        set_active_contract(task_id_b, TaskContract(objective="B", decision_authority=DecisionAuthority(can_modify_files=True)))
+
+        # Task A triggers high-risk write -> REQUIRE_APPROVAL
+        req_a = ExecutionRequest(trace_id="tr_c1a", capability_token={}, tool_name="write_file", tool_args={"file_path": ".env"})
+        res_a = await self.gateway.execute_tool(req_a, task_id=task_id_a)
+
+        self.assertEqual(res_a.outcome, DecisionOutcome.REQUIRE_APPROVAL)
+        interrupt_id_a = res_a.interrupt_id
+
+        # Attempt to use Task A's interrupt payload for Task B
+        req_b = ExecutionRequest(
+            trace_id="tr_c1b",
+            capability_token={"replayed_interrupt_id": interrupt_id_a},
+            tool_name="write_file",
+            tool_args={"file_path": ".env"}
+        )
+        res_b = await self.gateway.execute_tool(req_b, task_id=task_id_b)
+
+        # Task B MUST still trigger its own REQUIRE_APPROVAL with a NEW unique interrupt_id (no replay bypass)
+        self.assertEqual(res_b.outcome, DecisionOutcome.REQUIRE_APPROVAL)
+        self.assertNotEqual(res_b.interrupt_id, interrupt_id_a)
+        self.assertEqual(self.mock_http_client.post.call_count, 0)
+
+    async def test_C2_approval_mutation_protection(self):
+        """C2: Approval Action Mutation Protection — changing action from write_file to delete_file generates distinct decisions."""
+        task_id = "task_A"
+        set_active_contract(task_id, TaskContract(objective="A", decision_authority=DecisionAuthority(can_modify_files=True, can_delete_files=False)))
+
+        req_write = ExecutionRequest(trace_id="tr_c2", capability_token={}, tool_name="write_file", tool_args={"file_path": ".env"})
+        res_write = await self.gateway.execute_tool(req_write, task_id=task_id)
+
+        # write_file on .env triggers REQUIRE_APPROVAL
+        self.assertEqual(res_write.outcome, DecisionOutcome.REQUIRE_APPROVAL)
+
+        # Mutating action to delete_file must trigger HARD DENY (not approval)
+        req_del = ExecutionRequest(trace_id="tr_c2", capability_token={}, tool_name="delete_file", tool_args={"file_path": ".env"})
+        res_del = await self.gateway.execute_tool(req_del, task_id=task_id)
+
+        self.assertEqual(res_del.outcome, DecisionOutcome.DENY)
+        self.assertIn("can_delete_files=False", res_del.reason)
+
 
 if __name__ == "__main__":
     unittest.main()
+
