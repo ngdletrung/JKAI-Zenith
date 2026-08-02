@@ -668,3 +668,18 @@
 *Zenith Architectural Changelog. v24.0. Systems Engineering & Operational History. Fully Verified.*
 
 
+## [2026-08-02] - ZENITH v25.0: COGNITIVE CONTINUITY ENGINE & UNIVERSAL COGNITIVE WORLD STATE (UCWS & CCE)
+*   **Bối cảnh (Why)**:
+    - Chuyển dịch tâm điểm hệ thống từ LLM-Centric (tách biệt các module) sang Mission & World State-Centric (xem LLM là vi xử lý nhận thức - Cognitive Compute Unit).
+    - Tạo lập Mạch Thần Kinh Nhận Thức Liên Tục (Cognitive Continuity) giúp giải quyết các thực thể ẩn ("file đó") xuyên suốt nhiều cycle mà không cần nạp lại toàn bộ chat history raw.
+*   **Giải pháp (How)**:
+    - **Universal Cognitive World State (`ucws.py`)**: Chuẩn hóa cấu trúc 7 chiều tách biệt rõ rệt Current State (`entities`, `relationships`, `state`) vs Provenance (`events`, `causality_graph`, `temporal_history`) và `uncertainty` 6 thuộc tính.
+    - **State Reducer Pattern (`ucws.py`)**: Triển khai cơ chế biến đổi trạng thái bất biến `W(N+1) = Reduce(W(N), Event)` với versioning (`world_version`) và khả năng Replay chuẩn xác.
+    - **Cognitive Continuity Engine (`cce.py`)**: Tích hợp luồng suy luận 7 bước, kết nối Decision Boundary Risk Gate (Low Risk -> Act, High Risk -> Human Gate Interrupt) và giải quyết tham chiếu thực thể ẩn.
+    - **5-Group E2E Test Suite (`tests/test_cce_continuity.py`)**: Xác minh tính nhất quán State Integrity, Replayability, Causality Graph Edge, Risk Gate và Multi-Cycle Continuity.
+*   **Trạng thái**: **ACTIVE - ZENITH SOTA ENGINE v25.0 UCWS & CCE LIVE VERIFIED (244/244 TESTS PASSED)**
+
+---
+*Zenith Architectural Changelog. v25.0. Systems Engineering & Operational History. Fully Verified.*
+
+

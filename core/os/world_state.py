@@ -28,11 +28,21 @@ class WorkspaceState(BaseModel):
     is_dirty: bool = False
     modified_files: List[str] = Field(default_factory=list)
 
+class MissionWorldState(BaseModel):
+    entities: Dict[str, Any] = Field(default_factory=dict)
+    relationships: Dict[str, Any] = Field(default_factory=dict)
+    state_data: Dict[str, Any] = Field(default_factory=dict)
+    events: List[Dict[str, Any]] = Field(default_factory=list)
+    causality: List[Dict[str, Any]] = Field(default_factory=list)
+    temporal_changes: List[Dict[str, Any]] = Field(default_factory=list)
+    uncertainty: Dict[str, Any] = Field(default_factory=dict)
+
 class WorldState(BaseModel):
     hardware: HardwareTelemetry = Field(default_factory=HardwareTelemetry)
     workspace: WorkspaceState = Field(default_factory=WorkspaceState)
     available_tools: List[str] = Field(default_factory=list)
     infrastructure_health: Dict[str, str] = Field(default_factory=dict)
+    mission_state: MissionWorldState = Field(default_factory=MissionWorldState)
     timestamp: float = Field(default_factory=time.time)
 
 
@@ -227,3 +237,48 @@ class WorldStateMonitor:
             infrastructure_health=health,
             timestamp=time.time()
         )
+
+
+_MISSION_WORLD_STORE: Dict[str, MissionWorldState] = {}
+
+
+def get_mission_world_state(task_id: str) -> MissionWorldState:
+    """Retrieves 7-dimensional World State for a task."""
+    if not task_id:
+        task_id = "default_task"
+    if task_id not in _MISSION_WORLD_STORE:
+        _MISSION_WORLD_STORE[task_id] = MissionWorldState()
+    return _MISSION_WORLD_STORE[task_id]
+
+
+def update_mission_world_state(task_id: str, dimension: str, value: Any) -> MissionWorldState:
+    """Updates a specific dimension of the 7-dimensional World State."""
+    m_state = get_mission_world_state(task_id)
+    if hasattr(m_state, dimension):
+        target = getattr(m_state, dimension)
+        if isinstance(target, dict) and isinstance(value, dict):
+            target.update(value)
+        elif isinstance(target, list):
+            target.append(value)
+        else:
+            setattr(m_state, dimension, value)
+
+    # Log temporal change diff
+    m_state.temporal_changes.append({
+        "timestamp": time.time(),
+        "dimension": dimension,
+        "summary": str(value)[:200]
+    })
+    return m_state
+
+
+def record_causality_link(task_id: str, cause: str, effect: str, status: str = "SUCCESS") -> MissionWorldState:
+    """Records a cause-and-effect link in the World State causality dimension."""
+    link = {
+        "timestamp": time.time(),
+        "cause": cause,
+        "effect": effect,
+        "status": status
+    }
+    return update_mission_world_state(task_id, "causality", link)
+

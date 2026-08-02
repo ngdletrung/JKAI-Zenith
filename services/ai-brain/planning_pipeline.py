@@ -652,10 +652,13 @@ class PlanningPipeline:
                 # 🕒 [STAGE-TIMEOUT-GUARD]: Timeout 600s
                 state = await asyncio.wait_for(stage.run(state), timeout=600.0)
 
-                # 💾 [CHECKPOINT-SAVE]: Lưu trạng thái stage thành công
+                # 💾 [CHECKPOINT-SAVE & WORLD-STATE-UPDATE]: Lưu trạng thái stage thành công và cập nhật World State 7 chiều
                 try:
                     from core.utils.state_checkpoint import save_checkpoint
+                    from core.os.world_state import update_mission_world_state, record_causality_link
                     save_checkpoint(task_id, stage_name, state)
+                    update_mission_world_state(task_id, "state_data", {stage_name: "COMPLETED"})
+                    record_causality_link(task_id, cause=f"Stage_{stage_name}", effect=f"Stage {stage_name} output generated", status="SUCCESS")
                 except Exception as save_err:
                     logger.debug(f"[CHECKPOINT-SAVE-ERR] {stage_name}: {save_err}")
             except asyncio.TimeoutError:
