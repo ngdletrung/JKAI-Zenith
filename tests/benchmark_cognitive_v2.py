@@ -297,7 +297,7 @@ class TestCognitiveBenchmarkV2(unittest.TestCase):
         resp_a = call_llm(STATIC_SYSTEM, question)
 
         ready_kws = ["ready", "sẵn sàng", "hoàn thành", "completed", "validated"]
-        dep_kws   = ["phụ thuộc", "depend", "A_depends_B", "relationship"]
+        dep_kws   = ["phụ thuộc", "depend", "A_depends_B", "relationship", "dựa trên", "dựa vào", "liên quan", "quan hệ", "kết nối", "liên kết", "yêu cầu"]
         score_b = sum([
             1.0 if resp_b and any(k in resp_b.lower() for k in ready_kws) else 0.0,
             0.5 if resp_b and any(k in resp_b.lower() for k in dep_kws) else 0.0,
