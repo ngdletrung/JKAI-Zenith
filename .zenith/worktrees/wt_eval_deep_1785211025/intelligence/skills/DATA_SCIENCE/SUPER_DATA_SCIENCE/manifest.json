@@ -1,0 +1,62 @@
+{
+  "id": "SUPER_DATA_SCIENCE",
+  "name": "Zenith Super AI & Data Science",
+  "version": "1.0.0",
+  "description": "Unified analytics core: Combines predictive analytics, AutoML, deep learning training, and computer vision into a single high-performance engine for complex data challenges.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "phân tích dữ liệu elite",
+    "huấn luyện ai cấp tốc",
+    "thị giác máy tính",
+    "super data science",
+    "automl",
+    "predictive analytics",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "phan",
+    "hinh",
+    "lieu",
+    "tich",
+    "data",
+    "thong",
+    "nang",
+    "huan",
+    "luyen",
+    "trinh",
+    "du lieu",
+    "phan tich du lieu",
+    "ml",
+    "machine learning"
+  ],
+  "domain": "DATA_SCIENCE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "phan_tich_du_lieu_elite",
+            "huan_luyen_ai_cap_toc",
+            "thi_giac_may_tinh"
+          ],
+          "description": "Data science action."
+        },
+        "data_path": {
+          "type": "string",
+          "description": "Path to the dataset (CSV/Excel)."
+        },
+        "image_path": {
+          "type": "string",
+          "description": "Path to the image for computer vision."
+        }
+      },
+      "required": [
+        "action"
+      ]
+    }
+  }
+}

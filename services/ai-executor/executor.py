@@ -62,6 +62,30 @@ class Executor:
         except Exception:
             return "vi"
 
+    def _resolve_skill_logic(self, tool_name: str) -> Optional[str]:
+        try:
+            from core.utils.knowledge_manager import JKAIKnowledgeOrchestrator
+            orchestrator = JKAIKnowledgeOrchestrator()
+            import asyncio
+            all_skills = asyncio.run(orchestrator.get_all_skills_dict())
+            info = all_skills.get(tool_name)
+            if not info:
+                return None
+            rel_path = info.get("rel_path", "").replace("\\", "/")
+            skill_dir = os.path.dirname(rel_path) if rel_path else ""
+            import re
+            rel_subdir = re.sub(r'^skills/[/\\]?', '', skill_dir)
+            skills_root = os.path.abspath(os.path.join(
+                os.path.dirname(__file__), "..", "..", "intelligence", "skills"
+            ))
+            candidate = os.path.join(skills_root, rel_subdir, "logic.py")
+            if os.path.exists(candidate):
+                return candidate
+            alt = os.path.join(skills_root, tool_name, "logic.py")
+            return alt if os.path.exists(alt) else None
+        except Exception:
+            return None
+
     # ── PUBLIC API ────────────────────────────────────────────────────────────
 
     async def call_tool(self, tool_name: str, args: dict, task_id: str = "unknown", 
@@ -119,7 +143,7 @@ class Executor:
 
     # ── PIPELINE STEPS (PRIVATE) ──────────────────────────────────────────────
 
-    async def _pre_flight_check(self, tool_name: str, args: dict, task_id: str, trace_id: str = "system"):
+    async def _pre_flight_check(self, tool_name: str, args: dict, task_id: str, state: dict, trace_id: str = "system"):
         self._check_abort(task_id)
         guard = guardrail_registry.get_or_create(task_id)
         violation = guard.check_before_tool(tool_name, args)
@@ -160,7 +184,12 @@ class Executor:
         agent_soul = await engine.get_brain_knowledge(agent) if agent else ""
         
         # 📚 [CONTEXT-COMPRESSION]: Nén bối cảnh
-        insights = engine.get_insights(task_id)
+        insights = {}
+        if hasattr(engine, "get_insights"):
+            try:
+                insights = engine.get_insights(task_id)
+            except Exception:
+                pass
         # Chỉ lấy 3 insight gần nhất để tránh context explosion
         compressed_insights = dict(list(insights.items())[-3:]) if insights else {}
         insight_header = f"🧬 [TRI THỨC RÚT GỌN]:\n" + "\n".join([f"• {k}: {v}" for k, v in compressed_insights.items()]) + "\n\n" if compressed_insights else ""
@@ -175,16 +204,20 @@ class Executor:
         return policy.use_critic
 
     async def _reflect_suitability(self, tool_name: str, args: dict, task_id: str, policy: ExecutionPolicy):
-        # 🛡️ [CORE-EXEMPTION]: Bỏ qua Guardrail cho các kỹ năng hệ thống cốt lõi (Tự chẩn đoán, tự sửa lỗi)
-        exempt_tools = ["skill_tucaitien", "skill_tusualoi", "skill_self_healing", "SKILL_TUCAITIEN", "SKILL_TUSUALOI"]
+        # 🛡️ [CORE-EXEMPTION]: Bỏ qua Guardrail + CRITIC LLM call cho skill hệ thống và office
+        exempt_tools = [
+            "skill_tucaitien", "skill_tusualoi", "skill_self_healing", "SKILL_TUCAITIEN", "SKILL_TUSUALOI",
+            "OFFICE_SUITE_MASTER", "skill_quanlyvanphong", "OFFICE_AUTOMATOR",
+            "read_file", "write_to_file", "search_memory", "SEARCH_WEB_GLOBAL",
+        ]
         if any(t in tool_name for t in exempt_tools):
-            self._log("CRITIC", f"✅ [CORE EXEMPT]: Kỹ năng lõi `{tool_name}` được tự động phê duyệt.", task_id)
+            self._log("CRITIC", f"✅ [CORE EXEMPT]: Skill `{tool_name}` được tự động phê duyệt.", task_id)
             return
 
         check_prompt = f"Mục tiêu: {args.get('expert_mindset', 'N/A')}\nCông cụ: {tool_name}\n\nPhù hợp không thưa Đặc vụ? Trả về 'REJECT: lý do' hoặc 'APPROVE'."
         current_role = os.getenv("EXECUTOR_ROLE", "ALPHA").upper()
-        critic_role = f"CRITIC_{current_role}" if current_role in ["ALPHA", "BETA"] else "CRITIC"
-        suitability = await engine.call_chat([{"role": "user", "content": check_prompt}], role=critic_role, task_id=task_id)
+        critic_role = "CRITIC"
+        suitability = await engine.call_chat([{"role": "user", "content": check_prompt}], role=critic_role, task_id=task_id, skip_build_final=True)
         self._log("CRITIC", f"🧐 [Suitability Check]: {suitability}", task_id)
         if "REJECT" in suitability.upper():
             raise GuardrailException(f"Executor REJECT: {suitability}")
@@ -231,6 +264,18 @@ class Executor:
             except Exception as e:
                 last_error = str(e).strip() or type(e).__name__ or "Unknown error"
                 if "abort" in last_error.lower(): raise
+
+        # Fallback: autonomous repair loop for skill logic files
+        try:
+            logic_path = self._resolve_skill_logic(tool_name)
+            if logic_path:
+                from core.kernel.autonomous_repair_loop import autonomous_repair_loop
+                repair = await autonomous_repair_loop.execute_and_self_heal(logic_path, task_id)
+                if repair.get("status") == "success":
+                    self._log("REPAIR", f"Auto-repaired logic.py for {tool_name}, retrying...", task_id)
+                    return await asyncio.wait_for(self.router.call_tool(tool_name, **args), timeout=policy.timeout)
+        except Exception as repair_err:
+            self._log("REPAIR", f"Repair loop failed: {repair_err}", task_id)
 
         self._session_failures += 1
         return {"status": "error", "msg": f"Thất bại sau {policy.max_retry} lần: {last_error}"}
@@ -434,7 +479,7 @@ class Executor:
             
         # 2. Cognitive paths
         prompt = f"Lỗi loại {fail_type}: {error_msg}. Đề xuất args mới cho {step['tool']}. Trả về JSON."
-        correction = await engine.call_chat([{"role": "user", "content": prompt}], role="CRITIC", json_mode=True)
+        correction = await engine.call_chat([{"role": "user", "content": prompt}], role="CRITIC", json_mode=True, skip_build_final=True)
         self._log("SYSTEM", f"🛠️ [Self-Heal Suggestion]: {correction}", task_id)
         if isinstance(correction, dict):
             action_desc = f"Áp dụng mã tự phục hồi (Code Fix) cho công cụ {step['tool']}. Thay đổi: {json.dumps(correction, ensure_ascii=False)}"

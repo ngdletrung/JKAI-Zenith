@@ -1,0 +1,17 @@
+{
+    "id": "SHELL_EXECUTOR",
+    "name": "Shell Executor",
+    "name_vn": "Thực thi lệnh shell",
+    "description": "Execute a command in the terminal inside the workspace environment. Best for running tests, compilers, or inspecting services.",
+    "domain": "CORE",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "command": {
+                "type": "string",
+                "description": "The exact shell command line string to run."
+            }
+        },
+        "required": ["command"]
+    }
+}

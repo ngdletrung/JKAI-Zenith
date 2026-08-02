@@ -1,0 +1,49 @@
+{
+  "id": "SKILL_FORGE",
+  "name": "Zenith Master Skill Forge",
+  "version": "1.0.0",
+  "description": "The creative heart of Zenith: Autonomously designs, codes, and integrates new elite skills into the system architecture.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "đúc kỹ năng",
+    "tạo skill mới",
+    "skill forge",
+    "kiến tạo năng lực",
+    "master forge",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "nang",
+    "master",
+    "zenith",
+    "logic",
+    "thuc",
+    "nhat",
+    "thay",
+    "trinh",
+    "thiet",
+    "tich",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "Detailed description of the skill's purpose and logic."
+        }
+      },
+      "required": [
+        "description"
+      ]
+    }
+  }
+}

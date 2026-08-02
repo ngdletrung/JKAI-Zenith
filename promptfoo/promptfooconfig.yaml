@@ -1,0 +1,47 @@
+providers:
+  - id: ollama:qwen3.5:4b
+    config:
+      apiBaseUrl: http://127.0.0.1:11434
+
+prompts:
+  - file://prompts/lookup_prompt.txt
+  - file://prompts/planning_prompt.txt
+  - file://prompts/critic_prompt.txt
+  - file://prompts/executor_prompt.txt
+
+tests:
+  - description: Lookup - hợp đồng Sysme
+    vars:
+      goal: "hợp đồng gần đây nhất của Sysme là mua gì ?"
+    assert:
+      - type: contains-all
+        value: ["hợp đồng", "Sysme", "mua"]
+      - type: is-json
+
+  - description: Lookup - tra cứu quy trình
+    vars:
+      goal: "quy trình deploy JKAI là gì ?"
+    assert:
+      - type: contains-any
+        value: ["docker", "deploy", "quy trình"]
+
+  - description: Coding - sửa lỗi
+    vars:
+      goal: "sửa lỗi 400 khi search Tavily"
+    assert:
+      - type: contains-any
+        value: ["code", "bug", "sửa", "fix", "error"]
+
+  - description: Chat - chào hỏi
+    vars:
+      goal: "xin chào"
+    assert:
+      - type: contains-any
+        value: ["chào", "xin", "Master"]
+
+  - description: CRITIC - phê bình kế hoạch
+    vars:
+      goal: "phân tích rủi ro của kế hoạch triển khai"
+    assert:
+      - type: contains-any
+        value: ["rủi ro", "risk", "issue", "vấn đề"]

@@ -36,7 +36,7 @@ def test_resolve_1002():
     deck = _deck()
     entry = deck.resolve("1002")
     assert entry is not None, "#1002 should resolve"
-    assert entry.registry_id == "SKILL_AGENTIC_DEBATE", entry.registry_id
+    assert entry.registry_id == "HOI_DONG_CHUYEN_GIA", entry.registry_id
 
 
 def test_resolve_7001():
@@ -63,7 +63,7 @@ def test_lookup_or_explain_unknown_deck():
 def test_registry_deck_number_fallback():
     deck = _deck()
     rid = deck.resolve_registry_by_deck("1002")
-    assert rid == "SKILL_AGENTIC_DEBATE"
+    assert rid == "HOI_DONG_CHUYEN_GIA"
 
 
 def test_sync_dry_run():

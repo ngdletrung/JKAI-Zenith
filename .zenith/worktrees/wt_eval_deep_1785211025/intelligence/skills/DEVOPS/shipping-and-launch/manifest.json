@@ -1,0 +1,47 @@
+{
+  "id": "SHIPPING_AND_LAUNCH",
+  "name": "Shipping And Launch",
+  "version": "1.0.0",
+  "description": "Coordinates staged rollout checks and pre-release audits.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "phát hành sản phẩm",
+    "shipping launch",
+    "staged rollout",
+    "overview",
+    "when to use",
+    "the pre launch checklist",
+    "code quality",
+    "security",
+    "error",
+    "feature",
+    "flag",
+    "rollback",
+    "baseline",
+    "monitoring",
+    "check",
+    "rollout",
+    "production",
+    "users",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "version": {
+          "type": "string",
+          "description": "The launch version string."
+        }
+      },
+      "required": [
+        "version"
+      ]
+    }
+  }
+}

@@ -1,0 +1,76 @@
+{
+  "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/ZENITH_NEURAL_COMPACTOR/manifest.json - Role: Z-SOS Manifest for Context Optimization - Ownership: Mr LeeTrung - Status: Active | Version: SDS v1.0 ",
+  "id": "ZENITH_NEURAL_COMPACTOR",
+  "name": "Zenith Neural Compactor",
+  "version": "1.0.0",
+  "description": "Cognitive Filter & Context Manager: Implements a 5-layer compression pipeline (Snip, Micro-compact, Projection, Isolation, Anchor) to prevent context collapse and optimize neural efficiency.",
+  "author": "JKAI-Zenith",
+  "triggers": [
+    "nén ngữ cảnh",
+    "tối ưu bộ nhớ",
+    "compact history",
+    "neural compactor",
+    "dọn dẹp context",
+    "summarize session",
+    "context projection",
+    "overview",
+    "the 5 layer zenith pipeline  tinh hoa",
+    "1    layer 1  snip  cat tia rac",
+    "2    layer 2  micro compaction  nen te vi",
+    "layer 3  context projection  chieu ngu canh",
+    "nhat",
+    "layer",
+    "tieu",
+    "zenith",
+    "toan",
+    "tinh",
+    "thong",
+    "nhan",
+    "file",
+    "zenith_neural_compactor",
+    "skill",
+    "agent",
+    "tac vu"
+  ],
+  "domain": "CORE",
+  "config": {
+    "auto_compact_threshold": 25000,
+    "compression_ratio_target": 0.3,
+    "preservation_keys": [
+      "goal",
+      "lesson",
+      "structure"
+    ]
+  },
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "snip",
+            "micro",
+            "project",
+            "isolate",
+            "full"
+          ],
+          "default": "full",
+          "description": "Compression mode to apply."
+        },
+        "target_context": {
+          "type": "string",
+          "description": "The text or conversation history to compress."
+        },
+        "preserve_metadata": {
+          "type": "boolean",
+          "default": true,
+          "description": "Whether to extract and preserve core lessons and goals."
+        }
+      },
+      "required": [
+        "target_context"
+      ]
+    }
+  }
+}

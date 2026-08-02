@@ -5,13 +5,19 @@ node_modules/
 *.tar
 *.tar.gz
 
+# Temp Drive Upload Junk
+.tmp.driveupload/
+
 # Secrets & Credentials
 .env
 .env.*
 *.pem
 *.key
+*.conf
+data/rclone/rclone.conf
 certs/
 secrets.json
+connections.json
 intelligence/rules_software.md
 
 # User Personal Data & Vault (Chỉ giữ lại thư mục chứa dữ liệu cá nhân)

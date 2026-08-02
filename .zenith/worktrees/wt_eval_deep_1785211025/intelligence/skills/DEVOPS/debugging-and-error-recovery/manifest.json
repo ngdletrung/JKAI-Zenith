@@ -1,0 +1,47 @@
+{
+  "id": "DEBUGGING_AND_ERROR_RECOVERY",
+  "name": "Debugging And Error Recovery",
+  "version": "1.0.0",
+  "description": "Automates the 5-step triage process to recover from runtime errors.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "sửa lỗi hệ thống",
+    "debugging",
+    "error recovery",
+    "overview",
+    "when to use",
+    "the stop the line rule",
+    "the triage checklist",
+    "step 1  reproduce",
+    "test",
+    "check",
+    "error",
+    "data",
+    "build",
+    "step",
+    "code",
+    "failure",
+    "triage",
+    "cause",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "error_msg": {
+          "type": "string",
+          "description": "The error message to trace."
+        }
+      },
+      "required": [
+        "error_msg"
+      ]
+    }
+  }
+}

@@ -8,14 +8,13 @@ import re
 from enum import Enum
 from typing import List, Set
 
-_GIT_URL = re.compile(r"https?://(?:www\.)?(?:github|gitlab|bitbucket)\.com/", re.I)
-_IMAGE_HINT = re.compile(r"\b(hình|hinh|ảnh|anh|image|vision|screenshot|ocr)\b", re.I)
+from core.utils.regex import GIT_URL as _GIT_URL, IMAGE_HINT as _IMAGE_HINT
 _BUILD_RE = re.compile(
     r"\b(tạo|tao|build|implement|scaffold|viết api|viet api|deploy|docker compose)\b",
     re.I,
 )
 _CHAT_RE = re.compile(
-    r"^(xin chào|chào|hello|hi\b|cảm ơn|cam on|thanks|thời tiết|thoi tiet)\b",
+    r"^(ok\b|okey\b|oke\b|xin chào|chào|hello|hi\b|cảm ơn|cam on|thanks|thank you|thời tiết|thoi tiet)\b",
     re.I,
 )
 

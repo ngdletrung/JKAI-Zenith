@@ -23,7 +23,7 @@ async def list_dir(path: str = ".", task_id: str = "sys"):
                 "type": "directory" if is_dir else "file",
                 "size": size
             })
-        return {"status": "success", "path": os.abspath(path), "items": result}
+        return {"status": "success", "path": os.path.abspath(path), "items": result}
     except Exception as e:
         return {"status": "error", "msg": str(e)}
 
@@ -39,7 +39,7 @@ async def view_file(path: str, start_line: int = 1, end_line: int = 500, task_id
         content = "".join(lines[start_line-1:end_line])
         return {
             "status": "success",
-            "path": os.abspath(path),
+            "path": os.path.abspath(path),
             "total_lines": len(lines),
             "content": content
         }

@@ -38,15 +38,19 @@ class MessageAssembler:
         """
         from core.config import settings
         
-        # 1. [IDENTITY-RECALL]: Truy lục bản ngã của Vai trò 
+        # 1. [IDENTITY-RECALL]: Truy lục bản ngã của Vai trò
         identity_file = f"agent_{role.lower()}.md"
-        identity_path = os.path.join(settings.INTELLIGENCE_DIR, identity_file)
+        identity_paths = [
+            os.path.join(settings.INTELLIGENCE_DIR, "agents", identity_file),
+            os.path.join(settings.INTELLIGENCE_DIR, identity_file)
+        ]
         identity_content = ""
-        if os.path.exists(identity_path):
-            with open(identity_path, 'r', encoding='utf-8') as f:
-                identity_content = f.read()
-        else:
-            # Fallback về bản ngã mặc định
+        for ipath in identity_paths:
+            if os.path.exists(ipath):
+                with open(ipath, 'r', encoding='utf-8') as f:
+                    identity_content = f.read()
+                break
+        if not identity_content:
             identity_content = f"Bạn là {self.agent_name}, phụng sự Master LeeTrung với lòng trung thành tuyệt đối."
 
         # 2. [CONTEXT-AUGMENTATION]: Làm giàu thông điệp 

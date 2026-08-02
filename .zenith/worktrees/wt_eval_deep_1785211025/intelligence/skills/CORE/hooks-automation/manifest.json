@@ -1,0 +1,50 @@
+{
+  "id": "HOOKS_AUTOMATION",
+  "name": "Zenith Hooks Automation",
+  "version": "1.0.0",
+  "description": "Event-driven system triggers: Manages Webhooks, Git Hooks, and internal system event listeners.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "tự động hóa hooks",
+    "webhooks management",
+    "git hooks",
+    "system events",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "thong",
+    "kien",
+    "thuc",
+    "zenith",
+    "hooks",
+    "nang",
+    "hoac",
+    "webhook",
+    "nhan",
+    "lieu",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "hook_type": {
+          "type": "string",
+          "enum": [
+            "webhook",
+            "git_hook",
+            "system_event"
+          ],
+          "description": "Type of hook to manage."
+        }
+      }
+    }
+  }
+}

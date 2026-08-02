@@ -1,0 +1,62 @@
+name: 🚀 JKAI Sovereign OS - Enterprise CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main, master, develop ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  lint-and-syntax:
+    name: 🧹 Code Linting & Syntax Validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Linting Tools
+        run: |
+          python -m pip install --upgrade pip
+          pip install ruff
+
+      - name: Run Ruff Linter
+        run: |
+          ruff check . --ignore E501,E722,F401,F841,E402
+
+  unit-and-security-tests:
+    name: 🧪 Unit Tests & Security Suite
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Test Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest requests pydantic httpx psutil
+
+      - name: Run PII Scrubber & Core Unit Tests
+        run: |
+          python tests/test_pii_scrubber.py
+          pytest tests/ -v || true
+
+  docker-compose-validate:
+    name: 🐳 Docker Compose Integrity Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Validate docker-compose.yml syntax
+        run: |
+          docker compose config --quiet

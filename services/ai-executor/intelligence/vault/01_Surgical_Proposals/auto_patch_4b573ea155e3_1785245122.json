@@ -1,0 +1,6 @@
+{
+  "target_file": "path/to/file",
+  "reason": "The tool 'REWRITE_FILE' (resolved as 'REWRITE_FILE') not found in the registry.",
+  "proposed_code": "To fix this error, you need to ensure that the 'REWRITE_FILE' tool is correctly registered in the system's tool registry. You can do this by adding the following line to your code:\n\n```\nregistry.register_tool('REWRITE_FILE', 'REWRITE_FILE')\n```",
+  "impact": "This fix will allow the 'REWRITE_FILE' tool to be executed successfully, resolving the error."
+}

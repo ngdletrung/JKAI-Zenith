@@ -1,0 +1,52 @@
+{
+  "id": "PROJECT_ANALYZER",
+  "name": "Project Structure & Health Analyzer",
+  "version": "1.0.0",
+  "description": "Analyzes the project structure, dependencies, and health metrics.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "phân tích dự án",
+    "project analyzer",
+    "kiểm tra hệ thống",
+    "cấu trúc dự án",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "truc",
+    "file",
+    "phan",
+    "khong",
+    "nhan",
+    "kiem",
+    "thong",
+    "zenith",
+    "nhin",
+    "tinh",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "depth": {
+          "type": "integer",
+          "description": "Analysis depth (1-5)"
+        },
+        "focus": {
+          "type": "string",
+          "description": "Area to focus on (e.g., 'security', 'performance', 'structure')"
+        }
+      },
+      "required": [
+        "depth"
+      ]
+    }
+  }
+}

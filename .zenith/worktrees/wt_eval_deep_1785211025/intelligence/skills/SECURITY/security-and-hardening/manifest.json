@@ -1,0 +1,47 @@
+{
+  "id": "SECURITY_AND_HARDENING",
+  "name": "Security And Hardening",
+  "version": "1.0.0",
+  "description": "Audits dependencies and protects system boundaries from OWASP vulnerabilities.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "gia cố an ninh",
+    "security hardening",
+    "quét bảo mật",
+    "overview",
+    "when to use",
+    "process  threat model first",
+    "the three tier boundary system",
+    "always do  no exceptions",
+    "user",
+    "const",
+    "data",
+    "security",
+    "never",
+    "await",
+    "input",
+    "typescript",
+    "every",
+    "external",
+    "bao mat",
+    "an ninh",
+    "hack",
+    "tan cong",
+    "lo hong"
+  ],
+  "domain": "SECURITY",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "The target boundary or code to harden."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": "SKILL_XRAY_MONITOR",
+  "name": "Zenith X-Ray Monitor",
+  "version": "1.0.0",
+  "description": "Neural diagnostic core: Provides deep visibility into the system infrastructure, Ollama model health, and agent neural flows by communicating with the Host Satellite.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "x-ray monitor",
+    "soi chiếu hệ thống",
+    "kiểm tra ollama",
+    "chẩn đoán luồng tư duy",
+    "vitals check",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "thuc",
+    "thong",
+    "host",
+    "satellite",
+    "trang",
+    "hinh",
+    "neural",
+    "ollama",
+    "nang",
+    "lieu",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "scan_ollama_health",
+            "get_system_vitals",
+            "neural_flow_diagnostic"
+          ],
+          "description": "Diagnostic action."
+        }
+      },
+      "required": [
+        "action"
+      ]
+    }
+  }
+}

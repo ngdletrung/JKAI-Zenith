@@ -9,11 +9,11 @@
 2. [SDS-COMPLIANCE]: Moi thay doi phai tuan thu Giao thuc SDS moi nhat.
 3. [NO-EMOJI]: Cam dung emoji trong noi dung tep cau hinh va logic.
 -->
-# 🏛️ JKAI ZENITH: BA PHÂN TẦNG KIẾN TRÚC HỆ THỐNG (ZENITH ARCHITECTURAL TRIAD v6.0)
+# 🏛️ JKAI ZENITH: BA PHÂN TẦNG KIẾN TRÚC HỆ THỐNG (ZENITH ARCHITECTURAL TRIAD v5.0 Elite)
 **"Đặc tả phân tách quyền lực và ranh giới an toàn của Hệ thống điều phối Nhận thức"**
 
 > [!IMPORTANT]
-> **TIÊU CHUẨN KIẾN TRÚC**: Tài liệu này đặc tả ba phân tầng vận hành cốt lõi chi phối mọi hoạt động, luồng xử lý dữ liệu và hành vi tự trị của **JKAI Zenith v6.0**. 
+> **TIÊU CHUẨN KIẾN TRÚC**: Tài liệu này đặc tả ba phân tầng vận hành cốt lõi chi phối mọi hoạt động, luồng xử lý dữ liệu và hành vi tự trị của **JKAI Zenith v5.0 Elite**. 
 > Sự bóc tách nghiêm ngặt giữa Không gian Người dùng (Operator Space), Nhân Hệ thống (Kernel Space) và Tầng trừu tượng phần cứng (HAL) là nguyên tắc sống còn bảo đảm tính bảo mật Zero-Trust và độ ổn định của hệ thống.
 
 ---
@@ -77,4 +77,4 @@ Kiến trúc ba phân tầng là bất khả xâm phạm. Nếu bất kỳ một
 3. Hệ thống kích hoạt trạng thái **Panic Mode** bảo an, đóng băng tài nguyên đĩa cứng ở chế độ chỉ đọc (Read-only) và phát tín hiệu báo động khẩn cấp về phía Operator.
 
 ---
-*Architectural Triad Spec. v6.0. System Separation of Powers. Designed for Industrial Safety.* 🏛️⚙️🛡️
+*Architectural Triad Spec. v5.0 Elite. System Separation of Powers. Designed for Industrial Safety.* 🏛️⚙️🛡️

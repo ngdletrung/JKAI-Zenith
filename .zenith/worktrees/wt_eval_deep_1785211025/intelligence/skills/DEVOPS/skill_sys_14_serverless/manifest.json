@@ -1,0 +1,49 @@
+{
+  "id": "SKILL_SYS_14_SERVERLESS",
+  "name": "Zenith Serverless Engine",
+  "version": "1.0.0",
+  "description": "On-demand execution core: Manages the deployment and triggering of stateless functions that scale automatically and run only when needed.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "serverless engine",
+    "chạy hàm không máy chủ",
+    "stateless function",
+    "tự động hóa function",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "khong",
+    "chay",
+    "hoat",
+    "thong",
+    "dung",
+    "nang",
+    "phan",
+    "master",
+    "hoac",
+    "zenith",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "function_name": {
+          "type": "string",
+          "description": "Name of the function to trigger."
+        },
+        "payload": {
+          "type": "object",
+          "description": "Data to pass to the function."
+        }
+      }
+    }
+  }
+}

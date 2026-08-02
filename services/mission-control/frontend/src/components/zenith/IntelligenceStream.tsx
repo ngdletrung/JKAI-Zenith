@@ -7,6 +7,7 @@ import { ZenithService } from '../../services/ZenithService';
 import { useAgentController } from '../../hooks/useAgentController';
 import { LogItem } from './LogItem';
 import { ExecutionTrace } from './ExecutionTrace';
+import { WorkingDots } from './LogElements';
 export const IntelligenceStream = memo(() => {
   const goal = useZenithStore(s => s.goal);
   const setGoal = useZenithStore(s => s.setGoal);
@@ -442,18 +443,8 @@ export const IntelligenceStream = memo(() => {
                 })()}
 
                 {status === 'running' && (
-                  <div className="flex flex-col gap-1.5 px-2 py-1">
-                    <motion.div 
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-sky-500/5 border border-sky-500/10 backdrop-blur-sm w-fit mt-1"
-                    >
-                      <Zap className="w-3 h-3 text-sky-400 animate-pulse" />
-                      <span className="text-[10px] font-black tracking-widest text-sky-400/80">
-                        {dict.processing}
-                        <span className="animate-pulse">...</span>
-                      </span>
-                    </motion.div>
+                  <div className="my-2">
+                    <WorkingDots label={language === 'vi' ? 'Đang thực thi..' : 'Working..'} />
                   </div>
                 )}
                 {/* ⚓ [NEURAL-ANCHOR]: Mỏ neo cưỡng chế cuộn  */}

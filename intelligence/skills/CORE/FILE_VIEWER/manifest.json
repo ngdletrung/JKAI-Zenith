@@ -1,0 +1,25 @@
+{
+    "id": "FILE_VIEWER",
+    "name": "File Viewer",
+    "name_vn": "Xem tệp tin",
+    "description": "Read a file directly and return its content with line numbers. Best for inspecting code files.",
+    "domain": "CORE",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "file_path": {
+                "type": "string",
+                "description": "Relative path from workspace root or absolute path of the file to view."
+            },
+            "start_line": {
+                "type": "integer",
+                "description": "The line number to start viewing from (1-indexed). Default is 1."
+            },
+            "end_line": {
+                "type": "integer",
+                "description": "The line number to end viewing (inclusive, 1-indexed). Default is start_line + 200."
+            }
+        },
+        "required": ["file_path"]
+    }
+}

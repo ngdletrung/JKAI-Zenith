@@ -1,0 +1,47 @@
+{
+  "id": "IDEA_REFINE",
+  "name": "Idea Refine",
+  "version": "1.0.0",
+  "description": "Refines vague concepts into concrete proposals through divergent and convergent thinking.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "tinh lọc ý tưởng",
+    "idea refine",
+    "phác thảo ý tưởng",
+    "how it works",
+    "usage",
+    "output",
+    "detailed instructions",
+    "philosophy",
+    "what",
+    "idea",
+    "ideas",
+    "user",
+    "assumptions",
+    "direction",
+    "variations",
+    "problem",
+    "doing",
+    "ideation",
+    "nghien cuu",
+    "phan tich",
+    "ke hoach",
+    "plan",
+    "y tuong"
+  ],
+  "domain": "RESEARCH",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "concept": {
+          "type": "string",
+          "description": "The initial idea or concept."
+        }
+      },
+      "required": [
+        "concept"
+      ]
+    }
+  }
+}

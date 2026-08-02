@@ -1,0 +1,63 @@
+{
+  "id": "m_ZENITH_0607-1945_a6dfbc",
+  "title": "hãy tìm xem gần đây tôi đã đề xuất gì ở HueIC",
+  "goal": "hãy tìm xem gần đây tôi đã đề xuất gì ở HueIC",
+  "status": "failed",
+  "ts": 1783341944.3672183,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "hãy tìm xem gần đây tôi đã đề xuất gì ở HueIC",
+      "ts": 1783341913.601758,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0607-1945_a6dfbc"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_0607-1945_a6dfbc` initialized | Trace: `trace_a6dfbc`. Runtime ready.",
+      "ts": 1783341913.60458,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0607-1945_a6dfbc"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Command Deck inspect.",
+      "ts": 1783341920.544944,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0607-1945_a6dfbc"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Command Deck inspect.",
+      "ts": 1783341930.0492215,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0607-1945_a6dfbc"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Command Deck inspect.",
+      "ts": 1783341938.044432,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0607-1945_a6dfbc"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist\"}",
+      "ts": 1783341944.3401804,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0607-1945_a6dfbc"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+      "ts": 1783341944.3427114,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0607-1945_a6dfbc"
+    }
+  ],
+  "artifacts": {
+    "plan": "hãy tìm xem gần đây tôi đã đề xuất gì ở HueIC",
+    "walkthrough": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

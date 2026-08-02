@@ -32,7 +32,7 @@ class OutcomeLearner:
 
     async def _listen_loop(self):
         """Asynchronous listening loop that handles automatic reconnection."""
-        import redis.asyncio as aioredis
+        import redis.asyncio as async_redis
         
         while self._running:
             try:
@@ -49,7 +49,7 @@ class OutcomeLearner:
                 redis_port = int(os.getenv("REDIS_PORT", 6379))
                 redis_pass = os.getenv("REDIS_PASSWORD")
 
-                async_client = aioredis.Redis(
+                async_client = async_redis.Redis(
                     host=redis_host,
                     port=redis_port,
                     password=redis_pass,

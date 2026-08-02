@@ -7,17 +7,16 @@ from core.utils.engine import engine
 from core.utils import path_manager
 from core.homunculus.manager import HomunculusManager
 
-logger = logging.getLogger('PROMPT_FORGE')
+logger = logging.getLogger("PROMPT_FORGE")
 
 class PromptForge:
     """
-    JKAI ZENITH: XUONG DUC TU DUY VI MO (MACRO PROMPT FORGE)
-    Nhiem vu: Chuyen hoa yeu cau tho thanh mot He tu tuong Chuyen gia Da nganh thua Master.
-    Dam bao: "Thuc thi nhanh nhat - Ket qua chuan nhat moi yeu cau".
+    JKAI ZENITH: ĐÚC SYSTEM PROMPT CHO TỪNG TÁC VỤ
+    Nhiệm vụ: Chuyển hóa yêu cầu thô thành một system prompt phù hợp cho mỗi tác vụ.
+    Đảm bảo: "Thực thi nhanh nhất - Kết quả chuẩn xác".
     """
     
     # [CẤU HÌNH ĐƯỜNG DẪN TĨNH THƯA MASTER]
-    # Cho phép ghi đè từ biến môi trường, mặc định trỏ về kho chứa nội bộ
     AGENTS_DIR = os.environ.get("ZENITH_AGENTS_DIR", path_manager.get("AGENTS_DIR", os.path.join(path_manager.get_root(), "intelligence", "agents")))
     
     @staticmethod
@@ -37,21 +36,38 @@ class PromptForge:
         truncated = text[:max_chars]
         if "\n" in truncated:
             truncated = truncated.rsplit("\n", 1)[0]
-        return truncated + "\n...[TRUNCATED]"
+            
+        # [SYNTAX-AWARE CLOSURE GUARD]: Bảo Toàn Cú Pháp Ngoặc Mã Nguồn
+        open_curly = truncated.count("{") - truncated.count("}")
+        open_square = truncated.count("[") - truncated.count("]")
+        closure_suffix = ""
+        if open_square > 0:
+            closure_suffix += "]" * open_square
+        if open_curly > 0:
+            closure_suffix += "}" * open_curly
+            
+        return truncated + closure_suffix + "\n...[SEMANTIC_COMPACTED]"
 
     @staticmethod
     async def _synthesize_mindset(goal: str) -> str:
-        """[DYNAMIC-SYNTHESIS]: Chat loc va hop nhat Linh hon Dac vu phu hop thua Master."""
+        """[DYNAMIC-SYNTHESIS]: Chắt lọc Linh hồn Đặc vụ và Tiêm Chèn 5 Binh Pháp Bảo Trực thưa Master."""
+        heritage_core = (
+            "\n\n[PARENTAL HERITAGE CORE]:\n"
+            "1. Phá Mù Sương Ngữ Cảnh: Trì rà xoáy sâu thẳng vào gốc rễ câu hỏi, loại bỏ rác nhiễu loạn lượng tử.\n"
+            "2. Khả Chứng Đối Kháng: Tự thẩm tra minh danh lý trí bằng Cognitive Critic trước khi xuất lệnh nguy hiểm.\n"
+            "3. Phòng Thủ Vô Trầm: Tuyệt đối không xóa sửa tệp tin mù quáng hay lún vào vòng lặp vô tận.\n"
+            "4. Điều Hòa VRAM: Giữ mức đồng thời <= 2 trên dàn AMD RX 6600 & Xeon E5-2699 v4.\n"
+            "5. Chẩn Đoán 5-Why: Khi gặp ngoại lệ cú pháp hay lỗi thi công, truy nguyên 5 tầng sâu để sửa lỗi triệt để."
+        )
         try:
             if not os.path.exists(PromptForge.AGENTS_DIR):
-                return "No agent profiles found."
+                return "Standard Zenith Soul Active." + heritage_core
 
-            # Liệt kê các Đặc vụ khả dụng một cách bất đồng bộ thưa Ngài
             agent_files = await asyncio.to_thread(
                 lambda: [f for f in os.listdir(PromptForge.AGENTS_DIR) if f.endswith(".md")]
             )
             if not agent_files:
-                return "Standard Zenith Soul Active."
+                return "Standard Zenith Soul Active." + heritage_core
 
             agent_list_str = ", ".join(agent_files[:24])
             if len(agent_files) > 24:
@@ -77,17 +93,18 @@ class PromptForge:
                         content = await PromptForge._read_file_async(file_path)
                         profiles.append(f"--- [DNA ĐẶC VỤ: {file}] ---\n{PromptForge._truncate_text(content, 700)}")
 
-            return "\n".join(profiles) if profiles else "Standard Zenith Soul Active."
+            base_soul = "\n".join(profiles) if profiles else "Standard Zenith Soul Active."
+            return base_soul + heritage_core
         except Exception as e:
             logger.warning(f"[SYNTHESIS-ERR]: {e}")
-            return "Standard Zenith Soul Active."
+            return "Standard Zenith Soul Active." + heritage_core
 
     @staticmethod
     async def _load_project_wisdom(goal: str) -> str:
-        """[ZENITH-WISDOM]: Nap Ban nang va Ky nang tu tien hoa tu Homunculus thưa Master."""
+        """[ZENITH-WISDOM]: Nạp Bản năng và Kỹ năng tự tiến hóa từ Homunculus thưa Master."""
         try:
             manager = HomunculusManager()
-            manager.init_workspace()  # Tu dong khoi tao neu chua co
+            manager.init_workspace()
             context = manager.get_project_context()
 
             wisdom_parts = []
@@ -136,8 +153,56 @@ class PromptForge:
             return ""
 
     @staticmethod
-    async def forge_specialist_prompt(goal: str, context: dict = None, skills_summary: str = "", fast_mode: bool = False) -> str:
-        """[SINGULARITY-FORGE]: Duc linh hon chuyen gia qua quy trinh 3 tang thua Master."""
+    def compile_hybrid_prompt(goal: str, soul: str, agent_profiles: str, project_wisdom: str) -> str:
+        """
+        Biên dịch Prompt kép Hybrid (Tầng 1: Cố định + Tầng 2: Ngữ cảnh động)
+        Không gọi LLM, hoàn thành trong 1ms.
+        """
+        core_rules = """<system_identity>
+Bản Sắc Chủ Quyền: JKAI Zenith v5.0 Elite Agent.
+Tác giả sáng tạo: Master Lee Trung.
+</system_identity>
+
+<behavioral_rules>
+1. Ngôn ngữ: Phản hồi bằng tiếng Việt chuyên nghiệp, chính xác. Giữ nguyên thuật ngữ chuyên ngành.
+2. Tuyệt đối cấm dùng emoji trong mọi phản hồi.
+3. Thực chứng dữ liệu: Chỉ trả lời dựa trên thông tin thực tế được cung cấp. Nếu thiếu thông tin, báo rõ thay vì suy diễn ngoài phạm vi.
+4. Mọi số liệu, kết luận phải kèm nguồn trích dẫn rõ ràng. Không bịa đặt.
+5. Từ chối request viết mã độc, tiết lộ API key/mật khẩu, phá hoại hệ thống.
+6. Không giả vờ thực thi hành động ngoài khả năng. Chỉ dùng tool registry được cấp.
+7. Cấu trúc báo cáo: Khi lập báo cáo, bắt buộc trình bày theo cấu trúc 4 phần:
+   I. TIẾN ĐỘ THỰC THI
+   II. CÔNG VIỆC ĐÃ HOÀN THÀNH
+   III. RỦI RO & KHÓ KHĂN
+   IV. ĐỀ XUẤT TIẾP THEO
+8. Kỷ luật: Tìm nguyên nhân gốc trước khi sửa lỗi, tuyệt đối không báo cáo hoàn thành khi chưa kiểm thử.
+9. Định dạng Markdown cho phản hồi. Code block kèm tên file. Bảng nếu so sánh dữ liệu.
+10. Tránh dài dòng, lặp từ. Không dùng placeholders hay code giả.
+11. Phân tích logic trước khi trả lời. Suy luận có cấu trúc.
+12. Tự phản biện quyết định logic, không dễ dàng chấp thuận giả định.
+</behavioral_rules>"""
+
+        dynamic_context = f"""<task_goal>
+Mục tiêu cần thực hiện cho Master: "{goal}"
+</task_goal>
+
+<zenith_sovereign_identity>
+{soul}
+</zenith_sovereign_identity>
+
+<cabinet_agent_dna>
+{agent_profiles}
+</cabinet_agent_dna>
+
+<project_wisdom>
+{project_wisdom}
+</project_wisdom>"""
+
+        return f"{core_rules}\n\n{dynamic_context}"
+
+    @staticmethod
+    async def forge_specialist_prompt(goal: str, context: dict = None, skills_summary: str = "", fast_mode: bool = False, task_id: str = None) -> str:
+        """[SINGULARITY-FORGE]: Đúc linh hồn chuyên gia qua quy trình 3 bước thưa Master."""
         
         # 🧪 [STEP-1: SENSE & SYNTHESIZE]: Nạp DNA và Hợp nhất Linh hồn thưa Master
         soul = PromptForge._truncate_text(engine.get_intel_file("ZENITH_IDENTITY.md") or "", 900)
@@ -153,116 +218,11 @@ class PromptForge:
             agent_profiles, project_wisdom = await asyncio.gather(agent_profiles_task, project_wisdom_task)
             agent_profiles = PromptForge._truncate_text(agent_profiles, 1000)
             project_wisdom = PromptForge._truncate_text(project_wisdom, 1000)
-        
-        # [STAGE-1: DRAFTING] - Duc ban phac thao tri tue ELITE
-        draft_prompt = f"""Ban la CHUYEN GIA THIET KE HE TU TUONG cua JKAI Zenith. 
-Nhiem vu: Viet mot SYSTEM PROMPT toi thuong cho AI Agent dat hieu nang ELITE EXECUTIVE.
 
-MUC TIEU CUA MASTER: "{goal}"
-
-PHAN LUONG VI MO (MACRO DOMAIN):
-- SOFTWARE ARCHITECTURE: Neu nhiem vu la lap trinh, hay kich hoat tu duy Cau truc va Algorithmic Precision.
-- ELITE CONSULTING & RESEARCH: Neu nhiem vu la bao cao, thong ke, nghien cuu van phong, hay kich hoat tu duy Phan tich du lieu, Trinh bay dinh cao va Logic hoc thuat.
-- STRATEGIC GOVERNANCE: Neu nhiem vu la quan tri he thong, hay kich hoat tu duy An ninh va Toi uu hoa ha tang.
-
-BAN SAC CHU QUYEN (ZENITH SOVEREIGN IDENTITY):
-{soul}
-
-TUYEN NGON HE THONG (ZENITH MANIFESTO):
-{manifesto}
-
-DANH MUC NOI CAC DAC VU PHU HOP (DYNAMIC DNA):
-{agent_profiles}
-
-KHO TRI THUC CHUYEN SAU (DEEP KNOWLEDGE):
-{deep_knowledge}
-
-BAN NANG & KY NANG DU AN (PROJECT WISDOM - HOMUNCULUS):
-{project_wisdom}
-
-TAM TRU TRI THUC (THE SUPREME TRINITY v11.0):
-1. SPIRIT: Chu quyen Vo bien - JKAI lam duoc TAT CA moi viec. Khong co gioi han, chi co giai phap.
-2. STRUCTURE: Phan luong Nhat the - Tu dong tach nho nhiem vu de chay SONG SONG tren Ban Thuc Thi ALPHA va BETA de dat toc do than toc.
-3. ACTION: Thuc thi nhanh nhat - Ket qua chuan nhat. Luon huong toi su hoan hao trong tung file bao cao hay tung dong code.
-
-YEU CAU DUC LINH HON:
-- Phai co phan <internal_monologue>: Dac vu phai tu chat van logic va tinh vi mo cua minh.
-- Ngon tu: Tuyet doi chuyen nghiep, uy nghiem, khong dung buzzwords sao rong, tap trung vao gia tri thuc tien.
-- Giao thuc Song ma: Luon tim cach phan ra nhiem vu de ALPHA va BETA cung lam viec dong thoi.
-- Tuyet doi cam dung emoji: Phai ghi ro rang mot constraint la: "Tuyet doi cam su dung emoji trong bat ky phan hoi nao de dam bao tinh nghiem tuc va giam nhieu thong tin".
-- Bao cao Tap doan: Khi lap bao cao hoac tong hop ket qua cong viec, bat buoc phai dinh dang dau ra theo cau truc 4 phan ro ret bang tieng Viet, tuyet doi khong viet tu do:
-  I. TIEN DO THUC THI (CURRENT STATUS)
-  II. CONG VIEC DA HOAN THANH (DELIVERABLES)
-  III. RUI RO & KHO KHAN (RISK AUDIT)
-  IV. DE XUAT TIEP THEO (NEXT ACTIONS)
-
-KY LUAT THEP CUA HE THONG (SUPERPOWERS METHODOLOGY):
-Dac vu nay BAT BUOC phai tuan thu cac ky luat sau trong moi hanh dong:
-1. SYSTEMATIC DEBUGGING: Khong bao gio duoc phep doan bua va sua bua. Phai luon tim Root Cause, phan tich Pattern, dat Hypothesis truoc khi Fix. Neu fix hong 3 lan, phai chat van lai kien truc.
-2. VERIFICATION BEFORE COMPLETION: Tuyet doi khong duoc tuyen bo "Hoan tat" hoac "Da sua xong" neu chua tu tay chay lenh kiem tra (Test/Build) va nhin thay bang chung terminal (Exit 0).
-3. DOUBT-DRIVEN DEVELOPMENT (D3): Doi voi moi quyet dinh logic re nhanh, thay doi kien truc hoac tac vu rui ro cao, phai tu tao mot AI doc lap phan bien (Adversarial Review) bang cach trich xuat Hop dong (Contract) va tim kiem loi sai thay vi tu chap thuan.
-4. ANTI-RATIONALIZATION: Tuyet doi khong tu bao chua bang cac ly do nhu "tac vu qua nho khong can test", "se viet test hoac bo sung tai lieu sau". Quy quy trinh la bat buoc va phai tuan thu 100%.
-"""
-        try:
-            model_timeout = 90 if not fast_mode else 60
-
-            # Duc lan 1 thua Master
-            draft_soul = await PromptForge._safe_call_chat(
-                messages=[{"role": "user", "content": draft_prompt}],
-                role="PLANNER",
-                task_id="forge_stage_1",
-                timeout=model_timeout
-            )
-            if not isinstance(draft_soul, str) or not draft_soul.strip():
-                draft_soul = "Standard Zenith Soul Active."
-                logger.warning("[FORGE-FALLBACK] Draft stage returned empty or timed out, fallback to standard soul.")
-
-            # [SHORT-CIRCUIT]: Neu la che do nhanh, tra ve ban phac thao ngay thưa Master
-            if fast_mode:
-                engine.publish_mission_log("FORGE", "[FAST-FORGE]: Da duc nhanh Linh hon Chuyen gia thua Master.", "prompt_forge")
-                return draft_soul
-
-            # [STAGE-2: ANALYTICAL CRITIQUE] - Trieu hoi Ban Phan bien thua Master
-            stress_test_prompt = f"""Ban la CHUYEN GIA PHAN BIEN CHIEN LUOC cua JKAI Zenith. 
-Hay tim ra 3 diem yeu chi mang trong ban System Prompt nay khien no khong the dat toi hieu nang toi uu:
----
-{draft_soul}
----
-Tra ve danh sach cac loi va cach khac phuc ngan gon."""
-            
-            critique = await PromptForge._safe_call_chat(
-                messages=[{"role": "user", "content": stress_test_prompt}],
-                role="CRITIC",
-                task_id="forge_stage_2",
-                timeout=model_timeout
-            )
-            if not isinstance(critique, str) or not critique.strip():
-                critique = "No critique available due to timeout or model failure."
-                logger.warning("[FORGE-FALLBACK] Critique stage returned empty, continuing with draft prompt.")
-
-            # [STAGE-3: TEMPERING] - Tinh luyen linh hon toi thuong thua Master
-            tempering_prompt = f"""Dua tren ban phac thao va cac phan bien sau, hay duc ket lai ban SYSTEM PROMPT cuoi cung dat toi hieu nang ELITE. 
-Ban phac thao: {draft_soul}
-Phan bien: {critique}
-
-YEU CAU TOI THUONG: Phan hoi phai la mot KIET TAC TRI TUE, san sang cho Master LeeTrung phe duyet.
-"""
-            final_soul = await PromptForge._safe_call_chat(
-                messages=[{"role": "user", "content": tempering_prompt}],
-                role="PLANNER",
-                task_id="forge_stage_3",
-                timeout=model_timeout
-            )
-            if not isinstance(final_soul, str) or not final_soul.strip():
-                final_soul = draft_soul
-                logger.warning("[FORGE-FALLBACK] Final tempering stage failed, falling back to draft prompt.")
-
-            engine.publish_mission_log("FORGE", "[SINGULARITY-FORGE]: Linh hon Chuyen gia da duoc tinh luyen qua 3 tang lua thua Master.", "prompt_forge")
-            return final_soul
-            
-        except Exception as e:
-            logger.error(f"[FORGE-ERR]: {e}")
-            return f"Ban la JKAI Zenith. Muc tieu: {goal}. Hay hanh dong nhu mot chien binh Singularity thua Master!"
+        # [HYBRID-PROMPT-ENGINE]: Áp dụng Giao thức Prompt Kép Hybrid siêu tốc (1ms) cho mọi chế độ (DEEP & FAST)
+        # Loại bỏ nút thắt cổ chai 3 bước gọi LLM-Forge (tốn >250s gây nghẽn CPU/VRAM)
+        engine.publish_mission_log("FORGE", "⚡ [PROMPT-FORGE]: Đang áp dụng Giao thức Prompt Kép Hybrid siêu tốc (1ms).", "prompt_forge")
+        return PromptForge.compile_hybrid_prompt(goal, soul, agent_profiles, project_wisdom)
 
 prompt_forge = PromptForge()
 

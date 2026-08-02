@@ -1,0 +1,53 @@
+{
+  "id": "SKILL_MED_22_AUTO_VIDEO",
+  "name": "Zenith Automated Video Editor",
+  "version": "1.0.0",
+  "description": "Visual storytelling core: Automates the production, editing, and optimization of video content for digital platforms.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "biên tập video tự động",
+    "tạo video ai",
+    "auto video editor",
+    "sản xuất clip",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "video",
+    "dung",
+    "xuat",
+    "nang",
+    "chuyen",
+    "hoac",
+    "kich",
+    "hinh",
+    "minh",
+    "master",
+    "kinh doanh",
+    "ban hang",
+    "marketing",
+    "khach hang",
+    "san pham"
+  ],
+  "domain": "BUSINESS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "script": {
+          "type": "string",
+          "description": "Script or topic for the video."
+        },
+        "format": {
+          "type": "string",
+          "enum": [
+            "horizontal",
+            "vertical"
+          ],
+          "description": "Video aspect ratio."
+        }
+      }
+    }
+  }
+}

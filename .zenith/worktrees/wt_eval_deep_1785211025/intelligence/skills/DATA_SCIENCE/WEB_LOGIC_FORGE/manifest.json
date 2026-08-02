@@ -1,0 +1,63 @@
+{
+  "id": "WEB_LOGIC_FORGE",
+  "name": "Zenith Web Logic Forge",
+  "version": "1.0.0",
+  "description": "Dynamic skill architecture: Automatically generates, files, and registers new web-based visual skills into the Neural Eye infrastructure.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "đúc kỹ năng web",
+    "web logic forge",
+    "tạo kỹ năng thị giác mới",
+    "register web skill",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "nang",
+    "logic",
+    "thuc",
+    "chung",
+    "registry",
+    "dung",
+    "chuyen",
+    "forge",
+    "zenith",
+    "thanh",
+    "data",
+    "du lieu",
+    "phan tich du lieu",
+    "ml",
+    "machine learning"
+  ],
+  "domain": "DATA_SCIENCE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "domain": {
+          "type": "string",
+          "description": "The target domain (e.g., social, finance)."
+        },
+        "skill_name": {
+          "type": "string",
+          "description": "Name of the new skill."
+        },
+        "code": {
+          "type": "string",
+          "description": "Python code for the skill logic."
+        },
+        "capability": {
+          "type": "string",
+          "description": "Description of what this skill can do."
+        }
+      },
+      "required": [
+        "domain",
+        "skill_name",
+        "code",
+        "capability"
+      ]
+    }
+  }
+}

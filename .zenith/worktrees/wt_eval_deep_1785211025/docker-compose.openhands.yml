@@ -1,0 +1,36 @@
+# ==============================================================================
+# ⚒️ ZENITH STRATEGIC EXPANSION: OPENHANDS (SPECIALIZED EXECUTOR)
+# ------------------------------------------------------------------------------
+# Mô hình Hộp cát Lai (Hybrid Sandbox): 
+# - JKAI Internal: Hot-patch & System Surgery (Fast)
+# - OpenHands: Heavy Construction & Multi-lang (Deep)
+# ==============================================================================
+
+name: jkai-openhands
+
+services:
+  openhands:
+    image: ghcr.io/all-hands-ai/openhands:0.9
+    container_name: openhands
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - SANDBOX_USER_ID=0
+      - WORKSPACE_BASE=D:/Docker/JKAI
+      - LLM_MODEL=${OPENHANDS_MODEL:-executor}
+      - LLM_BASE_URL=${OPENHANDS_LLM_URL:-http://ai-executor-1:8000/v1}
+      - LLM_API_KEY=${OPENHANDS_API_KEY:-jkai-zenith-sovereign}
+      - DOCKER_BASE_URL=unix:///var/run/docker.sock
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - D:/Docker/JKAI:/app/workspace
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    networks:
+      - ai-network
+
+networks:
+  ai-network:
+    external: true
+    name: jkai_ai-network

@@ -1,0 +1,2191 @@
+{
+  "id": "m_ZENITH_0407-1118_5ca446",
+  "title": "Hueic hiện tại có bao nhiêu server ?",
+  "goal": "Hueic hiện tại có bao nhiêu server ?\n\n[KẾT QUẢ]\nDựa trên dữ liệu hiện có về hệ thống thiết bị tại Trường Đại học Cần Thơ (HueIC), tổng số lượng máy chủ đang được liệt kê là **3**. Chi tiết cụ thể như sau:\n\n1.  Server Lenovo IBM X3650M5 (Số 1): Đang hoạt động ổn định, phục vụ mục đích đăng ký học phần và hành chính trực tuyến trên trang web dangky.hueic.edu.vn.\n2.  Server IBM X3650M4 (Số 2): Từng chạy hệ thống Quản lý Đào tạo CMS nhưng đã ngừng sử dụng do chuyển sang dùng Phần mềm PMT - EMS của ASCVN.\n3.  Server IBM X3650M4 (Số 3): Đang phục vụ mục đích Virtual Net và Khảo thí online cho sinh viên qua địa chỉ IP nội bộ.\n\nNgoài ra, trong danh sách thiết bị quản trị còn ghi nhận thêm một máy chủ mang tên \"Webhoclieu\" với hệ điều hành Ubuntu Linux tại địa chỉ IP công cộng 203.113.167.3 (doanh nghiệp), tuy nhiên đây có thể là tài nguyên riêng hoặc đang không hoạt động, trong khi trang web HueIC chính thức được quản lý bởi máy chủ Windows Server 2012 tại địa chỉ IP nội bộ 203.113.167.5.\n\nDo đó, số lượng server cốt lõi phục vụ hạ tầng mạng và ứng dụng của trường là **3**.\n\n---\n👉 Phản hồi lúc 11h22m ngày 04/07/2026",
+  "status": "completed",
+  "ts": 1783138939.7004378,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "Hueic hiện tại có bao nhiêu server ?",
+      "ts": 1783138730.5457087,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_0407-1118_5ca446` initialized | Trace: `trace_5ca446`. Runtime ready.",
+      "ts": 1783138730.5480566,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1783138738.5434155,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1783138738.5473344,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [FAST-PIPELINE]: Khởi động RECEPTIONIST ReAct (3 turns).",
+      "ts": 1783138738.5979462,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "📚 [FAST-KB]: Đã cấu trúc XML cho 6 KB chunks. Sufficient=True",
+      "ts": 1783138738.7080863,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "WARN",
+      "msg": "Direct Ollama failed, fallback to call_chat: Ollama direct response was empty",
+      "ts": 1783138899.9461637,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "[INFO] [2026-07-04T04:22:00.436860] [RECEPTIONIST] [Task: ZENITH_0407-1118_5ca446] D",
+      "ts": 1783138920.4368732,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ựa",
+      "ts": 1783138920.500536,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " trên",
+      "ts": 1783138920.5590773,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " dữ",
+      "ts": 1783138920.6193554,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " liệu",
+      "ts": 1783138920.681481,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " hiện",
+      "ts": 1783138920.7405925,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " có",
+      "ts": 1783138920.7992845,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " về",
+      "ts": 1783138920.858715,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " hệ",
+      "ts": 1783138920.9168155,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " thống",
+      "ts": 1783138920.9761167,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " thiết",
+      "ts": 1783138921.0355325,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " bị",
+      "ts": 1783138921.0961182,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tại",
+      "ts": 1783138921.1569698,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Trường",
+      "ts": 1783138921.2181957,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Đại",
+      "ts": 1783138921.277836,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " học",
+      "ts": 1783138921.3392982,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Cần",
+      "ts": 1783138921.3991854,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Thơ",
+      "ts": 1783138921.45863,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " (",
+      "ts": 1783138921.518473,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "H",
+      "ts": 1783138921.5775554,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ue",
+      "ts": 1783138921.63629,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "IC",
+      "ts": 1783138921.6952975,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "),",
+      "ts": 1783138921.7543929,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tổng",
+      "ts": 1783138921.813661,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " số",
+      "ts": 1783138921.8730128,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " lượng",
+      "ts": 1783138921.932209,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " máy",
+      "ts": 1783138921.9915094,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " chủ",
+      "ts": 1783138922.0512958,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đang",
+      "ts": 1783138922.1108654,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " được",
+      "ts": 1783138922.171642,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " liệt",
+      "ts": 1783138922.2313926,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " kê",
+      "ts": 1783138922.2900715,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " là",
+      "ts": 1783138922.3488219,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " **",
+      "ts": 1783138922.4082072,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "3",
+      "ts": 1783138922.467661,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "**.",
+      "ts": 1783138922.526164,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Chi",
+      "ts": 1783138922.5855038,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tiết",
+      "ts": 1783138922.6441536,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " cụ",
+      "ts": 1783138922.7035484,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " thể",
+      "ts": 1783138922.7625055,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " như",
+      "ts": 1783138922.822361,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " sau",
+      "ts": 1783138922.8835425,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ":",
+      "ts": 1783138922.9443262,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "\n\n1",
+      "ts": 1783138923.064004,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".",
+      "ts": 1783138923.1240067,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "  Server",
+      "ts": 1783138923.2437322,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Lenovo",
+      "ts": 1783138923.3029108,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " IBM",
+      "ts": 1783138923.3621552,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " X",
+      "ts": 1783138923.4213564,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "3",
+      "ts": 1783138923.4802325,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "6",
+      "ts": 1783138923.5403097,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "5",
+      "ts": 1783138923.5988426,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1783138923.657359,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "M",
+      "ts": 1783138923.7167604,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "5",
+      "ts": 1783138923.7767806,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " (",
+      "ts": 1783138923.8381703,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "Số",
+      "ts": 1783138923.8973536,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " 1",
+      "ts": 1783138924.0188146,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "):",
+      "ts": 1783138924.0775352,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Đang",
+      "ts": 1783138924.1374903,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " hoạt",
+      "ts": 1783138924.1967735,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " động",
+      "ts": 1783138924.2558594,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ổn",
+      "ts": 1783138924.3150032,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " định",
+      "ts": 1783138924.3740094,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ",",
+      "ts": 1783138924.4326003,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " phục",
+      "ts": 1783138924.4934788,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " vụ",
+      "ts": 1783138924.5537083,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " mục",
+      "ts": 1783138924.6138163,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đích",
+      "ts": 1783138924.6748247,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đăng",
+      "ts": 1783138924.7338345,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ký",
+      "ts": 1783138924.792687,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " học",
+      "ts": 1783138924.8520172,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " phần",
+      "ts": 1783138924.912113,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " và",
+      "ts": 1783138924.9721017,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " hành",
+      "ts": 1783138925.0309792,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " chính",
+      "ts": 1783138925.0902297,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " trực",
+      "ts": 1783138925.1499836,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tuyến",
+      "ts": 1783138925.2097073,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " trên",
+      "ts": 1783138925.2684724,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " trang",
+      "ts": 1783138925.3282049,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " web",
+      "ts": 1783138925.3888717,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " dang",
+      "ts": 1783138925.447755,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ky",
+      "ts": 1783138925.508405,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".h",
+      "ts": 1783138925.5721395,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ue",
+      "ts": 1783138925.6303866,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ic",
+      "ts": 1783138925.6897483,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".edu",
+      "ts": 1783138925.748434,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".vn",
+      "ts": 1783138925.8072577,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".",
+      "ts": 1783138925.866935,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "\n2",
+      "ts": 1783138925.9860163,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".",
+      "ts": 1783138926.0470283,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "  Server",
+      "ts": 1783138926.1648514,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " IBM",
+      "ts": 1783138926.2266715,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " X",
+      "ts": 1783138926.2864234,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "3",
+      "ts": 1783138926.350907,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "6",
+      "ts": 1783138926.4106317,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "5",
+      "ts": 1783138926.4700642,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1783138926.5295806,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "M",
+      "ts": 1783138926.5880969,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "4",
+      "ts": 1783138926.6472683,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " (",
+      "ts": 1783138926.7071805,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "Số",
+      "ts": 1783138926.7666771,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " 2",
+      "ts": 1783138926.8839858,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "):",
+      "ts": 1783138926.9426382,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Từng",
+      "ts": 1783138927.0018098,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " chạy",
+      "ts": 1783138927.0622358,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " hệ",
+      "ts": 1783138927.1202028,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " thống",
+      "ts": 1783138927.1794674,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Quản",
+      "ts": 1783138927.2385445,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " lý",
+      "ts": 1783138927.2987924,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Đào",
+      "ts": 1783138927.3586304,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tạo",
+      "ts": 1783138927.4180968,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " CMS",
+      "ts": 1783138927.4773514,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " nhưng",
+      "ts": 1783138927.53698,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đã",
+      "ts": 1783138927.5964441,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ngừng",
+      "ts": 1783138927.6555996,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " sử",
+      "ts": 1783138927.7144613,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " dụng",
+      "ts": 1783138927.7731268,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " do",
+      "ts": 1783138927.8321412,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " chuyển",
+      "ts": 1783138927.8910537,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " sang",
+      "ts": 1783138927.9513564,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " dùng",
+      "ts": 1783138928.0128443,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Phần",
+      "ts": 1783138928.073585,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " mềm",
+      "ts": 1783138928.135271,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " PM",
+      "ts": 1783138928.1944175,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "T",
+      "ts": 1783138928.2532988,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " -",
+      "ts": 1783138928.3124712,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " EMS",
+      "ts": 1783138928.3711164,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " của",
+      "ts": 1783138928.429722,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ASC",
+      "ts": 1783138928.4889836,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "VN",
+      "ts": 1783138928.5487852,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".",
+      "ts": 1783138928.6077414,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "\n3",
+      "ts": 1783138928.726432,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".",
+      "ts": 1783138928.787248,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "  Server",
+      "ts": 1783138928.9075184,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " IBM",
+      "ts": 1783138928.9680545,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " X",
+      "ts": 1783138929.0420306,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "3",
+      "ts": 1783138929.1010976,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "6",
+      "ts": 1783138929.1606429,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "5",
+      "ts": 1783138929.2204015,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1783138929.2795067,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "M",
+      "ts": 1783138929.3380456,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "4",
+      "ts": 1783138929.3972063,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " (",
+      "ts": 1783138929.4559884,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "Số",
+      "ts": 1783138929.5146346,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " 3",
+      "ts": 1783138929.63182,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "):",
+      "ts": 1783138929.6923888,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Đang",
+      "ts": 1783138929.7542858,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " phục",
+      "ts": 1783138929.8156059,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " vụ",
+      "ts": 1783138929.8754978,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " mục",
+      "ts": 1783138929.9347806,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đích",
+      "ts": 1783138929.9938002,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Virtual",
+      "ts": 1783138930.0528352,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Net",
+      "ts": 1783138930.1128256,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " và",
+      "ts": 1783138930.1719642,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Kh",
+      "ts": 1783138930.230604,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ảo",
+      "ts": 1783138930.2895825,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " thí",
+      "ts": 1783138930.3487132,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " online",
+      "ts": 1783138930.4114618,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " cho",
+      "ts": 1783138930.47107,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " sinh",
+      "ts": 1783138930.5306098,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " viên",
+      "ts": 1783138930.5909798,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " qua",
+      "ts": 1783138930.6495926,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " địa",
+      "ts": 1783138930.7096581,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " chỉ",
+      "ts": 1783138930.768725,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " IP",
+      "ts": 1783138930.8285074,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " nội",
+      "ts": 1783138930.8900135,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " bộ",
+      "ts": 1783138930.9504156,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".",
+      "ts": 1783138931.0099294,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "\n\nNgo",
+      "ts": 1783138931.1287918,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ài",
+      "ts": 1783138931.1886616,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ra",
+      "ts": 1783138931.2496986,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ",",
+      "ts": 1783138931.3090923,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " trong",
+      "ts": 1783138931.368673,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " danh",
+      "ts": 1783138931.4291995,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " sách",
+      "ts": 1783138931.4910147,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " thiết",
+      "ts": 1783138931.5505378,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " bị",
+      "ts": 1783138931.6099648,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " quản",
+      "ts": 1783138931.6689131,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " trị",
+      "ts": 1783138931.7279153,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " còn",
+      "ts": 1783138931.7875087,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ghi",
+      "ts": 1783138931.8479638,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " nhận",
+      "ts": 1783138931.9078546,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " thêm",
+      "ts": 1783138931.9672809,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " một",
+      "ts": 1783138932.0261693,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " máy",
+      "ts": 1783138932.0858889,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " chủ",
+      "ts": 1783138932.1466203,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " mang",
+      "ts": 1783138932.212502,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tên",
+      "ts": 1783138932.27391,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " \"",
+      "ts": 1783138932.3341396,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "Web",
+      "ts": 1783138932.394706,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "hoc",
+      "ts": 1783138932.4536462,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "lie",
+      "ts": 1783138932.5137424,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "u",
+      "ts": 1783138932.5738873,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "\"",
+      "ts": 1783138932.6340084,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " với",
+      "ts": 1783138932.69282,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " hệ",
+      "ts": 1783138932.7519352,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " điều",
+      "ts": 1783138932.8117933,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " hành",
+      "ts": 1783138932.8714821,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Ubuntu",
+      "ts": 1783138932.9328523,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Linux",
+      "ts": 1783138932.994823,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tại",
+      "ts": 1783138933.054777,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " địa",
+      "ts": 1783138933.1146924,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " chỉ",
+      "ts": 1783138933.1753788,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " IP",
+      "ts": 1783138933.2352228,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " công",
+      "ts": 1783138933.2949002,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " cộng",
+      "ts": 1783138933.3547904,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " 2",
+      "ts": 1783138933.4726152,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1783138933.5322065,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "3",
+      "ts": 1783138933.5912662,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".",
+      "ts": 1783138933.6505134,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "1",
+      "ts": 1783138933.7095685,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "1",
+      "ts": 1783138933.7688835,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "3",
+      "ts": 1783138933.829523,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".",
+      "ts": 1783138933.890073,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "1",
+      "ts": 1783138933.9533274,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "6",
+      "ts": 1783138934.016069,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "7",
+      "ts": 1783138934.0753891,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".",
+      "ts": 1783138934.1343267,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "3",
+      "ts": 1783138934.194249,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " (",
+      "ts": 1783138934.252668,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "do",
+      "ts": 1783138934.3128524,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "anh",
+      "ts": 1783138934.372385,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " nghiệp",
+      "ts": 1783138934.4313562,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "),",
+      "ts": 1783138934.4904022,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tuy",
+      "ts": 1783138934.550371,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " nhiên",
+      "ts": 1783138934.609552,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đây",
+      "ts": 1783138934.6709762,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " có",
+      "ts": 1783138934.7316308,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " thể",
+      "ts": 1783138934.7920923,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " là",
+      "ts": 1783138934.8524053,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tài",
+      "ts": 1783138934.9120831,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " nguyên",
+      "ts": 1783138934.9719453,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " riêng",
+      "ts": 1783138935.0317566,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " hoặc",
+      "ts": 1783138935.0912318,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đang",
+      "ts": 1783138935.1504462,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " không",
+      "ts": 1783138935.210012,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " hoạt",
+      "ts": 1783138935.270595,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " động",
+      "ts": 1783138935.3308544,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ",",
+      "ts": 1783138935.3901758,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " trong",
+      "ts": 1783138935.4502707,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " khi",
+      "ts": 1783138935.5101619,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " trang",
+      "ts": 1783138935.5713778,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " web",
+      "ts": 1783138935.6313777,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Hue",
+      "ts": 1783138935.692461,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "IC",
+      "ts": 1783138935.7519357,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " chính",
+      "ts": 1783138935.8109794,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " thức",
+      "ts": 1783138935.8703687,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " được",
+      "ts": 1783138935.9302628,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " quản",
+      "ts": 1783138935.9937856,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " lý",
+      "ts": 1783138936.0540323,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " bởi",
+      "ts": 1783138936.1136625,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " máy",
+      "ts": 1783138936.1733935,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " chủ",
+      "ts": 1783138936.2338793,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Windows",
+      "ts": 1783138936.2957666,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Server",
+      "ts": 1783138936.3569098,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " 2",
+      "ts": 1783138936.4788435,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1783138936.5384758,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "1",
+      "ts": 1783138936.5982032,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1783138936.6578238,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tại",
+      "ts": 1783138936.7177296,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " địa",
+      "ts": 1783138936.776871,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " chỉ",
+      "ts": 1783138936.8363807,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " IP",
+      "ts": 1783138936.8960419,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " nội",
+      "ts": 1783138936.9556596,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " bộ",
+      "ts": 1783138937.0163138,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " 2",
+      "ts": 1783138937.137978,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1783138937.1982453,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "3",
+      "ts": 1783138937.2581713,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".",
+      "ts": 1783138937.319415,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "1",
+      "ts": 1783138937.3795826,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "1",
+      "ts": 1783138937.4385016,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "3",
+      "ts": 1783138937.4981127,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".",
+      "ts": 1783138937.5571654,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "1",
+      "ts": 1783138937.6157603,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "6",
+      "ts": 1783138937.675024,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "7",
+      "ts": 1783138937.7339535,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".",
+      "ts": 1783138937.793194,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "5",
+      "ts": 1783138937.852239,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".",
+      "ts": 1783138937.9114797,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "\n\nDo",
+      "ts": 1783138938.0313551,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đó",
+      "ts": 1783138938.092369,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ",",
+      "ts": 1783138938.152809,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " số",
+      "ts": 1783138938.2126045,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " lượng",
+      "ts": 1783138938.2721474,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " server",
+      "ts": 1783138938.33251,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " cốt",
+      "ts": 1783138938.3919215,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " lõi",
+      "ts": 1783138938.4513948,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " phục",
+      "ts": 1783138938.5115154,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " vụ",
+      "ts": 1783138938.5713968,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " hạ",
+      "ts": 1783138938.6307113,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tầng",
+      "ts": 1783138938.6905534,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " mạng",
+      "ts": 1783138938.750521,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " và",
+      "ts": 1783138938.8096206,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ứng",
+      "ts": 1783138938.870802,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " dụng",
+      "ts": 1783138938.9308739,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " của",
+      "ts": 1783138938.9902313,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " trường",
+      "ts": 1783138939.0575383,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " là",
+      "ts": 1783138939.1176963,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " **",
+      "ts": 1783138939.1764941,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "3",
+      "ts": 1783138939.2356057,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "**.",
+      "ts": 1783138939.294673,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "✅ [FAST-PIPELINE]: Hoàn tất ReAct loop cho task ZENITH_0407-1118_5ca446",
+      "ts": 1783138939.647112,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Dựa trên dữ liệu hiện có về hệ thống thiết bị tại Trường Đại học Cần Thơ (HueIC), tổng số lượng máy chủ đang được liệt kê là **3**. Chi tiết cụ thể như sau:\n\n1.  Server Lenovo IBM X3650M5 (Số 1): Đang hoạt động ổn định, phục vụ mục đích đăng ký học phần và hành chính trực tuyến trên trang web dangky.hueic.edu.vn.\n2.  Server IBM X3650M4 (Số 2): Từng chạy hệ thống Quản lý Đào tạo CMS nhưng đã ngừng sử dụng do chuyển sang dùng Phần mềm PMT - EMS của ASCVN.\n3.  Server IBM X3650M4 (Số 3): Đang phục vụ mục đích Virtual Net và Khảo thí online cho sinh viên qua địa chỉ IP nội bộ.\n\nNgoài ra, trong danh sách thiết bị quản trị còn ghi nhận thêm một máy chủ mang tên \"Webhoclieu\" với hệ điều hành Ubuntu Linux tại địa chỉ IP công cộng 203.113.167.3 (doanh nghiệp), tuy nhiên đây có thể là tài nguyên riêng hoặc đang không hoạt động, trong khi trang web HueIC chính thức được quản lý bởi máy chủ Windows Server 2012 tại địa chỉ IP nội bộ 203.113.167.5.\n\nDo đó, số lượng server cốt lõi phục vụ hạ tầng mạng và ứng dụng của trường là **3**.\n\n---\n👉 Phản hồi lúc 11h22m ngày 04/07/2026",
+      "ts": 1783138939.6540656,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1118_5ca446"
+    }
+  ],
+  "artifacts": {
+    "plan": "Hueic hiện tại có bao nhiêu server ?",
+    "walkthrough": "Dựa trên dữ liệu hiện có về hệ thống thiết bị tại Trường Đại học Cần Thơ (HueIC), tổng số lượng máy chủ đang được liệt kê là **3**. Chi tiết cụ thể như sau:\n\n1.  Server Lenovo IBM X3650M5 (Số 1): Đang hoạt động ổn định, phục vụ mục đích đăng ký học phần và hành chính trực tuyến trên trang web dangky.hueic.edu.vn.\n2.  Server IBM X3650M4 (Số 2): Từng chạy hệ thống Quản lý Đào tạo CMS nhưng đã ngừng sử dụng do chuyển sang dùng Phần mềm PMT - EMS của ASCVN.\n3.  Server IBM X3650M4 (Số 3): Đang phục vụ mục đích Virtual Net và Khảo thí online cho sinh viên qua địa chỉ IP nội bộ.\n\nNgoài ra, trong danh sách thiết bị quản trị còn ghi nhận thêm một máy chủ mang tên \"Webhoclieu\" với hệ điều hành Ubuntu Linux tại địa chỉ IP công cộng 203.113.167.3 (doanh nghiệp), tuy nhiên đây có thể là tài nguyên riêng hoặc đang không hoạt động, trong khi trang web HueIC chính thức được quản lý bởi máy chủ Windows Server 2012 tại địa chỉ IP nội bộ 203.113.167.5.\n\nDo đó, số lượng server cốt lõi phục vụ hạ tầng mạng và ứng dụng của trường là **3**.\n\n---\n👉 Phản hồi lúc 11h22m ngày 04/07/2026",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

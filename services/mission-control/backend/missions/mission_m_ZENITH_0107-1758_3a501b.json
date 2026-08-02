@@ -1,0 +1,63 @@
+{
+  "id": "m_ZENITH_0107-1758_3a501b",
+  "title": "Việt Nam có bao nhiêu tỉnh thành?",
+  "goal": "Việt Nam có bao nhiêu tỉnh thành?",
+  "status": "failed",
+  "ts": 1782903543.4243042,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "Việt Nam có bao nhiêu tỉnh thành?",
+      "ts": 1782903507.4383001,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-1758_3a501b"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_0107-1758_3a501b` initialized | Trace: `trace_3a501b`. Runtime ready.",
+      "ts": 1782903507.4404325,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-1758_3a501b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1782903514.9642622,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-1758_3a501b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1782903514.9682355,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-1758_3a501b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [FAST-PIPELINE]: Khởi động RECEPTIONIST ReAct (3 turns).",
+      "ts": 1782903514.978223,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-1758_3a501b"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All connection attempts failed | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All connection attempts failed\"}",
+      "ts": 1782903543.4138389,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-1758_3a501b"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+      "ts": 1782903543.4180803,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-1758_3a501b"
+    }
+  ],
+  "artifacts": {
+    "plan": "Việt Nam có bao nhiêu tỉnh thành?",
+    "walkthrough": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

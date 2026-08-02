@@ -1,0 +1,66 @@
+{
+  "id": "SAFLA_MEMORY_ENGINE",
+  "name": "Zenith SAFLA Neural Memory",
+  "version": "1.0.0",
+  "description": "Adaptive learning core: Implements the Self-Aware Feedback Loop Algorithm (SAFLA) with 4-tier memory (Working, Semantic, Episodic) for long-term knowledge retention and conceptual synthesis.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "ghi nhớ safla",
+    "nhập tâm tri thức",
+    "truy hồi ký ức safla",
+    "đúc khái niệm",
+    "quản lý bộ nhớ nơ-ron",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "memory",
+    "thuc",
+    "thanh",
+    "khong",
+    "master",
+    "hoac",
+    "kinh",
+    "zenith",
+    "lieu",
+    "tang",
+    "data",
+    "du lieu",
+    "phan tich du lieu",
+    "ml",
+    "machine learning"
+  ],
+  "domain": "DATA_SCIENCE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "assimilate",
+            "recall",
+            "forge_concept"
+          ],
+          "description": "Memory action."
+        },
+        "text": {
+          "type": "string",
+          "description": "Text to assimilate or query to recall."
+        },
+        "tier": {
+          "type": "string",
+          "enum": [
+            "semantic",
+            "episodic"
+          ],
+          "description": "Memory tier for assimilation."
+        }
+      },
+      "required": [
+        "action"
+      ]
+    }
+  }
+}

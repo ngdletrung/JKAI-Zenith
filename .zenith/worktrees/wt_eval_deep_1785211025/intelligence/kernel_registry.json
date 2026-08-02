@@ -1,0 +1,46 @@
+{
+  "plugins": {
+    "SEARCH_WEB_GLOBAL": {
+      "manifest": {
+        "id": "SEARCH_WEB_GLOBAL",
+        "name": "Siêu Tìm Kiếm Zenith",
+        "version": "2.0.0",
+        "domain": "RESEARCH",
+        "description": "Quét song song tri thức nội bộ và internet để trích xuất thông tin đa chiều.",
+        "triggers": [
+          "tìm kiếm",
+          "search",
+          "nghiên cứu",
+          "tin tức",
+          "trending github",
+          "tra cứu"
+        ],
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Từ khóa hoặc câu hỏi cần tìm kiếm."
+            },
+            "deep_search": {
+              "type": "boolean",
+              "description": "Kích hoạt tìm kiếm sâu (quét nhiều trang hơn).",
+              "default": false
+            }
+          },
+          "required": [
+            "query"
+          ]
+        },
+        "output_format": "Knowledge Packet (Markdown)",
+        "author": "Antigravity Architect"
+      },
+      "path": "d:\\Docker\\JKAI\\intelligence\\skills\\plugins\\RESEARCH\\SEARCH_WEB_GLOBAL",
+      "logic_path": "d:\\Docker\\JKAI\\intelligence\\skills\\plugins\\RESEARCH\\SEARCH_WEB_GLOBAL\\logic.py",
+      "dossier_path": "d:\\Docker\\JKAI\\intelligence\\skills\\plugins\\RESEARCH\\SEARCH_WEB_GLOBAL\\dossier.md"
+    }
+  },
+  "system": {
+    "last_scan": "26-05-2026 04:14 PM"
+  }
+}

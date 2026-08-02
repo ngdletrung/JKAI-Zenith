@@ -1,9 +1,9 @@
 """
 ╔══════════════════════════════════════════════════════════════════════════════╗
-║        JKAI ZENITH — BỘ NÃO LẬP KẾ HOẠCH CHIẾN LƯỢC (Elite Edition v3)    ║
+║        JKAI ZENITH — BỘ LẬP KẾ HOẠCH (Elite Edition v3)    ║
 ║   Lập trình Ứng dụng  •  Báo cáo & Thuyết minh  •  Nghiệp vụ Văn phòng   ║
 ╚══════════════════════════════════════════════════════════════════════════════╝
-* Sovereign Property of Master LeeTrung. Developed by Antigravity AI. 🌌🏛️🔥
+* Sovereign Property of Master LeeTrung. Developed by Antigravity AI. ️
 """
 
 import asyncio
@@ -11,6 +11,7 @@ import json
 import logging
 import os
 import time
+import unicodedata
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Set
 
@@ -21,7 +22,7 @@ from enum import Enum
 from core.qdrant_client import qdrant_client
 from core.utils.embed import embed
 from core.utils.engine import engine
-from knowledge_manager import JKAIKnowledgeOrchestrator
+from core.utils.knowledge_manager import JKAIKnowledgeOrchestrator
 from redis_client import redis_safe
 from core.utils.hlc import hlc
 from core.utils.reasoning_bank import reasoning_bank
@@ -63,13 +64,13 @@ _AGENT_ROLE_SOUL_HINTS = [
 
 class PlanStep(BaseModel):
     id:               str             = Field(..., description="Unique step ID — e.g. 'step_01'")
-    tool:             str             = Field(..., description="Exact skill ID from registry. NEVER invent.")
+    tool:             str             = Field("SYSTEM_CORE_EXECUTOR", description="Exact skill ID from registry. NEVER invent.")
     args:             Dict[str, Any]  = Field(default_factory=dict, description="Tool arguments matching skill signature")
-    description:      str             = Field(..., description="One-line plain-language summary")
-    assigned_agent:   str             = Field(..., description="Agent Soul .md file, e.g. agent_executor_alpha.md")
-    hardware_target:  HardwareTarget  = Field(..., description="ALPHA=GPU reasoning | BETA=CPU I/O")
-    expert_mindset:   str             = Field(..., description="Elite execution instruction for the agent")
-    verification:     str             = Field(..., description="Concrete, testable success criterion")
+    description:      str             = Field("Milestone thực thi Nơ-ron chiến lược.", description="One-line plain-language summary")
+    assigned_agent:   str             = Field("agent_executor_alpha.md", description="Agent Soul .md file, e.g. agent_executor_alpha.md")
+    hardware_target:  HardwareTarget  = Field(HardwareTarget.ALPHA, description="ALPHA=GPU reasoning | BETA=CPU I/O")
+    expert_mindset:   str             = Field("Tập trung chuẩn xác, tối ưu hiệu suất Antigravity.", description="Elite execution instruction for the agent")
+    verification:     str             = Field("Hoàn tất kiểm định tự động (Automated Antigravity Parity Verification).", description="Concrete, testable success criterion")
     parallel:         bool            = Field(False, description="True if independent of all other steps")
     depends_on:       List[str]       = Field(default_factory=list, description="IDs of prerequisite steps")
     fallback_tool:    Optional[str]   = Field(None, description="Backup skill if primary fails")
@@ -85,7 +86,7 @@ class Blueprint(BaseModel):
     question:            Optional[str]  = Field(None,  description="Clarification question when ambiguous=True")
     complexity_score:    int            = Field(1, ge=1, le=10, description="Task complexity 1-10")
     estimated_duration:  Optional[str]  = Field(None,  description="Rough wall-clock estimate, e.g. '3-5 min'")
-    # 💰 [COST-ESTIMATOR]: Cho phép hệ thống cân nhắc ngân sách trước khi chạy
+    #  [COST-ESTIMATOR]: Cho phép hệ thống cân nhắc ngân sách trước khi chạy
     estimated_tokens:     Optional[int]  = Field(None,  description="Estimated total LLM tokens for this plan")
     estimated_runtime_s:  Optional[int]  = Field(None,  description="Estimated wall-clock seconds to complete")
     estimated_api_cost:   Optional[str]  = Field(None,  description="Rough API cost estimate, e.g. '$0.05'")
@@ -104,20 +105,20 @@ class Blueprint(BaseModel):
 # ══════════════════════════════════════════════════════════════════════════════
 
 _FEW_SHOT_EXAMPLES = """
-[A1] Goal: "Xây dựng REST API quản lý nhân sự bằng FastAPI + PostgreSQL, có JWT auth"
-thought: Scaffold → models ∥ routes → tests → Docker.
-steps (each item is a PlanStep JSON object):
-  {"id": "step_01", "tool": "scaffold_project", "args": {}, "description": "Scaffold FastAPI project",
-   "assigned_agent": "agent_executor_alpha.md", "hardware_target": "ALPHA", "parallel": true,
-   "expert_mindset": "Scaffold with JWT-ready layout.", "verification": "Project tree exists with main.py"}
-  {"id": "step_02", "tool": "SEARCH_WEB_GLOBAL", "args": {"query": "FastAPI JWT best practices"},
-   "description": "Research JWT patterns", "assigned_agent": "agent_executor_beta.md", "hardware_target": "BETA",
-   "parallel": false, "expert_mindset": "Collect authoritative references only.", "verification": "Notes captured"}
-Agent routing: ALPHA (GPU/reasoning) → agent_executor_alpha.md | BETA (I/O) → agent_executor_beta.md
+[ANTIGRAVITY PARADIGM: LEAN, ULTRA-FAST MILESTONE CHECKLIST]
+Goal: "Phác thảo lộ trình thiết kế kiến trúc động cho hệ thống Microservices Load Balancing Engine trên nền tảng Python asyncio và Redis Pub/Sub"
+thought: "Analyze requirements -> Build dynamic routing architecture -> Set up checklist & test harness."
+steps:
+  [
+    {"id": "step_01", "tool": "scaffold_project", "args": {"name": "lb_engine"}, "description": "Thiết lập khung kiến trúc Microservices Load Balancing trên Python asyncio và Redis Pub/Sub", "assigned_agent": "agent_executor_alpha.md", "hardware_target": "ALPHA", "parallel": false, "expert_mindset": "Cấu trúc MECE tối ưu hóa Xeon 44 luồng và VRAM GPU.", "verification": "python -m py_compile main.py thành công"},
+    {"id": "step_02", "tool": "write_code", "args": {"file": "core/router.py"}, "description": "Lập trình thuật toán chống thắt cổ chai bộ nhớ và cân bằng tải động qua Redis", "assigned_agent": "agent_executor_alpha.md", "hardware_target": "ALPHA", "parallel": true, "expert_mindset": "Tận dụng tối đa bộ nhớ 128GB RAM và I/O bất đồng bộ.", "verification": "pytest tests/test_router.py -v exit 0"},
+    {"id": "step_03", "tool": "run_test", "args": {"suite": "integration"}, "description": "Thực hiện kiểm định checklist hiệu năng và nghiệm thu tải trọng hệ thống", "assigned_agent": "agent_executor_beta.md", "hardware_target": "BETA", "parallel": false, "expert_mindset": "Zero Hallucination. Mọi tuyên bố hoàn tất phải có log terminal.", "verification": "Toàn bộ test suite pass với latency < 50ms"}
+  ]
+CRITICAL SPEED & PRECISION LAW: Giữ mô tả (description/expert_mindset/verification) ngắn gọn dưới 25 từ! Sinh tối đa 3-5 bước milestone chiến lược để thi hành ngay lập tức.
 """
 
 # ══════════════════════════════════════════════════════════════════════════════
-#  PLANNER — Kiến trúc sư Chiến lược Tối thượng
+#  PLANNER — Bộ lập kế hoạch
 # ══════════════════════════════════════════════════════════════════════════════
 
 class Planner:
@@ -326,18 +327,29 @@ class Planner:
             logger.debug("[PLANNER] abort check failed: %s", e)
             return False
 
+    @staticmethod
+    def _strip_diacritics(text: str) -> str:
+        text = unicodedata.normalize("NFD", text)
+        return "".join(c for c in text if not unicodedata.combining(c))
+
     def _estimate_complexity(self, goal: str, context: dict = None, images: list = None) -> dict:
         goal_lower = goal.lower()
+        # Chuẩn hóa không dấu để tín hiệu phức tạp khớp cả input không dấu (JKAI normalize tiếng Việt).
+        goal_norm = self._strip_diacritics(goal_lower)
         complexity_signals = {
             "complex": ["multi_file", "codebase", "report", "báo cáo", "kiến trúc", "architecture", "research", "nghiên cứu", "danh mục", "tổng hợp"],
             "extreme": ["toàn bộ", "hệ thống", "system", "erp", "microservice", "deploy", "production", "framework"]
         }
-        
+        signals_norm = {
+            key: [self._strip_diacritics(w) for w in words]
+            for key, words in complexity_signals.items()
+        }
+
         score = 0
-        for word in complexity_signals["complex"]:
-            if word in goal_lower: score += 2
-        for word in complexity_signals["extreme"]:
-            if word in goal_lower: score += 4
+        for word in signals_norm["complex"]:
+            if word in goal_norm: score += 2
+        for word in signals_norm["extreme"]:
+            if word in goal_norm: score += 4
             
         words = len(goal.split())
         score += min(words / 10, 5)
@@ -370,11 +382,11 @@ class Planner:
 
     async def _recon_skills(self, goal: str, skills_summary: str, task_id: str, domain: str = None) -> tuple[str, list[str]]:
         """
-        🚀 [HYBRID-RECON v3.5]: Kết hợp Vector Search + Keyword Matching + Domain Filtering + Top-K.
+         [HYBRID-RECON v3.5]: Kết hợp Vector Search + Keyword Matching + Domain Filtering + Top-K.
         Sử dụng registry_Map_skills.json (Manifest) thay vì load source code logic.py
         để giảm tối đa context bloat cho LLM. Trả về (Skill DNA String, Top K Skill IDs).
         """
-        all_skills = self.orchestrator.get_all_skills_dict()
+        all_skills = await self.orchestrator.get_all_skills_dict()
         
         # Filter skills by domain if specified
         if domain:
@@ -418,11 +430,12 @@ class Planner:
         except Exception as e:
             logger.debug(f"[VECTOR-RECON]: Qdrant miss ({e}), falling back to summary.")
             
-        # [TOP-K INJECTION]: Đảm bảo các tool sinh tồn cốt lõi luôn có mặt (Universal Core Tools)
+        # [TOP-K INJECTION]: Đảm bảo các tool cốt lõi luôn có mặt (Universal Core Tools)
         UNIVERSAL_CORE_TOOLS = ["SEARCH_WEB_GLOBAL", "SYSTEM_CORE_EXECUTOR", "SKILL_ZENITH_OFFICE_MASTER"]
         core_ids = set()
+        skills_dict = await self.orchestrator.get_all_skills_dict()
         for t in UNIVERSAL_CORE_TOOLS:
-            if t in self.orchestrator.get_all_skills_dict():
+            if t in skills_dict:
                 core_ids.add(t)
                 
         # Top-K (Mặc định 8)
@@ -437,53 +450,42 @@ class Planner:
         # Tổng hợp danh sách cuối cùng (~15 skills)
         final_skill_ids = list(set(top_k_ids + fallback_k_ids + list(core_ids)))
             
-        # 3. BUILD RICH MANIFEST DNA — trích xuất toàn bộ metadata để Planner hiểu sâu
-        DNA_TOKEN_BUDGET = 2500  # Kí tự tối đa cho skill_dna tránh phình context
+        # 3. BUILD PROGRESSIVE SKILL DNA (Tối ưu hóa Context & Tránh Prompt Flooding)
+        skill_dna = "AVAILABLE CANDIDATE SKILLS OVERVIEW:\n"
         for s_id in final_skill_ids:
-            if len(skill_dna) >= DNA_TOKEN_BUDGET: break
-            s_data = all_skills[s_id]
-            
-            # --- Các trường cơ bản ---
+            s_data = skills_dict.get(s_id)
+            if not s_data:
+                continue
             desc = s_data.get("description") or s_data.get("semantic_guidance", "No description.")
-            schema_info = s_data.get("schema", {}).get("parameters", {})
-            required_args = schema_info.get("required", [])
             category = s_data.get("domain", s_data.get("category", ""))
-            
-            # --- Các trường Affinity & Planning ---
-            batch_capable   = s_data.get("batch_capable", None)
-            workflow_pos    = s_data.get("workflow_position", None)
-            commonly_after  = s_data.get("commonly_after", [])
-            commonly_before = s_data.get("commonly_before", [])
-            planning_hints  = s_data.get("planning_hints", [])
-            typical_wf      = s_data.get("typical_workflow", [])
-            cost_level      = s_data.get("cost_level", None)
-            input_types     = s_data.get("input_type", [])
-            output_types    = s_data.get("output_type", [])
-            
-            # --- Xây dựng DNA block ---
-            dna_lines = [f"\n--- [SKILL: {s_id}] ---"]
-            dna_lines.append(f"Purpose: {desc}")
-            if category:       dna_lines.append(f"Category: {category}")
-            if batch_capable is not None: dna_lines.append(f"Batch Capable: {batch_capable}")
-            if cost_level:     dna_lines.append(f"Cost Level: {cost_level}")
-            if workflow_pos:   dna_lines.append(f"Workflow Position: {workflow_pos}")
-            if commonly_after: dna_lines.append(f"Commonly After: {commonly_after}")
-            if commonly_before:dna_lines.append(f"Commonly Before: {commonly_before}")
-            if input_types:    dna_lines.append(f"Accepts Input: {input_types}")
-            if output_types:   dna_lines.append(f"Produces Output: {output_types}")
-            if planning_hints: dna_lines.append(f"Planning Hints: {planning_hints}")
-            if typical_wf:     dna_lines.append(f"Typical Workflow: {typical_wf}")
-            
-            dna_lines.append(f"Required Args: {', '.join(required_args) if required_args else 'None'}")
-            skill_dna += "\n".join(dna_lines) + "\n"
-            
+            skill_dna += f"- **{s_id}** ({category}): {desc}\n"
+
+        # Nạp toàn bộ nội dung file SKILL.md (Workflow, Chống ngụy biện, Exit Criteria) của tối đa 2 skill phù hợp nhất
+        primary_skills = [sid for sid in top_k_ids if sid in skills_dict][:2]
+        if primary_skills:
+            skill_dna += "\n=== ACTIVE SKILL DETAILED WORKFLOWS (BẮT BUỘC TUÂN THỦ) ===\n"
+            for s_id in primary_skills:
+                s_data = skills_dict.get(s_id)
+                rel_path = s_data.get("rel_path")
+                if rel_path:
+                    skill_path = Path(self.orchestrator.base_dir) / rel_path
+                    if skill_path.exists():
+                        try:
+                            full_content = skill_path.read_text(encoding="utf-8")
+                            # Loại bỏ khối YAML metadata để prompt gọn gàng hơn
+                            clean_content = re.sub(r'^---\s*\n.*?\n---\s*\n', '', full_content, flags=re.DOTALL)
+                            skill_dna += f"\n--- [FULL WORKFLOW FOR ACTIVE SKILL: {s_id}] ---\n"
+                            skill_dna += clean_content.strip() + "\n"
+                        except Exception as e:
+                            logger.warning(f"Error loading skill file {skill_path}: {e}")
+
         if not skill_dna.strip():
             skill_dna = "[SKILL DNA]: Fallback to general skills based on summary."
             
         return skill_dna, final_skill_ids
 
     async def _prepare_neural_context(self, goal: str, task_id: str, complexity: str = "medium") -> dict:
-        manifesto = await asyncio.to_thread(engine.get_intel_file, "JKAI_ZENITH_CORP.md")
+        manifesto = await asyncio.to_thread(engine.get_intel_file, "JKAI_ZENITH_CORP.md", task_id)
         complexity_data = self._estimate_complexity(goal)
         return {
             "manifesto": manifesto or "",
@@ -496,11 +498,11 @@ class Planner:
         summary_prompt = "Tóm tắt lịch sử:\n" + json.dumps(history[-15:], ensure_ascii=False)
         try:
             dna = await engine.call_chat([{"role": "user", "content": summary_prompt}], role="SUMMARIZER", task_id=task_id)
-            return [{"role": "system", "content": f"🧬 [HISTORY DNA]: {dna}"}]
+            return [{"role": "system", "content": f" [HISTORY DNA]: {dna}"}]
         except Exception: return history[-self._HISTORY_TAIL:]
 
     async def _verify_integrity(self, plan: dict, task_id: str) -> List[str]:
-        all_skills = self.orchestrator.get_all_skills_dict()
+        all_skills = await self.orchestrator.get_all_skills_dict()
         errors = []
         steps = plan.get("steps", [])
         
@@ -556,12 +558,26 @@ class Planner:
         errors.extend(self._verify_agent_souls(plan))
         return errors
 
+    def _validate_verification_criteria(self, blueprint: "Blueprint") -> list:
+        """
+        [QUALITY GATE]: Đảm bảo mỗi PlanStep có 'verification' là tiêu chí kiểm tra cụ thể.
+        Từ chối step nếu verification trống hoặc quá ngắn để thực sự test được.
+        """
+        errors = []
+        for step in blueprint.steps:
+            v = (step.verification or "").strip()
+            if not v:
+                errors.append(f"[MISSING-VERIFICATION]: Step '{step.id}' (tool: {step.tool}) thiếu tiêu chí kiểm tra. Thêm verification cụ thể.")
+            elif len(v) < 10:
+                errors.append(f"[WEAK-VERIFICATION]: Step '{step.id}' có verification quá ngắn: '{v}'. Phải mô tả kết quả có thể đo lường được.")
+        return errors
+
     def _build_system_prompt(self, manifesto: str, specialist_prompt: str, active_skills_dna: str, complexity: str = "medium", step_budget: int = 5, has_cache: bool = False, reasoning_samples: str = "") -> str:
         reasoning_block = f"\n<REASONING_MEMORIES>\n{reasoning_samples}\n</REASONING_MEMORIES>" if reasoning_samples else ""
         
         # Read the external physical memory task board (task.md)
         task_board_content = ""
-        # 🌍 [PORTABLE-PATH]: Dùng biến môi trường thay vì hardcode Windows path
+        #  [PORTABLE-PATH]: Dùng biến môi trường thay vì hardcode Windows path
         task_md_path = os.getenv("TASK_BOARD_PATH", "/workspace/task.md")
         if os.path.exists(task_md_path):
             try:
@@ -592,7 +608,7 @@ Chưa có bảng công việc. Sinh kế hoạch theo nguyên tắc:
 """
 
         PROTOCOL = f"""
-<IDENTITY>Kiến trúc sư Chiến lược JKAI Zenith.</IDENTITY>
+<IDENTITY>Bộ lập kế hoạch JKAI Zenith.</IDENTITY>
 <THINKING_PROTOCOL>Tư duy MECE. Hardware Routing: ALPHA (GPU) | BETA (CPU).</THINKING_PROTOCOL>
 <PLANNING_BUDGET>
 Complexity Level: {complexity.upper()}
@@ -601,7 +617,7 @@ Do NOT exceed this budget unless there is a hard technical dependency.
 If you find yourself exceeding it, revisit optimization_review and consolidate.
 </PLANNING_BUDGET>
 <ACTIVE_SKILLS_INSTRUCTIONS>
-⚡ [SKILL-AS-SYSTEM-PROMPT]: Chỉ nạp nơ-ron liên quan thưa Master.
+ [SKILL-AS-SYSTEM-PROMPT]: Chỉ nạp nơ-ron liên quan thưa Master.
 {active_skills_dna}
 </ACTIVE_SKILLS_INSTRUCTIONS>
 {reasoning_block}
@@ -619,6 +635,7 @@ If you find yourself exceeding it, revisit optimization_review and consolidate.
 [IRON LAW 3: WRITING PLANS & TDD]
 - Cấm sử dụng placeholder (TODO, TBD, implement later) trong các bước kế hoạch. Phải có đường dẫn file chính xác và mã nguồn cụ thể.
 - Nhiệm vụ lập trình phải tuân theo luồng: Viết Test Fail (RED) -> Viết Code Pass (GREEN) -> Refactor.
+- Mọi PlanStep có hành động viết code hoặc chỉnh sửa tệp tin Python BẮT BUỘC phải đi kèm trường 'verification' ghi cụ thể lệnh chạy thử kiểm thử hoặc biên dịch (ví dụ: 'chạy pytest tests/test_foo.py thành công' hoặc 'python -m py_compile utils.py không báo lỗi'). KHÔNG được ghi chung chung dạng 'xác minh thành công'.
 
 [IRON LAW 4: SUBAGENT-DRIVEN DEVELOPMENT]
 - Đối với tính năng phức tạp, thay vì ôm đồm thực thi trong 1 luồng, hãy lập kế hoạch chia nhỏ cho các Subagent chạy song song (sử dụng HardwareTarget ALPHA).
@@ -668,6 +685,10 @@ Vì bạn là Trí tuệ Trung tâm (AI OS) của JKAI, hãy tự động nhận
 [TOOL CONSOLIDATION LAW]
 - Nếu 2+ PlanStep dùng cùng tool, không có dependency, và có thể xử lý chung: BẮT BUỘC gộp thành 1 bước.
 - SAI: step_01 analyze(file_A), step_02 analyze(file_B) | ĐÚNG: step_01 analyze(files=[A,B])
+
+[ANTIGRAVITY EXECUTIVE COGNITION LAW]
+- Để đảm bảo tốc độ phản xạ tia chớp (Sub-30s) và độ chính xác tuyệt đối Chuẩn Antigravity: BẮT BUỘC giữ nội dung các trường description, expert_mindset, và verification cực kỳ súc tích, đanh thép (dưới 25 từ mỗi trường).
+- Không giải thích giông dài, tập trung thẳng vào kiến trúc, mã nguồn và minh chứng lệnh test hợp lệ!
 </GOLDEN_RULES>
 """
         return "\n\n".join([specialist_prompt, manifesto, PROTOCOL])
@@ -704,14 +725,9 @@ Vì bạn là Trí tuệ Trung tâm (AI OS) của JKAI, hãy tự động nhận
             )
 
         if domain is None or not context.get("agent_role"):
-            try:
-                from meta_planner import MetaPlanner
-                routing = await MetaPlanner().route_task(goal, context, task_id)
-                domain = domain or routing.get("domain")
-                context.setdefault("agent_role", routing.get("agent_role"))
-                context.setdefault("domain", domain)
-            except Exception as e:
-                logger.debug(f"[META-PLANNER] skipped: {e}")
+            domain = domain or "CORE"
+            context.setdefault("agent_role", "Generalist")
+            context.setdefault("domain", domain)
 
         agent_role = context.get("agent_role")
 
@@ -726,20 +742,20 @@ Vì bạn là Trí tuệ Trung tâm (AI OS) của JKAI, hãy tự động nhận
         except Exception as tp_err:
             logger.debug("[TEAM-PATTERN] skipped: %s", tp_err)
             team_pat = None
-        skills_summary = self.orchestrator.get_all_skills_summary()
         
         # Filter available skills for the prompt if domain is provided
+        all_skills_dict = await self.orchestrator.get_all_skills_dict()
         if domain:
-            all_valid_skill_ids = sorted([k for k, v in self.orchestrator.get_all_skills_dict().items() if v.get("domain", "GENERAL").upper() == domain.upper()])
+            all_valid_skill_ids = sorted([k for k, v in all_skills_dict.items() if v.get("domain", "GENERAL").upper() == domain.upper()])
             if not all_valid_skill_ids:
-                all_valid_skill_ids = sorted(self.orchestrator.get_all_skills_dict().keys())
+                all_valid_skill_ids = sorted(all_skills_dict.keys())
         else:
-            all_valid_skill_ids = sorted(self.orchestrator.get_all_skills_dict().keys())
+            all_valid_skill_ids = sorted(all_skills_dict.keys())
 
-        # 🧠 [KNOWLEDGE-FUSION]: Chạy 4 tác vụ song song, tiết kiệm tối đa thời gian
-        skill_dna_task = self._recon_skills(goal, skills_summary, task_id, domain)
+        #  [KNOWLEDGE-FUSION]: Chạy 4 tác vụ song song, tiết kiệm tối đa thời gian
+        skill_dna_task = self._recon_skills(goal, "", task_id, domain)
         cache_task = self._search_cache(goal)
-        manifesto_task = asyncio.to_thread(engine.get_intel_file, "JKAI_ZENITH_CORP.md")
+        manifesto_task = asyncio.to_thread(engine.get_intel_file, "JKAI_ZENITH_CORP.md", task_id)
         reasoning_task = reasoning_bank.recall(goal)
         smart_retrieve_task = self.orchestrator.smart_retrieve(goal, task_id)
 
@@ -748,15 +764,29 @@ Vì bạn là Trí tuệ Trung tâm (AI OS) của JKAI, hãy tự động nhận
         )
         skill_dna, top_k_ids = skill_dna_tuple
         
+        # Tạo bản tóm tắt tinh gọn chỉ gồm các skill được chọn làm ứng viên (Progressive Context)
+        candidate_summaries = []
+        for s_id in top_k_ids:
+            s_data = all_skills_dict.get(s_id)
+            if s_data:
+                desc = s_data.get("description") or s_data.get("semantic_guidance", "No description.")
+                candidate_summaries.append(f"- **{s_id}**: {desc}")
+        clean_skills_summary = "\n".join(candidate_summaries) if candidate_summaries else "No active skills."
+
         all_valid_skill_ids = top_k_ids if top_k_ids else ["SEARCH_WEB_GLOBAL", "SYSTEM_CORE_EXECUTOR"]
 
         context.update(smart_intel)
         reasoning_str = "\n".join([f"- Goal: {r['goal']}\n  Thought: {r['thought']}" for r in reasoning_samples])
 
-        specialist_prompt = await self._forge.forge_specialist_prompt(goal=goal, context=context, skills_summary=skills_summary, fast_mode=bool(cached_blueprint))
-        # 🔒 [GHOST-TOOL-SHIELD]: Nhúng danh sách ID hợp lệ trực tiếp vào system_prompt để Pydantic/LLM không bao giờ bịa tool
+        # Gắn knowledge từ Qdrant (smart_intel) vào goal để LLM thấy dữ liệu
+        qdrant_context = (smart_intel or {}).get("context", "").strip()
+        if qdrant_context:
+            goal = f"{goal}\n\n[CONTEXT FROM KNOWLEDGE BASE]:\n{qdrant_context[:4000]}"
+
+        specialist_prompt = await self._forge.forge_specialist_prompt(goal=goal, context=context, skills_summary=clean_skills_summary, fast_mode=bool(cached_blueprint), task_id=task_id)
+        #  [GHOST-TOOL-SHIELD]: Nhúng danh sách ID hợp lệ trực tiếp vào system_prompt để Pydantic/LLM không bao giờ bịa tool
         valid_ids_block = "AVAILABLE SKILL IDs (ONLY use these exact IDs in 'tool' field):\n" + "\n".join(f"  - {sid}" for sid in all_valid_skill_ids[:80])
-        system_prompt = self._build_system_prompt(manifesto or "", specialist_prompt, skill_dna or skills_summary, complexity_level, step_budget, bool(cached_blueprint), reasoning_str)
+        system_prompt = self._build_system_prompt(manifesto or "", specialist_prompt, skill_dna or clean_skills_summary, complexity_level, step_budget, bool(cached_blueprint), reasoning_str)
         team_pattern_block = ""
         try:
             from core.utils.team_patterns import pattern_prompt_block
@@ -772,7 +802,7 @@ Vì bạn là Trí tuệ Trung tâm (AI OS) của JKAI, hãy tự động nhận
             + f"\n\n<FEW_SHOT>\n{_FEW_SHOT_EXAMPLES}\n</FEW_SHOT>"
         )
 
-        # 🛡️ [TYPE-SAFETY]: Đảm bảo history luôn là list để tránh lỗi "unhashable type: 'slice'"
+        # ️ [TYPE-SAFETY]: Đảm bảo history luôn là list để tránh lỗi "unhashable type: 'slice'"
         if history is not None and not isinstance(history, list):
             history = [history] if history else []
 
@@ -786,14 +816,14 @@ Vì bạn là Trí tuệ Trung tâm (AI OS) của JKAI, hãy tự động nhận
             if self._is_aborted(): return {"status": "aborted"}
 
             if attempt == 1:
-                active_role = "MINI_PLANNER" if complexity_level == "simple" else "PLANNER"
+                active_role = "PLANNER"
             else:
                 active_role = "RESERVE_AGENT"
             
             schema = Blueprint.model_json_schema()
             self._inject_plan_schema_enums(schema, all_valid_skill_ids)
                 
-            raw_plan = await engine.call_chat(messages=messages, role=active_role, schema=schema, task_id=task_id, images=images)
+            raw_plan = await engine.call_chat(messages=messages, role=active_role, schema=schema, task_id=task_id, images=images, skip_build_final=True)
             try:
                 if isinstance(raw_plan, str): raw_plan = json.loads(raw_plan)
                 blueprint = Blueprint.model_validate(raw_plan)
@@ -803,13 +833,19 @@ Vì bạn là Trí tuệ Trung tâm (AI OS) của JKAI, hãy tự động nhận
                     blueprint.steps = blueprint.steps[:50]
 
                 self._normalize_blueprint_agents(blueprint, agent_role)
-                
+
+                # [QUALITY GATE]: Kiểm tra tiêu chí verification của từng step
+                verification_errors = self._validate_verification_criteria(blueprint)
+                if verification_errors:
+                    messages.append({"role": "system", "content": f"Lỗi chất lượng verification: {verification_errors}. Thêm tiêu chí kiểm tra cụ thể cho mỗi bước."})
+                    continue
+
                 ghosts = await self._verify_integrity(blueprint.model_dump(), task_id)
                 if ghosts:
                     messages.append({"role": "system", "content": f"Plan integrity errors: {ghosts}. Sửa lại thưa Master."})
                     continue
                 
-                review = await self._critic.review_plan(goal, blueprint.model_dump().get("steps"))
+                review = await self._critic.review_plan(goal, blueprint.model_dump().get("steps"), task_id=task_id)
                 if review.get("approved"):
                     asyncio.create_task(reasoning_bank.memorize(goal, blueprint.thought))
                     try:

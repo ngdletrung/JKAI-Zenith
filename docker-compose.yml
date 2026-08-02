@@ -54,7 +54,7 @@ services:
     image: redis:7-alpine
     container_name: redis-queue
     restart: unless-stopped
-    command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "noeviction", "--requirepass", "${REDIS_PASSWORD}"]
+    command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "allkeys-lru", "--requirepass", "${REDIS_PASSWORD}"]
     volumes:
       - redis-queue-data:/data
     healthcheck:
@@ -113,7 +113,7 @@ services:
     depends_on:
       qdrant:
         condition: service_started
-    command: ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    command: ["uvicorn", "app:app", "--host", "0.0.0.0", "--port", "8000", "--workers", "2"]
     env_file: .env
     volumes:
       - ./rag:/app
@@ -259,9 +259,9 @@ services:
         condition: service_healthy
     networks:
       - ai-network
-    mem_limit: 2g
-    mem_reservation: 1g
-    cpus: 2
+    mem_limit: 3g
+    mem_reservation: 1.5g
+    cpus: 3
     deploy:
       replicas: 1
       mode: replicated
@@ -282,6 +282,7 @@ services:
       - ./services/ai-control-plane:/app
       - ./models:/shared/models
       - ./core:/shared/core
+      - ./services/ai-brain/prompt_engine:/shared/prompt_engine
       - ./services/tools:/shared/tools
       - ./intelligence/tools:/shared/tool_schemas
       - ./intelligence/prompts:/prompts
@@ -324,6 +325,7 @@ services:
       - ./services/ai-control-plane:/app
       - ./models:/shared/models
       - ./core:/shared/core
+      - ./services/ai-brain/prompt_engine:/shared/prompt_engine
       - ./services/tools:/shared/tools
       - ./intelligence/tools:/shared/tool_schemas
       - ./intelligence/prompts:/prompts
@@ -350,7 +352,7 @@ services:
     build: ./services/ai-brain
     container_name: ai-brain
     restart: unless-stopped
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --workers 2
     env_file: .env
     ports:
       - "8001:8000"
@@ -374,6 +376,7 @@ services:
       - PYTHONUNBUFFERED=1
       - PROMPTS_DIR=/prompts
       - TASK_BOARD_PATH=/workspace/task.md
+      - ENABLE_MODEL_EVICTION=${ENABLE_MODEL_EVICTION:-false}
     depends_on:
       redis-ai:
         condition: service_healthy
@@ -394,7 +397,7 @@ services:
     build: ./services/ai-executor
     container_name: ai-executor-1
     restart: unless-stopped
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --workers 2
     env_file: .env
     ports:
       - "8002:8000"
@@ -402,11 +405,13 @@ services:
       - ./services/ai-executor:/app
       - ./models:/shared/models
       - ./core:/shared/core
+      - ./services/ai-brain/prompt_engine:/shared/prompt_engine
       - ./services/tools:/shared/tools
       - ./intelligence/tools:/shared/tool_schemas
       - ./intelligence/prompts:/prompts
       - ./intelligence:/intelligence
       - storage-data:/data
+      - .:/workspace
     environment:
       - PYTHONPATH=/app:/shared
       - PYTHONUNBUFFERED=1
@@ -429,7 +434,7 @@ services:
     build: ./services/ai-executor
     container_name: ai-executor-2
     restart: unless-stopped
-    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --workers 2
     env_file: .env
     ports:
       - "8007:8000"
@@ -437,11 +442,13 @@ services:
       - ./services/ai-executor:/app
       - ./models:/shared/models
       - ./core:/shared/core
+      - ./services/ai-brain/prompt_engine:/shared/prompt_engine
       - ./services/tools:/shared/tools
       - ./intelligence/tools:/shared/tool_schemas
       - ./intelligence/prompts:/prompts
       - ./intelligence:/intelligence
       - storage-data:/data
+      - .:/workspace
     environment:
       - PYTHONPATH=/app:/shared
       - PYTHONUNBUFFERED=1
@@ -515,6 +522,7 @@ services:
       - "9999:9999"
       - "9998:9998"
       - "5173:5173"
+      - "53800:53683"
     volumes:
       - ./services/mission-control/frontend/src:/app/frontend/src
       - ./services/mission-control/frontend/public:/app/frontend/public
@@ -564,9 +572,24 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     command: ["python3", "launch.py", "--use-rocm", "--precision", "full", "--no-half", "--api", "--listen", "--port", "7860"]
+  # =========================
+  # 🔄 AUTOMATED BACKUP SCHEDULER SERVICE
+  # =========================
+  backup-scheduler:
+    build: ./services/ai-executor
+    container_name: backup-scheduler
+    restart: unless-stopped
+    command: python /app/backup_scheduler_main.py
+    env_file: .env
+    volumes:
+      - ./services/backup-scheduler/main.py:/app/backup_scheduler_main.py
+      - ./scripts:/app/scripts
+      - ./core:/app/core
+    environment:
+      - PYTHONPATH=/app
+      - BACKUP_INTERVAL_HOURS=24
     networks:
       - ai-network
-      - gpu-internal
 
 # =========================
 # 📦 NAMED VOLUMES

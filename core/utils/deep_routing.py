@@ -47,12 +47,21 @@ def _env_auto_deep_analysis() -> bool:
     return raw in ("1", "true", "yes", "on")
 
 
+_SEARCH_NEWS_RE = re.compile(
+    r"\b(tin tức|tin tuc|tìm kiếm|tim kiem|tra cứu|tra cuu|search|news|thời sự|thoi su|"
+    r"hôm nay|hom nay|mới nhất|moi nhat)\b",
+    re.IGNORECASE,
+)
+
 def goal_should_force_deep_for_analysis(goal: str) -> bool:
-    """Phân tích / so sánh / báo cáo → DEEP + T5 CRITIC (Harness producer-reviewer)."""
+    """Phân tích / so sánh / báo cáo → DEEP + T5 CRITIC (Harness producer-reviewer).
+    Loại trừ các truy vấn tìm kiếm tin tức để không ép DEEP."""
     if not _env_auto_deep_analysis():
         return False
     g = (goal or "").strip()
     if not g or g.startswith("/"):
+        return False
+    if _SEARCH_NEWS_RE.search(g):
         return False
     try:
         from core.utils.team_patterns import infer_team_pattern, PATTERN_PRODUCER_REVIEWER
@@ -77,6 +86,21 @@ def _last_user_text(history: Optional[List[Any]], max_turns: int = 3) -> str:
                 chunks.append(str(item[1]))
     return "\n".join(chunks)
 
+
+_KNOWLEDGE_QUERY_RE = re.compile(
+    r"\b(là gì|la gi|là ai|la ai|định nghĩa|dinh nghia|khái niệm|khai niem|"
+    r"giải thích|giai thich|explain|what is|who is|what are|"
+    r"tìm hiểu|tim hieu|có nghĩa là|co nghia la|"
+    r"khác nhau|khac nhau|so sánh|so sanh|"
+    r"tại sao|tai sao|vì sao|vi sao|nguyên nhân|nguyen nhan|"
+    r"làm thế nào|lam the nao|làm sao|lam sao|"
+    r"cách nào|cach nao|cách.*(làm|học|dùng|sử dụng)|"
+    r"cach.*(lam|hoc|dung|su dung)|"
+    r"hướng dẫn|huong dan|tutorial|guide|"
+    r"học\s+\w+|hoc\s+\w+|"
+    r"\w+\s+gì\b|\w+\s+gi\b|\w+\s+nhỉ\b)\b",
+    re.IGNORECASE,
+)
 
 def goal_should_force_deep(goal: str, history: Optional[List[Any]] = None) -> bool:
     """
@@ -104,6 +128,10 @@ def goal_should_force_deep(goal: str, history: Optional[List[Any]] = None) -> bo
     if _AUDIT_VI_RE.search(g):
         return True
     if _ERROR_VI_RE.search(g) and _CODE_CONTEXT_RE.search(g):
+        return True
+
+    # Knowledge queries (definition, explanation, comparison) → DEEP for search
+    if _KNOWLEDGE_QUERY_RE.search(g):
         return True
 
     prior = _last_user_text(history)
@@ -142,15 +170,71 @@ def should_use_deep_pipeline_full(goal: str, kwargs: Optional[dict] = None) -> b
     return False
 
 
+# Danh sách các skill chạy ở chế độ DEEP bắt buộc
+_DEEP_SKILLS = {
+    "skill_self_healing",
+    "skill_dongbotrithuc",
+    "skill_strategic_recon",
+    "skill_host_control",
+    "skill_quantrihethong",
+    "skill_autonomous_researcher",
+    "skill_code_audit_elite",
+}
+
+
 def effective_ingress_mode(goal: str, requested_mode: str, history=None) -> str:
-    """Nâng fast/auto → deep khi phát hiện báo lỗi."""
+    """Nâng fast/auto → deep khi phát hiện báo lỗi (Ngoại trừ tác vụ LOOKUP)."""
     mode = (requested_mode or "fast").strip().lower()
+    
+    # 🧠 [ZAP-v4-ROUTING-GATE]: Kiểm tra nếu kích hoạt các skill bắt buộc chạy DEEP
+    try:
+        # 1. Check deck references (ví dụ: #1002)
+        from core.utils.skill_deck_index import SkillDeckIndex
+        deck = SkillDeckIndex.get()
+        deck.ensure_loaded()
+        deck_entries = deck.resolve_all_in_text(goal)
+        if any(e.registry_id in _DEEP_SKILLS for e in deck_entries if e.registry_id):
+            return "deep"
+            
+        # 2. Check semantic matches (ví dụ: "hội đồng chuyên gia")
+        from core.utils.semantic_skill_matcher import SemanticSkillMatcher
+        matcher = SemanticSkillMatcher.get()
+        matches = matcher.match(goal, top_k=2, min_score=0.40)
+        if matches and matches[0].skill_id in _DEEP_SKILLS:
+            return "deep"
+    except Exception:
+        pass
+
+    # 🧠 [ZAP-v3-ROUTING-GATE]: Tuyệt đối không ép DEEP đối với tác vụ LOOKUP
+    try:
+        from prompt_assembler import ZenithPromptAssembler
+        if ZenithPromptAssembler.classify_task(goal) == "LOOKUP":
+            return "fast"
+    except Exception:
+        pass
+
     if mode in ("deep", "deliberative"):
         return "deep"
-    if mode == "fast" and goal_should_force_deep(goal, history):
-        return "deep"
-    if mode == "auto" and goal_should_force_deep(goal, history):
-        return "deep"
-    if mode == "fast" and goal_should_force_deep_for_analysis(goal):
-        return "deep"
+    if mode == "fast":
+        return "fast"
+    if mode == "auto":
+        if goal_should_force_deep(goal, history) or goal_should_force_deep_for_analysis(goal):
+            return "deep"
     return mode
+
+
+def get_deep_routing_label(goal: str, history: Optional[List[Any]] = None) -> str:
+    """Trả về mô tả định tuyến chi tiết, tránh log nhầm 'lỗi/debug' cho câu hỏi tri thức."""
+    g = (goal or "").strip()
+    if _ERROR_TRACE_RE.search(g) or _HTTP_ERROR_RE.search(g):
+        return "DEEP — xử lý sự cố / stack trace."
+    if _ERROR_VI_RE.search(g):
+        return "DEEP — khắc phục lỗi hệ thống."
+    if _AUDIT_VI_RE.search(g):
+        return "DEEP — rà soát và tối ưu."
+    if _KNOWLEDGE_QUERY_RE.search(g):
+        return "DEEP — tra cứu tri thức chuyên sâu."
+    prior = _last_user_text(history)
+    if prior and (_ERROR_TRACE_RE.search(prior) or _ERROR_VI_RE.search(prior)):
+        return "DEEP — theo dõi sửa lỗi tiếp diễn."
+    return "DEEP — tự động định tuyến."

@@ -1,0 +1,52 @@
+{
+  "id": "SKILL_DATA_45_RECOMMEND",
+  "name": "Zenith AI Recommendation Engine",
+  "version": "1.0.0",
+  "description": "Personalization core: Provides tailored suggestions and content recommendations based on user behavior, preferences, and historical interaction patterns.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "hệ thống gợi ý",
+    "ai recommendation",
+    "gợi ý nội dung",
+    "personalization engine",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "dung",
+    "nguoi",
+    "thong",
+    "master",
+    "tinh",
+    "viec",
+    "nghiem",
+    "nhan",
+    "xuat",
+    "hanh",
+    "data",
+    "du lieu",
+    "phan tich du lieu",
+    "ml",
+    "machine learning"
+  ],
+  "domain": "DATA_SCIENCE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string",
+          "description": "ID of the user to get recommendations for."
+        },
+        "context": {
+          "type": "object",
+          "description": "Current context for recommendation."
+        }
+      },
+      "required": [
+        "user_id"
+      ]
+    }
+  }
+}

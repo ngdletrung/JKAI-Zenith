@@ -21,6 +21,12 @@ VALID_MODES = {"fast", "deep", "agentic", "auto"}
 
 app = FastAPI(title="JKAI ZENITH SINGULARITY v1.0 Elite (since 01/05/2026)", version="v1.0")
 
+try:
+    from core.utils.health import health_router
+    app.include_router(health_router)
+except Exception as _h_err:
+    pass
+
 # Global instances
 router = ServiceRouter()
 hitl = HITLManager(None)
@@ -42,8 +48,9 @@ async def startup():
     from pulse import start_pulse
     asyncio.create_task(start_pulse())
     
-    from monologue import start_monologue_loop
-    asyncio.create_task(start_monologue_loop())
+    # 🧠 [ZIM-DISABLED]: Monologue loop disabled to conserve system resources and prevent spam.
+    # from monologue import start_monologue_loop
+    # asyncio.create_task(start_monologue_loop())
     
     # 🚀 [NEURAL WARMUP]: Activating resident neural clusters
     try:

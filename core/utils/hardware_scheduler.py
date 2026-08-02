@@ -149,6 +149,10 @@ class HardwareScheduler:
                 actual_size = r.get(f"model_vram_size:{model_name}")
                 final_model_size = float(actual_size) if actual_size else model_size_gb
 
+                # 🛡️ [MOE-SPLIT-CAP]: Tối ưu hóa tối đa card RX 6600 (8GB VRAM) — Ép 32 lớp Attention (~6.5GB VRAM) vào GPU ở chế độ FAST
+                if any(k in model_name.lower() for k in ["30b", "35b", "moe", "split"]):
+                    final_model_size = min(final_model_size, 6.5)
+
                 # 🧠 [CONTEXT-OVERHEAD]: 15% context buffer
                 needed_vram = final_model_size * 1.15 if not model_already_loaded else (final_model_size * 0.15)
                 
@@ -413,9 +417,69 @@ class HardwareScheduler:
     async def get_autonomous_fallback(self, role: str, failed_model: str) -> dict:
         return {}
 
+    async def calculate_optimal_concurrency(self, model_name: str, hardware_type: str, chunk_ctx: int) -> int:
+        """
+        🧮 [DYNAMIC-CONCURRENCY-SOLVER]:
+        Tự động tính toán số luồng song song (concurrency/batching) tối ưu dựa trên phần cứng thực tế.
+        """
+        import psutil
+        import os
+        
+        # 1. Ước lượng KV Cache cho mỗi slot (định dạng GB)
+        # Ta nhân thêm buffer nhận thức và an toàn 250MB (0.25GB) cho mỗi slot để dự phòng.
+        param_size = 4.0
+        if "7b" in model_name.lower() or "8b" in model_name.lower():
+            param_size = 8.0
+        elif "3b" in model_name.lower():
+            param_size = 3.0
+            
+        kv_cache_per_slot_gb = (param_size * chunk_ctx * 1.2e-7) + 0.25 # 250MB safety buffer per slot
+        
+        if "GPU" in hardware_type.upper():
+            gpu_host = os.getenv('OLLAMA_HOST', 'http://127.0.0.1:11434')
+            if "host.docker.internal" in gpu_host or "127.0.0.1" in gpu_host:
+                gpu_host = "http://127.0.0.1:11434"
+            
+            used_vram_gb = 0.0
+            try:
+                async with httpx.AsyncClient(timeout=3.0) as client:
+                    resp = await client.get(f"{gpu_host}/api/ps")
+                    if resp.status_code == 200:
+                        for m in resp.json().get("models", []):
+                            vram_bytes = m.get("size_vram", 0)
+                            used_vram_gb += vram_bytes / (1024**3)
+            except Exception:
+                used_vram_gb = 3.0 # Fallback giả định mô hình đã được nạp
+                
+            free_vram_gb = self.max_vram_gb - used_vram_gb
+            if free_vram_gb < 0.1:
+                free_vram_gb = 0.1
+                
+            gpu_slots = int(free_vram_gb / kv_cache_per_slot_gb)
+            optimal_concurrency = max(1, min(gpu_slots, 4)) # Tối đa 4 luồng trên RX 6600
+            logger.info(f"🧮 [DYNAMIC-CONCURRENCY] GPU Target: free_vram={free_vram_gb:.2f}GB, slot_size={kv_cache_per_slot_gb:.3f}GB -> Concurrency={optimal_concurrency}")
+            return optimal_concurrency
+            
+        else:
+            try:
+                available_ram_gb = psutil.virtual_memory().available / (1024**3)
+            except Exception:
+                available_ram_gb = 16.0
+                
+            usable_ram_gb = available_ram_gb - 8.0 # Chừa lại 8GB cho OS
+            if usable_ram_gb < 1.0:
+                usable_ram_gb = 1.0
+                
+            model_size_gb = param_size * 0.7
+            cpu_slots = int((usable_ram_gb - model_size_gb) / kv_cache_per_slot_gb)
+            optimal_concurrency = max(1, min(cpu_slots, 2)) # Tối đa 2 luồng trên CPU
+            logger.info(f"🧮 [DYNAMIC-CONCURRENCY] CPU Target: free_ram={available_ram_gb:.2f}GB, slot_size={kv_cache_per_slot_gb:.3f}GB -> Concurrency={optimal_concurrency}")
+            return optimal_concurrency
+
     def apply_cpu_affinity(self):
         """🚀 [QUANTUM-LEAP]: Giao thức Xeon Affinity."""
         pass
 
 # Singleton
 hardware_scheduler = HardwareScheduler()
+

@@ -1,0 +1,35 @@
+{
+    "id": "REPO_SURGEON",
+    "name": "Repo Surgeon",
+    "name_vn": "Vá mã nguồn an toàn",
+    "description": "Apply code edits (patches) to files in the repository. Validates Python syntax (AST) and runs tests automatically to ensure safety.",
+    "domain": "CORE",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "patches": {
+                "type": "array",
+                "description": "List of patch dicts, each containing 'path' (relative file path) and 'content' (new file content).",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "path": {
+                            "type": "string",
+                            "description": "Relative file path from workspace root."
+                        },
+                        "content": {
+                            "type": "string",
+                            "description": "The new contents of the file."
+                        }
+                    },
+                    "required": ["path", "content"]
+                }
+            },
+            "dry_run": {
+                "type": "boolean",
+                "description": "If true, only runs syntax checks and writes to sandbox without modifying production files. Default is false."
+            }
+        },
+        "required": ["patches"]
+    }
+}

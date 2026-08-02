@@ -1,0 +1,30 @@
+{
+  "id": "NEURAL_LINT_GUARD",
+  "name": "Neural Lint Guard",
+  "version": "1.0.0",
+  "description": "Skill Neural Lint Guard - Domain CORE",
+  "author": "JKAI Zenith",
+  "domain": "CORE",
+  "triggers": [
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly",
+    "phan tich",
+    "tim kiem",
+    "search"
+  ],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Input query or task description"
+      }
+    },
+    "required": [
+      "query"
+    ]
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/BROWSER_VISION_OPS/manifest.json - Role: Z-SOS Manifest for Hybrid Browser Vision & Diagnostics - Ownership: Mr LeeTrung - Status: Active | Version: SDS v2.5 (Hybrid Elite) ",
+  "id": "duyet_browse_zenith",
+  "name": "Zenith Browse (Duyệt Zenith)",
+  "version": "2.5.0",
+  "description": "Hybrid Browser Intelligence: Merges autonomous human-like visual interaction with deep-level Chrome DevTools diagnostics (Network, Console, Performance).",
+  "author": "JKAI-Zenith",
+  "triggers": [
+    "quan sát web",
+    "duyệt web",
+    "browser vision",
+    "thiên nhãn",
+    "debug trình duyệt",
+    "inspect network",
+    "kiểm tra hiệu năng web",
+    "browser audit",
+    "overview",
+    "dual lenses architecture  kien truc nhan quan kep",
+    "lang kinh 1  human visual essence  tinh hoa thi giac",
+    "lang kinh 2  quantum x ray  thau kinh x ray",
+    "operational protocol  giao thuc van hanh lai",
+    "thay",
+    "hanh",
+    "giao",
+    "giai",
+    "zenith",
+    "sovereign",
+    "hybrid",
+    "giac",
+    "chan",
+    "quan",
+    "skill",
+    "agent"
+  ],
+  "domain": "CORE",
+  "config": {
+    "modes": {
+      "standard": "ai-browser-use",
+      "advanced": "chrome-devtools-mcp"
+    },
+    "auto_diagnostics": true,
+    "screenshot_enabled": true
+  },
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "objective": {
+          "type": "string",
+          "description": "Goal for the browser operation."
+        },
+        "url": {
+          "type": "string",
+          "description": "Target URL."
+        },
+        "use_xray": {
+          "type": "boolean",
+          "default": false,
+          "description": "Enable Advanced DevTools Diagnostics (Network/Console/Perf)."
+        }
+      },
+      "required": [
+        "objective"
+      ]
+    }
+  }
+}

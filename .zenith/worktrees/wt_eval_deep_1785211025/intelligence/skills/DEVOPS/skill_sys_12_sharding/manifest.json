@@ -1,0 +1,49 @@
+{
+  "id": "SKILL_SYS_12_SHARDING",
+  "name": "Zenith Data Sharding Engine",
+  "version": "1.0.0",
+  "description": "Distributed data core: Implements horizontal partitioning for large-scale databases to ensure high performance and sub-second query latency.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "phân mảnh dữ liệu",
+    "data sharding",
+    "tối ưu hóa database lớn",
+    "horizontal partitioning",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "lieu",
+    "phan",
+    "shard",
+    "nang",
+    "khong",
+    "bang",
+    "cach",
+    "nhieu",
+    "server",
+    "master",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "db_name": {
+          "type": "string",
+          "description": "Database to shard."
+        },
+        "shard_key": {
+          "type": "string",
+          "description": "The key used for partitioning."
+        }
+      }
+    }
+  }
+}

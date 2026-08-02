@@ -83,7 +83,7 @@ try {
     # Note: IFEO setting for PerfOptions is only read from HKEY_LOCAL_MACHINE (HKLM).
     $ifeoPath = "HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Image File Execution Options"
     try {
-        foreach ($exe in @("ollama.exe", "ollama_llama_server.exe")) {
+        foreach ($exe in @("ollama.exe", "ollama_llama_server.exe", "llama-server.exe")) {
             $exePath = "$ifeoPath\$exe"
             $perfPath = "$exePath\PerfOptions"
             if (-not (Test-Path $exePath)) { New-Item -Path $ifeoPath -Name $exe -Force -ErrorAction Stop | Out-Null }
@@ -111,8 +111,8 @@ try {
         Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue
     }
 
-    # Kill tat ca tien trinh Ollama
-    Get-Process "ollama*" -ErrorAction SilentlyContinue | Stop-Process -Force
+    # Kill tat ca tien trinh Ollama va llama-server
+    Get-Process "ollama*", "llama-server*" -ErrorAction SilentlyContinue | Stop-Process -Force
     Start-Sleep -Seconds 3
 
     $portCheckGPU = Get-NetTCPConnection -LocalPort 11434 -ErrorAction SilentlyContinue
@@ -139,6 +139,12 @@ try {
     if ($ollamaGpu) { try { $ollamaGpu.PriorityClass = "BelowNormal" } catch {} }
 
     # --- DONG CO 2: CPU RAM ENGINE ---
+    # Xoa GPU-specific vars de tranh leak sang CPU engine
+    foreach ($k in $gpuEnv.Keys) {
+        if (-not $cpuEnv.ContainsKey($k)) {
+            Remove-Item -Path "Env:$k" -ErrorAction SilentlyContinue
+        }
+    }
     # Reset env cho CPU engine (QUAN TRONG: phai set lai truoc Start-Process thu 2)
     $env:OLLAMA_HOST             = $OLLAMA_CPU_HOST
     $env:GGML_VK_VISIBLE_DEVICES = ""      # CPU engine khong dung Vulkan
@@ -212,7 +218,7 @@ try {
                     $gpu = if ($H_GPU -ge 0 -and $parts[$H_GPU] -match '\d+') { [int]$matches[0] } else { 0 }
                     $ctx = if ($H_CTX -ge 0 -and $parts[$H_CTX] -match '\d+') { [int]$matches[0] } else { 4096 }
                     $temp = if ($H_Temp -ge 0 -and $parts[$H_Temp] -match '[\d.]+') { [float]$matches[0] } else { 0.7 }
-                    $ka = if ($H_KA -ge 0 -and $parts[$H_KA] -match '^-1') { -1 } else { $parts[$H_KA] }
+                    $ka = if ($H_KA -ge 0 -and $parts[$H_KA] -match '^-1') { -1 } else { $raw = $parts[$H_KA]; if ($raw -match '^\d+$') { [int]$raw } else { $raw } }
                     $thread = if ($H_Thread -ge 0 -and $parts[$H_Thread] -match '\d+') { [int]$matches[0] } else { 0 }
 
                     if ($H_Role -ge 0 -and -not $missions.ContainsKey($mName)) { 
@@ -293,6 +299,8 @@ try {
         if (-not $name) { continue }
         $m = $missions[$name]
         $role = $m.role
+        # [ON-DEMAND-SKIP]: keep_alive=0 = on-demand, ko pre-load, de tranh load roi unload ngay
+        if ($m.ka -eq 0) { Write-KuteLog "   BO QUA $role ($name): keep_alive=0 (on-demand)." "PROCESS"; continue }
         $gpuInfo = if ($m.gpu -gt 0) { "GPU ($($m.gpu) layers)" } else { "CPU" }
         Write-KuteLog "Dang load model $role ($name) -> $gpuInfo..." "PROCESS"
         
@@ -307,44 +315,63 @@ try {
         if ($null -ne $m.thread -and $m.thread -gt 0) { $opts.Add("num_thread", [int]$m.thread) }
         if ($null -ne $m.temp) { $opts.Add("temperature", [float]$m.temp) }
 
-        # [TRIET DE WARMUP/LOAD]: 
-        # - Voi model LLM/Vision/Thinking: Khong truyen prompt de kich hoat che do load model tinh cua Ollama (done_reason: load).
-        #   Khong sinh bat ky token nao, loai bo 100% loi sinh chu dai hoac lap tu gay timeout.
-        # - Voi model Embed: Truyen prompt mac dinh "warmup" vi api/embeddings bat buoc co prompt.
+        # [LOAD & KEEP]: Load model voi prompt toi thieu de Ollama allocate VRAM + KV cache
+        # Ollama can prompt de chay allocate context. Khong truyen prompt = model co the bi bo qua.
+        # Prompt "." la toi thieu, sinh 1 token, dam bao model duoc giu trong VRAM.
         $body = @{ model = $name; options = $opts; keep_alive = $m.ka }
         if ($isEmbed) {
             $body.Add("prompt", "warmup") | Out-Null
+        } else {
+            $body.Add("prompt", ".") | Out-Null
         }
 
         $jsonBody = $body | ConvertTo-Json -Compress
         try {
-            # TimeoutSec 120: du de nap file model tu o cung vao RAM/VRAM
             $resp = Invoke-RestMethod -Uri $targetApi -Method Post -Body $jsonBody -ContentType "application/json" -TimeoutSec 120
             Write-KuteLog "   >> $role ($name) KICH HOAT THANH CONG !" "SUCCESS"
         }
         catch {
             Write-KuteLog "   XX Loi khi trieu hoi $role ($name): $($_.Exception.Message)" "ERROR"
         }
-        # [NO SLEEP]: /api/generate da block den khi load xong, khong can Sleep them
+        # Delay giua cac GPU model de Ollama can bang VRAM
+        if ($m.hw -match "GPU") { Start-Sleep -Seconds 2 }
     }
 
     # 5. KICH HOAT DOCKER ENGINE
-    if (Test-Path $DOCKER_EXE) {
-        Write-KuteLog "Khoi chay Docker Engine cho cac dac vu Docker..." "PROCESS"
-        Start-Process $DOCKER_EXE
-        
-        $dockerRetry = 0
-        while ($dockerRetry -lt 24) {
+    if (Get-Command docker -ErrorAction SilentlyContinue) {
+        $dockerRunning = $false
+        try {
             & docker info > $null 2>&1
-            if ($LASTEXITCODE -eq 0) {
-                Write-KuteLog "Docker Engine da SAN SANG!" "SUCCESS"
-                break
+            if ($LASTEXITCODE -eq 0) { $dockerRunning = $true }
+        } catch {}
+
+        if (-not $dockerRunning) {
+            if (Test-Path $DOCKER_EXE) {
+                Write-KuteLog "Khoi chay Docker Engine cho cac dac vu Docker..." "PROCESS"
+                Start-Process $DOCKER_EXE
+                
+                $dockerRetry = 0
+                while ($dockerRetry -lt 24) {
+                    & docker info > $null 2>&1
+                    if ($LASTEXITCODE -eq 0) {
+                        $dockerRunning = $true
+                        Write-KuteLog "Docker Engine da SAN SANG!" "SUCCESS"
+                        break
+                    }
+                    Start-Sleep -Seconds 5
+                    $dockerRetry++
+                }
+            } else {
+                Write-KuteLog "Docker daemon chua chay va khong tim thay Docker Desktop tai $DOCKER_EXE" "WARNING"
             }
-            Start-Sleep -Seconds 5
-            $dockerRetry++
+        } else {
+            Write-KuteLog "Docker Engine dang hoat dong." "SUCCESS"
         }
+
         Write-KuteLog "Kich hoat toan bo He sinh thai (docker compose up -d)..." "PROCESS"
         & docker compose -f docker-compose.yml up -d --remove-orphans
+    } else {
+        Write-KuteLog "Khong tim thay lenh docker tren he thong!" "ERROR"
     }
     
     # 5.5 SOVEREIGN HEALTH AUDIT (KIEM TOAN NO-RON)
@@ -364,15 +391,27 @@ try {
         $m = $missions[$name]
         $role = $m.role
         $isGpuTarget = $m.gpu -gt 0
+        
+        # [ON-DEMAND-STATUS]: keep_alive=0 = on-demand, MISSING la binh thuong
+        if ($m.ka -eq 0) {
+            $status = "ON-DEMAND (skip pre-load)"
+            $color = "Gray"
+            Write-Host "[$role] $name : $status" -ForegroundColor $color
+            continue
+        }
+        
         $status = "MISSING"
         $color = "Red"
         
         if ($isGpuTarget) {
             if ($loadedGpuModels -contains $name) {
-                # Kiem tra xem co bi day xuong CPU cua Engine GPU khong (Ollama se bao 0% GPU neu VRAM tran)
                 $modelInfo = $gpuReality.models | Where-Object { $_.name -eq $name }
-                $actualGpu = $modelInfo.size_details.gpu_layers
+                $actualGpu = if ($null -ne $modelInfo.size_details -and $null -ne $modelInfo.size_details.gpu_layers) { $modelInfo.size_details.gpu_layers } else { -1 }
                 if ($actualGpu -gt 0) {
+                    $status = "ONLINE (GPU)"
+                    $color = "Green"
+                } elseif ($actualGpu -eq -1 -and $modelInfo.size_vram -gt 0) {
+                    # Ollama API thieu size_details.gpu_layers, check size_vram > 0 = dang dung VRAM
                     $status = "ONLINE (GPU)"
                     $color = "Green"
                 } else {
@@ -414,22 +453,67 @@ try {
     } catch {}
 
     # Chuyen tat ca cac tien trinh hien co ve BelowNormal thieu Master
-    Get-Process "ollama*" -ErrorAction SilentlyContinue | ForEach-Object {
+    Get-Process "ollama*", "llama-server*" -ErrorAction SilentlyContinue | ForEach-Object {
         try { $_.PriorityClass = "BelowNormal" } catch {}
     }
 
     $WatcherScript = {
+        $logPath = "D:\Docker\JKAI\intelligence\protocols\guardian_logs.txt"
+        $deadlockCounterGpu = 0
+        $deadlockCounterCpu = 0
+
         while ($true) {
-            Get-Process "ollama*" -ErrorAction SilentlyContinue | Where-Object { $_.PriorityClass -ne "BelowNormal" -and $_.PriorityClass -ne "Idle" } | ForEach-Object {
+            # 1. Tối ưu ưu tiên tiến trình CPU về BelowNormal
+            Get-Process "ollama*", "llama-server*" -ErrorAction SilentlyContinue | Where-Object { $_.PriorityClass -ne "BelowNormal" -and $_.PriorityClass -ne "Idle" } | ForEach-Object {
                 try { $_.PriorityClass = "BelowNormal" } catch {}
             }
+
+            # 2. Giao thức Tự Phục Hồi Ngoại Vi (Sovereign Watchdog Resurrection Protocol)
+            try {
+                $gpuCheck = Invoke-WebRequest -Uri "http://127.0.0.1:11434/api/tags" -Method Head -TimeoutSec 5 -UseBasicParsing -ErrorAction SilentlyContinue
+                if ($null -ne $gpuCheck -and $gpuCheck.StatusCode -eq 200) { $deadlockCounterGpu = 0 } else { $deadlockCounterGpu += 2 }
+            } catch { $deadlockCounterGpu += 2 }
+
+            try {
+                $cpuCheck = Invoke-WebRequest -Uri "http://127.0.0.1:11435/api/tags" -Method Head -TimeoutSec 5 -UseBasicParsing -ErrorAction SilentlyContinue
+                if ($null -ne $cpuCheck -and $cpuCheck.StatusCode -eq 200) { $deadlockCounterCpu = 0 } else { $deadlockCounterCpu += 2 }
+            } catch { $deadlockCounterCpu += 2 }
+
+            # Ngắt và khôi phục khi phát hiện tiến trình kẹt (Deadlock > 120s)
+            if ($deadlockCounterGpu -ge 120 -or $deadlockCounterCpu -ge 120) {
+                $time = Get-Date -Format "HH:mm:ss"
+                "[$time] !! [RESURRECTION PROTOCOL] Phat hien treo cong Ollama (>120s). Kich hoat tu dong phuc hoi tai nguyen..." | Out-File -FilePath $logPath -Append -Encoding utf8
+                
+                # Khởi tạo chu kỳ giải phẫu và giải phóng luồng kẹt
+                Get-Process "ollama*", "llama-server*" -ErrorAction SilentlyContinue | Stop-Process -Force -ErrorAction SilentlyContinue
+                Start-Sleep -Seconds 3
+                
+                # Khôi phục trạng thái
+                $deadlockCounterGpu = 0
+                $deadlockCounterCpu = 0
+                "[$time] >> [RESURRECTION SUCCESS] Da giua phong VRAM/RAM tren Xeon & RX 6600. Trạng thái sẵn sàng khởi nạp lại." | Out-File -FilePath $logPath -Append -Encoding utf8
+            }
+
             Start-Sleep -Seconds 2
         }
     }
     Start-Process powershell -WindowStyle Hidden -ArgumentList "-NoProfile -Command & { $($WatcherScript.ToString()) }" -ErrorAction SilentlyContinue
-    Write-KuteLog "Bo theo doi Do uu tien chu dong da hoat dong ngam thanh cong." "SUCCESS"
+    Write-KuteLog "Bo theo doi Do uu tien va Giao thuc Tu phuc hoi Ngoai vi da hoat dong ngam thanh cong." "SUCCESS"
 
-    Write-KuteLog "Kich hoat Cam bien Nhip tim (Hardware Telemetry)..." "PROCESS"
+    # --- KICH HOAT HOST BRIDGE (TELEMETRY / DESKTOP ACCESS) ---
+    $HostBridgePath = "D:\Docker\JKAI\scripts\host_bridge.py"
+    if (Test-Path $HostBridgePath) {
+        Write-KuteLog "Kich hoat Cam bien Nhip tim (Hardware Telemetry)..." "PROCESS"
+        try {
+            Get-CimInstance Win32_Process -Filter "Name = 'python.exe'" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -match "host_bridge\.py" } | ForEach-Object {
+                Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue
+            }
+        } catch {}
+        Start-Process python -ArgumentList "`"$HostBridgePath`"" -WindowStyle Hidden -ErrorAction SilentlyContinue
+        Write-KuteLog "Host Bridge Telemetry da duoc khoi chay ngam tren port 9997." "SUCCESS"
+    } else {
+        Write-KuteLog "Khong tim thay script host_bridge.py tai $HostBridgePath" "WARNING"
+    }
     
     Write-Host "`n[OK] DA HOAN TAT QUY TRINH. HE THONG DA ON DINH." -ForegroundColor Green
     Start-Sleep -Seconds 10

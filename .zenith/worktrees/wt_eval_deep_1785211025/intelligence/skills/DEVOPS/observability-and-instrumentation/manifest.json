@@ -1,0 +1,47 @@
+{
+  "id": "OBSERVABILITY_AND_INSTRUMENTATION",
+  "name": "Observability And Instrumentation",
+  "version": "1.0.0",
+  "description": "Instruments structural logs and latency metrics for runtime monitoring.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "giám sát hiệu năng",
+    "observability",
+    "structured logging",
+    "overview",
+    "when to use",
+    "process",
+    "1  define  working  before instrumenting",
+    "2  pick the right signal for each question",
+    "every",
+    "code",
+    "provider",
+    "error",
+    "what",
+    "skill",
+    "instrumentation",
+    "telemetry",
+    "feature",
+    "payment",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "target": {
+          "type": "string",
+          "description": "Target file or class to instrument."
+        }
+      },
+      "required": [
+        "target"
+      ]
+    }
+  }
+}

@@ -128,6 +128,26 @@ class ProjectAgentLoop:
                 if rel.startswith("/workspace/"):
                     rel = rel[len("/workspace/") :]
                 emit_file_edit(rel, old_text, new_text, task_id=task_id, open_tab=True)
+
+                # Tự động kiểm chứng cú pháp Python nếu file bị sửa đổi kết thúc bằng .py
+                if safe_path.endswith(".py"):
+                    import subprocess
+                    try:
+                        res = subprocess.run(
+                            ["python", "-m", "py_compile", safe_path],
+                            capture_output=True,
+                            text=True,
+                            timeout=5
+                        )
+                        if res.returncode != 0:
+                            compile_err = res.stderr.strip() or res.stdout.strip()
+                            out_str += (
+                                f"\n\n🚨 [COMPILE-WARNING]: Tệp tin python vừa lưu bị lỗi cú pháp và không thể biên dịch thành công!\n"
+                                f"Chi tiết lỗi:\n{compile_err}\n"
+                                f"Vui lòng sử dụng lại tool để sửa lỗi cú pháp này trước khi thực hiện bước tiếp theo."
+                            )
+                    except Exception as compile_ex:
+                        logger.warning("Failed to auto compile-check: %s", compile_ex)
         return out_str
 
     def _system_prompt(self, goal: str) -> str:
@@ -148,8 +168,11 @@ class ProjectAgentLoop:
             f"3. Tools: {tools}\n"
             f"4. Luồng: list_dir → view_file / grep_search → run_command (python, pytest…) → "
             f"{'sửa → chạy lại' if self.mode == 'fix' else 'báo lỗi chi tiết'}.\n"
-            f"5. Khi xong, đặt final_answer (tiếng Việt, có file/dòng/lệnh đã chạy); tool=null.\n"
+            f"5. Chỉ được phép đặt final_answer khi và chỉ khi đã gọi view_file ít nhất một lần để đọc nội dung tệp tin cụ thể (như .env, requirements.txt, hoặc tệp Python chính). TUYỆT ĐỐI không được kết thúc và báo cáo khi chưa thực sự đọc nội dung tệp tin.\n"
             f"6. Chỉ thao tác TRONG `{self.base}` — không ra ngoài gốc JKAI.\n"
+            f"7. Quy chế Tự Hoài Nghi (Doubt-Driven Reasoning): Trong mỗi trường 'thought' của JSON, hãy tự chất vấn bản thân: (a) Ta có đang đưa ra giả định chưa được chứng minh bằng việc đọc file không? (b) Nếu chạy lệnh này, khả năng gặp lỗi cú pháp là gì? Ghi lại phản biện này trước khi chọn tool.\n"
+            f"8. Trực quan hóa Checklist: Nếu bài toán có nhiều bước, hãy ghi tiến trình checklist của bạn (ví dụ: '[x] Bước 1, [/] Bước 2, [ ] Bước 3') ngay trong trường 'thought'.\n"
+            f"9. Zero Placeholders: Tuyệt đối không được viết mã nguồn nháp, code mẫu hoặc ghi chú dạng '// TODO' hay '...'. Phải viết code hoàn chỉnh, sẵn sàng biên dịch và chạy thử.\n"
         )
 
     @staticmethod
@@ -183,7 +206,7 @@ class ProjectAgentLoop:
         self._log(f"🎯 Cursor Agent — `{self.scope_rel}` ({self.mode})", task_id)
         messages: List[Dict[str, str]] = [
             {"role": "system", "content": self._system_prompt(goal)},
-            {"role": "user", "content": "Bắt đầu: list_dir thư mục project rồi tiếp tục."},
+            {"role": "user", "content": "Bắt đầu: Hãy gọi ngay công cụ list_dir với tham số path='.' để quét thư mục gốc của dự án rồi tiếp tục."},
         ]
 
         last_obs = ""
@@ -208,14 +231,38 @@ class ProjectAgentLoop:
             params = data.get("params") or {}
 
             if final:
+                # Giao thức TDD Kiểm chứng trước khi bàn giao:
+                if self.mode == "fix" and self.touched_files:
+                    self._log("🔬 Đang chạy kiểm thử tự động để xác minh chất lượng code...", task_id)
+                    try:
+                        from core.utils.post_patch_verify import verify_after_repair
+                        from core.utils.executor_cache import invalidate_all_executors_sync
+
+                        ok, vmsg = verify_after_repair(
+                            touched_rel_paths=self.touched_files,
+                            run_compileall=True,
+                            run_tests=True,
+                        )
+                        invalidate_all_executors_sync()
+                        if not ok:
+                            self._log("❌ Kiểm thử thất bại! Trả lỗi lại cho đặc vụ tự sửa.", task_id)
+                            messages.append({"role": "assistant", "content": json.dumps(data, ensure_ascii=False)})
+                            messages.append({
+                                "role": "user", 
+                                "content": f"[OBSERVATION]\n🚨 Lỗi kiểm thử xác minh (Verification Test Failed):\n{vmsg}\n\nMã nguồn bạn vừa viết không vượt qua được bài kiểm tra. Hãy tự sửa lại lỗi logic hoặc lỗi test này trước khi nộp bài."
+                            })
+                            continue
+                    except Exception as verify_err:
+                        self._log(f"⚠️ Kiểm thử xác minh lỗi hệ thống: {verify_err}", task_id)
+
                 self._log("✅ Hoàn tất", task_id)
                 return self._finalize(str(final), task_id)
 
             if not tool:
-                if thought and len(thought) > 80:
+                if thought and len(thought) > 80 and step > 1:
                     return self._finalize(thought, task_id)
                 messages.append(
-                    {"role": "user", "content": "Chọn tool hoặc trả final_answer JSON."}
+                    {"role": "user", "content": "Chọn tool (ví dụ: 'list_dir') hoặc trả final_answer JSON. Hãy thực thi công cụ thay vì chỉ trả về văn bản tự do."}
                 )
                 continue
 

@@ -46,7 +46,7 @@ class PatternMiner:
     MIN_EVIDENCE:      int   = 3
     MIN_AVG_CONFIDENCE: float = 0.75
     _STOPWORDS: frozenset[str] = frozenset({"và", "hoặc", "nhưng", "với", "của", "cho", "về", "từ", "trong", "ngoài", "trên", "dưới", "này", "đó", "thì", "là", "có", "được", "không", "tôi", "bạn", "anh", "chị", "the", "a", "an", "is", "are", "was", "were", "to", "of", "and", "or", "but", "in", "on", "at", "for", "with", "it", "this", "that", "i", "you", "he", "she", "we", "they"})
-    _TOKEN_RE = re.compile(r"[\w\u00C0-\u024F\u1E00-\u1EFF]+", re.UNICODE)
+    from core.utils.regex import TOKEN_RE as _TOKEN_RE
 
     def extract(self, verdict: LLMVerdict) -> list[tuple[str, str]]:
         words = self._TOKEN_RE.findall(verdict.normalized)

@@ -1,0 +1,49 @@
+{
+  "id": "SKILL_SYS_13_HA_SYNC",
+  "name": "Zenith High Availability Sync",
+  "version": "1.0.0",
+  "description": "Availability core: Ensures zero-downtime operations by synchronizing state and data across multiple redundant nodes.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "đồng bộ ha",
+    "high availability",
+    "đồng bộ dự phòng",
+    "zero downtime",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "trang",
+    "phong",
+    "master",
+    "khong",
+    "thai",
+    "thiet",
+    "nang",
+    "zenith",
+    "sync",
+    "thong",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "sync_mode": {
+          "type": "string",
+          "enum": [
+            "active-active",
+            "active-passive"
+          ],
+          "description": "HA synchronization mode."
+        }
+      }
+    }
+  }
+}

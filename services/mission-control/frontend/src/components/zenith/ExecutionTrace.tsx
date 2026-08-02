@@ -19,7 +19,7 @@ interface ThoughtTraceItemProps {
 
 const ThoughtTraceItem: React.FC<ThoughtTraceItemProps> = ({ item, isLatest, systemStatus }) => {
   const language = useZenithStore(s => s.language);
-  const [seconds, setSeconds] = useState(() => {
+  const [seconds, setSeconds] = useState<number>(() => {
     if ((item as any).duration) return (item as any).duration;
     const elapsed = Math.floor((Date.now() - item.ts) / 1000);
     return Math.max(0, elapsed);
@@ -30,7 +30,7 @@ const ThoughtTraceItem: React.FC<ThoughtTraceItemProps> = ({ item, isLatest, sys
   useEffect(() => {
     if (!isActive) return;
     const interval = setInterval(() => {
-      setSeconds(prev => prev + 1);
+      setSeconds((prev: number) => prev + 1);
     }, 1000);
     return () => clearInterval(interval);
   }, [isActive]);

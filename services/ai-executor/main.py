@@ -5,6 +5,12 @@ from fastapi import FastAPI, Request
 from executor import Executor
 
 app = FastAPI(title="JKAI Executor Service", version="31.0")
+
+try:
+    from core.utils.health import health_router
+    app.include_router(health_router)
+except Exception as _h_err:
+    pass
 executor = Executor()
 
 from core.utils.engine import engine

@@ -1,0 +1,13 @@
+{
+  "name": "explore_project",
+  "description": "Thấu Thị Dự Án: Quét toàn bộ cấu trúc thư mục để hiểu kiến trúc và các tệp tin chính.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "path": {
+        "type": "string",
+        "description": "Đường dẫn gốc cần quét (mặc định là root)."
+      }
+    }
+  }
+}

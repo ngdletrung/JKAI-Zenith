@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "jkai": {
+      "command": "D:\\Docker\\JKAI\\tools\\jkai-mcp\\.venv\\Scripts\\python.exe",
+      "args": ["D:\\Docker\\JKAI\\tools\\jkai-mcp\\server.py"],
+      "env": {
+        "JKAI_BRAIN_URL": "http://localhost:8001",
+        "JKAI_CONTROL_PLANE_URL": "http://localhost:7000",
+        "JKAI_MCP_TIMEOUT": "600"
+      }
+    }
+  }
+}

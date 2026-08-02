@@ -308,7 +308,7 @@ const FloatingSpeechBubble = React.forwardRef(({ seat, status, message, tag, sho
     >
       <div className="w-[18%] max-w-[22%] min-w-[160px] pointer-events-auto">
         <motion.div
-          key={`${id}-${displayMsg.slice(0, 12)}`} // Kích hoạt transition mượt khi nội dung log thay đổi
+          key={`speech-bubble-${id}`} // 🛡️ [ANTIGRAVITY SMOOTH STREAM]: Key cố định theo ID đặc vụ để luồng token streaming chảy liền mạch, không làm DOM re-mount hay nảy nhảy chữ!
           initial={{ opacity: 0, scale: 0.85, y: 8 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.85, y: 8 }}

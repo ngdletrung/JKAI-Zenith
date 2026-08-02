@@ -1,0 +1,60 @@
+Kế Hoạch Cải Tiến Định Tuyến Dispatcher & Nâng Cấp Bộ Máy Tìm Kiếm Nhận Thức OMNI_SEARCH_ENGINE
+Bản kế hoạch này mô tả các thay đổi cấu trúc nhằm sửa đổi lỗi định tuyến của hệ thống Dispatcher và nâng cấp sâu bộ máy tìm kiếm OMNI_SEARCH_ENGINE (logic.py) để chuyển hóa nó từ một Meta-Search thông thường thành một AI Operating Substrate thực thụ với khả năng tối ưu hóa truy vấn, phân đoạn nhận thức, tìm kiếm thực tế và tổng hợp đa bước có kiểm chứng sự thật.
+
+User Review Required
+IMPORTANT
+
+Sửa lỗi tính điểm Reflex Matcher: Khắc phục triệt để hành vi cộng điểm ưu tiên (Priority bonus) ngay cả khi không khớp bất kỳ từ khóa nào trong dispatcher.py, điều làm cho ý định GREETING luôn chiếm quyền kiểm soát hệ thống khi gặp các câu hỏi lạ hoặc tìm kiếm.
+Nâng cấp Reranker sang Semantic Thực thụ: Kích hoạt việc gọi mô hình nhúng (embed.get_embedding_async) song song để lấy vector nhúng cho tất cả các phân đoạn thông tin ứng viên thu thập được, cho phép so khớp Cosine độ tương đồng ngữ nghĩa thực thay vì Jaccard thô sơ.
+Cơ chế Cache TTL thông minh chống lỗi thông tin cũ: Áp dụng TTL động (12 giờ mặc định, 1 giờ cho các truy vấn nhạy cảm với thời gian như "trending", "giá vàng", "tuần này" hoặc bypass trực tiếp) để tránh tình trạng hệ thống phản hồi dữ liệu lịch sử lỗi thời.
+Đảo thứ tự Fallback an toàn: Đưa tiến trình duyệt web vật lý không đầu (_search_browse thông qua DuckDuckGo) lên trước và ưu tiên hơn _search_cloud_llm để triệt tiêu nguy cơ ảo tưởng (hallucination) khi hệ thống hoạt động ở chế độ ngoại tuyến (local DeepSeek-R1).
+Open Questions
+NOTE
+
+Không có câu hỏi mở cần làm rõ. Các lỗi định tuyến và các điểm nghẽn nhận thức đã được xác định cụ thể và có phương án xử lý tận gốc.
+
+Proposed Changes
+1. Phân Hệ Định Tuyến Cốt Lõi (Sovereign Dispatcher)
+Khắc phục lỗi tính điểm ưu tiên và tích hợp quy tắc phản xạ cho Kỹ năng Tìm kiếm Toàn cầu để cải thiện độ nhạy định tuyến.
+
+[MODIFY] 
+dispatcher.py
+Mục tiêu: Sửa lỗi tính điểm ưu tiên và thêm quy tắc phản xạ nhanh cho SEARCH_WEB_GLOBAL.
+Thay đổi:
+Tại _calculate_rule_score: Nếu danh sách matched_keywords rỗng, lập tức trả về (0, []) để không cộng dồn điểm ưu tiên một cách sai lầm.
+Trong SKILL_TRIGGER_MAP: Bổ sung luật kích hoạt phản xạ nhanh cho SEARCH_WEB_GLOBAL với ID "01-S" và các từ khóa liên quan như "tìm kiếm", "search", "google", "tra cứu", "tin tức", "trending github", "github trending" để đưa thẳng yêu cầu tìm kiếm sang luồng thực thi phản xạ nhanh (0.1 giây) bypass qua Planner.
+2. Bộ Máy Tìm Kiếm Nhận Thức (Omni Search Engine Core)
+Nâng cấp toàn diện bộ máy tìm kiếm nhận thức lên chuẩn cấu trúc vận hành thông minh cao cấp.
+
+[MODIFY] 
+logic.py
+Mục tiêu: Nâng cấp Reranker, BM25-lite, phân đoạn nguồn tin, cơ chế Cache TTL, Query Planning, và Đa bước tổng hợp nhận thức.
+Thay đổi:
+Tách phân đoạn ngữ nghĩa & mã nguồn (Semantic Chunking): Thay thế việc bóc tách dòng mới thô sơ bằng hàm chunk_content gom nhóm các khối Markdown và giữ nguyên vẹn khối mã nguồn (```), tránh bẻ gãy mã nguồn hay đoạn văn kỹ thuật.
+Tái xếp hạng ngữ nghĩa thực (True Semantic Reranking): Sử dụng asyncio.gather gọi song song embed.get_embedding_async cho tất cả các phân đoạn ứng viên để lấy vector nhúng, cho phép tính toán Cosine Similarity thực thụ thay vì dựa vào Jaccard.
+BM25-lite nâng cấp với IDF & Boosts:
+Khởi tạo bảng IDF động cho các từ khóa truy vấn dựa trên Tần suất phân bổ (Document Frequency - DF) của các ứng viên thu thập được.
+Bổ sung điểm cộng ưu tiên (Boosts) cho việc khớp chính xác cả cụm câu truy vấn (Phrase Match), phát hiện khối mã nguồn (Code block boost), và trùng khớp từ khóa trong địa chỉ URL.
+Hệ thống Cache TTL Động:
+Phân tích câu truy vấn xem có nhạy cảm thời gian hay không (chứa các từ như "tuần này", "trending", "mới nhất", "hôm nay", v.v.).
+Đặt TTL 12 giờ cho cache thường và 1 giờ cho các thông tin nhạy cảm thời gian, thực hiện kiểm tra so khớp timestamp của dữ liệu đĩa và Qdrant trước khi quyết định hit cache.
+Định vị & Tối ưu hóa truy vấn (Query Planning):
+Trước khi đưa từ khóa sang các bộ máy tìm kiếm, nếu truy vấn mang tính kỹ thuật hoặc hỏi thông tin quốc tế bằng tiếng Việt, tự động sử dụng LLM dịch/tối ưu hóa sang tiếng Anh (ví dụ: "trending github tuần này" -> "trending github this week") để đạt hiệu quả tìm kiếm tốt nhất.
+Thay đổi trình tự Fallback an toàn:
+Chuyển _search_browse (duyệt vật lý DuckDuckGo) lên làm Fallback 2 đứng trước _search_cloud_llm để đảm bảo hệ thống lấy được dữ liệu thời gian thực thay vì ảo tưởng thông qua LLM offline cục bộ.
+Đa bước tổng hợp nhận thức (Multi-pass Cognitive Synthesis):
+Thay thế cơ chế summarize 1 lần thô sơ bằng luồng 2 bước:
+Bước 1 (Drafting): Tạo bản thảo tổng hợp chi tiết từ các nguồn dữ liệu gốc đã lọc.
+Bước 2 (Critique & Refine): Chuyển bản thảo sang LLM cùng nguồn dữ liệu gốc để tự rà soát, phản biện, sửa lỗi ảo tưởng thông tin và đánh bóng ngôn từ tiếng Việt chuẩn Elite, gọn gàng, súc tích.
+Verification Plan
+Kiểm thử Phản xạ Định tuyến (Dispatcher Testing)
+Kiểm thử trực tiếp câu lệnh:
+Sử dụng kịch bản kiểm tra kích hoạt trực tiếp câu truy vấn: "hãy tìm cho tôi top 5 trending github tuần này ?"
+Xác nhận log Dispatcher không còn khớp vào GREETING với điểm 90 nữa mà sẽ kích hoạt SEARCH_WEB_GLOBAL thông qua Reflex Matcher hoặc chuyển về LLM planning để tìm kiếm trực tiếp.
+Kiểm thử Nhận thức Tìm kiếm (Omni Search Testing)
+Kiểm tra độ tươi mới (Freshness & TTL):
+Chạy thử truy vấn nhạy cảm thời gian, xác nhận cache cũ quá 1 giờ bị bỏ qua và kích hoạt live search thực tế.
+Kiểm tra độ chuẩn xác của Rerank:
+Theo dõi log để xác nhận điểm số semantic_score được tính bằng Cosine Similarity thực từ Vector nhúng, không còn là 0 hoặc Jaccard Fallback.
+Kiểm tra kết quả tổng hợp:
+Xác nhận câu trả lời cuối cùng là kết quả của tiến trình tổng hợp đa bước (Drafting + Critique), chứa thông tin thực tế mới nhất của tuần hiện tại thay vì thông tin cũ lưu trữ từ trước.

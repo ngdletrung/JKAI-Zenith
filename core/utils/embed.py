@@ -17,7 +17,7 @@ class Embedder:
         return cls._instance
 
     def _init_embedder(self):
-        self.ollama_url = os.getenv("OLLAMA_EMBED_URL", "http://host.docker.internal:11434/api/embeddings")
+        self.ollama_url = os.getenv("OLLAMA_EMBED_URL", "")
         self.timeout = int(os.getenv("EMBED_TIMEOUT", "30"))
         from core.config import settings
         self.rules_path = os.path.join(settings.INTELLIGENCE_DIR, "rule_hardware.md")
@@ -26,7 +26,7 @@ class Embedder:
         self._rules_last_mtime = 0
         self._embedding_cache = {}  # 🧠 [NEURAL-CACHE]: Lưu trữ vector để tránh tính toán trùng lặp
         self._max_cache_size = 1000
-        self._semaphore = asyncio.Semaphore(5)  # 🛡️ [CONCURRENCY-GUARD]: Giới hạn 5 luồng embedding song song
+        self._semaphore = asyncio.Semaphore(30)  # 🛡️ [CONCURRENCY-GUARD]: Giới hạn 30 luồng embedding song song thưa Master
         
     def _get_rules_from_file(self):
         """Elite Logic: Trích xuất thông tin từ rule_hardware.md thông qua ModelRouter."""
@@ -54,6 +54,17 @@ class Embedder:
             params["num_ctx"] = opts.get("num_ctx", 2048)
             params["num_gpu"] = opts.get("num_gpu", 0)
             params["num_thread"] = opts.get("num_thread", 0)
+
+            hw = (embed_cfg.get("hardware") or "").upper()
+            from core.utils.engine import engine
+            if "GPU" in hw:
+                self.ollama_url = engine.ollama_host_gpu + "/api/embeddings"
+            elif "CPU" in hw:
+                self.ollama_url = engine.ollama_host_cpu + "/api/embeddings"
+            else:
+                num_gpu = params.get("num_gpu", 0)
+                is_gpu = (num_gpu > 0) or (num_gpu == -1)
+                self.ollama_url = (engine.ollama_host_gpu if is_gpu else engine.ollama_host_cpu) + "/api/embeddings"
 
             self._rules_cache = params
             self._rules_last_mtime = mtime

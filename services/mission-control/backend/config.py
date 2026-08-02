@@ -13,7 +13,11 @@ class Config:
     QDRANT_URL = os.getenv('QDRANT_URL', 'http://qdrant:6333')
     
     # DB URLs
-    POSTGRES_URL = os.getenv('POSTGRES_URL', 'postgresql://n8n:Admin@123456@postgres:5432/n8n')
+    POSTGRES_USER = os.getenv('POSTGRES_USER', 'n8n')
+    POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD', '')
+    POSTGRES_DB = os.getenv('POSTGRES_DB', 'n8n')
+    POSTGRES_HOST = os.getenv('POSTGRES_HOST', 'postgres')
+    POSTGRES_URL = os.getenv('POSTGRES_URL', f'postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:5432/{POSTGRES_DB}')
     
     # Log Retention
     MAX_HISTORY_LOGS = 500

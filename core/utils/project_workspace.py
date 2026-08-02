@@ -15,6 +15,8 @@ import re
 from pathlib import Path
 from typing import Optional, Tuple
 
+from core.utils.regex import URL as _URL_RE, GIT_URL as _GIT_HOST_RE, PY_FILE as _PY_FILE_RE
+
 _BLOCK_FRAGMENTS = (
     ".env",
     "sovereign",
@@ -43,21 +45,10 @@ _ERROR_RE = re.compile(
     re.IGNORECASE,
 )
 
-_PY_FILE_RE = re.compile(
-    r"\b((?:[\w\-]+/)*[\w\-]+\.py)\b",
-    re.IGNORECASE,
-)
-
 _REL_PATH_RE = re.compile(
     r"\b((?:[\w\-]+)(?:/[\w\-]+)+)\b",
 )
 
-# URL — loại khỏi quét path (tránh github.com/org/repo → com/org/repo)
-_URL_RE = re.compile(r"https?://[^\s`\"'<>]+", re.IGNORECASE)
-_GIT_HOST_RE = re.compile(
-    r"https?://(?:www\.)?(?:github|gitlab|bitbucket)\.com/[\w\-\./]+",
-    re.IGNORECASE,
-)
 # Path giả từ hostname URL (com/org/repo, net/...)
 _URL_PATH_ARTIFACT_RE = re.compile(r"^(?:com|org|net|io|dev)/", re.IGNORECASE)
 
@@ -89,6 +80,20 @@ _FALSE_WORKSPACE_PATHS = frozenset(
         "readme",
         "readme.md",
     }
+)
+
+# Regex cho các path giả do tên model AI (Gemini/GPT-4o, Claude/3.5, ...)
+_AI_MODEL_PATH_RE = re.compile(
+    r"\b(Gemini|GPT|Claude|DeepSeek|Grok|Llama|Mistral|Qwen|"
+    r"gemini|gpt|claude|deepseek|grok|llama|mistral|qwen)"
+    r"/[\w\-]+",
+    re.IGNORECASE,
+)
+
+# Regex cho các path giả do đơn vị đo lường / thông số kỹ thuật (request/phút, lần/giây, ...)
+_METRIC_UNIT_PATH_RE = re.compile(
+    r"\b[\w\-]+/(phút|giây|ngày|tháng|năm|giờ|phut|giay|ngay|thang|nam|gio|lần|lan|giây|giay)\b",
+    re.IGNORECASE,
 )
 
 _READ_WEB_NOISE_RE = re.compile(
@@ -140,6 +145,10 @@ def is_allowed_workspace_rel(rel: str) -> bool:
     if low.endswith("/dossier") or low.endswith("/manifest") or low.endswith("/logic") or low.endswith("/skill"):
         return False
     if any(frag in low for frag in _BLOCK_FRAGMENTS):
+        return False
+    if _AI_MODEL_PATH_RE.search(rel):
+        return False
+    if _METRIC_UNIT_PATH_RE.search(rel):
         return False
     return True
 
@@ -201,14 +210,32 @@ def detect_workspace_target(text: str) -> Optional[str]:
         if is_allowed_workspace_rel(rel):
             return rel
 
-    # Đường dẫn tuyệt đối trỏ vào gốc JKAI
     low_t = t.lower()
+
+    # Đường dẫn tuyệt đối trỏ vào gốc JKAI từ environment variable WORKSPACE_ROOT
+    env_ws = os.getenv("WORKSPACE_ROOT")
+    if env_ws:
+        env_ws_posix = env_ws.replace("\\", "/").lower()
+        if env_ws_posix in low_t:
+            pos = low_t.find(env_ws_posix)
+            tail = t[pos + len(env_ws_posix) :].lstrip("/")
+            tail = re.split(r"[\s`\"',;]", tail)[0]
+            rel = normalize_workspace_rel(tail)
+            if rel == "":
+                return "."
+            if is_allowed_workspace_rel(rel):
+                return rel
+
+    # Đường dẫn tuyệt đối trỏ vào gốc JKAI
     low_ws = ws_posix.lower()
     if low_ws in low_t:
         pos = low_t.find(low_ws)
         tail = t[pos + len(ws_posix) :].lstrip("/")
         tail = re.split(r"[\s`\"',;]", tail)[0]
         rel = normalize_workspace_rel(tail)
+        # === SỬA: Cho phép scope root ===
+        if rel == "":
+            return "."
         if is_allowed_workspace_rel(rel):
             return rel
 
@@ -283,7 +310,7 @@ def enrich_goal_for_workspace_target(
         return goal, None, ""
 
     mode = workspace_task_mode(goal)
-    container_path = f"/workspace/{target}"
+    container_path = "/workspace" if target == "." else f"/workspace/{target}"
 
     if mode == "fix":
         directive = (
@@ -311,6 +338,9 @@ def enrich_goal_for_project_workspace(goal: str) -> Tuple[str, Optional[str], st
 
 def workspace_scope_exists(scope_rel: str) -> bool:
     """Thư mục scope có thật trên đĩa (tránh agent ảo web/README, com/org/repo)."""
+    # Cho phép scope "." là root workspace
+    if scope_rel == ".":
+        return get_jkai_workspace_root().is_dir()
     rel = normalize_workspace_rel(scope_rel or "")
     if not rel:
         return False

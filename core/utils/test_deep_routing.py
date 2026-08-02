@@ -16,7 +16,8 @@ def test_greeting_not_deep():
 
 
 def test_ingress_mode_upgrade():
-    assert effective_ingress_mode("lỗi executor no output", "fast") == "deep"
+    assert effective_ingress_mode("lỗi executor no output", "auto") == "deep" # Auto mode upgrades to deep
+    assert effective_ingress_mode("lỗi executor no output", "fast") == "fast" # Fast mode locked by Master on UI
     assert effective_ingress_mode("thời tiết hôm nay", "fast") == "fast"
 
 
@@ -26,7 +27,8 @@ def test_analysis_forces_deep():
 
 
 def test_analysis_ingress_upgrade():
-    assert effective_ingress_mode("báo cáo đánh giá kiến trúc", "fast") == "deep"
+    assert effective_ingress_mode("báo cáo đánh giá kiến trúc", "auto") == "deep" # Auto mode upgrades to deep
+    assert effective_ingress_mode("báo cáo đánh giá kiến trúc", "fast") == "fast" # Fast mode locked by Master on UI
 
 
 def test_scratch_project_forces_deep():

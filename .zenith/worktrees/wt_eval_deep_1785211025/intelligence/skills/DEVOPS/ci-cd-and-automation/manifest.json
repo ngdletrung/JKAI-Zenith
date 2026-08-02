@@ -1,0 +1,47 @@
+{
+  "id": "CI_CD_AND_AUTOMATION",
+  "name": "Ci Cd And Automation",
+  "version": "1.0.0",
+  "description": "Orchestrates automation pipelines and deployment sanity checks.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "tích hợp CI-CD",
+    "CI-CD pipeline",
+    "automation deployment",
+    "overview",
+    "when to use",
+    "the quality gate pipeline",
+    "github actions configuration",
+    "basic ci pipeline",
+    "name",
+    "build",
+    "test",
+    "secrets",
+    "tests",
+    "deployment",
+    "actions",
+    "lint",
+    "uses",
+    "rollback",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "env": {
+          "type": "string",
+          "description": "Environment name."
+        }
+      },
+      "required": [
+        "env"
+      ]
+    }
+  }
+}

@@ -132,11 +132,87 @@ class PluginManager:
             else:
                 return {"status": "error", "message": f"Plugin {plugin_id} logic.py has no execute() function."}
         except Exception as e:
-            logger.error(f"❌ Execution error in plugin {plugin_id}: {e}")
+            logger.error(f"Execution error in plugin {plugin_id}: {e}")
             return {"status": "error", "message": str(e)}
 
+    def match_and_load_skills(self, query: str, max_skills: int = 2) -> Dict[str, Any]:
+        """
+        Bộ nạp kỹ năng động (Dynamic Skill Loader):
+        Quét từ khóa trong yêu cầu (goal/query), đối chiếu với tên, mô tả, tags của các kỹ năng và SKILL.md.
+        Chỉ trả về các cẩm nang phù hợp nhất để tối ưu hóa token và VRAM cho Qwen3-30B trên RX6600.
+        """
+        query_words = set(w.lower() for w in query.split() if len(w) >= 3)
+        matched_skills = []
+        
+        # 1. Quét trong plugins đã load từ registry
+        for plugin_id, info in self.plugins.items():
+            manifest = info.get("manifest", {})
+            name = str(manifest.get("name", plugin_id)).lower()
+            desc = str(manifest.get("description", "")).lower()
+            tags = set(w.lower() for w in manifest.get("tags", []))
+            
+            score = 0
+            for qw in query_words:
+                if qw in name: score += 3
+                if qw in desc: score += 2
+                if qw in tags: score += 4
+            
+            if score > 0 or "core" in tags:
+                dossier_content = ""
+                if info.get("dossier_path"):
+                    try:
+                        dossier_content = Path(info["dossier_path"]).read_text(encoding="utf-8")
+                    except Exception:
+                        pass
+                matched_skills.append({
+                    "skill_id": plugin_id,
+                    "name": manifest.get("name", plugin_id),
+                    "score": score,
+                    "content": dossier_content or str(manifest.get("description", ""))
+                })
+        
+        # 2. Quét trực tiếp các file SKILL.md hoặc tệp cẩm nang trong skills_root
+        if os.path.exists(self.skills_root):
+            for root, _, files in os.walk(self.skills_root):
+                for f_name in files:
+                    if f_name.upper() in ("SKILL.MD", "DOSSIER.MD"):
+                        f_path = Path(root) / f_name
+                        skill_name = Path(root).name
+                        if any(s["skill_id"] == skill_name for s in matched_skills):
+                            continue
+                        try:
+                            text_preview = f_path.read_text(encoding="utf-8")[:1000].lower()
+                            score = 0
+                            for qw in query_words:
+                                if qw in skill_name.lower(): score += 4
+                                if qw in text_preview: score += 1
+                            if score > 0 or "general" in skill_name.lower() or "standard" in skill_name.lower():
+                                full_text = f_path.read_text(encoding="utf-8")
+                                matched_skills.append({
+                                    "skill_id": skill_name,
+                                    "name": skill_name,
+                                    "score": score,
+                                    "content": full_text[:3000] # Giả lập truncation an toàn cho RAM/KV cache
+                                })
+                        except Exception:
+                            pass
+
+        matched_skills.sort(key=lambda x: x["score"], reverse=True)
+        selected = matched_skills[:max_skills]
+        
+        summary_text = "\n\n".join([f"### [SKILL: {s['name']}]\n{s['content']}" for s in selected]) if selected else "Không có kỹ năng đặc biệt, áp dụng tri thức cốt lõi mặc định."
+        return {
+            "status": "success",
+            "count": len(selected),
+            "skills": [s["skill_id"] for s in selected],
+            "payload": summary_text
+        }
+
 # Singleton
+_AI_BRAIN_ROOT = os.path.dirname(os.path.abspath(__file__))
+_REPO_ROOT = os.path.dirname(os.path.dirname(_AI_BRAIN_ROOT))
 plugin_manager = PluginManager(
-    plugins_root="d:/Docker/JKAI/intelligence/skills/plugins",
-    registry_path="d:/Docker/JKAI/intelligence/kernel_registry.json"
+    plugins_root=os.getenv("JKAI_PLUGINS_ROOT", os.path.join(_REPO_ROOT, "intelligence", "skills", "plugins")),
+    registry_path=os.getenv("JKAI_KERNEL_REGISTRY", os.path.join(_REPO_ROOT, "intelligence", "kernel_registry.json"))
 )
+

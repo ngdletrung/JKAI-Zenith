@@ -1,0 +1,54 @@
+{
+  "id": "SKILL_DATA_48_GRAPH",
+  "name": "Zenith Graph Intelligence",
+  "version": "1.0.0",
+  "description": "Network connectivity core: Analyzes complex relationships and interconnected data using graph algorithms to detect communities, influencers, and hidden patterns.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "phân tích đồ thị",
+    "graph intelligence",
+    "phân tích mạng lưới",
+    "mối quan hệ dữ liệu",
+    "influence mapping",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "mang",
+    "luoi",
+    "quan",
+    "phan",
+    "giua",
+    "thuc",
+    "toan",
+    "lien",
+    "hoac",
+    "graph",
+    "data",
+    "du lieu",
+    "phan tich du lieu",
+    "ml",
+    "machine learning"
+  ],
+  "domain": "DATA_SCIENCE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "nodes_data": {
+          "type": "string",
+          "description": "Path to the nodes dataset."
+        },
+        "edges_data": {
+          "type": "string",
+          "description": "Path to the relationships dataset."
+        }
+      },
+      "required": [
+        "nodes_data",
+        "edges_data"
+      ]
+    }
+  }
+}

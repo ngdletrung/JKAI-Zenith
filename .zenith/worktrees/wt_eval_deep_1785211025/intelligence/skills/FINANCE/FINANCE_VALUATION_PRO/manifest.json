@@ -1,0 +1,47 @@
+{
+  "id": "FINANCE_VALUATION_PRO",
+  "name": "Finance Valuation Pro",
+  "version": "1.0.0",
+  "description": "name_vn: \"Định Giá Doanh Nghiệp Vĩ Mô\"",
+  "author": "JKAI Zenith",
+  "domain": "FINANCE",
+  "triggers": [
+    "tong quan",
+    "phac  o van hanh  operational protocol",
+    "phase 1  investigation  tham  inh",
+    "phase 2  action  thuc thi",
+    "sai lam thuong gap  common pitfalls",
+    "doanh",
+    "nghiep",
+    "chinh",
+    "symbol",
+    "fin_04_valuation",
+    "phan",
+    "tich",
+    "type",
+    "thuc",
+    "hinh",
+    "phase",
+    "dung",
+    "thuong",
+    "name_vn",
+    "version",
+    "tai chinh",
+    "dau tu",
+    "co phieu",
+    "chung khoan",
+    "dong tien"
+  ],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Input query or task description"
+      }
+    },
+    "required": [
+      "query"
+    ]
+  }
+}

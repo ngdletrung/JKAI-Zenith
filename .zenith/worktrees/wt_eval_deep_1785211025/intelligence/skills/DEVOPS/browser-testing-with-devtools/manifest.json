@@ -1,0 +1,47 @@
+{
+  "id": "BROWSER_TESTING_WITH_DEVTOOLS",
+  "name": "Browser Testing With Devtools",
+  "version": "1.0.0",
+  "description": "Interacts with Chrome DevTools to analyze performance and DOM layout errors.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "chẩn đoán trình duyệt",
+    "browser testing",
+    "devtools inspect",
+    "overview",
+    "when to use",
+    "setting up chrome devtools mcp",
+    "installation",
+    "available tools",
+    "check",
+    "browser",
+    "console",
+    "network",
+    "data",
+    "content",
+    "execution",
+    "javascript",
+    "code",
+    "user",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "url": {
+          "type": "string",
+          "description": "The URL to inspect."
+        }
+      },
+      "required": [
+        "url"
+      ]
+    }
+  }
+}

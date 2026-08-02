@@ -1,7 +1,26 @@
 {
-    "vram": 0,
-    "status": "SOVEREIGN_OPTIMAL",
-    "cpu": 50.9,
-    "ram": 18.1,
-    "ts": 1777789053
+    "cpu": 15,
+    "ram": 50,
+    "gpu": 18,
+    "status": "DEGRADED",
+    "health": {
+        "status": "DEGRADED",
+        "details": [
+            "📡 AI-Control-Plane: `Online` ✅",
+            "🧠 AI-Brain: `Online` ✅",
+            "🦾 AI-Executor-Alpha: `Offline` ❌",
+            "🦾 AI-Executor-Beta: `Online` ✅",
+            "🏢 Mission-Control: `Online` ✅",
+            "🛡️ File-Warden: `Online` ✅",
+            "🔗 N8N-Main: `Online` ✅",
+            "📚 RAG-Service: `Online` ✅",
+            "🔍 Qdrant DB: `Online` ✅",
+            "👁️ AI-Browser: `Online` ✅",
+            "👷 AI-Worker: `Running` ✅",
+            "👷 N8N-Worker: `Running` ✅",
+            "📡 Redis AI: `Online` ✅"
+        ]
+    },
+    "active_thoughts": "IDLE",
+    "ts": 1785589154.7586334
 }

@@ -1,0 +1,56 @@
+{
+  "id": "SKILL_DATA_46_BIG_DATA",
+  "name": "Zenith Big Data Engine",
+  "version": "1.0.0",
+  "description": "Massive data core: Orchestrates large-scale data processing pipelines using Spark and distributed architectures to handle petabytes of information.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "xử lý big data",
+    "spark processing",
+    "hạ tầng dữ liệu lớn",
+    "distributed computing",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "lieu",
+    "nang",
+    "toan",
+    "khong",
+    "phan",
+    "data",
+    "thong",
+    "tinh",
+    "master",
+    "processing",
+    "du lieu",
+    "phan tich du lieu",
+    "ml",
+    "machine learning"
+  ],
+  "domain": "DATA_SCIENCE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "data_source": {
+          "type": "string",
+          "description": "Path or URL to the big data source."
+        },
+        "job_type": {
+          "type": "string",
+          "enum": [
+            "etl",
+            "analytics",
+            "streaming"
+          ],
+          "description": "Type of processing job."
+        }
+      },
+      "required": [
+        "data_source"
+      ]
+    }
+  }
+}

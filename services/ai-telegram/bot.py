@@ -9,6 +9,7 @@ import re
 import base64
 import hashlib
 import asyncio
+from datetime import datetime, timezone
 from edge_tts import Communicate
 from redis import Redis
 from dotenv import load_dotenv
@@ -67,12 +68,40 @@ def wait_for_internet(timeout=60):
             time.sleep(2)
     return False
 
+def safe_edit_message_text(chat_id, message_id, text, p_id=None, last_edit_map=None, **kwargs):
+    """
+    🛡️ [TELE-RATE-LIMIT-GUARD]: Thao tác sửa tin nhắn Telegram an toàn tuyệt đối.
+    Tránh lỗi 429 Too Many Requests bằng cách tự động phân tích Retry-After và áp đặt Cooldown.
+    """
+    try:
+        res = bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text, **kwargs)
+        if p_id and isinstance(last_edit_map, dict):
+            last_edit_map[p_id] = time.time()
+        return res
+    except Exception as err:
+        err_str = str(err).lower()
+        if "message is not modified" in err_str:
+            return None
+            
+        if "too many requests" in err_str or "429" in err_str:
+            import re
+            m = re.search(r'retry after (\d+)', err_str)
+            retry_after = int(m.group(1)) if m else 10
+            cooldown_period = retry_after + 2.0
+            if p_id and isinstance(last_edit_map, dict):
+                last_edit_map[p_id] = time.time() + cooldown_period
+                print(f"⚠️ [TELE-429-BACKOFF]: Telegram Rate Limit hit cho {p_id}. Tự động tạm hoãn sửa tin nhắn trong {cooldown_period:.0f}s.")
+            else:
+                print(f"⚠️ [TELE-429-BACKOFF]: Telegram Rate Limit hit. Tự động tạm hoãn sửa tin nhắn trong {cooldown_period:.0f}s.")
+            return None
+            
+        print(f"❌ [TELE-EDIT-ERR] {err}")
+        return None
+
 def safe_send_message(chat_id, text, **kwargs):
     """🚀 [RESILIENT-SENDER]: Giao thức gửi tin nhắn bền bỉ với cơ chế Tái thử."""
     import random
-    # Thêm độ trễ ngẫu nhiên nhỏ (0.2s đến 0.6s) để tránh timing pattern cố định
     time.sleep(random.uniform(0.2, 0.6))
-    
     max_retries = 10
     for i in range(max_retries):
         try:
@@ -81,7 +110,6 @@ def safe_send_message(chat_id, text, **kwargs):
             if i == max_retries - 1: 
                 print(f"❌ [TELE-CRITICAL]: Mất kết nối vĩnh viễn: {e}")
                 raise e
-            # Thêm Jitter ngẫu nhiên vào thời gian chờ tái thử (ví dụ: wait + 1.0s đến 3.0s)
             wait = min((i + 1) * 3, 30) + random.uniform(1.0, 3.0)
             print(f"⚠️ [TELE-RETRY]: Mất kết nối hoặc bị giới hạn. Đang thử lại sau {wait:.2f}s... (Lần {i+1})")
             time.sleep(wait)
@@ -96,19 +124,12 @@ def escape_html(text):
 def translate_markdown_to_html(md: str) -> str:
     if not md: return ""
     html = escape_html(md)
-    # Convert Markdown Bold (**text**) to HTML Bold (<b>text</b>)
     html = re.sub(r'\*\*(.*?)\*\*', r'<b>\1</b>', html)
-    # Convert Markdown Italic (*text*) to HTML Italic (<i>text</i>) safely without breaking double asterisks
     html = re.sub(r'(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)', r'<i>\1</i>', html)
-    # Convert Inline Code (`code`) to HTML Code (<code>code</code>)
     html = re.sub(r'`(.*?)`', r'<code>\1</code>', html)
-    # Convert Bullet Points (starts with "- " or "* ") to "• "
     html = re.sub(r'^\s*[-*]\s+', '• ', html, flags=re.MULTILINE)
-    # Convert Markdown Headers (## Header) to HTML Bold (<b>Header</b>)
     html = re.sub(r'^#{1,6}\s+(.+)$', r'<b>\1</b>', html, flags=re.MULTILINE)
-    # Convert separator lines (---, ———, ___ 10+) to strikethrough
     html = re.sub(r'^[\s]*[—\-_]{10,}[\s]*$', '<s>───</s>', html, flags=re.MULTILINE)
-    # Convert pipe table separator rows (| --- | --- |) — remove to reduce noise
     html = re.sub(r'^\|[\s\-:]+\|[\s\-:|]+\|$', '', html, flags=re.MULTILINE)
     return html
 
@@ -130,13 +151,9 @@ def generate_voice(text, chat_id):
 # ==========================================
 # 🧠 XỬ LÝ LỆNH TRUNG TÂM (CORE LOGIC)
 # ==========================================
-def execute_neural_command(goal, images=None, mode="auto"):
+def execute_neural_command(goal, images=None, mode="fast"):
     try:
         task_id = f"tele_{int(time.time())}"
-        
-        # 📡 [LOG-TELEGRAM]: Xuất hiện trên Tab Tiến trình
-        # Removed duplicate publish_mission_log here as main.py handles it
-        
         payload = {
             "task_id": task_id,
             "goal": goal,
@@ -145,10 +162,6 @@ def execute_neural_command(goal, images=None, mode="auto"):
             "ts": time.time(),
             "images": images or []
         }
-        
-        # 🌐 [UNIFIED-EXECUTION]: Dùng /api/submit_task cho mọi mode (non-blocking)
-        # Kết quả luôn đến qua Redis pub/sub (log_listener) — không cần chờ HTTP
-        # Timeout 600s chỉ để đảm bảo kết nối không bị cắt giữa chừng
         with httpx.Client(timeout=600.0) as client:
             res = client.post(f"{CONTROL_PLANE_URL}/api/submit_task", json=payload)
             data = res.json() if res.status_code == 200 else {}
@@ -174,8 +187,6 @@ def flush_non_pinned_logs():
         if not non_pinned_buffer:
             non_pinned_timer = None
             return
-        
-        # Group messages ensuring each combined block is under 4000 characters
         chunks = []
         current_chunk = []
         current_len = 0
@@ -190,10 +201,8 @@ def flush_non_pinned_logs():
                 current_len += len(msg) + 1
         if current_chunk:
             chunks.append("\n".join(current_chunk))
-            
         non_pinned_buffer.clear()
         non_pinned_timer = None
-    
     for chunk in chunks:
         if chunk.strip():
             safe_send_message(MASTER_ID, chunk, parse_mode="HTML")
@@ -213,7 +222,6 @@ def send_immediate_log(text, markup=None):
     with non_pinned_lock:
         if non_pinned_timer:
             non_pinned_timer.cancel()
-            
         chunks = []
         if non_pinned_buffer:
             current_chunk = []
@@ -231,11 +239,9 @@ def send_immediate_log(text, markup=None):
                 chunks.append("\n".join(current_chunk))
             non_pinned_buffer.clear()
         non_pinned_timer = None
-    
     for chunk in chunks:
         if chunk.strip():
             safe_send_message(MASTER_ID, chunk, parse_mode="HTML")
-            
     safe_send_message(MASTER_ID, text, parse_mode="HTML", reply_markup=markup)
 
 # ==========================================
@@ -244,108 +250,35 @@ def send_immediate_log(text, markup=None):
 def get_corporate_metadata(tag: str, source: str = "") -> dict:
     tag_upper = tag.upper()
     src_upper = source.upper() if source else ""
-    
-    # 👑 [MASTER / CHỦ TỊCH]
     if tag_upper.startswith("MASTER"):
-        return {
-            "dept_name": "VĂN PHÒNG CHỦ TỊCH HỘI ĐỒNG QUẢN TRỊ",
-            "clearance": "⚡ CHỈ THỊ THƯỢNG KHẨN (SUPREME DIRECTIVE)",
-            "serial_prefix": "JKAI-CHAIRMAN-",
-            "emoji": "👑"
-        }
-    
-    # 🧠 [JKAI TỔNG TRỢ LÝ TỐI CAO]
+        return {"dept_name": "VĂN PHÒNG CHỦ TỊCH HỘI ĐỒNG QUẢN TRỊ", "clearance": "⚡ CHỈ THỊ THƯỢNG KHẨN (SUPREME DIRECTIVE)", "serial_prefix": "JKAI-CHAIRMAN-", "emoji": "👑"}
     if tag_upper == "JKAI":
-        return {
-            "dept_name": "BAN ĐIỀU HÀNH TRUNG ƯƠNG (CENTRAL OPS BOARD)",
-            "clearance": "💎 NGHỊ QUYẾT TOÀN DIỆN (EXECUTIVE DECREE)",
-            "serial_prefix": "JKAI-CORE-",
-            "emoji": "💎"
-        }
-        
-    # 🌌 [ANTIGRAVITY]
+        return {"dept_name": "BAN ĐIỀU HÀNH TRUNG ƯƠNG (CENTRAL OPS BOARD)", "clearance": "💎 NGHỊ QUYẾT TOÀN DIỆN (EXECUTIVE DECREE)", "serial_prefix": "JKAI-CORE-", "emoji": "💎"}
     if tag_upper == "ANTIGRAVITY":
-        return {
-            "dept_name": "PHÂN KHU KIẾN TẠO KIẾN TRÚC & TƯ DUY",
-            "clearance": "🌌 ĐỀ XUẤT CẤU TRÚC (ARCHITECTURAL INITIATIVE)",
-            "serial_prefix": "JKAI-ANTIGRAV-",
-            "emoji": "🌌"
-        }
-
-    # 🛎️ [BAN TRỢ LÝ]
+        return {"dept_name": "PHÂN KHU KIẾN TẠO KIẾN TRÚC & TƯ DUY", "clearance": "🌌 ĐỀ XUẤT CẤU TRÚC (ARCHITECTURAL INITIATIVE)", "serial_prefix": "JKAI-ANTIGRAV-", "emoji": "🌌"}
     if "GATEWAY" in tag_upper or "RECEPTIONIST" in tag_upper or "GATEWAY" in src_upper or "RECEPTIONIST" in src_upper:
-        return {
-            "dept_name": "BAN TRỢ LÝ & ĐỐI NGOẠI TẬP ĐOÀN",
-            "clearance": "🟢 THÔNG THƯỜNG (PUBLIC ACCESSIBLE)",
-            "serial_prefix": "JKAI-RECEPT-",
-            "emoji": "🛎️"
-        }
-
-    # 🎯 [BAN KẾ HOẠCH]
+        return {"dept_name": "BAN TRỢ LÝ & ĐỐI NGOẠI TẬP ĐOÀN", "clearance": "🟢 THÔNG THƯỜNG (PUBLIC ACCESSIBLE)", "serial_prefix": "JKAI-RECEPT-", "emoji": "🛎️"}
     if "PLANNER" in tag_upper or "THOUGHT" in tag_upper or "PLANNER" in src_upper or "THOUGHT" in src_upper:
-        return {
-            "dept_name": "PHÒNG HOẠCH ĐỊNH CHIẾN LƯỢC & THIẾT LỘ TRÌNH",
-            "clearance": "🔵 PHƯƠNG ÁN CHIẾN LƯỢC (STRATEGIC PLAN)",
-            "serial_prefix": "JKAI-PLAN-",
-            "emoji": "🎯"
-        }
-
-    # ⚙️ [BAN THỰC THI]
+        return {"dept_name": "PHÒNG HOẠCH ĐỊNH CHIẾN LƯỢC & THIẾT LỘ TRÌNH", "clearance": "🔵 PHƯƠNG ÁN CHIẾN LƯỢC (STRATEGIC PLAN)", "serial_prefix": "JKAI-PLAN-", "emoji": "🎯"}
     if "EXECUTOR" in tag_upper or "ALPHA" in tag_upper or "BETA" in tag_upper or "EXECUTOR" in src_upper or "ALPHA" in src_upper or "BETA" in src_upper:
-        return {
-            "dept_name": "BAN THỰC THI & TRIỂN KHAI KỸ THUẬT",
-            "clearance": "🟡 LƯU HÀNH NỘI BỘ (INTERNAL ONLY)",
-            "serial_prefix": "JKAI-EXEC-",
-            "emoji": "⚙️"
-        }
-
-    # 🛡️ [BAN KIỂM SOÁT]
+        return {"dept_name": "BAN THỰC THI & TRIỂN KHAI KỸ THUẬT", "clearance": "🟡 LƯU HÀNH NỘI BỘ (INTERNAL ONLY)", "serial_prefix": "JKAI-EXEC-", "emoji": "⚙️"}
     if "CRITIC" in tag_upper or "AUDIT" in tag_upper or "REVIEW" in tag_upper or "CRITIC" in src_upper or "AUDIT" in src_upper or "REVIEW" in src_upper:
-        return {
-            "dept_name": "BAN KIỂM SOÁT NỘI BỘ & AN NINH TẬP ĐOÀN",
-            "clearance": "🔴 TỐI MẬT (HIGHLY CONFIDENTIAL)",
-            "serial_prefix": "JKAI-AUDIT-",
-            "emoji": "🛡️"
-        }
-
-    # ✍️ [BAN THƯ KÝ]
+        return {"dept_name": "BAN KIỂM SOÁT NỘI BỘ & AN NINH TẬP ĐOÀN", "clearance": "🔴 TỐI MẬT (HIGHLY CONFIDENTIAL)", "serial_prefix": "JKAI-AUDIT-", "emoji": "🛡️"}
     if "SUMMARIZER" in tag_upper or "SUMMARIZER" in src_upper:
-        return {
-            "dept_name": "BAN THƯ KÝ & TỔNG HỢP VĂN PHÒNG ĐIỀU HÀNH",
-            "clearance": "🟡 LƯU HÀNH NỘI BỘ (INTERNAL ONLY)",
-            "serial_prefix": "JKAI-SEC-",
-            "emoji": "✍️"
-        }
-
-    # 🚨 [SỰ CỐ KHẨN]
+        return {"dept_name": "BAN THƯ KÝ & TỔNG HỢP VĂN PHÒNG ĐIỀU HÀNH", "clearance": "🟡 LƯU HÀNH NỘI BỘ (INTERNAL ONLY)", "serial_prefix": "JKAI-SEC-", "emoji": "✍️"}
     if tag_upper == "ERROR":
-        return {
-            "dept_name": "BAN KIỂM SOÁT & KHẮC PHỤC SỰ CỐ KHẨN CẤP",
-            "clearance": "🚨 SỰ CỐ KHẨN CẤP (EMERGENCY ALARM)",
-            "serial_prefix": "JKAI-ERR-",
-            "emoji": "🚨"
-        }
-
-    # 📡 [BAN ĐIỀU PHỐI / HÀNH CHÍNH]
-    return {
-        "dept_name": "BAN ĐIỀU PHỐI & HÀNH CHÍNH NỘI BỘ",
-        "clearance": "⚙️ THÔNG TIN HỆ THỐNG (SYSTEM STATUS)",
-        "serial_prefix": "JKAI-ADMIN-",
-        "emoji": "📡"
-    }
+        return {"dept_name": "BAN KIỂM SOÁT & KHẮC PHỤC SỰ CỐ KHẨN CẤP", "clearance": "🚨 SỰ CỐ KHẨN CẤP (EMERGENCY ALARM)", "serial_prefix": "JKAI-ERR-", "emoji": "🚨"}
+    return {"dept_name": "BAN ĐIỀU PHỐI & HÀNH CHÍNH NỘI BỘ", "clearance": "⚙️ THÔNG TIN HỆ THỐNG (SYSTEM STATUS)", "serial_prefix": "JKAI-ADMIN-", "emoji": "📡"}
 
 # ==========================================
 # 🛰️ ĐỘI TUẦN TRA LOG (LISTENER)
 # ==========================================
 def log_listener():
     print("🛰️ [JKAI-TELEGRAM] Mobile Command Center ONLINE.")
-    
-    # Cache to prevent any duplication (FIFO sliding window list of processed log IDs & hashes)
     processed_ids = []
     processed_messages = []
+    sent_content_window = {}
     pin_map = {}
-
-    # Thread-safe caches and variables for smooth streaming on Telegram
     pinned_content_cache = {}
     pinned_ts_cache = {}
     last_edit_time = {}
@@ -356,24 +289,12 @@ def log_listener():
 
     def flush_pin(p_id):
         with stream_lock:
-            if p_id not in pin_map:
-                return
+            if p_id not in pin_map: return
             txt = pending_texts.get(p_id)
             mkup = pending_markups.get(p_id)
-            if not txt:
-                return
+            if not txt: return
             try:
-                bot.edit_message_text(
-                    chat_id=MASTER_ID,
-                    message_id=pin_map[p_id],
-                    text=txt,
-                    parse_mode="HTML",
-                    reply_markup=mkup
-                )
-                last_edit_time[p_id] = time.time()
-            except Exception as err:
-                if "message is not modified" not in str(err).lower():
-                    print(f"❌ [TELE-THROTTLE-FLUSH-ERR]: {err}")
+                safe_edit_message_text(chat_id=MASTER_ID, message_id=pin_map[p_id], text=txt, p_id=p_id, last_edit_map=last_edit_time, parse_mode="HTML", reply_markup=mkup)
             finally:
                 active_timers.pop(p_id, None)
 
@@ -381,50 +302,35 @@ def log_listener():
         try:
             pubsub = redis_client.pubsub()
             pubsub.subscribe("monitor:log_channel")
-            # [DEDUP-FIX]: Chỉ subscribe monitor:log_channel.
-            # engine.py publish cùng payload vào cả log_channel VÀ progress_channel,
-            # subscribe cả 2 sẽ nhận mỗi log 2 lần → Telegram hiển thị trùng lặp.
-            # progress_channel dành riêng cho Frontend Dashboard (streaming progress bar).
             print("📡 [TELE-SYNC]: Kết nối Redis Pub/Sub thành công.")
-            
             for message in pubsub.listen():
                 if message['type'] == 'message':
                     try:
                         data = json.loads(message['data'])
-                        
-                        # Deduplication Protocol using Stable IDs
                         log_id = data.get("id")
                         pin_id = data.get("pin_id")
                         is_pin = bool(pin_id)
-                        
                         raw_msg = data.get("msg", "")
                         
-                        is_dup_packet = False
                         with stream_lock:
                             if is_pin:
                                 last_ts = pinned_ts_cache.get(pin_id, 0.0)
                                 current_ts = float(data.get("ts", 0.0))
-                                
                                 is_newer = current_ts > last_ts
                                 is_same_but_full_flush = (abs(current_ts - last_ts) < 1e-5) and not data.get("is_delta", False)
-                                
                                 if is_newer or is_same_but_full_flush:
                                     current_content = pinned_content_cache.get(pin_id, "")
-                                    if data.get("is_delta", False):
-                                        new_content = current_content + raw_msg
-                                    else:
-                                        new_content = raw_msg
+                                    new_content = current_content + raw_msg if data.get("is_delta", False) else raw_msg
                                     pinned_content_cache[pin_id] = new_content
                                     pinned_ts_cache[pin_id] = current_ts
                                     clean_msg = new_content.strip()
                                 else:
-                                    is_dup_packet = True
+                                    continue
                             else:
                                 clean_msg = raw_msg.strip()
                         
                         if not clean_msg: continue
                         
-                        # Lọc triệt để mọi thẻ [TAG] ở đầu dòng
                         prev_msg = None
                         while clean_msg != prev_msg:
                             prev_msg = clean_msg
@@ -432,149 +338,102 @@ def log_listener():
                         clean_msg = clean_msg.strip()
                         if not clean_msg: continue
                         
-                        # Allow stealth logs on Telegram only if they are pinned (updating in-place)
-                        if data.get("stealth", False) and not is_pin:
+                        if data.get("stealth", False) and not is_pin: continue
+
+                        # [STREAMING-FIREWALL]: Ngăn chặn tuyệt đối rác token stream (is_delta=True) phát trực tiếp lên Telegram
+                        if not is_pin and (data.get("is_delta", False) or data.get("stream", False)):
                             continue
 
-                        # 1. Track ID for future auditing (log not blocked — root cause fixed upstream)
+                        # [ISOLATION-GATE]: Lọc bỏ hoàn toàn tin nhắn ngầm từ OMNI-EVOLVE hoặc tiến trình nền [Task: None]/system khỏi kênh đàm thoại
+                        t_id_check = str(data.get("task_id", "manual"))
+                        if t_id_check in ("omni_evolve", "None", "NoneType", "system") or "OMNI-EVOLVE" in raw_msg or "Task: None" in raw_msg:
+                            continue
+
                         if not is_pin and log_id:
-                            if log_id not in processed_ids:
-                                processed_ids.append(log_id)
-                                if len(processed_ids) > 500:
-                                    processed_ids.pop(0)
+                            if log_id in processed_ids:
+                                continue
+                            processed_ids.append(log_id)
+                            if len(processed_ids) > 500: processed_ids.pop(0)
                         
                         tag = data.get("tag", "SYSTEM").upper()
                         task_id = data.get("task_id", "manual")
 
-                        # 2. Dedup hash for safety (root cause = subscribing 2 channels fixed, this is secondary guard)
                         if not is_pin:
                             msg_hash = hashlib.md5(f"{task_id}:{data.get('tag')}:{clean_msg}".encode()).hexdigest()
-                            if msg_hash in processed_messages:
-                                continue  # Safety guard: skip truly identical messages
+                            if msg_hash in processed_messages: continue
                             processed_messages.append(msg_hash)
-                            if len(processed_messages) > 500:
-                                processed_messages.pop(0)
+                            if len(processed_messages) > 500: processed_messages.pop(0)
+
+                            # [SEMANTIC-DEDUPLICATION]: Bộ lọc lặp tin nhắn theo nội dung tinh gọn, bỏ qua tag hoặc mốc thời gian chênh lệch từ các module
+                            if not tag.startswith("MASTER"):
+                                pure_txt = re.sub(r'\[.*?\]|\d{2,4}[/-]\d{2,4}[/-]\d{2,4}|\d{2}:\d{2}:\d{2}(?:\.\d+)?|\b\d+\.\d+\b', '', clean_msg)
+                                pure_txt = re.sub(r'[^\w\s]', '', pure_txt).strip().lower()
+                                if len(pure_txt) > 5:
+                                    pure_hash = hashlib.md5(pure_txt.encode()).hexdigest()
+                                    now_ts_win = time.time()
+                                    if pure_hash in sent_content_window and (now_ts_win - sent_content_window[pure_hash]) < 45.0:
+                                        continue
+                                    sent_content_window[pure_hash] = now_ts_win
+                                    if len(sent_content_window) > 200:
+                                        sent_content_window = {k: v for k, v in sent_content_window.items() if (now_ts_win - v) < 60.0}
 
                         markup = None
                         if any(k in clean_msg for k in ["Phê duyệt", "Kế hoạch", "Master có phê duyệt"]):
                             markup = types.InlineKeyboardMarkup()
-                            btn_text = "✅ PHÊ DUYỆT"
-                            if "Kế hoạch" in clean_msg: btn_text = "🚀 TRIỂN KHAI"
-                            markup.add(
-                                types.InlineKeyboardButton(btn_text, callback_data=f"approve_{task_id}"),
-                                types.InlineKeyboardButton("❌ TỪ CHỐI", callback_data=f"reject_{task_id}")
-                            )
+                            btn_text = "✅ PHÊ DUYỆT" if "Kế hoạch" not in clean_msg else "🚀 TRIỂN KHAI"
+                            markup.add(types.InlineKeyboardButton(btn_text, callback_data=f"approve_{task_id}"), types.InlineKeyboardButton("❌ TỪ CHỐI", callback_data=f"reject_{task_id}"))
 
-                        # 💎 [AESTHETIC-TELE-MSG]: Match the beautiful progress bar and operational style
                         prefix = "👑" if tag in ["MASTER", "MASTER_WEB", "MASTER_TELE"] else "🧠" if tag in ["JKAI", "MISSION_RESULT", "DONE", "RESULT", "THOUGHT"] else "🚨" if tag in ["ERROR", "CRITICAL", "WARN"] else "⚙️" if tag == "SYSTEM" else "📈" if tag in ["HEARTBEAT", "PROGRESS"] else "⚡"
                         
                         raw_tag = tag.upper()
-                        is_zenith_msg = "ZENITH" in raw_msg or "ZENITH" in task_id
-                        if "GATEWAY" in raw_tag or "RECEPTIONIST" in raw_tag:
-                            action_label = "Ban Trợ Lý"
-                        elif "PLANNER" in raw_tag or "THOUGHT" in raw_tag:
-                            action_label = "Ban Kế Hoạch"
-                        elif "EXECUTOR" in raw_tag or "ALPHA" in raw_tag or "BETA" in raw_tag:
-                            action_label = "Ban Thực Thi"
-                        elif "SUMMARIZER" in raw_tag or "SYNTHESIS" in raw_tag:
-                            action_label = "Ban Thư Ký"
-                        elif "CRITIC" in raw_tag or "AUDIT" in raw_tag or "REVIEW" in raw_tag or "GUARDRAIL" in raw_tag:
-                            action_label = "Ban Kiểm Soát"
-                        elif (
-                            "DATA_SCOUT" in raw_tag or "RESEARCH" in raw_tag or "SEARCH" in raw_tag or 
-                            "ANTIGRAVITY" in raw_tag or "FORGE" in raw_tag or
-                            "CREATOR" in raw_tag or "KIẾN TẠO" in raw_tag or "KIENTAO" in raw_tag or 
-                            "TÌNH BÁO" in raw_tag or "TINHBAO" in raw_tag
-                        ):
-                            action_label = "Ban Trợ Lý"
-                        elif "MASTER" in raw_tag or "USER" in raw_tag:
-                            action_label = "Chủ Tịch"
-                        elif "MISSION_RESULT" in raw_tag or "RESULT" in raw_tag or "DONE" in raw_tag or "JKAI" in raw_tag:
-                            action_label = "JKAI"
-                        else:
-                            action_label = "Ban Hành Chính"
+                        if "GATEWAY" in raw_tag or "RECEPTIONIST" in raw_tag: action_label = "Ban Trợ Lý"
+                        elif "PLANNER" in raw_tag or "THOUGHT" in raw_tag: action_label = "Ban Kế Hoạch"
+                        elif "EXECUTOR" in raw_tag or "ALPHA" in raw_tag or "BETA" in raw_tag: action_label = "Ban Thực Thi"
+                        elif "SUMMARIZER" in raw_tag or "SYNTHESIS" in raw_tag: action_label = "Ban Thư Ký"
+                        elif "CRITIC" in raw_tag or "AUDIT" in raw_tag or "REVIEW" in raw_tag or "GUARDRAIL" in raw_tag: action_label = "Ban Kiểm Soát"
+                        elif any(k in raw_tag for k in ["DATA_SCOUT", "RESEARCH", "SEARCH", "ANTIGRAVITY", "FORGE", "CREATOR", "KIẾN TẠO", "KIENTAO", "TÌNH BÁO", "TINHBAO"]): action_label = "Ban Trợ Lý"
+                        elif "MASTER" in raw_tag or "USER" in raw_tag: action_label = "Master (Web)" if tag == "MASTER_WEB" else "Master"
+                        elif any(k in raw_tag for k in ["MISSION_RESULT", "RESULT", "DONE", "JKAI"]): action_label = "JKAI"
+                        else: action_label = "Ban Hành Chính"
                         
-                        # Keep full length for dynamic pinned updates (safely under 4000 characters)
-                        short_msg = clean_msg[:3800] if is_pin else (clean_msg[:300] + "..." if len(clean_msg) > 300 else clean_msg)
-                        
+                        short_msg = clean_msg[:3800] if is_pin else (clean_msg[:3800] + "..." if len(clean_msg) > 3800 else clean_msg)
                         is_thought = "THOUGHT]" in clean_msg or "THOUGHT:" in data.get("full_tag", "") or (is_pin and bool(data.get("source")))
-                        
                         source_role = data.get("source", "") or tag
                         if is_pin and (tag == "THOUGHT" or is_thought):
                             short_msg = re.sub(r'^🧠\s*\[.*?THOUGHT\]:\s*', '', short_msg)
-                            if not source_role or source_role == "THOUGHT":
-                                source_role = "MODEL"
+                            if not source_role or source_role == "THOUGHT": source_role = "MODEL"
                         
                         meta = get_corporate_metadata(tag, source_role)
-                        
-                        from datetime import datetime
                         now_ts = data.get("ts") or time.time()
-                        dt = datetime.fromtimestamp(now_ts)
-                        date_str = dt.strftime("%Y%m%d")
+                        tz_name = os.getenv("GENERIC_TIMEZONE", "Asia/Bangkok")
+                        try:
+                            import pytz
+                            dt = datetime.fromtimestamp(now_ts, tz=timezone.utc).astimezone(pytz.timezone(tz_name))
+                        except Exception:
+                            dt = datetime.fromtimestamp(now_ts)
                         formatted_time = dt.strftime("%d/%m/%Y %H:%M:%S")
                         
-                        log_id = data.get("id")
-                        if log_id:
-                            hash_str = str(log_id)[-4:].upper()
-                        else:
-                            content_hash = hashlib.md5(f"{tag}:{clean_msg}".encode("utf-8")).hexdigest()
-                            hash_str = content_hash[-4:].upper()
-                        
-                        doc_serial = f"{meta['serial_prefix']}{date_str}-{hash_str}"
-                        
-                        header_title = "BÁO CÁO NGHIỆP VỤ"
-                        if tag in ["ERROR", "CRITICAL"]:
-                            header_title = "BÁO CÁO SỰ CỐ KHẨN"
-                        elif tag == "WARN":
-                            header_title = "CẢNH BÁO HOẠT ĐỘNG"
-                        elif tag in ["AUTH", "SECURITY"]:
-                            header_title = "THẨM ĐỊNH BẢO MẬT"
-                        elif tag.startswith("MASTER") or tag == "USER":
-                            header_title = "CHỈ THỊ THƯỢNG KHẨN"
-                        elif tag == "ZENITH":
-                            header_title = "BÁO CÁO CHIẾN LƯỢC"
-                        elif tag in ["MISSION_RESULT", "DONE", "RESULT"]:
-                            header_title = "BÁO CÁO KẾT QUẢ SỨ MỆNH"
-
                         formatted_msg = translate_markdown_to_html(short_msg)
-                        formatted_msg = formatted_msg.replace("<i>[Đang suy nghĩ]</i>", "<b>[Đang suy nghĩ]</b>")
-                        formatted_msg = formatted_msg.replace("<i>[Đang suy nghĩ...]</i>", "<b>[Đang suy nghĩ...]</b>")
-                        formatted_msg = formatted_msg.replace("<i>[Đang trả lời...]</i>", "<b>[Đang trả lời...]</b>")
-                        formatted_msg = formatted_msg.replace("&gt; ", "┃ ").replace("&gt;", "┃ ")
+                        formatted_msg = formatted_msg.replace("<i>[Đang suy nghĩ]</i>", "<b>[Đang suy nghĩ]</b>").replace("<i>[Đang suy nghĩ...]</i>", "<b>[Đang suy nghĩ...]</b>").replace("<i>[Đang trả lời...]</i>", "<b>[Đang trả lời...]</b>").replace("&gt; ", "┃ ").replace("&gt;", "┃ ")
 
-                        final_text = (
-                            f"{prefix} <b>[{action_label}]</b> <code>({formatted_time.split(' ')[1]})</code>:\n"
-                            f"{formatted_msg}"
-                        )
+                        final_text = f"{prefix} <b>[{action_label}]</b> <code>({formatted_time.split(' ')[1]})</code>:\n{formatted_msg}"
 
-                        # 🔄 IN-PLACE MESSAGE EDIT!
                         with stream_lock:
                             if is_pin and pin_id in pin_map:
                                 pending_texts[pin_id] = final_text
                                 pending_markups[pin_id] = markup
-                                
                                 now_time = time.time()
                                 time_since_last_edit = now_time - last_edit_time.get(pin_id, 0)
-                                
-                                if time_since_last_edit > 1.2:
+                                edit_interval = 3.0 # Tần suất sửa tin nhắn Telegram tối thiểu 3s để tuân thủ Rate Limit
+                                if time_since_last_edit > edit_interval:
                                     if pin_id in active_timers:
                                         active_timers[pin_id].cancel()
                                         del active_timers[pin_id]
-                                    try:
-                                        bot.edit_message_text(
-                                            chat_id=MASTER_ID,
-                                            message_id=pin_map[pin_id],
-                                            text=final_text,
-                                            parse_mode="HTML",
-                                            reply_markup=markup
-                                        )
-                                        last_edit_time[pin_id] = now_time
-                                    except Exception as edit_err:
-                                        if "message is not modified" not in str(edit_err).lower():
-                                            print(f"❌ [TELE-EDIT-ERR] {edit_err}")
+                                    safe_edit_message_text(chat_id=MASTER_ID, message_id=pin_map[pin_id], text=final_text, p_id=pin_id, last_edit_map=last_edit_time, parse_mode="HTML", reply_markup=markup)
                                 else:
                                     if pin_id not in active_timers:
-                                        t = threading.Timer(1.2 - time_since_last_edit, flush_pin, args=[pin_id])
+                                        wait_time = max(edit_interval - time_since_last_edit, 0.5)
+                                        t = threading.Timer(wait_time, flush_pin, args=[pin_id])
                                         active_timers[pin_id] = t
                                         t.start()
                                 continue
@@ -617,24 +476,15 @@ def cmd_help(message):
     if message.from_user.id != MASTER_ID: return
     try:
         task_id = f"tele_{int(time.time())}"
-        payload = {
-            "task_id": task_id,
-            "goal": "/help",
-            "mode": "fast",
-            "source": "TELEGRAM",
-            "ts": time.time()
-        }
+        payload = {"task_id": task_id, "goal": "/help", "mode": "fast", "source": "TELEGRAM", "ts": time.time()}
         with httpx.Client(timeout=15.0) as client:
             res = client.post(f"{CONTROL_PLANE_URL}/execute", json=payload)
             if res.status_code == 200:
                 data = res.json()
                 answer = data.get("answer") or data.get("msg") or "Không có câu trả lời thưa Master."
                 formatted_help = translate_markdown_to_html(answer)
-                
-                # 💎 [AESTHETIC-UPGRADE]: Thêm lời chào nồng nhiệt nếu là lệnh /start
                 if message.text.startswith('/start'):
                     formatted_help = f"🚀 <b>Khởi động Giao thức Chủ quyền. Chào mừng Master LeeTrung trở lại!</b>\n\n{formatted_help}"
-                
                 safe_send_message(MASTER_ID, formatted_help, parse_mode="HTML")
             else:
                 safe_send_message(MASTER_ID, f"⚠️ <b>LỖI HỆ THỐNG:</b> Không thể kết nối Trung tâm <i>(Mã lỗi: {res.status_code})</i>.", parse_mode="HTML")
@@ -661,7 +511,6 @@ def handle_voice(message):
         downloaded_file = bot.download_file(file_info.file_path)
         path = f"/tmp/audio/voice_{message.message_id}.ogg"
         with open(path, 'wb') as f: f.write(downloaded_file)
-        
         bot.send_chat_action(MASTER_ID, 'typing')
         if whisper_model:
             segments, _ = whisper_model.transcribe(path, beam_size=5)
@@ -675,18 +524,13 @@ def handle_voice(message):
 
 # ==========================================
 # 👁️ GIAO THỨC THỊ GIÁC CỤC BỘ (LOCAL VISION)
-# 👁️ [VISION-GATEWAY]: Sử dụng Đầu mối Trung tâm
+# ==========================================
 def analyze_image_sync(base64_image: str) -> str:
     try:
-        payload = {
-            "prompt": "Mô tả thật chi tiết bức ảnh này bằng tiếng Việt. Trích xuất bất kỳ văn bản nào có trong ảnh.",
-            "image_path": "telegram_upload", # Placeholder
-            "image_data": base64_image # Gửi thẳng data
-        }
+        payload = {"prompt": "Mô tả thật chi tiết bức ảnh này bằng tiếng Việt. Trích xuất bất kỳ văn bản nào có trong ảnh.", "image_path": "telegram_upload", "image_data": base64_image}
         with httpx.Client(timeout=120.0) as client:
             resp = client.post(f"{CONTROL_PLANE_URL}/api/vision", json=payload)
-            if resp.status_code == 200:
-                return resp.json().get("analysis", "").strip()
+            if resp.status_code == 200: return resp.json().get("analysis", "").strip()
             return ""
     except Exception as e:
         print(f"❌ [VISION-RELAY-ERR] {e}")
@@ -695,8 +539,8 @@ def analyze_image_sync(base64_image: str) -> str:
 # ==========================================
 # 📂 GIAO THỨC GOM CỤM THƯ MỤC/HÌNH ẢNH (MEDIA GROUP AGGREGATOR)
 # ==========================================
-media_group_buffer = {}  # {media_group_id: [messages]}
-media_group_timers = {}  # {media_group_id: threading.Timer}
+media_group_buffer = {}
+media_group_timers = {}
 buffer_lock = threading.Lock()
 
 def process_media_group(media_group_id):
@@ -704,22 +548,15 @@ def process_media_group(media_group_id):
         with buffer_lock:
             messages = media_group_buffer.pop(media_group_id, [])
             media_group_timers.pop(media_group_id, None)
-            
-        if not messages:
-            return
-            
+        if not messages: return
         messages.sort(key=lambda m: m.message_id)
-        
         captions = []
         files_saved = []
         images_base64 = []
-        
         for msg in messages:
             if msg.caption:
                 c = msg.caption.strip()
-                if c not in captions:
-                    captions.append(c)
-            
+                if c not in captions: captions.append(c)
             if msg.photo:
                 try:
                     file_id = msg.photo[-1].file_id
@@ -734,24 +571,19 @@ def process_media_group(media_group_id):
                     file_name = msg.document.file_name
                     file_info = bot.get_file(msg.document.file_id)
                     downloaded_file = bot.download_file(file_info.file_path)
-                    
                     input_dir = os.path.join(os.getcwd(), "files/Input")
                     os.makedirs(input_dir, exist_ok=True)
                     save_path = os.path.join(input_dir, file_name)
-                    with open(save_path, 'wb') as f:
-                        f.write(downloaded_file)
+                    with open(save_path, 'wb') as f: f.write(downloaded_file)
                     files_saved.append(file_name)
                 except Exception as doc_err:
                     print(f"❌ [MEDIA-GROUP-DOC-ERR]: {doc_err}")
         
         base_goal = " ".join(captions)
         mode = "auto"
-        if base_goal.upper().startswith("[FAST]"):
-            mode = "fast"
-            base_goal = base_goal[6:].strip()
-        elif base_goal.upper().startswith("[DEEP]"):
-            mode = "deep"
-            base_goal = base_goal[6:].strip()
+        if base_goal.upper().startswith("[FAST]"): mode, base_goal = "fast", base_goal[6:].strip()
+        elif base_goal.upper().startswith("[DEEP]"): mode, base_goal = "deep", base_goal[6:].strip()
+        elif base_goal.upper().startswith("[AUTO]"): mode, base_goal = "auto", base_goal[6:].strip()
             
         vision_descriptions = []
         if images_base64:
@@ -759,35 +591,23 @@ def process_media_group(media_group_id):
             status_msg = safe_send_message(MASTER_ID, f"👁️ <b>VISION:</b> Đang dùng Moondream Cục bộ để dịch {len(images_base64)} hình ảnh...", parse_mode="HTML")
             for idx, img_b64 in enumerate(images_base64):
                 desc = analyze_image_sync(img_b64)
-                if desc:
-                    vision_descriptions.append(f"[Ảnh {idx+1}]: {desc}")
+                if desc: vision_descriptions.append(f"[Ảnh {idx+1}]: {desc}")
             try: bot.delete_message(MASTER_ID, status_msg.message_id)
             except Exception: pass
             
         goal = base_goal
+        vision_text = '\n'.join(vision_descriptions) if vision_descriptions else ''
         if not goal:
-            if files_saved and vision_descriptions:
-                desc_str = "\n".join(vision_descriptions)
-                files_str = ", ".join(files_saved)
-                goal = f"[FILE_ONLY]: {files_str}\n\n[THỊ GIÁC - MOONDREAM]:\n{desc_str}"
-            elif files_saved:
-                goal = f"[FILE_ONLY]: {', '.join(files_saved)}"
-            elif vision_descriptions:
-                desc_str = "\n".join(vision_descriptions)
-                goal = f"[IMAGE_ONLY]\n\n[THỊ GIÁC - MOONDREAM]:\n{desc_str}"
+            if files_saved and vision_descriptions: goal = f"[FILE_ONLY]: {', '.join(files_saved)}\n\n[THỊ GIÁC - MOONDREAM]:\n{vision_text}"
+            elif files_saved: goal = f"[FILE_ONLY]: {', '.join(files_saved)}"
+            elif vision_descriptions: goal = f"[IMAGE_ONLY]\n\n[THỊ GIÁC - MOONDREAM]:\n{vision_text}"
         else:
-            if files_saved:
-                goal = f"{goal}\n\n[TỆP ĐÍNH KÈM]: {', '.join(files_saved)}"
-            if vision_descriptions:
-                desc_str = "\n".join(vision_descriptions)
-                goal = f"{goal}\n\n[THỊ GIÁC - MOONDREAM]:\n{desc_str}"
+            if files_saved: goal = f"{goal}\n\n[TỆP ĐÍNH KÈM]: {', '.join(files_saved)}"
+            if vision_descriptions: goal = f"{goal}\n\n[THỊ GIÁC - MOONDREAM]:\n{vision_text}"
                 
-        if files_saved and vision_descriptions:
-            safe_send_message(MASTER_ID, f"📂 <b>MEDIA-GROUP:</b> Đã tiếp nhận {len(files_saved)} file và {len(images_base64)} ảnh vào vùng `Input`.", parse_mode="HTML")
-        elif files_saved:
-            safe_send_message(MASTER_ID, f"📂 <b>MEDIA-GROUP:</b> Đã nhận {len(files_saved)} file vào vùng `Input`.", parse_mode="HTML")
-        elif vision_descriptions:
-            safe_send_message(MASTER_ID, f"👁️ <b>MEDIA-GROUP:</b> Đã giải mã {len(images_base64)} hình ảnh thành công.", parse_mode="HTML")
+        if files_saved and vision_descriptions: safe_send_message(MASTER_ID, f"📂 <b>MEDIA-GROUP:</b> Đã tiếp nhận {len(files_saved)} file và {len(images_base64)} ảnh vào vùng `Input`.", parse_mode="HTML")
+        elif files_saved: safe_send_message(MASTER_ID, f"📂 <b>MEDIA-GROUP:</b> Đã nhận {len(files_saved)} file vào vùng `Input`.", parse_mode="HTML")
+        elif vision_descriptions: safe_send_message(MASTER_ID, f"👁️ <b>MEDIA-GROUP:</b> Đã giải mã {len(images_base64)} hình ảnh thành công.", parse_mode="HTML")
             
         execute_neural_command(goal, images=[], mode=mode)
     except Exception as e:
@@ -800,10 +620,8 @@ def check_and_buffer_media_group(message):
             if message.media_group_id not in media_group_buffer:
                 media_group_buffer[message.media_group_id] = []
             media_group_buffer[message.media_group_id].append(message)
-            
             if message.media_group_id in media_group_timers:
                 media_group_timers[message.media_group_id].cancel()
-                
             timer = threading.Timer(1.2, process_media_group, args=[message.media_group_id])
             media_group_timers[message.media_group_id] = timer
             timer.start()
@@ -823,19 +641,16 @@ def handle_photo(message):
         
         goal = message.caption or "[IMAGE_ONLY]"
         mode = "auto"
-        if goal.upper().startswith("[FAST]"):
-            mode = "fast"
-            goal = goal[6:].strip()
-        elif goal.upper().startswith("[DEEP]"):
-            mode = "deep"
-            goal = goal[6:].strip()
+        if goal.upper().startswith("[FAST]"): mode, goal = "fast", goal[6:].strip()
+        elif goal.upper().startswith("[DEEP]"): mode, goal = "deep", goal[6:].strip()
+        elif goal.upper().startswith("[AUTO]"): mode, goal = "auto", goal[6:].strip()
             
-        bot.reply_to(message, "👁️ <b>VISION:</b> Đang dùng Moondream Cục bộ (Local) để dịch ảnh thành trí thức...", parse_mode="HTML")
+        bot.reply_to(message, "👁️ <b>VISION:</b> Đang dùng Moondream Cục bộ (Local) để dịch ảnh thành tri thức...", parse_mode="HTML")
         vision_text = analyze_image_sync(encoded_string)
         
         if vision_text:
             goal = f"{goal}\n\n[THỊ GIÁC - MOONDREAM]:\n{vision_text}"
-            bot.reply_to(message, f"👁️ <b>ĐÃ GIẢI MÃ:</b>\n<i>{vision_text}</i>\n\nĐang truyền lên Não Bộ Trung Ương...", parse_mode="HTML")
+            bot.reply_to(message, f"👁️ <b>ĐÃ GIẢI MÃ:</b>\n<i>{vision_text}</i>\n\nĐang truyền lên Không Gian Tư Duy...", parse_mode="HTML")
         else:
             bot.reply_to(message, "⚠️ <b>VISION LỖI:</b> Không thể kết nối Mô hình Thị giác Cục bộ.", parse_mode="HTML")
             
@@ -855,9 +670,7 @@ def handle_document(message):
         input_dir = os.path.join(os.getcwd(), "files/Input")
         os.makedirs(input_dir, exist_ok=True)
         save_path = os.path.join(input_dir, file_name)
-        
-        with open(save_path, 'wb') as f:
-            f.write(downloaded_file)
+        with open(save_path, 'wb') as f: f.write(downloaded_file)
             
         goal = message.caption or f"[FILE_ONLY]: {file_name}"
         bot.reply_to(message, f"📂 <b>FILE:</b> Đã tiếp nhận `{file_name}` và nạp vào vùng `Input`.", parse_mode="HTML")
@@ -875,26 +688,36 @@ def handle_all(message):
     if input_hash == MASTER_HASH:
         try: bot.delete_message(message.chat.id, message.message_id)
         except Exception: pass
-        # Chuyển về Brain xử lý xác thực ngầm
         execute_neural_command(text)
         return
 
-    mode = "auto"
+    mode = "fast"
     if text.upper().startswith("[FAST]"):
         mode = "fast"
         text = text[6:].strip()
     elif text.upper().startswith("[DEEP]"):
         mode = "deep"
         text = text[6:].strip()
+    elif text.upper().startswith("[AUTO]"):
+        mode = "auto"
+        text = text[6:].strip()
     
     execute_neural_command(text, mode=mode)
 
 if __name__ == "__main__":
-    # 🕵️ [BOOT-SYNC]: Đảm bảo internet sẵn sàng trước khi nạp linh hồn
     if not wait_for_internet():
         print("⚠️ [RESILIENCE]: Không thể thiết lập kết nối internet sau 60s. Đang khởi động ở chế độ offline...")
     
+    # 🛡️ [TELE-TIMEOUT-GUARD]: Set HTTP Read/Connect timeouts higher than Telegram long_polling_timeout (20s)
+    telebot.apihelper.READ_TIMEOUT = 90
+    telebot.apihelper.CONNECT_TIMEOUT = 30
+
     threading.Thread(target=init_whisper, daemon=True).start()
     threading.Thread(target=log_listener, daemon=True).start()
-    print("🚀 [JKAI-TELEGRAM] Bot is polling...")
-    bot.infinity_polling()
+    print("🚀 [JKAI-TELEGRAM] Bot is polling with resilient timeouts (READ_TIMEOUT=90s)...")
+    while True:
+        try:
+            bot.infinity_polling(timeout=60, long_polling_timeout=20)
+        except Exception as e:
+            print(f"⚠️ [TELE-POLLING-RETRY] Polling exception caught: {e}. Retrying in 5s...")
+            time.sleep(5)

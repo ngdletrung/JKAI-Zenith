@@ -1,0 +1,21 @@
+{
+    "id": "CODE_GREP",
+    "name": "Code Grep",
+    "name_vn": "Tìm kiếm mã nguồn",
+    "description": "Search for a keyword or string in all code and text files across the workspace.",
+    "domain": "CORE",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "query": {
+                "type": "string",
+                "description": "The search query or keyword to find."
+            },
+            "max_hits": {
+                "type": "integer",
+                "description": "Maximum number of search results to return. Default is 25."
+            }
+        },
+        "required": ["query"]
+    }
+}

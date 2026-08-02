@@ -1,0 +1,49 @@
+{
+  "id": "SKILL_SYS_11_AUTOSCALING",
+  "name": "Zenith Dynamic Autoscaling",
+  "version": "1.0.0",
+  "description": "Elastic infrastructure core: Manages the automatic scaling of containerized services based on resource demand and performance metrics.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "tự động giãn nở",
+    "autoscaling",
+    "mở rộng hạ tầng tự động",
+    "elastic scale",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "thong",
+    "luong",
+    "nang",
+    "tang",
+    "dich",
+    "nguyen",
+    "scale",
+    "container",
+    "zenith",
+    "gian",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "target_service": {
+          "type": "string",
+          "description": "The service to scale."
+        },
+        "threshold": {
+          "type": "number",
+          "description": "CPU/RAM threshold to trigger scaling."
+        }
+      }
+    }
+  }
+}

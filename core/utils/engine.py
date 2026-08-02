@@ -17,15 +17,22 @@ import httpx
 import asyncio
 import re
 import time
+import threading
+import functools
 from core.qdrant_client import qdrant_client
 from core.utils.embed import embed
 from core.utils.hlc import hlc
 from core.utils import path_manager
+from core.utils.regex import THINK_TAG, CODE_BLOCK_JSON, JSON_BLOCK, extract_json, strip_think_tags
 from core.utils.models import RoleConfig, NeuralProfile, ModelOptions, TaskBudget, BudgetLedger
 from core.utils.model_router import ModelRouter
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger('UIE')
+
+class MasterAbortException(BaseException):
+    """Emergency abort signal from Master to stop execution immediately."""
+    pass
 
 class JKAIIntelligenceEngine:
     def __init__(self):
@@ -45,6 +52,14 @@ class JKAIIntelligenceEngine:
         self.ollama_host = self.ollama_host_gpu # Default for legacy functions
         self.current_service_url = None # 🏛️ [IDENTITY-TAG]: Sẽ được set bởi service 
         self.is_brain_service = False # Legacy flag
+        self.request_cache: dict = {} # Shared context cho 1 request (task_id -> data)
+        self._routing_stats_lock = threading.Lock()
+        self._request_cache_lock = threading.Lock()
+        self.routing_stats: dict = {"total": 0, "bypass": 0, "fast": 0, "deep": 0, "ollama_offline": 0, "llm_override": 0, "replan": 0, "forge_noop": 0, "step_timeout": 0}
+        self._stats_save_counter: int = 0
+        self._stats_save_interval: int = 10  # Lưu Redis mỗi 10 request
+        self.load_routing_stats()
+        self._schedule_cache_cleanup()
 
         # Automatically translate container hosts when running outside of docker.
         is_docker = os.path.exists('/.dockerenv')
@@ -81,12 +96,13 @@ class JKAIIntelligenceEngine:
         self._role_mapping_cache = {} # Ensure this is initialized
         self.global_params = {}
         # 🔒 [ELITE REDIS LOCKS]: Khóa toàn cục hệ thống 
-        self.lock_timeout = 180 # 3 phút tối đa chờ nơ-ron
+        self.lock_timeout = 30 # 30 giây tối đa chờ nơ-ron (Hạ nhiệt tránh treo 3 phút)
         
         # [QUANTUM-LEAP v31.0]: Thực thi Processor Affinity 
         self._apply_hardware_affinity()
         self.agent_profiles_cache = {}
-        self._intel_file_cache = {}
+        self._software_rules_cache = None  # (mtime, configs) cho load_software_rules
+        self._structured_output = None  # Lazy init for structured output wrapper
 
     def _load_agent_profiles(self):
         """📂 [SINGULARITY-LOAD]: Nạp toàn bộ tinh hoa Đặc vụ vào RAM ."""
@@ -196,9 +212,12 @@ class JKAIIntelligenceEngine:
         pass
 
     def _get_client(self):
-        """Khởi tạo hoặc trả về Client dùng chung để tối ưu TCP ."""
+        """Khởi tạo hoặc trả về Persistent Async Connection Pool dùng chung để tối ưu HTTP Keep-Alive & giảm TCP Overhead."""
         if self._client is None or self._client.is_closed:
-            self._client = httpx.AsyncClient(timeout=600.0, limits=httpx.Limits(max_keepalive_connections=10, max_connections=20))
+            self._client = httpx.AsyncClient(
+                timeout=httpx.Timeout(600.0, connect=15.0, read=300.0),
+                limits=httpx.Limits(max_keepalive_connections=100, max_connections=200, keepalive_expiry=300.0)
+            )
         return self._client
 
     def _get_redis(self):
@@ -221,82 +240,82 @@ class JKAIIntelligenceEngine:
         return self._redis_conn
 
     def _publish_thought(self, role, thought, task_id="system", stream_id=None, is_delta=False, is_first_chunk=False):
-        """Phát sóng luồng tư duy lên Dashboard - Enterprise v31.2"""
-        try:
-            r = self._get_redis()
-            if r and thought:
-                from datetime import datetime
-                iso_time = datetime.now().isoformat()
-                
-                # Assign default log level
-                level = "[INFO]"
-                if "error" in thought.lower() or "lỗi" in thought.lower() or "[ERR" in thought:
-                    level = "[ERROR]"
-                elif "warn" in thought.lower() or "cảnh báo" in thought.lower():
-                    level = "[WARN]"
-                elif "vram" in thought.lower() or "cpu" in thought.lower():
-                    level = "[METRIC]"
-                    
-                if is_delta:
-                    if is_first_chunk:
-                        msg = f"{level} [{iso_time}] [{role}] [Task: {task_id}] {thought}"
-                    else:
-                        msg = thought
-                else:
-                    msg = f"{level} [{iso_time}] [{role}] [Task: {task_id}] {thought.strip()}"
-                    
-                display_tag = role.upper()
-                payload = {
-                    "tag": display_tag, "msg": msg, "ts": time.time(), "task_id": task_id or "system", "source": display_tag, "iso_time": iso_time
-                }
-                if is_delta:
-                    payload["is_delta"] = True
-                if stream_id:
-                    payload["id"] = stream_id
-                    payload["pin_id"] = stream_id
-                log_payload = json.dumps(payload, ensure_ascii=False)
-                # [BROADCAST]: Phát tín hiệu tới cả hai kênh để đồng bộ 100%
-                r.publish("monitor:log_channel", log_payload)
-                r.publish("monitor:progress_channel", log_payload)
-                if not is_delta:
-                    r.lpush("monitor:log_history", log_payload)
-                    r.ltrim("monitor:log_history", 0, 499)
-                    r.lpush("monitor:progress_history", log_payload)
-                    r.ltrim("monitor:progress_history", 0, 1999)
-        except Exception as e:
-            logger.error(f"[LOG_ERROR] Could not publish thought: {e}")
+        from core.utils.log_engine import log_engine
+        log_engine.publish_thought(role, thought, task_id, stream_id, is_delta, is_first_chunk, redis_conn=self._get_redis())
 
     def publish_mission_log(self, tag, msg, task_id="system", trace_id=None, stealth=False):
-        """
-        [STRATEGIC-LOG]: Giao thức Nhật ký Chiến lược .
-        Tinh giản tối đa để đảm bảo tốc độ phản xạ ánh sáng.
-        """
-        r = self._get_redis()
-        if r and msg:
-            try:
-                payload_data = {
-                    "tag": tag,
-                    "msg": msg,
-                    "ts": time.time(),
-                    "task_id": task_id,
-                    "hlc": str(hlc.now())
-                }
-                if stealth:
-                    payload_data["stealth"] = True
-                
-                payload = json.dumps(payload_data, ensure_ascii=False)
-                
-                r.publish("monitor:log_channel", payload)
-                r.publish("monitor:progress_channel", payload)
-                r.lpush("monitor:log_history", payload)
-                r.ltrim("monitor:log_history", 0, 999)
-                r.lpush("monitor:progress_history", payload)
-                r.ltrim("monitor:progress_history", 0, 1999)
-            except Exception as e:
-                logger.error(f"❌ [LOG-ERR]: {e}")
+        from core.utils.log_engine import log_engine
+        log_engine.publish_mission_log(tag, msg, task_id, trace_id, stealth, redis_conn=self._get_redis())
+
+    def _increment_stat(self, key: str, delta: int = 1) -> None:
+        """Thread-safe increment cho routing_stats."""
+        with self._routing_stats_lock:
+            new_val = self.routing_stats.get(key, 0) + delta
+            self.routing_stats[key] = new_val
+
+    def save_routing_stats(self, force: bool = False):
+        """Batch save routing_stats xuống Redis — mặc định chỉ save mỗi N request."""
+        with self._routing_stats_lock:
+            if not force:
+                self._stats_save_counter += 1
+                if self._stats_save_counter < self._stats_save_interval:
+                    return
+                self._stats_save_counter = 0
+        try:
+            r = self._get_redis()
+            if r:
+                r.setex("jkai:routing_stats", 86400 * 7, json.dumps(self.routing_stats))
+        except Exception:
+            pass
+
+    def load_routing_stats(self):
+        """Khôi phục routing_stats từ Redis."""
+        try:
+            r = self._get_redis()
+            if r:
+                data = r.get("jkai:routing_stats")
+                if data:
+                    stored = json.loads(data)
+                    with self._routing_stats_lock:
+                        stored.update(self.routing_stats)
+                        self.routing_stats = stored
+        except Exception:
+            pass
+
+    def cache_put(self, task_id, key, value):
+        """Thread-safe write vào request_cache."""
+        with self._request_cache_lock:
+            entry = self.request_cache.setdefault(task_id, {})
+            entry[key] = value
+            entry["_ts"] = time.time()
+
+    def cache_get(self, task_id, key, default=None):
+        """Thread-safe read từ request_cache."""
+        with self._request_cache_lock:
+            entry = self.request_cache.get(task_id)
+            if entry is None:
+                return default
+            return entry.get(key, default)
+
+    def _schedule_cache_cleanup(self):
+        """Daemon thread dọn request_cache mỗi 5 phút để tránh memory leak."""
+        def _cleanup():
+            while True:
+                time.sleep(300)
+                cutoff = time.time() - 1800  # 30 phút
+                with self._request_cache_lock:
+                    stale = [
+                        tid for tid, data in self.request_cache.items()
+                        if isinstance(data, dict) and data.get("_ts", 0) < cutoff
+                    ]
+                    for tid in stale:
+                        self.request_cache.pop(tid, None)
+                if stale:
+                    logger.info("[ENGINE] Cleaned %d stale entries from request_cache", len(stale))
+        t = threading.Thread(target=_cleanup, daemon=True)
+        t.start()
 
     def publish_progress(self, pct, msg, *args, **kwargs):
-        """Giao thức Phát sóng Tiến độ chuẩn v12.0 ."""
         task_id = "system"
         phase = "system"
         trace_id = None
@@ -315,82 +334,29 @@ class JKAIIntelligenceEngine:
         phase = kwargs.get("phase", phase)
         trace_id = kwargs.get("trace_id", trace_id)
 
-        r = self._get_redis()
-        if r:
-            try:
-                payload = json.dumps({
-                    "tag": "PROGRESS",
-                    "pct": pct,
-                    "msg": msg,
-                    "task_id": task_id,
-                    "phase": phase,
-                    "trace_id": trace_id,
-                    "ts": time.time()
-                }, ensure_ascii=False)
-                r.publish("monitor:log_channel", payload)
-                r.publish("monitor:progress_channel", payload)
-            except Exception: pass
+        from core.utils.log_engine import log_engine
+        log_engine.publish_progress(pct, msg, phase, task_id, trace_id, redis_conn=self._get_redis())
 
-    def get_intel_file(self, filename):
-        """
-        👑 [HYBRID-TWO-TIER-CACHE]: Hệ thống bộ nhớ đệm 2 lớp tối thượng thưa Master.
-        - L1 (Local RAM Cache): Tốc độ chạm đáy tuyệt đối (0.01ms), cục bộ cho mỗi tiến trình.
-        - L2 (Shared Redis Cache): Đồng bộ hóa liên container (0.5ms), tránh toàn bộ Disk I/O cho mọi cụm Docker.
-        - Tự động đồng bộ và invalidation theo mtime (Modification Time) thời gian thực thưa Ngài.
-        """
+    def get_intel_file(self, filename, task_id=None):
+        if task_id and task_id in self.request_cache:
+            pcache = self.request_cache[task_id].get("prompt_cache")
+            if pcache and filename in pcache:
+                return pcache[filename]
+        from core.utils.cache_engine import cache_engine
         intel_dir = os.path.join(path_manager.get_root(), 'intelligence')
-        base_paths = [
-            '/intelligence', '/intelligence/identity', '/intelligence/context', 
-            '/intelligence/agents', '/intelligence/rules', '/intelligence/skills',
-            intel_dir, os.path.join(intel_dir, 'identity'), os.path.join(intel_dir, 'context')
-        ]
-        clean_name = filename[2:] if filename.startswith('./') else filename
-        for bp in base_paths:
-            full_path = os.path.join(bp, clean_name)
-            if os.path.exists(full_path) and os.path.isfile(full_path):
-                try:
-                    mtime = os.path.getmtime(full_path)
-                    
-                    # 🥇 [L1-CACHE]: Kiểm tra RAM cục bộ của tiến trình thưa Master
-                    if full_path in self._intel_file_cache:
-                        cached_mtime, cached_content = self._intel_file_cache[full_path]
-                        if cached_mtime == mtime:
-                            return cached_content
-                    
-                    # 🥈 [L2-CACHE]: Kiểm tra RAM dùng chung (Shared Redis) giữa các container thưa Ngài
-                    import hashlib
-                    redis_key = f"intel_cache:{hashlib.md5(full_path.encode('utf-8')).hexdigest()}"
-                    r_conn = self._get_redis()
-                    
-                    if r_conn:
-                        try:
-                            shared_data = r_conn.get(redis_key)
-                            if shared_data:
-                                parsed = json.loads(shared_data)
-                                if parsed.get("mtime") == mtime:
-                                    content = parsed.get("content")
-                                    # Đồng bộ ngược lại L1 để tối ưu lượt tiếp theo
-                                    self._intel_file_cache[full_path] = (mtime, content)
-                                    return content
-                        except Exception: pass
-                    
-                    # 🥉 [DISK-READ]: Nếu cả L1 và L2 đều lỡ nhịp, đọc đĩa cứng và cập nhật đồng bộ thưa Master
-                    with open(full_path, 'r', encoding='utf-8') as f:
-                        content = f.read()
-                    
-                    # Cập nhật L1 thưa Master
-                    self._intel_file_cache[full_path] = (mtime, content)
-                    
-                    # Cập nhật L2 thưa Ngài
-                    if r_conn:
-                        try:
-                            payload = json.dumps({"mtime": mtime, "content": content}, ensure_ascii=False)
-                            r_conn.setex(redis_key, 86400, payload) # Cache trong 24 giờ
-                        except Exception: pass
-                        
-                    return content
-                except Exception: pass
-        return None
+        result = cache_engine.get_intel_file(filename, intel_dir, redis_conn=self._get_redis())
+        if task_id and task_id in self.request_cache:
+            pcache = self.request_cache[task_id].setdefault("prompt_cache", {})
+            pcache[filename] = result
+        return result
+
+    async def get_brain_knowledge(self, agent_soul_file: str) -> str:
+        from core.utils.knowledge_manager import knowledge_orchestrator
+        return await knowledge_orchestrator.get_brain_knowledge(agent_soul_file) or ""
+
+    def init_request_cache(self, task_id):
+        self.request_cache[task_id] = self.request_cache.get(task_id, {})
+        self.request_cache[task_id].setdefault("prompt_cache", {})
 
     def _get_smart_params(self):
         self._router._refresh_rules_if_needed()
@@ -554,21 +520,19 @@ class JKAIIntelligenceEngine:
                 val = r.decr(self._get_active_key(model_name))
                 if val < 0: r.set(self._get_active_key(model_name), 0)
             except Exception: pass
-        # [VRAM-UNLOAD]: Thực sự giải phóng model khỏi VRAM bằng cách gửi keep_alive=0
-        try:
-            client = self._get_client()
-            for host in [self.ollama_host_gpu, self.ollama_host_cpu]:
-                await client.post(
-                    f"{host}/api/generate",
-                    json={"model": model_name, "prompt": "", "keep_alive": 0},
-                    timeout=3.0
-                )
-        except Exception: pass
+        # [MODE-SWITCHER-LOCK]: Bộ điều chuyển làn (ModeSwitcher) duy trì trạng thái cư trú của model trong RAM/VRAM.
+        # Không gửi keep_alive=0 tại đây để cho phép tái dùng mãi theo từng chế độ Fast/Deep.
 
     def get_role_config(self, role):
         self._get_smart_params()
         role = role.upper()
         role_data = self._role_mapping_cache.get(role)
+        
+        # 🛡️ [RESERVE-AGENT-MAPPING]: Bản lề thần kỳ định tuyến RESERVE_AGENT sang EXECUTOR (GPU/VRAM) khi CPU PLANNER quá tải
+        if not role_data and role in ["RESERVE_AGENT", "RESERVE_PLANNER"]:
+            role_data = self._role_mapping_cache.get("EXECUTOR_BETA") or self._role_mapping_cache.get("EXECUTOR")
+            if role_data:
+                return role_data if isinstance(role_data, dict) else role_data.to_dict()
         
         if not role_data:
             logger.warning(f"[ENGINE] Role '{role}' undefined. Activating fallback protocol...")
@@ -601,7 +565,24 @@ class JKAIIntelligenceEngine:
             if os.path.exists(p):
                 sw_path = p
                 break
+
+        # RAM cache with mtime check — tránh đọc + parse file mỗi call_chat
+        if sw_path:
+            try:
+                now = time.time()
+                last_checked = getattr(self, '_software_rules_last_checked', 0)
+                if self._software_rules_cache is not None and (now - last_checked < 5.0):
+                    return self._software_rules_cache[1]
                 
+                self._software_rules_last_checked = now
+                current_mtime = os.path.getmtime(sw_path)
+                if self._software_rules_cache is not None:
+                    cached_mtime, cached_configs = self._software_rules_cache
+                    if cached_mtime == current_mtime:
+                        return cached_configs
+            except Exception:
+                pass
+
         if sw_path:
             try:
                 with open(sw_path, 'r', encoding='utf-8') as f:
@@ -655,7 +636,66 @@ class JKAIIntelligenceEngine:
                 elif p == 'deepseek':
                     configs[p]['base_url'] = 'https://api.deepseek.com'
                     
+        # Save to RAM cache for next call
+        if sw_path:
+            try:
+                self._software_rules_cache = (os.path.getmtime(sw_path), configs)
+            except Exception:
+                pass
+
         return configs
+
+
+    async def search_memory(self, query: str, task_id: str = None) -> str:
+        """[INTERNAL-SEARCH]: Tra cứu dữ liệu nội bộ (jkai_external)."""
+        from core.knowledge_sources.retriever import retriever
+        q_lower = query.lower()
+        is_temporal = any(kw in q_lower for kw in ["mới nhất", "gần đây", "recent", "newest", "latest", "mới", "cuối cùng"])
+        try:
+            if is_temporal:
+                qdrant_url = os.getenv("QDRANT_URL", "http://qdrant:6333")
+                async with httpx.AsyncClient(timeout=10) as client:
+                    # Lấy tổng số point để scroll hết
+                    info_resp = await client.get(f"{qdrant_url}/collections/jkai_external")
+                    total = 0
+                    if info_resp.status_code == 200:
+                        total = info_resp.json().get("result", {}).get("points_count", 0)
+                    limit = min(total or 1200, 2000)
+                    scroll_resp = await client.post(
+                        f"{qdrant_url}/collections/jkai_external/points/scroll",
+                        json={"limit": limit, "with_payload": True, "with_vector": False},
+                    )
+                    if scroll_resp.status_code == 200:
+                        points = scroll_resp.json().get("result", {}).get("points", [])
+                        points.sort(key=lambda p: p.get("payload", {}).get("indexed_at", 0), reverse=True)
+                        parts = []
+                        for p in points[:5]:
+                            pl = p.get("payload", {})
+                            parts.append(f"File: {pl.get('filename','?')} | Path: {pl.get('rel_path','')}")
+                        if parts:
+                            return "\n".join(parts)
+            else:
+                res = await retriever.search(query, top_k=5, sources=["jkai_external"])
+                if res.results:
+                    parts = []
+                    for m in res.results:
+                        pl = m.get("payload", {})
+                        fname = pl.get("filename", "?")
+                        text = pl.get("text", "")
+                        parts.append(f"[{fname}] {text[:200]}")
+                    return "\n".join(parts[:10])
+        except Exception:
+            pass
+        return "Khong tim thay du lieu noi bo phu hop."
+
+    async def get_vector_size(self, model: str = None) -> int:
+        """📏 Proxy to embedder for vector dimension lookup."""
+        from core.utils.embed import embedder
+        try:
+            sample = await embedder.get_embedding_async("JKAI", model)
+            return len(sample) if sample else 768
+        except Exception:
+            return 768
 
 
     async def get_embeddings(self, text, model=None):
@@ -683,7 +723,8 @@ class JKAIIntelligenceEngine:
 
         # Step 1: Spatial Memory (preferred_geolocation in experience.json)
         try:
-            intel_dir = os.getenv("INTELLIGENCE_DIR") or "d:\\Docker\\JKAI\\intelligence"
+            from core.config import settings
+            intel_dir = settings.INTELLIGENCE_DIR
             exp_path = os.path.join(intel_dir, "experience.json")
             if os.path.exists(exp_path):
                 with open(exp_path, "r", encoding="utf-8") as f:
@@ -882,16 +923,22 @@ class JKAIIntelligenceEngine:
         self._geo_cache_time = now
         return loc
 
+    @property
+    def structured_output(self):
+        if self._structured_output is None:
+            from core.utils.structured_output import init_structured_output
+            self._structured_output = init_structured_output(self)
+        return self._structured_output
 
-    async def call_chat(self, messages, role='CHAT', model=None, json_mode=False, schema=None, options=None, profile=None, keep_alive=None, task_id=None, images=None, tools=None, **kwargs):
+    async def call_chat(self, messages, role='RECEPTIONIST', model=None, json_mode=False, schema=None, options=None, profile=None, keep_alive=None, task_id=None, images=None, tools=None, skip_identity=False, skip_build_final=False, **kwargs):
         """
         API giao tiếp với Bộ não Trung tâm (Ollama Dual-Engine).
         Tích hợp [DYNAMIC KEEP-ALIVE] & [COGNITIVE PROFILE].
         Hỗ trợ [NATIVE TOOL CALLING] (Function Calling).
         """
         # [MICROSERVICE-ROUTING]: Central multi-tier routing protocol
-        # [SELF-AWARENESS]: Direct cognitive bypass for core brain services
-        if self.is_brain_service and role in ['CICE', 'RECEPTIONIST', 'CRITIC', 'CRITIC_ALPHA', 'DISPATCHER', 'CHAT']:
+        # [SELF-AWARENESS]: Direct cognitive bypass for core brain services (Giữ toàn bộ vai trò Tư duy/Kế hoạch/Pháo đài xử lý tại chỗ trong ai-brain)
+        if self.is_brain_service and role not in ['EXECUTOR', 'EXECUTOR_ALPHA', 'EXECUTOR_BETA']:
             services = []
         else:
             services = [
@@ -920,7 +967,10 @@ class JKAIIntelligenceEngine:
                     logger.info(f"[NEURAL-QUEUE] GPU đang bận. {service_name} sẽ chờ nơ-ron giải phóng...")
 
                 self._publish_thought(role, f"[ROUTING]: Đang chuyển hướng tới {service_name} ({service_url})...", task_id)
+                from core.utils.otlp_tracer import generate_trace_parent
+                traceparent_hdr = generate_trace_parent(task_id)
                 routing_timeout = min(kwargs.get('timeout', 900.0), 300.0)
+                t_start = time.perf_counter()
                 resp = await client.post(f"{service_url}/chat", json={
                     "messages": messages, "role": role, "model": model,
                     "json_mode": json_mode, "schema": schema, "options": options,
@@ -928,83 +978,76 @@ class JKAIIntelligenceEngine:
                     "images": images, "lock_timeout": kwargs.get('lock_timeout', 60),
                     "timeout": routing_timeout,
                     "hlc": str(hlc.now())
-                }, timeout=routing_timeout)
+                }, headers={"traceparent": traceparent_hdr}, timeout=routing_timeout)
                 
                 res_data = resp.json()
-                return res_data.get('response') or res_data.get('answer') or ''
+                ans = res_data.get('response') or res_data.get('answer') or ''
+                t_elapsed_ms = (time.perf_counter() - t_start) * 1000.0
+                self.publish_mission_log(
+                    "SYSTEM",
+                    f"⚡ [TELEMETRY]: Role={role} | Model={model or 'default'} | Latency={t_elapsed_ms:.1f}ms | Output={len(ans)} chars",
+                    task_id
+                )
+                return ans
             except Exception as e:
+                r_check = self._get_redis()
+                if r_check and (r_check.get("agent:stop_signal") in [b'true', 'true'] or (task_id and r_check.get(f"agent:stop_signal:{task_id}") in [b'true', 'true'])):
+                    raise MasterAbortException("Mission aborted by Master.") from e
                 logger.error(f"❌ [ENGINE-CHAT-ERR]: {type(e).__name__}: {repr(e)}")
                 continue
                 
-        # [METADATA-INJECTION]: Giao thuc thoi gian thuc va vi tri dia ly he thong
-        import datetime
-        import pytz
-        tz = pytz.timezone('Asia/Ho_Chi_Minh')
-        current_time = datetime.datetime.now(tz)
-        days = ["Thu Hai", "Thu Ba", "Thu Tu", "Thu Nam", "Thu Sau", "Thu Bay", "Chu Nhat"]
-        
-        try:
-            geo_loc = await self.get_dynamic_geolocation()
-        except Exception:
-            import os
-            geo_loc = os.getenv("DEFAULT_GEOLOCATION", "Hue")
-            
-        try:
-            from core.utils.world_state import world_engine
-            world_context = world_engine.get_world_context_string()
-        except Exception:
-            world_context = "[WORLD STATE]\n- CPU: N/A | RAM: N/A\n- Tinh trang: Unknown"
-            
-        metadata_str = (
-            f"[SYSTEM_TIME]: Hien tai la {current_time.strftime('%H:%M')}, {days[current_time.weekday()]}, ngay {current_time.strftime('%d/%m/%Y')} (Gio Viet Nam GMT+7).\n"
-            f"[SYSTEM_GEOLOCATION]: Vi tri dia ly thuc te cua he thong va nguoi dung hien tai: {geo_loc}.\n"
-            f"{world_context}"
-        )
-        
-        if messages and messages[0].get('role') == 'system':
-            if "[SYSTEM_TIME]" not in messages[0]['content']:
-                messages[0]['content'] += f"\n\n{metadata_str}"
-        else:
-            messages.insert(0, {"role": "system", "content": metadata_str})
-        
-        # [IDENTITY-INJECTION]: Cường chế bản sắc cho vai trò CHAT thưa Master
-        if role.upper() == 'CHAT':
-            identity_dna = self.get_intel_file("ZENITH_IDENTITY.md")
-            if identity_dna:
-                messages.insert(0, {"role": "system", "content": f"🏛️ [ZENITH-IDENTITY]:\n{identity_dna}"})
-
-        # [DYNAMIC-MIND-FORGING]: Giao thức Não Vô Biên 
-        if not kwargs.get('skip_forge'):
-            try:
-                if not self.agent_profiles_cache: self._load_agent_profiles()
-                # Chọn ra 3 hồ sơ Đặc vụ phù hợp nhất để hợp nhất 
-                context_query = messages[-1]['content'] if messages else ""
-                relevant_profiles = [v for k,v in self.agent_profiles_cache.items() if any(word in v.lower() for word in context_query.lower().split())][:3]
-                if relevant_profiles:
-                    dynamic_mind = "\n\n".join(relevant_profiles)
-                    messages.insert(0, {"role": "system", "content": f"🏛️ [OMNI-MINDSET]: Bạn là sự nhất thể của các Đặc vụ Elite sau:\n{dynamic_mind}"})
-                    self._publish_thought(role, "[SINGULARITY]: Đã đúc kết Hệ tư tưởng Đa tầng .", task_id)
-            except Exception: pass
-
-        # [COGNITIVE-BRIDGE]: Đồng bộ 'khẩu vị' tri thức theo kiến trúc Model thưa Master
+        # [PROMPT-ENGINE-INJECTION]: Single entry point — inject_to_messages + cognitive_bridge + memory
+        from prompt_engine.core import prompt_core
         role_cfg = self.get_role_config(role)
         final_model = model or role_cfg.get('model')
-        messages = self._bridge_cognitive_schema(final_model, messages)
 
-        # [AUTO-CONTEXT-INJECTION]: Giao thức Thấu thị Vĩnh cửu 
-        if not kwargs.get('skip_memory'):
+        memory_context = ""
+        # ⚡ [LAZY-RAG-GATE]: Chỉ kích hoạt RAG Qdrant khi query có chứa từ khóa tra cứu KB hoặc khi force_rag=True
+        _kb_keywords = ["jkai", "quy trình", "hệ thống", "dự án", "báo cáo", "quá khứ", "lịch sử", "rule", "hướng dẫn", "tri thức", "kiến thức"]
+        query_str = (messages[-1]['content'] if messages else "").lower()
+        should_rag = kwargs.get('force_rag') or any(kw in query_str for kw in _kb_keywords)
+        if not kwargs.get('skip_memory') and should_rag:
             try:
-                # Trích xuất goal từ tin nhắn cuối cùng để tìm kiếm 
-                query = messages[-1]['content'] if messages else ""
-                if len(query) > 10:
-                    vector = await embed.get_embedding_async(query[:1000])
+                if len(query_str) > 10:
+                    vector = await embed.get_embedding_async(query_str[:1000])
                     if vector:
-                        memories = await qdrant_client.search_intel(vector, limit=3)
+                        memories = await qdrant_client.search_similar(vector, limit=3)
                         if memories:
                             mem_text = "\n".join([f"- {m.get('payload', {}).get('text', '')}" for m in memories])
-                            messages.insert(0, {"role": "system", "content": f"[EXPERIENCE DNA]: Dựa trên di sản tri thức quá khứ, hãy lưu ý:\n{mem_text}"})
+                            memory_context = mem_text
                             self._publish_thought(role, "[OMNIPRESENT]: Đã nạp di sản tri thức từ Qdrant .", task_id)
             except Exception: pass
+
+        # 🛡️ [ANTIGRAVITY EXECUTIVE SHIELD]: Tự động bảo vệ system prompt chuyên nghiệp của các Đặc vụ Chức năng khỏi bị ghi đè
+        exec_roles = ["PLANNER", "RESERVE_AGENT", "CRITIC", "SUMMARIZER", "EXECUTOR", "EXECUTOR_ALPHA", "EXECUTOR_BETA", "EXECUTOR_GAMMA", "META_PLANNER"]
+        if not skip_build_final and role.upper() not in exec_roles:
+            messages = prompt_core.build_final(
+                messages=messages,
+                role=role,
+                model=final_model,
+                task_id=task_id,
+                skip_identity=skip_identity,
+                extra_context={"json_mode": json_mode},
+                memory_context=memory_context,
+            )
+            # Inject context-specific reminders
+            try:
+                from prompt_engine.injected_reminders import inject_reminder
+                if final_model and 'model_switched' in str(kwargs.get('_flags', '')):
+                    msg_content = messages[0]["content"] if messages else ""
+                    messages[0]["content"] = inject_reminder(msg_content, "model_switched")
+                if kwargs.get('brief_mode'):
+                    msg_content = messages[0]["content"] if messages else ""
+                    messages[0]["content"] = inject_reminder(msg_content, "brief_mode")
+            except Exception:
+                pass
+        elif memory_context:
+            # Still inject memory without overwriting the caller's custom system prompt
+            mem_block = f"\n\n<memory>\n{memory_context}\n</memory>"
+            if messages and messages[0].get("role") == "system":
+                messages[0]["content"] += mem_block
+            else:
+                messages.insert(0, {"role": "system", "content": mem_block})
 
         # --- TIẾP TỤC LOGIC GỌI MODEL TRỰC TIẾP ---
         duration = 0.0
@@ -1028,6 +1071,8 @@ class JKAIIntelligenceEngine:
                 '0.6b' in f_model_lower or 
                 '0.5b' in f_model_lower or 
                 '1.5b' in f_model_lower or 
+                'qwen3.5' in f_model_lower or
+                '4b' in f_model_lower or
                 'tiny' in f_model_lower
             ):
                 use_manual_react = True
@@ -1046,11 +1091,11 @@ class JKAIIntelligenceEngine:
                     self.publish_mission_log("WARN", f"[FALLBACK]: Khoi chay co che du phong cho {final_model}...")
                     try:
                         from core.utils.hardware_scheduler import hardware_scheduler
-                        fb_info = await hardware_scheduler.resolve_smart_fallback(final_model, self, [role, "CHAT", "RESERVE_AGENT"])
+                        fb_info = await hardware_scheduler.resolve_smart_fallback(final_model, self, [role, "RECEPTIONIST", "RESERVE_AGENT"])
                         if fb_info and fb_info.get("model"):
                             final_model = fb_info["model"]
                             # Preserve high-level role identity if falling back to generic roles
-                            if role not in ['RECEPTIONIST', 'PLANNER', 'DISPATCHER', 'CRITIC'] or fb_info.get("role") not in ["RESERVE_AGENT", "CHAT"]:
+                            if role not in ['RECEPTIONIST', 'PLANNER', 'CRITIC'] or fb_info.get("role") not in ["RESERVE_AGENT", "RECEPTIONIST"]:
                                 role = fb_info.get("role", role)
                             role_cfg = self.get_role_config(role)
                             self.publish_mission_log("INFO", f"[SMART-FALLBACK]: Dong bo mo hinh thanh cong. Chuyen sang Role: {role}, Model: {final_model}")
@@ -1060,14 +1105,14 @@ class JKAIIntelligenceEngine:
                         break
 
             # Estimate context length to auto-route long context queries to Gemini
+            # Vietnamese + code tokenizes denser than English (~3 chars/token, not 4)
             total_chars = sum(len(m.get('content', '')) for m in messages)
-            estimated_tokens = total_chars // 4
-            
+            estimated_tokens = total_chars // 3
+
             configs = self.load_software_rules()
             gemini_key = configs.get('gemini', {}).get('api_key')
-            
-            # [COST-GOVERNOR]: Kiểm tra ngân sách cloud trước khi route
-            # Hạ ngưỡng về 8000 để bảo vệ VRAM của GPU AMD RX 6600 thưa Master
+
+            # [COST-GOVERNOR]: Route to Gemini only when context truly exceeds local capacity (>8000 tokens)
             if estimated_tokens > 8000 and gemini_key and not any(final_model.lower().startswith(p) for p in ['gemini-', 'gpt-', 'claude-']):
                 if attempt > 0 and forced_cloud:
                     self.publish_mission_log("ERROR", f"❌ Ngữ cảnh quá lớn ({estimated_tokens} tokens) nhưng Cloud API đã thất bại. Hủy bỏ để bảo vệ hệ thống.", task_id)
@@ -1132,7 +1177,17 @@ class JKAIIntelligenceEngine:
                 for k, v in preset.items():
                     if k.lower() not in final_options:
                         final_options[k.lower()] = v
-            
+
+            # [ROLE-DYNAMIC-SCALING]: Chỉ điều chỉnh temperature theo Role — num_ctx được đọc từ rule_hardware.md (SSoT)
+            role_upper = str(role).upper()
+            if "CRITIC" in role_upper:
+                final_options["temperature"] = 0.1
+            elif "PLANNER" in role_upper or "META_PLANNER" in role_upper:
+                final_options["temperature"] = 0.2
+            elif "RECEPTIONIST" in role_upper:
+                final_options["temperature"] = 0.7
+
+
             # [CPU-OFFLOAD]: Ép chạy trên CPU nếu là tác vụ giám sát nhẹ hoặc được yêu cầu 
             is_small = any(k in final_model.lower() for k in ["1.5b", "0.5b", "tiny", "phi3"])
             hw_col = role_cfg.get('hardware', '').upper()
@@ -1162,6 +1217,11 @@ class JKAIIntelligenceEngine:
                 if str(final_keep_alive).replace('-', '').isdigit():
                     final_keep_alive = int(final_keep_alive)
             except Exception: pass
+
+            # [STAY-ALIVE-OVERRIDE]: KEEP_ALIVE=0 trong rule_hardware.md dùng để skip boot warmup.
+            # Khi thực thi lệnh thực tế, ép về -1 (cất giữ mãi theo Làn ModeSwitcher), trừ model ảnh ngắn hạn.
+            if str(final_keep_alive) == '0' and str(role).upper() != 'GRAPHIC_MASTER':
+                final_keep_alive = -1
 
             # 🖼️ [NEURAL-VISION]: Đính kèm hình ảnh vào tin nhắn cuối cùng nếu có 
             _vision_models = ['moondream', 'llava', 'llama3.2-vision', 'bakllava', 'minicpm-v', 'qwen2-vl', 'qwen2.5-vl', 'phi3-vision', 'gemma3']
@@ -1206,34 +1266,41 @@ class JKAIIntelligenceEngine:
                 else:
                     payload['tools'] = tools
             
-            is_reasoning_model = any(k in final_model.lower() for k in ["r1", "thinking", "deepseek-v3"])
+            is_reasoning_model = any(k in final_model.lower() for k in ["r1", "thinking", "deepseek-v3", "qwen3", "qwq"])
             
             payload['keep_alive'] = final_keep_alive
             payload['options'] = safe_options
             
-            # [REASONING BYPASS]: Nếu là model Reasoning (DeepSeek-R1), KHÔNG dùng format: json 
-            # vì nó sẽ làm tắt chức năng tư duy .
-            is_reasoning_model = any(k in final_model.lower() for k in ["r1", "thinking", "deepseek-v3"])
-            if is_reasoning_model:
-                # Reasoning models perform better with natural language prompts 
-                if 'format' in payload: del payload['format']
-            elif schema: 
-                payload['format'] = schema
-            elif json_mode: 
-                payload['format'] = 'json'
+            # [REASONING & JSON BYPASS RESOLUTELY FIXED]: Cân đối hòa hợp giữa chế độ suy luận và yêu cầu cấu trúc JSON trọn vẹn.
+            is_reasoning_model = any(k in final_model.lower() for k in ["r1", "thinking", "deepseek-v3", "qwen3", "qwq"])
             
+            # [THINK-GATE]: Kiểm soát thinking mode cho Qwen3/QwQ/R1 models
+            if is_reasoning_model:
+                if 'think' in kwargs:
+                    payload['think'] = kwargs['think']
+                else:
+                    payload['think'] = False
+
+            exec_json_roles = ["PLANNER", "RESERVE_AGENT", "CRITIC", "EXECUTOR", "EXECUTOR_ALPHA", "EXECUTOR_BETA", "EXECUTOR_GAMMA", "META_PLANNER"]
+            if schema: 
+                payload['format'] = schema
+            elif json_mode or kwargs.get('format') == 'json' or (str(role).upper() in exec_json_roles and not kwargs.get('skip_json', False)): 
+                payload['format'] = 'json'
+            elif is_reasoning_model and payload.get('think') is True:
+                if 'format' in payload: del payload['format']
+
             # [SMALL MODEL GUARD]: Tự động áp dụng thiết lập an toàn cho các mô hình yếu 
             is_weak_model = any(k in final_model.lower() for k in ["0.5b", "0.8b", "tiny"])
             if is_weak_model:
                 if 'options' not in payload: payload['options'] = {}
-                payload['options']['repeat_penalty'] = 1.3 # Chống lặp cực mạnh
-                payload['options']['top_k'] = 20           # Giới hạn lựa chọn từ để tránh nói sảng
+                payload['options']['repeat_penalty'] = 1.3
+                payload['options']['top_k'] = 20
                 if 'num_predict' not in payload['options']:
-                    payload['options']['num_predict'] = 256 # Ép ngắn gọn
+                    payload['options']['num_predict'] = 256
             
             start_time = time.time()
-            logger.info(f"[ENGINE] call_chat: {final_model} (Role: {role})")
-            self._publish_thought(role, f"Đang triệu tập {final_model}... (Context: {final_options.get('num_ctx', 'default')})", task_id)
+            logger.info(f"[ENGINE] call_chat: {final_model} (Role: {role}) | think={payload.get('think')} | tools={len(payload.get('tools', []))} | msgs={repr(payload.get('messages', []))[:200]}")
+            self._publish_thought(role, f"Initializing execution stream with model {final_model}... (Context: {final_options.get('num_ctx', 'default')})", task_id)
             
             client = self._get_client()
             full_content = ""
@@ -1243,7 +1310,23 @@ class JKAIIntelligenceEngine:
             think_stream_id = None
             final_tool_calls = []
             
+            monitor_task = None
             try:
+                main_task = asyncio.current_task()
+                async def stop_monitor():
+                    r_mon = self._get_redis()
+                    while not main_task.done():
+                        if r_mon:
+                            stop_sig = r_mon.get("agent:stop_signal")
+                            stop_sig_task = r_mon.get(f"agent:stop_signal:{task_id}") if task_id else None
+                            if stop_sig in [b'true', 'true'] or stop_sig_task in [b'true', 'true']:
+                                logger.info("[SIGNAL-MONITOR] Đã nhận lệnh dừng khẩn cấp, đang hủy tác vụ chính...")
+                                main_task.cancel()
+                                break
+                        await asyncio.sleep(0.2)
+                
+                monitor_task = asyncio.create_task(stop_monitor())
+
                 last_log_time = time.time()
                 now = last_log_time
                 last_published_text = ""
@@ -1277,12 +1360,12 @@ class JKAIIntelligenceEngine:
 
                 # [PRE-FLIGHT-ABORT]: Kiểm tra lệnh dừng trước khi khởi động nơ-ron 
                 r_pre = self._get_redis()
-                if r_pre and r_pre.get("agent:stop_signal") in [b'true', 'true']:
-                    self._publish_thought(role, "[ABORT]: Lệnh Dừng đang hoạt động. Từ chối khởi động nơ-ron .", task_id)
-                    return "Mission aborted by Master."
+                if r_pre and (r_pre.get("agent:stop_signal") in [b'true', 'true'] or (task_id and r_pre.get(f"agent:stop_signal:{task_id}") in [b'true', 'true'])):
+                    self._publish_thought(role, "[ABORT]: Stop signal active. Execution cancelled.", task_id)
+                    raise MasterAbortException("Mission aborted by Master.")
 
-                # 🔒 Master đã xác nhận GPU có 2 model và chạy song song, KHÔNG cần khóa GPU 
-                use_gpu_lock = False
+                # 🔒 Kích hoạt Khóa GPU VRAM để chống tràn bộ nhớ VRAM khi chạy đa tác tử
+                use_gpu_lock = True
                 if not use_gpu_lock or await self._acquire_neural_lock("gpu_vram", timeout=kwargs.get('lock_timeout')):
                     try:
                         if is_cloud:
@@ -1359,9 +1442,19 @@ class JKAIIntelligenceEngine:
                         if is_cloud:
                             custom_timeout = httpx.Timeout(900.0, connect=15.0, read=90.0)
                         else:
-                            # [TIMEOUT-RELIABILITY]: Tăng read timeout cho local từ 35s lên 180s thưa Master.
-                            # Việc này giúp tránh bị ReadTimeout giả tạo khi model đang được tải (load) từ đĩa cứng hoặc đang xử lý prefill dài.
-                            custom_timeout = httpx.Timeout(900.0, connect=10.0, read=180.0)
+                            # 🧠 [ADAPTIVE TIERED TIMEOUT PROTOCOL]: Phân tầng thời gian chờ theo phần cứng và quy mô Nơ-ron
+                            m_name_low = str(final_model).lower()
+                            if not is_gpu:
+                                # [CPU-XEON-PREFILL]: Model chạy trên CPU (Port 11435 như PLANNER) cần ít nhất 240s để nạp và prefill ngữ cảnh lớn (~3000 tokens) trước khi trả về token đầu tiên
+                                custom_timeout = httpx.Timeout(600.0, connect=10.0, read=240.0)
+                            elif any(k in m_name_low for k in ['30b', '32b', '70b', 'moe', 'xl', '72b']):
+                                # Mô hình Titan MoE (như Qwen3-30B Active 3B): Cần 90s-120s cho nạp VRAM/RAM và prefill suy luận sâu, tuyệt đối không chém ngang tai giữa chừng!
+                                custom_timeout = httpx.Timeout(600.0, connect=10.0, read=120.0)
+                            elif any(k in m_name_low for k in ['14b', '13b', '11b']):
+                                custom_timeout = httpx.Timeout(600.0, connect=10.0, read=75.0)
+                            else:
+                                # Mô hình gọn trên GPU (<14B): Read timeout 60s
+                                custom_timeout = httpx.Timeout(600.0, connect=10.0, read=60.0)
                             
                         async with client.stream('POST', req_url, headers=req_headers, json=req_payload, timeout=custom_timeout) as resp:
                             if resp.status_code != 200:
@@ -1404,14 +1497,14 @@ class JKAIIntelligenceEngine:
                                     # Nhịp đập nơ-ron: Báo cáo nếu đang chờ quá lâu 
                                     now = time.time()
                                     if not first_token_received and now - waiting_start > 10.0:
-                                        self._publish_thought(role, "[NEURAL-PULSE]: Vẫn đang chờ phản hồi đầu tiên. Model có thể đang nạp hoặc suy nghĩ rất sâu...", task_id)
+                                        self._publish_thought(role, "[STATUS]: Processing prompt context...", task_id)
                                         waiting_start = now # Reset timer để không spam
                                     continue
                                 
                                 now = time.time()
                                 if not first_token_received:
                                     first_token_received = True
-                                    self._publish_thought(role, "[NEURAL-SYNC]: Đã bắt đầu nhận tín hiệu nơ-ron...", task_id)
+                                    self._publish_thought(role, "[STATUS]: Streaming tokens initialized.", task_id)
                                 
                                     last_signal_check = now
 
@@ -1421,13 +1514,14 @@ class JKAIIntelligenceEngine:
                                     r = self._get_redis()
                                     if r:
                                         stop_sig = r.get("agent:stop_signal")
-                                        if stop_sig in [b'true', 'true']:
-                                            self._publish_thought(role, "[SIGNAL]: Đã nhận lệnh Dừng khẩn cấp từ Master. Ngắt kết nối nơ-ron ngay lập tức .", task_id)
-                                            break
+                                        stop_sig_task = r.get(f"agent:stop_signal:{task_id}") if task_id else None
+                                        if stop_sig in [b'true', 'true'] or stop_sig_task in [b'true', 'true']:
+                                            self._publish_thought(role, "[SIGNAL]: Received termination signal. Stopping execution.", task_id)
+                                            raise MasterAbortException("Mission aborted by Master.")
 
                                 # [DEGENERATION CHECK]: Phát hiện vòng lặp vô tận 
                                 if len(full_content) > 1000 and len(set(full_content[-100:])) < 5:
-                                    self._publish_thought(role, "[NEURAL-DEGENERATION]: Phát hiện nơ-ron bị lặp (looping). Ngắt kết nối để bảo vệ VRAM.", task_id)
+                                    self._publish_thought(role, "[WARNING]: Repetitive sequence detected. Stream terminated.", task_id)
                                     break
 
                                 token = ""
@@ -1470,10 +1564,13 @@ class JKAIIntelligenceEngine:
                                             return _vis_stream_msg
                                         self._publish_thought(role, f"⚠️ [STREAM-ERR]: {err_stream}", task_id)
                                         continue
+                                    if chunk.get('done') or 'error' in chunk:
+                                        logger.info(f"🏁 [OLLAMA CHUNK DONE/ERR]: done_reason={chunk.get('done_reason')} | eval_count={chunk.get('eval_count', 0)} | raw={chunk}")
                                     msg_obj = chunk.get('message', {})
                                     token = msg_obj.get('content', '')
                                     reasoning_token = msg_obj.get('reasoning_content', '')
                                     if 'tool_calls' in msg_obj and msg_obj['tool_calls']:
+                                        logger.info(f"🛠️ [STREAM TOOL CALL FOUND]: {msg_obj['tool_calls']}")
                                         # Ollama might send tool_calls in the chunk
                                         for tc in msg_obj['tool_calls']:
                                             if tc not in final_tool_calls:
@@ -1481,8 +1578,7 @@ class JKAIIntelligenceEngine:
                                 
                                 # [UNIFIED REASONING ENGINE]: Xử lý cả reasoning_content và <think> tag 
                                 if reasoning_token:
-                                    if not is_thinking:
-                                        is_thinking = True
+                                    if not think_stream_id:
                                         think_stream_id = f"think_{uuid.uuid4().hex[:8]}"
                                         self._publish_thought(role, "[HỆ THỐNG]: Đang khởi động luồng tư duy sâu...", task_id)
                                         last_log_time = time.time()
@@ -1509,7 +1605,7 @@ class JKAIIntelligenceEngine:
 
                                 # Cap nhat soan thao van ban moi 50ms de tao hieu ung nhay chu muot ma thua Master
                                 if now - last_log_time > 0.05:
-                                    if is_thinking and len(thinking_content) > last_published_thinking_len:
+                                    if (is_thinking or reasoning_token) and len(thinking_content) > last_published_thinking_len:
                                         thinking_delta = thinking_content[last_published_thinking_len:]
                                         if thinking_delta:
                                             if is_first_thinking_chunk:
@@ -1570,15 +1666,17 @@ class JKAIIntelligenceEngine:
 
                             duration = time.time() - start_time
                             
-                            # [THINKING EXTRACTION] - Trích xuất tư duy từ các model Reasoning (<think> tag)
-                            thinking_match = re.search(r'<think>\s*(.*?)\s*(?:</think>|$)', full_content, re.DOTALL)
-                            if thinking_match:
+                            # [THINKING EXTRACTION] - Trích xuất tư duy từ các model Reasoning (<think> tag hoặc streaming reasoning_token)
+                            if not full_content.strip() and thinking_content.strip():
+                                full_content = thinking_content.strip()
+                            elif THINK_TAG.search(full_content):
+                                thinking_match = THINK_TAG.search(full_content)
                                 thinking_process = thinking_match.group(1).strip()
                                 if thinking_process:
                                     self._publish_thought(role, f"[LUỒNG TƯ DUY NỘI TÂM]:\n{thinking_process}", task_id)
                                 
                                 # Chỉ lọc bỏ nếu phần còn lại có nội dung đáng kể 
-                                stripped_content = re.sub(r'<think>.*?(?:</think>|$)', '', full_content, flags=re.DOTALL).strip()
+                                stripped_content = strip_think_tags(full_content).strip()
                                 if len(stripped_content) > 20:
                                     full_content = stripped_content
                                 elif thinking_process:
@@ -1603,11 +1701,17 @@ class JKAIIntelligenceEngine:
 
                 self._publish_thought(role, f"Hoàn tất trong {duration:.2f}s. (Size: {len(full_content)} chars)", task_id)
 
+                # [OUTPUT-FILTER]: Loại bỏ emoji và enforce behavioral rules
+                from prompt_engine.filter import response_filter
+                full_content = response_filter.strip_emoji(full_content)
+
                 # [LATENCY-REPORT]: Chuyển thành log nội bộ thay vì public
-                logger.info(f"⏱️ [{role}] {final_model}: {duration:.2f}s")
+                logger.info(f"⏱️ [{role}] {final_model}: {duration:.2f}s | full_len={len(full_content)} | think_len={len(thinking_content)}")
+                if not full_content and thinking_content:
+                    full_content = thinking_content
 
                 if final_tool_calls:
-                    self._publish_thought(role, f"🛠️ [NATIVE-TOOL-CALL]: Nơ-ron quyết định sử dụng {len(final_tool_calls)} công cụ.", task_id)
+                    self._publish_thought(role, f"🛠️ [TOOL-EXECUTION]: Executing {len(final_tool_calls)} tools.", task_id)
                     return {"answer": full_content, "tool_calls": final_tool_calls}
 
                 if json_mode or schema:
@@ -1621,13 +1725,19 @@ class JKAIIntelligenceEngine:
                 # 📜 [LEGACY-COMPATIBILITY]: Luôn trả về chuỗi văn bản cho các Đặc vụ cũ 
                 return str(full_content)
                 
+            except asyncio.CancelledError as e:
+                r_check = self._get_redis()
+                if r_check and (r_check.get("agent:stop_signal") in [b'true', 'true'] or (task_id and r_check.get(f"agent:stop_signal:{task_id}") in [b'true', 'true'])):
+                    self._publish_thought(role, "[SIGNAL]: Received termination signal. Halting execution.", task_id)
+                    raise MasterAbortException("Mission aborted by Master.") from e
+                raise
             except Exception as e:
                 import httpx
                 err_str = str(e)
                 # [SMART-FAILOVER-PROTOCOL]: Tự động chuyển vùng nếu trạm chính thực sự bị sập (ConnectError/ConnectTimeout)
                 # Tuyệt đối KHÔNG tự ý chuyển vùng khi bị ReadTimeout để tránh gọi sai phần cứng (gọi CPU model lên GPU gây nghẽn VRAM) thưa Master.
                 if isinstance(e, (httpx.ConnectError, httpx.ConnectTimeout, httpx.ReadError)) and not kwargs.get('is_fallback_attempt'):
-                    self.publish_mission_log("WARNING", f"📡 [CONNECTION-LOST]: Trạm tại {req_url} gặp sự cố hoặc nghẽn nơ-ron ({type(e).__name__}). Đang kích hoạt Giao thức Chuyển vùng thưa Master...", task_id)
+                    self.publish_mission_log("WARNING", f"📡 [CONNECTION-LOST]: Trạm tại {req_url} gặp sự cố ({type(e).__name__}). Đang chuyển vùng dự phòng...", task_id)
                     # Thử trạm còn lại
                     other_host = self.ollama_host_cpu if target_ollama_host == self.ollama_host_gpu else self.ollama_host_gpu
                     kwargs['is_fallback_attempt'] = True
@@ -1637,34 +1747,33 @@ class JKAIIntelligenceEngine:
                         if check_resp.status_code == 200:
                             models = [m['name'].lower() for m in check_resp.json().get('models', [])]
                             if any(final_model.lower() in m for m in models):
-                                self.publish_mission_log("INFO", f"✅ [FAILOVER-SUCCESS]: Đã tìm thấy nơ-ron {final_model} tại trạm dự phòng {other_host}. Đang chuyển kết nối thưa Master.", task_id)
+                                self.publish_mission_log("INFO", f"✅ [FAILOVER-SUCCESS]: Đã chuyển kết nối mô hình {final_model} tới trạm dự phòng {other_host}.", task_id)
                                 return await self.call_chat(messages=messages, role=role, model=final_model, task_id=task_id, task_budget=budget, **kwargs)
                     except Exception:
                         pass
 
                 if isinstance(e, httpx.ConnectError):
-                    err_str = f"🛑 [CONNECT-FAILED]: Không thể kết nối tới Trạm nơ-ron {final_model} tại {req_url}. Có thể Trạm đang ngoại tuyến hoặc bị tường lửa chặn thưa Master."
+                    err_str = f"🛑 [CONNECT-FAILED]: Không thể kết nối tới mô hình {final_model} tại {req_url}."
                 elif isinstance(e, httpx.TimeoutException):
-                    err_str = f"⏳ [TIME-OUT]: Trạm nơ-ron {final_model} phản ứng quá chậm (>900s). Có thể VRAM đang bị nghẽn thưa Master."
+                    err_str = f"⏳ [TIMEOUT]: Mô hình {final_model} vượt quá thời gian phản hồi (>900s)."
                 
-                err_msg = f"Error: [NEURAL-ENGINE-ERR] {err_str}"
+                err_msg = f"Error: [ENGINE-ERR] {err_str}"
                 logger.error(err_msg)
                 self._publish_thought(role, err_msg, task_id)
                 
                 # [SMART-ERROR-RECOVERY]: Phát hiện lỗi Quota/429 để ép chuyển vùng nơ-ron
                 if any(x in err_str.lower() for x in ["429", "quota", "rate limit", "limit exceeded", "exhausted"]):
-                    self.publish_mission_log("CRITICAL", f"🚨 [CLOUD-QUOTA-EXCEEDED]: API {final_model} đã cạn kiệt tài nguyên. Kích hoạt Giao thức Dự phòng Thông minh (Smart Fallback).", task_id)
+                    self.publish_mission_log("CRITICAL", f"🚨 [CLOUD-QUOTA-EXCEEDED]: API {final_model} cạn kiệt tài nguyên. Kích hoạt mô hình dự phòng.", task_id)
                     
                     try:
                         from core.utils.hardware_scheduler import hardware_scheduler
-                        fb_info = await hardware_scheduler.resolve_smart_fallback(final_model, self, [role, "CHAT", "RESERVE_AGENT"])
+                        fb_info = await hardware_scheduler.resolve_smart_fallback(final_model, self, [role, "RECEPTIONIST", "RESERVE_AGENT"])
                         if fb_info and fb_info.get("model"):
                             final_model = fb_info["model"]
-                            self.publish_mission_log("INFO", f"✅ [DYNAMIC-RECOVERY]: Đã chuyển vùng sang `{final_model}` ({fb_info.get('hardware')}) thành công.", task_id)
+                            self.publish_mission_log("INFO", f"✅ [DYNAMIC-RECOVERY]: Đã chuyển mô hình sang `{final_model}` ({fb_info.get('hardware')}).", task_id)
                         else:
-                            # ❌ [HARD-ABORT]: Kiệt lực hoàn toàn. Không tự ý triệu hồi model lạ thưa Master.
                             logger.error(f"❌ [FALLBACK-FAILED]: Không tìm thấy mô hình dự phòng hợp lệ cho Role `{role}`.")
-                            return f"Error: [RESOURCE-EXHAUSTED] Mọi nơ-ron dự phòng cho Role `{role}` đã cạn kiệt thưa Master."
+                            return f"Error: [RESOURCE-EXHAUSTED] Mọi mô hình dự phòng cho Role `{role}` đã cạn kiệt."
                     except Exception as fb_err:
                         logger.error(f"❌ [FALLBACK-CRITICAL]: {fb_err}")
                         return f"Error: [FALLBACK-CRITICAL] {fb_err}"
@@ -1677,6 +1786,8 @@ class JKAIIntelligenceEngine:
                 else:
                     continue # continue the attempt loop
             finally:
+                if monitor_task and not monitor_task.done():
+                    monitor_task.cancel()
                 await self._exit_neural_gate(final_model)
 
             # If it succeeded, it would have returned earlier (either dict or string)
@@ -1685,53 +1796,14 @@ class JKAIIntelligenceEngine:
 
     def _extract_json_from_text(self, text):
         """Trích xuất JSON từ văn bản thô một cách bền bỉ ."""
-        if not text: return {}
-        # 1. Thử parse trực tiếp
-        try: return json.loads(text)
-        except Exception: pass
-        
-        # 2. Tìm trong Markdown Code Blocks
-        json_match = re.search(r'```json\s*(.*?)\s*```', text, re.DOTALL)
-        if json_match:
-            try: return json.loads(json_match.group(1))
-            except Exception: pass
-            
-        # 3. Tìm các khối { ... } tiềm năng và thử parse từng khối (ưu tiên khối hợp lệ đầu tiên hoặc khối có cấu trúc steps)
-        # Sử dụng regex tìm các khối ngoặc nhọn lớn nhất có thể
-        potential_json_blocks = re.findall(r'(\{.*?\})', text, re.DOTALL)
-        
-        # Thử parse từ ngược lại (thường JSON nằm ở cuối)
-        for block in reversed(potential_json_blocks):
-            try:
-                data = json.loads(block)
-                if isinstance(data, dict):
-                    # Nếu tìm thấy khối có 'steps' hoặc 'answer', khả năng cao đây là kết quả đúng
-                    if "steps" in data or "answer" in data or "thought" in data:
-                        return data
-                    # Lưu lại khối hợp lệ cuối cùng như phương án dự phòng
-                    last_valid = data
-            except Exception:
-                continue
-        
-        if 'last_valid' in locals():
-            return last_valid
-            
-        # 4. Cố gắng làm sạch text thô nếu không tìm thấy khối nào hoàn hảo
-        # (Xóa các phần <think>...</think> nếu còn sót lại)
-        cleaned_text = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL).strip()
-        if cleaned_text.startswith('{') and cleaned_text.endswith('}'):
-            try:
-                return json.loads(cleaned_text)
-            except Exception: pass
-            
-        raise Exception("Không tìm thấy JSON hợp lệ.")
+        return extract_json(text)
 
     def call_skill(self, skill_id, params, task_id="system"):
         """
         ⚡ [SUPREME CALL]: Giao thức Triệu hồi Kỹ năng chuẩn v30.2.
         Tìm kiếm và thực thi logic của kỹ năng dựa trên #ID.
         """
-        self._publish_thought("SKILL_CALL", f"Đang triệu hồi Siêu kỹ năng `{skill_id}`...", task_id)
+        self._publish_thought("SKILL_CALL", f"Executing skill `{skill_id}`...", task_id)
         
         # 1. Tìm đường dẫn kỹ năng từ Registry (Giả lập tìm kiếm)
         skill_name_map = {

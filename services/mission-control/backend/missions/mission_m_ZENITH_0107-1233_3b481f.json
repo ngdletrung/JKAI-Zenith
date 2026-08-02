@@ -1,0 +1,63 @@
+{
+  "id": "m_ZENITH_0107-1233_3b481f",
+  "title": "Tinh 25 * 4 + 10",
+  "goal": "Tinh 25 * 4 + 10\n\n[KẾT QUẢ]\nError: [NEURAL-ENGINE-ERR] ⏳ [TIME-OUT]: Trạm nơ-ron qwen3.5:4b phản ứng quá chậm (>900s). Có thể VRAM đang bị nghẽn thưa Master.\n\n---\n👉 Phản hồi lúc 12h43m ngày 01/07/2026",
+  "status": "completed",
+  "ts": 1782884599.681219,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "Tinh 25 * 4 + 10",
+      "ts": 1782883999.9827452,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-1233_3b481f"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_0107-1233_3b481f` initialized | Trace: `trace_3b481f`. Runtime ready.",
+      "ts": 1782883999.9852602,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-1233_3b481f"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1782884053.0234892,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-1233_3b481f"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1782884053.0260365,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-1233_3b481f"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [FAST-PIPELINE]: Khởi động RECEPTIONIST ReAct (3 turns).",
+      "ts": 1782884053.028325,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-1233_3b481f"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "✅ [FAST-PIPELINE]: Hoàn tất ReAct loop cho task ZENITH_0107-1233_3b481f",
+      "ts": 1782884599.6427722,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-1233_3b481f"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Error: [NEURAL-ENGINE-ERR] ⏳ [TIME-OUT]: Trạm nơ-ron qwen3.5:4b phản ứng quá chậm (>900s). Có thể VRAM đang bị nghẽn thưa Master.\n\n---\n👉 Phản hồi lúc 12h43m ngày 01/07/2026",
+      "ts": 1782884599.6495864,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-1233_3b481f"
+    }
+  ],
+  "artifacts": {
+    "plan": "Tinh 25 * 4 + 10",
+    "walkthrough": "Error: [NEURAL-ENGINE-ERR] ⏳ [TIME-OUT]: Trạm nơ-ron qwen3.5:4b phản ứng quá chậm (>900s). Có thể VRAM đang bị nghẽn thưa Master.\n\n---\n👉 Phản hồi lúc 12h43m ngày 01/07/2026",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

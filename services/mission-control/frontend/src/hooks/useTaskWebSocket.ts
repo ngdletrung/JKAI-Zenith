@@ -309,7 +309,7 @@ export function useTaskWebSocket(onNewLog?: (log: TaskLog) => void) {
     socket.on('disconnect', onDisconnect);
     socket.on('connect_error', onConnectError);
 
-    // ── Batching buffers ─────────────────────────────────────────────────────
+    // ── Batching buffers (Debounced 60ms UI Stream Sync) ─────────────────────
     let logBuffer: TaskLog[] = [];
     let pendingNodeUpdates: NodeUpdate[] = [];
 
@@ -319,10 +319,15 @@ export function useTaskWebSocket(onNewLog?: (log: TaskLog) => void) {
         pendingNodeUpdates = [];
         setDagNodes(nodes => applyAnatomyLayout(nodes, updates));
       }
+      if (logBuffer.length > 0) {
+        const logsToFlush = [...logBuffer];
+        logBuffer = [];
+        useZenithStore.getState().addLogs(logsToFlush, 'progress');
+      }
     };
 
-    // FIX: clearInterval trong cleanup để không leak timer sau unmount
-    const throttleTimer = setInterval(flushBuffers, 250);
+    // ⚡ [SMOOTH STREAMING]: Xả đệm UI mỗi 60ms (xấp xỉ 16 FPS) để chat bubble cuộn mượt không giật lag
+    const throttleTimer = setInterval(flushBuffers, 60);
 
     // ── onLog ────────────────────────────────────────────────────────────────
     const onLog = (data: any) => {
@@ -481,6 +486,9 @@ export function useTaskWebSocket(onNewLog?: (log: TaskLog) => void) {
         const fileMatch = msg.match(/📄\s*([a-zA-Z0-9_.\-/]+)/);
         if (fileMatch) useZenithStore.getState().addModifiedFile(fileMatch[1].trim());
       }
+
+      // Buffer log item cho đợt xả UI tập trung (flushBuffers)
+      logBuffer.push(log);
     };
 
     // ── log_batch ────────────────────────────────────────────────────────────

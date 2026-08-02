@@ -21,7 +21,7 @@ class RedisClient:
         else:
             self.host = env_host
         self.port = int(os.getenv("REDIS_PORT", "6379"))
-        self.password = os.getenv("REDIS_PASSWORD", "Admin@123456")
+        self.password = os.getenv("REDIS_PASSWORD", None)
         self.client = None
         self._sync_client = None
 

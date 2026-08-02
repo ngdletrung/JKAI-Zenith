@@ -1,0 +1,84 @@
+{
+  "id": "m_ZENITH_0407-1806_b8a94a",
+  "title": "giá vàng thế giới hôm nay thế nào ?",
+  "goal": "giá vàng thế giới hôm nay thế nào ?",
+  "status": "failed",
+  "ts": 1783163207.4003205,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "giá vàng thế giới hôm nay thế nào ?",
+      "ts": 1783163178.3703563,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1806_b8a94a"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_0407-1806_b8a94a` initialized | Trace: `trace_b8a94a`. Runtime ready.",
+      "ts": 1783163178.3721561,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1806_b8a94a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1783163185.850261,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1806_b8a94a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1783163185.855893,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1806_b8a94a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1783163193.2379603,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1806_b8a94a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1783163193.240366,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1806_b8a94a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1783163201.3365057,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1806_b8a94a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1783163201.339668,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1806_b8a94a"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist\"}",
+      "ts": 1783163207.3734305,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1806_b8a94a"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+      "ts": 1783163207.377092,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1806_b8a94a"
+    }
+  ],
+  "artifacts": {
+    "plan": "giá vàng thế giới hôm nay thế nào ?",
+    "walkthrough": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "id": "SKILL_SANGTAOVANHANLUC",
+  "name": "Zenith Creative & Graphics Forge",
+  "version": "1.0.0",
+  "description": "Artistic generation core: Orchestrates Stable Diffusion for high-fidelity image creation and manages visual capture services.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "phù thủy đồ họa",
+    "sáng tạo ảnh",
+    "vẽ tranh ai",
+    "chụp màn hình",
+    "creative forge",
+    "stable diffusion",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "hinh",
+    "nang",
+    "dung",
+    "master",
+    "prompt",
+    "hoac",
+    "thuat",
+    "khong",
+    "tuong",
+    "trinh",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "draw",
+            "screenshot"
+          ],
+          "description": "Creative action to perform."
+        },
+        "prompt": {
+          "type": "string",
+          "description": "Prompt for image generation."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,47 @@
+{
+  "id": "INCREMENTAL_IMPLEMENTATION",
+  "name": "Incremental Implementation",
+  "version": "1.0.0",
+  "description": "Implements code in thin vertical slices with rollback points.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "triển khai lát cắt nhỏ",
+    "incremental implementation",
+    "code lát cắt",
+    "overview",
+    "when to use",
+    "the increment cycle",
+    "slicing strategies",
+    "vertical slices  preferred",
+    "slice",
+    "task",
+    "code",
+    "build",
+    "test",
+    "tests",
+    "increment",
+    "after",
+    "implement",
+    "pass",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "task": {
+          "type": "string",
+          "description": "Task description."
+        }
+      },
+      "required": [
+        "task"
+      ]
+    }
+  }
+}

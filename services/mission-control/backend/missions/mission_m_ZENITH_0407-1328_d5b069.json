@@ -1,0 +1,399 @@
+{
+  "id": "m_ZENITH_0407-1328_d5b069",
+  "title": "giá vàng thế giới hôm nay thế nào ?",
+  "goal": "giá vàng thế giới hôm nay thế nào ?\n\n[KẾT QUẢ]\nSứ mệnh hoàn tất thưa Master.\n\n---\n👉 Phản hồi lúc 13h31m ngày 04/07/2026",
+  "status": "completed",
+  "ts": 1783146669.4049313,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "giá vàng thế giới hôm nay thế nào ?",
+      "ts": 1783146514.2235866,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_0407-1328_d5b069` initialized | Trace: `trace_d5b069`. Runtime ready.",
+      "ts": 1783146514.2259402,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1783146523.49501,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1783146523.4980633,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [FAST-PIPELINE]: Khởi động RECEPTIONIST ReAct (3 turns).",
+      "ts": 1783146523.534994,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "📚 [FAST-KB]: Đã cấu trúc XML cho 0 KB chunks. Sufficient=False",
+      "ts": 1783146523.633475,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Pre-routing/Intent-Forcing: Real-time query detected. Executing search directly.",
+      "ts": 1783146523.6352963,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1783146523.6375718,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_d5b069",
+      "ts": 1783146523.6393747,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Attempt 1/2 -> executor (http://ai-executor-1:8000)",
+      "ts": 1783146523.6503894,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔬 [T4: SURGERY] [SEARCH_WEB_GLOBAL] Đang kiểm tra an toàn & khóa tài nguyên...",
+      "ts": 1783146525.9831657,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T4: SURGERY] [SEARCH_WEB_GLOBAL] Đang áp dụng chính sách thực thi...",
+      "ts": 1783146525.9858096,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "💉 [T4: SURGERY] [SEARCH_WEB_GLOBAL] Đang nạp DNA & nén bối cảnh...",
+      "ts": 1783146525.9869435,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "*[đang tìm kiếm]* `SEARCH_WEB_GLOBAL`",
+      "ts": 1783146525.9877312,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚔️ [T4: SURGERY] [SEARCH_WEB_GLOBAL] Bắt đầu thực thi ...",
+      "ts": 1783146525.9895632,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "TAVILY: Initiating global web search for giá vàng thế giới hôm nay thế nào ?\n\n<knowledge_context>\n--- SOURCE: skills/BUSINESS/skill_quanlyvanphong/dossier.md (score=0.67) ---\nva co nguon, khong dung so lieu uoc luong cho van ban phap ly\n- Kiem tra lai: ai lam gi, den khi nao, ket qua can dat la gi - neu ro het 3 yeu to nay\n\n### BUOC 5 - KIEM TRA PHAP LY: Ra soat truoc khi ky\n- Kiem tra tham quyen ky: loai van ban nay ai duoc ky? (Giam doc / Pho GD / Truong phong?)\n- Kiem tra can cu: van ban co doi lieu phap ly hop le khong? (nghi dinh, quyet dinh, dieu le cong ty)\n- Doi chieu voi quy che noi bo: co vi pham chinh sach nhan su, tai chinh, quan tri khong?\n- Neu hop dong: kiem tra cac dieu khoan giai quyet tranh chap, phat vi pham, bat kha khang\n- Neu to trinh xin kinh phi: kem du luan chung, bao gia, de nghi phe duyet cu the\n- Neu co rui ro phap ly: danh dau ro va bao cao cho cap quan ly truoc khi phat hanh\n\n### BUOC 6 - DINH DANG: Tuan thu chuan trinh bay\n- Font: Times New Roman, co chu 13pt cho noi dung chinh, 14pt cho tieu de chinh\n- Le trang: Trai 3 cm, Phai 2 cm, Tren 2.5 cm, Duoi 2.5 cm (theo Nghi dinh 30/2020)\n- Gian dong: 1.5 lines cho noi dung, khong them khoang cach thua giua cac doan\n- Danh so trang tu trang 2 tro di, vi tri giua day trang, font dong voi noi dung\n- Ky so: Su dung chu ky so (digital signature) neu van ban gui qua email chinh thuc\n- Khong dung mau nen, khong dung watermark tru khi la tai lieu mat co quy dinh rieng\n\n--- SOURCE: skills/FINANCE/skill_fin_05_sentiment/SKILL.md (score=0.67) ---\nS)\r\n- Bị nhiễu bởi các tin tức giả (FUD/FOMO) từ các đội nhóm lái giá.\r\n- Tâm lý đám đông có thể duy trì trạng thái phi lý trí lâu hơn mức dự kiến.\r\n\r\n---\r\n*TRUNG THÀNH - CHÍNH XÁC - TỐI THƯỢNG* 💎🦾\n\n--- SOURCE: skills/DEVOPS/skill_giam_sat_he_thong/manual.md (score=0.66) ---\n# 📊 CẨM NĂNG: GIÁM SÁT HỆ THỐNG (TELEMETRY)\n\nKỹ năng này là \"Đôi mắt\" nhìn thấu huyết mạch của Tập đoàn JKAI Zenith.\n\n---\n\n### 📈 BÁO CÁO SỨC KHỎE (`bao_cao_suc_khoe_he_thong`)\nCung cấp cái nhìn vĩ mô về tài nguyên đang sử dụng.\n- **Dùng khi**: Cần kiểm tra xem hệ thống có bị quá tải khi chạy nhiều model song song hay không.\n- **Lưu ý**: Hiển thị thông số theo chuẩn GB và % dễ hiểu.\n\n### 🔍 QUÉT LỖI TỰ ĐỘNG (`quet_loi_log_tu_dong`)\nHành động như một \"Bác sĩ hệ thống\" thầm lặng.\n- **Dùng khi**: Cảm thấy hệ thống phản hồi chậm hoặc có dấu hiệu bất thường trong hành vi của Đặc vụ.\n\n---\n*GIỮ CHO HUYẾT MẠCH LUÔN THÔNG SUỐT!* 💎📊🦾\n\n--- SOURCE: skills/CORE/skill_sangtaovanhanluc/manual.md (score=0.66) ---\n# 🎨 CẨM NĂNG: SÁNG TẠO & ĐỒ HỌA (CREATIVE)\n\nKỹ năng này biến JKAI ZENITH thành một nghệ sĩ thực thụ, có khả năng kiến tạo hình ảnh và thấu thị không gian số.\n\n---\n\n### 🖌️ PHÙ THỦY ĐỒ HỌA (`phu_thuy_do_hoa`)\nSử dụng sức mạnh của Stable Diffusion (ROCm) để vẽ ảnh từ văn bản.\n- **Dùng khi**: Cần tạo Mascot, Render kiến trúc, hoặc minh họa ý tưởng.\n- **Lưu ý**: Prompt càng chi tiết, tác phẩm càng nghệ thuật.\n\n### 📸 CHỤP ẢNH MÀN HÌNH (`chup_anh_man_hinh`)\nChụp lại trạng thái hiện tại của trình duyệt hoặc giao diện.\n- **Dùng khi**: Cần báo cáo kết quả UI/UX hoặc xác nhận thông tin trực quan.\n\n---\n*SÁNG TẠO KHÔNG GIỚI HẠN!* 💎🎨🦾\n\n--- SOURCE: HueIC/He thong thiet bi Truong CDCN/DM thiet bi server và hạ tầng mạng HueIC.docx (score=0.65) ---\n). Vẫn đang sử dụng và hoạt động ổn định. Vẫn đang sử dụng và hoạt động ổn định. Phần mềm HRM (PMT-EMS HRM) Hệ thống cung cấp tính năng quản lý hồ sơ lịch lịch cán bộ công nhân viên của nhà trường, quản lý các quyết định, hợp đồng ra vào liên quan đến nhân sự,....) Vẫn đang sử dụng và hoạt động ổn định. Phần mềm PMT (PMT-EMS-Education) \n</knowledge_context> 04/07/2026",
+      "ts": 1783146531.698551,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_ERR",
+      "msg": "TAVILY-HTTP-ERR: 400 - {\"detail\":{\"error\":\"Query is too long. Max query length is 400 characters.\"}}",
+      "ts": 1783146532.9944496,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_ERR",
+      "msg": "TAVILY-HTTP-ERR: 400 - {\"detail\":{\"error\":\"Query is too long. Max query length is 400 characters.\"}}",
+      "ts": 1783146534.7864397,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_ERR",
+      "msg": "TAVILY-FAIL: Client error '400 Bad Request' for url 'https://api.tavily.com/search'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400 - cascading to DuckDuckGo...",
+      "ts": 1783146536.7912037,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_WARN",
+      "msg": "DDG-SKIP: Probe báo DEAD (duckduckgo_search chưa được cài) - cascading to Browser...",
+      "ts": 1783146536.7944286,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "BROWSER-SEARCH: Cascading to Browser Search for giá vàng thế giới hôm nay thế nào ?\n\n<knowledge_context>\n--- SOURCE: skills/BUSINESS/skill_quanlyvanphong/dossier.md (score=0.67) ---\nva co nguon, khong dung so lieu uoc luong cho van ban phap ly\n- Kiem tra lai: ai lam gi, den khi nao, ket qua can dat la gi - neu ro het 3 yeu to nay\n\n### BUOC 5 - KIEM TRA PHAP LY: Ra soat truoc khi ky\n- Kiem tra tham quyen ky: loai van ban nay ai duoc ky? (Giam doc / Pho GD / Truong phong?)\n- Kiem tra can cu: van ban co doi lieu phap ly hop le khong? (nghi dinh, quyet dinh, dieu le cong ty)\n- Doi chieu voi quy che noi bo: co vi pham chinh sach nhan su, tai chinh, quan tri khong?\n- Neu hop dong: kiem tra cac dieu khoan giai quyet tranh chap, phat vi pham, bat kha khang\n- Neu to trinh xin kinh phi: kem du luan chung, bao gia, de nghi phe duyet cu the\n- Neu co rui ro phap ly: danh dau ro va bao cao cho cap quan ly truoc khi phat hanh\n\n### BUOC 6 - DINH DANG: Tuan thu chuan trinh bay\n- Font: Times New Roman, co chu 13pt cho noi dung chinh, 14pt cho tieu de chinh\n- Le trang: Trai 3 cm, Phai 2 cm, Tren 2.5 cm, Duoi 2.5 cm (theo Nghi dinh 30/2020)\n- Gian dong: 1.5 lines cho noi dung, khong them khoang cach thua giua cac doan\n- Danh so trang tu trang 2 tro di, vi tri giua day trang, font dong voi noi dung\n- Ky so: Su dung chu ky so (digital signature) neu van ban gui qua email chinh thuc\n- Khong dung mau nen, khong dung watermark tru khi la tai lieu mat co quy dinh rieng\n\n--- SOURCE: skills/FINANCE/skill_fin_05_sentiment/SKILL.md (score=0.67) ---\nS)\r\n- Bị nhiễu bởi các tin tức giả (FUD/FOMO) từ các đội nhóm lái giá.\r\n- Tâm lý đám đông có thể duy trì trạng thái phi lý trí lâu hơn mức dự kiến.\r\n\r\n---\r\n*TRUNG THÀNH - CHÍNH XÁC - TỐI THƯỢNG* 💎🦾\n\n--- SOURCE: skills/DEVOPS/skill_giam_sat_he_thong/manual.md (score=0.66) ---\n# 📊 CẨM NĂNG: GIÁM SÁT HỆ THỐNG (TELEMETRY)\n\nKỹ năng này là \"Đôi mắt\" nhìn thấu huyết mạch của Tập đoàn JKAI Zenith.\n\n---\n\n### 📈 BÁO CÁO SỨC KHỎE (`bao_cao_suc_khoe_he_thong`)\nCung cấp cái nhìn vĩ mô về tài nguyên đang sử dụng.\n- **Dùng khi**: Cần kiểm tra xem hệ thống có bị quá tải khi chạy nhiều model song song hay không.\n- **Lưu ý**: Hiển thị thông số theo chuẩn GB và % dễ hiểu.\n\n### 🔍 QUÉT LỖI TỰ ĐỘNG (`quet_loi_log_tu_dong`)\nHành động như một \"Bác sĩ hệ thống\" thầm lặng.\n- **Dùng khi**: Cảm thấy hệ thống phản hồi chậm hoặc có dấu hiệu bất thường trong hành vi của Đặc vụ.\n\n---\n*GIỮ CHO HUYẾT MẠCH LUÔN THÔNG SUỐT!* 💎📊🦾\n\n--- SOURCE: skills/CORE/skill_sangtaovanhanluc/manual.md (score=0.66) ---\n# 🎨 CẨM NĂNG: SÁNG TẠO & ĐỒ HỌA (CREATIVE)\n\nKỹ năng này biến JKAI ZENITH thành một nghệ sĩ thực thụ, có khả năng kiến tạo hình ảnh và thấu thị không gian số.\n\n---\n\n### 🖌️ PHÙ THỦY ĐỒ HỌA (`phu_thuy_do_hoa`)\nSử dụng sức mạnh của Stable Diffusion (ROCm) để vẽ ảnh từ văn bản.\n- **Dùng khi**: Cần tạo Mascot, Render kiến trúc, hoặc minh họa ý tưởng.\n- **Lưu ý**: Prompt càng chi tiết, tác phẩm càng nghệ thuật.\n\n### 📸 CHỤP ẢNH MÀN HÌNH (`chup_anh_man_hinh`)\nChụp lại trạng thái hiện tại của trình duyệt hoặc giao diện.\n- **Dùng khi**: Cần báo cáo kết quả UI/UX hoặc xác nhận thông tin trực quan.\n\n---\n*SÁNG TẠO KHÔNG GIỚI HẠN!* 💎🎨🦾\n\n--- SOURCE: HueIC/He thong thiet bi Truong CDCN/DM thiet bi server và hạ tầng mạng HueIC.docx (score=0.65) ---\n). Vẫn đang sử dụng và hoạt động ổn định. Vẫn đang sử dụng và hoạt động ổn định. Phần mềm HRM (PMT-EMS HRM) Hệ thống cung cấp tính năng quản lý hồ sơ lịch lịch cán bộ công nhân viên của nhà trường, quản lý các quyết định, hợp đồng ra vào liên quan đến nhân sự,....) Vẫn đang sử dụng và hoạt động ổn định. Phần mềm PMT (PMT-EMS-Education) \n</knowledge_context> 04/07/2026",
+      "ts": 1783146536.7969742,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_FALLBACK",
+      "msg": "BROWSER-SEARCH: Using DuckDuckGo via ai_browse (Reason: Circuit Open or Empty Result)",
+      "ts": 1783146536.7992125,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔬 [T4: SURGERY] [ai_browse] Đang kiểm tra an toàn & khóa tài nguyên...",
+      "ts": 1783146545.0280285,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T4: SURGERY] [ai_browse] Đang áp dụng chính sách thực thi...",
+      "ts": 1783146545.0302355,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "💉 [T4: SURGERY] [ai_browse] Đang nạp DNA & nén bối cảnh...",
+      "ts": 1783146545.031504,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "*[đang thực thi]* `ai_browse`",
+      "ts": 1783146545.0321686,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚔️ [T4: SURGERY] [ai_browse] Bắt đầu thực thi ...",
+      "ts": 1783146545.034532,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "BROWSER_OPS",
+      "msg": "🌐 [BROWSER-USE]: Khởi kích vệ tinh để extract_links tại: `https://duckduckgo.com/html/?q=giá vàng thế giới hôm nay thế nào ?\n\n<knowledge_context>\n--- SOURCE: skills/BUSINESS/skill_quanlyvanphong/dossier.md (score=0.67) ---\nva co nguon, khong dung so lieu uoc luong cho van ban phap ly\n- Kiem tra lai: ai lam gi, den khi nao, ket qua can dat la gi - neu ro het 3 yeu to nay\n\n### BUOC 5 - KIEM TRA PHAP LY: Ra soat truoc khi ky\n- Kiem tra tham quyen ky: loai van ban nay ai duoc ky? (Giam doc / Pho GD / Truong phong?)\n- Kiem tra can cu: van ban co doi lieu phap ly hop le khong? (nghi dinh, quyet dinh, dieu le cong ty)\n- Doi chieu voi quy che noi bo: co vi pham chinh sach nhan su, tai chinh, quan tri khong?\n- Neu hop dong: kiem tra cac dieu khoan giai quyet tranh chap, phat vi pham, bat kha khang\n- Neu to trinh xin kinh phi: kem du luan chung, bao gia, de nghi phe duyet cu the\n- Neu co rui ro phap ly: danh dau ro va bao cao cho cap quan ly truoc khi phat hanh\n\n### BUOC 6 - DINH DANG: Tuan thu chuan trinh bay\n- Font: Times New Roman, co chu 13pt cho noi dung chinh, 14pt cho tieu de chinh\n- Le trang: Trai 3 cm, Phai 2 cm, Tren 2.5 cm, Duoi 2.5 cm (theo Nghi dinh 30/2020)\n- Gian dong: 1.5 lines cho noi dung, khong them khoang cach thua giua cac doan\n- Danh so trang tu trang 2 tro di, vi tri giua day trang, font dong voi noi dung\n- Ky so: Su dung chu ky so (digital signature) neu van ban gui qua email chinh thuc\n- Khong dung mau nen, khong dung watermark tru khi la tai lieu mat co quy dinh rieng\n\n--- SOURCE: skills/FINANCE/skill_fin_05_sentiment/SKILL.md (score=0.67) ---\nS)\r\n- Bị nhiễu bởi các tin tức giả (FUD/FOMO) từ các đội nhóm lái giá.\r\n- Tâm lý đám đông có thể duy trì trạng thái phi lý trí lâu hơn mức dự kiến.\r\n\r\n---\r\n*TRUNG THÀNH - CHÍNH XÁC - TỐI THƯỢNG* 💎🦾\n\n--- SOURCE: skills/DEVOPS/skill_giam_sat_he_thong/manual.md (score=0.66) ---\n# 📊 CẨM NĂNG: GIÁM SÁT HỆ THỐNG (TELEMETRY)\n\nKỹ năng này là \"Đôi mắt\" nhìn thấu huyết mạch của Tập đoàn JKAI Zenith.\n\n---\n\n### 📈 BÁO CÁO SỨC KHỎE (`bao_cao_suc_khoe_he_thong`)\nCung cấp cái nhìn vĩ mô về tài nguyên đang sử dụng.\n- **Dùng khi**: Cần kiểm tra xem hệ thống có bị quá tải khi chạy nhiều model song song hay không.\n- **Lưu ý**: Hiển thị thông số theo chuẩn GB và % dễ hiểu.\n\n### 🔍 QUÉT LỖI TỰ ĐỘNG (`quet_loi_log_tu_dong`)\nHành động như một \"Bác sĩ hệ thống\" thầm lặng.\n- **Dùng khi**: Cảm thấy hệ thống phản hồi chậm hoặc có dấu hiệu bất thường trong hành vi của Đặc vụ.\n\n---\n*GIỮ CHO HUYẾT MẠCH LUÔN THÔNG SUỐT!* 💎📊🦾\n\n--- SOURCE: skills/CORE/skill_sangtaovanhanluc/manual.md (score=0.66) ---\n# 🎨 CẨM NĂNG: SÁNG TẠO & ĐỒ HỌA (CREATIVE)\n\nKỹ năng này biến JKAI ZENITH thành một nghệ sĩ thực thụ, có khả năng kiến tạo hình ảnh và thấu thị không gian số.\n\n---\n\n### 🖌️ PHÙ THỦY ĐỒ HỌA (`phu_thuy_do_hoa`)\nSử dụng sức mạnh của Stable Diffusion (ROCm) để vẽ ảnh từ văn bản.\n- **Dùng khi**: Cần tạo Mascot, Render kiến trúc, hoặc minh họa ý tưởng.\n- **Lưu ý**: Prompt càng chi tiết, tác phẩm càng nghệ thuật.\n\n### 📸 CHỤP ẢNH MÀN HÌNH (`chup_anh_man_hinh`)\nChụp lại trạng thái hiện tại của trình duyệt hoặc giao diện.\n- **Dùng khi**: Cần báo cáo kết quả UI/UX hoặc xác nhận thông tin trực quan.\n\n---\n*SÁNG TẠO KHÔNG GIỚI HẠN!* 💎🎨🦾\n\n--- SOURCE: HueIC/He thong thiet bi Truong CDCN/DM thiet bi server và hạ tầng mạng HueIC.docx (score=0.65) ---\n). Vẫn đang sử dụng và hoạt động ổn định. Vẫn đang sử dụng và hoạt động ổn định. Phần mềm HRM (PMT-EMS HRM) Hệ thống cung cấp tính năng quản lý hồ sơ lịch lịch cán bộ công nhân viên của nhà trường, quản lý các quyết định, hợp đồng ra vào liên quan đến nhân sự,....) Vẫn đang sử dụng và hoạt động ổn định. Phần mềm PMT (PMT-EMS-Education) \n</knowledge_context> 04/07/2026`...",
+      "ts": 1783146551.4466462,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_ERR",
+      "msg": "BROWSER-FAIL: ",
+      "ts": 1783146566.8264742,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_WARN",
+      "msg": "BROWSER-EMPTY: Browser search returned empty results - cascading to Cloud LLM...",
+      "ts": 1783146566.8299432,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "CLOUD-LLM: Cascading to Cloud LLM search for giá vàng thế giới hôm nay thế nào ?\n\n<knowledge_context>\n--- SOURCE: skills/BUSINESS/skill_quanlyvanphong/dossier.md (score=0.67) ---\nva co nguon, khong dung so lieu uoc luong cho van ban phap ly\n- Kiem tra lai: ai lam gi, den khi nao, ket qua can dat la gi - neu ro het 3 yeu to nay\n\n### BUOC 5 - KIEM TRA PHAP LY: Ra soat truoc khi ky\n- Kiem tra tham quyen ky: loai van ban nay ai duoc ky? (Giam doc / Pho GD / Truong phong?)\n- Kiem tra can cu: van ban co doi lieu phap ly hop le khong? (nghi dinh, quyet dinh, dieu le cong ty)\n- Doi chieu voi quy che noi bo: co vi pham chinh sach nhan su, tai chinh, quan tri khong?\n- Neu hop dong: kiem tra cac dieu khoan giai quyet tranh chap, phat vi pham, bat kha khang\n- Neu to trinh xin kinh phi: kem du luan chung, bao gia, de nghi phe duyet cu the\n- Neu co rui ro phap ly: danh dau ro va bao cao cho cap quan ly truoc khi phat hanh\n\n### BUOC 6 - DINH DANG: Tuan thu chuan trinh bay\n- Font: Times New Roman, co chu 13pt cho noi dung chinh, 14pt cho tieu de chinh\n- Le trang: Trai 3 cm, Phai 2 cm, Tren 2.5 cm, Duoi 2.5 cm (theo Nghi dinh 30/2020)\n- Gian dong: 1.5 lines cho noi dung, khong them khoang cach thua giua cac doan\n- Danh so trang tu trang 2 tro di, vi tri giua day trang, font dong voi noi dung\n- Ky so: Su dung chu ky so (digital signature) neu van ban gui qua email chinh thuc\n- Khong dung mau nen, khong dung watermark tru khi la tai lieu mat co quy dinh rieng\n\n--- SOURCE: skills/FINANCE/skill_fin_05_sentiment/SKILL.md (score=0.67) ---\nS)\r\n- Bị nhiễu bởi các tin tức giả (FUD/FOMO) từ các đội nhóm lái giá.\r\n- Tâm lý đám đông có thể duy trì trạng thái phi lý trí lâu hơn mức dự kiến.\r\n\r\n---\r\n*TRUNG THÀNH - CHÍNH XÁC - TỐI THƯỢNG* 💎🦾\n\n--- SOURCE: skills/DEVOPS/skill_giam_sat_he_thong/manual.md (score=0.66) ---\n# 📊 CẨM NĂNG: GIÁM SÁT HỆ THỐNG (TELEMETRY)\n\nKỹ năng này là \"Đôi mắt\" nhìn thấu huyết mạch của Tập đoàn JKAI Zenith.\n\n---\n\n### 📈 BÁO CÁO SỨC KHỎE (`bao_cao_suc_khoe_he_thong`)\nCung cấp cái nhìn vĩ mô về tài nguyên đang sử dụng.\n- **Dùng khi**: Cần kiểm tra xem hệ thống có bị quá tải khi chạy nhiều model song song hay không.\n- **Lưu ý**: Hiển thị thông số theo chuẩn GB và % dễ hiểu.\n\n### 🔍 QUÉT LỖI TỰ ĐỘNG (`quet_loi_log_tu_dong`)\nHành động như một \"Bác sĩ hệ thống\" thầm lặng.\n- **Dùng khi**: Cảm thấy hệ thống phản hồi chậm hoặc có dấu hiệu bất thường trong hành vi của Đặc vụ.\n\n---\n*GIỮ CHO HUYẾT MẠCH LUÔN THÔNG SUỐT!* 💎📊🦾\n\n--- SOURCE: skills/CORE/skill_sangtaovanhanluc/manual.md (score=0.66) ---\n# 🎨 CẨM NĂNG: SÁNG TẠO & ĐỒ HỌA (CREATIVE)\n\nKỹ năng này biến JKAI ZENITH thành một nghệ sĩ thực thụ, có khả năng kiến tạo hình ảnh và thấu thị không gian số.\n\n---\n\n### 🖌️ PHÙ THỦY ĐỒ HỌA (`phu_thuy_do_hoa`)\nSử dụng sức mạnh của Stable Diffusion (ROCm) để vẽ ảnh từ văn bản.\n- **Dùng khi**: Cần tạo Mascot, Render kiến trúc, hoặc minh họa ý tưởng.\n- **Lưu ý**: Prompt càng chi tiết, tác phẩm càng nghệ thuật.\n\n### 📸 CHỤP ẢNH MÀN HÌNH (`chup_anh_man_hinh`)\nChụp lại trạng thái hiện tại của trình duyệt hoặc giao diện.\n- **Dùng khi**: Cần báo cáo kết quả UI/UX hoặc xác nhận thông tin trực quan.\n\n---\n*SÁNG TẠO KHÔNG GIỚI HẠN!* 💎🎨🦾\n\n--- SOURCE: HueIC/He thong thiet bi Truong CDCN/DM thiet bi server và hạ tầng mạng HueIC.docx (score=0.65) ---\n). Vẫn đang sử dụng và hoạt động ổn định. Vẫn đang sử dụng và hoạt động ổn định. Phần mềm HRM (PMT-EMS HRM) Hệ thống cung cấp tính năng quản lý hồ sơ lịch lịch cán bộ công nhân viên của nhà trường, quản lý các quyết định, hợp đồng ra vào liên quan đến nhân sự,....) Vẫn đang sử dụng và hoạt động ổn định. Phần mềm PMT (PMT-EMS-Education) \n</knowledge_context> 04/07/2026",
+      "ts": 1783146566.832315,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "TAVILY: Initiating global web search for giá vàng thế giới hôm nay thế nào ?\n\n<knowledge_context>\n--- SOURCE: skills/BUSINESS/skill_quanlyvanphong/dossier.md (score=0.67) ---\nva co nguon, khong dung so lieu uoc luong cho van ban phap ly\n- Kiem tra lai: ai lam gi, den khi nao, ket qua can dat la gi - neu ro het 3 yeu to nay\n\n### BUOC 5 - KIEM TRA PHAP LY: Ra soat truoc khi ky\n- Kiem tra tham quyen ky: loai van ban nay ai duoc ky? (Giam doc / Pho GD / Truong phong?)\n- Kiem tra can cu: van ban co doi lieu phap ly hop le khong? (nghi dinh, quyet dinh, dieu le cong ty)\n- Doi chieu voi quy che noi bo: co vi pham chinh sach nhan su, tai chinh, quan tri khong?\n- Neu hop dong: kiem tra cac dieu khoan giai quyet tranh chap, phat vi pham, bat kha khang\n- Neu to trinh xin kinh phi: kem du luan chung, bao gia, de nghi phe duyet cu the\n- Neu co rui ro phap ly: danh dau ro va bao cao cho cap quan ly truoc khi phat hanh\n\n### BUOC 6 - DINH DANG: Tuan thu chuan trinh bay\n- Font: Times New Roman, co chu 13pt cho noi dung chinh, 14pt cho tieu de chinh\n- Le trang: Trai 3 cm, Phai 2 cm, Tren 2.5 cm, Duoi 2.5 cm (theo Nghi dinh 30/2020)\n- Gian dong: 1.5 lines cho noi dung, khong them khoang cach thua giua cac doan\n- Danh so trang tu trang 2 tro di, vi tri giua day trang, font dong voi noi dung\n- Ky so: Su dung chu ky so (digital signature) neu van ban gui qua email chinh thuc\n- Khong dung mau nen, khong dung watermark tru khi la tai lieu mat co quy dinh rieng\n\n--- SOURCE: skills/FINANCE/skill_fin_05_sentiment/SKILL.md (score=0.67) ---\nS)\r\n- Bị nhiễu bởi các tin tức giả (FUD/FOMO) từ các đội nhóm lái giá.\r\n- Tâm lý đám đông có thể duy trì trạng thái phi lý trí lâu hơn mức dự kiến.\r\n\r\n---\r\n*TRUNG THÀNH - CHÍNH XÁC - TỐI THƯỢNG* 💎🦾\n\n--- SOURCE: skills/DEVOPS/skill_giam_sat_he_thong/manual.md (score=0.66) ---\n# 📊 CẨM NĂNG: GIÁM SÁT HỆ THỐNG (TELEMETRY)\n\nKỹ năng này là \"Đôi mắt\" nhìn thấu huyết mạch của Tập đoàn JKAI Zenith.\n\n---\n\n### 📈 BÁO CÁO SỨC KHỎE (`bao_cao_suc_khoe_he_thong`)\nCung cấp cái nhìn vĩ mô về tài nguyên đang sử dụng.\n- **Dùng khi**: Cần kiểm tra xem hệ thống có bị quá tải khi chạy nhiều model song song hay không.\n- **Lưu ý**: Hiển thị thông số theo chuẩn GB và % dễ hiểu.\n\n### 🔍 QUÉT LỖI TỰ ĐỘNG (`quet_loi_log_tu_dong`)\nHành động như một \"Bác sĩ hệ thống\" thầm lặng.\n- **Dùng khi**: Cảm thấy hệ thống phản hồi chậm hoặc có dấu hiệu bất thường trong hành vi của Đặc vụ.\n\n---\n*GIỮ CHO HUYẾT MẠCH LUÔN THÔNG SUỐT!* 💎📊🦾\n\n--- SOURCE: skills/CORE/skill_sangtaovanhanluc/manual.md (score=0.66) ---\n# 🎨 CẨM NĂNG: SÁNG TẠO & ĐỒ HỌA (CREATIVE)\n\nKỹ năng này biến JKAI ZENITH thành một nghệ sĩ thực thụ, có khả năng kiến tạo hình ảnh và thấu thị không gian số.\n\n---\n\n### 🖌️ PHÙ THỦY ĐỒ HỌA (`phu_thuy_do_hoa`)\nSử dụng sức mạnh của Stable Diffusion (ROCm) để vẽ ảnh từ văn bản.\n- **Dùng khi**: Cần tạo Mascot, Render kiến trúc, hoặc minh họa ý tưởng.\n- **Lưu ý**: Prompt càng chi tiết, tác phẩm càng nghệ thuật.\n\n### 📸 CHỤP ẢNH MÀN HÌNH (`chup_anh_man_hinh`)\nChụp lại trạng thái hiện tại của trình duyệt hoặc giao diện.\n- **Dùng khi**: Cần báo cáo kết quả UI/UX hoặc xác nhận thông tin trực quan.\n\n---\n*SÁNG TẠO KHÔNG GIỚI HẠN!* 💎🎨🦾\n\n--- SOURCE: HueIC/He thong thiet bi Truong CDCN/DM thiet bi server và hạ tầng mạng HueIC.docx (score=0.65) ---\n). Vẫn đang sử dụng và hoạt động ổn định. Vẫn đang sử dụng và hoạt động ổn định. Phần mềm HRM (PMT-EMS HRM) Hệ thống cung cấp tính năng quản lý hồ sơ lịch lịch cán bộ công nhân viên của nhà trường, quản lý các quyết định, hợp đồng ra vào liên quan đến nhân sự,....) Vẫn đang sử dụng và hoạt động ổn định. Phần mềm PMT (PMT-EMS-Education) \n</knowledge_context> 04/07/2026",
+      "ts": 1783146576.7811584,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_ERR",
+      "msg": "TAVILY-HTTP-ERR: 400 - {\"detail\":{\"error\":\"Query is too long. Max query length is 400 characters.\"}}",
+      "ts": 1783146578.0436068,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_ERR",
+      "msg": "TAVILY-HTTP-ERR: 400 - {\"detail\":{\"error\":\"Query is too long. Max query length is 400 characters.\"}}",
+      "ts": 1783146579.8427033,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "BROWSER_OPS",
+      "msg": "🌐 [BROWSER-USE]: Khởi kích vệ tinh để extract_links tại: `https://duckduckgo.com/html/?q=giá vàng thế giới hôm nay thế nào ?\n\n<knowledge_context>\n--- SOURCE: skills/BUSINESS/skill_quanlyvanphong/dossier.md (score=0.67) ---\nva co nguon, khong dung so lieu uoc luong cho van ban phap ly\n- Kiem tra lai: ai lam gi, den khi nao, ket qua can dat la gi - neu ro het 3 yeu to nay\n\n### BUOC 5 - KIEM TRA PHAP LY: Ra soat truoc khi ky\n- Kiem tra tham quyen ky: loai van ban nay ai duoc ky? (Giam doc / Pho GD / Truong phong?)\n- Kiem tra can cu: van ban co doi lieu phap ly hop le khong? (nghi dinh, quyet dinh, dieu le cong ty)\n- Doi chieu voi quy che noi bo: co vi pham chinh sach nhan su, tai chinh, quan tri khong?\n- Neu hop dong: kiem tra cac dieu khoan giai quyet tranh chap, phat vi pham, bat kha khang\n- Neu to trinh xin kinh phi: kem du luan chung, bao gia, de nghi phe duyet cu the\n- Neu co rui ro phap ly: danh dau ro va bao cao cho cap quan ly truoc khi phat hanh\n\n### BUOC 6 - DINH DANG: Tuan thu chuan trinh bay\n- Font: Times New Roman, co chu 13pt cho noi dung chinh, 14pt cho tieu de chinh\n- Le trang: Trai 3 cm, Phai 2 cm, Tren 2.5 cm, Duoi 2.5 cm (theo Nghi dinh 30/2020)\n- Gian dong: 1.5 lines cho noi dung, khong them khoang cach thua giua cac doan\n- Danh so trang tu trang 2 tro di, vi tri giua day trang, font dong voi noi dung\n- Ky so: Su dung chu ky so (digital signature) neu van ban gui qua email chinh thuc\n- Khong dung mau nen, khong dung watermark tru khi la tai lieu mat co quy dinh rieng\n\n--- SOURCE: skills/FINANCE/skill_fin_05_sentiment/SKILL.md (score=0.67) ---\nS)\r\n- Bị nhiễu bởi các tin tức giả (FUD/FOMO) từ các đội nhóm lái giá.\r\n- Tâm lý đám đông có thể duy trì trạng thái phi lý trí lâu hơn mức dự kiến.\r\n\r\n---\r\n*TRUNG THÀNH - CHÍNH XÁC - TỐI THƯỢNG* 💎🦾\n\n--- SOURCE: skills/DEVOPS/skill_giam_sat_he_thong/manual.md (score=0.66) ---\n# 📊 CẨM NĂNG: GIÁM SÁT HỆ THỐNG (TELEMETRY)\n\nKỹ năng này là \"Đôi mắt\" nhìn thấu huyết mạch của Tập đoàn JKAI Zenith.\n\n---\n\n### 📈 BÁO CÁO SỨC KHỎE (`bao_cao_suc_khoe_he_thong`)\nCung cấp cái nhìn vĩ mô về tài nguyên đang sử dụng.\n- **Dùng khi**: Cần kiểm tra xem hệ thống có bị quá tải khi chạy nhiều model song song hay không.\n- **Lưu ý**: Hiển thị thông số theo chuẩn GB và % dễ hiểu.\n\n### 🔍 QUÉT LỖI TỰ ĐỘNG (`quet_loi_log_tu_dong`)\nHành động như một \"Bác sĩ hệ thống\" thầm lặng.\n- **Dùng khi**: Cảm thấy hệ thống phản hồi chậm hoặc có dấu hiệu bất thường trong hành vi của Đặc vụ.\n\n---\n*GIỮ CHO HUYẾT MẠCH LUÔN THÔNG SUỐT!* 💎📊🦾\n\n--- SOURCE: skills/CORE/skill_sangtaovanhanluc/manual.md (score=0.66) ---\n# 🎨 CẨM NĂNG: SÁNG TẠO & ĐỒ HỌA (CREATIVE)\n\nKỹ năng này biến JKAI ZENITH thành một nghệ sĩ thực thụ, có khả năng kiến tạo hình ảnh và thấu thị không gian số.\n\n---\n\n### 🖌️ PHÙ THỦY ĐỒ HỌA (`phu_thuy_do_hoa`)\nSử dụng sức mạnh của Stable Diffusion (ROCm) để vẽ ảnh từ văn bản.\n- **Dùng khi**: Cần tạo Mascot, Render kiến trúc, hoặc minh họa ý tưởng.\n- **Lưu ý**: Prompt càng chi tiết, tác phẩm càng nghệ thuật.\n\n### 📸 CHỤP ẢNH MÀN HÌNH (`chup_anh_man_hinh`)\nChụp lại trạng thái hiện tại của trình duyệt hoặc giao diện.\n- **Dùng khi**: Cần báo cáo kết quả UI/UX hoặc xác nhận thông tin trực quan.\n\n---\n*SÁNG TẠO KHÔNG GIỚI HẠN!* 💎🎨🦾\n\n--- SOURCE: HueIC/He thong thiet bi Truong CDCN/DM thiet bi server và hạ tầng mạng HueIC.docx (score=0.65) ---\n). Vẫn đang sử dụng và hoạt động ổn định. Vẫn đang sử dụng và hoạt động ổn định. Phần mềm HRM (PMT-EMS HRM) Hệ thống cung cấp tính năng quản lý hồ sơ lịch lịch cán bộ công nhân viên của nhà trường, quản lý các quyết định, hợp đồng ra vào liên quan đến nhân sự,....) Vẫn đang sử dụng và hoạt động ổn định. Phần mềm PMT (PMT-EMS-Education) \n</knowledge_context> 04/07/2026`...",
+      "ts": 1783146581.4496999,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_ERR",
+      "msg": "TAVILY-FAIL: Client error '400 Bad Request' for url 'https://api.tavily.com/search'\nFor more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400 - cascading to DuckDuckGo...",
+      "ts": 1783146581.8469481,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_WARN",
+      "msg": "DDG-SKIP: Probe báo DEAD (duckduckgo_search chưa được cài) - cascading to Browser...",
+      "ts": 1783146581.849651,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "BROWSER-SEARCH: Cascading to Browser Search for giá vàng thế giới hôm nay thế nào ?\n\n<knowledge_context>\n--- SOURCE: skills/BUSINESS/skill_quanlyvanphong/dossier.md (score=0.67) ---\nva co nguon, khong dung so lieu uoc luong cho van ban phap ly\n- Kiem tra lai: ai lam gi, den khi nao, ket qua can dat la gi - neu ro het 3 yeu to nay\n\n### BUOC 5 - KIEM TRA PHAP LY: Ra soat truoc khi ky\n- Kiem tra tham quyen ky: loai van ban nay ai duoc ky? (Giam doc / Pho GD / Truong phong?)\n- Kiem tra can cu: van ban co doi lieu phap ly hop le khong? (nghi dinh, quyet dinh, dieu le cong ty)\n- Doi chieu voi quy che noi bo: co vi pham chinh sach nhan su, tai chinh, quan tri khong?\n- Neu hop dong: kiem tra cac dieu khoan giai quyet tranh chap, phat vi pham, bat kha khang\n- Neu to trinh xin kinh phi: kem du luan chung, bao gia, de nghi phe duyet cu the\n- Neu co rui ro phap ly: danh dau ro va bao cao cho cap quan ly truoc khi phat hanh\n\n### BUOC 6 - DINH DANG: Tuan thu chuan trinh bay\n- Font: Times New Roman, co chu 13pt cho noi dung chinh, 14pt cho tieu de chinh\n- Le trang: Trai 3 cm, Phai 2 cm, Tren 2.5 cm, Duoi 2.5 cm (theo Nghi dinh 30/2020)\n- Gian dong: 1.5 lines cho noi dung, khong them khoang cach thua giua cac doan\n- Danh so trang tu trang 2 tro di, vi tri giua day trang, font dong voi noi dung\n- Ky so: Su dung chu ky so (digital signature) neu van ban gui qua email chinh thuc\n- Khong dung mau nen, khong dung watermark tru khi la tai lieu mat co quy dinh rieng\n\n--- SOURCE: skills/FINANCE/skill_fin_05_sentiment/SKILL.md (score=0.67) ---\nS)\r\n- Bị nhiễu bởi các tin tức giả (FUD/FOMO) từ các đội nhóm lái giá.\r\n- Tâm lý đám đông có thể duy trì trạng thái phi lý trí lâu hơn mức dự kiến.\r\n\r\n---\r\n*TRUNG THÀNH - CHÍNH XÁC - TỐI THƯỢNG* 💎🦾\n\n--- SOURCE: skills/DEVOPS/skill_giam_sat_he_thong/manual.md (score=0.66) ---\n# 📊 CẨM NĂNG: GIÁM SÁT HỆ THỐNG (TELEMETRY)\n\nKỹ năng này là \"Đôi mắt\" nhìn thấu huyết mạch của Tập đoàn JKAI Zenith.\n\n---\n\n### 📈 BÁO CÁO SỨC KHỎE (`bao_cao_suc_khoe_he_thong`)\nCung cấp cái nhìn vĩ mô về tài nguyên đang sử dụng.\n- **Dùng khi**: Cần kiểm tra xem hệ thống có bị quá tải khi chạy nhiều model song song hay không.\n- **Lưu ý**: Hiển thị thông số theo chuẩn GB và % dễ hiểu.\n\n### 🔍 QUÉT LỖI TỰ ĐỘNG (`quet_loi_log_tu_dong`)\nHành động như một \"Bác sĩ hệ thống\" thầm lặng.\n- **Dùng khi**: Cảm thấy hệ thống phản hồi chậm hoặc có dấu hiệu bất thường trong hành vi của Đặc vụ.\n\n---\n*GIỮ CHO HUYẾT MẠCH LUÔN THÔNG SUỐT!* 💎📊🦾\n\n--- SOURCE: skills/CORE/skill_sangtaovanhanluc/manual.md (score=0.66) ---\n# 🎨 CẨM NĂNG: SÁNG TẠO & ĐỒ HỌA (CREATIVE)\n\nKỹ năng này biến JKAI ZENITH thành một nghệ sĩ thực thụ, có khả năng kiến tạo hình ảnh và thấu thị không gian số.\n\n---\n\n### 🖌️ PHÙ THỦY ĐỒ HỌA (`phu_thuy_do_hoa`)\nSử dụng sức mạnh của Stable Diffusion (ROCm) để vẽ ảnh từ văn bản.\n- **Dùng khi**: Cần tạo Mascot, Render kiến trúc, hoặc minh họa ý tưởng.\n- **Lưu ý**: Prompt càng chi tiết, tác phẩm càng nghệ thuật.\n\n### 📸 CHỤP ẢNH MÀN HÌNH (`chup_anh_man_hinh`)\nChụp lại trạng thái hiện tại của trình duyệt hoặc giao diện.\n- **Dùng khi**: Cần báo cáo kết quả UI/UX hoặc xác nhận thông tin trực quan.\n\n---\n*SÁNG TẠO KHÔNG GIỚI HẠN!* 💎🎨🦾\n\n--- SOURCE: HueIC/He thong thiet bi Truong CDCN/DM thiet bi server và hạ tầng mạng HueIC.docx (score=0.65) ---\n). Vẫn đang sử dụng và hoạt động ổn định. Vẫn đang sử dụng và hoạt động ổn định. Phần mềm HRM (PMT-EMS HRM) Hệ thống cung cấp tính năng quản lý hồ sơ lịch lịch cán bộ công nhân viên của nhà trường, quản lý các quyết định, hợp đồng ra vào liên quan đến nhân sự,....) Vẫn đang sử dụng và hoạt động ổn định. Phần mềm PMT (PMT-EMS-Education) \n</knowledge_context> 04/07/2026",
+      "ts": 1783146581.851527,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_FALLBACK",
+      "msg": "BROWSER-SEARCH: Using DuckDuckGo via ai_browse (Reason: Circuit Open or Empty Result)",
+      "ts": 1783146581.8533852,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔬 [T4: SURGERY] [ai_browse] Đang kiểm tra an toàn & khóa tài nguyên...",
+      "ts": 1783146591.287702,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T4: SURGERY] [ai_browse] Đang áp dụng chính sách thực thi...",
+      "ts": 1783146591.2901912,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "💉 [T4: SURGERY] [ai_browse] Đang nạp DNA & nén bối cảnh...",
+      "ts": 1783146591.2914174,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "*[đang thực thi]* `ai_browse`",
+      "ts": 1783146591.2925923,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚔️ [T4: SURGERY] [ai_browse] Bắt đầu thực thi ...",
+      "ts": 1783146591.2949567,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "BROWSER_OPS",
+      "msg": "🌐 [BROWSER-USE]: Khởi kích vệ tinh để extract_links tại: `https://duckduckgo.com/html/?q=giá vàng thế giới hôm nay thế nào ?\n\n<knowledge_context>\n--- SOURCE: skills/BUSINESS/skill_quanlyvanphong/dossier.md (score=0.67) ---\nva co nguon, khong dung so lieu uoc luong cho van ban phap ly\n- Kiem tra lai: ai lam gi, den khi nao, ket qua can dat la gi - neu ro het 3 yeu to nay\n\n### BUOC 5 - KIEM TRA PHAP LY: Ra soat truoc khi ky\n- Kiem tra tham quyen ky: loai van ban nay ai duoc ky? (Giam doc / Pho GD / Truong phong?)\n- Kiem tra can cu: van ban co doi lieu phap ly hop le khong? (nghi dinh, quyet dinh, dieu le cong ty)\n- Doi chieu voi quy che noi bo: co vi pham chinh sach nhan su, tai chinh, quan tri khong?\n- Neu hop dong: kiem tra cac dieu khoan giai quyet tranh chap, phat vi pham, bat kha khang\n- Neu to trinh xin kinh phi: kem du luan chung, bao gia, de nghi phe duyet cu the\n- Neu co rui ro phap ly: danh dau ro va bao cao cho cap quan ly truoc khi phat hanh\n\n### BUOC 6 - DINH DANG: Tuan thu chuan trinh bay\n- Font: Times New Roman, co chu 13pt cho noi dung chinh, 14pt cho tieu de chinh\n- Le trang: Trai 3 cm, Phai 2 cm, Tren 2.5 cm, Duoi 2.5 cm (theo Nghi dinh 30/2020)\n- Gian dong: 1.5 lines cho noi dung, khong them khoang cach thua giua cac doan\n- Danh so trang tu trang 2 tro di, vi tri giua day trang, font dong voi noi dung\n- Ky so: Su dung chu ky so (digital signature) neu van ban gui qua email chinh thuc\n- Khong dung mau nen, khong dung watermark tru khi la tai lieu mat co quy dinh rieng\n\n--- SOURCE: skills/FINANCE/skill_fin_05_sentiment/SKILL.md (score=0.67) ---\nS)\r\n- Bị nhiễu bởi các tin tức giả (FUD/FOMO) từ các đội nhóm lái giá.\r\n- Tâm lý đám đông có thể duy trì trạng thái phi lý trí lâu hơn mức dự kiến.\r\n\r\n---\r\n*TRUNG THÀNH - CHÍNH XÁC - TỐI THƯỢNG* 💎🦾\n\n--- SOURCE: skills/DEVOPS/skill_giam_sat_he_thong/manual.md (score=0.66) ---\n# 📊 CẨM NĂNG: GIÁM SÁT HỆ THỐNG (TELEMETRY)\n\nKỹ năng này là \"Đôi mắt\" nhìn thấu huyết mạch của Tập đoàn JKAI Zenith.\n\n---\n\n### 📈 BÁO CÁO SỨC KHỎE (`bao_cao_suc_khoe_he_thong`)\nCung cấp cái nhìn vĩ mô về tài nguyên đang sử dụng.\n- **Dùng khi**: Cần kiểm tra xem hệ thống có bị quá tải khi chạy nhiều model song song hay không.\n- **Lưu ý**: Hiển thị thông số theo chuẩn GB và % dễ hiểu.\n\n### 🔍 QUÉT LỖI TỰ ĐỘNG (`quet_loi_log_tu_dong`)\nHành động như một \"Bác sĩ hệ thống\" thầm lặng.\n- **Dùng khi**: Cảm thấy hệ thống phản hồi chậm hoặc có dấu hiệu bất thường trong hành vi của Đặc vụ.\n\n---\n*GIỮ CHO HUYẾT MẠCH LUÔN THÔNG SUỐT!* 💎📊🦾\n\n--- SOURCE: skills/CORE/skill_sangtaovanhanluc/manual.md (score=0.66) ---\n# 🎨 CẨM NĂNG: SÁNG TẠO & ĐỒ HỌA (CREATIVE)\n\nKỹ năng này biến JKAI ZENITH thành một nghệ sĩ thực thụ, có khả năng kiến tạo hình ảnh và thấu thị không gian số.\n\n---\n\n### 🖌️ PHÙ THỦY ĐỒ HỌA (`phu_thuy_do_hoa`)\nSử dụng sức mạnh của Stable Diffusion (ROCm) để vẽ ảnh từ văn bản.\n- **Dùng khi**: Cần tạo Mascot, Render kiến trúc, hoặc minh họa ý tưởng.\n- **Lưu ý**: Prompt càng chi tiết, tác phẩm càng nghệ thuật.\n\n### 📸 CHỤP ẢNH MÀN HÌNH (`chup_anh_man_hinh`)\nChụp lại trạng thái hiện tại của trình duyệt hoặc giao diện.\n- **Dùng khi**: Cần báo cáo kết quả UI/UX hoặc xác nhận thông tin trực quan.\n\n---\n*SÁNG TẠO KHÔNG GIỚI HẠN!* 💎🎨🦾\n\n--- SOURCE: HueIC/He thong thiet bi Truong CDCN/DM thiet bi server và hạ tầng mạng HueIC.docx (score=0.65) ---\n). Vẫn đang sử dụng và hoạt động ổn định. Vẫn đang sử dụng và hoạt động ổn định. Phần mềm HRM (PMT-EMS HRM) Hệ thống cung cấp tính năng quản lý hồ sơ lịch lịch cán bộ công nhân viên của nhà trường, quản lý các quyết định, hợp đồng ra vào liên quan đến nhân sự,....) Vẫn đang sử dụng và hoạt động ổn định. Phần mềm PMT (PMT-EMS-Education) \n</knowledge_context> 04/07/2026`...",
+      "ts": 1783146594.7131412,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_ERR",
+      "msg": "BROWSER-FAIL: ",
+      "ts": 1783146611.8754056,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_WARN",
+      "msg": "BROWSER-EMPTY: Browser search returned empty results - cascading to Cloud LLM...",
+      "ts": 1783146611.8790526,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "CLOUD-LLM: Cascading to Cloud LLM search for giá vàng thế giới hôm nay thế nào ?\n\n<knowledge_context>\n--- SOURCE: skills/BUSINESS/skill_quanlyvanphong/dossier.md (score=0.67) ---\nva co nguon, khong dung so lieu uoc luong cho van ban phap ly\n- Kiem tra lai: ai lam gi, den khi nao, ket qua can dat la gi - neu ro het 3 yeu to nay\n\n### BUOC 5 - KIEM TRA PHAP LY: Ra soat truoc khi ky\n- Kiem tra tham quyen ky: loai van ban nay ai duoc ky? (Giam doc / Pho GD / Truong phong?)\n- Kiem tra can cu: van ban co doi lieu phap ly hop le khong? (nghi dinh, quyet dinh, dieu le cong ty)\n- Doi chieu voi quy che noi bo: co vi pham chinh sach nhan su, tai chinh, quan tri khong?\n- Neu hop dong: kiem tra cac dieu khoan giai quyet tranh chap, phat vi pham, bat kha khang\n- Neu to trinh xin kinh phi: kem du luan chung, bao gia, de nghi phe duyet cu the\n- Neu co rui ro phap ly: danh dau ro va bao cao cho cap quan ly truoc khi phat hanh\n\n### BUOC 6 - DINH DANG: Tuan thu chuan trinh bay\n- Font: Times New Roman, co chu 13pt cho noi dung chinh, 14pt cho tieu de chinh\n- Le trang: Trai 3 cm, Phai 2 cm, Tren 2.5 cm, Duoi 2.5 cm (theo Nghi dinh 30/2020)\n- Gian dong: 1.5 lines cho noi dung, khong them khoang cach thua giua cac doan\n- Danh so trang tu trang 2 tro di, vi tri giua day trang, font dong voi noi dung\n- Ky so: Su dung chu ky so (digital signature) neu van ban gui qua email chinh thuc\n- Khong dung mau nen, khong dung watermark tru khi la tai lieu mat co quy dinh rieng\n\n--- SOURCE: skills/FINANCE/skill_fin_05_sentiment/SKILL.md (score=0.67) ---\nS)\r\n- Bị nhiễu bởi các tin tức giả (FUD/FOMO) từ các đội nhóm lái giá.\r\n- Tâm lý đám đông có thể duy trì trạng thái phi lý trí lâu hơn mức dự kiến.\r\n\r\n---\r\n*TRUNG THÀNH - CHÍNH XÁC - TỐI THƯỢNG* 💎🦾\n\n--- SOURCE: skills/DEVOPS/skill_giam_sat_he_thong/manual.md (score=0.66) ---\n# 📊 CẨM NĂNG: GIÁM SÁT HỆ THỐNG (TELEMETRY)\n\nKỹ năng này là \"Đôi mắt\" nhìn thấu huyết mạch của Tập đoàn JKAI Zenith.\n\n---\n\n### 📈 BÁO CÁO SỨC KHỎE (`bao_cao_suc_khoe_he_thong`)\nCung cấp cái nhìn vĩ mô về tài nguyên đang sử dụng.\n- **Dùng khi**: Cần kiểm tra xem hệ thống có bị quá tải khi chạy nhiều model song song hay không.\n- **Lưu ý**: Hiển thị thông số theo chuẩn GB và % dễ hiểu.\n\n### 🔍 QUÉT LỖI TỰ ĐỘNG (`quet_loi_log_tu_dong`)\nHành động như một \"Bác sĩ hệ thống\" thầm lặng.\n- **Dùng khi**: Cảm thấy hệ thống phản hồi chậm hoặc có dấu hiệu bất thường trong hành vi của Đặc vụ.\n\n---\n*GIỮ CHO HUYẾT MẠCH LUÔN THÔNG SUỐT!* 💎📊🦾\n\n--- SOURCE: skills/CORE/skill_sangtaovanhanluc/manual.md (score=0.66) ---\n# 🎨 CẨM NĂNG: SÁNG TẠO & ĐỒ HỌA (CREATIVE)\n\nKỹ năng này biến JKAI ZENITH thành một nghệ sĩ thực thụ, có khả năng kiến tạo hình ảnh và thấu thị không gian số.\n\n---\n\n### 🖌️ PHÙ THỦY ĐỒ HỌA (`phu_thuy_do_hoa`)\nSử dụng sức mạnh của Stable Diffusion (ROCm) để vẽ ảnh từ văn bản.\n- **Dùng khi**: Cần tạo Mascot, Render kiến trúc, hoặc minh họa ý tưởng.\n- **Lưu ý**: Prompt càng chi tiết, tác phẩm càng nghệ thuật.\n\n### 📸 CHỤP ẢNH MÀN HÌNH (`chup_anh_man_hinh`)\nChụp lại trạng thái hiện tại của trình duyệt hoặc giao diện.\n- **Dùng khi**: Cần báo cáo kết quả UI/UX hoặc xác nhận thông tin trực quan.\n\n---\n*SÁNG TẠO KHÔNG GIỚI HẠN!* 💎🎨🦾\n\n--- SOURCE: HueIC/He thong thiet bi Truong CDCN/DM thiet bi server và hạ tầng mạng HueIC.docx (score=0.65) ---\n). Vẫn đang sử dụng và hoạt động ổn định. Vẫn đang sử dụng và hoạt động ổn định. Phần mềm HRM (PMT-EMS HRM) Hệ thống cung cấp tính năng quản lý hồ sơ lịch lịch cán bộ công nhân viên của nhà trường, quản lý các quyết định, hợp đồng ra vào liên quan đến nhân sự,....) Vẫn đang sử dụng và hoạt động ổn định. Phần mềm PMT (PMT-EMS-Education) \n</knowledge_context> 04/07/2026",
+      "ts": 1783146611.88117,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Executor executor success (57 chars)",
+      "ts": 1783146620.9885461,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (57 ký tự)",
+      "ts": 1783146620.994099,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "BROWSER_OPS",
+      "msg": "🌐 [BROWSER-USE]: Khởi kích vệ tinh để extract_links tại: `https://duckduckgo.com/html/?q=giá vàng thế giới hôm nay thế nào ?\n\n<knowledge_context>\n--- SOURCE: skills/BUSINESS/skill_quanlyvanphong/dossier.md (score=0.67) ---\nva co nguon, khong dung so lieu uoc luong cho van ban phap ly\n- Kiem tra lai: ai lam gi, den khi nao, ket qua can dat la gi - neu ro het 3 yeu to nay\n\n### BUOC 5 - KIEM TRA PHAP LY: Ra soat truoc khi ky\n- Kiem tra tham quyen ky: loai van ban nay ai duoc ky? (Giam doc / Pho GD / Truong phong?)\n- Kiem tra can cu: van ban co doi lieu phap ly hop le khong? (nghi dinh, quyet dinh, dieu le cong ty)\n- Doi chieu voi quy che noi bo: co vi pham chinh sach nhan su, tai chinh, quan tri khong?\n- Neu hop dong: kiem tra cac dieu khoan giai quyet tranh chap, phat vi pham, bat kha khang\n- Neu to trinh xin kinh phi: kem du luan chung, bao gia, de nghi phe duyet cu the\n- Neu co rui ro phap ly: danh dau ro va bao cao cho cap quan ly truoc khi phat hanh\n\n### BUOC 6 - DINH DANG: Tuan thu chuan trinh bay\n- Font: Times New Roman, co chu 13pt cho noi dung chinh, 14pt cho tieu de chinh\n- Le trang: Trai 3 cm, Phai 2 cm, Tren 2.5 cm, Duoi 2.5 cm (theo Nghi dinh 30/2020)\n- Gian dong: 1.5 lines cho noi dung, khong them khoang cach thua giua cac doan\n- Danh so trang tu trang 2 tro di, vi tri giua day trang, font dong voi noi dung\n- Ky so: Su dung chu ky so (digital signature) neu van ban gui qua email chinh thuc\n- Khong dung mau nen, khong dung watermark tru khi la tai lieu mat co quy dinh rieng\n\n--- SOURCE: skills/FINANCE/skill_fin_05_sentiment/SKILL.md (score=0.67) ---\nS)\r\n- Bị nhiễu bởi các tin tức giả (FUD/FOMO) từ các đội nhóm lái giá.\r\n- Tâm lý đám đông có thể duy trì trạng thái phi lý trí lâu hơn mức dự kiến.\r\n\r\n---\r\n*TRUNG THÀNH - CHÍNH XÁC - TỐI THƯỢNG* 💎🦾\n\n--- SOURCE: skills/DEVOPS/skill_giam_sat_he_thong/manual.md (score=0.66) ---\n# 📊 CẨM NĂNG: GIÁM SÁT HỆ THỐNG (TELEMETRY)\n\nKỹ năng này là \"Đôi mắt\" nhìn thấu huyết mạch của Tập đoàn JKAI Zenith.\n\n---\n\n### 📈 BÁO CÁO SỨC KHỎE (`bao_cao_suc_khoe_he_thong`)\nCung cấp cái nhìn vĩ mô về tài nguyên đang sử dụng.\n- **Dùng khi**: Cần kiểm tra xem hệ thống có bị quá tải khi chạy nhiều model song song hay không.\n- **Lưu ý**: Hiển thị thông số theo chuẩn GB và % dễ hiểu.\n\n### 🔍 QUÉT LỖI TỰ ĐỘNG (`quet_loi_log_tu_dong`)\nHành động như một \"Bác sĩ hệ thống\" thầm lặng.\n- **Dùng khi**: Cảm thấy hệ thống phản hồi chậm hoặc có dấu hiệu bất thường trong hành vi của Đặc vụ.\n\n---\n*GIỮ CHO HUYẾT MẠCH LUÔN THÔNG SUỐT!* 💎📊🦾\n\n--- SOURCE: skills/CORE/skill_sangtaovanhanluc/manual.md (score=0.66) ---\n# 🎨 CẨM NĂNG: SÁNG TẠO & ĐỒ HỌA (CREATIVE)\n\nKỹ năng này biến JKAI ZENITH thành một nghệ sĩ thực thụ, có khả năng kiến tạo hình ảnh và thấu thị không gian số.\n\n---\n\n### 🖌️ PHÙ THỦY ĐỒ HỌA (`phu_thuy_do_hoa`)\nSử dụng sức mạnh của Stable Diffusion (ROCm) để vẽ ảnh từ văn bản.\n- **Dùng khi**: Cần tạo Mascot, Render kiến trúc, hoặc minh họa ý tưởng.\n- **Lưu ý**: Prompt càng chi tiết, tác phẩm càng nghệ thuật.\n\n### 📸 CHỤP ẢNH MÀN HÌNH (`chup_anh_man_hinh`)\nChụp lại trạng thái hiện tại của trình duyệt hoặc giao diện.\n- **Dùng khi**: Cần báo cáo kết quả UI/UX hoặc xác nhận thông tin trực quan.\n\n---\n*SÁNG TẠO KHÔNG GIỚI HẠN!* 💎🎨🦾\n\n--- SOURCE: HueIC/He thong thiet bi Truong CDCN/DM thiet bi server và hạ tầng mạng HueIC.docx (score=0.65) ---\n). Vẫn đang sử dụng và hoạt động ổn định. Vẫn đang sử dụng và hoạt động ổn định. Phần mềm HRM (PMT-EMS HRM) Hệ thống cung cấp tính năng quản lý hồ sơ lịch lịch cán bộ công nhân viên của nhà trường, quản lý các quyết định, hợp đồng ra vào liên quan đến nhân sự,....) Vẫn đang sử dụng và hoạt động ổn định. Phần mềm PMT (PMT-EMS-Education) \n</knowledge_context> 04/07/2026`...",
+      "ts": 1783146624.7177625,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WARN",
+      "msg": "Direct Ollama failed, fallback to call_chat: Server disconnected without sending a response.",
+      "ts": 1783146666.170646,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "WARNING",
+      "msg": "📡 [CONNECTION-LOST]: Trạm tại http://host.docker.internal:11434/api/chat gặp sự cố hoặc nghẽn nơ-ron (ConnectError). Đang kích hoạt Giao thức Chuyển vùng thưa Master...",
+      "ts": 1783146669.299342,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "✅ [FAST-PIPELINE]: Hoàn tất ReAct loop cho task ZENITH_0407-1328_d5b069",
+      "ts": 1783146669.3648598,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Sứ mệnh hoàn tất thưa Master.\n\n---\n👉 Phản hồi lúc 13h31m ngày 04/07/2026",
+      "ts": 1783146669.3712351,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1328_d5b069"
+    }
+  ],
+  "artifacts": {
+    "plan": "giá vàng thế giới hôm nay thế nào ?",
+    "walkthrough": "Sứ mệnh hoàn tất thưa Master.\n\n---\n👉 Phản hồi lúc 13h31m ngày 04/07/2026",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

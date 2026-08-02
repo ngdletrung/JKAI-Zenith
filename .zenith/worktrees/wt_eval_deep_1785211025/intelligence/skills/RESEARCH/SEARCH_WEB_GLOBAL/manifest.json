@@ -1,0 +1,57 @@
+{
+  "id": "SEARCH_WEB_GLOBAL",
+  "name": "Zenith Global Omni-Search",
+  "version": "2.0.0",
+  "description": "Supreme search core: Orchestrates global internet reconnaissance, RAG-based knowledge retrieval, and smart scraping with automated noise purification and reranking.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "siêu tìm kiếm",
+    "search web global",
+    "truy lục tri thức",
+    "quét internet",
+    "omni search",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "thuc",
+    "nhat",
+    "thong",
+    "kiem",
+    "toan",
+    "nang",
+    "tinh",
+    "master",
+    "global",
+    "khong",
+    "nghien cuu",
+    "phan tich",
+    "ke hoach",
+    "plan",
+    "y tuong"
+  ],
+  "domain": "RESEARCH",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "The search query."
+        },
+        "search_depth": {
+          "type": "string",
+          "enum": [
+            "basic",
+            "advanced"
+          ],
+          "description": "Depth of search."
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
+  }
+}

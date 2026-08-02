@@ -1,0 +1,63 @@
+{
+  "id": "OMNI_SEARCH_ENGINE",
+  "name": "Zenith Omni Search (v8.0)",
+  "version": "8.0.0",
+  "description": "Supreme intelligence retrieval: Hybrid search engine with semantic reranking, fact verification, and persistent neural caching.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "tìm kiếm internet",
+    "tra cứu thông tin",
+    "omni search",
+    "search global",
+    "tìm kiếm thông minh",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "thong",
+    "kiem",
+    "nguon",
+    "thuc",
+    "toan",
+    "nang",
+    "nhat",
+    "thoi",
+    "lieu",
+    "truy",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "The search query."
+        },
+        "mode": {
+          "type": "string",
+          "enum": [
+            "fast",
+            "deep"
+          ],
+          "default": "fast",
+          "description": "Search depth."
+        },
+        "bypass_cache": {
+          "type": "boolean",
+          "default": false,
+          "description": "Force fresh search from internet."
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
+  }
+}

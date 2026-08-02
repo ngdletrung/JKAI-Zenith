@@ -1,0 +1,46 @@
+{
+  "id": "DEPRECATION_AND_MIGRATION",
+  "name": "Deprecation And Migration",
+  "version": "1.0.0",
+  "description": "Scans and cleans dead/zombie code and coordinates migrations.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "dọn dẹp code rác",
+    "deprecation",
+    "zombie code clean",
+    "overview",
+    "when to use",
+    "core principles",
+    "code is a liability",
+    "hyrum s law makes removal hard",
+    "migration",
+    "system",
+    "code",
+    "cost",
+    "remove",
+    "users",
+    "maintenance",
+    "time",
+    "documentation",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "module": {
+          "type": "string",
+          "description": "The module name to clean."
+        }
+      },
+      "required": [
+        "module"
+      ]
+    }
+  }
+}

@@ -1,0 +1,58 @@
+{
+  "id": "SKILL_TUCAITIEN",
+  "name": "Zenith Evolution Engine",
+  "version": "7.0.0",
+  "description": "Supreme self-optimization core: Capable of autonomously analyzing, rewriting, and verifying source code across the entire skill ecosystem with ACID safety.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "tự cải tiến",
+    "nâng cấp mã nguồn",
+    "evolution engine",
+    "phẫu thuật logic",
+    "tự nâng cấp bản thân",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "nang",
+    "nguon",
+    "toan",
+    "tien",
+    "thuc",
+    "hien",
+    "khong",
+    "logic",
+    "zenith",
+    "phan",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "skill_id": {
+          "type": "string",
+          "description": "ID of the skill to optimize."
+        },
+        "optimization_goal": {
+          "type": "string",
+          "description": "Goal for the optimization (e.g., performance, reliability)."
+        },
+        "dry_run": {
+          "type": "boolean",
+          "default": false,
+          "description": "If true, only generates the diff without applying changes."
+        }
+      },
+      "required": [
+        "optimization_goal"
+      ]
+    }
+  }
+}

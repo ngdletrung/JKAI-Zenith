@@ -1,0 +1,49 @@
+{
+  "id": "SKILL_SYS_18_LOG_INSIGHT",
+  "name": "Zenith Log Insight Engine",
+  "version": "1.0.0",
+  "description": "Observability core: Centralizes and analyzes logs from all system components to identify patterns, errors, and performance bottlenecks using AI-driven insights.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "phân tích log",
+    "log insight",
+    "điều tra lỗi hệ thống",
+    "centralized logging",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "nang",
+    "hieu",
+    "thong",
+    "khong",
+    "nhung",
+    "master",
+    "phan",
+    "thanh",
+    "zenith",
+    "insight",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "service_name": {
+          "type": "string",
+          "description": "The service to analyze logs for."
+        },
+        "time_range": {
+          "type": "string",
+          "description": "Time range for analysis (e.g., 'last 1 hour')."
+        }
+      }
+    }
+  }
+}

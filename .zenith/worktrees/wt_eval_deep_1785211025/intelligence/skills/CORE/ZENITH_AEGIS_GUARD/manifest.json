@@ -1,0 +1,79 @@
+{
+  "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/ZENITH_AEGIS_GUARD/manifest.json - Role: Z-SOS Manifest for Security Sandboxing - Ownership: Mr LeeTrung - Status: Active | Version: SDS v1.0 ",
+  "id": "ZENITH_AEGIS_GUARD",
+  "name": "Zenith Aegis Guard",
+  "version": "1.0.0",
+  "description": "Security Sandbox & Permission Orchestrator: Enforces a deny-first policy for sensitive operations, implements file/command isolation, and manages the Neural Handshake protocol with the Master.",
+  "author": "JKAI-Zenith",
+  "triggers": [
+    "bảo mật hệ thống",
+    "phân quyền",
+    "sandbox",
+    "aegis guard",
+    "cô lập lệnh",
+    "neural handshake",
+    "quản trị rủi ro",
+    "overview",
+    "the hybrid pillars  tru cot hop nhat",
+    "1    cognitive rationale  tinh hoa claude code",
+    "2  hard authentication  mat ma phe duyet master",
+    "the hybrid handshake protocol",
+    "hybrid",
+    "khong",
+    "thuc",
+    "zenith",
+    "giai",
+    "trinh",
+    "luat",
+    "master",
+    "zenith_aegis_guard",
+    "duyet",
+    "skill",
+    "agent",
+    "tac vu"
+  ],
+  "domain": "CORE",
+  "config": {
+    "security_level": "strict",
+    "red_zone_paths": [
+      ".env",
+      "config/",
+      "node_modules/",
+      "core/auth/"
+    ],
+    "allowed_commands": [
+      "ls",
+      "grep",
+      "cat",
+      "git status"
+    ]
+  },
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "check",
+            "authorize",
+            "log_violation",
+            "update_zones"
+          ],
+          "description": "Security action to perform."
+        },
+        "target": {
+          "type": "string",
+          "description": "The command or file path to evaluate."
+        },
+        "rationale": {
+          "type": "string",
+          "description": "Agent justification for the requested sensitive operation."
+        }
+      },
+      "required": [
+        "action"
+      ]
+    }
+  }
+}

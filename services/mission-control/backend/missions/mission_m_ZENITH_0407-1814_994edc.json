@@ -1,0 +1,42 @@
+{
+  "id": "m_ZENITH_0407-1814_994edc",
+  "title": "hợp đồng gần đây nhất của Sysme là mua gì ?",
+  "goal": "hợp đồng gần đây nhất của Sysme là mua gì ?",
+  "status": "failed",
+  "ts": 1783163671.9131734,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "hợp đồng gần đây nhất của Sysme là mua gì ?",
+      "ts": 1783163663.129781,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1814_994edc"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_0407-1814_994edc` initialized | Trace: `trace_994edc`. Runtime ready.",
+      "ts": 1783163663.1321425,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1814_994edc"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All connection attempts failed | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All connection attempts failed\"}",
+      "ts": 1783163671.8899837,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1814_994edc"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+      "ts": 1783163671.8921437,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1814_994edc"
+    }
+  ],
+  "artifacts": {
+    "plan": "hợp đồng gần đây nhất của Sysme là mua gì ?",
+    "walkthrough": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "id": "SKILL_SYS_15_CICD_ELITE",
+  "name": "Zenith CI/CD Elite",
+  "version": "1.0.0",
+  "description": "Delivery excellence core: Automates the continuous integration and continuous deployment pipelines to ensure rapid, secure, and reliable software releases.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "triển khai tự động",
+    "ci/cd elite",
+    "tự động hóa phát hành",
+    "continuous delivery",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "trien",
+    "kiem",
+    "khai",
+    "master",
+    "nang",
+    "phat",
+    "nhat",
+    "nguon",
+    "thuc",
+    "phan",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "project_name": {
+          "type": "string",
+          "description": "Name of the project to deploy."
+        },
+        "env": {
+          "type": "string",
+          "enum": [
+            "staging",
+            "production"
+          ],
+          "description": "Target environment."
+        }
+      }
+    }
+  }
+}

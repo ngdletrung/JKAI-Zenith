@@ -1,0 +1,70 @@
+{
+  "id": "SOVEREIGN_PRESENTER",
+  "name": "Zenith Sovereign Presenter",
+  "version": "1.0.0",
+  "description": "Visual presentation architect: Automates the creation of professional PowerPoint slides with dynamic content structures and self-healing dependency management.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "tạo slide",
+    "thiết kế thuyết trình",
+    "pptx generator",
+    "sovereign presenter",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "trinh",
+    "nang",
+    "thuyet",
+    "slide",
+    "dung",
+    "phuc",
+    "sovereign",
+    "khong",
+    "self-healing",
+    "vien"
+  ],
+  "domain": "CODING",
+  "dependencies": [
+    "python-pptx"
+  ],
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Main title of the presentation."
+        },
+        "subtitle": {
+          "type": "string",
+          "description": "Sub-title for the cover slide."
+        },
+        "slides": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "title": {
+                "type": "string"
+              },
+              "content": {
+                "type": "string"
+              }
+            }
+          },
+          "description": "Array of slide objects with title and content."
+        },
+        "filename": {
+          "type": "string",
+          "description": "Output filename."
+        }
+      },
+      "required": [
+        "title",
+        "slides"
+      ]
+    }
+  }
+}

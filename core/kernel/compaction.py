@@ -95,7 +95,7 @@ class CompactionEngine:
                     {"role": "system", "content": compression_prompt},
                     {"role": "user", "content": f"[LOGS TO CONDENSE]:\n{history_text}"}
                 ],
-                role="COMPRESSOR",
+                role="SUMMARIZER",
                 task_id=task_id,
                 options={"temperature": 0.0}
             )

@@ -1,0 +1,11 @@
+{
+    "name": "math_calculator",
+    "description": "Thực hiện các phép tính toán học phức tạp.",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "expression": { "type": "string", "description": "Biểu thức toán học cần tính (vd: 15*30 + 120)" }
+        },
+        "required": ["expression"]
+    }
+}

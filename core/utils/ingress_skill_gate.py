@@ -59,7 +59,7 @@ def enrich_goal_with_deck(goal: str) -> Tuple[str, List[str], Optional[str]]:
         refs = deck.parse_refs(goal)
         if not refs:
             try:
-                ssm = try_semantic_skill_match(goal, threshold=0.40)
+                ssm = try_semantic_skill_match(goal, threshold=0.70)
                 if ssm and ssm.get("status") == "success":
                     enriched = ssm.get("enriched_goal")
                     matched_refs = deck.parse_refs(enriched)
@@ -100,7 +100,7 @@ def _append_skill_references(goal: str, registry_ids: List[str]) -> Tuple[str, L
 
 def try_semantic_skill_match(
     goal: str,
-    threshold: float = 0.40,
+    threshold: float = 0.70,
     skip_if_has_deck_ref: bool = True,
 ) -> Optional[Dict[str, Any]]:
     """
@@ -109,13 +109,19 @@ def try_semantic_skill_match(
 
     Args:
         goal: Goal text tu Master.
-        threshold: Score toi thieu de kich hoat (default 0.40).
+        threshold: Score toi thieu de kich hoat (default 0.70).
         skip_if_has_deck_ref: Neu True, bo qua SSM khi Master da goi #NNNN tuong minh.
 
     Returns:
         Dict voi enriched_goal va metadata, hoac None neu khong co match.
     """
     if not goal or len(goal.strip()) < 5:
+        return None
+
+    # 🛡️ [SOVEREIGN BYPASS GATE]: Cấm tuyệt đối tiêm Skill Dossier cho yêu cầu toán học, danh tính, và câu hỏi kỹ thuật về máy/chế độ FAST
+    goal_low = goal.lower()
+    if any(k in goal_low for k in ["tính", "*", "+", "-", "/", "bằng mấy", "trình độ", "cấu hình", "bạn là ai", "chế độ fast", "active 3b", "vram", "rx 6600", "xeon", "bạn có thể", "mô hình"]):
+        logger.debug("[INGRESS-SSM] Sovereign Reflex Bypass: skipping skill dossier injection.")
         return None
 
     # Neu Master da chi dinh #NNNN tuong minh, tin tuong explicit ref

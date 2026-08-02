@@ -1,0 +1,57 @@
+{
+  "id": "EXECUTIVE_PROPOSAL",
+  "name": "Zenith Executive Strategy Forge",
+  "version": "1.0.0",
+  "description": "Strategic document architect: Creates high-level proposals and executive summaries with professional Sovereign styling.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "đề xuất chiến lược",
+    "executive proposal",
+    "tóm tắt điều hành",
+    "soạn thảo dự án",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "lieu",
+    "tinh",
+    "nang",
+    "hanh",
+    "thanh",
+    "xuat",
+    "chuyen",
+    "nghiep",
+    "chien",
+    "strategic",
+    "kinh doanh",
+    "ban hang",
+    "marketing",
+    "khach hang",
+    "san pham"
+  ],
+  "domain": "BUSINESS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "forge_proposal",
+            "summarize"
+          ],
+          "description": "Business action to perform."
+        },
+        "project_data": {
+          "type": "string",
+          "description": "Data for the proposal."
+        },
+        "objectives": {
+          "type": "string",
+          "description": "Strategic objectives."
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "m_ZENITH_0107-1247_9382c6",
+  "title": "/help",
+  "goal": "/help\n\n[KẾT QUẢ]\n🏛️ **JKAI ZENITH — COMMAND DECK**\n\n**📟 HỆ THỐNG**\n- `/status` — Kiểm tra sức khỏe toàn bộ lõi AI\n- `/sync` — Đồng hóa tri thức (7 phase: import → cleanup)\n- `/reset` hoặc `/clear` — Xóa bộ nhớ ngữ cảnh\n- `/insights` — Trích xuất 10 tư duy chiến lược gần nhất\n- `/cancel` hoặc `/stop` — Ngắt khẩn cấp mọi tiến trình\n\n**📥 IMPORT TRI THỨC**\nThả file vào `files/Import/`, gõ `/sync`\nHỗ trợ: `.md` `.txt` `.pdf` `.docx` `.csv` `.json` `.yaml` `.py` `.js` `.ts`\nQuy trình: chunk → embed → Qdrant `jkai_wiki` → phân loại tự động\n\n**🚀 SKILLS & COMMAND DECK**\n- `/search <từ khóa>` — Tìm kỹ năng toàn cục (VD: `/search docker`)\n- `/search_skill <từ khóa>` — Tra cứu Command Deck chi tiết\n- `/run_skill #<ID>` — Chạy kỹ năng theo mã MAP (VD: `/run_skill #7001`)\n- Tra cứu trực tiếp: `skill #1002 có gì hay`\n\n**🔧 CHẨN ĐOÁN & CẢI TIẾN**\n- `/tusualoi` — Giám định toàn diện, đề xuất khắc phục\n- `/tucaitien` — Rà soát toàn diện, đề xuất cải tiến\n- `/tucaitien_#<ID>` — Rà soát riêng một kỹ năng\n- Chat lỗi tự nhiên: \"sửa services/ai-brain/planner.py\" → tự DEEP\n\n💡 Gõ `/help_secret` để xem Lệnh Đặc Quyền.",
+  "status": "completed",
+  "ts": 1782884928.133727,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "/help",
+      "ts": 1782884828.3119438,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-1247_9382c6"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_0107-1247_9382c6` initialized | Trace: `trace_9382c6`. Runtime ready.",
+      "ts": 1782884828.313833,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-1247_9382c6"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "🏛️ **JKAI ZENITH — COMMAND DECK**\n\n**📟 HỆ THỐNG**\n- `/status` — Kiểm tra sức khỏe toàn bộ lõi AI\n- `/sync` — Đồng hóa tri thức (7 phase: import → cleanup)\n- `/reset` hoặc `/clear` — Xóa bộ nhớ ngữ cảnh\n- `/insights` — Trích xuất 10 tư duy chiến lược gần nhất\n- `/cancel` hoặc `/stop` — Ngắt khẩn cấp mọi tiến trình\n\n**📥 IMPORT TRI THỨC**\nThả file vào `files/Import/`, gõ `/sync`\nHỗ trợ: `.md` `.txt` `.pdf` `.docx` `.csv` `.json` `.yaml` `.py` `.js` `.ts`\nQuy trình: chunk → embed → Qdrant `jkai_wiki` → phân loại tự động\n\n**🚀 SKILLS & COMMAND DECK**\n- `/search <từ khóa>` — Tìm kỹ năng toàn cục (VD: `/search docker`)\n- `/search_skill <từ khóa>` — Tra cứu Command Deck chi tiết\n- `/run_skill #<ID>` — Chạy kỹ năng theo mã MAP (VD: `/run_skill #7001`)\n- Tra cứu trực tiếp: `skill #1002 có gì hay`\n\n**🔧 CHẨN ĐOÁN & CẢI TIẾN**\n- `/tusualoi` — Giám định toàn diện, đề xuất khắc phục\n- `/tucaitien` — Rà soát toàn diện, đề xuất cải tiến\n- `/tucaitien_#<ID>` — Rà soát riêng một kỹ năng\n- Chat lỗi tự nhiên: \"sửa services/ai-brain/planner.py\" → tự DEEP\n\n💡 Gõ `/help_secret` để xem Lệnh Đặc Quyền.",
+      "ts": 1782884928.0998137,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-1247_9382c6"
+    }
+  ],
+  "artifacts": {
+    "plan": "/help",
+    "walkthrough": "🏛️ **JKAI ZENITH — COMMAND DECK**\n\n**📟 HỆ THỐNG**\n- `/status` — Kiểm tra sức khỏe toàn bộ lõi AI\n- `/sync` — Đồng hóa tri thức (7 phase: import → cleanup)\n- `/reset` hoặc `/clear` — Xóa bộ nhớ ngữ cảnh\n- `/insights` — Trích xuất 10 tư duy chiến lược gần nhất\n- `/cancel` hoặc `/stop` — Ngắt khẩn cấp mọi tiến trình\n\n**📥 IMPORT TRI THỨC**\nThả file vào `files/Import/`, gõ `/sync`\nHỗ trợ: `.md` `.txt` `.pdf` `.docx` `.csv` `.json` `.yaml` `.py` `.js` `.ts`\nQuy trình: chunk → embed → Qdrant `jkai_wiki` → phân loại tự động\n\n**🚀 SKILLS & COMMAND DECK**\n- `/search <từ khóa>` — Tìm kỹ năng toàn cục (VD: `/search docker`)\n- `/search_skill <từ khóa>` — Tra cứu Command Deck chi tiết\n- `/run_skill #<ID>` — Chạy kỹ năng theo mã MAP (VD: `/run_skill #7001`)\n- Tra cứu trực tiếp: `skill #1002 có gì hay`\n\n**🔧 CHẨN ĐOÁN & CẢI TIẾN**\n- `/tusualoi` — Giám định toàn diện, đề xuất khắc phục\n- `/tucaitien` — Rà soát toàn diện, đề xuất cải tiến\n- `/tucaitien_#<ID>` — Rà soát riêng một kỹ năng\n- Chat lỗi tự nhiên: \"sửa services/ai-brain/planner.py\" → tự DEEP\n\n💡 Gõ `/help_secret` để xem Lệnh Đặc Quyền.",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

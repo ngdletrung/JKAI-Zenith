@@ -89,6 +89,12 @@ This project incorporates components from several third-party projects. Full lic
 
 ## 🤖 5. AUTONOMOUS ENGINEERING / KỸ THUẬT TỰ TRỊ
 
+### Claw Compactor (MIT License)
+- **Project**: [Claw Compactor](https://github.com/open-compress/claw-compactor)
+- **License**: [claw-compactor-MIT.txt](file:///d:/Docker/JKAI/LICENSES/claw-compactor-MIT.txt)
+- **Notice**: Copyright (c) 2026 OpenClaw Contributors / Bot777. The 14-stage Fusion Pipeline for LLM token compression is assimilated from this project for context compression in the PromptEngine.
+- **Lưu ý**: Bản quyền thuộc về OpenClaw Contributors / Bot777. Fusion Pipeline 14 tầng nén token LLM được đồng hóa từ dự án này để nén ngữ cảnh trong PromptEngine.
+
 ### OpenHands (MIT License)
 - **Project**: [OpenHands](https://github.com/All-Hands-AI/OpenHands)
 - **License**: [OPENHANDS_LICENSE](file:///d:/Docker/JKAI/LICENSES/OPENHANDS_LICENSE)

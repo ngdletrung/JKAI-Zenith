@@ -50,7 +50,8 @@ class JKAIKnowledgeOrchestrator:
                 if not self.registry_path.exists():
                     await self.sync_sovereign_registry()
                 
-                current_mtime = os.path.getmtime(self.registry_path)
+                import os as _os
+                current_mtime = _os.path.getmtime(self.registry_path)
                 # [AUTO-INVALIDATION]: Nếu file gốc thay đổi, ép buộc tái nạp nơ-ron
                 if _GLOBAL_SKILLS_CACHE is None or current_mtime > _LAST_REGISTRY_MTIME:
                     if _GLOBAL_SKILLS_CACHE is not None:
@@ -75,53 +76,88 @@ class JKAIKnowledgeOrchestrator:
     # 💎 TẦNG 2: SEMANTIC RETRIEVAL PIPELINE (V11 ELITE)
     # ─────────────────────────────────────────────────────────────
 
-    async def smart_retrieve(self, query: str, task_id: str = "system", top_k: int = 5) -> Dict[str, Any]:
-        """
-        🧪 [COGNITIVE-RETRIEVAL-V11]: Quy trình 5 giai đoạn.
-        1. Query Expansion -> 2. Semantic Cache -> 3. Vector Search -> 4. MMR Diversity -> 5. Structured Context
-        """
-        # 1. [QUERY-EXPANSION]: Khai phóng ý định
-        expanded_queries = await self._expand_query(query, task_id)
+    def expand_context_from_file(self, p: dict, expansion_radius: int = 1000) -> str:
+        original_text = p.get("text") or p.get("content") or ""
+        source_path = p.get("source_path") or p.get("rel_path") or p.get("path")
+        if not source_path:
+            return original_text
+            
+        possible_paths = [
+            source_path,
+            os.path.join(os.getcwd(), source_path),
+            os.path.join("d:\\Docker\\JKAI", source_path),
+        ]
         
-        # 2. [SEMANTIC-EMBED-CACHE]: Kiểm tra bộ nhớ đệm nơ-ron
-        main_query = expanded_queries[0]
-        vector = await self._get_cached_embedding(main_query)
-        
-        if not vector:
-            from core.utils.embed import embed
-            vector = await asyncio.to_thread(embed, main_query)
-            if vector:
-                await self._cache_embedding(main_query, vector)
+        target_path = None
+        for path in possible_paths:
+            if os.path.exists(path) and os.path.isfile(path):
+                target_path = path
+                break
+                
+        if not target_path:
+            return original_text
+            
+        try:
+            start_idx = p.get("start_char_idx")
+            end_idx = p.get("end_char_idx")
+            
+            with open(target_path, "r", encoding="utf-8", errors="replace") as f:
+                content = f.read()
+                
+            file_len = len(content)
+            if start_idx is not None and end_idx is not None:
+                start = max(0, int(start_idx) - expansion_radius)
+                end = min(file_len, int(end_idx) + expansion_radius)
+                expanded = content[start:end]
+                return f"... {expanded.strip()} ..."
+            else:
+                idx = content.find(original_text[:100])
+                if idx != -1:
+                    start = max(0, idx - expansion_radius)
+                    end = min(file_len, idx + len(original_text) + expansion_radius)
+                    expanded = content[start:end]
+                    return f"... {expanded.strip()} ..."
+                return original_text
+        except Exception as e:
+            logger.warning(f"[KNOWLEDGE-EXPAND-ERR] Failed to read {target_path}: {e}")
+            return original_text
 
-        if not vector: return {"context": "", "sources": [], "structured": []}
+    async def smart_retrieve(self, query: str, task_id: str = "system", top_k: int = 5, expansion_radius: int = 1000) -> Dict[str, Any]:
+        """
+        🧪 [COGNITIVE-RETRIEVAL-V11]: Quy trình 5 giai đoạn thống nhất qua UnifiedRetriever.
+        """
+        from core.knowledge_sources.retriever import retriever
+        result = await retriever.search(query, top_k=top_k, include_external=True)
 
-        # 3. [HYBRID-VECTOR-SEARCH]: Quét sâu Qdrant
-        from core.qdrant_client import qdrant_client
-        raw_results = await qdrant_client.search_similar(vector, limit=top_k * 2, collection="universal_graph")
-        
-        # 4. [MMR-DIVERSITY]: Chắt lọc tinh hoa, loại bỏ trùng lặp
-        diverse_results = self._apply_mmr(raw_results, vector, top_k=top_k)
-        
-        # 5. [STRUCTURED-CONTEXT]: Đóng gói hồ sơ tri thức
+        # [P2-FIX]: Lọc bỏ chunk có score thấp để tránh noise inject vào LLM
+        MIN_RETRIEVAL_SCORE = 0.45
         structured_data = []
-        for r in diverse_results:
+        for r in result.results:
+            score = r.get("score", 0.0)
+            if score < MIN_RETRIEVAL_SCORE:
+                continue  # Bỏ qua chunk không liên quan
             p = r.get("payload", {})
+            
+            # Tự động nạp và mở rộng ngữ cảnh từ file gốc với bán kính động
+            content = self.expand_context_from_file(p, expansion_radius=expansion_radius)
+            
             structured_data.append({
-                "content": p.get("content") or p.get("text", ""),
-                "source": p.get("rel_path") or p.get("filename", "Unknown"),
-                "score": r.get("score", 0.0),
-                "type": p.get("category", "knowledge")
+                "content": content,
+                "source": p.get("rel_path") or p.get("filename") or p.get("path") or "Unknown",
+                "score": score,
+                "type": p.get("category") or ("external" if r.get("_collection") == "jkai_external" else "knowledge")
             })
 
-        context_text = "\n\n".join([f"--- SOURCE: {d['source']} ---\n{d['content']}" for d in structured_data])
-        
+        context_text = "\n\n".join([f"--- SOURCE: {d['source']} (score={d['score']:.2f}) ---\n{d['content']}" for d in structured_data])
+
         return {
             "query": query,
-            "expanded": expanded_queries,
             "context": context_text,
             "structured": structured_data,
-            "sources": [d["source"] for d in structured_data]
+            "sources": [d["source"] for d in structured_data],
+            "elapsed": result.elapsed
         }
+
 
     async def _get_cached_embedding(self, text: str) -> Optional[List[float]]:
         """Truy xuất vector từ Semantic Cache (Redis)."""
@@ -360,6 +396,29 @@ class JKAIKnowledgeOrchestrator:
             if p.exists():
                 return await asyncio.to_thread(p.read_text, encoding="utf-8")
         return None
+
+    def get_all_skills_summary(self) -> str:
+        """
+        Tóm tắt toàn bộ kỹ năng (Skills) dựa trên MAP_SKILLS.md thưa Master.
+        """
+        map_content = self.get_category_map("skills")
+        if "Chua co ban do" in map_content or not map_content:
+            return "Kho kỹ năng đang trống thưa Master."
+        
+        lines = map_content.splitlines()
+        summary = []
+        
+        for line in lines:
+            if "|" in line and "---" not in line and "ID |" not in line:
+                parts = [p.strip() for p in line.split("|") if p.strip()]
+                if len(parts) >= 3:
+                    s_id = parts[0].replace("**", "").replace("`", "")
+                    s_name = parts[1].replace("**", "").replace("`", "")
+                    s_desc = parts[2]
+                    if s_id and len(s_id) < 50:
+                        summary.append(f"- **{s_id}**: {s_name} - {s_desc}")
+                        
+        return "\n".join(summary)
 
 # Khởi tạo Singleton
 knowledge_orchestrator = JKAIKnowledgeOrchestrator()

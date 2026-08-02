@@ -1,0 +1,57 @@
+{
+  "id": "SKILL_TAOKYNANG",
+  "name": "Zenith Elite Skill Factory",
+  "version": "1.0.0",
+  "description": "Legacy skill architect: Automates the creation of the 'Elite Quartet' file structure for new AI capabilities.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "tạo kỹ năng elite",
+    "xưởng đúc kỹ năng",
+    "skill factory",
+    "kiến tạo năng lực",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "nang",
+    "logic",
+    "chuan",
+    "thuc",
+    "master",
+    "elite",
+    "zenith",
+    "thong",
+    "nguon",
+    "dossier",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "skill_id": {
+          "type": "string",
+          "description": "Unique ID for the new skill."
+        },
+        "skill_name": {
+          "type": "string",
+          "description": "Display name of the skill."
+        },
+        "description": {
+          "type": "string",
+          "description": "Brief description of the skill."
+        }
+      },
+      "required": [
+        "skill_id",
+        "skill_name"
+      ]
+    }
+  }
+}

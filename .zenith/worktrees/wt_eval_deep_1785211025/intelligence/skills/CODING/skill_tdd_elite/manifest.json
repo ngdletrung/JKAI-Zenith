@@ -1,0 +1,43 @@
+{
+  "id": "SKILL_TDD_ELITE",
+  "name": "Zenith TDD Elite",
+  "version": "1.0.0",
+  "description": "Quality engineering core: Implements the Red-Green-Refactor cycle to ensure 100% code reliability and technical excellence.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "thực thi tdd",
+    "kiểm thử phần mềm",
+    "red green refactor",
+    "test driven development",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "khong",
+    "code",
+    "kiem",
+    "viet",
+    "trien",
+    "nang",
+    "phase",
+    "thiet",
+    "nguon",
+    "thong"
+  ],
+  "domain": "CODING",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "feature": {
+          "type": "string",
+          "description": "The software feature to develop using TDD."
+        }
+      },
+      "required": [
+        "feature"
+      ]
+    }
+  }
+}

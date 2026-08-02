@@ -87,10 +87,11 @@ class ReflexGate:
                         break
 
             # Bộ lọc số lượng (Quantity check như "bao nhiêu", "bn", "mấy" ngoại trừ truy vấn ngày giờ)
-            has_quantity_word = any(q in words for q in ["bao nhieu", "bn", "may"])
+            has_quantity_word = any(q in words for q in ["bn", "may"]) or any(q in clean for q in ["bao nhieu"])
             is_time_query = any(t in clean for q, t in [
                 ("thu", "thu may"), ("ngay", "ngay may"), ("gio", "may gio"), ("thang", "thang may"),
-                ("ngay", "ngay bao nhieu"), ("gio", "bay gio"), ("gio", "bay gio la may gio")
+                ("ngay", "ngay bao nhieu"), ("gio", "bay gio"), ("gio", "bay gio la may gio"),
+                ("nam", "nam nay"), ("nam", "nam bao nhieu")
             ])
             
             if has_quantity_word and not is_time_query:
@@ -124,14 +125,14 @@ class ReflexGate:
             # Nếu là câu xã giao hoặc bản sắc mang tính chất kiểm tra
             if word_count <= 15 and has_conv_key:
                 # Tránh nhầm lẫn với các lệnh thực tế (ví dụ: "thảo luận về code")
-                topic_indicators = {"ve", "cho", "voi", "trong", "file", "code", "du an"}
+                topic_indicators = {"ve", "cho", "voi", "trong", "file", "code", "du an", "dich", "translate", "fix", "bug", "loi", "sua", "debug", "python", "js", "javascript", "sql", "web", "app", "design", "thiet ke", "docker", "api", "server", "database", "function", "ham", "class", "thuat toan", "algorithm", "tech", "cong nghe", "blockchain", "git"}
                 has_topic = any(topic in words for topic in topic_indicators)
                 
                 if not has_topic:
                     return True
             
             # 🚀 [MODE-3]: GREETING START (Chào Zenith...)
-            if words and words[0] in {"chao", "hi", "hello"} and word_count <= 3:
+            if words and words[0] in {"chao", "hi", "hello", "good"} and word_count <= 3:
                 return True
                     
             return False

@@ -1,0 +1,3675 @@
+{
+  "id": "m_tele_1785154880",
+  "title": "Thời tiết hôm nay thế nào",
+  "goal": "Thời tiết hôm nay thế nào\n\n[KẾT QUẢ]\nDựa trên dữ liệu dự báo thời tiết ngày 27/07/2026, tình hình thời tiết trên toàn quốc có mưa rào và dông cục bộ. Các khu vực cụ thể sẽ có cường độ khác nhau:\n\n*   **TP. Hồ Chí Minh:** Dự kiến có mây, xen kẽ mưa rào và dông ở một số điểm; chiều tối và tối có khả năng mưa rào và dông mạnh hơn. Tốc độ gió chủ yếu là gió nam với cấp 2-3. Nhiệt độ cao nhất dự kiến dao động từ 29°C đến 32°C, với một số khu vực có thể vượt ngưỡng 32°C.\n*   **Nam Định:** Mực nước sông Đào tại trạm Thề Văn được ghi nhận ở mức cao nhất khoảng 2,3 - 2,5m, thấp hơn so với ngưỡng báo động (0,7 - 0,9m).\n*   **Thanh Hóa:** Mực nước sông Ninh Cơ tại trạm Thế Văn có mức cao nhất ước tính khoảng 2,15 - 2,35m.\n\nNguồn dữ liệu: Dự báo thời tiết ngày 27/7/2026 từ Moitruong.net.vn và VOV [source_file].",
+  "status": "completed",
+  "ts": 1785155390.076454,
+  "logs": [
+    {
+      "tag": "MASTER_TELE",
+      "msg": "Thời tiết hôm nay thế nào",
+      "ts": 1785154880.7827516,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `tele_1785154880` initialized | Trace: `gen_1785154880`. Runtime ready.",
+      "ts": 1785154880.7850504,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=social pipeline=fast mode=fast tags=-",
+      "ts": 1785154892.394986,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1785154892.4086905,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ENGINE-INIT]: Đang nạp mô hình cho quy trình FAST vào RAM/VRAM...",
+      "ts": 1785154892.4663033,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [FAST-PIPELINE]: Khởi động RECEPTIONIST ReAct (3 turns).",
+      "ts": 1785154892.4684224,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "📚 [FAST-KB]: Đã cấu trúc XML cho 0 KB chunks. Sufficient=False",
+      "ts": 1785154892.6520753,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Pre-routing/Intent-Forcing: Real-time query detected. Executing search directly.",
+      "ts": 1785154892.6551077,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Triển khai kỹ năng: `SEARCH_WEB_GLOBAL`",
+      "ts": 1785154892.65877,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: gen_1785154880",
+      "ts": 1785154892.6616437,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Attempt 1/2 -> executor (http://ai-executor-1:8000)",
+      "ts": 1785154892.6754544,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔬 [T4: SURGERY] [SEARCH_WEB_GLOBAL] Đang kiểm tra an toàn & khóa tài nguyên...",
+      "ts": 1785154897.9063168,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T4: SURGERY] [SEARCH_WEB_GLOBAL] Đang áp dụng chính sách thực thi...",
+      "ts": 1785154897.9131994,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "💉 [T4: SURGERY] [SEARCH_WEB_GLOBAL] Đang nạp DNA & nén bối cảnh...",
+      "ts": 1785154897.9150755,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "*[đang tìm kiếm]* `SEARCH_WEB_GLOBAL`",
+      "ts": 1785154897.916183,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚔️ [T4: SURGERY] [SEARCH_WEB_GLOBAL] Bắt đầu thực thi ...",
+      "ts": 1785154897.9190958,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "TAVILY: Initiating global web search for Thời tiết hôm nay thế nào 27/07/2026",
+      "ts": 1785154906.739518,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "WEB_DATA",
+      "msg": "TAVILY-FOUND: Discovered 5 results.\n1. Dự báo thời tiết ngày 27/7/2026: Đêm có mưa rào và dông vài  (https://moitruong.net.vn/du-bao-thoi-tiet-ngay-27-7-2026-dem-co-mua-rao-va-dong-vai-noi-101229.html)\n2. Dự báo thời tiết đêm nay, ngày mai 27/7/2026 | Đêm nay và ch (https://www.youtube.com/watch?v=jq3qg_qmEFM)\n3. Thời tiết hôm nay 27/7: Nhiều nơi có mưa rào và dông (https://vov.vn/xa-hoi/thoi-tiet-hom-nay-277-nhieu-noi-co-mua-rao-va-dong-post1217938.vov)\n",
+      "ts": 1785154911.642369,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "WEB_WARN",
+      "msg": "⚠️ [FACT-CONFLICTS] Phat hien mau thuan ky thuat:\nXung dot ky thuat configs cho 'nhất': Co nhieu thong tin trai chieu ('26-29' tu https://moitruong.net.vn/du-bao-thoi-tiet-ngay-27-7-2026-dem-co-mua-rao-va-dong-vai-noi-101229.html; '31-33' tu https://vov.vn/xa-hoi/thoi-tiet-hom-nay-277-nhieu-noi-co-mua-rao-va-dong-post1217938.vov)",
+      "ts": 1785154911.6563473,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "*[đã tìm kiếm]* ...",
+      "ts": 1785154911.76722,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Executor executor success (8861 chars)",
+      "ts": 1785154911.7721756,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Đã nhận dữ liệu từ `SEARCH_WEB_GLOBAL` (8861 ký tự)",
+      "ts": 1785154911.7750342,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "DEEP-DISTILLING: Large search data (8861 chars). Distilling...",
+      "ts": 1785154911.7770016,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thể",
+      "ts": 1785155188.4986024,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tại",
+      "ts": 1785155189.066814,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " một",
+      "ts": 1785155189.674601,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " số",
+      "ts": 1785155190.2185662,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " địa",
+      "ts": 1785155190.8572462,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " phương",
+      "ts": 1785155191.4384592,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ":",
+      "ts": 1785155191.7461185,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\n*",
+      "ts": 1785155192.3818598,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "   **",
+      "ts": 1785155193.1395197,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "TP",
+      "ts": 1785155193.7191467,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".",
+      "ts": 1785155194.2792008,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Hồ",
+      "ts": 1785155194.8649821,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Chí",
+      "ts": 1785155195.4760497,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Minh",
+      "ts": 1785155196.0264874,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ":**",
+      "ts": 1785155196.4364123,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Có",
+      "ts": 1785155196.7497125,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " mây",
+      "ts": 1785155197.0549355,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ",",
+      "ts": 1785155197.3648243,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " có",
+      "ts": 1785155197.8274713,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " mưa",
+      "ts": 1785155198.4339018,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " rào",
+      "ts": 1785155199.06476,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và",
+      "ts": 1785155199.6716747,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dông",
+      "ts": 1785155200.2091022,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " vài",
+      "ts": 1785155200.815142,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nơi",
+      "ts": 1785155201.1511285,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ";",
+      "ts": 1785155201.433211,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " chiều",
+      "ts": 1785155201.7175589,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tối",
+      "ts": 1785155202.038073,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và",
+      "ts": 1785155202.530752,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tối",
+      "ts": 1785155203.1002817,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " có",
+      "ts": 1785155203.710474,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lúc",
+      "ts": 1785155204.1843553,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " mưa",
+      "ts": 1785155204.7572405,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " rào",
+      "ts": 1785155205.3020635,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và",
+      "ts": 1785155205.745573,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dông",
+      "ts": 1785155206.0775335,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " mạnh",
+      "ts": 1785155206.4062254,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hơn",
+      "ts": 1785155206.6859403,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".",
+      "ts": 1785155207.2348692,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Gió",
+      "ts": 1785155207.7732842,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nam",
+      "ts": 1785155208.3816197,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cấp",
+      "ts": 1785155208.9233541,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " 2",
+      "ts": 1785155210.032235,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "-",
+      "ts": 1785155210.411723,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "3",
+      "ts": 1785155210.6941543,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".",
+      "ts": 1785155210.9830234,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Nhiệt",
+      "ts": 1785155211.325348,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " độ",
+      "ts": 1785155211.7339935,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ca",
+      "ts": 1785155212.3145611,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "o",
+      "ts": 1785155212.8546138,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nhất",
+      "ts": 1785155213.3779092,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " từ",
+      "ts": 1785155213.9602847,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " 2",
+      "ts": 1785155215.04194,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "9",
+      "ts": 1785155215.2860887,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "-",
+      "ts": 1785155215.6032062,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "3",
+      "ts": 1785155215.898042,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "2",
+      "ts": 1785155216.169837,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "°C",
+      "ts": 1785155216.6619139,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " (",
+      "ts": 1785155217.2639124,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "có",
+      "ts": 1785155217.8371406,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nơi",
+      "ts": 1785155218.4051418,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trên",
+      "ts": 1785155219.0095947,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " 3",
+      "ts": 1785155219.9514003,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "2",
+      "ts": 1785155220.2177582,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "°C",
+      "ts": 1785155220.515742,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ").",
+      "ts": 1785155221.3077862,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\n*",
+      "ts": 1785155222.8216403,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "   **",
+      "ts": 1785155224.4633152,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Nam",
+      "ts": 1785155225.3266158,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Định",
+      "ts": 1785155226.0831828,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ":**",
+      "ts": 1785155226.915432,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " M",
+      "ts": 1785155227.7593684,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ực",
+      "ts": 1785155228.6556475,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nước",
+      "ts": 1785155229.3699353,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " sông",
+      "ts": 1785155230.1207612,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Đào",
+      "ts": 1785155230.9954119,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tại",
+      "ts": 1785155231.9327972,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trạm",
+      "ts": 1785155232.7453978,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Th",
+      "ts": 1785155233.381975,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ề",
+      "ts": 1785155234.20633,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Văn",
+      "ts": 1785155235.0270476,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ở",
+      "ts": 1785155235.7282057,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " mức",
+      "ts": 1785155236.657164,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ca",
+      "ts": 1785155237.5633087,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "o",
+      "ts": 1785155238.3915648,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nhất",
+      "ts": 1785155239.1968834,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " là",
+      "ts": 1785155240.0345423,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " 2",
+      "ts": 1785155241.6843777,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ",",
+      "ts": 1785155242.5203853,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "3",
+      "ts": 1785155243.5713964,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " -",
+      "ts": 1785155244.4785688,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " 2",
+      "ts": 1785155246.077726,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ",",
+      "ts": 1785155246.968267,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "5",
+      "ts": 1785155247.8433487,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "m",
+      "ts": 1785155248.5874753,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " (",
+      "ts": 1785155249.405859,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "th",
+      "ts": 1785155250.2506127,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ấp",
+      "ts": 1785155251.0748866,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hơn",
+      "ts": 1785155251.8656447,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " báo",
+      "ts": 1785155252.5133388,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " động",
+      "ts": 1785155253.3229883,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " 1",
+      "ts": 1785155255.0796769,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " từ",
+      "ts": 1785155255.6866648,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " 0",
+      "ts": 1785155257.4711194,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ",",
+      "ts": 1785155258.5133998,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "7",
+      "ts": 1785155259.0945275,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " -",
+      "ts": 1785155259.850366,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " 0",
+      "ts": 1785155261.498585,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ",",
+      "ts": 1785155262.3174357,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "9",
+      "ts": 1785155262.9575086,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "m",
+      "ts": 1785155263.7798715,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ").",
+      "ts": 1785155264.6145284,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\n*",
+      "ts": 1785155266.0979095,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "   **",
+      "ts": 1785155267.5948253,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Thanh",
+      "ts": 1785155268.4207222,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Hóa",
+      "ts": 1785155269.177351,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ":**",
+      "ts": 1785155269.8548634,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " M",
+      "ts": 1785155270.8243144,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ực",
+      "ts": 1785155271.9457083,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nước",
+      "ts": 1785155272.6997738,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " sông",
+      "ts": 1785155273.4391704,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Ninh",
+      "ts": 1785155274.3805585,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Cơ",
+      "ts": 1785155275.256004,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tại",
+      "ts": 1785155276.050024,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trạm",
+      "ts": 1785155276.6614392,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Thế",
+      "ts": 1785155277.4684925,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Văn",
+      "ts": 1785155278.3133209,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ở",
+      "ts": 1785155279.2159424,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " mức",
+      "ts": 1785155279.8468087,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ca",
+      "ts": 1785155280.3900914,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "o",
+      "ts": 1785155280.9455967,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nhất",
+      "ts": 1785155281.5507576,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " khoảng",
+      "ts": 1785155282.1323044,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " 2",
+      "ts": 1785155283.2417617,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ",",
+      "ts": 1785155283.5125155,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "1",
+      "ts": 1785155283.721424,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "5",
+      "ts": 1785155283.934145,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " -",
+      "ts": 1785155284.1432471,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " 2",
+      "ts": 1785155284.5684326,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ",",
+      "ts": 1785155284.777938,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "3",
+      "ts": 1785155284.986771,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "5",
+      "ts": 1785155285.1957276,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "m",
+      "ts": 1785155285.4073153,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".",
+      "ts": 1785155285.616686,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\n\nNguồn",
+      "ts": 1785155286.040104,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ":",
+      "ts": 1785155286.250755,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Dự",
+      "ts": 1785155286.462847,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " báo",
+      "ts": 1785155286.6724627,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thời",
+      "ts": 1785155286.8844898,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tiết",
+      "ts": 1785155287.0942454,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ngày",
+      "ts": 1785155287.3047733,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " 2",
+      "ts": 1785155287.721778,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "7",
+      "ts": 1785155287.9272385,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "/",
+      "ts": 1785155288.1370652,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "7",
+      "ts": 1785155288.34757,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "/",
+      "ts": 1785155288.5587502,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "2",
+      "ts": 1785155288.769909,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "0",
+      "ts": 1785155288.9796126,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "2",
+      "ts": 1785155289.188252,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "6",
+      "ts": 1785155289.4005187,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " từ",
+      "ts": 1785155289.6107972,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Mo",
+      "ts": 1785155289.8211436,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "it",
+      "ts": 1785155290.0283053,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ru",
+      "ts": 1785155290.2393835,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ong",
+      "ts": 1785155290.4509058,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".net",
+      "ts": 1785155290.660859,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".vn",
+      "ts": 1785155290.869984,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và",
+      "ts": 1785155291.0818963,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " V",
+      "ts": 1785155291.2899837,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "OV",
+      "ts": 1785155291.4989636,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " (",
+      "ts": 1785155291.709461,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ngày",
+      "ts": 1785155291.9197547,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " 2",
+      "ts": 1785155292.3387687,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "7",
+      "ts": 1785155292.5473235,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "/",
+      "ts": 1785155292.754481,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "0",
+      "ts": 1785155292.9644818,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "7",
+      "ts": 1785155293.1752021,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "/",
+      "ts": 1785155293.3868356,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "2",
+      "ts": 1785155293.5931153,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "0",
+      "ts": 1785155293.802823,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "2",
+      "ts": 1785155294.0160234,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "6",
+      "ts": 1785155294.22488,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ").",
+      "ts": 1785155294.4338105,
+      "source": "EXECUTOR",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "✅ [FAST-PIPELINE]: Hoàn tất ReAct loop cho task tele_1785154880",
+      "ts": 1785155294.6498723,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[INFO] [2026-07-27T12:29:22.434348] [CRITIC] [Task: tele_1785154880] {",
+      "ts": 1785155362.4343731,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n",
+      "ts": 1785155362.5215898,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "  ",
+      "ts": 1785155362.6082845,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\"",
+      "ts": 1785155362.696502,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "approved",
+      "ts": 1785155362.785685,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\":",
+      "ts": 1785155362.8734756,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " true",
+      "ts": 1785155362.9599504,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1785155363.0468962,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n",
+      "ts": 1785155363.1350045,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "  ",
+      "ts": 1785155363.2226386,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\"",
+      "ts": 1785155363.31112,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "corrected",
+      "ts": 1785155363.3974023,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "_",
+      "ts": 1785155363.485374,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "answer",
+      "ts": 1785155363.5731447,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\":",
+      "ts": 1785155363.6603355,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " \"",
+      "ts": 1785155363.747895,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "D",
+      "ts": 1785155363.834693,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ựa",
+      "ts": 1785155363.9212306,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " trên",
+      "ts": 1785155364.0087564,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " dữ",
+      "ts": 1785155364.0950482,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " liệu",
+      "ts": 1785155364.1831336,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " dự",
+      "ts": 1785155364.2708495,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " báo",
+      "ts": 1785155364.358144,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thời",
+      "ts": 1785155364.445742,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tiết",
+      "ts": 1785155364.5324006,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ngày",
+      "ts": 1785155364.62096,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ",
+      "ts": 1785155364.7075984,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "2",
+      "ts": 1785155364.7952037,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "7",
+      "ts": 1785155364.8824518,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "/",
+      "ts": 1785155364.9698603,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "0",
+      "ts": 1785155365.0567713,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "7",
+      "ts": 1785155365.1428616,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "/",
+      "ts": 1785155365.2302368,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "2",
+      "ts": 1785155365.3165865,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "0",
+      "ts": 1785155365.4034698,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "2",
+      "ts": 1785155365.490124,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "6",
+      "ts": 1785155365.5758116,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1785155365.6622598,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tình",
+      "ts": 1785155365.7490003,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hình",
+      "ts": 1785155365.8362179,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thời",
+      "ts": 1785155365.9234998,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tiết",
+      "ts": 1785155366.0114462,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " trên",
+      "ts": 1785155366.09851,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " toàn",
+      "ts": 1785155366.1856117,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " quốc",
+      "ts": 1785155366.273137,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " có",
+      "ts": 1785155366.3608222,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " mưa",
+      "ts": 1785155366.4490793,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " r",
+      "ts": 1785155366.5341556,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ào",
+      "ts": 1785155366.6206858,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " và",
+      "ts": 1785155366.7074254,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " d",
+      "ts": 1785155366.7932312,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ông",
+      "ts": 1785155366.879779,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cục",
+      "ts": 1785155366.9661036,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bộ",
+      "ts": 1785155367.0519788,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".",
+      "ts": 1785155367.1389086,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Các",
+      "ts": 1785155367.225448,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " khu",
+      "ts": 1785155367.3116267,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " vực",
+      "ts": 1785155367.399136,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cụ",
+      "ts": 1785155367.4860249,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thể",
+      "ts": 1785155367.5740554,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " sẽ",
+      "ts": 1785155367.661738,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " có",
+      "ts": 1785155367.7490578,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cường",
+      "ts": 1785155367.83749,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " độ",
+      "ts": 1785155367.9258325,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " khác",
+      "ts": 1785155368.0127676,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nhau",
+      "ts": 1785155368.0992253,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ":\\",
+      "ts": 1785155368.1867282,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "n",
+      "ts": 1785155368.2745342,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\\",
+      "ts": 1785155368.3619292,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "n",
+      "ts": 1785155368.4476514,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "*",
+      "ts": 1785155368.5355718,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "   ",
+      "ts": 1785155368.6220887,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "**",
+      "ts": 1785155368.7096505,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "TP",
+      "ts": 1785155368.7961645,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".",
+      "ts": 1785155368.8836935,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Hồ",
+      "ts": 1785155368.9701,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Chí",
+      "ts": 1785155369.0577226,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Minh",
+      "ts": 1785155369.1433668,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ":**",
+      "ts": 1785155369.2302144,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Dự",
+      "ts": 1785155369.3174608,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " kiến",
+      "ts": 1785155369.4054556,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " có",
+      "ts": 1785155369.492183,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " m",
+      "ts": 1785155369.5792737,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ây",
+      "ts": 1785155369.6670382,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1785155369.75923,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " xen",
+      "ts": 1785155369.8464687,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " k",
+      "ts": 1785155369.933191,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ẽ",
+      "ts": 1785155370.0180159,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " mưa",
+      "ts": 1785155370.1052039,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " r",
+      "ts": 1785155370.191436,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ào",
+      "ts": 1785155370.2785382,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " và",
+      "ts": 1785155370.366341,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " d",
+      "ts": 1785155370.454317,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ông",
+      "ts": 1785155370.542075,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ở",
+      "ts": 1785155370.6282392,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " một",
+      "ts": 1785155370.7161283,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " số",
+      "ts": 1785155370.8043363,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " điểm",
+      "ts": 1785155370.8922179,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ";",
+      "ts": 1785155370.9794827,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " chiều",
+      "ts": 1785155371.0674257,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tối",
+      "ts": 1785155371.154225,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " và",
+      "ts": 1785155371.240648,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tối",
+      "ts": 1785155371.3282409,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " có",
+      "ts": 1785155371.4158342,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " khả",
+      "ts": 1785155371.5030146,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " năng",
+      "ts": 1785155371.589916,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " mưa",
+      "ts": 1785155371.677035,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " r",
+      "ts": 1785155371.763095,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ào",
+      "ts": 1785155371.850687,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " và",
+      "ts": 1785155371.9375887,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " d",
+      "ts": 1785155372.0258434,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ông",
+      "ts": 1785155372.112531,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " mạnh",
+      "ts": 1785155372.1981733,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hơn",
+      "ts": 1785155372.285917,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".",
+      "ts": 1785155372.3722572,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " T",
+      "ts": 1785155372.460245,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ốc",
+      "ts": 1785155372.5479362,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " độ",
+      "ts": 1785155372.633473,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " gió",
+      "ts": 1785155372.7199762,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " chủ",
+      "ts": 1785155372.8059065,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " yếu",
+      "ts": 1785155372.8940792,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " là",
+      "ts": 1785155372.9805253,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " gió",
+      "ts": 1785155373.0670145,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nam",
+      "ts": 1785155373.1533287,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " với",
+      "ts": 1785155373.2402465,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cấp",
+      "ts": 1785155373.3287215,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ",
+      "ts": 1785155373.4164572,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "2",
+      "ts": 1785155373.5023673,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "-",
+      "ts": 1785155373.589501,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "3",
+      "ts": 1785155373.6758912,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".",
+      "ts": 1785155373.7618642,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Nhi",
+      "ts": 1785155373.8489358,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ệt",
+      "ts": 1785155373.9372175,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " độ",
+      "ts": 1785155374.0245767,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cao",
+      "ts": 1785155374.1121688,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nhất",
+      "ts": 1785155374.198953,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " dự",
+      "ts": 1785155374.2848454,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " kiến",
+      "ts": 1785155374.3714414,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " dao",
+      "ts": 1785155374.4595008,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " động",
+      "ts": 1785155374.5464568,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " từ",
+      "ts": 1785155374.6338837,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ",
+      "ts": 1785155374.7204406,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "2",
+      "ts": 1785155374.807886,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "9",
+      "ts": 1785155374.8949378,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "°",
+      "ts": 1785155374.9827318,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "C",
+      "ts": 1785155375.0681977,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " đến",
+      "ts": 1785155375.1538074,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ",
+      "ts": 1785155375.2403185,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "3",
+      "ts": 1785155375.3268187,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "2",
+      "ts": 1785155375.4138043,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "°",
+      "ts": 1785155375.500897,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "C",
+      "ts": 1785155375.5891426,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1785155375.6765773,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " với",
+      "ts": 1785155375.7640007,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " một",
+      "ts": 1785155375.8507407,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " số",
+      "ts": 1785155375.9375637,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " khu",
+      "ts": 1785155376.0245385,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " vực",
+      "ts": 1785155376.1107183,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " có",
+      "ts": 1785155376.197429,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thể",
+      "ts": 1785155376.2835386,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " vượt",
+      "ts": 1785155376.3709023,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ngưỡng",
+      "ts": 1785155376.4575808,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ",
+      "ts": 1785155376.5447483,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "3",
+      "ts": 1785155376.6320689,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "2",
+      "ts": 1785155376.7192917,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "°",
+      "ts": 1785155376.805291,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "C",
+      "ts": 1785155376.892961,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".\\",
+      "ts": 1785155376.9809198,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "n",
+      "ts": 1785155377.067427,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "*",
+      "ts": 1785155377.1545367,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "   ",
+      "ts": 1785155377.2408319,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "**",
+      "ts": 1785155377.3276923,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Nam",
+      "ts": 1785155377.4146137,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Định",
+      "ts": 1785155377.5011384,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ":**",
+      "ts": 1785155377.5880501,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " M",
+      "ts": 1785155377.674619,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ực",
+      "ts": 1785155377.7611475,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nước",
+      "ts": 1785155377.8484242,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " sông",
+      "ts": 1785155377.9338799,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Đ",
+      "ts": 1785155378.0205975,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ào",
+      "ts": 1785155378.106751,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tại",
+      "ts": 1785155378.1940901,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tr",
+      "ts": 1785155378.2816105,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ạm",
+      "ts": 1785155378.3682883,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Th",
+      "ts": 1785155378.4548476,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ề",
+      "ts": 1785155378.542578,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Văn",
+      "ts": 1785155378.6310408,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " được",
+      "ts": 1785155378.721191,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ghi",
+      "ts": 1785155378.8070178,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nhận",
+      "ts": 1785155378.8938787,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ở",
+      "ts": 1785155378.9813528,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " mức",
+      "ts": 1785155379.0686567,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cao",
+      "ts": 1785155379.1558607,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nhất",
+      "ts": 1785155379.2426672,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " khoảng",
+      "ts": 1785155379.3299527,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ",
+      "ts": 1785155379.4176173,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "2",
+      "ts": 1785155379.5056016,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1785155379.5920281,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "3",
+      "ts": 1785155379.6792839,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " -",
+      "ts": 1785155379.7671282,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ",
+      "ts": 1785155379.8536274,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "2",
+      "ts": 1785155379.9411252,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1785155380.0279016,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "5",
+      "ts": 1785155380.1148689,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "m",
+      "ts": 1785155380.2019346,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1785155380.2887962,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thấp",
+      "ts": 1785155380.3759508,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hơn",
+      "ts": 1785155380.4639723,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " so",
+      "ts": 1785155380.5518906,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " với",
+      "ts": 1785155380.6389902,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ngưỡng",
+      "ts": 1785155380.7270083,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " báo",
+      "ts": 1785155380.8135262,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " động",
+      "ts": 1785155380.9011724,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " (",
+      "ts": 1785155380.9874732,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "0",
+      "ts": 1785155381.0755312,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1785155381.1617653,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "7",
+      "ts": 1785155381.2486074,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " -",
+      "ts": 1785155381.3354745,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ",
+      "ts": 1785155381.4223785,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "0",
+      "ts": 1785155381.5092502,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1785155381.5969183,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "9",
+      "ts": 1785155381.6837032,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "m",
+      "ts": 1785155381.770504,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ").\\",
+      "ts": 1785155381.8571439,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "n",
+      "ts": 1785155381.9443507,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "*",
+      "ts": 1785155382.0308092,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "   ",
+      "ts": 1785155382.1174157,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "**",
+      "ts": 1785155382.2044785,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Th",
+      "ts": 1785155382.2902617,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "anh",
+      "ts": 1785155382.376111,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " H",
+      "ts": 1785155382.4619594,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "óa",
+      "ts": 1785155382.5493333,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ":**",
+      "ts": 1785155382.636693,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " M",
+      "ts": 1785155382.7232919,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ực",
+      "ts": 1785155382.8101099,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nước",
+      "ts": 1785155382.894898,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " sông",
+      "ts": 1785155382.9812574,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Ninh",
+      "ts": 1785155383.0682206,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Cơ",
+      "ts": 1785155383.1547544,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tại",
+      "ts": 1785155383.2417676,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tr",
+      "ts": 1785155383.3284018,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ạm",
+      "ts": 1785155383.416094,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Thế",
+      "ts": 1785155383.502291,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Văn",
+      "ts": 1785155383.5899312,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " có",
+      "ts": 1785155383.6780653,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " mức",
+      "ts": 1785155383.7654297,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cao",
+      "ts": 1785155383.852657,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nhất",
+      "ts": 1785155383.9402912,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ước",
+      "ts": 1785155384.0281603,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tính",
+      "ts": 1785155384.1163394,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " khoảng",
+      "ts": 1785155384.2036853,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ",
+      "ts": 1785155384.29073,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "2",
+      "ts": 1785155384.377565,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1785155384.4650571,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "1",
+      "ts": 1785155384.5527325,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "5",
+      "ts": 1785155384.6403606,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " -",
+      "ts": 1785155384.7262473,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ",
+      "ts": 1785155384.8136091,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "2",
+      "ts": 1785155384.898754,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1785155384.9860797,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "3",
+      "ts": 1785155385.0734005,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "5",
+      "ts": 1785155385.1602457,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "m",
+      "ts": 1785155385.2474384,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".\\",
+      "ts": 1785155385.3340938,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "n",
+      "ts": 1785155385.4216218,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\\",
+      "ts": 1785155385.5103292,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "n",
+      "ts": 1785155385.5991104,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "N",
+      "ts": 1785155385.6860943,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "guồn",
+      "ts": 1785155385.7731895,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " dữ",
+      "ts": 1785155385.8603113,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " liệu",
+      "ts": 1785155385.9475114,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ":",
+      "ts": 1785155386.0337362,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Dự",
+      "ts": 1785155386.1213787,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " báo",
+      "ts": 1785155386.2089117,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thời",
+      "ts": 1785155386.296553,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tiết",
+      "ts": 1785155386.3827906,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ngày",
+      "ts": 1785155386.469413,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ",
+      "ts": 1785155386.556739,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "2",
+      "ts": 1785155386.6437578,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "7",
+      "ts": 1785155386.7306936,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "/",
+      "ts": 1785155386.8186245,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "7",
+      "ts": 1785155386.9042008,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "/",
+      "ts": 1785155386.9925067,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "2",
+      "ts": 1785155387.0798738,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "0",
+      "ts": 1785155387.1671333,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "2",
+      "ts": 1785155387.25855,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "6",
+      "ts": 1785155387.3410888,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " từ",
+      "ts": 1785155387.4272673,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Mo",
+      "ts": 1785155387.5146103,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "it",
+      "ts": 1785155387.602259,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ru",
+      "ts": 1785155387.6907287,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ong",
+      "ts": 1785155387.7778828,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".",
+      "ts": 1785155387.8642974,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "net",
+      "ts": 1785155387.9522316,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".",
+      "ts": 1785155388.0393956,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "vn",
+      "ts": 1785155388.1265423,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " và",
+      "ts": 1785155388.2128694,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " VO",
+      "ts": 1785155388.2994025,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "V",
+      "ts": 1785155388.3863354,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " [",
+      "ts": 1785155388.4734106,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "source",
+      "ts": 1785155388.5606782,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "_",
+      "ts": 1785155388.6475527,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "file",
+      "ts": 1785155388.7352483,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "].",
+      "ts": 1785155388.8234696,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\",",
+      "ts": 1785155388.9095454,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n",
+      "ts": 1785155388.9960206,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "  ",
+      "ts": 1785155389.0821636,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\"",
+      "ts": 1785155389.1680548,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "action",
+      "ts": 1785155389.2548816,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "_",
+      "ts": 1785155389.3409648,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "plan",
+      "ts": 1785155389.4275734,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\":",
+      "ts": 1785155389.513499,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " []",
+      "ts": 1785155389.6008668,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n",
+      "ts": 1785155389.6867886,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "}",
+      "ts": 1785155389.772498,
+      "source": "CRITIC",
+      "task_id": "tele_1785154880"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Dựa trên dữ liệu dự báo thời tiết ngày 27/07/2026, tình hình thời tiết trên toàn quốc có mưa rào và dông cục bộ. Các khu vực cụ thể sẽ có cường độ khác nhau:\n\n*   **TP. Hồ Chí Minh:** Dự kiến có mây, xen kẽ mưa rào và dông ở một số điểm; chiều tối và tối có khả năng mưa rào và dông mạnh hơn. Tốc độ gió chủ yếu là gió nam với cấp 2-3. Nhiệt độ cao nhất dự kiến dao động từ 29°C đến 32°C, với một số khu vực có thể vượt ngưỡng 32°C.\n*   **Nam Định:** Mực nước sông Đào tại trạm Thề Văn được ghi nhận ở mức cao nhất khoảng 2,3 - 2,5m, thấp hơn so với ngưỡng báo động (0,7 - 0,9m).\n*   **Thanh Hóa:** Mực nước sông Ninh Cơ tại trạm Thế Văn có mức cao nhất ước tính khoảng 2,15 - 2,35m.\n\nNguồn dữ liệu: Dự báo thời tiết ngày 27/7/2026 từ Moitruong.net.vn và VOV [source_file].",
+      "ts": 1785155390.0418837,
+      "source": "SYSTEM",
+      "task_id": "tele_1785154880"
+    }
+  ],
+  "artifacts": {
+    "plan": "Thời tiết hôm nay thế nào",
+    "walkthrough": "Dựa trên dữ liệu dự báo thời tiết ngày 27/07/2026, tình hình thời tiết trên toàn quốc có mưa rào và dông cục bộ. Các khu vực cụ thể sẽ có cường độ khác nhau:\n\n*   **TP. Hồ Chí Minh:** Dự kiến có mây, xen kẽ mưa rào và dông ở một số điểm; chiều tối và tối có khả năng mưa rào và dông mạnh hơn. Tốc độ gió chủ yếu là gió nam với cấp 2-3. Nhiệt độ cao nhất dự kiến dao động từ 29°C đến 32°C, với một số khu vực có thể vượt ngưỡng 32°C.\n*   **Nam Định:** Mực nước sông Đào tại trạm Thề Văn được ghi nhận ở mức cao nhất khoảng 2,3 - 2,5m, thấp hơn so với ngưỡng báo động (0,7 - 0,9m).\n*   **Thanh Hóa:** Mực nước sông Ninh Cơ tại trạm Thế Văn có mức cao nhất ước tính khoảng 2,15 - 2,35m.\n\nNguồn dữ liệu: Dự báo thời tiết ngày 27/7/2026 từ Moitruong.net.vn và VOV [source_file].",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

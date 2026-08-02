@@ -1,0 +1,3724 @@
+{
+  "id": "m_ZENITH_2907-1929_8ca597",
+  "title": "Tạo cho tôi một file Excel quản lý tiến độ dự án 5 giai đoạn có chart",
+  "goal": "Tạo cho tôi một file Excel quản lý tiến độ dự án 5 giai đoạn có chart\n\n[KẾT QUẢ]\nKhông thể tạo file Excel do thiếu công cụ hỗ trợ trực tiếp. Tuy nhiên, dưới đây là cấu trúc chi tiết để bạn tự xây dựng file quản lý tiến độ dự án 5 giai đoạn với biểu đồ:\n\n---\n\n###  **Cấu trúc File Excel: `project_progress_tracker.xlsx`**\n\n#### **Sheet1: Quản lý Tiến độ Dự án (5 Giai đoạn)**\n\n| STT | Giai đoạn         | Mục tiêu chính                     | Ngày bắt đầu | Ngày kết thúc | Trạng thái     | Người phụ trách | % Hoàn thành |\n|-----|-------------------|------------------------------------|--------------|----------------|----------------|------------------|---------------|\n| 1   | Khởi động          | Xác định mục tiêu, phân công vai trò | 01/04/2025    | 07/04/2025      | Đang thực hiện | Nguyễn A         | 80%           |\n| 2   | Thiết kế            | Lên ý tưởng, sơ đồ hệ thống        | 08/04/2025    | 21/04/2025      | Chưa bắt đầu     | Trần B           | 0%            |\n| 3   | Phát triển          | Viết mã, tích hợp chức năng         | 22/04/2025    | 15/05/2025      | Đang thực hiện | Lê C             | 60%           |\n| 4   | Kiểm thử            | Test unit, integration, QA          | 16/05/2025    | 31/05/2025      | Chưa bắt đầu     | Phạm D           | 0%            |\n| 5   | Triển khai & Bảo trì | Ra mắt sản phẩm, hỗ trợ sau triển khai | 01/06/2025    | 30/06/2025      | Chưa bắt đầu     | Nguyễn A         | 0%            |\n\n---\n\n#### **Sheet2: Biểu đồ Tiến độ (Chart)**\n\n- **Loại biểu đồ**: Bar Chart (dạng cột dọc) hoặc Gantt Chart (nếu dùng Excel Pro).\n- **Trục X**: Ngày (từ 01/04 đến 30/06/2025)\n- **Trục Y**: Các giai đoạn\n- **Dữ liệu biểu đồ**:\n  - Mỗi cột đại diện cho một giai đoạn.\n  - Chiều dài cột = thời gian thực hiện (tính từ ngày bắt đầu đến kết thúc).\n  - Màu sắc theo trạng thái: Xanh lá (đang tiến hành), Vàng (chậm trễ), Đỏ (trì hoãn).\n\n>  **Gợi ý**: Dùng `Insert > Chart > Bar Chart` và chọn dữ liệu từ Sheet1 để tự động cập nhật.\n\n---\n\n###  Hướng dẫn nhanh:\n1. Mở Excel.\n2. Tạo 2 sheet: `Dự án`, `Biểu đồ`.\n3. Nhập bảng trên vào `Dự án`.\n4. Chọn dữ liệu từ cột **Ngày bắt đầu** và **Ngày kết thúc**, chèn biểu đồ cột dọc.\n5. Định dạng màu theo trạng thái.\n\n>  Nếu cần, tôi có thể gửi mã Python (với `openpyxl` hoặc `pandas`) để tự động tạo file Excel này — chỉ cần bạn xác nhận.\n\n---\n\nBạn muốn tiếp tục với phiên bản **Python code** không?\n\n---\nPhản hồi lúc 19h35m ngày 29/07/2026",
+  "status": "completed",
+  "ts": 1785328548.6577888,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "Tạo cho tôi một file Excel quản lý tiến độ dự án 5 giai đoạn có chart",
+      "ts": 1785328195.476621,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_2907-1929_8ca597` initialized | Trace: `trace_8ca597`. Runtime ready.",
+      "ts": 1785328195.4782057,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=build pipeline=fast mode=fast tags=-",
+      "ts": 1785328206.1741023,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1785328206.17816,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [ENGINE-READY]: Chế độ FAST — Mô hình Qwen3-30B (`hf.co/unsloth/qwen3-30b-a3b-instruct-2507-gguf:ud-q4_k_xl`) đã có sẵn trên RAM/VRAM. Khởi chạy phản xạ tức thì!",
+      "ts": 1785328206.2522178,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [FAST-PIPELINE]: Khởi động RECEPTIONIST ReAct (3 turns).",
+      "ts": 1785328206.2559404,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "📚 [FAST-KB]: Đã cấu trúc XML cho 1 KB chunks. Sufficient=False",
+      "ts": 1785328206.4436255,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "⚡ [FAST REFLEX-GATE]: Tác vụ hội thoại / suy luận nội tại -> Kích hoạt nơ-ron phản xạ trực tiếp.",
+      "ts": 1785328206.4473417,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Triển khai kỹ năng: `CREATE_EXCEL_PROJECT_TRACKER`",
+      "ts": 1785328284.7856932,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: CREATE_EXCEL_PROJECT_TRACKER(...) - TraceID: trace_8ca597",
+      "ts": 1785328284.7895958,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Attempt 1/2 -> executor (http://ai-executor-1:8000)",
+      "ts": 1785328284.810536,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔬 [T4: SURGERY] [CREATE_EXCEL_PROJECT_TRACKER] Đang kiểm tra an toàn & khóa tài nguyên...",
+      "ts": 1785328296.4583063,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T4: SURGERY] [CREATE_EXCEL_PROJECT_TRACKER] Đang áp dụng chính sách thực thi...",
+      "ts": 1785328296.466623,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "💉 [T4: SURGERY] [CREATE_EXCEL_PROJECT_TRACKER] Đang nạp DNA & nén bối cảnh...",
+      "ts": 1785328296.4676542,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "*[đang tạo]* `CREATE_EXCEL_PROJECT_TRACKER`",
+      "ts": 1785328296.4688919,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚔️ [T4: SURGERY] [CREATE_EXCEL_PROJECT_TRACKER] Bắt đầu thực thi ...",
+      "ts": 1785328296.4707632,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Executor executor success (123 chars)",
+      "ts": 1785328323.8316925,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Đã nhận dữ liệu từ `CREATE_EXCEL_PROJECT_TRACKER` (123 ký tự)",
+      "ts": 1785328323.8386462,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Triển khai kỹ năng: `SEARCH_MEMORY`",
+      "ts": 1785328361.7571504,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_MEMORY(...) - TraceID: trace_8ca597",
+      "ts": 1785328361.7601836,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Attempt 1/2 -> executor (http://ai-executor-1:8000)",
+      "ts": 1785328361.762744,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔬 [T4: SURGERY] [SEARCH_MEMORY] Đang kiểm tra an toàn & khóa tài nguyên...",
+      "ts": 1785328371.6682045,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T4: SURGERY] [SEARCH_MEMORY] Đang áp dụng chính sách thực thi...",
+      "ts": 1785328371.6734529,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "💉 [T4: SURGERY] [SEARCH_MEMORY] Đang nạp DNA & nén bối cảnh...",
+      "ts": 1785328371.6752477,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "*[đang tìm kiếm]* `SEARCH_MEMORY`",
+      "ts": 1785328371.676901,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚔️ [T4: SURGERY] [SEARCH_MEMORY] Bắt đầu thực thi ...",
+      "ts": 1785328371.6798167,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Executor executor success (93 chars)",
+      "ts": 1785328394.7373505,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Đã nhận dữ liệu từ `SEARCH_MEMORY` (93 ký tự)",
+      "ts": 1785328394.7415345,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ",
+      "ts": 1785328463.120548,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328463.294719,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328463.4692245,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "/",
+      "ts": 1785328463.6397183,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328463.8072586,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "4",
+      "ts": 1785328463.9777443,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "/",
+      "ts": 1785328464.148607,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328464.3200693,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328464.4948387,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328464.655884,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "5",
+      "ts": 1785328464.828786,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "   ",
+      "ts": 1785328464.992217,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |",
+      "ts": 1785328465.1524935,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ",
+      "ts": 1785328465.31978,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "1",
+      "ts": 1785328465.4854667,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "5",
+      "ts": 1785328465.6538537,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "/",
+      "ts": 1785328465.8169193,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328465.977387,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "5",
+      "ts": 1785328466.1500635,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "/",
+      "ts": 1785328466.3146794,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328466.4761631,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328466.6460595,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328466.81375,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "5",
+      "ts": 1785328466.9838758,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "     ",
+      "ts": 1785328467.1553473,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |",
+      "ts": 1785328467.3326335,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Đ",
+      "ts": 1785328467.5034797,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ang",
+      "ts": 1785328467.6710765,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " thực",
+      "ts": 1785328467.8430638,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " hiện",
+      "ts": 1785328468.0083327,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |",
+      "ts": 1785328468.1844475,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Lê",
+      "ts": 1785328468.3626344,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " C",
+      "ts": 1785328468.5381818,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "            ",
+      "ts": 1785328468.7062101,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |",
+      "ts": 1785328468.8800473,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ",
+      "ts": 1785328469.039156,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "6",
+      "ts": 1785328469.201772,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328469.3640413,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "%",
+      "ts": 1785328469.5276399,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "          ",
+      "ts": 1785328469.6938555,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |\n",
+      "ts": 1785328469.8538468,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "|",
+      "ts": 1785328470.0161123,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ",
+      "ts": 1785328470.1763098,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "4",
+      "ts": 1785328470.3360348,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "  ",
+      "ts": 1785328470.4992301,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |",
+      "ts": 1785328470.6638904,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Ki",
+      "ts": 1785328470.831359,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ểm",
+      "ts": 1785328471.0003839,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " thử",
+      "ts": 1785328471.1721785,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "           ",
+      "ts": 1785328471.3368556,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |",
+      "ts": 1785328471.507193,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Test",
+      "ts": 1785328471.6708825,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " unit",
+      "ts": 1785328471.83337,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ",",
+      "ts": 1785328471.9968514,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " integration",
+      "ts": 1785328472.165024,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ",",
+      "ts": 1785328472.3367374,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " QA",
+      "ts": 1785328472.5010824,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "         ",
+      "ts": 1785328472.672423,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |",
+      "ts": 1785328472.8403158,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ",
+      "ts": 1785328473.0116746,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "1",
+      "ts": 1785328473.1675868,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "6",
+      "ts": 1785328473.3303523,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "/",
+      "ts": 1785328473.4952772,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328473.656776,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "5",
+      "ts": 1785328473.833799,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "/",
+      "ts": 1785328473.998729,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328474.1621497,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328474.3240004,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328474.489502,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "5",
+      "ts": 1785328474.6505895,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "   ",
+      "ts": 1785328474.8162227,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |",
+      "ts": 1785328474.9744694,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ",
+      "ts": 1785328475.1400454,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "3",
+      "ts": 1785328475.3076406,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "1",
+      "ts": 1785328475.4737582,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "/",
+      "ts": 1785328475.6448221,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328475.809424,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "5",
+      "ts": 1785328475.97508,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "/",
+      "ts": 1785328476.1478832,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328476.3198378,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328476.4878285,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328476.6567793,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "5",
+      "ts": 1785328476.823118,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "     ",
+      "ts": 1785328476.9881482,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |",
+      "ts": 1785328477.1500351,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Ch",
+      "ts": 1785328477.3092752,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ưa",
+      "ts": 1785328477.4774473,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " bắt",
+      "ts": 1785328477.6427512,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đầu",
+      "ts": 1785328477.8148165,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "    ",
+      "ts": 1785328477.9832695,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |",
+      "ts": 1785328478.1538727,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Phạm",
+      "ts": 1785328478.3183773,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " D",
+      "ts": 1785328478.4798973,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "          ",
+      "ts": 1785328478.645869,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |",
+      "ts": 1785328478.8088322,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ",
+      "ts": 1785328478.984382,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328479.1514077,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "%",
+      "ts": 1785328479.318759,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "           ",
+      "ts": 1785328479.4821537,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |\n",
+      "ts": 1785328479.6568065,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "|",
+      "ts": 1785328479.8238738,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ",
+      "ts": 1785328479.9873393,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "5",
+      "ts": 1785328480.1461673,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "  ",
+      "ts": 1785328480.3095024,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |",
+      "ts": 1785328480.471176,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Tri",
+      "ts": 1785328480.6342165,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ển",
+      "ts": 1785328480.8106754,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " kh",
+      "ts": 1785328480.97685,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ai",
+      "ts": 1785328481.1430006,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " &",
+      "ts": 1785328481.3063185,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Bảo",
+      "ts": 1785328481.4763012,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " trì",
+      "ts": 1785328481.64967,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |",
+      "ts": 1785328481.821066,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Ra",
+      "ts": 1785328481.9857993,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " mắt",
+      "ts": 1785328482.1467876,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " sản",
+      "ts": 1785328482.3153486,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " phẩm",
+      "ts": 1785328482.4790392,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ",",
+      "ts": 1785328482.6467428,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " hỗ",
+      "ts": 1785328482.817349,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " trợ",
+      "ts": 1785328482.989462,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " sau",
+      "ts": 1785328483.1554844,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " triển",
+      "ts": 1785328483.3237069,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " kh",
+      "ts": 1785328483.4834435,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ai",
+      "ts": 1785328483.649635,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |",
+      "ts": 1785328483.826806,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ",
+      "ts": 1785328483.9990094,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328484.162462,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "1",
+      "ts": 1785328484.3376825,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "/",
+      "ts": 1785328484.5147078,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328484.6919463,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "6",
+      "ts": 1785328484.8675473,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "/",
+      "ts": 1785328485.0414877,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328485.2118766,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328485.3850935,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328485.5605123,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "5",
+      "ts": 1785328485.736612,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "   ",
+      "ts": 1785328485.9039133,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |",
+      "ts": 1785328486.0701308,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ",
+      "ts": 1785328486.2359307,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "3",
+      "ts": 1785328486.3949225,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328486.5613122,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "/",
+      "ts": 1785328486.7327745,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328486.9022453,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "6",
+      "ts": 1785328487.075645,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "/",
+      "ts": 1785328487.2444134,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328487.4248724,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328487.5987554,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328487.7800746,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "5",
+      "ts": 1785328487.9554021,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "     ",
+      "ts": 1785328488.1260173,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |",
+      "ts": 1785328488.2911499,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Ch",
+      "ts": 1785328488.4678495,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ưa",
+      "ts": 1785328488.6404827,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " bắt",
+      "ts": 1785328488.805848,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đầu",
+      "ts": 1785328488.9733481,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "    ",
+      "ts": 1785328489.145717,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |",
+      "ts": 1785328489.319324,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Nguyễn",
+      "ts": 1785328489.4908352,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " A",
+      "ts": 1785328489.6570654,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "        ",
+      "ts": 1785328489.8207011,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |",
+      "ts": 1785328489.994449,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ",
+      "ts": 1785328490.1616323,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328490.317771,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "%",
+      "ts": 1785328490.4792798,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "           ",
+      "ts": 1785328490.642309,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " |\n\n",
+      "ts": 1785328490.8166318,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "---\n\n",
+      "ts": 1785328490.9826157,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "####",
+      "ts": 1785328491.1573374,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " **",
+      "ts": 1785328491.3208847,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "Sheet",
+      "ts": 1785328491.486758,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328491.651901,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ":",
+      "ts": 1785328491.8127544,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Bi",
+      "ts": 1785328491.987489,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ểu",
+      "ts": 1785328492.1568055,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đồ",
+      "ts": 1785328492.3296847,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Tiến",
+      "ts": 1785328492.4998338,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " độ",
+      "ts": 1785328492.6728072,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " (",
+      "ts": 1785328492.8439248,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "Chart",
+      "ts": 1785328493.0167837,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ")**",
+      "ts": 1785328493.184062,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "\n\n",
+      "ts": 1785328493.352395,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "-",
+      "ts": 1785328493.5158346,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " **",
+      "ts": 1785328493.6792438,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "Lo",
+      "ts": 1785328493.8472571,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ại",
+      "ts": 1785328494.0234673,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " biểu",
+      "ts": 1785328494.1884015,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đồ",
+      "ts": 1785328494.3544593,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "**:",
+      "ts": 1785328494.5210483,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Bar",
+      "ts": 1785328494.683156,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Chart",
+      "ts": 1785328494.84782,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " (",
+      "ts": 1785328495.01192,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "d",
+      "ts": 1785328495.1800053,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ạng",
+      "ts": 1785328495.3429222,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " c",
+      "ts": 1785328495.5048752,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ột",
+      "ts": 1785328495.6744707,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " d",
+      "ts": 1785328495.8393629,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ọc",
+      "ts": 1785328496.0119054,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ")",
+      "ts": 1785328496.1869934,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " hoặc",
+      "ts": 1785328496.357741,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " G",
+      "ts": 1785328496.5257933,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "antt",
+      "ts": 1785328496.6926477,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Chart",
+      "ts": 1785328496.8620646,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " (",
+      "ts": 1785328497.0249577,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "n",
+      "ts": 1785328497.1902318,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ếu",
+      "ts": 1785328497.3579507,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " dùng",
+      "ts": 1785328497.5233114,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Excel",
+      "ts": 1785328497.691664,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Pro",
+      "ts": 1785328497.8617368,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ").\n",
+      "ts": 1785328498.030764,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "-",
+      "ts": 1785328498.2050455,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " **",
+      "ts": 1785328498.3668978,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "Tr",
+      "ts": 1785328498.538633,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ục",
+      "ts": 1785328498.7071111,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " X",
+      "ts": 1785328498.8747199,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "**:",
+      "ts": 1785328499.040164,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Ngày",
+      "ts": 1785328499.2130265,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " (",
+      "ts": 1785328499.3881047,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "t",
+      "ts": 1785328499.5497863,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ừ",
+      "ts": 1785328499.720964,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ",
+      "ts": 1785328499.893772,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328500.062876,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "1",
+      "ts": 1785328500.2378116,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "/",
+      "ts": 1785328500.411682,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328500.5782852,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "4",
+      "ts": 1785328500.741497,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đến",
+      "ts": 1785328500.9094987,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ",
+      "ts": 1785328501.0744653,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "3",
+      "ts": 1785328501.2621572,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328501.429945,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "/",
+      "ts": 1785328501.6034298,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328501.7740104,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "6",
+      "ts": 1785328501.941415,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "/",
+      "ts": 1785328502.1054568,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328502.2799053,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "0",
+      "ts": 1785328502.4516568,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328502.6171997,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "5",
+      "ts": 1785328502.7909713,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ")\n",
+      "ts": 1785328502.9543185,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "-",
+      "ts": 1785328503.1290116,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " **",
+      "ts": 1785328503.3015575,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "Tr",
+      "ts": 1785328503.474744,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ục",
+      "ts": 1785328503.6423166,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Y",
+      "ts": 1785328503.8201764,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "**:",
+      "ts": 1785328503.9972787,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Các",
+      "ts": 1785328504.1694589,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " gia",
+      "ts": 1785328504.341103,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "i",
+      "ts": 1785328504.5223083,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đoạn",
+      "ts": 1785328504.6902533,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "\n",
+      "ts": 1785328504.854727,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "-",
+      "ts": 1785328505.024192,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " **",
+      "ts": 1785328505.1918743,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "D",
+      "ts": 1785328505.3621142,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ữ",
+      "ts": 1785328505.5251703,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " liệu",
+      "ts": 1785328505.6938233,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " biểu",
+      "ts": 1785328505.8592181,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đồ",
+      "ts": 1785328506.0289934,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "**",
+      "ts": 1785328506.203631,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ":\n",
+      "ts": 1785328506.365192,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ",
+      "ts": 1785328506.5306568,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " -",
+      "ts": 1785328506.6956544,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Mỗi",
+      "ts": 1785328506.8610494,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " c",
+      "ts": 1785328507.0280645,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ột",
+      "ts": 1785328507.1908605,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đại",
+      "ts": 1785328507.3581192,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " diện",
+      "ts": 1785328507.5359685,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " cho",
+      "ts": 1785328507.7098815,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " một",
+      "ts": 1785328507.8888817,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " gia",
+      "ts": 1785328508.0579138,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "i",
+      "ts": 1785328508.23289,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đoạn",
+      "ts": 1785328508.4039829,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".\n",
+      "ts": 1785328508.5760756,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ",
+      "ts": 1785328508.749319,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " -",
+      "ts": 1785328508.9183059,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Chi",
+      "ts": 1785328509.0832613,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ều",
+      "ts": 1785328509.2552428,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " dài",
+      "ts": 1785328509.4281251,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " c",
+      "ts": 1785328509.6014977,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ột",
+      "ts": 1785328509.7634902,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " =",
+      "ts": 1785328509.9267573,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " thời",
+      "ts": 1785328510.0970256,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " g",
+      "ts": 1785328510.2622712,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ian",
+      "ts": 1785328510.426327,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " thực",
+      "ts": 1785328510.5934086,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " hiện",
+      "ts": 1785328510.760849,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " (",
+      "ts": 1785328510.9287868,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "t",
+      "ts": 1785328511.108204,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ính",
+      "ts": 1785328511.2740257,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " từ",
+      "ts": 1785328511.4474683,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ngày",
+      "ts": 1785328511.6257324,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " bắt",
+      "ts": 1785328511.8020992,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đầu",
+      "ts": 1785328511.9735913,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đến",
+      "ts": 1785328512.1361701,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " kết",
+      "ts": 1785328512.3025515,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " thúc",
+      "ts": 1785328512.4724033,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ").\n",
+      "ts": 1785328512.6472368,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ",
+      "ts": 1785328512.8171303,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " -",
+      "ts": 1785328512.9890099,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Mà",
+      "ts": 1785328513.161634,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "u",
+      "ts": 1785328513.3363738,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " sắc",
+      "ts": 1785328513.5051665,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " the",
+      "ts": 1785328513.666469,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "o",
+      "ts": 1785328513.8455791,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " trạng",
+      "ts": 1785328514.0245118,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " thái",
+      "ts": 1785328514.2049925,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ":",
+      "ts": 1785328514.3718724,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " X",
+      "ts": 1785328514.5390058,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "anh",
+      "ts": 1785328514.696491,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " lá",
+      "ts": 1785328514.863846,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " (",
+      "ts": 1785328515.0340993,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "đ",
+      "ts": 1785328515.200398,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ang",
+      "ts": 1785328515.365715,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tiến",
+      "ts": 1785328515.532665,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " hành",
+      "ts": 1785328515.7044969,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "),",
+      "ts": 1785328515.8776042,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " V",
+      "ts": 1785328516.055903,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "àng",
+      "ts": 1785328516.225878,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " (",
+      "ts": 1785328516.4026809,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ch",
+      "ts": 1785328516.5765133,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ậm",
+      "ts": 1785328516.74466,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tr",
+      "ts": 1785328516.9116101,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ễ",
+      "ts": 1785328517.077955,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "),",
+      "ts": 1785328517.244051,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Đ",
+      "ts": 1785328517.405156,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ỏ",
+      "ts": 1785328517.576467,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " (",
+      "ts": 1785328517.7420232,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "tr",
+      "ts": 1785328517.9092655,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ì",
+      "ts": 1785328518.0692654,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ho",
+      "ts": 1785328518.2376115,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ãn",
+      "ts": 1785328518.4049828,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ").\n\n",
+      "ts": 1785328518.5741184,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ">",
+      "ts": 1785328518.7409904,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ✅",
+      "ts": 1785328519.0840561,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " **",
+      "ts": 1785328519.2585566,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "G",
+      "ts": 1785328519.4291732,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ợi",
+      "ts": 1785328519.6009321,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ý",
+      "ts": 1785328519.7686296,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "**:",
+      "ts": 1785328519.93562,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " D",
+      "ts": 1785328520.103107,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ùng",
+      "ts": 1785328520.2696562,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " `",
+      "ts": 1785328520.4471076,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "Insert",
+      "ts": 1785328520.6205082,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " >",
+      "ts": 1785328520.7907732,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Chart",
+      "ts": 1785328520.957361,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " >",
+      "ts": 1785328521.1333961,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Bar",
+      "ts": 1785328521.2922728,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Chart",
+      "ts": 1785328521.4544818,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "`",
+      "ts": 1785328521.6280754,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " và",
+      "ts": 1785328521.794343,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " chọn",
+      "ts": 1785328521.9610689,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " dữ",
+      "ts": 1785328522.120169,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " liệu",
+      "ts": 1785328522.2896748,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " từ",
+      "ts": 1785328522.4516222,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Sheet",
+      "ts": 1785328522.6166704,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "1",
+      "ts": 1785328522.7823632,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " để",
+      "ts": 1785328522.9554515,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tự",
+      "ts": 1785328523.1203423,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " động",
+      "ts": 1785328523.2885492,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " cập",
+      "ts": 1785328523.458394,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " nhật",
+      "ts": 1785328523.6337872,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".\n\n",
+      "ts": 1785328523.808709,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "---\n\n",
+      "ts": 1785328523.9811637,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "###",
+      "ts": 1785328524.1523614,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " 🛠",
+      "ts": 1785328524.666712,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "️",
+      "ts": 1785328524.8338428,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Hướng",
+      "ts": 1785328525.0078554,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " dẫn",
+      "ts": 1785328525.1799498,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " n",
+      "ts": 1785328525.3477676,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "han",
+      "ts": 1785328525.5114143,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "h",
+      "ts": 1785328525.682815,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ":\n",
+      "ts": 1785328525.8568327,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "1",
+      "ts": 1785328526.0263598,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".",
+      "ts": 1785328526.2090719,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " M",
+      "ts": 1785328526.3848698,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ở",
+      "ts": 1785328526.5493357,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Excel",
+      "ts": 1785328526.725271,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".\n",
+      "ts": 1785328526.8938162,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328527.072953,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".",
+      "ts": 1785328527.2507489,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " T",
+      "ts": 1785328527.4247098,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ạo",
+      "ts": 1785328527.5950434,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ",
+      "ts": 1785328527.7744968,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "2",
+      "ts": 1785328527.9495497,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " sheet",
+      "ts": 1785328528.11112,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ":",
+      "ts": 1785328528.2824068,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " `",
+      "ts": 1785328528.447101,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "D",
+      "ts": 1785328528.6167378,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ự",
+      "ts": 1785328528.7866673,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " án",
+      "ts": 1785328528.958427,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "`,",
+      "ts": 1785328529.1281545,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " `",
+      "ts": 1785328529.3074448,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "Bi",
+      "ts": 1785328529.4813485,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ểu",
+      "ts": 1785328529.6512637,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đồ",
+      "ts": 1785328529.8236568,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "`.\n",
+      "ts": 1785328529.9894097,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "3",
+      "ts": 1785328530.1655614,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".",
+      "ts": 1785328530.3406343,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Nh",
+      "ts": 1785328530.5095515,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ập",
+      "ts": 1785328530.6787033,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " bảng",
+      "ts": 1785328530.8586314,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " trên",
+      "ts": 1785328531.0301354,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " vào",
+      "ts": 1785328531.201289,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " `",
+      "ts": 1785328531.370013,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "D",
+      "ts": 1785328531.5424907,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ự",
+      "ts": 1785328531.717028,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " án",
+      "ts": 1785328531.8864632,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "`.\n",
+      "ts": 1785328532.0621693,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "4",
+      "ts": 1785328532.2367613,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".",
+      "ts": 1785328532.4088213,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Ch",
+      "ts": 1785328532.5715897,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ọn",
+      "ts": 1785328532.7426014,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " dữ",
+      "ts": 1785328532.919399,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " liệu",
+      "ts": 1785328533.0928817,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " từ",
+      "ts": 1785328533.2581975,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " c",
+      "ts": 1785328533.4287705,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ột",
+      "ts": 1785328533.6028032,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " **",
+      "ts": 1785328533.7742517,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "Ng",
+      "ts": 1785328533.9613018,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ày",
+      "ts": 1785328534.125605,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " bắt",
+      "ts": 1785328534.2961364,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đầu",
+      "ts": 1785328534.4604359,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "**",
+      "ts": 1785328534.6314962,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " và",
+      "ts": 1785328534.7950265,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " **",
+      "ts": 1785328534.9692798,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "Ng",
+      "ts": 1785328535.13879,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ày",
+      "ts": 1785328535.3116624,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " kết",
+      "ts": 1785328535.4833949,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " thúc",
+      "ts": 1785328535.6567497,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "**,",
+      "ts": 1785328535.8309772,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " ch",
+      "ts": 1785328536.0001264,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "è",
+      "ts": 1785328536.172171,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "n",
+      "ts": 1785328536.3381178,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " biểu",
+      "ts": 1785328536.5106947,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " đồ",
+      "ts": 1785328536.6759288,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " c",
+      "ts": 1785328536.8423498,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ột",
+      "ts": 1785328537.009758,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " d",
+      "ts": 1785328537.1806326,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ọc",
+      "ts": 1785328537.3497128,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".\n",
+      "ts": 1785328537.5234213,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "5",
+      "ts": 1785328537.6885192,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".",
+      "ts": 1785328537.8607352,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Định",
+      "ts": 1785328538.0352073,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " dạng",
+      "ts": 1785328538.2067585,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " màu",
+      "ts": 1785328538.3886468,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " the",
+      "ts": 1785328538.5564673,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "o",
+      "ts": 1785328538.7392337,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " trạng",
+      "ts": 1785328538.9138305,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " thái",
+      "ts": 1785328539.0936007,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".\n\n",
+      "ts": 1785328539.2571776,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ">",
+      "ts": 1785328539.4301462,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " 💡",
+      "ts": 1785328539.7645996,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Nếu",
+      "ts": 1785328539.9312027,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " cần",
+      "ts": 1785328540.098545,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ",",
+      "ts": 1785328540.2751067,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tôi",
+      "ts": 1785328540.4422088,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " có",
+      "ts": 1785328540.6187034,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " thể",
+      "ts": 1785328540.7879596,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " gửi",
+      "ts": 1785328540.9678624,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " mã",
+      "ts": 1785328541.1387253,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Python",
+      "ts": 1785328541.3057342,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " (",
+      "ts": 1785328541.4736197,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "v",
+      "ts": 1785328541.6417606,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "ới",
+      "ts": 1785328541.81012,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " `",
+      "ts": 1785328541.9867644,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "open",
+      "ts": 1785328542.1609552,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "py",
+      "ts": 1785328542.331874,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "xl",
+      "ts": 1785328542.5107415,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "`",
+      "ts": 1785328542.686166,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " hoặc",
+      "ts": 1785328542.8633332,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " `",
+      "ts": 1785328543.0356295,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "p",
+      "ts": 1785328543.2144835,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "andas",
+      "ts": 1785328543.385128,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "`)",
+      "ts": 1785328543.5687418,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " để",
+      "ts": 1785328543.7331605,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tự",
+      "ts": 1785328543.9081137,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " động",
+      "ts": 1785328544.0828044,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tạo",
+      "ts": 1785328544.2590916,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " file",
+      "ts": 1785328544.4226463,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " Excel",
+      "ts": 1785328544.5979137,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " này",
+      "ts": 1785328544.7619941,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " —",
+      "ts": 1785328544.9317045,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " chỉ",
+      "ts": 1785328545.1098635,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " cần",
+      "ts": 1785328545.2837608,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " bạn",
+      "ts": 1785328545.4629145,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " xác",
+      "ts": 1785328545.6333015,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " nhận",
+      "ts": 1785328545.8144245,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": ".\n\n",
+      "ts": 1785328545.9896736,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "---\n\n",
+      "ts": 1785328546.1746175,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "Bạn",
+      "ts": 1785328546.35254,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " muốn",
+      "ts": 1785328546.5243812,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tiếp",
+      "ts": 1785328546.6921213,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " tục",
+      "ts": 1785328546.8611248,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " với",
+      "ts": 1785328547.0311441,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " phiên",
+      "ts": 1785328547.2023811,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " bản",
+      "ts": 1785328547.3786967,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " **",
+      "ts": 1785328547.547395,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "Python",
+      "ts": 1785328547.718126,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " code",
+      "ts": 1785328547.8848467,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "**",
+      "ts": 1785328548.054584,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": " không",
+      "ts": 1785328548.2241917,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "RECEPTIONIST",
+      "msg": "?",
+      "ts": 1785328548.4002771,
+      "source": "RECEPTIONIST",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "✅ [FAST-PIPELINE]: Hoàn tất ReAct loop cho task ZENITH_2907-1929_8ca597",
+      "ts": 1785328548.5810652,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Không thể tạo file Excel do thiếu công cụ hỗ trợ trực tiếp. Tuy nhiên, dưới đây là cấu trúc chi tiết để bạn tự xây dựng file quản lý tiến độ dự án 5 giai đoạn với biểu đồ:\n\n---\n\n###  **Cấu trúc File Excel: `project_progress_tracker.xlsx`**\n\n#### **Sheet1: Quản lý Tiến độ Dự án (5 Giai đoạn)**\n\n| STT | Giai đoạn         | Mục tiêu chính                     | Ngày bắt đầu | Ngày kết thúc | Trạng thái     | Người phụ trách | % Hoàn thành |\n|-----|-------------------|------------------------------------|--------------|----------------|----------------|------------------|---------------|\n| 1   | Khởi động          | Xác định mục tiêu, phân công vai trò | 01/04/2025    | 07/04/2025      | Đang thực hiện | Nguyễn A         | 80%           |\n| 2   | Thiết kế            | Lên ý tưởng, sơ đồ hệ thống        | 08/04/2025    | 21/04/2025      | Chưa bắt đầu     | Trần B           | 0%            |\n| 3   | Phát triển          | Viết mã, tích hợp chức năng         | 22/04/2025    | 15/05/2025      | Đang thực hiện | Lê C             | 60%           |\n| 4   | Kiểm thử            | Test unit, integration, QA          | 16/05/2025    | 31/05/2025      | Chưa bắt đầu     | Phạm D           | 0%            |\n| 5   | Triển khai & Bảo trì | Ra mắt sản phẩm, hỗ trợ sau triển khai | 01/06/2025    | 30/06/2025      | Chưa bắt đầu     | Nguyễn A         | 0%            |\n\n---\n\n#### **Sheet2: Biểu đồ Tiến độ (Chart)**\n\n- **Loại biểu đồ**: Bar Chart (dạng cột dọc) hoặc Gantt Chart (nếu dùng Excel Pro).\n- **Trục X**: Ngày (từ 01/04 đến 30/06/2025)\n- **Trục Y**: Các giai đoạn\n- **Dữ liệu biểu đồ**:\n  - Mỗi cột đại diện cho một giai đoạn.\n  - Chiều dài cột = thời gian thực hiện (tính từ ngày bắt đầu đến kết thúc).\n  - Màu sắc theo trạng thái: Xanh lá (đang tiến hành), Vàng (chậm trễ), Đỏ (trì hoãn).\n\n>  **Gợi ý**: Dùng `Insert > Chart > Bar Chart` và chọn dữ liệu từ Sheet1 để tự động cập nhật.\n\n---\n\n###  Hướng dẫn nhanh:\n1. Mở Excel.\n2. Tạo 2 sheet: `Dự án`, `Biểu đồ`.\n3. Nhập bảng trên vào `Dự án`.\n4. Chọn dữ liệu từ cột **Ngày bắt đầu** và **Ngày kết thúc**, chèn biểu đồ cột dọc.\n5. Định dạng màu theo trạng thái.\n\n>  Nếu cần, tôi có thể gửi mã Python (với `openpyxl` hoặc `pandas`) để tự động tạo file Excel này — chỉ cần bạn xác nhận.\n\n---\n\nBạn muốn tiếp tục với phiên bản **Python code** không?\n\n---\nPhản hồi lúc 19h35m ngày 29/07/2026",
+      "ts": 1785328548.59861,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2907-1929_8ca597"
+    }
+  ],
+  "artifacts": {
+    "plan": "Tạo cho tôi một file Excel quản lý tiến độ dự án 5 giai đoạn có chart",
+    "walkthrough": "Không thể tạo file Excel do thiếu công cụ hỗ trợ trực tiếp. Tuy nhiên, dưới đây là cấu trúc chi tiết để bạn tự xây dựng file quản lý tiến độ dự án 5 giai đoạn với biểu đồ:\n\n---\n\n###  **Cấu trúc File Excel: `project_progress_tracker.xlsx`**\n\n#### **Sheet1: Quản lý Tiến độ Dự án (5 Giai đoạn)**\n\n| STT | Giai đoạn         | Mục tiêu chính                     | Ngày bắt đầu | Ngày kết thúc | Trạng thái     | Người phụ trách | % Hoàn thành |\n|-----|-------------------|------------------------------------|--------------|----------------|----------------|------------------|---------------|\n| 1   | Khởi động          | Xác định mục tiêu, phân công vai trò | 01/04/2025    | 07/04/2025      | Đang thực hiện | Nguyễn A         | 80%           |\n| 2   | Thiết kế            | Lên ý tưởng, sơ đồ hệ thống        | 08/04/2025    | 21/04/2025      | Chưa bắt đầu     | Trần B           | 0%            |\n| 3   | Phát triển          | Viết mã, tích hợp chức năng         | 22/04/2025    | 15/05/2025      | Đang thực hiện | Lê C             | 60%           |\n| 4   | Kiểm thử            | Test unit, integration, QA          | 16/05/2025    | 31/05/2025      | Chưa bắt đầu     | Phạm D           | 0%            |\n| 5   | Triển khai & Bảo trì | Ra mắt sản phẩm, hỗ trợ sau triển khai | 01/06/2025    | 30/06/2025      | Chưa bắt đầu     | Nguyễn A         | 0%            |\n\n---\n\n#### **Sheet2: Biểu đồ Tiến độ (Chart)**\n\n- **Loại biểu đồ**: Bar Chart (dạng cột dọc) hoặc Gantt Chart (nếu dùng Excel Pro).\n- **Trục X**: Ngày (từ 01/04 đến 30/06/2025)\n- **Trục Y**: Các giai đoạn\n- **Dữ liệu biểu đồ**:\n  - Mỗi cột đại diện cho một giai đoạn.\n  - Chiều dài cột = thời gian thực hiện (tính từ ngày bắt đầu đến kết thúc).\n  - Màu sắc theo trạng thái: Xanh lá (đang tiến hành), Vàng (chậm trễ), Đỏ (trì hoãn).\n\n>  **Gợi ý**: Dùng `Insert > Chart > Bar Chart` và chọn dữ liệu từ Sheet1 để tự động cập nhật.\n\n---\n\n###  Hướng dẫn nhanh:\n1. Mở Excel.\n2. Tạo 2 sheet: `Dự án`, `Biểu đồ`.\n3. Nhập bảng trên vào `Dự án`.\n4. Chọn dữ liệu từ cột **Ngày bắt đầu** và **Ngày kết thúc**, chèn biểu đồ cột dọc.\n5. Định dạng màu theo trạng thái.\n\n>  Nếu cần, tôi có thể gửi mã Python (với `openpyxl` hoặc `pandas`) để tự động tạo file Excel này — chỉ cần bạn xác nhận.\n\n---\n\nBạn muốn tiếp tục với phiên bản **Python code** không?\n\n---\nPhản hồi lúc 19h35m ngày 29/07/2026",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

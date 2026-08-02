@@ -1,10 +1,11 @@
 import logging
-import re
+
+from core.utils.regex import EMAIL, PHONE
 
 class PIIMaskingFormatter(logging.Formatter):
     PII_PATTERNS = [
-        (re.compile(r'[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+'), '[EMAIL_MASKED]'),
-        (re.compile(r'\b\d{4}[-.]?\d{3}[-.]?\d{3}\b'), '[PHONE_MASKED]'),
+        (EMAIL, '[EMAIL_MASKED]'),
+        (PHONE, '[PHONE_MASKED]'),
     ]
 
     def format(self, record):

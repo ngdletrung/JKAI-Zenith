@@ -1,0 +1,49 @@
+{
+  "id": "SKILL_STRATEGIC_RECON",
+  "name": "Zenith Strategic Reconnaissance",
+  "version": "1.0.0",
+  "description": "Adaptive scouting core: Uses recursive reasoning and visual satellite browsing to independently solve complex research goals across the web.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "trinh sát chiến lược",
+    "search browse",
+    "tìm kiếm đa tầng",
+    "strategic recon",
+    "tầm soát thị giác",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "tinh",
+    "master",
+    "trinh",
+    "strategic",
+    "kiem",
+    "thong",
+    "khong",
+    "nang",
+    "thuc",
+    "thanh",
+    "nghien cuu",
+    "phan tich",
+    "ke hoach",
+    "plan",
+    "y tuong"
+  ],
+  "domain": "RESEARCH",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "goal": {
+          "type": "string",
+          "description": "The complex goal to research and achieve."
+        }
+      },
+      "required": [
+        "goal"
+      ]
+    }
+  }
+}

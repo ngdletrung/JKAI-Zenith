@@ -10,7 +10,10 @@ import os
 import ast
 import json
 import time
+import asyncio
 import logging
+import subprocess
+import sys
 import traceback
 from typing import Dict, Any, Optional, Tuple
 
@@ -41,6 +44,30 @@ class SurgeryEngine:
             return False, err_detail
         except Exception as e:
             return False, f"Lỗi kiểm toán không xác định: {str(e)}"
+
+    @staticmethod
+    async def _sandbox_verify(code_content: str, script_name: str = "patch_test.py", timeout_sec: float = 5.0) -> Tuple[bool, int, str, str]:
+        """
+        🧪 [HỘP CÁT]: Chạy thử bản vá trong subprocess cô lập với timeout cứng.
+        Đảm bảo bản vá biên dịch và thực thi không treo trước khi hot-patch.
+        """
+        try:
+            proc = await asyncio.wait_for(
+                asyncio.to_thread(
+                    subprocess.run,
+                    [sys.executable, "-c", code_content],
+                    capture_output=True,
+                    text=True,
+                    timeout=timeout_sec,
+                ),
+                timeout=timeout_sec + 2,
+            )
+            ok = proc.returncode == 0
+            return ok, proc.returncode, proc.stdout, proc.stderr
+        except subprocess.TimeoutExpired:
+            return False, -1, "", f"SANDBOX TIMEOUT sau {timeout_sec}s"
+        except Exception as e:
+            return False, -1, "", str(e)
 
     async def attempt_surgery(self, 
                               file_path: str, 
@@ -218,11 +245,10 @@ class SurgeryEngine:
                 f"{patched_content}\n"
             )
             
-            sb_ok, exit_code, stdout, stderr = await sandbox_executor.execute_isolated_code(
-                token_id=exec_token.token_id,
+            sb_ok, exit_code, stdout, stderr = await self._sandbox_verify(
                 code_content=sandbox_code,
                 script_name=f"test_{os.path.basename(file_path)}",
-                timeout_sec=5.0
+                timeout_sec=5.0,
             )
 
             if not sb_ok and exit_code != 0:

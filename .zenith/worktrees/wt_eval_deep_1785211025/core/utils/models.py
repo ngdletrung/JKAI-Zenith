@@ -1,0 +1,96 @@
+from pydantic import BaseModel, Field
+from typing import Dict, Optional, Any
+from enum import Enum
+
+
+class ModelOptions(BaseModel):
+    num_ctx: Optional[int] = None
+    num_gpu: Optional[int] = None
+    temperature: Optional[float] = None
+    repeat_penalty: Optional[float] = None
+    top_p: float = 0.9
+    top_k: int = 40
+
+
+class NeuralProfile(BaseModel):
+    num_ctx: int = 4096
+    num_gpu: int = 0
+    temperature: float = 0.7
+    repeat_penalty: float = 1.1
+
+
+class RoleConfig(BaseModel):
+    model: str
+    options: ModelOptions = Field(default_factory=ModelOptions)
+    keep_alive: str = "5m"
+    hardware: str = ""
+
+    def to_dict(self) -> Dict[str, Any]:
+        return {
+            "model": self.model,
+            "options": self.options.model_dump(exclude_none=True),
+            "keep_alive": self.keep_alive,
+            "hardware": self.hardware,
+        }
+
+
+class SkillInput(BaseModel):
+    """Typed contract cho tool input."""
+    task_id: Optional[str] = None
+    goal: Optional[str] = None
+    args: Dict[str, Any] = Field(default_factory=dict)
+
+
+class SkillOutput(BaseModel):
+    """Typed contract cho tool output."""
+    output: str = ""
+    status: str = "success"
+    error: Optional[str] = None
+    attachments: Optional[list] = None
+
+
+class TaskBudget(BaseModel):
+    """Cost Governor: ngân sách cho mỗi task."""
+    max_retries: int = 3
+    max_local_tokens: int = 50000
+    max_cloud_calls: int = 2
+    max_cloud_cost_usd: float = 0.20
+    max_total_duration_sec: float = 300.0
+
+
+class BudgetLedger(BaseModel):
+    """Sổ cái theo dõi chi tiêu cho một task."""
+    task_id: str
+    local_tokens_used: int = 0
+    cloud_calls_made: int = 0
+    estimated_cost_usd: float = 0.0
+    retries_used: int = 0
+    exceeded: bool = False
+
+
+class Permission(str, Enum):
+    FILESYSTEM_READ = "filesystem:read"
+    FILESYSTEM_WRITE = "filesystem:write"
+    FILESYSTEM_DELETE = "filesystem:delete"
+    SHELL_EXEC = "shell:exec"
+    NETWORK_HTTP = "network:http"
+    DOCKER_MANAGE = "docker:manage"
+    DOCKER_INSPECT = "docker:inspect"
+    REDIS_ACCESS = "redis:access"
+    LLM_CALL = "llm:call"
+    SKILL_MANAGE = "skill:manage"
+    SOVEREIGN = "sovereign:all"
+
+
+SKILL_CATEGORY_PERMISSIONS: Dict[str, list[Permission]] = {
+    "CORE": [Permission.SOVEREIGN],
+    "SECURITY": [Permission.FILESYSTEM_READ, Permission.FILESYSTEM_WRITE, Permission.SHELL_EXEC, Permission.NETWORK_HTTP, Permission.DOCKER_INSPECT],
+    "DEVOPS": [Permission.FILESYSTEM_READ, Permission.FILESYSTEM_WRITE, Permission.SHELL_EXEC, Permission.DOCKER_INSPECT, Permission.DOCKER_MANAGE, Permission.NETWORK_HTTP],
+    "CODING": [Permission.FILESYSTEM_READ, Permission.FILESYSTEM_WRITE, Permission.LLM_CALL],
+    "RESEARCH": [Permission.FILESYSTEM_READ, Permission.NETWORK_HTTP, Permission.LLM_CALL],
+    "DATA_SCIENCE": [Permission.FILESYSTEM_READ, Permission.NETWORK_HTTP, Permission.LLM_CALL],
+    "BUSINESS": [Permission.FILESYSTEM_READ, Permission.LLM_CALL],
+    "COMMANDS": [Permission.SHELL_EXEC, Permission.FILESYSTEM_READ],
+}
+
+

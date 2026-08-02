@@ -1,0 +1,103 @@
+---
+id: embeddings
+name_vn: embeddings
+version: 1.0.0
+author: Zenith Legacy
+domain: UNKNOWN
+intent_pairs: []
+aliases_vn: []
+schema: {}
+priority: NORMAL
+related_skills: []
+
+---
+
+# embeddings (embeddings)
+
+## 🌟 TỔNG QUAN
+---
+name: embeddings
+description: >
+  Vector embeddings with HNSW indexing, sql.js persistence, and hyperbolic support. 75x faster with agentic-flow integration.
+  Use when: semantic search, pattern matching, similarity queries, knowledge retrieval.
+  Skip when: exact text matching, simple lookups, no semantic understanding needed.
+---
+
+# Embeddings Skill
+
+## Purpose
+Vector embeddings for semantic search and pattern matching with HNSW indexing.
+
+## Features
+
+| Feature | Description |
+|---------|-------------|
+| **sql.js** | Cross-platform SQLite persistent cache (WASM) |
+| **HNSW** | 150x-12,500x faster search |
+| **Hyperbolic** | Poincare ball model for hierarchical data |
+| **Normalization** | L2, L1, min-max, z-score |
+| **Chunking** | Configurable overlap and size |
+| **75x faster** | With agentic-flow ONNX integration |
+
+## Commands
+
+### Initialize Embeddings
+```bash
+npx claude-flow embeddings init --backend sqlite
+```
+
+### Embed Text
+```bash
+npx claude-flow embeddings embed --text "authentication patterns"
+```
+
+### Batch Embed
+```bash
+npx claude-flow embeddings batch --file documents.json
+```
+
+### Semantic Search
+```bash
+npx claude-flow embeddings search --query "security best practices" --top-k 5
+```
+
+## Memory Integration
+
+```bash
+# Store with embeddings
+npx claude-flow memory store --key "pattern-1" --value "description" --embed
+
+# Search with embeddings
+npx claude-flow memory search --query "related patterns" --semantic
+```
+
+## Quantization
+
+| Type | Memory Reduction | Speed |
+|------|-----------------|-------|
+| Int8 | 3.92x | Fast |
+| Int4 | 7.84x | Faster |
+| Binary | 32x | Fastest |
+
+## Best Practices
+1. Use HNSW for large pattern databases
+2. Enable quantization for memory efficiency
+3. Use hyperbolic for hierarchical relationships
+4. Normalize embeddings for consistency
+
+
+## 🛠️ PHÁC ĐỒ VẬN HÀNH (OPERATIONAL PROTOCOL)
+### 🔍 Phase 1: Investigation (Thẩm định)
+- Xác minh tham số đầu vào dựa trên Schema.
+- Kiểm tra bối cảnh hệ thống liên quan.
+
+### 🚀 Phase 2: Action (Thực thi)
+- Triệu hồi logic thực thi trong `logic.py`.
+- Trả về kết quả và chắt lọc kinh nghiệm.
+
+---
+## ⚠️ SAI LẦM THƯỜNG GẶP (COMMON PITFALLS)
+- Chưa ghi nhận.
+
+---
+*TRUNG THÀNH - CHÍNH XÁC - TỐI THƯỢNG* 💎🦾

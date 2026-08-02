@@ -124,7 +124,16 @@ except Exception as e:
                 except (psutil.NoSuchProcess, psutil.AccessDenied):
                     pass
                 
-                time.sleep(poll_interval)
+                try:
+                    import asyncio
+                    loop = asyncio.get_running_loop()
+                    # Non-blocking poll for async loops
+                    if loop.is_running():
+                        time.sleep(poll_interval / 5.0)
+                    else:
+                        time.sleep(poll_interval)
+                except RuntimeError:
+                    time.sleep(poll_interval)
                 elapsed += poll_interval
             
             # Doc output

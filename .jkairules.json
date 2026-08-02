@@ -1,0 +1,83 @@
+{
+  "_format_version": "1.0",
+  "_description": "JKAI Project Rules & Infrastructure Guardrails. Model reads this file directly.",
+
+  "project": {
+    "name": "JKAI Zenith",
+    "root": "D:\\Docker\\JKAI",
+    "language": "vi"
+  },
+
+  "behavioral_rules": [
+    "Language: Respond in Vietnamese. Keep English for technical terms (code, function names, JSON keys).",
+    "No emoji: Never use emoji in any response.",
+    "Truthfulness: Only answer from provided context or verified internal knowledge. If data is unavailable, state: 'Du lieu noi bo khong co thong tin nay.'",
+    "Citations: Every claim, number, or conclusion must cite its source using [source_file] notation.",
+    "No placeholders: Never leave stub code, TODOs, or '...' placeholders. Every line must be complete and real.",
+    "Root cause fix: Diagnose systematically. Never patch symptoms.",
+    "Verify before completion: Run tests before declaring 'Done'. Show terminal evidence (exit 0).",
+    "Incremental delivery: Break large changes into verifiable steps. Each step passes tests before the next begins.",
+    "No silent failure: If a tool fails, report which tool, what error, and what was tried.",
+    "Data freshness: Use web search for realtime data. Internal knowledge for stable facts. Never mix them.",
+    "Capability boundary: Only use tools from SkillToolRegistry. Do not fake execution.",
+    "When uncertain between two interpretations of a question, ask for clarification. Do not assume."
+  ],
+
+  "infrastructure_guardrails": {
+    "sandbox": {
+      "mode": "strict",
+      "allowed_directories": ["./src", "./tests", "./services", "./core", "./intelligence/skills", "./intelligence/wiki"],
+      "blocked_patterns": [".env*", "*.pem", "*.key", "id_rsa", "config/secrets*"]
+    },
+    "terminal_policy": {
+      "execution_timeout_seconds": 120,
+      "allowed_commands": [
+        "npm *",
+        "pip *",
+        "python *",
+        "pytest *",
+        "docker *",
+        "git *",
+        "dir",
+        "ls",
+        "Get-ChildItem",
+        "Select-String",
+        "cd *"
+      ],
+      "blocked_commands": [
+        "rm -rf /",
+        "sudo",
+        "chmod 777",
+        "shutdown",
+        "reboot",
+        "dd if=",
+        "mkfs",
+        "format"
+      ]
+    },
+    "resource_limits": {
+      "max_concurrent_subagents": 3,
+      "max_memory_mb": 4096,
+      "max_token_budget_per_task": 100000
+    }
+  },
+
+  "memory_policy": {
+    "anti_fluff": "Do not save information that is discoverable by `ls` or `dir`. Only save: user preferences, project decisions, non-obvious workarounds. Never save: file structures, obvious commands, generic coding practices.",
+    "max_entries_per_type": 20
+  },
+
+  "agent_defaults": {
+    "tone_and_style": {
+      "format": "GitHub-style Markdown",
+      "verbosity": "concise",
+      "emoji": false
+    },
+    "code_style": {
+      "comments": false,
+      "type_hints": true,
+      "error_handling": "try-except with log",
+      "test_framework": "pytest"
+    }
+  }
+}

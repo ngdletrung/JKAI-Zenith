@@ -87,13 +87,21 @@ related_skills: ["ID_1", "ID_2"]
 
 ---
 
-## 🛠️ QUY TRÌNH VẬN HÀNH (OPERATIONAL PROTOCOL)
-Bên dưới khối YAML, nội dung `SKILL.md` phải chia thành các Phase rõ ràng:
+## 🛠️ QUY TRÌNH VẬN HÀNH & KỶ LUẬT (OPERATIONAL WORKFLOW & DISCIPLINE)
+Bên dưới khối YAML, nội dung `SKILL.md` đóng vai trò là prompt vận hành chính (Operational Prompt) và PHẢI chứa các cấu phần sau để đảm bảo kỷ luật kỹ nghệ:
 
-1. **Phase 1: Investigation (Thẩm định)**: AI cần thu thập dữ liệu gì trước khi làm?
-2. **Phase 2: Action (Thực thi)**: Các bước thực hiện cụ thể kèm `Tool Call` mẫu.
-3. **Phase 3: Validation (Xác minh)**: Làm sao biết đã thành công?
-4. **Phase 4: Reporting (Đúc kết)**: Cách trình bày kết quả cho Master.
+1. **OPERATIONAL WORKFLOW (Quy trình thực thi chi tiết)**: Chia thành các bước rõ ràng:
+   - *Phase 1: Investigation (Khảo sát/Thẩm định)*: Xác định thông tin cần thu thập (lệnh đọc file, grep cụ thể) trước khi thực hiện bất kỳ chỉnh sửa nào.
+   - *Phase 2: Action (Thực thi)*: Các bước triển khai cụ thể kèm Tool Call mẫu.
+   - *Phase 3: Validation (Xác minh)*: Các bước chạy thử nghiệm, biên dịch (lệnh cụ thể).
+   - *Phase 4: Reporting (Đúc kết)*: Cách trình bày bằng chứng và kết quả cho Master.
+
+2. **ANTI-RATIONALIZATION (Chống ngụy biện - Excuse vs Counter Argument)**:
+   Bảng quy tắc phản biện chống việc Executor tự hợp lý hóa để bỏ qua các bước quan trọng (ví dụ: "code nhỏ khỏi chạy test").
+
+3. **EXIT CRITERIA & EVIDENCE (Tiêu chí hoàn thành & Bằng chứng)**:
+   Checklist bắt buộc và các bằng chứng thực tế (test reports, linter outputs, runtime validation log) cần bàn giao.
+
 
 ---
 

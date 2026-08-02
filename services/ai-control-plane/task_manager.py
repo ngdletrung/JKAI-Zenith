@@ -125,15 +125,53 @@ class CircuitBreaker:
             self._state = CircuitState.OPEN
             self._opened_at = _time.time()
 
+_CB_MAX_LOCAL = 256
+
 class CircuitBreakerRegistry:
     def __init__(self):
         self._breakers: Dict[str, CircuitBreaker] = {}
+        self._access_order: List[str] = []
         self._lock = asyncio.Lock()
+
+    def _prune(self):
+        if len(self._breakers) > _CB_MAX_LOCAL:
+            overflow = len(self._breakers) - _CB_MAX_LOCAL
+            for key in self._access_order[:overflow]:
+                self._breakers.pop(key, None)
+            self._access_order = self._access_order[overflow:]
 
     def get_sync(self, tool: str) -> CircuitBreaker:
         if tool not in self._breakers:
-            self._breakers[tool] = CircuitBreaker()
+            cb = CircuitBreaker()
+            try:
+                from redis_client import get_redis
+                r = get_redis()
+                if r:
+                    saved_state = r.get(f"circuit_breaker:state:{tool}")
+                    if saved_state == "OPEN":
+                        cb._state = CircuitState.OPEN
+                        cb._opened_at = float(r.get(f"circuit_breaker:opened_at:{tool}") or 0.0)
+            except Exception:
+                pass
+            self._breakers[tool] = cb
+            self._access_order.append(tool)
+            self._prune()
+        else:
+            self._access_order.remove(tool)
+            self._access_order.append(tool)
         return self._breakers[tool]
+
+    def record_state_change(self, tool: str, state_str: str, opened_at: float = 0.0):
+        """🚀 [REDIS-CIRCUIT-SYNC]: Đồng bộ trạng thái Circuit Breaker qua Redis cho multi-worker."""
+        try:
+            from redis_client import get_redis
+            r = get_redis()
+            if r:
+                r.set(f"circuit_breaker:state:{tool}", state_str, ex=3600)
+                if opened_at:
+                    r.set(f"circuit_breaker:opened_at:{tool}", str(opened_at), ex=3600)
+        except Exception:
+            pass
 
 _circuit_registry = CircuitBreakerRegistry()
 
@@ -484,16 +522,6 @@ class TaskManager:
         parent_mid = data.get("parent_mission_id")
         try:
             try:
-                lessons = await civilization_ledger.retrieve_analogous_lessons(goal, limit=2)
-                if lessons:
-                    lesson_texts = "\n".join([f"📌 [BÀI HỌC KINH NGHIỆM {i+1}]: {l['text']}" for i, l in enumerate(lessons)])
-                    self._log("WISDOM_LEDGER", f"📜 [KHO TÀI LIỆU CỔ] Tìm thấy {len(lessons)} bài học tương thích từ lịch sử:\n{lesson_texts}", tid, trid)
-                    goal = f"{goal}\n\n[SOVEREIGN WISDOM FROM COLLECTIVE MEMORY - CÁC BÀI HỌC LỊCH SỬ CẦN KẾ THỪA]:\n{lesson_texts}"
-                    core._state = replace(core._state, goal=goal)
-            except Exception as memory_err:
-                self._log("WARN", f"⚠️ [BỘ NHỚ TẬP THỂ PHÂN RÃ]: Không thể truy vấn Sổ cái Văn minh ({str(memory_err)})", tid, trid)
-
-            try:
                 from core.utils.ingress_skill_gate import try_skill_deck_inspect, enrich_goal_with_deck
 
                 inspect_hit = try_skill_deck_inspect(goal)
@@ -502,9 +530,11 @@ class TaskManager:
                     self._log("JKAI", ans[:400], tid, trid)
                     status = "completed"
                     return {"status": inspect_hit.get("status", "success"), "answer": ans, "task_id": tid}
-                goal, _, deck_warn = enrich_goal_with_deck(goal)
-                if deck_warn:
-                    self._log("WARN", deck_warn, tid, trid)
+                # Command (/status, /help, ...) không cần SSM enrich — brain sẽ bắt bằng command interceptor
+                if not goal.strip().startswith("/"):
+                    goal, _, deck_warn = enrich_goal_with_deck(goal)
+                    if deck_warn:
+                        self._log("WARN", deck_warn, tid, trid)
             except Exception as deck_ex:
                 self._log("WARN", f"[SKILL-DECK] control-plane: {deck_ex}", tid, trid)
 
@@ -523,7 +553,7 @@ class TaskManager:
             
             if manifest.get("status") == "error" or "error" in manifest:
                 err_msg = manifest.get("error", "Lỗi nơ-ron không xác định.")
-                self._log("ERROR", f"[RECEPTIONIST-FAILED]: {err_msg}", tid, trid)
+                self._log("ERROR", f"[RECEPTIONIST-FAILED]: {err_msg} | manifest={json.dumps(manifest, ensure_ascii=False)[:500]}", tid, trid)
                 err_answer = f"[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: {err_msg})"
                 self._log("JKAI", err_answer, tid, trid)
                 try:
@@ -581,7 +611,18 @@ class TaskManager:
                     pass
                 return res
             
-            res = await self._run_deep_path(goal, tid, trid, mode, manifest, core)
+            deep_goal = goal
+            try:
+                lessons = await civilization_ledger.retrieve_analogous_lessons(goal, limit=2)
+                if lessons:
+                    lesson_texts = "\n".join([f"📌 [BÀI HỌC KINH NGHIỆM {i+1}]: {l['text']}" for i, l in enumerate(lessons)])
+                    self._log("WISDOM_LEDGER", f"📜 [KHO TÀI LIỆU CỔ] Tìm thấy {len(lessons)} bài học tương thích từ lịch sử:\n{lesson_texts}", tid, trid)
+                    deep_goal = f"{goal}\n\n[SOVEREIGN WISDOM FROM COLLECTIVE MEMORY - CÁC BÀI HỌC LỊCH SỬ CẦN KẾ THỪA]:\n{lesson_texts}"
+                    core._state = replace(core._state, goal=deep_goal)
+            except Exception as memory_err:
+                self._log("WARN", f"⚠️ [BỘ NHỚ TẬP THỂ PHÂN RÃ]: Không thể truy vấn Sổ cái Văn minh ({str(memory_err)})", tid, trid)
+
+            res = await self._run_deep_path(deep_goal, tid, trid, mode, manifest, core)
             if res.get("status") == "success" or res.get("summary") or "answer" in res:
                 status = "completed"
             else:

@@ -40,6 +40,9 @@ class Intent(str, Enum):
     STOP         = "STOP"
     ABORT        = "ABORT"
     UNKNOWN      = "UNKNOWN"
+    # [ANTI-HALLUCINATION]: Dedicated intents for knowledge-type routing
+    FACT_CHECK      = "FACT_CHECK"      # Kiem tra su that cu the (so lieu, ngay thang, hanh chinh)
+    TEMPORAL_QUERY  = "TEMPORAL_QUERY"  # Thong tin co the thay doi theo thoi gian
 
     @classmethod
     def coerce(cls, value: Any) -> Intent:
@@ -127,16 +130,19 @@ _COMPLEX_DOMAINS: FrozenSet[Domain] = frozenset({
 })
 
 _TOOL_BASE: dict[Intent, dict[str, float]] = {
-    Intent.RESEARCH:     {"web": 0.95, "memory": 0.50, "code_executor": 0.10},
-    Intent.WEB_SEARCH:   {"web": 0.98, "memory": 0.20, "code_executor": 0.05},
-    Intent.BUILD:        {"web": 0.35, "memory": 0.60, "code_executor": 0.92},
-    Intent.DEBUG:        {"web": 0.45, "memory": 0.72, "code_executor": 0.90},
-    Intent.PLAN:         {"web": 0.50, "memory": 0.82, "code_executor": 0.28},
-    Intent.ANALYSIS:     {"web": 0.60, "memory": 0.78, "code_executor": 0.45},
-    Intent.ARCHITECTURE: {"web": 0.55, "memory": 0.75, "code_executor": 0.55},
-    Intent.EXPLAIN:      {"web": 0.65, "memory": 0.55, "code_executor": 0.20},
-    Intent.SOCIAL:       {"web": 0.10, "memory": 0.30, "code_executor": 0.05},
-    Intent.UNKNOWN:      {"web": 0.30, "memory": 0.30, "code_executor": 0.30},
+    Intent.RESEARCH:        {"web": 0.95, "memory": 0.50, "code_executor": 0.10},
+    Intent.WEB_SEARCH:      {"web": 0.98, "memory": 0.20, "code_executor": 0.05},
+    Intent.BUILD:           {"web": 0.35, "memory": 0.60, "code_executor": 0.92},
+    Intent.DEBUG:           {"web": 0.45, "memory": 0.72, "code_executor": 0.90},
+    Intent.PLAN:            {"web": 0.50, "memory": 0.82, "code_executor": 0.28},
+    Intent.ANALYSIS:        {"web": 0.60, "memory": 0.78, "code_executor": 0.45},
+    Intent.ARCHITECTURE:    {"web": 0.55, "memory": 0.75, "code_executor": 0.55},
+    Intent.EXPLAIN:         {"web": 0.65, "memory": 0.55, "code_executor": 0.20},
+    Intent.SOCIAL:          {"web": 0.10, "memory": 0.30, "code_executor": 0.05},
+    Intent.UNKNOWN:         {"web": 0.30, "memory": 0.30, "code_executor": 0.30},
+    # [ANTI-HALLUCINATION]: Fact & temporal queries MUST use external sources
+    Intent.FACT_CHECK:      {"web": 0.99, "memory": 0.90, "code_executor": 0.05},
+    Intent.TEMPORAL_QUERY:  {"web": 0.99, "memory": 0.50, "code_executor": 0.05},
 }
 
 _AGENT_TOPOLOGY: dict[ExecutionMode, list[str]] = {
@@ -187,6 +193,43 @@ def _cached_classify(normalized_goal: str, dynamic_rules: list | None = None) ->
 
 def _normalize(text: str) -> str:
     return re.sub(r"\s+", " ", text.strip().lower())
+
+
+def _strip_diacritics(text: str) -> str:
+    """Bỏ dấu tiếng Việt để khớp từ khóa diacritic-agnostic."""
+    import unicodedata
+    text = text.replace("đ", "d").replace("Đ", "D")
+    return unicodedata.normalize("NFKD", text).encode("ASCII", "ignore").decode("utf-8")
+
+
+_TECH_ERROR_RE = re.compile(
+    r"module.?not.?found|no module named|modulenotfounderror|importerror|"
+    r"elifecycle|npm err|pip install|"
+    r"port already allocated|clock skew|nullpointerexception|exception in thread|"
+    r"referenceerror|uncaught exception|failed to (?:start|connect)",
+    re.IGNORECASE,
+)
+
+
+_AMBIGUOUS_GENERIC = (
+    "file", "script", "log", "code", "mã nguồn", "tin tức", "kết quả",
+    "dữ liệu", "data", "tài liệu", "báo cáo", "thử", "test",
+)
+_AMBIGUOUS_DEICTIC = ("nó", "đó", "đi", "đấy", "ấy", "gì", "hả", "giúp", "với", "hộ")
+
+
+def _is_ambiguous_query(norm: str, intent: Intent) -> bool:
+    """Câu ngắn, thiếu đối tượng, hoặc dùng đại từ deictic → cần hỏi làm rõ."""
+    tokens = norm.split()
+    if len(tokens) > 4:
+        return False
+    if re.search(r"\d", norm):
+        return False
+    if intent in (Intent.SOCIAL, Intent.GREETING):
+        return False
+    deictic = any(t in tokens for t in _AMBIGUOUS_DEICTIC)
+    generic = any(w in norm for w in _AMBIGUOUS_GENERIC)
+    return deictic or generic or (intent == Intent.UNKNOWN and len(tokens) <= 3)
 
 
 def _resolve_primary_intent(
@@ -279,12 +322,32 @@ def _score_complexity(goal: str, discovery: dict[str, Any]) -> float:
 
     # 🚀 [DEEP-MODE-FORCING]: Kích hoạt độ phức tạp tuyệt đối cho các tác vụ hệ thống/phân tích thưa Master
     FORCE_DEEP_PATTERNS = [
-        "tạo file", "xóa file", "tạo tệp", "xóa tệp", "bash", "cmd", "terminal", 
-        "phân tích", "phan tich", "thống kê", "thong ke", "báo cáo", "bao cao",
-        "viết code", "lập trình", "sửa lỗi", "debug", "audit", "tạo script",
-        "run command", "chạy lệnh"
+        # file / script / code build tasks
+        "tao file", "xoa file", "tao tep", "xoa tep", "tao script", "viet script",
+        "script", "viet ham", "viet code", "lap trinh", "viet tai lieu", "huong dan",
+        "tao dashboard", "dashboard", "xay dung", "thiet ke", "schema", "refactor",
+        "trich xuat", "chuyen doi", "bam mat khau", "bcrypt", "do thoi gian",
+        "dem so dong", "cai tien cau truc", "de xuat cai tien", "test case",
+        "doc file", "file cau hinh", "tep cau hinh", "markdown", "chatbot",
+        "tim tat ca cac file", "phuong an xu ly", "kiem thu",
+        # analysis / report
+        "phan tich", "thong ke", "toi uu", "audit", "ra soat", "debug", "sua loi",
+        "chua loi", "chay lenh", "bash", "terminal", "cmd", "run command",
+        "kien truc", "giai thich", "explain",
+        # escalation / guardrails
+        "self healing", "self-healing", "phau thuat", "surgery", "escalation",
+        "sandbox", "policy", "timeout", "homeostasis", "sanitizer", "quarantine",
+        "nhay cam", "ngoai workspace", "tran vram", "request rac", "lap vo han",
+        "vo han", "tien trinh", "xoa toan bo", "xoa database", "cach ly",
+        "ky tu la", "system32", "trigger", "phuc hoi", "self-heal",
+        # memory / context retrieval
+        "bai hoc kinh nghiem", "ky uc", "ki uc", "lich su", "tim lai",
+        "map_skills", "civilization wisdom", "phien lam viec", "duc ket",
+        "master da hoi", "log thuc thi", "su khac biet", "cloud escalation",
+        "web_pathfinder", "ky nang trung lap", "tom tat su khac biet",
+        "dong bo tri thuc",
     ]
-    if any(p in goal for p in FORCE_DEEP_PATTERNS):
+    if any(p in _strip_diacritics(goal) for p in FORCE_DEEP_PATTERNS):
         score += 1.0  # Ép điểm tuyệt đối để đẩy thẳng sang DELIBERATIVE (DEEP MODE)
 
     return round(min(score, 1.0), 3)
@@ -464,7 +527,7 @@ class IntentCortex:
         has_search_pair = any(p[0] == "SEARCH" for p in action_pairs)
         has_time_pair   = any(p[0] in ("TIME_LOCATION", "TOPIC_TIME") for p in context_pairs)
         
-        is_realtime  = bool(_REALTIME_RE.search(norm)) or has_search_pair or has_time_pair or is_url
+        is_realtime  = bool(_REALTIME_RE.search(norm)) or bool(_TECH_ERROR_RE.search(norm)) or has_search_pair or has_time_pair or is_url
         is_technical = domain in _COMPLEX_DOMAINS or domain == Domain.CODING
 
         # Hard-bounded secondary validation pass
@@ -495,8 +558,8 @@ class IntentCortex:
         est_tokens = _estimate_tokens(norm, complexity, exec_mode)
         constraints = _build_constraints(style, priority, domain)
         requires_clarification = (
-            primary_intent != Intent.UNKNOWN
-            and confidence < _CLARIFICATION_THRESHOLD
+            (primary_intent != Intent.UNKNOWN and confidence < _CLARIFICATION_THRESHOLD)
+            or _is_ambiguous_query(norm, primary_intent)
         )
         hist_ctx = _analyze_history(history or [])
 

@@ -3,6 +3,7 @@ from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel
 import pyautogui
 import mss
+import win32pdh
 import mss.tools
 import os
 import time
@@ -10,6 +11,15 @@ import subprocess
 from typing import Optional
 
 app = FastAPI(title="AKAI Host Satellite - FULL ACCESS")
+
+# Khởi tạo PDH Query cho GPU toàn cục (tốc độ đo đạc kernel 0ms)
+try:
+    gpu_query = win32pdh.OpenQuery()
+    gpu_counter = win32pdh.AddCounter(gpu_query, r"\GPU Engine(*engtype_3D)\Utilization Percentage")
+    win32pdh.CollectQueryData(gpu_query)
+except Exception as pdh_err:
+    print(f"⚠️ [PDH-INIT-ERR]: {pdh_err}")
+    gpu_query = None
 
 # MÃ BÍ MẬT - Xác thực từ Docker
 AKAI_SECRET_TOKEN = os.getenv("AKAI_SATELLITE_TOKEN", "AKAI_PRIME_SUPER_SECRET_999")
@@ -121,7 +131,33 @@ def execute_terminal(action: TerminalAction):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.get("/telemetry")
+def get_telemetry():
+    """Truy vấn dữ liệu phần cứng trực tiếp bằng psutil và win32pdh siêu tốc (0ms)"""
+    try:
+        import psutil
+        cpu = psutil.cpu_percent(interval=None)
+        ram = psutil.virtual_memory().percent
+
+        gpu_util = 0
+        if gpu_query is not None:
+            try:
+                win32pdh.CollectQueryData(gpu_query)
+                values = win32pdh.GetFormattedCounterArray(gpu_counter, win32pdh.PDH_FMT_DOUBLE)
+                gpu_util = int(round(sum(val for val in values.values() if val is not None)))
+            except Exception:
+                pass
+
+        return {
+            "cpu": cpu,
+            "ram": ram,
+            "gpu": gpu_util,
+            "ts": time.time()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 if __name__ == "__main__":
-    print("👑 AKAI Host Satellite - FULL ACCESS MODE ACTIVE")
-    print("🚀 Listening on http://0.0.0.0:9997")
+    print("AKAI Host Satellite - FULL ACCESS MODE ACTIVE")
+    print("Listening on http://0.0.0.0:9997")
     uvicorn.run(app, host="0.0.0.0", port=9997)

@@ -266,8 +266,17 @@ class SemanticSkillMatcher:
                 if hits:
                     if len(trig_toks) > 1:
                         if len(hits) >= 2:
-                            raw_score += 1.5 * len(hits)
-                            matched_triggers.append(trigger)
+                            # Verify bigrams to ensure matched tokens form a contiguous phrase in both trigger and goal
+                            trig_bigrams = {(trig_toks[i], trig_toks[i+1]) for i in range(len(trig_toks)-1)}
+                            goal_bigrams = {(goal_tokens[j], goal_tokens[j+1]) for j in range(len(goal_tokens)-1)}
+                            if any(bg in goal_bigrams for bg in trig_bigrams):
+                                raw_score += 1.5 * len(hits)
+                                matched_triggers.append(trigger)
+                            else:
+                                t = hits[0]
+                                if t in TECHNICAL_TERMS:
+                                    raw_score += 0.5
+                                    matched_triggers.append(trigger)
                         else:
                             t = hits[0]
                             if t in TECHNICAL_TERMS:

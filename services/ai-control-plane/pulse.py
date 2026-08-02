@@ -16,7 +16,9 @@ class ZenithPulse:
         self.brain_url = os.getenv("AI_BRAIN_URL", "http://ai-brain:8000")
         self.last_status = "OPTIMAL"  # Trạng thái trước đó
         # 💎 Synapse vĩnh cửu
-        self.client = httpx.AsyncClient(timeout=5.0)
+        self.client = httpx.AsyncClient(timeout=15.0)
+        self.satellite_url = "http://host.docker.internal:9997"
+        self.akai_token = os.getenv("AKAI_PRIME_TOKEN", "AKAI_PRIME_SUPER_SECRET_999")
 
     async def _send_tg(self, message: str):
         """Gửi tin nhắn Telegram tới Master."""
@@ -30,15 +32,31 @@ class ZenithPulse:
         except Exception as e:
             print(f"❌ [PULSE-TG-ERR] {e}")
 
+    async def _call_satellite(self, command: str) -> str:
+        """Thực thi lệnh trực tiếp trên máy chủ Windows của Master."""
+        try:
+            res = await self.client.post(
+                f"{self.satellite_url}/terminal",
+                json={"command": command, "shell": "powershell"},
+                headers={"X-AKAI-TOKEN": self.akai_token},
+                timeout=10.0
+            )
+            if res.status_code == 200:
+                data = res.json()
+                return data.get("stdout", data.get("output", ""))
+        except Exception as e:
+            print(f"❌ [PULSE-SATELLITE-ERR] {e}")
+        return ""
+
     async def get_system_health(self):
-        """Thu thập chỉ số sức khỏe toàn hệ thống."""
+        """Thu thập chỉ số sức khỏe toàn hệ thống song song."""
         health = {"status": "OPTIMAL", "details": []}
         
         # 🌐 [HTTP-CHECK]: Cac dich vu co Port
         services = {
             "📡 AI-Control-Plane": "http://localhost:8000/health",
             "🧠 AI-Brain": f"{self.brain_url.rstrip('/')}/health",
-            "🦾 AI-Executor-Alpha": "http://ai-executor-1:8000/health",
+            "🦾 AI-Executor-Alpha": "http://ai-executor-1:8000/health",  # Cập nhật tên container đúng của Executor Alpha (Port 8002)
             "🦾 AI-Executor-Beta": "http://ai-executor-2:8000/health",
             "🏢 Mission-Control": "http://mission-control:9998/api/system_status",
             "🛡️ File-Warden": "http://zenith-file-warden:8005/",
@@ -48,16 +66,22 @@ class ZenithPulse:
             "👁️ AI-Browser": "http://ai-browser:8000/health",
         }
         
-        for name, url in services.items():
+        async def check_service(name, url):
             try:
-                r = await self.client.get(url, timeout=5.0)
+                r = await self.client.get(url, timeout=2.0)
                 if r.status_code in [200, 204]:
-                    health["details"].append(f"{name}: `Online` ✅")
+                    return f"{name}: `Online` ✅", "OPTIMAL"
                 else:
-                    health["details"].append(f"{name}: `Unstable` ⚠️")
-                    health["status"] = "DEGRADED"
+                    return f"{name}: `Unstable` ⚠️", "DEGRADED"
             except Exception:
-                health["details"].append(f"{name}: `Offline` ❌")
+                return f"{name}: `Offline` ❌", "DEGRADED"
+
+        tasks = [check_service(name, url) for name, url in services.items()]
+        results = await asyncio.gather(*tasks)
+        
+        for detail, status in results:
+            health["details"].append(detail)
+            if status == "DEGRADED":
                 health["status"] = "DEGRADED"
 
         # 🐳 [DOCKER-CHECK]: Cac dich vu Worker (khong Port)
@@ -87,48 +111,62 @@ class ZenithPulse:
         if not is_redis: health["status"] = "CRITICAL"
         
         return health
-        
-        return health
 
     async def get_hardware_stats(self):
-        """🌐 [TELEMETRY]: Thu thập nhịp tim phần cứng thực tế."""
+        """🌐 [TELEMETRY]: Thu thập nhịp tim phần cứng thực tế qua API siêu tốc."""
+        cpu = 0
+        ram = 0
+        gpu = 0
         try:
             import psutil
             cpu = psutil.cpu_percent()
             ram = psutil.virtual_memory().percent
-            # 💎 GIAO THỨC THẤU THỊ GPU (Chỉ dành cho Master LeeTrung)
-            # Giả lập hoặc gọi rocm-smi nếu có
-            gpu = 0 
-            try:
-                # Thử lấy dữ liệu GPU nếu có agent sensor
-                pass
-            except Exception: pass
-            
-            return {"cpu": cpu, "ram": ram, "gpu": gpu, "ts": time.time()}
         except Exception:
-            return {"cpu": 0, "ram": 0, "gpu": 0, "ts": time.time()}
+            pass
+
+        # Truy vấn trực tiếp API từ Host Bridge siêu tốc (0.5s)
+        try:
+            res = await self.client.get(
+                f"{self.satellite_url}/telemetry",
+                headers={"X-AKAI-TOKEN": self.akai_token},
+                timeout=5.0
+            )
+            if res.status_code == 200:
+                data = res.json()
+                cpu = int(round(float(data.get("cpu", cpu))))
+                ram = int(round(float(data.get("ram", ram))))
+                gpu = int(round(float(data.get("gpu", gpu))))
+        except Exception as e:
+            print(f"⚠️ [PULSE-HOST-QUERY-ERR]: {e}")
+            
+        return {"cpu": cpu, "ram": ram, "gpu": gpu, "ts": time.time()}
 
     async def run_forever(self):
         """Vòng lặp nhịp đập v31.0 - Thấu thị và Cảnh báo."""
         print("💓 [PULSE-v31.0] Quantum Pulse Service is Online. Đang thấu thị tài nguyên...")
-        await asyncio.sleep(5)
+        await asyncio.sleep(2)
+        
+        cached_health = {"status": "OPTIMAL", "details": []}
+        last_health_check = 0.0
         
         while True:
             try:
-                # 1. Kiểm tra sức khỏe Service
-                health = await self.get_system_health()
+                now = time.time()
+                # 1. Chỉ kiểm tra sức khỏe Service mỗi 30 giây để tránh làm nghẽn luồng realtime
+                if now - last_health_check > 30:
+                    cached_health = await self.get_system_health()
+                    last_health_check = now
                 
-                # 2. Thu thập Telemetry phần cứng
+                # 2. Thu thập Telemetry phần cứng (Realtime 2s)
                 stats = await self.get_hardware_stats()
                 
                 # 3. Publish lên Dashboard qua Redis
-                # 💎 [TELEMETRY-FLATTEN]: Đưa các chỉ số ra root để UI Dashboard dễ dàng tiếp nhận
                 pulse_data = {
                     "cpu": stats["cpu"],
                     "ram": stats["ram"],
                     "gpu": stats["gpu"],
-                    "status": health["status"],
-                    "health": health,
+                    "status": cached_health["status"],
+                    "health": cached_health,
                     "active_thoughts": "IDLE",
                     "ts": stats["ts"]
                 }
@@ -139,15 +177,24 @@ class ZenithPulse:
                 # 🧠 [NEURAL-CACHE]: Lưu vào bộ nhớ đệm cho Giao thức Nhật ký Thông minh
                 redis_safe(lambda r: r.set("hardware_pulse_cache", json.dumps(pulse_data), ex=60))
 
+                # 📝 [SHARED-FILE-WRITE]: Ghi trực tiếp vào tệp tin dùng chung để mission-control phát đi chính xác
+                try:
+                    pulse_file = "/intelligence/protocols/hardware_pulse.json"
+                    os.makedirs(os.path.dirname(pulse_file), exist_ok=True)
+                    with open(pulse_file, 'w', encoding='utf-8') as f:
+                        json.dump(pulse_data, f, ensure_ascii=False, indent=4)
+                except Exception as json_err:
+                    print(f"⚠️ [PULSE-JSON-WRITE-ERR]: {json_err}")
+
                 # 🛡️ Cảnh báo Telegram khi có biến động lớn
-                current_status = health["status"]
+                current_status = cached_health["status"]
                 if current_status != self.last_status:
                     if current_status != "OPTIMAL":
                         alert = [
                             f"🚨 *[ZENITH ALERT — {current_status}]*",
                             f"📊 *CPU:* {stats['cpu']}% | *RAM:* {stats['ram']}%",
                             f"📅 _{time.strftime('%H:%M:%S')}_",
-                            "\n".join(health['details']),
+                            "\n".join(cached_health['details']),
                             "⚠️ *Master, hệ thống đang mất ổn định!*"
                         ]
                         await self._send_tg("\n".join(alert))
@@ -158,7 +205,7 @@ class ZenithPulse:
             except Exception as e:
                 print(f"⚠️ [PULSE-LOOP-ERR] {e}")
             
-            await asyncio.sleep(60)  # Tăng giãn cách quét lên 60 giây theo lệnh Master
+            await asyncio.sleep(2)  # Đưa về 2 giây để cực nhạy và realtime cho Master thưa Master
 
 async def start_pulse():
     """Hàm khởi động Nhịp đập từ main.py."""

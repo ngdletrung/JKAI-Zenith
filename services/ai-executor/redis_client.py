@@ -10,7 +10,7 @@ def get_redis():
         _REDIS_INSTANCE = redis.Redis(
             host=os.getenv("REDIS_HOST", "redis-ai"),
             port=int(os.getenv("REDIS_PORT", "6379")),
-            password=os.getenv("REDIS_PASSWORD", "Admin@123456"),
+            password=os.getenv("REDIS_PASSWORD"),
             decode_responses=True,
             socket_timeout=5
         )

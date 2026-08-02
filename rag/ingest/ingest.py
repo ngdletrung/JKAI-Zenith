@@ -13,7 +13,7 @@ try:
 except ImportError as e:
     print(f"Lỗi import: {e}")
     print("Chạy lệnh: pip install pymupdf4llm python-docx markdown")
-    sys.exit(1)
+    raise e
 
 # Lấy URL từ environment hoặc dùng mặc định
 _base_url = os.getenv("RAG_API_URL", "http://rag-service:8000")
@@ -35,6 +35,14 @@ def extract_text(file_path: Path) -> str:
     
     elif suffix in [".md", ".markdown", ".txt"]:
         return file_path.read_text(encoding="utf-8")
+    
+    elif suffix in [".pptx", ".ppt", ".xlsx", ".xls", ".html", ".htm", ".eml", ".csv"]:
+        try:
+            from unstructured.partition.auto import partition
+            elements = partition(filename=str(file_path))
+            return "\n\n".join([str(el) for el in elements])
+        except Exception as e:
+            raise ValueError(f"Lỗi trích xuất file qua unstructured: {e}")
     
     else:
         raise ValueError(f"Unsupported file type: {suffix}")
@@ -86,7 +94,7 @@ def ingest_folder(folder_path: str, recursive: bool = True, extensions: List[str
         return
     
     if extensions is None:
-        extensions = [".pdf", ".docx", ".md", ".markdown", ".txt"]
+        extensions = [".pdf", ".docx", ".md", ".markdown", ".txt", ".pptx", ".ppt", ".xlsx", ".xls", ".html", ".htm", ".eml", ".csv"]
     
     pattern = "**/*" if recursive else "*"
     files = [f for f in folder.glob(pattern) if f.is_file() and f.suffix.lower() in extensions]

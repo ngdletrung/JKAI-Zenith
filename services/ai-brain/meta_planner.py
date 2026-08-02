@@ -68,7 +68,7 @@ Output valid JSON matching the RoutingDecision schema.
         try:
             raw_decision = await engine.call_chat(
                 messages=messages,
-                role="MINI_PLANNER",
+                role="PLANNER",
                 schema=RoutingDecision.model_json_schema(),
                 task_id=task_id
             )

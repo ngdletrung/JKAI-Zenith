@@ -11,18 +11,47 @@ _CAPABILITIES_RE = re.compile(
     r"(?:"
     r"(?:liệt kê|liet ke|list|kể|ke)\s+(?:ra\s+)?(?:các\s+)?(?:tính năng|tinh nang|khả năng|kha nang|chức năng|chuc nang)"
     r"|(?:tính năng|tinh nang|features?|khả năng|kha nang).{0,40}(?:của bạn|cuaban|jkai|chính mình|chinh minh|ban|bạn có|ban co|mình)"
-    r"|(?:bạn là gì|ban la gi|bạn làm được gì|ban lam duoc gi)"
+    r"|(?:bạn là gì|ban la gi|bạn làm được (?:những )?gì|ban lam duoc (?:nhung )?gi)"
     r"|(?:giới thiệu|gioi thieu).{0,30}(?:jkai|bản thân|ban than|hệ thống|he thong)"
     r"|what (?:are your|can you) (?:features|do)"
     r")",
     re.IGNORECASE | re.DOTALL,
 )
 
+_SKILL_USE_RE = re.compile(
+    r"\b(dùng|dung|sử dụng|su dung|kích hoạt|kich hoat|chạy|chay|run)\s+(skill|kỹ năng|ky nang)",
+    re.IGNORECASE,
+)
+
+# Chào hỏi kèm hỏi danh tính → ưu tiên SOCIAL thay vì capabilities
+_IDENTITY_GREETING_RE = re.compile(
+    r"(?:^|[\s,])(?:hello|hi|hey|xin chào|chào|alo)\b.{0,40}\b(?:who are you|bạn là ai|ban la ai|tên gì|ten gi|bạn là gì|ban la gi)\b",
+    re.IGNORECASE,
+)
+
+def _normalize(text: str) -> str:
+    import unicodedata
+    text = text.replace("đ", "d").replace("Đ", "D")
+    return unicodedata.normalize("NFKD", text).encode("ASCII", "ignore").decode("utf-8")
 
 def goal_is_capabilities_inquiry(goal: str) -> bool:
     if not goal or goal.strip().startswith("/"):
         return False
-    return bool(_CAPABILITIES_RE.search(goal))
+    # Chào hỏi + hỏi danh tính → trả lời xã giao, không phải danh mục năng lực
+    if _IDENTITY_GREETING_RE.search(goal):
+        return False
+    # Loại trừ goal có ý định DÙNG skill (không phải hỏi về tính năng)
+    if _SKILL_USE_RE.search(goal):
+        return False
+    if not bool(_CAPABILITIES_RE.search(goal)):
+        return False
+    # Loại trừ các goal bắt đầu bằng động từ tạo/viết để tránh false positive
+    writing_starters = ["viet", "write", "tao", "create", "code", "script"]
+    norm = _normalize(goal).lower().strip()
+    for ws in writing_starters:
+        if norm.startswith(ws):
+            return False
+    return True
 
 
 def _deck_sample(limit: int = 12) -> List[str]:

@@ -83,13 +83,11 @@ def parse_python_file(filepath: str) -> Dict[str, Any]:
         return None
 
 def scan_directory(directory: str) -> List[Dict[str, Any]]:
-    """Quét toàn bộ thư mục để phân tích mã nguồn."""
+    """Quét toàn bộ thư mục để phân tích mã nguồn với giải pháp cắt rễ siêu tốc."""
     results = []
-    for root, _, files in os.walk(directory):
-        # Bỏ qua các thư mục không cần thiết để tăng tốc độ
-        if any(ignore in root for ignore in ['.git', '__pycache__', 'venv', 'node_modules', 'scratch']):
-            continue
-            
+    ignored = {'.git', '__pycache__', 'venv', '.venv', 'node_modules', 'scratch', 'dist', 'build', '.gemini', 'Ollama_model'}
+    for root, dirs, files in os.walk(directory, topdown=True):
+        dirs[:] = [d for d in dirs if d not in ignored and not d.startswith('.')]
         for file in files:
             if file.endswith('.py'):
                 filepath = os.path.join(root, file)

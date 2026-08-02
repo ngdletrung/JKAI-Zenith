@@ -1,0 +1,70 @@
+{
+  "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/hoi_dong_chuyen_gia_ai/manifest.json - Role: Z-SOS Manifest for Cognitive Council AI - Ownership: Mr LeeTrung - Status: Active | Version: SDS v1.0 ",
+  "id": "HOI_DONG_CHUYEN_GIA",
+  "name": "Hội Đồng Chuyên Gia AI",
+  "version": "1.0.0",
+  "description": "Triệu hồi Hội đồng Chuyên gia đa mô hình (Gemini, ChatGPT, DeepSeek, Grok) cùng thảo luận, phản biện chéo và đúc rút giải pháp tối ưu cho bài toán phức tạp theo cấu trúc Evidence Schema JSON.",
+  "author": "JKAI-Zenith",
+  "triggers": [
+    "hội đồng chuyên gia",
+    "hoi dong chuyen gia",
+    "cognitive council",
+    "multi expert consensus",
+    "thảo luận đa model",
+    "phản biện chéo",
+    "triệu hồi hội đồng",
+    "council AI",
+    "expert debate"
+  ],
+  "domain": "CORE",
+  "config": {
+    "nodes": [
+      {
+        "name": "OpenAI Node",
+        "provider": "OPENAI_API_KEY",
+        "model": "gpt-4o"
+      },
+      {
+        "name": "Gemini Node",
+        "provider": "GEMINI_API_KEY",
+        "model": "gemini-3.5-flash"
+      },
+      {
+        "name": "DeepSeek Node",
+        "provider": "DEEPSEEK_API_KEY",
+        "model": "deepseek-chat"
+      },
+      {
+        "name": "Grok Node",
+        "provider": "GROK_API_KEY",
+        "model": "grok-3"
+      }
+    ],
+    "consensus_builder": "GEMINI_API_KEY",
+    "max_rounds": 2,
+    "conflict_threshold": 0.5
+  },
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "question": {
+          "type": "string",
+          "description": "Câu hỏi hoặc bài toán phức tạp cần hội đồng giải quyết."
+        },
+        "focus_area": {
+          "type": "string",
+          "description": "Lĩnh vực chuyên sâu cần tập trung (architecture, security, coding, business)."
+        },
+        "rounds": {
+          "type": "integer",
+          "default": 1,
+          "description": "Số vòng thảo luận phản biện nếu có xung đột lớn."
+        }
+      },
+      "required": [
+        "question"
+      ]
+    }
+  }
+}

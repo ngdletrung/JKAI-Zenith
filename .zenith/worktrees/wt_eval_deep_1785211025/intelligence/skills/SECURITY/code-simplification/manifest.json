@@ -1,0 +1,47 @@
+{
+  "id": "CODE_SIMPLIFICATION",
+  "name": "Code Simplification",
+  "version": "1.0.0",
+  "description": "Reduces complexity and removes boilerplate using Chesterton's Fence.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "rút gọn code",
+    "code simplify",
+    "đơn giản hóa",
+    "overview",
+    "when to use",
+    "the five principles",
+    "1  preserve behavior exactly",
+    "2  follow project conventions",
+    "code",
+    "simplification",
+    "item",
+    "what",
+    "behavior",
+    "understand",
+    "function",
+    "tests",
+    "functions",
+    "does",
+    "bao mat",
+    "an ninh",
+    "hack",
+    "tan cong",
+    "lo hong"
+  ],
+  "domain": "SECURITY",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "file_path": {
+          "type": "string",
+          "description": "The file path to simplify."
+        }
+      },
+      "required": [
+        "file_path"
+      ]
+    }
+  }
+}

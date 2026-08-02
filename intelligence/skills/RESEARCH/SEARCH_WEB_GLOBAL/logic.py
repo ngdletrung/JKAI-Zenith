@@ -1068,9 +1068,10 @@ async def SEARCH_WEB_GLOBAL(
         try:
             async def _do_search():
                 async with httpx.AsyncClient(timeout=30.0) as client:
+                    clean_query = query[:390] if len(query) > 400 else query
                     resp = await client.post(
                         "https://api.tavily.com/search",
-                        json={"api_key": tavily_api_key, "query": query, "search_depth": search_depth},
+                        json={"api_key": tavily_api_key, "query": clean_query, "search_depth": search_depth},
                     )
                     try:
                         resp.raise_for_status()
@@ -1139,7 +1140,7 @@ async def SEARCH_WEB_GLOBAL(
                 _cache.set(cache_key, data, ttl=600)
                 return data
             else:
-                engine.publish_mission_log("WEB_WARN", f"TAVILY-EMPTY: No results for {query}", task_id, trace_id)
+                engine.publish_mission_log("WEB_WARN", f"TAVILY-EMPTY: No results for {query} - cascading to DuckDuckGo...", task_id, trace_id)
                 _cb_tavily.record_failure()
         except Exception as e:
             _cb_tavily.record_failure()
@@ -1165,7 +1166,7 @@ async def SEARCH_WEB_GLOBAL(
     if ddg_health.status != BackendStatus.DEAD:
         try:
             from duckduckgo_search import DDGS
-            with DDGS() as ddgs:
+            with DDGS(timeout=10) as ddgs:
                 ddg_results = [r for r in ddgs.text(query, max_results=5)]
 
             if ddg_results:
@@ -1229,7 +1230,7 @@ async def SEARCH_WEB_GLOBAL(
                 _cache.set(cache_key, data, ttl=600)
                 return data
             else:
-                engine.publish_mission_log("WEB_WARN", f"DUCKDUCKGO-EMPTY: No results for {query}", task_id, trace_id)
+                engine.publish_mission_log("WEB_WARN", f"DUCKDUCKGO-EMPTY: No results for {query} - cascading to Browser...", task_id, trace_id)
         except Exception as e:
             engine.publish_mission_log("WEB_ERR", f"DUCKDUCKGO-FAIL: {e} - cascading to Browser...", task_id, trace_id)
             log.error(f"DuckDuckGo search failed: {e}")
@@ -1242,7 +1243,7 @@ async def SEARCH_WEB_GLOBAL(
             _cache.set(cache_key, browser_data, ttl=600)
             return browser_data
         else:
-            engine.publish_mission_log("WEB_WARN", f"BROWSER-EMPTY: Browser search returned empty results", task_id, trace_id)
+            engine.publish_mission_log("WEB_WARN", f"BROWSER-EMPTY: Browser search returned empty results - cascading to Cloud LLM...", task_id, trace_id)
     except Exception as e:
         engine.publish_mission_log("WEB_ERR", f"BROWSER-FAIL: {e} - cascading to Cloud LLM...", task_id, trace_id)
         log.error(f"Browser fallback failed: {e}")
@@ -1285,6 +1286,7 @@ async def SEARCH_WEB_GLOBAL(
         log.error(f"Cloud LLM fallback failed: {e}")
 
     # Fallback absolute: All sources failed
+    engine.publish_mission_log("WEB_ERR", "ALL-SOURCES-FAILED: Tavily, DuckDuckGo, Browser, Cloud LLM đều thất bại hoặc trả về rỗng.", task_id, trace_id)
     return {
         "status": "error",
         "msg": "All search sources (Tavily, DuckDuckGo, Browser, Cloud LLM) have failed or returned empty results."

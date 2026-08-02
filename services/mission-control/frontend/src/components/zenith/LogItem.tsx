@@ -1,13 +1,13 @@
-import React, { memo, useMemo, useCallback } from 'react';
-import { motion } from 'framer-motion';
-import { Brain, Zap, ShieldCheck, MessageSquare, Target, Activity, Bot, Settings, Hexagon, Radar, RotateCcw, FileCode2, AlertTriangle, Plus } from 'lucide-react';
+import React, { memo, useMemo, useCallback, useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Brain, Zap, ShieldCheck, Target, Activity, Bot, Settings, Hexagon, Radar, RotateCcw, FileCode2, AlertTriangle, Plus, ChevronRight, ChevronDown, GitCommit, Loader2 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { useZenithStore, AgentLog } from '../../store/zenithStore';
 import { ZenithService } from '../../services/ZenithService';
 import { useAgentController } from '../../hooks/useAgentController';
 import { MarkdownRenderer } from './MarkdownRenderer';
 import { NuclearApprovalPad } from './NuclearApprovalPad';
-import { ToolBlock, ActionBadge, ReasoningBlock, MicroscopeIcon, SurgicalDiff } from './LogElements';
+import { ToolBlock, ActionBadge, ReasoningBlock, MicroscopeIcon, SurgicalDiff, FileEditRow, WorkingDots } from './LogElements';
 
 export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasoning?: boolean }) => {
   const setInspectedFile = useZenithStore(s => s.setInspectedFile);
@@ -17,8 +17,14 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
   if (!l) return null;
   const tag = l.tag?.toUpperCase() || 'SYS';
   const rawMsg = l.msg || '';
-  // 🛡️ [CHAT-PURGE]: Loại bỏ chỉ số độ trễ [⏱️ ...s] khỏi nội dung chat
-  const msg = rawMsg.replace(/\[⏱️\s*[\d.]+\s*s\]/g, '').trim();
+  // [CHAT-PURGE]: Loại bỏ chỉ số độ trễ [⏱ ...s] khỏi nội dung chat
+  const durationMatch = rawMsg.match(/\[(?:⏱️|⏱)\s*([\d.]+)\s*s\]/i) || rawMsg.match(/response time:\s*([\d.]+)\s*s/i) || rawMsg.match(/trong\s+([\d.]+)\s*(?:s|ms)/i);
+  let duration: number | undefined = l.duration;
+  if (duration === undefined && durationMatch) {
+    const val = parseFloat(durationMatch[1]);
+    duration = rawMsg.toLowerCase().includes('ms') && val > 50 ? Math.round((val / 1000) * 10) / 10 : val;
+  }
+  const msg = rawMsg.replace(/\[(?:⏱️|⏱)\s*[\d.]+\s*s\]/g, '').trim();
   const isUser = tag.startsWith('MASTER') || l.type === 'user';
 
   const isReasoning = (
@@ -70,22 +76,42 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
     try {
       const data = JSON.parse(msg);
       const filePath = data.path || '';
+      const fileName = filePath.split('/').pop() || filePath;
+      const added: number = data.added ?? 0;
+      const removed: number = data.removed ?? 0;
       return (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="my-3 ml-14 max-w-[95%]">
-          <button
-            type="button"
-            onClick={() => handleInspect(filePath)}
-            className="mb-2 text-[11px] font-bold text-sky-400 hover:text-sky-300 flex items-center gap-2"
-          >
-            <FileCode2 className="w-4 h-4" />
-            {language === 'vi' ? `Đã sửa: ${filePath}` : `Edited: ${filePath}`}
-          </button>
-          {data.diff ? <SurgicalDiff diff={data.diff} /> : null}
-        </motion.div>
+        <FileEditRow
+          filePath={filePath}
+          fileName={fileName}
+          added={added}
+          removed={removed}
+          diff={data.diff || ''}
+          onInspect={() => handleInspect(filePath)}
+        />
       );
     } catch {
       /* fall through */
     }
+  }
+
+  // [STEP-HEADER]: Render step separator giong Antigravity
+  if (tag === 'ZENITH' && (msg.includes('[STEP-RUNNING]') || msg.includes('[STEP-RUNNER]'))) {
+    const clean = msg
+      .replace(/\[STEP-RUNNING\]:/g, '')
+      .replace(/\[STEP-RUNNER\]:/g, '')
+      .replace(/^[\s\-–:]+/, '')
+      .trim();
+    return (
+      <motion.div
+        initial={{ opacity: 0, x: -8 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="my-4 ml-1 flex items-center gap-2.5"
+      >
+        <GitCommit className="w-3.5 h-3.5 text-cyan-500/60 shrink-0" />
+        <span className="text-[13px] font-semibold text-white/75 tracking-tight">{clean}</span>
+        <div className="flex-1 h-px bg-gradient-to-r from-cyan-500/20 to-transparent" />
+      </motion.div>
+    );
   }
 
   if (tag === 'LATENCY') {
@@ -118,7 +144,7 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
     );
   }
 
-  if (isReasoning) return <ReasoningBlock tag={tag} msg={msg} />;
+  if (isReasoning) return <ReasoningBlock tag={tag} msg={msg} duration={duration} />;
 
   // 🏛️ [ANTIGRAVITY-AESTHETIC-REFORM]: Chế độ hiển thị Hành động Rút gọn
   const isAction = (tag === 'EXECUTOR' || tag === 'SEARCH' || tag === 'RESEARCH' || tag === 'FILE' || tag === 'TOOL') && !l.is_result;
@@ -134,7 +160,7 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
   // 💎 [EXECUTIVE-OFFICE-PROTOCOL]: Định danh Chuyên nghiệp
   const renderIdentity = () => {
     if (isUser) {
-      const label = tag === 'MASTER_WEB' ? 'Master (Web)' : tag === 'MASTER_TELE' ? 'Master (Tele)' : 'Master';
+      const label = tag === 'MASTER_WEB' ? 'Master' : tag === 'MASTER_TELE' ? 'Master (Tele)' : 'Master';
       return (
         <div className="flex items-center gap-2">
           {/* 👑 [IMPERIAL-CROWN]: Biểu tượng vương miện tinh xảo */}
@@ -259,7 +285,7 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
         )}
 
         <div className={`relative group flex-1 flex flex-col ${isUser ? 'items-end' : 'items-start'} min-w-0`}>
-          <div className={`relative transition-all duration-500 w-fit max-w-[85%] ${bubbleStyle} ${bgStyle}`}>
+          <div className={`relative transition-shadow duration-300 w-fit max-w-[85%] ${bubbleStyle} ${bgStyle}`}>
             <div className={`relative z-10 prose prose-invert compact-prose max-w-none !max-w-full leading-relaxed text-[13px] ${textColor}`}>
               {isTool ? <ToolBlock msg={msg} /> : !msg.trim() ? <Radar className="animate-spin text-cyan-400" /> : <MarkdownRenderer content={msg} />}
             </div>

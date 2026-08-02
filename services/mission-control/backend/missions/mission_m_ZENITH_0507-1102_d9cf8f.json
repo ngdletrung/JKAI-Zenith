@@ -1,0 +1,42 @@
+{
+  "id": "m_ZENITH_0507-1102_d9cf8f",
+  "title": "giá vàng thế giới hôm nay thế nào ?",
+  "goal": "giá vàng thế giới hôm nay thế nào ?",
+  "status": "failed",
+  "ts": 1783224146.4867935,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "giá vàng thế giới hôm nay thế nào ?",
+      "ts": 1783224130.1781166,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1102_d9cf8f"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_0507-1102_d9cf8f` initialized | Trace: `trace_d9cf8f`. Runtime ready.",
+      "ts": 1783224130.180269,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1102_d9cf8f"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All connection attempts failed | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All connection attempts failed\"}",
+      "ts": 1783224146.46047,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1102_d9cf8f"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+      "ts": 1783224146.464056,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1102_d9cf8f"
+    }
+  ],
+  "artifacts": {
+    "plan": "giá vàng thế giới hôm nay thế nào ?",
+    "walkthrough": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

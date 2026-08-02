@@ -6,8 +6,10 @@ RUN apt-get update && apt-get install -y \
     curl \
     libpq-dev \
     procps \
+    unzip \
     && curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
     && apt-get install -y nodejs \
+    && curl https://rclone.org/install.sh | bash \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app

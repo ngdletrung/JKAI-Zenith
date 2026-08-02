@@ -6,6 +6,8 @@ import os
 import json
 import time
 import hashlib
+import logging
+logger = logging.getLogger("main")
 from flask import Flask, send_from_directory, jsonify, request
 from flask_socketio import SocketIO, emit
 from api.tasks import bp as tasks_bp
@@ -826,8 +828,9 @@ def read_file_content():
     if not path.startswith('/') and not path.startswith('d:\\'):
         path = os.path.join('/workspace', path)
     try:
-        with open(path, 'r', encoding='utf-8') as f:
-            return jsonify({"content": f.read(), "path": path})
+        ext = os.path.splitext(path)[1].lower()
+        content = parse_document_content(path, ext)
+        return jsonify({"content": content, "path": path})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -1006,6 +1009,123 @@ def save_mission():
         if os.path.exists(fallback_docs):
             docs_dir = fallback_docs
 
+    # Save mission to file
+    mission_path = os.path.join(MISSIONS_DIR, f"mission_{mid}.json")
+    try:
+        with open(mission_path, 'w', encoding='utf-8') as f:
+            json.dump(data, f, ensure_ascii=False, indent=2, default=str)
+    except Exception as e:
+        pass
+
+    return jsonify({"ok": True, "id": mid, "saved": os.path.exists(mission_path)})
+
+def resolve_rclone_name(section: str, r_type: str, token_str: str) -> str:
+    if not token_str:
+        if r_type == "drive": return f"Google ({section})"
+        if r_type == "onedrive": return f"OneDrive ({section})"
+        if r_type == "sharepoint": return f"SharePoint ({section})"
+        return f"{section} (Rclone)"
+        
+    try:
+        token_data = json.loads(token_str)
+        access_token = token_data.get("access_token")
+        if not access_token:
+            raise ValueError()
+            
+        import urllib.request
+        import urllib.error
+        
+        headers = {"Authorization": f"Bearer {access_token}"}
+        
+        if r_type == "drive":
+            req = urllib.request.Request("https://www.googleapis.com/oauth2/v2/userinfo", headers=headers)
+            with urllib.request.urlopen(req, timeout=3) as res:
+                info = json.loads(res.read().decode())
+                email = info.get("email") or info.get("name")
+                if email:
+                    return f"Google ({email})"
+                    
+        elif r_type == "onedrive":
+            req = urllib.request.Request("https://graph.microsoft.com/v1.0/me", headers=headers)
+            with urllib.request.urlopen(req, timeout=3) as res:
+                info = json.loads(res.read().decode())
+                email = info.get("userPrincipalName") or info.get("mail") or info.get("displayName")
+                if email:
+                    return f"OneDrive ({email})"
+                    
+        elif r_type == "sharepoint":
+            req = urllib.request.Request("https://graph.microsoft.com/v1.0/me", headers=headers)
+            with urllib.request.urlopen(req, timeout=3) as res:
+                info = json.loads(res.read().decode())
+                email = info.get("userPrincipalName") or info.get("mail") or info.get("displayName")
+                if email:
+                    return f"SharePoint ({email})"
+                    
+    except Exception:
+        pass
+        
+    if r_type == "drive": return f"Google ({section})"
+    if r_type == "onedrive": return f"OneDrive ({section})"
+    if r_type == "sharepoint": return f"SharePoint ({section})"
+    return f"{section} (Rclone)"
+
+
+@app.route('/api/connections')
+def list_connections():
+    """GET all external connections."""
+    conn_path = "/workspace/intelligence/Knowledge_Manager/connections.json"
+    try:
+        if os.path.exists(conn_path):
+            with open(conn_path, "r", encoding="utf-8") as f:
+                connections = json.load(f)
+        else:
+            connections = []
+    except Exception:
+        connections = []
+
+    # Dynamically read and append rclone connections from rclone.conf
+    rclone_path = os.getenv("RCLONE_CONFIG_PATH_CONTAINER", "/workspace/data/rclone/rclone.conf")
+    if os.path.exists(rclone_path):
+        try:
+            import configparser
+            config = configparser.ConfigParser()
+            config.read(rclone_path, encoding="utf-8")
+            for section in config.sections():
+                # Avoid duplication
+                if any(c.get("id") == f"rclone_{section}" for c in connections):
+                    continue
+                r_type = config.get(section, "type", fallback="")
+                token_str = config.get(section, "token", fallback="")
+                
+                # Resolve beautiful names and native type
+                name = resolve_rclone_name(section, r_type, token_str)
+                drive_type = config.get(section, "drive_type", fallback="")
+                if r_type == "drive":
+                    mapped_type = "gdrive"
+                elif r_type == "onedrive" and drive_type == "sharepoint":
+                    mapped_type = "sharepoint"
+                elif r_type in ["onedrive", "sharepoint"]:
+                    mapped_type = "onedrive"
+                else:
+                    mapped_type = "rclone"
+                
+                connections.append({
+                    "id": f"rclone_{section}",
+                    "name": name,
+                    "type": mapped_type,
+                    "config": {
+                        "remote": section,
+                        "folder_path": "",
+                    },
+                    "status": "active",
+                    "created_at": os.path.getctime(rclone_path),
+                    "last_sync": None,
+                    "error": None,
+                })
+        except Exception as e:
+            logger.error(f"Error parsing rclone config: {e}")
+
+    return jsonify(connections)       
     filename_map = {
         'plan': 'implementation_plan.md',
         'tasks': 'task.md',
@@ -1074,6 +1194,881 @@ def clear_missions():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+_rclone_auth_processes = {}
+
+@app.route('/api/rclone/start-auth', methods=['POST'])
+def rclone_start_auth():
+    global _rclone_auth_processes
+    import subprocess
+    import threading
+    
+    data = request.get_json(silent=True) or {}
+    name = data.get("name", "Drive")
+    r_type = data.get("type")
+    client_id = data.get("client_id", "")
+    client_secret = data.get("client_secret", "")
+    site_url = data.get("site_url", "")
+    
+    if not r_type:
+        return jsonify({"error": "Missing type"}), 400
+    
+    # Map frontend type -> rclone backend type
+    TYPE_MAP = {
+        "gdrive": "drive",
+        "onedrive": "onedrive",
+        "sharepoint": "onedrive",  # SharePoint dùng chung backend onedrive của Rclone
+    }
+    rclone_type = TYPE_MAP.get(r_type, r_type)
+    is_sharepoint = (r_type == "sharepoint")
+        
+    if name in _rclone_auth_processes:
+        try:
+            _rclone_auth_processes[name].kill()
+        except Exception:
+            pass
+    
+    rclone_path = os.getenv("RCLONE_CONFIG_PATH_CONTAINER", "/workspace/data/rclone/rclone.conf")
+    
+    # Tự động xóa section cũ để cho phép đăng nhập tài khoản mới
+    try:
+        if os.path.exists(rclone_path):
+            import configparser
+            config = configparser.ConfigParser()
+            config.read(rclone_path, encoding="utf-8")
+            if config.has_section(name):
+                config.remove_section(name)
+                with open(rclone_path, "w", encoding="utf-8") as f:
+                    config.write(f)
+    except Exception:
+        pass
+    
+    cmd = [
+        "rclone",
+        f"--config={rclone_path}",
+        "config",
+        "create",
+        name,
+        rclone_type,
+    ]
+    if client_id:
+        cmd.append(f"client_id={client_id}")
+    if client_secret:
+        cmd.append(f"client_secret={client_secret}")
+    # SharePoint yêu cầu drive_type=documentLibrary và sharepoint_url
+    if is_sharepoint:
+        cmd.append("drive_type=documentLibrary")
+        if site_url:
+            cmd.append(f"sharepoint_url={site_url}")
+        
+    try:
+        proc = subprocess.Popen(
+            cmd,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            bufsize=1
+        )
+        
+        url = None
+        output_buffer = []
+        start_time = time.time()
+        while time.time() - start_time < 10:
+            line = proc.stdout.readline()
+            if not line:
+                break
+            output_buffer.append(line)
+            if "please go to the following link:" in line:
+                parts = line.split("please go to the following link:")
+                if len(parts) > 1:
+                    url = parts[1].strip()
+                    # Với OneDrive/SharePoint: thêm prompt=select_account để
+                    # Microsoft luôn hiển thị màn hình chọn tài khoản, không SSO tự động
+                    if r_type in ("onedrive", "sharepoint"):
+                        sep = "&" if "?" in url else "?"
+                        url = url + sep + "prompt=select_account"
+                    break
+                    
+        if not url:
+            proc.poll()
+            err_out = "".join(output_buffer) + (proc.stdout.read() or "")
+            
+            # Dọn dẹp section rác nếu có lỗi
+            try:
+                if os.path.exists(rclone_path):
+                    import configparser
+                    config = configparser.ConfigParser()
+                    config.read(rclone_path, encoding="utf-8")
+                    if config.has_section(name):
+                        config.remove_section(name)
+                        with open(rclone_path, "w", encoding="utf-8") as f:
+                            config.write(f)
+            except Exception:
+                pass
+                
+            return jsonify({"error": f"Rclone error: {err_out.strip()}"}), 500
+            
+        _rclone_auth_processes[name] = proc
+        
+        def fix_onedrive_drive_id(n, rpath, rtype):
+            """
+            Sau khi Rclone xác thực xong, tự động sửa drive_id sai.
+            Rclone hay chọn nhầm drive (PersonalCacheLibrary) thay vì OneDrive thật.
+            Dùng Microsoft Graph API để tìm drive_id chính xác.
+            """
+            import time, json, urllib.request, configparser as cp2
+            time.sleep(5)  # Chờ Rclone ghi token xong
+            try:
+                if rtype not in ("onedrive", "sharepoint"):
+                    return
+                cfg = cp2.ConfigParser()
+                cfg.read(rpath, encoding="utf-8")
+                if not cfg.has_section(n):
+                    return
+                token_raw = cfg.get(n, "token", fallback="")
+                if not token_raw:
+                    return
+                token_data = json.loads(token_raw)
+                access_token = token_data.get("access_token", "")
+                if not access_token:
+                    return
+
+                # Gọi /me/drive để lấy drive OneDrive chính xác
+                req = urllib.request.Request(
+                    "https://graph.microsoft.com/v1.0/me/drive",
+                    headers={"Authorization": "Bearer " + access_token}
+                )
+                with urllib.request.urlopen(req, timeout=10) as r:
+                    drive = json.loads(r.read())
+                correct_id = drive.get("id", "")
+                correct_type = drive.get("driveType", "business")
+                if not correct_id:
+                    return
+
+                # Patch rclone.conf với drive_id đúng
+                cfg2 = cp2.ConfigParser()
+                cfg2.read(rpath, encoding="utf-8")
+                if cfg2.has_section(n):
+                    cfg2.set(n, "drive_id", correct_id)
+                    cfg2.set(n, "drive_type", correct_type)
+                    # Xóa sharepoint_url nếu không cần
+                    if cfg2.has_option(n, "sharepoint_url"):
+                        cfg2.remove_option(n, "sharepoint_url")
+                    with open(rpath, "w", encoding="utf-8") as f:
+                        cfg2.write(f)
+                    logger.info(f"[RCLONE] Auto-fixed drive_id for [{n}]: {correct_id} (type={correct_type})")
+            except Exception as ex:
+                logger.warning(f"[RCLONE] Could not auto-fix drive_id for [{n}]: {ex}")
+
+        def cleanup_thread(p, n):
+            try:
+                p.wait(timeout=300)
+            except subprocess.TimeoutExpired:
+                try:
+                    p.kill()
+                except Exception:
+                    pass
+            finally:
+                global _rclone_auth_processes
+                if _rclone_auth_processes.get(n) == p:
+                    _rclone_auth_processes.pop(n, None)
+                # Tự động fix drive_id sau khi xác thực hoàn tất
+                fix_onedrive_drive_id(n, rclone_path, rclone_type)
+                    
+        threading.Thread(target=cleanup_thread, args=(proc, name), daemon=True).start()
+        return jsonify({"url": url})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/connections/<conn_id>', methods=['DELETE'])
+def delete_connection(conn_id: str):
+    try:
+        # 1. Rclone Cloud connection deletion
+        if conn_id.startswith("rclone_"):
+            remote_name = conn_id[7:]
+            rclone_path = os.getenv("RCLONE_CONFIG_PATH_CONTAINER", "/workspace/data/rclone/rclone.conf")
+            if os.path.exists(rclone_path):
+                import configparser
+                config = configparser.ConfigParser()
+                config.read(rclone_path, encoding="utf-8")
+                if config.has_section(remote_name):
+                    config.remove_section(remote_name)
+                    with open(rclone_path, "w", encoding="utf-8") as f:
+                        config.write(f)
+            redis_safe(lambda r: r.publish("monitor:log_channel", json.dumps(
+                {"tag": "SYSTEM", "msg": f"Rclone Remote {remote_name} removed.", "ts": time.time()})))
+            return jsonify({"ok": True})
+            
+        # 2. Local / Web connection deletion
+        conn_path = "/workspace/intelligence/Knowledge_Manager/connections.json"
+        if os.path.exists(conn_path):
+            with open(conn_path, "r", encoding="utf-8") as f:
+                connections = json.load(f)
+            new_connections = [c for c in connections if c.get("id") != conn_id]
+            with open(conn_path, "w", encoding="utf-8") as f:
+                json.dump(new_connections, f, indent=2, ensure_ascii=False)
+            return jsonify({"ok": True})
+            
+        return jsonify({"error": "Connection not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/connections/<conn_id>/sync', methods=['POST'])
+def sync_connection(conn_id: str):
+    """
+    🔄 [SYNC-ENDPOINT]: Kích hoạt đồng bộ tri thức cho một kết nối cụ thể.
+    Chuyển tiếp yêu cầu trực tiếp sang cho ai-brain xử lý qua ConnectionManager.
+    """
+    import urllib.request as _ur
+    import urllib.error as _ue
+
+    ai_brain_url = os.getenv("AI_BRAIN_URL", "http://ai-brain:8000")
+
+    try:
+        # Xác định tên đẹp hiển thị trong log
+        label = conn_id
+        if conn_id.startswith("rclone_"):
+            label = conn_id[7:]
+        else:
+            conn_path_file = "/workspace/intelligence/Knowledge_Manager/connections.json"
+            if os.path.exists(conn_path_file):
+                with open(conn_path_file, "r", encoding="utf-8") as f:
+                    conns = json.load(f)
+                for c in conns:
+                    if c.get("id") == conn_id:
+                        label = c.get("name", conn_id)
+                        break
+
+        payload = json.dumps({
+            "source_id": conn_id,
+            "task_id": f"sync_{conn_id}_{int(time.time())}",
+        }).encode("utf-8")
+
+        req = _ur.Request(
+            f"{ai_brain_url}/ks/sync",
+            data=payload,
+            headers={"Content-Type": "application/json"},
+            method="POST"
+        )
+
+        redis_safe(lambda r: r.publish("monitor:log_channel", json.dumps({
+            "tag": "SYSTEM",
+            "msg": f"🔄 [SYNC-STARTED]: Đang kích hoạt đồng bộ đám mây cho '{label}'...",
+            "ts": time.time()
+        })))
+
+        try:
+            with _ur.urlopen(req, timeout=10) as resp:
+                result = json.loads(resp.read())
+                return jsonify({"ok": True, "status": "syncing", "task": result})
+        except _ue.HTTPError as e:
+            body = e.read().decode("utf-8", errors="replace")
+            return jsonify({"ok": False, "error": f"ai-brain error {e.code}: {body}"}), 502
+        except _ue.URLError as e:
+            return jsonify({"ok": False, "error": f"Không kết nối được ai-brain: {e.reason}"}), 503
+
+    except Exception as e:
+        logger.error(f"[SYNC-ENDPOINT] {e}")
+        return jsonify({"ok": False, "error": str(e)}), 500
+
+
+def build_tree_from_lsjson(items):
+    import os
+    root = {"name": "Root", "path": "", "type": "directory", "children": []}
+    path_map = {"": root}
+    
+    # First pass: create all directory nodes
+    for item in items:
+        if item.get("IsDir"):
+            path = item.get("Path", "").replace("\\", "/")
+            name = item.get("Name", "")
+            node = {"name": name, "path": path, "type": "directory", "children": []}
+            path_map[path] = node
+            
+    # Second pass: attach directories to parents
+    for path, node in list(path_map.items()):
+        if path == "":
+            continue
+        parent_path = "/".join(path.split("/")[:-1])
+        parent_node = path_map.get(parent_path, root)
+        parent_node["children"].append(node)
+        
+    # Third pass: add files
+    for item in items:
+        if not item.get("IsDir"):
+            path = item.get("Path", "").replace("\\", "/")
+            name = item.get("Name", "")
+            parent_path = "/".join(path.split("/")[:-1])
+            node = {
+                "name": name,
+                "path": path,
+                "type": "file",
+                "size": item.get("Size", 0),
+                "extension": os.path.splitext(name)[1].lower()
+            }
+            parent_node = path_map.get(parent_path, root)
+            parent_node["children"].append(node)
+            
+    # Sort children
+    for node in path_map.values():
+        node["children"] = sorted(
+            node["children"],
+            key=lambda x: (x.get("type") != "directory", x["name"].lower())
+        )
+        
+    return root
+
+def get_local_explorer(root_dir):
+    import os
+    def get_tree(path, base_dir):
+        rel = os.path.relpath(path, base_dir).replace('\\', '/')
+        if rel == '.':
+            rel = ''
+        d = {'name': os.path.basename(path) or 'root', 'path': rel}
+        if os.path.isdir(path):
+            d['type'] = 'directory'
+            children = []
+            try:
+                for f in sorted(os.listdir(path)):
+                    if f.startswith('.'):
+                        continue
+                    child_path = os.path.join(path, f)
+                    children.append(get_tree(child_path, base_dir))
+                children = sorted(children, key=lambda x: (x.get('type') != 'directory', x['name'].lower()))
+            except OSError:
+                pass
+            d['children'] = children
+        else:
+            d['type'] = 'file'
+            d['extension'] = os.path.splitext(path)[1].lower()
+            try:
+                d['size'] = os.path.getsize(path)
+            except OSError:
+                d['size'] = 0
+        return d
+    return get_tree(root_dir, root_dir)
+
+def resolve_connection(conn_id):
+    import os, json
+    if conn_id == "local":
+        return {
+            "id": "local",
+            "type": "local",
+            "path": "/workspace"
+        }
+    if conn_id.startswith("rclone_"):
+        remote_name = conn_id[7:]
+        rclone_path = os.getenv("RCLONE_CONFIG_PATH_CONTAINER", "/workspace/data/rclone/rclone.conf")
+        if os.path.exists(rclone_path):
+            import configparser as _cp
+            _cfg = _cp.ConfigParser()
+            _cfg.read(rclone_path, encoding="utf-8")
+            if _cfg.has_section(remote_name):
+                _tok = _cfg.get(remote_name, "token", fallback="")
+                _rtype = _cfg.get(remote_name, "type", fallback="")
+                return {
+                    "id": conn_id,
+                    "type": "rclone",
+                    "remote": remote_name,
+                    "rclone_type": _rtype,
+                    "token": _tok,
+                    "folder_path": ""
+                }
+    else:
+        conn_path = "/workspace/intelligence/Knowledge_Manager/connections.json"
+        if os.path.exists(conn_path):
+            with open(conn_path, "r", encoding="utf-8") as f:
+                connections = json.load(f)
+            for c in connections:
+                if c.get("id") == conn_id:
+                    return {
+                        "id": conn_id,
+                        "type": c.get("type"),
+                        "path": c.get("config", {}).get("path")
+                    }
+    return None
+
+def run_rclone_cmd(args):
+    import subprocess, os
+    rclone_path = os.getenv("RCLONE_CONFIG_PATH_CONTAINER", "/workspace/data/rclone/rclone.conf")
+    cmd = ["rclone", f"--config={rclone_path}"] + args
+    res = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+    return res
+
+@app.route('/api/connections/<conn_id>/explorer/site-drive')
+def connection_explorer_site_drive(conn_id):
+    """Lấy drive_id của thư viện tài liệu (Documents) từ một SharePoint Site."""
+    import urllib.request as _ur
+    conn = resolve_connection(conn_id)
+    if not conn:
+        return jsonify({"error": "Connection not found"}), 404
+    if conn.get("rclone_type") != "onedrive":
+        return jsonify({"error": "Chỉ hỗ trợ OneDrive/SharePoint"}), 400
+
+    site_id = request.args.get("site_id", "")
+    if not site_id:
+        return jsonify({"error": "site_id is required"}), 400
+
+    token_raw = conn.get("token", "")
+    if not token_raw:
+        return jsonify({"error": "Không tìm thấy token"}), 401
+    try:
+        token_data = json.loads(token_raw)
+        access_token = token_data.get("access_token", "")
+    except Exception:
+        return jsonify({"error": "Token không hợp lệ"}), 401
+
+    try:
+        headers = {"Authorization": "Bearer " + access_token}
+        drives_url = f"https://graph.microsoft.com/v1.0/sites/{site_id}/drives"
+        req = _ur.Request(drives_url, headers=headers)
+        with _ur.urlopen(req, timeout=10) as r:
+            data = json.loads(r.read())
+        drives = data.get("value", [])
+        # Ưu tiên Documents library, nếu không thì lấy cái đầu tiên
+        drive = next((d for d in drives if d.get("driveType") == "documentLibrary"), None)
+        if not drive and drives:
+            drive = drives[0]
+        if not drive:
+            return jsonify({"error": "Site không có document library"}), 404
+        return jsonify({
+            "drive_id": drive.get("id", ""),
+            "drive_name": drive.get("name", "Documents"),
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route('/api/connections/<conn_id>/explorer/shared')
+def connection_explorer_shared(conn_id):
+    """
+    Liệt kê:
+    1. File/folder được share trực tiếp (Graph sharedWithMe)
+    2. SharePoint Sites mà user là thành viên (Graph /sites?search=*)
+    """
+    import urllib.request as _ur
+    conn = resolve_connection(conn_id)
+    if not conn:
+        return jsonify({"error": "Connection not found"}), 404
+    if conn.get("rclone_type") != "onedrive":
+        return jsonify({"error": "Chỉ hỗ trợ kết nối OneDrive/SharePoint"}), 400
+    
+    token_raw = conn.get("token", "")
+    if not token_raw:
+        return jsonify({"error": "Không tìm thấy token"}), 401
+    try:
+        token_data = json.loads(token_raw)
+        access_token = token_data.get("access_token", "")
+    except Exception:
+        return jsonify({"error": "Token không hợp lệ"}), 401
+
+    headers = {"Authorization": "Bearer " + access_token}
+    items = []
+
+    # ── 1. File/folder được share trực tiếp ─────────────────────────────
+    try:
+        req = _ur.Request(
+            "https://graph.microsoft.com/v1.0/me/drive/sharedWithMe?$top=100",
+            headers=headers
+        )
+        with _ur.urlopen(req, timeout=15) as r:
+            data = json.loads(r.read())
+        for item in data.get("value", []):
+            remote = item.get("remoteItem", {})
+            shared_by = remote.get("shared", {}).get("sharedBy", {}).get("user", {}).get("displayName", "Unknown")
+            is_folder = "folder" in item or "folder" in remote
+            file_info = remote.get("file", item.get("file", {}))
+            size = remote.get("size", item.get("size", 0))
+            modified = remote.get("lastModifiedDateTime", item.get("lastModifiedDateTime", ""))
+            parent_ref = remote.get("parentReference", {})
+            drive_id = parent_ref.get("driveId", "")
+            item_id = remote.get("id", item.get("id", ""))
+            web_url = remote.get("webUrl", item.get("webUrl", ""))
+            items.append({
+                "name": item.get("name", "?"),
+                "type": "directory" if is_folder else "file",
+                "size": size,
+                "modified": modified,
+                "shared_by": shared_by,
+                "source": "shared_file",
+                "drive_id": drive_id,
+                "item_id": item_id,
+                "web_url": web_url,
+                "mime_type": file_info.get("mimeType", "") if not is_folder else "",
+            })
+    except Exception as e:
+        logger.warning(f"sharedWithMe error: {e}")
+
+    # ── 2. Tự động phát hiện SharePoint Sites từ tệp tin tương tác/chia sẻ ──
+    try:
+        import re, urllib.parse
+        discovered_sites = set() # lưu tuple (hostname, site_name)
+
+        # Lấy danh sách các URL để lọc ra sites
+        urls_to_scan = []
+
+        # Quét từ shared files (đã lấy ở trên)
+        for it in items:
+            if it.get("web_url"):
+                urls_to_scan.append(it["web_url"])
+
+        # Quét thêm từ Insights (Used, Shared) và Recent files
+        endpoints = [
+            "https://graph.microsoft.com/v1.0/me/insights/used?$top=50",
+            "https://graph.microsoft.com/v1.0/me/insights/shared?$top=50",
+            "https://graph.microsoft.com/v1.0/me/drive/recent?$top=50"
+        ]
+        for ep in endpoints:
+            try:
+                ep_req = _ur.Request(ep, headers=headers)
+                with _ur.urlopen(ep_req, timeout=10) as r:
+                    ep_data = json.loads(r.read())
+                for val in ep_data.get("value", []):
+                    if "remoteItem" in val:
+                        urls_to_scan.append(val["remoteItem"].get("webUrl", ""))
+                    if "resourceReference" in val:
+                        urls_to_scan.append(val["resourceReference"].get("webUrl", ""))
+                    if "webUrl" in val:
+                        urls_to_scan.append(val.get("webUrl", ""))
+            except Exception as ep_err:
+                logger.warning(f"Failed to scan insights endpoint {ep}: {ep_err}")
+
+        # Trích xuất site names từ các URL
+        for url in urls_to_scan:
+            if not url:
+                continue
+            # Regex khớp cấu trúc: https://domain.sharepoint.com/sites/site_name
+            match = re.search(r'https://([^/]+)/sites/([^/]+)', url)
+            if match:
+                hostname = match.group(1)
+                site_name = match.group(2)
+                # Bỏ qua cá nhân my-site nếu có
+                if "-my.sharepoint.com" not in hostname:
+                    discovered_sites.add((hostname, site_name))
+
+        # Truy vấn thông tin chi tiết từng site được phát hiện
+        for hostname, site_name in discovered_sites:
+            try:
+                site_path = f"{hostname}:/sites/{site_name}"
+                site_detail_url = "https://graph.microsoft.com/v1.0/sites/" + urllib.parse.quote(site_path)
+                site_req = _ur.Request(site_detail_url, headers=headers)
+                with _ur.urlopen(site_req, timeout=10) as r:
+                    site_data = json.loads(r.read())
+                
+                web_url = site_data.get("webUrl", "")
+                site_display = site_data.get("displayName") or site_name
+                site_id = site_data.get("id", "")
+                modified = site_data.get("lastModifiedDateTime", "")
+
+                items.append({
+                    "name": site_display,
+                    "type": "site",
+                    "size": 0,
+                    "modified": modified,
+                    "shared_by": "Thành viên site",
+                    "source": "sharepoint_site",
+                    "site_id": site_id,
+                    "web_url": web_url,
+                    "mime_type": "",
+                })
+            except Exception as site_err:
+                logger.warning(f"Failed to fetch site info for {site_name}: {site_err}")
+
+    except Exception as e:
+        logger.warning(f"Active site discovery error: {e}")
+
+    # Sites lên trước, file sau, sắp xếp theo tên
+    items.sort(key=lambda x: (0 if x.get("source") == "sharepoint_site" else 1, x["name"].lower()))
+    return jsonify({"items": items, "total": len(items)})
+
+@app.route('/api/connections/<conn_id>/explorer')
+def connection_explorer(conn_id):
+    conn = resolve_connection(conn_id)
+    if not conn:
+        return jsonify({"error": "Connection not found"}), 404
+        
+    drive_id = request.args.get("drive_id", "")
+    folder_path = request.args.get("path", "")  # subfolder để list
+    
+    if conn["type"] == "rclone":
+        remote = conn['remote']
+        if drive_id:
+            # Khi có drive_id (SharePoint site): list NON-recursive từng thư mục
+            # Tránh timeout khi load toàn bộ thư viện tài liệu lớn
+            if folder_path:
+                target = f"{remote}:{folder_path}"
+            else:
+                target = f"{remote}:"
+            cmd_args = ["lsjson", target]  # KHÔNG có -R
+            cmd_args.append(f"--onedrive-drive-id={drive_id}")
+            res = run_rclone_cmd(cmd_args)
+            if res.returncode != 0:
+                err = res.stderr or "Unknown rclone error"
+                return jsonify({"error": f"Rclone lỗi: {err}"}), 500
+            try:
+                items = json.loads(res.stdout)
+                # Build flat list thành cấu trúc children dạng 1 cấp
+                children = []
+                for it in items:
+                    name = it.get("Name", "")
+                    is_dir = it.get("IsDir", False)
+                    size = it.get("Size", 0)
+                    mod_time = it.get("ModTime", "")
+                    path_rel = f"{folder_path}/{name}".lstrip("/") if folder_path else name
+                    children.append({
+                        "name": name,
+                        "path": path_rel,
+                        "type": "directory" if is_dir else "file",
+                        "size": size,
+                        "modified": mod_time,
+                        "children": [] if is_dir else None,
+                    })
+                return jsonify({"name": folder_path or remote, "path": folder_path or "", "type": "directory", "children": children})
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
+        else:
+            # OneDrive gốc: list đệ quy như cũ
+            target = f"{remote}:"
+            cmd_args = ["lsjson", "-R", target]
+            res = run_rclone_cmd(cmd_args)
+            if res.returncode != 0:
+                return jsonify({"error": f"Failed to list files from Rclone: {res.stderr}"}), 500
+            try:
+                items = json.loads(res.stdout)
+                tree = build_tree_from_lsjson(items)
+                return jsonify(tree)
+            except Exception as e:
+                return jsonify({"error": str(e)}), 500
+    else:
+        path = conn.get("path")
+        if not path or not os.path.exists(path):
+            return jsonify({"error": f"Local path not found: {path}"}), 404
+        try:
+            tree = get_local_explorer(path)
+            return jsonify(tree)
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+
+@app.route('/api/connections/<conn_id>/explorer/read')
+def connection_explorer_read(conn_id):
+    conn = resolve_connection(conn_id)
+    if not conn:
+        return jsonify({"error": "Connection not found"}), 404
+    rel_path = request.args.get("path", "")
+    drive_id = request.args.get("drive_id", "")
+    
+    if conn["type"] == "rclone":
+        target = f"{conn['remote']}:{rel_path}"
+        cmd_args = ["cat", target]
+        if drive_id:
+            cmd_args.append(f"--onedrive-drive-id={drive_id}")
+        res = run_rclone_cmd_bytes(cmd_args)
+        if res.returncode != 0:
+            return jsonify({"error": f"Failed to read file: {res.stderr.decode('utf-8', errors='replace')}"}), 500
+        ext = os.path.splitext(rel_path)[1].lower()
+        content = parse_document_content(res.stdout, ext)
+        return jsonify({"path": rel_path, "content": content})
+    else:
+        abs_path = os.path.join(conn["path"], rel_path)
+        if not os.path.exists(abs_path):
+            return jsonify({"error": "File not found"}), 404
+        try:
+            ext = os.path.splitext(rel_path)[1].lower()
+            content = parse_document_content(abs_path, ext)
+            return jsonify({"path": rel_path, "content": content})
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+@app.route('/api/connections/<conn_id>/explorer/write', methods=['POST'])
+def connection_explorer_write(conn_id):
+    conn = resolve_connection(conn_id)
+    if not conn:
+        return jsonify({"error": "Connection not found"}), 404
+    data = request.get_json(silent=True) or {}
+    rel_path = data.get("path", "")
+    content = data.get("content", "")
+    is_base64 = data.get("is_base64", False)
+    drive_id = data.get("drive_id", "") or request.args.get("drive_id", "")
+    
+    if is_base64:
+        import base64
+        file_bytes = base64.b64decode(content.split(",")[-1] if "," in content else content)
+    else:
+        file_bytes = content.encode('utf-8')
+        
+    if conn["type"] == "rclone":
+        import tempfile
+        with tempfile.NamedTemporaryFile(mode='wb', delete=False) as tf:
+            tf.write(file_bytes)
+            temp_name = tf.name
+        try:
+            target = f"{conn['remote']}:{rel_path}"
+            cmd_args = ["copyto", temp_name, target]
+            if drive_id:
+                cmd_args.append(f"--onedrive-drive-id={drive_id}")
+            res = run_rclone_cmd(cmd_args)
+            if res.returncode != 0:
+                return jsonify({"error": f"Failed to write file: {res.stderr}"}), 500
+            return jsonify({"ok": True})
+        finally:
+            try:
+                os.remove(temp_name)
+            except: pass
+    else:
+        abs_path = os.path.join(conn["path"], rel_path)
+        try:
+            os.makedirs(os.path.dirname(abs_path), exist_ok=True)
+            with open(abs_path, 'wb') as f:
+                f.write(file_bytes)
+            return jsonify({"ok": True})
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+@app.route('/api/connections/<conn_id>/explorer/new', methods=['POST'])
+def connection_explorer_new(conn_id):
+    conn = resolve_connection(conn_id)
+    if not conn:
+        return jsonify({"error": "Connection not found"}), 404
+    data = request.get_json(silent=True) or {}
+    rel_path = data.get("path", "")
+    is_dir = data.get("is_dir", False)
+    drive_id = data.get("drive_id", "") or request.args.get("drive_id", "")
+    
+    if conn["type"] == "rclone":
+        if is_dir:
+            target = f"{conn['remote']}:{rel_path}"
+            cmd_args = ["mkdir", target]
+            if drive_id:
+                cmd_args.append(f"--onedrive-drive-id={drive_id}")
+            res = run_rclone_cmd(cmd_args)
+            if res.returncode != 0:
+                return jsonify({"error": f"Failed to create directory: {res.stderr}"}), 500
+            return jsonify({"ok": True})
+        else:
+            import tempfile
+            with tempfile.NamedTemporaryFile(mode='w', delete=False) as tf:
+                temp_name = tf.name
+            try:
+                target = f"{conn['remote']}:{rel_path}"
+                cmd_args = ["copyto", temp_name, target]
+                if drive_id:
+                    cmd_args.append(f"--onedrive-drive-id={drive_id}")
+                res = run_rclone_cmd(cmd_args)
+                if res.returncode != 0:
+                    return jsonify({"error": f"Failed to create file: {res.stderr}"}), 500
+                return jsonify({"ok": True})
+            finally:
+                try:
+                    os.remove(temp_name)
+                except: pass
+    else:
+        abs_path = os.path.join(conn["path"], rel_path)
+        try:
+            if is_dir:
+                os.makedirs(abs_path, exist_ok=True)
+            else:
+                os.makedirs(os.path.dirname(abs_path), exist_ok=True)
+                with open(abs_path, 'w', encoding='utf-8') as f:
+                    f.write("")
+            return jsonify({"ok": True})
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+@app.route('/api/connections/<conn_id>/explorer/delete', methods=['DELETE', 'POST'])
+def connection_explorer_delete(conn_id):
+    conn = resolve_connection(conn_id)
+    if not conn:
+        return jsonify({"error": "Connection not found"}), 404
+    rel_path = request.args.get("path", "")
+    is_dir = request.args.get("is_dir", "false").lower() == "true"
+    drive_id = request.args.get("drive_id", "")
+    
+    if conn["type"] == "rclone":
+        target = f"{conn['remote']}:{rel_path}"
+        if is_dir:
+            cmd_args = ["purge", target]
+        else:
+            cmd_args = ["deletefile", target]
+        if drive_id:
+            cmd_args.append(f"--onedrive-drive-id={drive_id}")
+            
+        res = run_rclone_cmd(cmd_args)
+        if res.returncode != 0:
+            return jsonify({"error": f"Failed to delete: {res.stderr}"}), 500
+        return jsonify({"ok": True})
+    else:
+        abs_path = os.path.join(conn["path"], rel_path)
+        try:
+            if not os.path.exists(abs_path):
+                return jsonify({"error": "Not found"}), 404
+            if is_dir:
+                import shutil
+                shutil.rmtree(abs_path)
+            else:
+                os.remove(abs_path)
+            return jsonify({"ok": True})
+        except Exception as e:
+            return jsonify({"error": str(e)}), 500
+
+
+
+def parse_document_content(file_path_or_bytes, extension):
+    ext = extension.lower()
+    
+    # helper to read bytes if it's a file path
+    if isinstance(file_path_or_bytes, str):
+        try:
+            with open(file_path_or_bytes, 'rb') as f:
+                file_bytes = f.read()
+        except Exception as e:
+            return f"Error reading file: {str(e)}"
+    else:
+        file_bytes = file_path_or_bytes
+        
+    if ext == '.docx':
+        try:
+            import io, docx
+            doc = docx.Document(io.BytesIO(file_bytes))
+            fullText = []
+            for para in doc.paragraphs:
+                fullText.append(para.text)
+            for table in doc.tables:
+                for row in table.rows:
+                    row_text = [cell.text for cell in row.cells]
+                    fullText.append(" | ".join(row_text))
+            return "\n".join(fullText)
+        except Exception as e:
+            return f"Error parsing Word file: {str(e)}"
+            
+    elif ext in ['.xlsx', '.xls']:
+        try:
+            import io, pandas as pd
+            xl = pd.ExcelFile(io.BytesIO(file_bytes))
+            sheets_text = []
+            for sheet_name in xl.sheet_names:
+                df = pd.read_excel(xl, sheet_name=sheet_name)
+                sheets_text.append(f"### Sheet: {sheet_name}\n")
+                sheets_text.append(df.to_markdown(index=False))
+                sheets_text.append("\n")
+            return "\n".join(sheets_text)
+        except Exception as e:
+            return f"Error parsing Excel file: {str(e)}"
+            
+    else:
+        try:
+            return file_bytes.decode('utf-8', errors='replace')
+        except Exception as e:
+            return f"Error reading text: {str(e)}"
+
+def run_rclone_cmd_bytes(args):
+    import subprocess, os
+    rclone_path = os.getenv("RCLONE_CONFIG_PATH_CONTAINER", "/workspace/data/rclone/rclone.conf")
+    cmd = ["rclone", f"--config={rclone_path}"] + args
+    res = subprocess.run(cmd, capture_output=True, timeout=30)
+    return res
+
+
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
 def serve(path):
@@ -1130,10 +2125,56 @@ def get_artifact():
 
 
 
+def start_rclone_port_forwarder():
+    import socket
+    import threading
+    import time
+    
+    def forward_stream(source, destination):
+        try:
+            while True:
+                data = source.recv(4096)
+                if not data:
+                    break
+                destination.sendall(data)
+        except Exception:
+            pass
+        finally:
+            try: source.close()
+            except: pass
+            try: destination.close()
+            except: pass
+
+    def forwarder_listener():
+        print("📡 [RCLONE PORT FORWARDER] Listening on 0.0.0.0:53683 -> 127.0.0.1:53682")
+        server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        try:
+            server.bind(("0.0.0.0", 53683))
+            server.listen(10)
+        except Exception as e:
+            print(f"❌ [RCLONE PORT FORWARDER] Failed to bind: {e}")
+            return
+            
+        while True:
+            try:
+                client_sock, addr = server.accept()
+                target_sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                target_sock.connect(("127.0.0.1", 53682))
+                
+                threading.Thread(target=forward_stream, args=(client_sock, target_sock), daemon=True).start()
+                threading.Thread(target=forward_stream, args=(target_sock, client_sock), daemon=True).start()
+            except Exception:
+                time.sleep(0.5)
+
+    threading.Thread(target=forwarder_listener, daemon=True).start()
+
+
 socketio.start_background_task(start_warmup_sequence, socketio)
 socketio.start_background_task(redis_log_broadcaster)
 socketio.start_background_task(hardware_pulse_broadcaster)
 socketio.start_background_task(artifact_watcher)
+socketio.start_background_task(start_rclone_port_forwarder)
 
 if __name__ == '__main__':
     print("🚀 [JKAI] Mission Control Backend starting on port 9998...")

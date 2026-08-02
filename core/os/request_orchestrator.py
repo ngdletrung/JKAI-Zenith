@@ -8,6 +8,7 @@ Mọi kênh (Mission Control, API, Telegram) nên dùng module này thay vì if/
 from __future__ import annotations
 
 import logging
+import time
 from dataclasses import dataclass, field
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -17,8 +18,13 @@ from core.os.intent_taxonomy import (
     classify_os_intent,
     default_pipeline_for_intent,
 )
+from core.os.mission_state import MissionState
+from core.utils.engine import engine
 
 logger = logging.getLogger("jkai.os.orchestrator")
+
+# Module-level constants — không recreate mỗi lần gọi
+_BYPASS_WHITELIST: frozenset = frozenset(["xin chào", "chào", "hello", "hi", "ok", "yes", "2+2", "tạm biệt", "bye", "cảm ơn", "thanks"])
 
 
 @dataclass
@@ -38,6 +44,7 @@ class OSRequestPlan:
     kwargs_patch: Dict[str, Any] = field(default_factory=dict)
     log_messages: List[Tuple[str, str]] = field(default_factory=list)
     early_response: Optional[Dict[str, Any]] = None
+    mission_state: Optional[MissionState] = None
 
     def merge_into_kwargs(self, kwargs: dict) -> dict:
         out = dict(kwargs or {})
@@ -62,10 +69,79 @@ async def orchestrate_request(
     Chuẩn bị mọi yêu cầu Master trước khi Receptionist / TaskManager thực thi.
     """
     plan = OSRequestPlan(goal=(goal or "").strip())
+    engine._increment_stat("total")
     kw_patch: Dict[str, Any] = {}
     g = plan.goal
 
+    # ── T-0: Zero-Latency Math Reflex (<1ms) ──
+    try:
+        import re
+        g_low = g.lower().strip()
+        if not any(kw in g_low for kw in ['tại sao', 'vì sao', 'giải mã', 'kiến trúc', 'code', 'hàm', 'script', 'lỗi', 'python', 'javascript', 'nội dung', 'bài tập']):
+            if any(k in g_low for k in ['tính', 'bằng mấy', 'bằng bao nhiêu', 'kết quả', 'bao nhiêu']) or any(op in g for op in ['*', '+', '-', '/']):
+                if not re.search(r'\d{1,2}\/\d{1,2}\/\d{2,4}', g):
+                    matches = re.findall(r'(?:\d+[\s]*[\+\-\*\/]+[\s]*)+\d+', g)
+                    if matches:
+                        expr = max(matches, key=len).strip()
+                        if re.match(r'^[0-9\s\+\-\*\/\.\(\)]+$', expr) and len(expr) >= 3:
+                            val = eval(expr, {"__builtins__": None}, {})
+                            if isinstance(val, (int, float)):
+                                if isinstance(val, float) and val.is_integer():
+                                    val = int(val)
+                                val_str = f"{val:,.4f}".rstrip('0').rstrip('.') if isinstance(val, float) else f"{val:,}"
+                                val_str = val_str.replace(',', '.')
+                                _log(plan, "ZENITH", "⚡ [MATH-REFLEX]: Phản xạ tính toán dưới 1ms từ Ingress Root.")
+                                plan.pipeline = "fast"
+                                plan.early_response = {
+                                    "answer": (
+                                        f"**[MATH-REFLEX (<1ms)]**\n\n"
+                                        f"📌 **Phép tính:** `{expr}`\n"
+                                        f"🎯 **Kết quả:** **{val_str}** (hoặc `{val}`)\n\n"
+                                        f"*Xử lý qua cổng phản xạ toán học ở chế độ FAST trên JKAI Zenith OS.*"
+                                    ),
+                                    "task_id": task_id,
+                                    "cached": True,
+                                    "pipeline": "fast",
+                                    "mode": "fast"
+                                }
+                                return plan
+    except Exception:
+        pass
+
+    # ── Fast Path Bypass: Chỉ bypass với whitelist + kiểm tra history ──
+    g_clean = g.lower().strip()
+    has_history = history and len(history) > 1
+    is_simple = g_clean in _BYPASS_WHITELIST and not has_history
+    if is_simple:
+        plan.pipeline = "fast"
+        plan.is_fast = True
+        plan.is_deep = False
+        plan.execution_mode = "fast"
+        
+        from core.os.execution_plan import ExecutionPlan, ExecutionPlanStep
+        
+        plan.mission_state = MissionState(
+            goal=plan.goal,
+            original_goal=goal,
+            task_id=task_id,
+            os_intent="social",
+            pipeline="fast",
+            execution_mode="fast",
+            is_fast=True,
+            is_deep=False,
+            trace_id=kwargs.get("trace_id") or task_id
+        )
+        plan.mission_state.execution_plan = ExecutionPlan(
+            selected_pipeline="fast",
+            estimated_cost=1.0,
+            steps=[ExecutionPlanStep(step_id="S1_FAST_REACTIVE", description="Phản xạ nhanh bypass", assigned_agent="general")]
+        )
+        engine._increment_stat("bypass")
+        _log(plan, "ZENITH", "⚡ [FAST-PATH-BYPASS]: Câu hỏi đơn giản. Bỏ qua 14 tầng phân tích Router.")
+        return plan
+
     # ── T0: Reflex memory ──
+    reflex = None
     if check_reflex:
         try:
             from core.utils.cognitive_memory import cognitive_memory
@@ -102,7 +178,7 @@ async def orchestrate_request(
             plan.early_response = {
                 "answer": inspect_hit.get("answer", ""),
                 "task_id": task_id,
-                **{k: v for v in inspect_hit.items() if k not in ("answer",)},
+                **{k: v for k, v in inspect_hit.items() if k not in ("answer",)},
             }
             return plan
 
@@ -129,7 +205,7 @@ async def orchestrate_request(
             )
 
             if goal_is_capabilities_inquiry(g):
-                _log(plan, "ZENITH", "CAPABILITIES — báo cáo registry (không gọi LLM).")
+                _log(plan, "ZENITH", "Yêu cầu thông tin năng lực — Trả về danh mục kỹ năng đăng ký (Bỏ qua LLM).")
                 plan.pipeline = "capabilities"
                 plan.os_intent = "capabilities"
                 plan.early_response = {
@@ -152,6 +228,8 @@ async def orchestrate_request(
         logger.warning("[OS] skill deck: %s", e)
 
     # ── T2: Mission context ──
+    _internal_keywords = ["nội bộ", "trong máy", "trong hệ thống", "đã lưu", "đã có"]
+    _is_internal_query = any(kw in g.lower() for kw in _internal_keywords)
     try:
         from core.utils.mission_context import (
             apply_parent_context,
@@ -162,14 +240,20 @@ async def orchestrate_request(
         parent_mid = kwargs.get("parent_mission_id")
         mission_mid = kwargs.get("mission_id")
         if parent_mid:
-            g = apply_parent_context(g, parent_mid)
-            _log(plan, "ZENITH", f"MISSION-CTX parent `{parent_mid}`")
+            if _is_internal_query:
+                _log(plan, "ZENITH", f"MISSION-CTX parent `{parent_mid}` — skipped (internal data query)")
+            else:
+                g = apply_parent_context(g, parent_mid)
+                _log(plan, "ZENITH", f"MISSION-CTX parent `{parent_mid}`")
         elif mission_mid:
-            pack = load_context_pack(mission_mid)
-            block = format_context_block(pack)
-            if block:
-                g = f"{g.strip()}\n\n{block}"
-                _log(plan, "ZENITH", f"MISSION-CTX resume `{mission_mid}`")
+            if _is_internal_query:
+                _log(plan, "ZENITH", f"MISSION-CTX resume `{mission_mid}` — skipped (internal data query)")
+            else:
+                pack = load_context_pack(mission_mid)
+                block = format_context_block(pack)
+                if block:
+                    g = f"{g.strip()}\n\n{block}"
+                    _log(plan, "ZENITH", f"MISSION-CTX resume `{mission_mid}`")
     except Exception as e:
         logger.debug("[OS] mission ctx: %s", e)
 
@@ -269,89 +353,178 @@ async def orchestrate_request(
     is_deep = mode_param in ("deep", "deliberative") or "/deep" in g.lower() or kwargs.get("deep")
     is_fast = mode_param == "fast" or "/fast" in g.lower() or kw_patch.get("jkai_fast_fix")
 
-    if kw_patch.get("jkai_workspace_target") and not kw_patch.get("jkai_web_only_analysis"):
-        is_deep = True
-        is_fast = False
-    if kw_patch.get("jkai_web_only_analysis"):
-        is_deep = True
-        is_fast = False
-
-    if not g.startswith("/"):
+    has_deep_skill = False
+    if kw_patch.get("resolved_skill_ids"):
         try:
-            from core.utils.deep_routing import (
-                goal_should_force_deep,
-                goal_should_force_deep_for_analysis,
+            from core.utils.deep_routing import _DEEP_SKILLS
+            if any(sid in _DEEP_SKILLS for sid in kw_patch["resolved_skill_ids"]):
+                has_deep_skill = True
+                is_deep = True
+                is_fast = False
+                _log(plan, "ZENITH", f"DEEP — kích hoạt do skill yêu cầu DEEP mode: {kw_patch['resolved_skill_ids']}")
+        except Exception:
+            pass
+
+    has_workspace_target = bool(kw_patch.get("jkai_workspace_target"))
+
+    # Chỉ chạy logic force deep hoặc tự động định tuyến khi chưa có chỉ định FAST/DEEP (chế độ AUTO)
+    if not is_fast and not is_deep:
+        if not (kw_patch.get("resolved_skill_ids") and not has_deep_skill and not has_workspace_target):
+            if not g.startswith("/"):
+                try:
+                    from core.utils.deep_routing import (
+                        goal_should_force_deep,
+                        goal_should_force_deep_for_analysis,
+                    )
+
+                    if "<ZENITH_SKILL_ACTIVATED>" not in g and goal_should_force_deep_for_analysis(g):
+                        is_deep, is_fast = True, False
+                        _log(plan, "ZENITH", "DEEP — phân tích (producer_reviewer + CRITIC).")
+                    elif goal_should_force_deep(g, history):
+                        is_deep, is_fast = True, False
+                        from core.utils.deep_routing import get_deep_routing_label
+                        label = get_deep_routing_label(g, history)
+                        _log(plan, "ZENITH", label)
+                except Exception as e:
+                    logger.warning("[OS] deep routing: %s", e)
+
+            if mode_param == "auto" and not is_deep and not is_fast:
+                # Skill đã resolve mà không yêu cầu DEEP → chạy fast
+                if kw_patch.get("resolved_skill_ids"):
+                    try:
+                        from core.utils.deep_routing import _DEEP_SKILLS
+                        if not any(sid in _DEEP_SKILLS for sid in kw_patch["resolved_skill_ids"]):
+                            is_fast = True
+                            _log(plan, "ZENITH", f"FAST — skill resolve, không yêu cầu DEEP.")
+                    except Exception:
+                        pass
+                if not is_fast:
+                    try:
+                        from core.utils.intent_cortex import IntentCortex
+
+                        cortex = await IntentCortex().analyze(g, history=history, images=kwargs.get("images"))
+                        engine.cache_put(task_id, "intent_manifest", cortex)
+                        if cortex.execution_mode.value in ("DELIBERATIVE", "HYBRID"):
+                            is_deep = True
+                            _log(
+                                plan,
+                                "ZENITH",
+                                f"DEEP — IntentCortex ({cortex.execution_mode.value}, "
+                                f"complexity={cortex.complexity_score:.2f}).",
+                            )
+                        elif getattr(cortex, "intent", None) and str(
+                            getattr(cortex.intent, "value", cortex.intent)
+                        ).upper() in ("DEBUG", "BUILD"):
+                            is_deep = True
+                            _log(plan, "ZENITH", "DEEP — intent DEBUG/BUILD.")
+                        elif intent == OSIntent.SOCIAL and cortex.complexity_score < 0.35:
+                            is_fast = True
+                        elif default_pipeline_for_intent(intent, tags) == "fast_chat":
+                            is_fast = True
+                        else:
+                            is_fast = not is_deep
+                    except Exception as e:
+                        logger.error("[OS] IntentCortex: %s", e)
+                        is_fast = not is_deep
+        else:
+            # Ép chạy Fast cho skill thông thường
+            is_deep = False
+            is_fast = True
+
+    # ── T7 (mới): Khởi tạo MissionState & WorldState trước thưa Master ──
+    try:
+        trace_id = kwargs.get("trace_id") or task_id
+        cached_manifest = engine.cache_get(task_id, "intent_manifest")
+
+        # ⚠️ Đồng bộ quyết định is_deep/is_fast/use_deep_full vào plan trước khi tạo MissionState
+        # Tránh ExecutionPlanner dùng default False/False và ra quyết định sai
+        plan.is_deep = is_deep
+        plan.is_fast = is_fast
+        plan.use_deep_full = is_deep
+
+        # Tạo MissionState ban đầu để nạp dữ liệu
+        plan.mission_state = MissionState.from_os_plan(
+            plan=plan,
+            goal=plan.goal,
+            original_goal=goal,
+            task_id=task_id,
+            kwargs={**kwargs, **kw_patch},
+            trace_id=trace_id,
+        )
+        if cached_manifest:
+            plan.mission_state.routing_manifest = cached_manifest
+
+        # Capture World State
+        from core.os.world_state import WorldStateMonitor
+        workspace_path = kwargs.get("jkai_workspace_target") or "/workspace"
+        world = await WorldStateMonitor.capture_state(workspace_path)
+        plan.mission_state.world_state = world
+
+        # [NEW]: Capture Memory State (reflex hit, conversation summary) thưa Master
+        try:
+            from core.os.memory_state import MemoryState
+            reflex_hit = reflex is not None
+            summary = ""
+            # Lấy liên kết hội thoại gần nhất (chỉ khi cùng mission_id, không phải "+" mới)
+            try:
+                from context.mission_context import ctx_mgr
+                prev_mission_id = ctx_mgr.get_linked_mission("default")
+                if prev_mission_id and prev_mission_id != task_id:
+                    prev_mc = ctx_mgr.get_or_create(prev_mission_id)
+                    # Chỉ lấy summary nếu mission trước có context (không phải "+")
+                    if prev_mc.conversation.get("last_subject"):
+                        summary = prev_mc.conversation.get("last_answer", "")[:200]
+            except Exception:
+                pass
+                
+            plan.mission_state.memory_state = MemoryState(
+                reflex_cache_hit=reflex_hit,
+                conversation_summary=summary,
+                learned_patterns=[]
             )
+        except Exception as mem_err:
+            logger.warning("[OS] capture memory state failed: %s", mem_err)
 
-            if goal_should_force_deep_for_analysis(g):
-                is_deep, is_fast = True, False
-                _log(plan, "ZENITH", "DEEP — phân tích (producer_reviewer + CRITIC).")
-            elif goal_should_force_deep(g, history):
-                is_deep, is_fast = True, False
-                _log(plan, "ZENITH", "DEEP — lỗi/debug.")
-        except Exception as e:
-            logger.warning("[OS] deep routing: %s", e)
+        # ── T8 (mới): Run ExecutionPlanner (Layer 4) để phán quyết pipeline động ──
+        from core.os.execution_planner import ExecutionPlanner
+        exec_plan = await ExecutionPlanner.generate_plan(plan.mission_state, world)
+        plan.mission_state.execution_plan = exec_plan
 
-    if mode_param == "auto" and not is_deep and not is_fast:
-        try:
-            from core.utils.intent_cortex import IntentCortex
+        # Áp dụng phán quyết lập lịch động của ExecutionPlanner vào OSRequestPlan
+        plan.pipeline = exec_plan.selected_pipeline
+        plan.is_deep = exec_plan.selected_pipeline == "deep"
+        plan.is_fast = exec_plan.selected_pipeline == "fast"
+        plan.use_deep_full = plan.is_deep
+        if plan.mission_state:
+            plan.mission_state.use_deep_full = plan.use_deep_full
+        plan.execution_mode = exec_plan.selected_pipeline
+        
+        # Override đặc biệt cho jkai_fast_fix
+        if kw_patch.get("jkai_fast_fix"):
+            plan.pipeline = "fast_fix"
 
-            cortex = await IntentCortex().analyze(g, history=history, images=kwargs.get("images"))
-            if cortex.execution_mode.value in ("DELIBERATIVE", "HYBRID"):
-                is_deep = True
-                _log(
-                    plan,
-                    "ZENITH",
-                    f"DEEP — IntentCortex ({cortex.execution_mode.value}, "
-                    f"complexity={cortex.complexity_score:.2f}).",
-                )
-            elif getattr(cortex, "intent", None) and str(
-                getattr(cortex.intent, "value", cortex.intent)
-            ).upper() in ("DEBUG", "BUILD"):
-                is_deep = True
-                _log(plan, "ZENITH", "DEEP — intent DEBUG/BUILD.")
-            elif intent == OSIntent.SOCIAL and cortex.complexity_score < 0.35:
-                is_fast = True
-            elif default_pipeline_for_intent(intent, tags) == "fast_chat":
-                is_fast = True
-            else:
-                is_fast = not is_deep
-        except Exception as e:
-            logger.error("[OS] IntentCortex: %s", e)
-            is_fast = not is_deep
+        engine._increment_stat(exec_plan.selected_pipeline)
 
-    plan.is_deep = is_deep
-    plan.is_fast = is_fast and not is_deep
-    plan.execution_mode = "deep" if is_deep else ("fast" if is_fast else mode_param)
-
-    # ── T8: Pipeline selection ──
-    preferred = default_pipeline_for_intent(intent, tags)
-    if kw_patch.get("jkai_fast_fix"):
-        plan.pipeline = "fast_fix"
-    elif is_deep:
-        try:
-            from core.utils.deep_routing import should_use_deep_pipeline_full
-
-            plan.use_deep_full = should_use_deep_pipeline_full(g, merged_kw)
-            plan.pipeline = "deep_full" if plan.use_deep_full else "deep"
-        except Exception:
-            plan.pipeline = "deep"
-    elif is_fast:
-        plan.pipeline = preferred if preferred in ("fast", "fast_chat") else "fast"
-    else:
-        plan.pipeline = preferred
-
-    scope = kw_patch.get("jkai_workspace_target")
-    use_agent = bool(scope) and not kw_patch.get("jkai_fast_fix") and not kw_patch.get(
-        "jkai_web_only_analysis"
-    )
-    if use_agent and container:
-        try:
-            from core.kernel.project_agent_loop import _env_enabled
-
-            plan.use_cursor_agent = _env_enabled()
-        except Exception:
-            plan.use_cursor_agent = False
+        # Xác định use_cursor_agent thưa Master
+        scope = kw_patch.get("jkai_workspace_target")
+        use_agent = bool(scope) and not kw_patch.get("jkai_fast_fix") and not kw_patch.get(
+            "jkai_web_only_analysis"
+        )
+        if use_agent and container:
+            try:
+                from core.kernel.project_agent_loop import _env_enabled
+                plan.use_cursor_agent = _env_enabled()
+                plan.mission_state.use_cursor_agent = plan.use_cursor_agent
+            except Exception:
+                plan.use_cursor_agent = False
+            
+    except Exception as os_plan_err:
+        logger.error("[OS] Execution Planner Layer 4 failed: %s", os_plan_err)
+        # Fallback cơ bản nếu lỗi
+        plan.pipeline = "fast"
+        plan.is_fast = True
+        plan.is_deep = False
+        plan.execution_mode = "fast"
 
     _log(
         plan,
@@ -359,4 +532,14 @@ async def orchestrate_request(
         f"AI OS: intent={plan.os_intent} pipeline={plan.pipeline} "
         f"mode={plan.execution_mode} tags={','.join(plan.capability_tags) or '-'}",
     )
+    # Luu pipeline decision vao shared context (thread-safe)
+    engine.cache_put(task_id, "pipeline", plan.pipeline)
+    engine.cache_put(task_id, "execution_mode", plan.execution_mode)
+    engine.cache_put(task_id, "os_intent", plan.os_intent)
+    engine.cache_put(task_id, "is_fast", plan.is_fast)
+    engine.cache_put(task_id, "is_deep", plan.is_deep)
+    engine.cache_put(task_id, "capability_tags", plan.capability_tags)
+    if plan.mission_state:
+        engine.cache_put(task_id, "mission_state", plan.mission_state)
+    engine.save_routing_stats()
     return plan

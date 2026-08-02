@@ -1,0 +1,44 @@
+{
+  "id": "GITHUB_CODE_REVIEW",
+  "name": "Zenith GitHub Code Review",
+  "version": "1.0.0",
+  "description": "Automated AI code auditor: Performs deep analysis of Pull Requests, detects bugs, and suggests improvements according to Zenith standards.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "review code github",
+    "kiểm tra mã nguồn",
+    "audit pull request",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "code",
+    "nang",
+    "trinh",
+    "hien",
+    "truc",
+    "giam",
+    "zenith",
+    "github",
+    "tieu",
+    "chuan",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "pr_number": {
+          "type": "integer",
+          "description": "Pull Request number."
+        }
+      }
+    }
+  }
+}

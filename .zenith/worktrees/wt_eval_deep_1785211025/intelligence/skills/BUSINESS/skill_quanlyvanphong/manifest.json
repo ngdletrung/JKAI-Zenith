@@ -1,0 +1,61 @@
+{
+  "id": "SKILL_QUANLYVANPHONG",
+  "name": "Zenith Office Administrator",
+  "version": "1.0.0",
+  "description": "Administrative support core: Handles word processing, excel reporting, and office document parsing with specialized Zenith styling.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "quản lý văn phòng",
+    "soạn thảo văn bản",
+    "xuất báo cáo excel",
+    "đọc file office",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "viec",
+    "dung",
+    "master",
+    "lieu",
+    "phong",
+    "tinh",
+    "office",
+    "hanh",
+    "chinh",
+    "cong",
+    "kinh doanh",
+    "ban hang",
+    "marketing",
+    "khach hang",
+    "san pham"
+  ],
+  "domain": "BUSINESS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "soan_thao_word",
+            "xuat_bao_cao_excel",
+            "doc_du_lieu_van_phong"
+          ],
+          "description": "Admin action."
+        },
+        "title": {
+          "type": "string",
+          "description": "Document title."
+        },
+        "content": {
+          "type": "string",
+          "description": "Main text content or data."
+        }
+      },
+      "required": [
+        "action"
+      ]
+    }
+  }
+}

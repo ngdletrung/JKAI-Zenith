@@ -1,0 +1,32 @@
+{
+  "id": "ANALYZE_LARGE_FILE",
+  "name": "Zenith Sequential File Analyzer",
+  "version": "1.0.0",
+  "domain": "CORE",
+  "description": "Reads and analyzes extremely large files (1-2M tokens) sequentially using dynamic chunking and Map-Reduce distillation to answer queries without context overflow.",
+  "triggers": [
+    "đọc file lớn",
+    "phân tích file lớn",
+    "read large file",
+    "analyze large file"
+  ],
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "file_path": {
+        "type": "string",
+        "description": "Đường dẫn tuyệt đối hoặc tương đối tới tệp tin cần phân tích."
+      },
+      "query": {
+        "type": "string",
+        "description": "Câu hỏi hoặc yêu cầu phân tích cụ thể đối với nội dung tệp."
+      }
+    },
+    "required": [
+      "file_path",
+      "query"
+    ]
+  },
+  "output_format": "Detailed Report (Markdown)",
+  "author": "Antigravity Architect"
+}

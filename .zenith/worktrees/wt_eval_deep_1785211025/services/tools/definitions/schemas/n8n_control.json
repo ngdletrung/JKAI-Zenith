@@ -1,0 +1,19 @@
+{
+  "name": "n8n_control",
+  "description": "N8N Automation Control: Điều khiển các quy trình tự động hóa n8n (List, Trigger, Monitor).",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "action": {
+        "type": "string",
+        "enum": ["list_workflows", "trigger_workflow", "get_execution"],
+        "description": "Hành động điều khiển n8n."
+      },
+      "params": {
+        "type": "object",
+        "description": "Tham số (ví dụ: {workflow_id: '1'} cho trigger_workflow)."
+      }
+    },
+    "required": ["action"]
+  }
+}

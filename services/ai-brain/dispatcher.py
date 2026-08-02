@@ -12,6 +12,7 @@ from typing import Optional
 from collections import Counter
 import uuid
 from core.utils.routing_manifest import RoutingManifest, ActionType
+from core.utils.difficulty_classifier import classify, DifficultyLevel
 
 from core.utils.engine import engine
 from plugin_manager import plugin_manager
@@ -20,7 +21,7 @@ logger = logging.getLogger(__name__)
 
 
 # ---------------------------------------------------------------------------
-# 💎 [UTILITY] — Vietnamese Accent Folding + Text Cleanup
+#  [UTILITY] — Vietnamese Accent Folding + Text Cleanup
 # ---------------------------------------------------------------------------
 
 def remove_accents(text: str) -> str:
@@ -35,7 +36,7 @@ _MULTI_SPACE_RE = re.compile(r"\s+")
 
 
 # ---------------------------------------------------------------------------
-# 💎 [SKILL-TRIGGER-MAP]
+#  [SKILL-TRIGGER-MAP]
 # ---------------------------------------------------------------------------
 @dataclass(frozen=True)
 class TriggerRule:
@@ -83,6 +84,19 @@ SKILL_TRIGGER_MAP: list[TriggerRule] = [
         priority=15,
         intent="EXECUTION",
         action_type=ActionType.EXECUTION,
+        # [FIX-DISPATCH-001]: Exclude code-specific GitHub queries to prevent false routing.
+        # e.g. "github actions", "github repo", "pull request", "clone repo" should NOT trigger web search.
+        negative_patterns=(
+            "github actions",
+            "github repo",
+            "pull request",
+            "clone",
+            "git clone",
+            "git commit",
+            "git push",
+            "git pull",
+            "merge request",
+        ),
     ),
 
     TriggerRule(
@@ -251,22 +265,29 @@ SKILL_TRIGGER_MAP: list[TriggerRule] = [
 
     TriggerRule(
         "18",
-        "skill_agentic_debate",
+        "HOI_DONG_CHUYEN_GIA",
         (
-            "phản biện",
-            "phan bien",
-            "tranh luận",
-            "tranh luan",
-            "debate",
-            "hội đồng",
-            "hoi dong",
-            "xung đột",
-            "xung dot",
+            "hội đồng chuyên gia",
+            "hoi dong chuyen gia",
+            "hội đồng chuyên gia ai",
+            "hoi dong chuyen gia ai",
+            "cognitive council",
+            "multi expert consensus",
+            "thảo luận đa model",
+            "thao luan da model",
+            "phản biện chéo",
+            "phan bien cheo",
+            "triệu hồi hội đồng",
+            "trieu hoi hoi dong",
+            "expert debate",
+            "tranh luận chuyên gia",
+            "tranh luan chuyen gia",
+            "dùng skill hội đồng",
+            "dung skill hoi dong",
         ),
-        priority=40,
+        priority=90,
         mode="deep",
     ),
-
     TriggerRule(
         "107",
         "skill_council_of_minds",
@@ -299,7 +320,7 @@ SKILL_TRIGGER_MAP: list[TriggerRule] = [
 
 
 # ---------------------------------------------------------------------------
-# 💎 [COMPILED RULE ENGINE]
+#  [COMPILED RULE ENGINE]
 # ---------------------------------------------------------------------------
 _SORTED_RULES = sorted(SKILL_TRIGGER_MAP, key=lambda r: r.priority)
 
@@ -330,11 +351,11 @@ for rule in _SORTED_RULES:
 
 
 # ---------------------------------------------------------------------------
-# 💎 [DISPATCHER]
+#  [DISPATCHER]
 # ---------------------------------------------------------------------------
 class Dispatcher:
     """
-    🏗️ JKAI ZENITH DISPATCHER
+    ️ JKAI ZENITH DISPATCHER
 
     Architecture:
 
@@ -373,12 +394,12 @@ class Dispatcher:
             if "<ZENITH_SKILL_ACTIVATED>" not in goal:
                 try:
                     from core.utils.ingress_skill_gate import try_semantic_skill_match
-                    ssm = try_semantic_skill_match(goal, threshold=0.40)
+                    ssm = try_semantic_skill_match(goal, threshold=0.70)
                     if ssm and ssm.get("status") == "success":
                         goal = ssm.get("enriched_goal")
                         engine.publish_mission_log(
                             "DISPATCHER",
-                            "🧠 [SSM-AUTO-ACTIVATE]: Match found. Enriched goal.",
+                            " [SSM-AUTO-ACTIVATE]: Match found. Enriched goal.",
                             task_id,
                             stealth=True
                         )
@@ -391,7 +412,38 @@ class Dispatcher:
 
             norm = self._normalize(goal)
 
-            # 🚀 [Z-SOS]: Đảm bảo Plugin Registry luôn mới nhất
+            # -------------------------------------------------------------------
+            # [DIFFICULTY-GATE]: Classify request complexity before any dispatch
+            # L0_REFLEX → instant conversational reply, zero tool overhead
+            # -------------------------------------------------------------------
+            difficulty = classify(goal)
+            if difficulty.level == DifficultyLevel.L0_REFLEX:
+                engine.publish_mission_log(
+                    "DISPATCHER",
+                    f"[L0-REFLEX]: Direct reply path — {difficulty.reason}",
+                    task_id,
+                    stealth=True,
+                )
+                return RoutingManifest(
+                    trace_id=str(uuid.uuid4()),
+                    parent_trace_id=None,
+                    intent="SOCIAL",
+                    action_type=ActionType.SOCIAL,
+                    mode="fast",
+                    skill="GREETING",
+                    confidence=0.97,
+                    reasoning=f"L0_REFLEX: {difficulty.reason}",
+                    requires_planner=False,
+                    requires_memory=False,
+                    requires_llm=True,
+                    risk="LOW",
+                    domain="SOCIAL",
+                    complexity=0.0,
+                    telemetry={"source": "difficulty_classifier", "level": "L0",
+                               "prompt_variant": difficulty.hint_prompt_variant},
+                )
+
+            #  [Z-SOS]: Đảm bảo Plugin Registry luôn mới nhất
             if not plugin_manager.plugins:
                 await plugin_manager.scan_plugins()
 
@@ -402,7 +454,7 @@ class Dispatcher:
             if cached:
                 engine.publish_mission_log(
                     "DISPATCHER",
-                    "⚡ [CACHE-HIT]: Sử dụng cached dispatch.",
+                    " [CACHE-HIT]: Sử dụng cached dispatch.",
                     task_id,
                     stealth=True
                 )
@@ -421,7 +473,7 @@ class Dispatcher:
             # -------------------------------------------------------------------
             engine.publish_mission_log(
                 "DISPATCHER",
-                "🧠 [LLM-FALLBACK]: Reflex không chắc chắn. Đang gọi LLM...",
+                " [LLM-FALLBACK]: Reflex không chắc chắn. Đang gọi LLM...",
                 task_id,
             )
 
@@ -434,7 +486,7 @@ class Dispatcher:
 
             engine.publish_mission_log(
                 "DISPATCHER",
-                f"📊 [LATENCY]: {latency} ms",
+                f"[LATENCY]: {latency} ms",
                 task_id,
                 stealth=True
             )
@@ -465,7 +517,7 @@ class Dispatcher:
 
             engine.publish_mission_log(
                 "DISPATCHER",
-                f"🗺️ [DECK-REFLEX]: {primary.display_id} → `{primary.registry_id}`",
+                f"️ [DECK-REFLEX]: {primary.display_id} → `{primary.registry_id}`",
                 task_id,
                 stealth=True,
             )
@@ -560,7 +612,7 @@ class Dispatcher:
 
     @classmethod
     def _reflex_match(cls, norm: str, task_id: str) -> Optional[RoutingManifest]:
-        # 🔗 [URL-REFLEX]: Phát hiện URL trực tiếp (Bypass LLM)
+        #  [URL-REFLEX]: Phát hiện URL trực tiếp (Bypass LLM)
         url_pattern = re.compile(r'https?://[^\s/$.?#].[^\s]*', re.IGNORECASE)
         if url_pattern.search(norm):
              return RoutingManifest(
@@ -607,7 +659,7 @@ class Dispatcher:
         engine.publish_mission_log(
             "DISPATCHER",
             (
-                f"⚡ [REFLEX]: skill={best_rule.skill} | "
+                f" [REFLEX]: skill={best_rule.skill} | "
                 f"score={best_score} | "
                 f"confidence={confidence:.2f} | "
                 f"matched={matched_keywords}"
@@ -651,7 +703,7 @@ class Dispatcher:
             if history:
                 history_text = "\n".join([f"{m.get('role', 'user')}: {m.get('content', '')}" for m in history[-5:]])
             
-            # 🚀 [COGNITIVE-INTENT-CORE]: Tìm kiếm chuyên gia phù hợp nhất từ Registry
+            #  [COGNITIVE-INTENT-CORE]: Tìm kiếm chuyên gia phù hợp nhất từ Registry
             from core.utils.knowledge_manager import knowledge_orchestrator
             all_skills = await knowledge_orchestrator.get_all_skills_dict()
             
@@ -694,7 +746,7 @@ class Dispatcher:
             # Sử dụng model nhanh để phân loại ý định
             response = await engine.call_chat(
                 messages=[{"role": "user", "content": prompt}],
-                role="DISPATCHER",
+                role="PLANNER",
                 task_id=task_id,
                 json_mode=True,
                 options={"temperature": 0.0}
@@ -710,7 +762,7 @@ class Dispatcher:
                 
                 engine.publish_mission_log(
                     "DISPATCHER",
-                    f"🎯 [LLM-DECISION]: Chốt kỹ năng `{skill_id}` (Conf: {confidence}). Lý do: {reasoning}",
+                    f" [LLM-DECISION]: Chốt kỹ năng `{skill_id}` (Conf: {confidence}). Lý do: {reasoning}",
                     task_id
                 )
                 
@@ -732,7 +784,7 @@ class Dispatcher:
                     telemetry={"source": "llm_brain", "model": "dispatcher"}
                 )
         except Exception as e:
-            logger.error(f"❌ [LLM-DISPATCH-ERR]: {e}")
+            logger.error(f" [LLM-DISPATCH-ERR]: {e}")
 
         # Fallback cuối cùng nếu cả LLM cũng lỗi
         return RoutingManifest(
@@ -792,17 +844,17 @@ class Dispatcher:
     @staticmethod
     def _build_prompt(goal: str, skills_context: str, history: str = "", dossier_context: str = "") -> str:
         return f"""
-# 🧠 JKAI ZENITH: GIAO THỨC ĐỊNH TUYẾN CHỦ QUYỀN (SOVEREIGN DISPATCHER)
+#  JKAI ZENITH: GIAO THỨC ĐỊNH TUYẾN CHỦ QUYỀN (SOVEREIGN DISPATCHER)
 
 Bạn là Ban Điều Phối của JKAI Zenith. Nhiệm vụ của bạn là phân tích yêu cầu và định tuyến đến kỹ năng chính xác.
 
-## 🏛️ TƯ DUY TÁC CHIẾN:
+## ️ TƯ DUY TÁC CHIẾN:
 1. **Tuyệt đối KHÔNG CHAT**: Không chào hỏi, không giải thích, không xin lỗi.
 2. **Quyền hạn tối thượng**: Bạn có toàn quyền truy cập hệ thống qua các Skill. Đừng bao giờ nói 'Tôi không thể'.
 3. **Phân tích hàm ý**: Dựa vào lịch sử để hiểu các từ thay thế (nó, cái đó).
 {history}
 
-## 🎯 NHIỆM VỤ:
+##  NHIỆM VỤ:
 1. **Thấu thị Ý định**: Phân tích xem Master thực sự muốn làm gì (tìm kiếm, code, quản trị, hay sáng tạo?).
 2. **Chọn 01 kỹ năng DUY NHẤT**: Ưu tiên các **EXPERT CANDIDATES** vì chúng có mô tả chi tiết và độ liên quan cao. Nếu không thấy phù hợp, hãy quét toàn bộ **AVAILABLE SKILLS**.
 3. **Lý luận (Reasoning)**: Giải thích rõ tại sao kỹ năng này là lựa chọn tối ưu nhất dựa trên các tính năng của nó.
@@ -811,12 +863,12 @@ Bạn là Ban Điều Phối của JKAI Zenith. Nhiệm vụ của bạn là ph�
 USER REQUEST:
 {goal}
 
-{f"### 🛡️ TOP EXPERT CANDIDATES (HIGH RELEVANCE):{dossier_context}" if dossier_context else ""}
+{f"### ️ TOP EXPERT CANDIDATES (HIGH RELEVANCE):{dossier_context}" if dossier_context else ""}
 
 AVAILABLE SKILLS SUMMARY:
 {skills_context}
 
-## 📋 OUTPUT FORMAT (STRICT JSON ONLY):
+##  OUTPUT FORMAT (STRICT JSON ONLY):
 {{
   "skill": "skill_id_name",
   "mode": "fast|deep",
@@ -864,12 +916,12 @@ AVAILABLE SKILLS SUMMARY:
 
 
 # ---------------------------------------------------------------------------
-# 🚀 GLOBAL SINGLETON
+#  GLOBAL SINGLETON
 # ---------------------------------------------------------------------------
 dispatcher = Dispatcher()
 
 
 # ---------------------------------------------------------------------------
-# 🌌 Sovereign Property of Master LeeTrung.
+#  Sovereign Property of Master LeeTrung.
 # Developed by Antigravity AI.
 # ---------------------------------------------------------------------------

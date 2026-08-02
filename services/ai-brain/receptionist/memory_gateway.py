@@ -3,7 +3,7 @@ from core.utils.engine import engine
 
 class MemoryGateway:
     """
-    🧠 TẬP ĐOÀN JKAI ZENITH - MEMORY GATEWAY
+     TẬP ĐOÀN JKAI ZENITH - MEMORY GATEWAY
     Quản lý Cortex 3 lớp và lọc dữ liệu bộ nhớ.
     """
     def __init__(self, redis_conn):
@@ -11,7 +11,7 @@ class MemoryGateway:
 
     def _log(self, tag, msg, task_id="manual", stealth=False):
         try:
-            enhanced_msg = f"💎🫡 [ZENITH]: {msg}" if tag == "ZENITH" else msg
+            enhanced_msg = f"🫡 [ZENITH]: {msg}" if tag == "ZENITH" else msg
             engine.publish_mission_log(tag, enhanced_msg, task_id, stealth=stealth)
         except Exception: pass
 
@@ -37,28 +37,27 @@ class MemoryGateway:
             return []
 
     async def fetch_neural_context(self, goal: str) -> str:
-        """Kéo dữ liệu từ Vector Semantic Memory (3-Layer Cortex)"""
+        """Kéo dữ liệu từ Qdrant jkai_memory (episodic memory)"""
         mem_context = ""
         try:
-            from semantic_memory import memory
-            mem_idx = await memory.search_index(goal, limit=5)
-            if mem_idx:
-                top_ids = [m["id"] for m in mem_idx[:2]]
-                past_memories = await memory.get_details(top_ids)
-                
-                mem_context = "\n\n---\n🏛️ [TRUY XUẤT VỎ NÃO THẦN KINH] thưa Master:\n"
-                mem_context += "📊 Ký ức liên quan (Chỉ mục):\n"
-                mem_context += "\n".join([f"- [#{m['id']}] {m['summary']} (Score: {m['score']:.2f})" for m in mem_idx])
-                
-                if past_memories:
-                    mem_context += "\n\n📖 Chi tiết Ký ức Chiến lược:\n"
-                    mem_context += "\n".join([f"💎 Observation #{m.get('task_id', '??')}: {m['text']}" for m in past_memories])
+            from core.qdrant_client import qdrant_client
+            from core.utils.embed import embed
+            vector = await embed.get_embedding_async(goal[:1000])
+            if vector:
+                memories = await qdrant_client.search_similar(vector, limit=3, collection="jkai_memory")
+                if memories:
+                    mem_context = "\n\n---\n️ [TRUY XUẤT KÝ ỨC] thưa Master:\n"
+                    for m in memories:
+                        payload = m.get('payload', {})
+                        text = payload.get('text', '')[:200]
+                        mem_type = payload.get('memory_type', 'memory')
+                        mem_context += f"\n [{mem_type}] {text}"
         except Exception as e:
             pass
         return mem_context
 
     def clean_history(self, history: list) -> list:
-        """🛡️ [ELITE FILTER]: Lọc tin rác khỏi neural context"""
+        """️ [ELITE FILTER]: Lọc tin rác khỏi neural context"""
         clean_history = []
         for h in history[-10:]:
             content = h.get("content", "")

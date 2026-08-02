@@ -51,7 +51,7 @@ class JKAI_Assimilator:
             "agents": self.base_dir / "agents",
             "rules": self.base_dir / "rules",
             "skills": self.base_dir / "skills",
-            "knowledge": self.base_dir / "knowledge",
+            "knowledge": self.base_dir / "wiki",
             "tools": self.base_dir / "tools",
             "commands": self.base_dir / "commands",
             "prompts": self.base_dir / "prompts",
@@ -63,9 +63,13 @@ class JKAI_Assimilator:
         }
         
         
-        # Đảm bảo thư mục tồn tại
+        # Đảm bảo thư mục tồn tại thưa Master
         for path in self.dest_map.values():
-            path.mkdir(parents=True, exist_ok=True)
+            try:
+                path.mkdir(parents=True, exist_ok=True)
+            except FileExistsError:
+                if not path.is_dir():
+                    logger.warning(f"⚠️ [ASSIMILATOR-WARN] Path {path} exists but is not a directory!")
 
         # Lazy-init engine để tránh crash khi import module
         self._engine = None

@@ -1,0 +1,14 @@
+{
+  "name": "list_dir",
+  "description": "Liệt kê danh sách tệp tin và thư mục con trong một đường dẫn.",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "path": {
+        "type": "string",
+        "description": "Đường dẫn tới thư mục cần liệt kê."
+      }
+    },
+    "required": ["path"]
+  }
+}

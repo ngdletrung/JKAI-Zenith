@@ -9,11 +9,11 @@
 2. [SDS-COMPLIANCE]: Moi thay doi phai tuan thu Giao thuc SDS moi nhat.
 3. [NO-EMOJI]: Cam dung emoji trong noi dung tep cau hinh va logic.
 -->
-# 🏛️ ZENITH 12 FUNCTIONAL SYSTEM SUBSYSTEMS SPECIFICATION (v6.0)
+# 🏛️ ZENITH 12 FUNCTIONAL SYSTEM SUBSYSTEMS SPECIFICATION (v5.0 Elite)
 **"Đặc tả Cấu trúc và Vòng đời của 12 Phân khu Hệ thống Nhận thức"**
 
 > [!IMPORTANT]
-> **TIÊU CHUẨN KIẾN TRÚC**: Hệ thống JKAI Zenith v6.0 tổ chức tài nguyên, dữ liệu và luồng thực thi thành **12 Phân khu Hệ thống (System Subsystems)** độc lập.
+> **TIÊU CHUẨN KIẾN TRÚC**: Hệ thống JKAI Zenith v5.0 Elite tổ chức tài nguyên, dữ liệu và luồng thực thi thành **12 Phân khu Hệ thống (System Subsystems)** độc lập.
 > Thiết kế phân vùng này mô phỏng các phân hệ quản lý tài nguyên trong hệ điều hành truyền thống, bảo đảm mọi tiến trình luôn được định vị rõ ràng và vận hành theo cơ chế Module hóa tối đa.
 
 ---
@@ -129,4 +129,4 @@ Khi Operator gửi chỉ thị từ **Operator Space**:
 7. **ARCHIVE (#11)** ghi nhận kết quả và cập nhật delta tiến hóa trước khi đóng tiến trình.
 
 ---
-*Subsystems Specification. v6.0. Modular Architecture Design. Verified for Operational Integrity.* 🏛️⚙️🛡️
+*Subsystems Specification. v5.0 Elite. Modular Architecture Design. Verified for Operational Integrity.* 🏛️⚙️🛡️

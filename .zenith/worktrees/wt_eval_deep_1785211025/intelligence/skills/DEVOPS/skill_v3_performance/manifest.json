@@ -1,0 +1,62 @@
+{
+  "id": "SKILL_V3_PERFORMANCE",
+  "name": "Zenith V3 Performance Optimizer",
+  "version": "1.0.0",
+  "description": "System velocity core: Implements cutting-edge techniques like Flash Attention for context optimization and HNSW for ultra-fast vector search (up to 12,500x speedup).",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "tối ưu hiệu năng v3",
+    "flash attention",
+    "hnsw search",
+    "tăng tốc hệ thống",
+    "tối ưu context",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "performance",
+    "context",
+    "thong",
+    "kiem",
+    "luon",
+    "master",
+    "nhat",
+    "nang",
+    "thuc",
+    "search",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "optimize_context",
+            "hyper_search",
+            "performance_audit"
+          ],
+          "description": "Optimization action."
+        },
+        "messages": {
+          "type": "array",
+          "description": "Messages to optimize for context."
+        },
+        "query_embedding": {
+          "type": "array",
+          "description": "Embedding vector for hyper search."
+        }
+      },
+      "required": [
+        "action"
+      ]
+    }
+  }
+}

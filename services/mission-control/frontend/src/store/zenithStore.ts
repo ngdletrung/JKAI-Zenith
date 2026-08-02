@@ -3,7 +3,7 @@ import { persist, devtools } from 'zustand/middleware';
 
 export type AgentStatus = 'idle' | 'running' | 'paused' | 'error';
 export type CognitiveMode = 'auto' | 'fast' | 'deep';
-export type RightTab = 'progress' | 'plan' | 'tasks' | 'walkthrough' | 'explorer' | 'changes' | 'logs' | 'terminal' | 'filelab';
+export type RightTab = 'progress' | 'plan' | 'tasks' | 'walkthrough' | 'explorer' | 'changes' | 'logs' | 'terminal' | 'filelab' | 'connections';
 export type StreamView = 'chat' | 'process' | 'full';
 
 export interface Proposal {
@@ -47,6 +47,7 @@ export interface TaskLog {
   mode?: string;
   task_id?: string;
   is_delta?: boolean;
+  duration?: number; // Thinking time or latency in seconds
 }
 
 export interface TraceItem {
@@ -248,7 +249,7 @@ export interface ZenithState {
   operationalLogs: AgentLog[];
   progressLogs: AgentLog[];
   rightTab: RightTab;
-  inspectedFile: { path: string; content: string } | null;
+  inspectedFile: { path: string; content: string; connId?: string } | null;
   thinkingPhrase: string;
   showReasoning: boolean;
   streamView: StreamView;
@@ -304,7 +305,7 @@ export interface ZenithState {
   addLog: (log: AgentLog, target?: 'operational' | 'progress') => void;
   addLogs: (logs: AgentLog[], target?: 'operational' | 'progress') => void;
   setTab: (tab: RightTab) => void;
-  setInspectedFile: (file: { path: string; content: string } | null) => void;
+  setInspectedFile: (file: { path: string; content: string; connId?: string } | null) => void;
   addModifiedFile: (path: string) => void;
   registerFileEdit: (edit: FileEditEvent, openPreview?: boolean) => void;
   setThinkingPhrase: (phrase: string) => void;
@@ -616,8 +617,8 @@ export const useZenithStore = create<ZenithState>()(
 
           return {
             ...s,
-            operationalLogs: updatedOps.sort((a, b) => (a.ts || 0) - (b.ts || 0)).slice(-200),
-            progressLogs: updatedProg.sort((a, b) => (a.ts || 0) - (b.ts || 0)).slice(-2000),
+            operationalLogs: updatedOps.slice(-200),
+            progressLogs: updatedProg.slice(-2000),
             executionTrace: newTrace
           };
         }),
@@ -956,11 +957,16 @@ export const useZenithStore = create<ZenithState>()(
         setUnreadTab: (tab, val) => set(s => ({ ...s, unreadTabs: { ...s.unreadTabs, [tab]: val } })),
         incrementUnreadTab: (tab) => set(s => ({ ...s, unreadTabs: { ...s.unreadTabs, [tab]: (s.unreadTabs[tab] || 0) + 1 } })),
         
-        setBackgroundProposals: (proposals) => set(s => ({ ...s, backgroundProposals: proposals })),
-        addBackgroundProposal: (proposal) => set(s => ({ 
-          ...s, 
-          backgroundProposals: [proposal, ...s.backgroundProposals] 
-        })),
+        setBackgroundProposals: (proposals) => set(s => {
+          const uniqueMap = new Map();
+          (proposals || []).forEach(p => { if (p && p.id) uniqueMap.set(p.id, p); });
+          return { ...s, backgroundProposals: Array.from(uniqueMap.values()) };
+        }),
+        addBackgroundProposal: (proposal) => set(s => {
+          if (!proposal || !proposal.id) return s;
+          if (s.backgroundProposals.some(p => p.id === proposal.id)) return s;
+          return { ...s, backgroundProposals: [proposal, ...s.backgroundProposals] };
+        }),
         removeBackgroundProposal: (id) => set(s => ({ 
           ...s, 
           backgroundProposals: s.backgroundProposals.filter(p => p.id !== id) 

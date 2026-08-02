@@ -5,7 +5,9 @@ from core.kernel.compaction import compaction_engine
 from core.homunculus.manager import HomunculusManager
 from core.utils.cognitive_memory import cognitive_memory
 from core.utils.zenith_observer import ZenithObserver
-from core.utils.engine import engine # Khôi phục engine thưa Master
+from core.utils.engine import engine
+from prompt_engine.injectors import behavior_injector
+from context import mission_context as ctx_mgr, entity_resolver as ent_resolver, working_memory as wm_mgr, fact_extractor as fact_ext
 import os
 from pathlib import Path
 
@@ -27,6 +29,16 @@ class Receptionist:
     async def handle_task(self, goal, task_id, history=None, **kwargs):
         """[ZENITH-COGNITION V2]: Giao thức Phản xạ Tức thời (Reactive Core)."""
         
+        # 1. PIPELINE CACHE CHECK
+        from core.utils.engine import engine
+        engine.init_request_cache(task_id)
+        mode = kwargs.get("mode", "auto")
+        from core.utils.pipeline_cache import pipeline_cache
+        cached = await pipeline_cache.get(goal, mode)
+        if cached:
+            self._log("SYSTEM", f"[CACHE-HIT]: Tra ve ket qua da cache cho: {goal[:80]}", task_id)
+            return {**cached, "task_id": task_id, "cached": True}
+
         # 0. INITIALIZATION
         self.homunculus.init_workspace()
         context = self.homunculus.get_project_context()
@@ -44,18 +56,7 @@ class Receptionist:
             args = " ".join(parts[1:])
             return await self.container.command_router.process_command(cmd, args, task_id)
 
-        # 🧠 [SSM-GATE]: Auto-enrich goal với skill dossier trước khi vào AI OS
-        if "<ZENITH_SKILL_ACTIVATED>" not in goal:
-            try:
-                from core.utils.ingress_skill_gate import try_semantic_skill_match
-                ssm_result = try_semantic_skill_match(goal, threshold=0.42, skip_if_has_deck_ref=True)
-                if ssm_result and ssm_result.get("status") == "success":
-                    goal = ssm_result["enriched_goal"]
-                    self._log("SYSTEM", "🧠 [SSM]: Đã tự động kích hoạt skill phù hợp.", task_id)
-            except Exception as _ssm_err:
-                logger.debug("[RECEPTIONIST-SSM] skip: %s", _ssm_err)
-
-        # 🏛️ AI OS: một kernel điều phối cho mọi loại yêu cầu
+        # [AI-OS]: mot kernel dieu phoi cho moi loai yeu cau
         from core.os.request_orchestrator import orchestrate_request
 
         os_plan = await orchestrate_request(
@@ -70,14 +71,46 @@ class Receptionist:
             self._log(tag, msg, task_id, trace_id=kwargs.get("trace_id"))
         if os_plan.early_response:
             return os_plan.early_response
+
+        ms = os_plan.mission_state
         goal = os_plan.goal
         kwargs = os_plan.merge_into_kwargs(kwargs)
         kwargs["jkai_os_intent"] = os_plan.os_intent
         kwargs["jkai_os_pipeline"] = os_plan.pipeline
+        if ms:
+            kwargs["mission_state"] = ms
 
-        # 🖱️ Workspace agent (khi OS chọn cursor_agent)
-        scope = kwargs.get("jkai_workspace_target") or kwargs.get("jkai_project_root")
-        if os_plan.use_cursor_agent and scope and self.container:
+        mc = kwargs.get("mission_context")
+        if mc is None:
+            try:
+                mc = ctx_mgr.get_or_create(task_id, goal=goal)
+                prev_mission_id = ctx_mgr.get_linked_mission("default")
+                if prev_mission_id and prev_mission_id != task_id:
+                    # Nếu mission mới (không có last_subject), clear context cũ
+                    if not mc.conversation.get("last_subject"):
+                        ctx_mgr.clear(prev_mission_id)
+                        prev_mission_id = None
+                    else:
+                        prev_mc = ctx_mgr.get_or_create(prev_mission_id)
+                        resolved_goal = ent_resolver.resolve(goal, last_subject=prev_mc.conversation.get("last_subject", ""), last_query=prev_mc.conversation.get("last_query", ""))
+                        if resolved_goal != goal:
+                            self._log("BRAIN", f"[CONTEXT] Anaphora resolved: '{goal}' → '{resolved_goal}'", task_id)
+                            goal = resolved_goal
+            except Exception as ctx_err:
+                self._log("WARN", f"[CONTEXT] Context init failed, continuing: {ctx_err}", task_id)
+                mc = ctx_mgr.get_or_create(task_id, goal=goal)
+        mc.runtime["trace_id"] = kwargs.get("trace_id") or task_id
+        ctx_mgr.save(mc)
+        kwargs["mission_context"] = mc
+
+        # [WORKSPACE-AGENT]: Khi OS chon cursor_agent
+        scope = (
+            (ms.workspace_target if ms else None)
+            or kwargs.get("jkai_workspace_target")
+            or kwargs.get("jkai_project_root")
+        )
+        use_agent = (ms.use_cursor_agent if ms else os_plan.use_cursor_agent)
+        if use_agent and scope and self.container:
             try:
                 from core.kernel.project_agent_loop import ProjectAgentLoop, _env_enabled
 
@@ -100,9 +133,35 @@ class Receptionist:
                 logger.error("[CURSOR-AGENT] fallback DEEP: %s", agent_err)
                 self._log("WARN", f"Cursor Agent lỗi — chuyển DEEP thường: {agent_err}", task_id)
 
-        is_deep = os_plan.is_deep
-        is_fast = os_plan.is_fast
-        use_full = os_plan.use_deep_full
+        is_deep = ms.is_deep if ms else os_plan.is_deep
+        is_fast = ms.is_fast if ms else os_plan.is_fast
+        use_full = ms.use_deep_full if ms else os_plan.use_deep_full
+
+        # [NEW]: Kích hoạt StatePipeline (StepRunner) nếu có MissionState thưa Master (Trừ khi ở chế độ DEEP hoặc FAST)
+        if ms and ms.execution_plan and not (is_fast or is_deep or ms.pipeline in ("fast", "deep") or ms.execution_mode in ("fast", "deep") or kwargs.get("mode") in ("fast", "deep")):
+            try:
+                from state_pipeline import StatePipeline
+                sp = StatePipeline()
+                self._log("SYSTEM", f"Khởi chạy lộ trình: STATE_PIPELINE ({ms.execution_plan.selected_pipeline})", task_id)
+                
+                state_res = await sp.execute(ms, {"mode": ms.execution_mode, "history": history, **kwargs})
+                answer = state_res.get("answer") or state_res.get("summary") or str(state_res)
+                
+                engine.request_cache.pop(task_id, None)
+                try:
+                    subject = ent_resolver.extract_subject(goal, answer)
+                    mc.conversation["last_subject"] = subject
+                    mc.conversation["last_query"] = goal
+                    mc.conversation["last_answer"] = answer
+                    mc.runtime["status"] = "completed"
+                    ctx_mgr.update_from_answer(mc, goal, answer)
+                    ctx_mgr.link_conversation("default", task_id)
+                except Exception as cache_save_err:
+                    logger.warning("[CONTEXT] Failed to save conversation state: %s", cache_save_err)
+                
+                return {"answer": answer, "task_id": task_id, "pipeline": ms.pipeline}
+            except Exception as state_err:
+                logger.error("[STATE-PIPELINE] Lỗi thực thi StatePipeline, chuyển sang chạy fallback: %s", state_err)
 
         if is_deep:
             self._log("SYSTEM", "Khởi chạy lộ trình: DEEP_PIPELINE", task_id)
@@ -130,9 +189,31 @@ class Receptionist:
             self._log("ZENITH", "Đang phác thảo kế hoạch tác chiến...", task_id)
             plan = await self._generate_strategic_plan(goal, history, task_id)
         else:
-            self._log("SYSTEM", "Khởi chạy lộ trình: FAST_PIPELINE (REACTIVE)", task_id)
-            # FAST MODE: Bypass hoàn toàn Planning. Đi thẳng vào chuỗi phản xạ.
-            plan = [goal]
+            self._log("SYSTEM", "Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)", task_id)
+            from fast_pipeline import FastPipeline
+            fp = FastPipeline()
+            fast_res = await fp.execute(
+                goal=goal,
+                task_id=task_id,
+                context={"mode": "fast", **kwargs},
+                history=history,
+                images=kwargs.get("images"),
+                mode="fast",
+                trace_id=kwargs.get("trace_id") or task_id,
+            )
+            answer = fast_res.get("answer") or fast_res.get("summary") or str(fast_res)
+            engine.request_cache.pop(task_id, None)
+            try:
+                subject = ent_resolver.extract_subject(goal, answer)
+                mc.conversation["last_subject"] = subject
+                mc.conversation["last_query"] = goal
+                mc.conversation["last_answer"] = answer
+                mc.runtime["status"] = "completed"
+                ctx_mgr.update_from_answer(mc, goal, answer)
+                ctx_mgr.link_conversation("default", task_id)
+            except Exception as ctx_err:
+                self._log("WARN", f"[CONTEXT] Save failed: {ctx_err}", task_id)
+            return {"answer": answer, "task_id": task_id, "pipeline": "fast", "mode": "fast"}
         
         final_results = []
         for i, step in enumerate(plan):
@@ -154,6 +235,7 @@ class Receptionist:
 
         # 3. TỔNG HỢP CUỐI CÙNG (Nếu cần nhiều bước)
         if len(plan) > 1:
+            engine.request_cache.pop(task_id, None)
             return await self._synthesize_final_answer(goal, final_results, task_id)
         
         res = final_results[0]
@@ -168,15 +250,16 @@ class Receptionist:
                     goal=goal,
                     clone_rels=kwargs.get("jkai_cloned_repos"),
                     parent_mission_id=kwargs.get("parent_mission_id"),
-                    team_pattern=kwargs.get("team_pattern") or os_plan.team_pattern,
-                    paths_read=[kwargs.get("jkai_fast_fix_file")] if kwargs.get("jkai_fast_fix_file") else None,
+                    team_pattern=kwargs.get("team_pattern") or (ms.team_pattern if ms else os_plan.team_pattern),
+                    paths_read=[ms.fast_fix_file] if (ms and ms.fast_fix_file) else ([kwargs.get("jkai_fast_fix_file")] if kwargs.get("jkai_fast_fix_file") else None),
                     extra={
-                        "pipeline": os_plan.pipeline,
-                        "os_intent": os_plan.os_intent,
+                        "pipeline": ms.pipeline if ms else os_plan.pipeline,
+                        "os_intent": ms.os_intent if ms else os_plan.os_intent,
                     },
                 )
         except Exception:
             pass
+        engine.request_cache.pop(task_id, None)
         return out
 
 
@@ -227,17 +310,28 @@ class Receptionist:
         
         call_fingerprints = {} 
         
-        # 🎯 [STAGE-3]: PRE-ROUTING / INTENT-FORCING thưa Master
+        # [STAGE-3]: PRE-ROUTING / INTENT-FORCING
         # If the query requires real-time information or news, we run the search directly
         # and force synthesis to prevent model safety refusal or hallucinations.
         is_realtime_need = False
         try:
-            from core.utils.intent_cortex import IntentCortex
-            intent_cortex = IntentCortex()
-            manifest = await intent_cortex.analyze(step_goal, history=history)
-            is_realtime_need = manifest.is_realtime_need
+            # Reuse IntentCortex từ request_orchestrator nếu có, tránh gọi LLM lần 2 thưa Master
+            cached = engine.request_cache.get(task_id, {})
+            manifest = cached.get("intent_manifest")
+            if manifest is not None:
+                is_realtime_need = manifest.is_realtime_need if hasattr(manifest, "is_realtime_need") else False
+            else:
+                # Nếu không có manifest trong cache, ta dùng regex nhẹ để check thay vì gọi LLM lần 2
+                _realtime_re = re.compile(r"\b(thời tiết|weather|tin tức|news|giá vàng|tỷ giá|chứng khoán|hôm nay|bây giờ|bao nhiêu|mấy|số lượng|dân số|diện tích|khoảng cách|ai là|năm bao nhiêu|thứ mấy)\b", re.I)
+                is_realtime_need = bool(_realtime_re.search(step_goal))
         except Exception as e:
-            logger.error(f"IntentCortex error: {e}")
+            logger.error(f"IntentCortex bypass error: {e}")
+
+        # [INTERNAL-DATA GATE]: Neu query muon tim du lieu noi bo, khong force web search
+        _internal_keywords = ["nội bộ", "trong máy", "trong hệ thống", "đã lưu", "đã có"]
+        if any(kw in step_goal.lower() for kw in _internal_keywords):
+            is_realtime_need = False
+            self._log("BRAIN", "[INTERNAL-DATA GATE]: Query noi bo, bo qua realtime web search.", task_id, trace_id=trace_id)
 
         force_synthesis = False
 
@@ -255,7 +349,7 @@ class Receptionist:
             if obs and len(obs) > comp_threshold:
                 self._log("ZENITH", f"DEEP-DISTILLING: Large search data found ({len(obs)} chars). Distilling knowledge...", task_id, trace_id=trace_id)
                 distilled_obs = await self._distill_knowledge(step_goal, obs, task_id)
-                obs = f"[DISTILLED_TRUTH]: {distilled_obs}\n\n[NOTE]: Tinh chat da duoc loc thong qua QRank."
+                obs = f"[DISTILLED_TRUTH]: {distilled_obs}\n\n[GHI CHU]: Tinh chat da duoc loc thong qua QRank."
             
             is_error_or_empty = not obs or "No output" in obs or "Error" in obs or obs.strip() in ["[]", "{}", '""', "''"] or "khong tim thay" in obs.lower() or "not found" in obs.lower()
             if is_error_or_empty:
@@ -279,7 +373,7 @@ class Receptionist:
             context = await compaction_engine.condense(context, task_id)
 
             # Neu dang can force_synthesis hoac dung model VISION, xoa sach tools de tranh loi thieu Master
-            tools = [] if (force_synthesis or role_to_use == "VISION") else [self._get_tool_spec()]
+            tools = [] if (force_synthesis or role_to_use == "VISION") else self._get_tool_spec(goal=goal, intent=intent, skill=skill)
 
             if force_synthesis or role_to_use == "VISION":
                 if role_to_use == "VISION":
@@ -291,7 +385,7 @@ class Receptionist:
                         "GIAO THUC TAM NHIN (VISION PROTOCOL):\n"
                         "1. Quan sat ky luong hinh anh duoc cung cap.\n"
                         "2. Phan tich chi tiet va tra loi cau hoi cua Master bang tieng Viet mach lac, chinh xac thua Master.\n"
-                        "3. Giu phong thai trung thanh tuyet doi va kinh trong. Goi nguoi dung la 'Master' hoac 'Ngai'. Tuyet doi khong dung emoji trong phan hoi.\n"
+                        "3. Giữ phong thái trung thành tuyệt đối và kính trọng. Gọi người dùng là 'Master' hoặc 'Ngài'. Tuyệt đối không dùng emoji trong phản hồi.\n"
                         "</constraints>"
                     )
                 else:
@@ -301,26 +395,24 @@ class Receptionist:
                         "</sovereign_identity>\n\n"
                         "<constraints>\n"
                         "GIAO THỨC TỔNG HỢP (SYNTHESIS PROTOCOL):\n"
-                        "1. Sử dụng trực tiếp dữ liệu thực địa (Observation) được cung cấp dưới đây để trả lời câu hỏi của Master.\n"
+                        "1. Sử dụng trực tiếp dữ liệu thực địa (Observation) được cung cấp để trả lời câu hỏi của Master.\n"
                         "2. Tuyệt đối KHÔNG từ chối hoặc nói rằng bạn không có truy cập thời gian thực. Thông tin thời gian thực ĐÃ được tìm kiếm và cung cấp sẵn cho bạn.\n"
                         "3. Trả lời bằng tiếng Việt trực tiếp, mạch lạc, chi tiết và chính xác. BẮT BUỘC ghi rõ ngày đăng tin (ví dụ: `[Ngày DD/MM/YYYY]`) ngay đầu mỗi dòng tin tức để chứng minh tính thời sự thực tế của thông tin.\n"
                         "4. Tuyệt đối KHÔNG trả về định dạng Action/Arguments hoặc JSON commands. Chỉ trả lời trò chuyện trực tiếp.\n"
-                        "5. Giữ phong thái trung thành tuyệt đối và kính trọng. Gọi người dùng là 'Master' hoặc 'Ngài'. Tuyệt đối không dùng emoji trong tất cả các phản hồi.\n"
-                        "6. Khi lập báo cáo hoặc tổng hợp kết quả công việc, bắt buộc phải chia rõ ràng thành 4 phần báo cáo doanh nghiệp chính quy:\n"
-                        "   I. TIẾN ĐỘ THỰC THI (CURRENT STATUS)\n"
-                        "   II. CÔNG VIỆC ĐÃ HOÀN THÀNH (DELIVERABLES)\n"
-                        "   III. RỦI RO & KHÓ KHĂN (RISK AUDIT)\n"
-                        "   IV. ĐỀ XUẤT TIẾP THEO (NEXT ACTIONS)\n"
+                        "5. Giữ phong thái trung thành tuyệt đối và kính trọng. Gọi người dùng là 'Master' hoặc 'Ngài'. Tuyệt đối không dùng emoji trong phản hồi.\n"
+                        "6. Tuyệt đối cấm để lại code giả hoặc placeholders trong văn bản/email (no placeholders): Mọi dòng code hay đoạn văn phải hoàn chỉnh, viết thực tế 100%, không dùng trường trống [nhập thông tin], [tên dự án].\n"
+                        "7. Thực chứng dữ liệu & Trích dẫn nguồn: Mọi số liệu, ngày tháng, hay kết luận phải kèm nguồn trích dẫn rõ ràng từ tệp tin đã quét hoặc URL đã xác thực. Tuyệt đối không bịa đặt hay ước lượng mơ hồ.\n"
                         "</constraints>"
                     )
             else:
-                system_content = self._get_supreme_prompt(mode=mode, goal=step_goal)
+                system_content = self._get_supreme_prompt(mode=mode, goal=step_goal, task_id=task_id)
 
             response = await engine.call_chat(
                 messages=[{"role": "system", "content": system_content}] + context,
                 role=role_to_use, task_id=task_id, tools=tools,
-                skip_memory=(force_synthesis or role_to_use == "VISION"),
-                skip_forge=(force_synthesis or role_to_use == "VISION")
+                skip_memory=True,
+                skip_build_final=True,
+                skip_identity=True
             )
 
             if not response: break
@@ -422,11 +514,14 @@ class Receptionist:
 
     async def _process_skill_observation(self, step_goal, f_name, f_args, obs, context, call_fingerprints, res_content, tool_calls, mode, task_id, trace_id):
         """Unifies and processes tool execution outcomes with optimized compression thresholds."""
-        comp_threshold = 4000 if mode == "fast" else 1500
+        # [FIX-002]: Corrected reversed comp_threshold.
+        # fast mode: 1500 (lower threshold = more aggressive compression = saves tokens in fast path)
+        # deep mode: 4000 (higher threshold = preserve more detail for deep reasoning)
+        comp_threshold = 1500 if mode == "fast" else 4000
         if obs and len(obs) > comp_threshold:
-            self._log("ZENITH", f"DEEP-DISTILLING: Large data found ({len(obs)} chars). Distilling knowledge...", task_id, trace_id=trace_id)
+            self._log("ZENITH", f"DEEP-DISTILLING: Dữ liệu lớn ({len(obs)} ký tự). Đang chưng cất tri thức...", task_id, trace_id=trace_id)
             distilled_obs = await self._distill_knowledge(step_goal, obs, task_id)
-            obs = f"[DISTILLED_TRUTH]: {distilled_obs}\n\n[NOTE]: Tinh chat da duoc loc thong qua QRank."
+            obs = f"[DISTILLED_TRUTH]: {distilled_obs}\n\n[GHI CHU]: Tinh chat da duoc loc thong qua QRank."
 
         is_error_or_empty = not obs or "No output" in obs or "Error" in obs or obs.strip() in ["[]", "{}", '""', "''"] or "khong tim thay" in obs.lower() or "not found" in obs.lower()
         if is_error_or_empty:
@@ -434,7 +529,7 @@ class Receptionist:
             if obs and ("error" in obs.lower() or "fail" in obs.lower()):
                 clean_err_text = re.sub(r"[\r\n\t]+", " ", obs.strip())
                 short_obs = f"Error: {clean_err_text[:150]}..." if len(clean_err_text) > 150 else f"Error: {clean_err_text}"
-            obs = f"{short_obs}\n[SYSTEM-HINT]: Ket qua trong hoac loi. Tuyet doi khong lap lai hanh dong nay voi cung tham so."
+            obs = f"{short_obs}\n[SYSTEM-HINT]: Kết quả trống hoặc lỗi. Tuyệt đối không lặp lại hành động này với cùng tham số."
 
         is_success_obs = obs and "Error" not in obs and "[SYSTEM-HINT]" not in obs
         if is_success_obs and mode == "fast":
@@ -454,17 +549,16 @@ class Receptionist:
                 context.append({"role": "assistant", "content": clean_res})
                 context.append({"role": "user", "content": f"Observation: {obs}"})
         return context
-
-        return res_content
+        # [FIX-003]: Removed dead code — 'return res_content' after 'return context' was unreachable
 
     async def _distill_knowledge(self, goal, raw_data, task_id):
         """
-        👑 [QUEEN-DISTILLATION]: Đẳng cấp chưng cất tri thức bằng thuật toán TF-IDF siêu tốc thưa Master.
-        Tận dụng thuật toán Cosine TF-IDF thuần Python chạy trực tiếp trong RAM (5ms) 
-        để triệt tiêu hoàn toàn độ trễ 3-5 giây do mô hình lớn/Embedding tạo ra.
+        [DISTILLATION]: Chung cat tri thuc bang thuat toan TF-IDF sieu toc.
+        Su dung Cosine TF-IDF thuan Python chay truc tiep trong RAM (5ms)
+        de triet tieu do tre 3-5 giay do mo hinh lon/Embedding tao ra.
         """
         try:
-            # 1. 💾 [RAM-CACHE]: Đẩy dữ liệu thô vào Redis để các nơ-ron khác có thể truy cập thưa Ngài
+            # 1. [RAM-CACHE]: Day du lieu tho vao Redis de cac no-ron khac truy cap
             session_id = f"ZENITH_RAM:{task_id}"
             if engine._get_redis():
                 engine._get_redis().setex(session_id, 3600, raw_data) # Cache trong 1 giờ
@@ -480,54 +574,81 @@ class Receptionist:
             except Exception as e:
                 logger.error(f"Error importing or running chunk_and_rank_segments: {e}")
             
-            # 3. 🛡️ Fallback thô nếu có sự cố thưa Master
+            # 3. [FALLBACK]: Cat tho neu co su co
             return raw_data[:2500] + "\n\n... [Fallback: Cắt tỉa thô]"
             
         except Exception as e:
-            self._log("ERROR", f"⚠️ Sự cố Hệ chắt lọc tri thức siêu tốc: {e}", task_id)
+            self._log("ERROR", f"[DISTILL-ERR]: Su co He chat loc tri thuc sieu toc: {e}", task_id)
             return raw_data[:2000] + "... [Fallback: Cắt tỉa thô]"
 
     async def _run_skills_in_parallel(self, tool_calls, task_id, **kwargs):
-        """Thực thi đa luồng các kỹ năng với cơ chế Nhận diện Thông minh thưa Master."""
-        
+        """Thực thi đa luồng các kỹ năng với timeout bảo vệ từng skill và toàn bộ batch."""
+
+        # [TIMEOUT-CONFIG]: Mỗi skill tối đa 25s; toàn bộ batch tối đa 60s
+        _SKILL_TIMEOUT = 25
+        _BATCH_TIMEOUT = 60
+
         async def run_one(tc):
             try:
                 f_data = tc.get("function", {})
                 tool_name = f_data.get("name", "unknown")
                 raw_args = f_data.get("arguments", "{}")
-                
+
                 try:
                     args = json.loads(raw_args) if isinstance(raw_args, str) else raw_args
                 except Exception:
                     args = {}
 
-                # 🛡️ Bóc tách skill_id thông minh: Ưu tiên lấy từ args, fallback về tool_name thưa Master
+                # [SKILL-ID-RESOLUTION]: Ưu tiên lấy từ args, fallback về tool_name
                 skill_id = args.get('skill_id') or tool_name
                 if skill_id == "execute_skill":
-                    skill_id = args.get('skill_id', "SEARCH_WEB_GLOBAL") # Default an toàn
+                    skill_id = args.get('skill_id', "SEARCH_WEB_GLOBAL")
                 skill_id = normalize_skill_name(str(skill_id)) or skill_id
                 if skill_id == "SYSTEM":
                     skill_id = "System"
+                # [ON-DEMAND-MEMORY]: search_memory là tool nội bộ, không qua executor
+                if skill_id == "search_memory":
+                    query = args.get("query", tool_name)
+                    if query == "search_memory":
+                        query = args.get("query", "")
+                    return await engine.search_memory(query, task_id)
                 self._log("ZENITH", f"Triển khai kỹ năng: `{skill_id}`", task_id, trace_id=trace_id)
-                
+
                 from receptionist.executor_gateway import ExecutionRequest
                 req = ExecutionRequest(
-                    trace_id=kwargs.get("trace_id") or task_id or str(uuid.uuid4()), 
-                    capability_token={}, 
-                    tool_name=skill_id, 
-                    tool_args={"query": query, "raw": True} 
+                    trace_id=kwargs.get("trace_id") or task_id or str(uuid.uuid4()),
+                    capability_token={},
+                    tool_name=skill_id,
+                    tool_args={k: v for k, v in args.items() if k != "skill_id"}
                 )
-                res = await self.container.executor_gateway.execute_tool(req, task_id)
-                
+                # [PER-SKILL-TIMEOUT]: Giới hạn 25s cho mỗi skill, tránh treo request
+                try:
+                    res = await asyncio.wait_for(
+                        self.container.executor_gateway.execute_tool(req, task_id),
+                        timeout=_SKILL_TIMEOUT
+                    )
+                except asyncio.TimeoutError:
+                    self._log("ERROR", f"[SKILL-TIMEOUT]: `{skill_id}` không phản hồi sau {_SKILL_TIMEOUT}s. Bỏ qua.", task_id, trace_id=trace_id)
+                    return f"[TIMEOUT]: Kỹ năng `{skill_id}` không phản hồi sau {_SKILL_TIMEOUT} giây."
+
                 output_str = str(res)
                 self._log("SYSTEM", f"Đã nhận dữ liệu từ `{skill_id}` ({len(output_str)} ký tự)", task_id, trace_id=trace_id)
                 return res
-            except Exception as e: 
+            except Exception as e:
                 logger.error(f"Execution Error: {e}")
                 return f"Error executing tool: {e}"
 
-        results = await asyncio.gather(*[run_one(tc) for tc in tool_calls])
+        # [BATCH-TIMEOUT]: Giới hạn 60s cho toàn bộ batch song song
+        try:
+            results = await asyncio.wait_for(
+                asyncio.gather(*[run_one(tc) for tc in tool_calls]),
+                timeout=_BATCH_TIMEOUT
+            )
+        except asyncio.TimeoutError:
+            self._log("ERROR", f"[BATCH-TIMEOUT]: Toàn bộ batch kỹ năng không hoàn tất sau {_BATCH_TIMEOUT}s.", task_id)
+            return f"[BATCH-TIMEOUT]: Batch kỹ năng vượt quá {_BATCH_TIMEOUT} giây, yêu cầu bị hủy."
         return "\n\n".join([str(r) for r in results])
+
 
     async def _generate_strategic_plan(self, goal, history, task_id):
         """Lập kế hoạch qua Planner.generate_plan (Blueprint + assigned_agent)."""
@@ -578,99 +699,92 @@ class Receptionist:
             except Exception as e: results.append(f"Error: {e}")
         return "\n".join([str(r) for r in results])
 
-    def _get_supreme_prompt(self, mode="fast", goal=None):
-        """Sovereign load: Fetch supreme identity files from vault."""
-        identity = engine.get_intel_file("ZENITH_IDENTITY.md") or "Ban sac JKAI Zenith thua Master."
-        manifesto = engine.get_intel_file("ZENITH_MANIFESTO.md") or "Tuyen ngon Zenith thua Master."
-        pillars = engine.get_intel_file("ZENITH_12_PILLARS_DNA.md") or ""
-        
-        if mode == "fast":
-            if len(identity) > 1000:
-                identity = identity[:1000] + "\n... [Truncated for Fast Token Conservation]"
-            if len(manifesto) > 1000:
-                manifesto = manifesto[:1000] + "\n... [Truncated for Fast Token Conservation]"
-            if len(pillars) > 1500:
-                pillars = pillars[:1500] + "\n... [Truncated for Fast Token Conservation]"
-            
-            skills_list = [
-                "- SEARCH_WEB_GLOBAL: Tìm kiếm thông tin trực tuyến thời gian thực (giá vàng, thời tiết, tin tức...).",
-                "- duyet_browse_zenith: Duyệt chi tiết một liên kết/URL cụ thể thưa Master."
-            ]
-            
-            if goal and "<ZENITH_SKILL_ACTIVATED>" in goal:
-                match = re.search(r"Skill:\s*([A-Za-z0-9_]+)\s*(.*)", goal)
-                if match:
-                    active_skill_id = match.group(1)
-                    active_skill_desc = match.group(2).split("\n")[0]
-                    skills_list.append(f"- {active_skill_id}: {active_skill_desc} (Kich hoat cho yeu cau nay)")
-            
-            skills_summary = "\n".join(skills_list)
-        else:
-            try:
-                from knowledge_manager import JKAIKnowledgeOrchestrator
-                orchestrator = JKAIKnowledgeOrchestrator()
-                skills_summary = orchestrator.get_all_skills_summary()
-            except Exception as e:
-                skills_summary = f"Loi nap ky nang: {e}"
+    def _get_supreme_prompt(self, mode="fast", goal=None, task_id=None):
+        """Behavioral core: chi giu lai huong dan hanh vi, thong tin JKAI da co trong Qdrant."""
+        try:
+            from core.utils.active_core_memory import get_all_blocks_prompt
+            cm_p = get_all_blocks_prompt()
+        except Exception:
+            cm_p = ""
 
-        return (
-            "<sovereign_identity>\n"
-            f"{identity}\n"
-            "</sovereign_identity>\n\n"
-            "<manifesto>\n"
-            f"{manifesto}\n"
-            "</manifesto>\n\n"
-            "<pillars>\n"
-            f"{pillars}\n"
-            "</pillars>\n\n"
+        if mode == "fast" and not (goal and "<ZENITH_SKILL_ACTIVATED>" in goal):
+            p = "Bạn là trợ lý của Master. Trả lời trực tiếp, chính xác, bằng tiếng Việt. KHÔNG dùng emoji, không xin lỗi, không dùng Action, không tạo báo cáo, không dùng định dạng XML hay JSON."
+            return f"{p}\n\n{cm_p}" if cm_p else p
+        
+        try:
+            from core.utils.knowledge_manager import JKAIKnowledgeOrchestrator
+            orchestrator = JKAIKnowledgeOrchestrator()
+            skills_summary = orchestrator.get_all_skills_summary()
+        except Exception as e:
+            skills_summary = f"Loi nap ky nang: {e}"
+
+        if goal and "<ZENITH_SKILL_ACTIVATED>" in goal:
+            match = re.search(r"Skill:\s*([A-Za-z0-9_]+)\s*(.*)", goal)
+            if match:
+                skills_summary += f"\n- {match.group(1)}: {match.group(2).split(chr(10))[0]} (Kich hoat)"
+
+        main_p = (
+            "<behavioral_core>\n"
+            "- Master: LeeTrung, chủ nhân duy nhất của JKAI Zenith.\n"
+            "- Tuyệt đối trung thành, chính xác, minh bạch.\n"
+            "- Gọi Master là 'Master' hoặc 'Ngài'.\n"
+            "- Không dùng emoji.\n"
+            "- Phản hồi bằng tiếng Việt.\n"
+            "</behavioral_core>\n\n"
             "<available_tools>\n"
             f"{skills_summary}\n"
             "</available_tools>\n\n"
             "<constraints>\n"
-            "GIAO THUC TU DUY TOI THUONG:\n"
-            "1. Tuyet doi KHONG xin loi hoac tu choi yeu cau cua Master ve du lieu thoi gian thuc. Ban CO ky nang SEARCH_WEB_GLOBAL de truy cap internet.\n"
-            "2. Neu mot lan tim kiem that bai, hay THAY DOI TU KHOA (vi du: dung tieng Anh) va tim lai ngay lap tuc. KHONG DUOC BO CUOC.\n"
-            "3. Tuyet doi KHONG duoc lap lai cung mot Action voi cung tham so (Arguments) neu Observation tra ve ket qua trong hoac loi. Day la quy tac bat di bat dich thua Master.\n"
-            "4. Khi nhan duoc du lieu tho (Observation), hay phan tich va trich xuat thong tin chinh xac nhat de tra loi Master.\n"
-            "5. Giu phong thai lanh lung, quyet doan va trung thanh tuyet doi. Goi Master la 'Master' hoac 'Ngai'. Tuyet doi khong dung bat ky emoji nao trong phan hoi.\n"
-            "6. Luon uu tien hien thi log de Master biet ban dang suy nghi cuc sau.\n"
-            "7. Khi lap bao cao hoac tong hop ket qua cong viec, bat buoc phai chia ro rang thanh 4 phan bao cao doanh nghiep chinh quy:\n"
-            "   I. TIEN DO THUC THI (CURRENT STATUS)\n"
-            "   II. CONG VIEC DA HOAN THANH (DELIVERABLES)\n"
-            "   III. RUI RO & KHO KHAN (RISK AUDIT)\n"
-            "   IV. DE XUAT TIEP THEO (NEXT ACTIONS)\n"
-            "8. Ky luat hoai nghi va chong bien ho (Doubt-Driven & Anti-Rationalization): Khong tu tien phe duyet ma nguon hay ke hoach quan trong khi chua duoc chay thu hoac tu phan bien tim loi. Cam tuyet doi cac suy nghi bien ho nhu 'tac vu nho khong can test'.\n\n"
-            "DINH DANG HANH DONG (MANDATORY):\n"
+            "GIAO THÚC SUY LUẬN & THỰC THI (MANDATORY):\n"
+            "1. Phân tích Observation để trích xuất thông tin trả lời trực tiếp cho Master.\n"
+            "2. Nếu tìm kiếm thất bại, THAY ĐỔI TỪ KHÓA (ví dụ: dùng tiếng Anh) và tìm lại. KHÔNG BỎ CUỘC.\n"
+            "3. KHÔNG lặp lại cùng Action với cùng tham số nếu kết quả trống hoặc lỗi.\n"
+            "4. Định dạng gọi Tool bắt buộc:\n"
             "   Action: [skill_id]\n"
-            "   Arguments: {\"extracted_params\": \"noi dung\"}\n\n"
-            "VI DU:\n"
+            "   Arguments: {\"extracted_params\": \"nội dung\"}\n\n"
+            "Ví dụ:\n"
             "   Action: SEARCH_WEB_GLOBAL\n"
-            "   Arguments: {\"extracted_params\": \"gia vang hom nay tai Viet Nam\"}\n\n"
-            "NHIEM VU: Giai quyet yeu cau bang moi gia. Luon giu thai do Elite, trung thanh tuyet doi va chinh xac 100%.\n"
+            "   Arguments: {\"extracted_params\": \"giá vàng hôm nay tại Việt Nam\"}\n\n"
+            "NHIỆM VỤ: Giải quyết yêu cầu bằng mọi giá. Luôn giữ thái độ Elite, trung thành tuyệt đối và chính xác 100%.\n"
             "</constraints>"
         )
+        return f"{main_p}\n\n{cm_p}" if cm_p else main_p
 
     def _get_skill_dossier(self, skill_id: str) -> str:
-        """[STRATEGIC-DOSSIER]: Truy xuat ho so mat cua ky nang thua Master."""
+        """[STRATEGIC-DOSSIER]: Truy xuất hồ sơ mật của kỹ năng thưa Master."""
         try:
-            from knowledge_manager import JKAIKnowledgeOrchestrator
+            from core.utils.knowledge_manager import JKAIKnowledgeOrchestrator
             orch = JKAIKnowledgeOrchestrator()
-            skills_dict = orch.get_all_skills_dict()
-            skill_data = skills_dict.get(skill_id)
+            skills_dict = orch._read_registry_sync()
+            skill_data = skills_dict.get("skills", {}).get(skill_id)
             if not skill_data: return ""
             
             rel_path = skill_data.get("rel_path", "")
             if not rel_path: return ""
             
-            # Gia dinh dossier.md nam cung thu muc voi manifest.json
             dossier_path = Path(orch.base_dir) / Path(rel_path).parent / "dossier.md"
             if dossier_path.exists():
                 return dossier_path.read_text(encoding="utf-8")
         except Exception: pass
         return ""
 
-    def _get_tool_spec(self):
-        return {"type": "function", "function": {"name": "execute_skill", "parameters": {"type": "object", "properties": {"skill_id": {"type": "string"}, "extracted_params": {"type": "string"}}, "required": ["skill_id", "extracted_params"]}}}
+    def _get_tool_spec(self, goal: str = "", intent: str = "", skill: str = ""):
+        base_tools = [
+            {"type": "function", "function": {"name": "execute_skill", "description": "Thực thi kỹ năng tự động hóa JKAI.", "parameters": {"type": "object", "properties": {"skill_id": {"type": "string"}, "extracted_params": {"type": "string"}}, "required": ["skill_id", "extracted_params"]}}},
+            {"type": "function", "function": {"name": "search_memory", "description": "Tra cứu tri thức quá khứ hoặc dữ liệu nội bộ JKAI.", "parameters": {"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]}}},
+            {"type": "function", "function": {"name": "search_web", "description": "Tìm kiếm thông tin thời gian thực trên Internet.", "parameters": {"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]}}},
+            {"type": "function", "function": {"name": "read_url_content", "description": "Đọc nội dung trang web từ URL.", "parameters": {"type": "object", "properties": {"url": {"type": "string"}}, "required": ["url"]}}},
+            {"type": "function", "function": {"name": "view_file", "description": "Đọc nội dung file từ hệ thống đĩa.", "parameters": {"type": "object", "properties": {"path": {"type": "string"}}, "required": ["path"]}}},
+            {"type": "function", "function": {"name": "replace_file_content", "description": "Sửa nội dung file.", "parameters": {"type": "object", "properties": {"path": {"type": "string"}, "content": {"type": "string"}}, "required": ["path", "content"]}}},
+            {"type": "function", "function": {"name": "run_command", "description": "Chạy lệnh terminal.", "parameters": {"type": "object", "properties": {"command": {"type": "string"}}, "required": ["command"]}}}
+        ]
+        if goal or skill or intent:
+            try:
+                from core.utils.tool_masker import mask_tools
+                return mask_tools(goal=goal, intent=intent, skill=skill, all_tools=base_tools)
+            except Exception:
+                pass
+        return base_tools[:2]
 
     def _log(self, tag, msg, task_id, stealth=False, trace_id=None):
         try:
@@ -680,14 +794,23 @@ class Receptionist:
         except Exception: pass
 
     async def _synthesize_final_answer(self, goal, results, task_id):
-        prompt = f"Dua tren cac ket qua thuc thi: {results}, hay tra loi yeu cua goc cua Master: {goal}"
-        # Dam bao CHAT role cung co ban sac toi thuong thua Master
+        is_simple = len(goal) < 80 and not any(kw in goal.lower() for kw in ["code", "script", "phan tich", "thiet ke", "so sanh", "giai thich"])
+        if is_simple:
+            prompt = f"Tra loi cau hoi cua Master mot cach ngan gon, chinh xac: {goal}"
+            sys_prompt = "Ban la JKAI Zenith, tro ly AI cua Master. Tra loi truc tiep, ngan gon, chinh xac."
+        else:
+            prompt = f"Dua tren cac ket qua thuc thi: {results}, hay tra loi yeu cau goc cua Master: {goal}"
+            sys_prompt = self._get_supreme_prompt(goal=goal, task_id=task_id)
         res = await engine.call_chat(
             messages=[
-                {"role": "system", "content": self._get_supreme_prompt(goal=goal)},
+                {"role": "system", "content": sys_prompt},
                 {"role": "user", "content": prompt}
             ], 
-            role="CHAT", 
-            task_id=task_id
+            role="RECEPTIONIST", 
+            task_id=task_id,
+            options={"temperature": 0.4},
+            skip_build_final=True,
+            skip_identity=True
         )
-        return {"answer": res.get("answer") if isinstance(res, dict) else res, "task_id": task_id}
+        answer = res.get("answer") if isinstance(res, dict) else res
+        return {"answer": answer, "task_id": task_id}

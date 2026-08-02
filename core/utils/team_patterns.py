@@ -22,7 +22,7 @@ PATTERN_HIERARCHICAL = "hierarchical_delegation"
 _ANALYSIS_RE = re.compile(
     r"\b(phân tích|phan tich|so sánh|so sanh|đánh giá|danh gia|đối chiếu|doi chieu|"
     r"review|analyze|compare|assess|architecture|kiến trúc|kien truc|"
-    r"báo cáo|bao cao|kết luận|ket luan|roi|harness|cải tiến cho jkai|cai tien cho jkai)\b",
+    r"báo cáo|bao cao|kết luận|ket luan|harness|cải tiến cho jkai|cai tien cho jkai)\b",
     re.IGNORECASE,
 )
 _PARALLEL_RE = re.compile(

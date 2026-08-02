@@ -27,6 +27,11 @@ class Settings:
     VERSION: str = "3.2"
     BASE_DIR: str = WORKSPACE_ROOT # Đồng bộ hóa tọa độ cơ sở
 
+    # --- [OS COGNITIVE & ROUTING THRESHOLDS] ---
+    OS_COST_THRESHOLD: float = float(os.getenv("OS_COST_THRESHOLD", "3.0"))
+    OS_STALE_CACHE_TTL: float = float(os.getenv("OS_STALE_CACHE_TTL", "5.0"))
+    OS_OVERLOAD_CPU: int = int(os.getenv("OS_OVERLOAD_CPU", "85"))
+
     # --- [INFRASTRUCTURE & NETWORK] ---
     _ollama_default = "http://localhost:11434" if not IS_DOCKER else "http://host.docker.internal:11434"
     OLLAMA_URL: str = os.getenv("OLLAMA_URL", f"{_ollama_default}/api/generate")

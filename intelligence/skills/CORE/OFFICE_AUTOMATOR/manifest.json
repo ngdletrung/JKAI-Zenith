@@ -1,0 +1,29 @@
+{
+    "id": "OFFICE_AUTOMATOR",
+    "name": "Office Automator",
+    "name_vn": "Tự động hóa tài liệu Office",
+    "description": "Read, create, or modify Microsoft Office documents (Word docx, Excel xlsx, PowerPoint pptx) using OfficeCLI.",
+    "domain": "CORE",
+    "parameters": {
+        "type": "object",
+        "properties": {
+            "action": {
+                "type": "string",
+                "description": "Action to perform: 'create' (create blank file), 'dump' (extract text/data), 'merge' (fill template with data)."
+            },
+            "file_path": {
+                "type": "string",
+                "description": "Path to the target Office document or template file."
+            },
+            "output_path": {
+                "type": "string",
+                "description": "Path to the output file (required for merge, optional for dump)."
+            },
+            "data": {
+                "type": "object",
+                "description": "JSON object of data for merge templates (e.g. {'name':'John'})."
+            }
+        },
+        "required": ["action", "file_path"]
+    }
+}

@@ -1,0 +1,3577 @@
+{
+  "id": "m_ZENITH_1207-0959_fd3c25",
+  "title": "hệ thống dữ liệu nội bộ thế nào ?",
+  "goal": "hệ thống dữ liệu nội bộ thế nào ?\n\n[KẾT QUẢ]\nHệ thống dữ liệu nội bộ của JKAI Zenith được tổ chức theo kiến trúc phân tầng (Layered Architecture) để đảm bảo tính nhất quán, khả năng truy xuất và an toàn. Cụ thể:\n\n1. **Lớp Lưu Trữ Dữ Liệu (Persistence Layer)**: Sử dụng các cơ sở dữ liệu quan hệ và phi quan hệ.\n   - `postgres`: Lưu trữ cấu trúc dữ liệu chính thống (knowledge graph, trạng thái hệ thống).\n   - `mongodb`: Lưu trữ tài liệu không cấu trúc (log, nhật ký hoạt động, ngữ cảnh chat dài hạn).\n\n2. **Lớp Vector & Tìm kiếm Semantics**: Sử dụng `qdrant` làm trung tâm tìm kiếm vector.\n   - Chứa dữ liệu được mã hóa thành vector từ các văn bản trong hệ thống.\n   - Hỗ trợ truy xuất kiến thức (RAG) cho các câu hỏi phức tạp dựa trên ngữ nghĩa thay vì chỉ khớp từ khóa.\n\n3. **Lớp Cache & Trạng thái Runtime**: Sử dụng `redis` làm bus sự kiện tốc độ cao và bộ nhớ đệm trạng thái.\n   - Lưu trữ kết quả tính toán tạm thời, session state của các tác vụ đang chạy để tránh trùng lặp và tăng hiệu suất phản hồi.\n\n4. **Lớp Bảo mật & Kiểm soát Truy cập**: Được quản lý bởi `zenith-file-warden` và cơ chế xác thực nội bộ.\n   - Đảm bảo toàn vẹn dữ liệu (file integrity) và ngăn chặn truy cập trái phép vào các file cấu hình nhạy cảm hoặc mã nguồn gốc.\n\n5. **Lớp Xử Lý & Triết Học**: Dữ liệu được xử lý bởi `ai-brain` thông qua quy trình ReAct và Forge Loop.\n   - Các dữ liệu thô (raw data) từ Docker, Web Browser hay Telegram sẽ được lọc, làm sạch và chuyển đổi thành ngữ nghĩa trước khi lưu vào các lớp trên.\n\n*Lưu ý: Cấu trúc này tuân thủ nguyên tắc 'Cognitive Autonomy' và 'Architectural Awareness', cho phép hệ thống tự sửa chữa và tối ưu hóa dựa trên dữ liệu thu thập được.*",
+  "status": "completed",
+  "ts": 1783825277.123301,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "hệ thống dữ liệu nội bộ thế nào ?",
+      "ts": 1783825140.904029,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1207-0959_fd3c25` initialized | Trace: `trace_fd3c25`. Runtime ready.",
+      "ts": 1783825140.9066374,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: MISSION-CTX resume `default` — skipped (internal data query)",
+      "ts": 1783825152.9361026,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1783825152.9387321,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1783825152.9435868,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [FAST-PIPELINE]: Khởi động RECEPTIONIST ReAct (3 turns).",
+      "ts": 1783825153.027825,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "🔒 [INTERNAL-DATA GATE]: Query nội bộ → skip KB search, force tool call.",
+      "ts": 1783825153.0769162,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "✅ [FAST-PIPELINE]: Hoàn tất ReAct loop cho task ZENITH_1207-0959_fd3c25",
+      "ts": 1783825153.3065512,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ")**",
+      "ts": 1783825212.3126857,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ":",
+      "ts": 1783825212.4352937,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Sử",
+      "ts": 1783825212.5579019,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dụng",
+      "ts": 1783825212.6798253,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " các",
+      "ts": 1783825212.8024852,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cơ",
+      "ts": 1783825212.9252155,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " sở",
+      "ts": 1783825213.0467906,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dữ",
+      "ts": 1783825213.1699188,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " liệu",
+      "ts": 1783825213.2965696,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " quan",
+      "ts": 1783825213.4182189,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hệ",
+      "ts": 1783825213.5409255,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và",
+      "ts": 1783825213.667232,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " phi",
+      "ts": 1783825213.7899764,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " quan",
+      "ts": 1783825213.9122028,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hệ",
+      "ts": 1783825214.0347407,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\",
+      "ts": 1783825214.1578,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n",
+      "ts": 1783825214.2819757,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "   -",
+      "ts": 1783825214.5299964,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " `",
+      "ts": 1783825214.6555874,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "postgres",
+      "ts": 1783825214.7787075,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "`:",
+      "ts": 1783825214.900821,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Lưu",
+      "ts": 1783825215.0228748,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trữ",
+      "ts": 1783825215.1450183,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cấu",
+      "ts": 1783825215.2676673,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trúc",
+      "ts": 1783825215.393201,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dữ",
+      "ts": 1783825215.5130334,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " liệu",
+      "ts": 1783825215.6345482,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " chính",
+      "ts": 1783825215.7559822,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thống",
+      "ts": 1783825215.878412,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " (",
+      "ts": 1783825216.000448,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "knowledge",
+      "ts": 1783825216.122586,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " graph",
+      "ts": 1783825216.2456615,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ",",
+      "ts": 1783825216.3691406,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trạng",
+      "ts": 1783825216.4926968,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thái",
+      "ts": 1783825216.6152391,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hệ",
+      "ts": 1783825216.739813,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thống",
+      "ts": 1783825216.8627512,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ").\\",
+      "ts": 1783825216.984934,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n",
+      "ts": 1783825217.1084313,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "   -",
+      "ts": 1783825217.352254,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " `",
+      "ts": 1783825217.4768457,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "mongodb",
+      "ts": 1783825217.5972009,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "`:",
+      "ts": 1783825217.7211206,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Lưu",
+      "ts": 1783825217.847017,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trữ",
+      "ts": 1783825217.9710386,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tài",
+      "ts": 1783825218.0931294,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " liệu",
+      "ts": 1783825218.2162714,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " không",
+      "ts": 1783825218.3392105,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cấu",
+      "ts": 1783825218.46152,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trúc",
+      "ts": 1783825218.5850358,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " (",
+      "ts": 1783825218.7080069,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "log",
+      "ts": 1783825218.8303351,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ",",
+      "ts": 1783825218.9532437,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nhật",
+      "ts": 1783825219.075816,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ký",
+      "ts": 1783825219.1984723,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hoạt",
+      "ts": 1783825219.3208973,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " động",
+      "ts": 1783825219.4451,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ",",
+      "ts": 1783825219.5689752,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ngữ",
+      "ts": 1783825219.69086,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cảnh",
+      "ts": 1783825219.8126078,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " chat",
+      "ts": 1783825219.9346678,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dài",
+      "ts": 1783825220.0567632,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hạn",
+      "ts": 1783825220.1791863,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ").\\",
+      "ts": 1783825220.3023143,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n",
+      "ts": 1783825220.425513,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\\n",
+      "ts": 1783825220.547818,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "2",
+      "ts": 1783825220.6693246,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".",
+      "ts": 1783825220.7909038,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " **",
+      "ts": 1783825220.9145603,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "L",
+      "ts": 1783825221.0375867,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ớp",
+      "ts": 1783825221.1616845,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Vector",
+      "ts": 1783825221.2854989,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " &",
+      "ts": 1783825221.4089403,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Tìm",
+      "ts": 1783825221.5328257,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " kiếm",
+      "ts": 1783825221.6554942,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Sem",
+      "ts": 1783825221.7773972,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "antics",
+      "ts": 1783825221.9012992,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "**:",
+      "ts": 1783825222.0242279,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Sử",
+      "ts": 1783825222.1492004,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dụng",
+      "ts": 1783825222.272509,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " `",
+      "ts": 1783825222.3968003,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "q",
+      "ts": 1783825222.5212643,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "dr",
+      "ts": 1783825222.6435473,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ant",
+      "ts": 1783825222.765332,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "`",
+      "ts": 1783825222.8879728,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " làm",
+      "ts": 1783825223.0112214,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trung",
+      "ts": 1783825223.1316059,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tâm",
+      "ts": 1783825223.255054,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tìm",
+      "ts": 1783825223.3771737,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " kiếm",
+      "ts": 1783825223.4994528,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " vector",
+      "ts": 1783825223.6229572,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\",
+      "ts": 1783825223.7457793,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n",
+      "ts": 1783825223.8680372,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "   -",
+      "ts": 1783825224.114569,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Ch",
+      "ts": 1783825224.2385736,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ứa",
+      "ts": 1783825224.3640857,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dữ",
+      "ts": 1783825224.486227,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " liệu",
+      "ts": 1783825224.6094694,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " được",
+      "ts": 1783825224.732078,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " mã",
+      "ts": 1783825224.8550417,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hóa",
+      "ts": 1783825224.9787617,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thành",
+      "ts": 1783825225.102862,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " vector",
+      "ts": 1783825225.2242649,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " từ",
+      "ts": 1783825225.347535,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " các",
+      "ts": 1783825225.471272,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " văn",
+      "ts": 1783825225.5950723,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " bản",
+      "ts": 1783825225.7185876,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trong",
+      "ts": 1783825225.843588,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hệ",
+      "ts": 1783825225.9648023,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thống",
+      "ts": 1783825226.0876029,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\",
+      "ts": 1783825226.2113218,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n",
+      "ts": 1783825226.3347626,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "   -",
+      "ts": 1783825226.582983,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Hỗ",
+      "ts": 1783825226.7057974,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trợ",
+      "ts": 1783825226.82879,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " truy",
+      "ts": 1783825226.9543328,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " xuất",
+      "ts": 1783825227.078364,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " kiến",
+      "ts": 1783825227.204173,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thức",
+      "ts": 1783825227.3277755,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " (",
+      "ts": 1783825227.4509702,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "R",
+      "ts": 1783825227.574611,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "AG",
+      "ts": 1783825227.6994524,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ")",
+      "ts": 1783825227.8226907,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cho",
+      "ts": 1783825227.9481492,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " các",
+      "ts": 1783825228.0711093,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " câu",
+      "ts": 1783825228.1961215,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hỏi",
+      "ts": 1783825228.3218837,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " phức",
+      "ts": 1783825228.4500926,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tạp",
+      "ts": 1783825228.5773628,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dựa",
+      "ts": 1783825228.7035024,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trên",
+      "ts": 1783825228.8257413,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ngữ",
+      "ts": 1783825228.9506454,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nghĩa",
+      "ts": 1783825229.0752406,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thay",
+      "ts": 1783825229.200046,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " vì",
+      "ts": 1783825229.325052,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " chỉ",
+      "ts": 1783825229.4480088,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " khớp",
+      "ts": 1783825229.5723176,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " từ",
+      "ts": 1783825229.695567,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " khóa",
+      "ts": 1783825229.8190072,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\",
+      "ts": 1783825229.9424977,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n",
+      "ts": 1783825230.0687165,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\\n",
+      "ts": 1783825230.1927571,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "3",
+      "ts": 1783825230.3171296,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".",
+      "ts": 1783825230.4401608,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " **",
+      "ts": 1783825230.562121,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "L",
+      "ts": 1783825230.68586,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ớp",
+      "ts": 1783825230.8085992,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Cache",
+      "ts": 1783825230.9312696,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " &",
+      "ts": 1783825231.0543559,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Tr",
+      "ts": 1783825231.1784725,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ạng",
+      "ts": 1783825231.3023076,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thái",
+      "ts": 1783825231.4265826,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Runtime",
+      "ts": 1783825231.5500996,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "**:",
+      "ts": 1783825231.673405,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Sử",
+      "ts": 1783825231.797551,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dụng",
+      "ts": 1783825231.9201534,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " `",
+      "ts": 1783825232.0432277,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "redis",
+      "ts": 1783825232.1685793,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "`",
+      "ts": 1783825232.2915418,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " làm",
+      "ts": 1783825232.4163873,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " bus",
+      "ts": 1783825232.5403454,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " sự",
+      "ts": 1783825232.6627436,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " kiện",
+      "ts": 1783825232.7860215,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tốc",
+      "ts": 1783825232.9105296,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " độ",
+      "ts": 1783825233.0349207,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ca",
+      "ts": 1783825233.1585844,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "o",
+      "ts": 1783825233.2831752,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và",
+      "ts": 1783825233.40705,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " bộ",
+      "ts": 1783825233.5326903,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nhớ",
+      "ts": 1783825233.6575837,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " đệm",
+      "ts": 1783825233.7805614,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trạng",
+      "ts": 1783825233.9039237,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thái",
+      "ts": 1783825234.0267015,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\",
+      "ts": 1783825234.150201,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n",
+      "ts": 1783825234.2759378,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "   -",
+      "ts": 1783825234.5226355,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Lưu",
+      "ts": 1783825234.6471953,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trữ",
+      "ts": 1783825234.7711675,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " kết",
+      "ts": 1783825234.8953223,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " quả",
+      "ts": 1783825235.021908,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tính",
+      "ts": 1783825235.1461658,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " toán",
+      "ts": 1783825235.270367,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tạm",
+      "ts": 1783825235.3941517,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thời",
+      "ts": 1783825235.517126,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ",",
+      "ts": 1783825235.6430395,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " session",
+      "ts": 1783825235.7668087,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " state",
+      "ts": 1783825235.8909497,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " của",
+      "ts": 1783825236.0155234,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " các",
+      "ts": 1783825236.1396463,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tác",
+      "ts": 1783825236.2645314,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " vụ",
+      "ts": 1783825236.390408,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " đang",
+      "ts": 1783825236.5145433,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " chạy",
+      "ts": 1783825236.6385026,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " để",
+      "ts": 1783825236.7616482,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tránh",
+      "ts": 1783825236.8871546,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trùng",
+      "ts": 1783825237.0121014,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lặp",
+      "ts": 1783825237.1366885,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và",
+      "ts": 1783825237.2605796,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tăng",
+      "ts": 1783825237.3848524,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hiệu",
+      "ts": 1783825237.5104053,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " suất",
+      "ts": 1783825237.6342046,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " phản",
+      "ts": 1783825237.7602358,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hồi",
+      "ts": 1783825237.8850582,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\",
+      "ts": 1783825238.0081372,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n",
+      "ts": 1783825238.1327507,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\\n",
+      "ts": 1783825238.257158,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "4",
+      "ts": 1783825238.3816798,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".",
+      "ts": 1783825238.5068219,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " **",
+      "ts": 1783825238.631738,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "L",
+      "ts": 1783825238.7540817,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ớp",
+      "ts": 1783825238.8786066,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Bảo",
+      "ts": 1783825239.0044296,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " mật",
+      "ts": 1783825239.128461,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " &",
+      "ts": 1783825239.254718,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Kiểm",
+      "ts": 1783825239.3781455,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " soát",
+      "ts": 1783825239.5030856,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Truy",
+      "ts": 1783825239.6269267,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cập",
+      "ts": 1783825239.7501366,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "**:",
+      "ts": 1783825239.874766,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Được",
+      "ts": 1783825239.998189,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " quản",
+      "ts": 1783825240.121481,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lý",
+      "ts": 1783825240.2464466,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " bởi",
+      "ts": 1783825240.3698447,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " `",
+      "ts": 1783825240.491601,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "zen",
+      "ts": 1783825240.6156197,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ith",
+      "ts": 1783825240.7396395,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "-file",
+      "ts": 1783825240.8618634,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "-",
+      "ts": 1783825240.9864397,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ward",
+      "ts": 1783825241.1103199,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "en",
+      "ts": 1783825241.2335584,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "`",
+      "ts": 1783825241.359349,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và",
+      "ts": 1783825241.4824915,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cơ",
+      "ts": 1783825241.6054268,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " chế",
+      "ts": 1783825241.7293172,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " xác",
+      "ts": 1783825241.8521252,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thực",
+      "ts": 1783825241.974081,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nội",
+      "ts": 1783825242.0985026,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " bộ",
+      "ts": 1783825242.221235,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\",
+      "ts": 1783825242.3443084,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n",
+      "ts": 1783825242.468471,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "   -",
+      "ts": 1783825242.714919,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Đảm",
+      "ts": 1783825242.8387034,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " bảo",
+      "ts": 1783825242.9632547,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " toàn",
+      "ts": 1783825243.0882385,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " vẹn",
+      "ts": 1783825243.2128246,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dữ",
+      "ts": 1783825243.3372166,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " liệu",
+      "ts": 1783825243.4623446,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " (",
+      "ts": 1783825243.5850484,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "file",
+      "ts": 1783825243.7102995,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " integrity",
+      "ts": 1783825243.83517,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ")",
+      "ts": 1783825243.9597433,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và",
+      "ts": 1783825244.084381,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ngăn",
+      "ts": 1783825244.20856,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " chặn",
+      "ts": 1783825244.331906,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " truy",
+      "ts": 1783825244.4564686,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cập",
+      "ts": 1783825244.5816855,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trái",
+      "ts": 1783825244.7066464,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " phép",
+      "ts": 1783825244.8314168,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " vào",
+      "ts": 1783825244.956432,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " các",
+      "ts": 1783825245.0813284,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " file",
+      "ts": 1783825245.2073638,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cấu",
+      "ts": 1783825245.336704,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hình",
+      "ts": 1783825245.460748,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nhạy",
+      "ts": 1783825245.583723,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cảm",
+      "ts": 1783825245.7067003,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hoặc",
+      "ts": 1783825245.830072,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " mã",
+      "ts": 1783825245.9561653,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nguồn",
+      "ts": 1783825246.0793371,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " gốc",
+      "ts": 1783825246.2026613,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\",
+      "ts": 1783825246.326734,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n",
+      "ts": 1783825246.451636,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\\n",
+      "ts": 1783825246.573921,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "5",
+      "ts": 1783825246.6983852,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".",
+      "ts": 1783825246.8237047,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " **",
+      "ts": 1783825246.9474833,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "L",
+      "ts": 1783825247.070917,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ớp",
+      "ts": 1783825247.197203,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Xử",
+      "ts": 1783825247.3216083,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Lý",
+      "ts": 1783825247.4467845,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " &",
+      "ts": 1783825247.5697198,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Tri",
+      "ts": 1783825247.6937854,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ết",
+      "ts": 1783825247.8177736,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Học",
+      "ts": 1783825247.9415965,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "**:",
+      "ts": 1783825248.067545,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " D",
+      "ts": 1783825248.1934192,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ữ",
+      "ts": 1783825248.3186493,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " liệu",
+      "ts": 1783825248.4417725,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " được",
+      "ts": 1783825248.5651016,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " xử",
+      "ts": 1783825248.6893408,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lý",
+      "ts": 1783825248.814725,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " bởi",
+      "ts": 1783825248.9395056,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " `",
+      "ts": 1783825249.0640295,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ai",
+      "ts": 1783825249.1875646,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "-br",
+      "ts": 1783825249.3125062,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ain",
+      "ts": 1783825249.4359958,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "`",
+      "ts": 1783825249.5608087,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thông",
+      "ts": 1783825249.6845894,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " qua",
+      "ts": 1783825249.808341,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " quy",
+      "ts": 1783825249.933223,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trình",
+      "ts": 1783825250.0574467,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Re",
+      "ts": 1783825250.1812222,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Act",
+      "ts": 1783825250.3068776,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và",
+      "ts": 1783825250.432105,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Forge",
+      "ts": 1783825250.5539181,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Loop",
+      "ts": 1783825250.6768198,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\",
+      "ts": 1783825250.8002288,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n",
+      "ts": 1783825250.924681,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "   -",
+      "ts": 1783825251.1751873,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Các",
+      "ts": 1783825251.3016825,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dữ",
+      "ts": 1783825251.4261665,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " liệu",
+      "ts": 1783825251.5502791,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thô",
+      "ts": 1783825251.674449,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " (",
+      "ts": 1783825251.7992456,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "raw",
+      "ts": 1783825251.9229307,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " data",
+      "ts": 1783825252.0468292,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ")",
+      "ts": 1783825252.1730688,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " từ",
+      "ts": 1783825252.2965233,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Docker",
+      "ts": 1783825252.4224336,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ",",
+      "ts": 1783825252.5464993,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Web",
+      "ts": 1783825252.6690042,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Browser",
+      "ts": 1783825252.7957304,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hay",
+      "ts": 1783825252.920304,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Telegram",
+      "ts": 1783825253.044842,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " sẽ",
+      "ts": 1783825253.1662264,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " được",
+      "ts": 1783825253.2916667,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lọc",
+      "ts": 1783825253.4162245,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ",",
+      "ts": 1783825253.5408833,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " làm",
+      "ts": 1783825253.6636858,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " sạch",
+      "ts": 1783825253.786889,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và",
+      "ts": 1783825253.9129696,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " chuyển",
+      "ts": 1783825254.037246,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " đổi",
+      "ts": 1783825254.1620207,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thành",
+      "ts": 1783825254.2874882,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ngữ",
+      "ts": 1783825254.412345,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nghĩa",
+      "ts": 1783825254.5368054,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trước",
+      "ts": 1783825254.660316,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " khi",
+      "ts": 1783825254.785322,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lưu",
+      "ts": 1783825254.9114275,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " vào",
+      "ts": 1783825255.0339458,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " các",
+      "ts": 1783825255.158902,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lớp",
+      "ts": 1783825255.283006,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trên",
+      "ts": 1783825255.4072266,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\",
+      "ts": 1783825255.5301657,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n",
+      "ts": 1783825255.6525698,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\\n",
+      "ts": 1783825255.776159,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "*L",
+      "ts": 1783825255.9013295,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ưu",
+      "ts": 1783825256.0243955,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ý",
+      "ts": 1783825256.1483412,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ":",
+      "ts": 1783825256.2720196,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Cấu",
+      "ts": 1783825256.3946552,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trúc",
+      "ts": 1783825256.516913,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " này",
+      "ts": 1783825256.641252,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tuân",
+      "ts": 1783825256.7645504,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thủ",
+      "ts": 1783825256.8885915,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nguyên",
+      "ts": 1783825257.0123265,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tắc",
+      "ts": 1783825257.134667,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " '",
+      "ts": 1783825257.2588298,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "C",
+      "ts": 1783825257.3829644,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ognitive",
+      "ts": 1783825257.5073304,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Aut",
+      "ts": 1783825257.6301568,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "onomy",
+      "ts": 1783825257.753317,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "'",
+      "ts": 1783825257.8767657,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và",
+      "ts": 1783825258.0007522,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " '",
+      "ts": 1783825258.1239169,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Arch",
+      "ts": 1783825258.2464628,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "itect",
+      "ts": 1783825258.370564,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ural",
+      "ts": 1783825258.492902,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Awareness",
+      "ts": 1783825258.615431,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "',",
+      "ts": 1783825258.7381592,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cho",
+      "ts": 1783825258.8614552,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " phép",
+      "ts": 1783825258.9853928,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hệ",
+      "ts": 1783825259.1110957,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thống",
+      "ts": 1783825259.2335978,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tự",
+      "ts": 1783825259.3566635,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " sửa",
+      "ts": 1783825259.4794357,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " chữa",
+      "ts": 1783825259.6033325,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và",
+      "ts": 1783825259.7251408,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tối",
+      "ts": 1783825259.8480523,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ưu",
+      "ts": 1783825259.9704118,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hóa",
+      "ts": 1783825260.093932,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dựa",
+      "ts": 1783825260.2174816,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trên",
+      "ts": 1783825260.3415065,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dữ",
+      "ts": 1783825260.465303,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " liệu",
+      "ts": 1783825260.58793,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thu",
+      "ts": 1783825260.711088,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thập",
+      "ts": 1783825260.833127,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " được",
+      "ts": 1783825260.9561036,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".*",
+      "ts": 1783825261.079122,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\",",
+      "ts": 1783825261.2004733,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\n  \"",
+      "ts": 1783825261.571631,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "action",
+      "ts": 1783825261.6969109,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "_plan",
+      "ts": 1783825261.8171134,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\":",
+      "ts": 1783825261.9405558,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " [",
+      "ts": 1783825262.063995,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\n    \"",
+      "ts": 1783825262.4369357,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Ki",
+      "ts": 1783825262.5603576,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ểm",
+      "ts": 1783825262.6833858,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tra",
+      "ts": 1783825262.807295,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lại",
+      "ts": 1783825262.929525,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cấu",
+      "ts": 1783825263.0551114,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hình",
+      "ts": 1783825263.1775556,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " kết",
+      "ts": 1783825263.3004923,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nối",
+      "ts": 1783825263.423635,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " của",
+      "ts": 1783825263.5485692,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " `",
+      "ts": 1783825263.6721802,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "q",
+      "ts": 1783825263.7983592,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "dr",
+      "ts": 1783825263.9197407,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ant",
+      "ts": 1783825264.0447862,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "`",
+      "ts": 1783825264.1682513,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trong",
+      "ts": 1783825264.2931252,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Docker",
+      "ts": 1783825264.4174197,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Com",
+      "ts": 1783825264.5420492,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "pose",
+      "ts": 1783825264.6660454,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " để",
+      "ts": 1783825264.7904458,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " xác",
+      "ts": 1783825264.914735,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nhận",
+      "ts": 1783825265.0391262,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trạng",
+      "ts": 1783825265.1658626,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thái",
+      "ts": 1783825265.2909794,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " vector",
+      "ts": 1783825265.4150414,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " database",
+      "ts": 1783825265.5406935,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " đang",
+      "ts": 1783825265.665958,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hoạt",
+      "ts": 1783825265.7901914,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " động",
+      "ts": 1783825265.9147038,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\",",
+      "ts": 1783825266.0393746,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\n    \"",
+      "ts": 1783825266.4141707,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Thực",
+      "ts": 1783825266.5382802,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hiện",
+      "ts": 1783825266.6629663,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lệnh",
+      "ts": 1783825266.785967,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " `",
+      "ts": 1783825266.9100094,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "docker",
+      "ts": 1783825267.034319,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " exec",
+      "ts": 1783825267.1584518,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " -",
+      "ts": 1783825267.284428,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "it",
+      "ts": 1783825267.4099898,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " q",
+      "ts": 1783825267.5351453,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "dr",
+      "ts": 1783825267.6611905,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ant",
+      "ts": 1783825267.7865322,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "-",
+      "ts": 1783825267.9129314,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "1",
+      "ts": 1783825268.0411148,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " curl",
+      "ts": 1783825268.16674,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " localhost",
+      "ts": 1783825268.2952898,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ":",
+      "ts": 1783825268.4448438,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "6",
+      "ts": 1783825268.5663936,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "3",
+      "ts": 1783825268.6916747,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "3",
+      "ts": 1783825268.8199065,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "3",
+      "ts": 1783825268.9471104,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "`",
+      "ts": 1783825269.072411,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " (",
+      "ts": 1783825269.1982725,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "hoặc",
+      "ts": 1783825269.325143,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tương",
+      "ts": 1783825269.4544766,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ứng",
+      "ts": 1783825269.5802224,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " với",
+      "ts": 1783825269.708372,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " container",
+      "ts": 1783825269.8354685,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ID",
+      "ts": 1783825269.9603763,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ")",
+      "ts": 1783825270.0882926,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " để",
+      "ts": 1783825270.2152798,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " xem",
+      "ts": 1783825270.3405342,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trực",
+      "ts": 1783825270.4662137,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tiếp",
+      "ts": 1783825270.5901256,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dữ",
+      "ts": 1783825270.7167099,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " liệu",
+      "ts": 1783825270.8443568,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " mẫu",
+      "ts": 1783825270.9694347,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " được",
+      "ts": 1783825271.096365,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lưu",
+      "ts": 1783825271.2232504,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trữ",
+      "ts": 1783825271.3479898,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\",",
+      "ts": 1783825271.4745347,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\n    \"",
+      "ts": 1783825271.8520415,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "So",
+      "ts": 1783825271.97713,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " sánh",
+      "ts": 1783825272.1039386,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " số",
+      "ts": 1783825272.2302139,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lượng",
+      "ts": 1783825272.357272,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " documents",
+      "ts": 1783825272.4840527,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trong",
+      "ts": 1783825272.6109982,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " `",
+      "ts": 1783825272.7361252,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "q",
+      "ts": 1783825272.8596997,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "dr",
+      "ts": 1783825272.985373,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ant",
+      "ts": 1783825273.110945,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "`",
+      "ts": 1783825273.2382474,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " với",
+      "ts": 1783825273.364763,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " số",
+      "ts": 1783825273.4897833,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lượng",
+      "ts": 1783825273.615959,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " file",
+      "ts": 1783825273.7418222,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " đã",
+      "ts": 1783825273.8734138,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " được",
+      "ts": 1783825274.0011885,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " index",
+      "ts": 1783825274.129536,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hóa",
+      "ts": 1783825274.2564116,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " qua",
+      "ts": 1783825274.3835974,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " quy",
+      "ts": 1783825274.5089252,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trình",
+      "ts": 1783825274.6350071,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " `",
+      "ts": 1783825274.760632,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "zen",
+      "ts": 1783825274.8859391,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ith",
+      "ts": 1783825275.0113628,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "-file",
+      "ts": 1783825275.1390889,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "-",
+      "ts": 1783825275.263895,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ward",
+      "ts": 1783825275.3894408,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "en",
+      "ts": 1783825275.5181613,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "`",
+      "ts": 1783825275.6426218,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\"",
+      "ts": 1783825275.768465,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\n  ]",
+      "ts": 1783825276.145438,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\n}",
+      "ts": 1783825276.3946857,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\n```",
+      "ts": 1783825276.6438768,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Hệ thống dữ liệu nội bộ của JKAI Zenith được tổ chức theo kiến trúc phân tầng (Layered Architecture) để đảm bảo tính nhất quán, khả năng truy xuất và an toàn. Cụ thể:\n\n1. **Lớp Lưu Trữ Dữ Liệu (Persistence Layer)**: Sử dụng các cơ sở dữ liệu quan hệ và phi quan hệ.\n   - `postgres`: Lưu trữ cấu trúc dữ liệu chính thống (knowledge graph, trạng thái hệ thống).\n   - `mongodb`: Lưu trữ tài liệu không cấu trúc (log, nhật ký hoạt động, ngữ cảnh chat dài hạn).\n\n2. **Lớp Vector & Tìm kiếm Semantics**: Sử dụng `qdrant` làm trung tâm tìm kiếm vector.\n   - Chứa dữ liệu được mã hóa thành vector từ các văn bản trong hệ thống.\n   - Hỗ trợ truy xuất kiến thức (RAG) cho các câu hỏi phức tạp dựa trên ngữ nghĩa thay vì chỉ khớp từ khóa.\n\n3. **Lớp Cache & Trạng thái Runtime**: Sử dụng `redis` làm bus sự kiện tốc độ cao và bộ nhớ đệm trạng thái.\n   - Lưu trữ kết quả tính toán tạm thời, session state của các tác vụ đang chạy để tránh trùng lặp và tăng hiệu suất phản hồi.\n\n4. **Lớp Bảo mật & Kiểm soát Truy cập**: Được quản lý bởi `zenith-file-warden` và cơ chế xác thực nội bộ.\n   - Đảm bảo toàn vẹn dữ liệu (file integrity) và ngăn chặn truy cập trái phép vào các file cấu hình nhạy cảm hoặc mã nguồn gốc.\n\n5. **Lớp Xử Lý & Triết Học**: Dữ liệu được xử lý bởi `ai-brain` thông qua quy trình ReAct và Forge Loop.\n   - Các dữ liệu thô (raw data) từ Docker, Web Browser hay Telegram sẽ được lọc, làm sạch và chuyển đổi thành ngữ nghĩa trước khi lưu vào các lớp trên.\n\n*Lưu ý: Cấu trúc này tuân thủ nguyên tắc 'Cognitive Autonomy' và 'Architectural Awareness', cho phép hệ thống tự sửa chữa và tối ưu hóa dựa trên dữ liệu thu thập được.*",
+      "ts": 1783825277.0537546,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1207-0959_fd3c25"
+    }
+  ],
+  "artifacts": {
+    "plan": "hệ thống dữ liệu nội bộ thế nào ?",
+    "walkthrough": "Hệ thống dữ liệu nội bộ của JKAI Zenith được tổ chức theo kiến trúc phân tầng (Layered Architecture) để đảm bảo tính nhất quán, khả năng truy xuất và an toàn. Cụ thể:\n\n1. **Lớp Lưu Trữ Dữ Liệu (Persistence Layer)**: Sử dụng các cơ sở dữ liệu quan hệ và phi quan hệ.\n   - `postgres`: Lưu trữ cấu trúc dữ liệu chính thống (knowledge graph, trạng thái hệ thống).\n   - `mongodb`: Lưu trữ tài liệu không cấu trúc (log, nhật ký hoạt động, ngữ cảnh chat dài hạn).\n\n2. **Lớp Vector & Tìm kiếm Semantics**: Sử dụng `qdrant` làm trung tâm tìm kiếm vector.\n   - Chứa dữ liệu được mã hóa thành vector từ các văn bản trong hệ thống.\n   - Hỗ trợ truy xuất kiến thức (RAG) cho các câu hỏi phức tạp dựa trên ngữ nghĩa thay vì chỉ khớp từ khóa.\n\n3. **Lớp Cache & Trạng thái Runtime**: Sử dụng `redis` làm bus sự kiện tốc độ cao và bộ nhớ đệm trạng thái.\n   - Lưu trữ kết quả tính toán tạm thời, session state của các tác vụ đang chạy để tránh trùng lặp và tăng hiệu suất phản hồi.\n\n4. **Lớp Bảo mật & Kiểm soát Truy cập**: Được quản lý bởi `zenith-file-warden` và cơ chế xác thực nội bộ.\n   - Đảm bảo toàn vẹn dữ liệu (file integrity) và ngăn chặn truy cập trái phép vào các file cấu hình nhạy cảm hoặc mã nguồn gốc.\n\n5. **Lớp Xử Lý & Triết Học**: Dữ liệu được xử lý bởi `ai-brain` thông qua quy trình ReAct và Forge Loop.\n   - Các dữ liệu thô (raw data) từ Docker, Web Browser hay Telegram sẽ được lọc, làm sạch và chuyển đổi thành ngữ nghĩa trước khi lưu vào các lớp trên.\n\n*Lưu ý: Cấu trúc này tuân thủ nguyên tắc 'Cognitive Autonomy' và 'Architectural Awareness', cho phép hệ thống tự sửa chữa và tối ưu hóa dựa trên dữ liệu thu thập được.*",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

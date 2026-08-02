@@ -5,7 +5,7 @@ import {
   Command, GitBranch, CircuitBoard, Sparkles, 
   ClipboardList, ScrollText, FolderTree, Code2, 
   History, Terminal, RefreshCcw, Radar, Cpu, 
-  Database, ShieldCheck
+  Database, ShieldCheck, Radio, Volume2, VolumeX, Search
 } from 'lucide-react';
 import toast, { Toaster } from 'react-hot-toast';
 
@@ -16,6 +16,8 @@ import { useZenithStore, Dictionary } from './store/zenithStore';
 import { useAgentController } from './hooks/useAgentController';
 import { ZenithService } from './services/ZenithService';
 import { NuclearApprovalPad } from './components/zenith/NuclearApprovalPad';
+import { CommandPalette } from './components/zenith/CommandPalette';
+import { playSound, toggleSound, isSoundEnabled } from './utils/soundEffects';
 
 // Modular Components
 import { IntelligenceStream } from './components/zenith/IntelligenceStream';
@@ -30,6 +32,7 @@ const RIGHT_TABS = [
   { k: 'walkthrough', l: 'Giải pháp', i: ScrollText },
   { k: 'changes', l: 'Thay đổi', i: GitBranch },
   { k: 'explorer', l: 'Hệ thống', i: FolderTree },
+  { k: 'connections', l: 'Kết nối', i: Radio },
   { k: 'logs', l: 'Nhật ký', i: History }
 ] as const;
 
@@ -121,13 +124,11 @@ const ResourceGauge = memo(({ label, value, percent, icon: Icon, colorClass, glo
 });
 
 const ResourceHUD = memo(() => {
-  // 🛡️ [PRIMITIVE-SELECTORS]: Subscribe to values individually to avoid object reference re-renders
-  const cpu = useZenithStore(s => s.pulse.cpu);
-  const ram = useZenithStore(s => s.pulse.ram);
-  const gpu = useZenithStore(s => s.pulse.gpu);
+  const pulse = useZenithStore(s => s.pulse);
+  const isConnected = useZenithStore(s => s.isConnected);
   const status = useZenithStore(s => s.status);
-
-  // 🛡️ [SOVEREIGN PERFORMANCE SHIELD]: Tự động gắn class khi quá tải để tối ưu hóa render cực hạn
+  const { cpu, ram, gpu } = pulse;
+  
   useEffect(() => {
     const isHigh = cpu > 80 || status === 'running';
     if (isHigh) {
@@ -136,7 +137,7 @@ const ResourceHUD = memo(() => {
       document.body.classList.remove('high-cpu-mode');
     }
   }, [cpu, status]);
-  
+
   // CPU Color calculations
   const cpuColor = cpu > 80 ? 'text-rose-400' : 'text-amber-400';
   const cpuGlow = cpu > 80 ? '#fb7185' : '#f59e0b';
@@ -151,28 +152,18 @@ const ResourceHUD = memo(() => {
       <div className="w-px h-8 bg-white/5" />
       <div className="flex flex-col gap-1 min-w-[100px] pl-1">
         <div className="flex items-center gap-1.5">
-          <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span className="text-[8px] font-black uppercase tracking-tighter text-white/40">Status: <span className="text-white/80">OPTIMAL</span></span>
+          <div className={`w-1.5 h-1.5 rounded-full ${isConnected ? 'bg-emerald-400 animate-pulse' : 'bg-rose-500'}`} />
+          <span className="text-[8px] font-black uppercase tracking-tighter text-white/40">Status: <span className="text-white/80">{isConnected ? 'OPTIMAL' : 'DEGRADED'}</span></span>
         </div>
         <div className="flex items-center gap-1.5">
-          <Radar className="w-3 h-3 text-sky-400/40 animate-spin-slow" />
-          <span className="text-[8px] font-black uppercase tracking-widest text-white/20">Uplink: <span className="text-sky-400/60">ACTIVE</span></span>
+          {isConnected ? (
+            <Radar className="w-3 h-3 text-sky-400/40 animate-spin-slow" />
+          ) : (
+            <WifiOff className="w-3 h-3 text-rose-400/60" />
+          )}
+          <span className="text-[8px] font-black uppercase tracking-widest text-white/20">Uplink: <span className={isConnected ? 'text-sky-400/60' : 'text-rose-400'}>{isConnected ? 'ACTIVE' : 'SEVERED'}</span></span>
         </div>
       </div>
-    </div>
-  );
-});
-
-// ─── 3. TOP NAVIGATION & DECOUPLED CONNECTION ───────────────────────────────
-
-const ConnectionIndicator = memo(({ dict }: { dict: any }) => {
-  const isConnected = useZenithStore(s => s.isConnected);
-  return (
-    <div className={`px-4 py-2 rounded-xl border flex items-center gap-3 transition-all ${isConnected ? 'bg-emerald-500/5 border-emerald-500/20' : 'bg-rose-500/5 border-rose-500/20'}`}>
-      <Wifi className={`w-3.5 h-3.5 ${isConnected ? 'text-emerald-400' : 'text-rose-400'}`} />
-      <span className={`text-[9px] font-black uppercase tracking-widest ${isConnected ? 'text-emerald-400/80' : 'text-rose-400/80'}`}>
-        {isConnected ? (dict.uplink_stable || 'Uplink Stable') : (dict.uplink_lost || 'Uplink Lost')}
-      </span>
     </div>
   );
 });
@@ -182,6 +173,12 @@ const TopHeader = memo(({ dict, voice }: any) => {
   const setLanguage = useZenithStore(s => s.setLanguage);
   const status = useZenithStore(s => s.status);
   const isRunning = status === 'running';
+  const [muted, setMuted] = React.useState(!isSoundEnabled());
+
+  const handleToggleSound = () => {
+    const enabled = toggleSound();
+    setMuted(!enabled);
+  };
 
   return (
     <header className="shrink-0 h-20 border-b border-white/[0.04] bg-[#060910]/80 backdrop-blur-3xl relative z-[100] flex items-center justify-between px-8">
@@ -204,17 +201,23 @@ const TopHeader = memo(({ dict, voice }: any) => {
           </div>
         </div>
       </div>
-      <div className="flex items-center gap-8">
+      <div className="flex items-center gap-6">
         <ResourceHUD />
-        <div className="flex items-center gap-3">
-          <button onClick={voice.toggleListening} className={`p-2.5 rounded-full transition-all ${voice.isListening ? 'bg-sky-500/20 border border-sky-500 shadow-lg shadow-sky-500/20' : 'bg-white/5 border border-white/5 hover:bg-white/10'}`}>
+        <div className="flex items-center gap-2.5">
+          <button 
+            onClick={handleToggleSound} 
+            className="p-2.5 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all text-white/40 hover:text-white"
+            title={muted ? "Mở âm thanh" : "Tắt âm thanh"}
+          >
+            {muted ? <VolumeX className="w-4 h-4 text-rose-400/80" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
+          </button>
+          <button onClick={voice.toggleListening} className={`p-2.5 rounded-xl transition-all ${voice.isListening ? 'bg-sky-500/20 border border-sky-500 shadow-lg shadow-sky-500/20' : 'bg-white/5 border border-white/5 hover:bg-white/10'}`}>
             <Mic className={`w-4 h-4 ${voice.isListening ? 'text-sky-400 animate-pulse' : 'text-white/40'}`} />
           </button>
-          <button onClick={() => setLanguage(language === 'en' ? 'vi' : 'en')} className="px-4 py-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all flex items-center gap-2">
+          <button onClick={() => { setLanguage(language === 'en' ? 'vi' : 'en'); playSound('click'); }} className="px-3.5 py-2 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 transition-all flex items-center gap-2">
             <Globe className="w-3.5 h-3.5 text-sky-400" />
             <span className="text-[10px] font-black text-white/60">{language.toUpperCase()}</span>
           </button>
-          <ConnectionIndicator dict={dict} />
         </div>
       </div>
     </header>
@@ -514,6 +517,19 @@ function App() {
     };
   }, [isResizing]);
 
+  const [isPaletteOpen, setIsPaletteOpen] = React.useState(false);
+
+  useEffect(() => {
+    const handleGlobalKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setIsPaletteOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleGlobalKeyDown);
+    return () => window.removeEventListener('keydown', handleGlobalKeyDown);
+  }, []);
+
   // ─── 6. LAYOUT ─────────────────────────────────────────────────────────────
 
   return (
@@ -531,7 +547,7 @@ function App() {
       className="fixed inset-0 w-full h-full bg-[#060910] text-white font-sans selection:bg-sky-500/30 overflow-hidden flex flex-col [transform:translateZ(0)] [backface-visibility:hidden] [will-change:transform]"
     >
       <div className="nebula-bg" />
-      <TopHeader dict={dict} voice={voiceActions} />
+      <TopHeader dict={dict} voice={voiceActions} onOpenPalette={() => setIsPaletteOpen(true)} />
 
       <main className="flex-1 w-full px-5 py-4 flex gap-0 overflow-hidden relative z-10 min-h-0">
         {/* Left: Isolated Neural Graph (Phòng họp giữ nguyên) */}
@@ -567,22 +583,25 @@ function App() {
             <div className="flex gap-1">
               {RIGHT_TABS.map(t => {
                 const isActive = rightTab === t.k;
+                const unreadCount = t.k === 'plan' ? backgroundProposals.length : (unreadTabs[t.k] || 0);
                 return (
                   <button 
                     key={t.k} 
-                    onClick={() => { setTab(t.k as any); if (unreadTabs[t.k]) setUnreadTab(t.k, 0); }} 
+                    onClick={() => { setTab(t.k as any); if (unreadTabs[t.k]) setUnreadTab(t.k, 0); playSound('tab'); }} 
                     className={`relative flex-1 flex flex-col items-center justify-center gap-1.5 py-3 rounded-xl transition-all duration-300 group border ${
                       isActive 
                         ? 'text-white bg-cyan-400/10 border-cyan-400/20' 
-                        : 'text-white/20 hover:text-white/40 border-transparent hover:bg-white/[0.02]'
+                        : unreadCount > 0
+                          ? 'text-sky-300 bg-sky-500/10 border-sky-500/30 animate-pulse'
+                          : 'text-white/20 hover:text-white/40 border-transparent hover:bg-white/[0.02]'
                     }`}
                   >
                     <div className="relative">
                       <t.i className={`w-4 h-4 relative ${isActive ? 'text-cyan-400' : ''}`} />
-                      {(t.k === 'plan' ? backgroundProposals.length : (unreadTabs[t.k] || 0)) > 0 && (
+                      {unreadCount > 0 && (
                         <div className="absolute -top-2 -right-2.5 flex items-center justify-center min-w-[14px] h-[14px] rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)] px-1 z-10">
                           <span className="text-[9px] font-black text-white leading-none">
-                            {t.k === 'plan' ? backgroundProposals.length : unreadTabs[t.k]}
+                            {unreadCount}
                           </span>
                         </div>
                       )}
@@ -598,6 +617,9 @@ function App() {
           </div>
         </div>
       </main>
+
+      {/* 🔮 Command Palette Modal */}
+      <CommandPalette isOpen={isPaletteOpen} onClose={() => setIsPaletteOpen(false)} />
 
       {/* 🛡️ [CORE-AUTH OVERLAY] */}
       <AnimatePresence>

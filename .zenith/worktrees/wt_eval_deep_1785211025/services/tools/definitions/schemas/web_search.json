@@ -1,0 +1,14 @@
+{
+  "name": "web_search",
+  "description": "Tìm kiếm thông tin trực tuyến thời gian thực trên internet (Google/Bing/DuckDuckGo).",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Nội dung cần tìm kiếm."
+      }
+    },
+    "required": ["query"]
+  }
+}

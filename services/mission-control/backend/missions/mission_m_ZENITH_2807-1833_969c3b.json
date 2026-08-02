@@ -1,0 +1,84 @@
+{
+  "id": "m_ZENITH_2807-1833_969c3b",
+  "title": "bạn có thể làm được gì ?",
+  "goal": "bạn có thể làm được gì ?",
+  "status": "failed",
+  "ts": 1785238495.9848719,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "bạn có thể làm được gì ?",
+      "ts": 1785238409.7387712,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2807-1833_969c3b"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_2807-1833_969c3b` initialized | Trace: `trace_969c3b`. Runtime ready.",
+      "ts": 1785238409.742292,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2807-1833_969c3b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1785238418.492365,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2807-1833_969c3b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1785238418.4979246,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2807-1833_969c3b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [ENGINE-READY]: Chế độ FAST — Mô hình Qwen3-30B (`hf.co/unsloth/qwen3-30b-a3b-instruct-2507-gguf:ud-q4_k_xl`) đã có sẵn trên RAM/VRAM. Khởi chạy phản xạ tức thì!",
+      "ts": 1785238418.5898304,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2807-1833_969c3b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [FAST-PIPELINE]: Khởi động RECEPTIONIST ReAct (3 turns).",
+      "ts": 1785238418.5929248,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2807-1833_969c3b"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "📚 [FAST-KB]: Đã cấu trúc XML cho 0 KB chunks. Sufficient=False",
+      "ts": 1785238418.7373126,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2807-1833_969c3b"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "⚡ [FAST REFLEX-GATE]: Tác vụ hội thoại / suy luận nội tại -> Kích hoạt nơ-ron phản xạ trực tiếp.",
+      "ts": 1785238418.7406695,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2807-1833_969c3b"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All connection attempts failed | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All connection attempts failed\"}",
+      "ts": 1785238495.9567835,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2807-1833_969c3b"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+      "ts": 1785238495.9597554,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2807-1833_969c3b"
+    }
+  ],
+  "artifacts": {
+    "plan": "bạn có thể làm được gì ?",
+    "walkthrough": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

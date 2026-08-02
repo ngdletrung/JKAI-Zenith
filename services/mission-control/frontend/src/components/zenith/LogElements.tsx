@@ -1,8 +1,96 @@
 import React, { memo, useState } from 'react';
-import { Brain, Zap, FileCode2, Terminal, ChevronRight, ChevronDown, Search, FileText, Loader2 } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Brain, Zap, FileCode2, Terminal, ChevronRight, ChevronDown, Search, FileText, Loader2, GitCommit, Clock } from 'lucide-react';
 import { useZenithStore } from '../../store/zenithStore';
 import { ZenithService } from '../../services/ZenithService';
 import { MarkdownRenderer } from './MarkdownRenderer';
+
+// ── FileEditRow: "Edited file.py  +118  -26" kiểu Antigravity ─────────────
+interface FileEditRowProps {
+  filePath: string;
+  fileName: string;
+  added: number;
+  removed: number;
+  diff: string;
+  onInspect: () => void;
+}
+
+export const FileEditRow = memo(({ filePath, fileName, added, removed, diff, onInspect }: FileEditRowProps) => {
+  const [expanded, setExpanded] = useState(false);
+  const language = useZenithStore(s => s.language);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: -4 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="my-1 ml-14 font-sans w-fit max-w-[95%]"
+    >
+      {/* ── Header row ── */}
+      <div className="flex items-center gap-2 group/row select-none">
+        {/* Toggle expand */}
+        <button
+          onClick={() => setExpanded(v => !v)}
+          className="text-white/25 hover:text-white/60 transition-colors"
+        >
+          {expanded
+            ? <ChevronDown className="w-3 h-3" />
+            : <ChevronRight className="w-3 h-3" />}
+        </button>
+
+        {/* File icon */}
+        <FileCode2 className="w-3.5 h-3.5 text-sky-400/70 shrink-0" />
+
+        {/* Filename — clickable to open */}
+        <button
+          onClick={onInspect}
+          className="text-[12.5px] font-medium text-white/60 hover:text-sky-300 transition-colors font-mono leading-none"
+        >
+          {fileName}
+        </button>
+
+        {/* +added badge */}
+        {added > 0 && (
+          <span className="text-[11px] font-bold font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded leading-none">
+            +{added}
+          </span>
+        )}
+
+        {/* -removed badge */}
+        {removed > 0 && (
+          <span className="text-[11px] font-bold font-mono text-rose-400 bg-rose-500/10 px-1.5 py-0.5 rounded leading-none">
+            -{removed}
+          </span>
+        )}
+      </div>
+
+      {/* ── Collapsible diff ── */}
+      <AnimatePresence>
+        {expanded && diff && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            className="overflow-hidden mt-2"
+          >
+            <SurgicalDiff diff={diff} />
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+});
+
+// ── WorkingDots: spinner nhỏ "Working..." không chiếm chỗ ─────────────────
+export const WorkingDots = memo(({ label }: { label?: string }) => (
+  <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    className="ml-14 my-1.5 flex items-center gap-1.5 text-white/30"
+  >
+    <Loader2 className="w-3 h-3 animate-spin" />
+    <span className="text-[11.5px] font-normal">{label || 'Working...'}</span>
+  </motion.div>
+));
 
 export const MicroscopeIcon = ({ className }: { className?: string }) => (
   <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M6 18h8" /><path d="M3 22h18" /><path d="M14 22a7 7 0 1 0 0-14h-1" /><path d="M9 14h2" /><path d="M9 12a2 2 0 0 1-2-2V6h6v4a2 2 0 0 1-2 2Z" /><path d="M12 6V3a1 1 0 0 0-1-1H9a1 1 0 0 0-1 1v3" /></svg>
@@ -51,7 +139,7 @@ export const SurgicalDiff = memo(({ diff }: { diff: string }) => {
   );
 });
 
-export const ActionBadge = memo(({ label, rawMsg }: { label: string, rawMsg?: string }) => {
+export const ActionBadge = memo(({ label, rawMsg, onClick }: { label: string, rawMsg?: string, onClick?: () => void | Promise<void> }) => {
   const [isOpen, setIsOpen] = useState(false);
   const setInspectedFile = useZenithStore(s => s.setInspectedFile);
   const language = useZenithStore(s => s.language);
@@ -95,7 +183,9 @@ export const ActionBadge = memo(({ label, rawMsg }: { label: string, rawMsg?: st
 
   const handleClick = (e: React.MouseEvent) => {
     setIsOpen(!isOpen);
-    if (filePath) {
+    if (onClick) {
+      onClick();
+    } else if (filePath) {
       handleInspect();
     }
   };
@@ -140,7 +230,8 @@ export const ActionBadge = memo(({ label, rawMsg }: { label: string, rawMsg?: st
   );
 });
 
-export const ReasoningBlock = memo(({ tag, msg }: { tag: string, msg: string }) => {
+export const ReasoningBlock = memo(({ tag, msg, duration }: { tag: string, msg: string, duration?: number }) => {
+  const language = useZenithStore(s => s.language);
   const safeTag = tag || '';
   const roleRaw = (safeTag.includes(':') ? safeTag.split(':')[1] : safeTag).trim();
   const roleUpper = roleRaw.toUpperCase();
@@ -189,8 +280,17 @@ export const ReasoningBlock = memo(({ tag, msg }: { tag: string, msg: string }) 
   return (
     <div className={`my-2 p-2.5 rounded-xl border ${bgClass} leading-relaxed transition-all hover:bg-white/[0.01]`}>
       <div className="flex items-center gap-2 mb-1.5">
-        <span className={`text-[9px] font-black uppercase tracking-wider ${color}`}>{displayRole}</span>
-        <span className="text-[7.5px] px-1 py-0.2 rounded-full bg-white/5 text-white/30 font-mono">BÁO CÁO NỘI BỘ</span>
+        <span className={`text-[9.5px] font-black uppercase tracking-wider ${color}`}>{displayRole}</span>
+        {duration !== undefined ? (
+          <span className="text-[10px] font-mono text-sky-400/85 bg-sky-500/10 border border-sky-500/20 px-2 py-0.5 rounded-full flex items-center gap-1">
+            <Clock className="w-3 h-3 text-sky-400 opacity-80" />
+            <span>{language === 'vi' ? `Đã tư duy ${duration}s` : `Thought for ${duration}s`}</span>
+          </span>
+        ) : (
+          <span className="text-[8.5px] px-1.5 py-0.5 rounded-full bg-white/5 text-white/40 font-mono">
+            {language === 'vi' ? 'TƯ DUY CHIẾN THUẬT' : 'STRATEGIC REASONING'}
+          </span>
+        )}
       </div>
       <div className={`text-[12px] font-medium leading-relaxed font-mono ${isImportant ? 'text-white/80' : 'text-slate-400'}`}>
         <MarkdownRenderer content={cleanMsg || msg} />

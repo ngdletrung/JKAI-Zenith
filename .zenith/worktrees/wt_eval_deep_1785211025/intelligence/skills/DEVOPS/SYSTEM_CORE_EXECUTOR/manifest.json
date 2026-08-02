@@ -1,0 +1,65 @@
+{
+  "id": "SYSTEM_CORE_EXECUTOR",
+  "name": "Zenith System Core Executor",
+  "version": "1.0.0",
+  "description": "Primary motor system: Orchestrates fundamental OS operations including file I/O, directory traversal, pattern searching, command execution, and web reconnaissance.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "thực thi hệ thống",
+    "system executor",
+    "quản lý tệp tin",
+    "chạy lệnh shell",
+    "quét mã nguồn",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "nang",
+    "thuc",
+    "lenh",
+    "thong",
+    "system_core_executor",
+    "zenith",
+    "truc",
+    "nguon",
+    "shell",
+    "system",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "list_dir",
+            "view_file",
+            "write_to_file",
+            "run_command",
+            "grep_search",
+            "search_web"
+          ],
+          "description": "Core action to perform."
+        },
+        "path": {
+          "type": "string",
+          "description": "Target file or directory path."
+        },
+        "query": {
+          "type": "string",
+          "description": "Search query or command string."
+        }
+      },
+      "required": [
+        "action"
+      ]
+    }
+  }
+}

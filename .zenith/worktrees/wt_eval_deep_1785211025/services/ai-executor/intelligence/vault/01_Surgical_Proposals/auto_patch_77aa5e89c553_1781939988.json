@@ -1,0 +1,6 @@
+{
+  "target_file": "config/router_config.py",
+  "reason": "Lỗi router liên tục xảy ra có thể do cấu hình định tuyến không chính xác hoặc thiếu middleware xử lý lỗi. Nguyên nhân gốc rễ có thể là tên tool 'skill_tucaitien' không khớp với bất kỳ endpoint nào trong hệ thống, hoặc có sự xung đột trong định tuyến.",
+  "proposed_code": "from fastapi import HTTPException\nfrom fastapi.routing import APIRouter\nfrom .services.skill_tucaitien import skill_tucaitien_service\n\nrouter = APIRouter()\n\n# Thêm endpoint cho tool 'skill_tucaitien'\n@router.get(\"/skill/tucaitien/\")\ndef execute_skill_tucaitien():\n    try:\n        return skill_tucaitien_service.execute()\n    except Exception as e:\n        raise HTTPException(status_code=500, detail=f\"Internal Server Error: {str(e)}\")",
+  "impact": "Sau khi sửa lỗi, hệ thống sẽ có khả năng định tuyến và thực thi tool 'skill_tucaitien' ổn định hơn. Người dùng sẽ không gặp lỗi router liên tục nữa và có thể sử dụng tool này bình thường."
+}

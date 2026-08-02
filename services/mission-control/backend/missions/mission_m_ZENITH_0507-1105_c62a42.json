@@ -1,0 +1,3850 @@
+{
+  "id": "m_ZENITH_0507-1105_c62a42",
+  "title": "hợp đồng gần đây nhất của Sysme là mua gì ?",
+  "goal": "hợp đồng gần đây nhất của Sysme là mua gì ?",
+  "status": "failed",
+  "ts": 1783225077.1592677,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "hợp đồng gần đây nhất của Sysme là mua gì ?",
+      "ts": 1783224307.3189435,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_0507-1105_c62a42` initialized | Trace: `trace_c62a42`. Runtime ready.",
+      "ts": 1783224307.321607,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: DEEP — tra cứu tri thức chuyên sâu.",
+      "ts": 1783224311.680556,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=deep_full mode=deep tags=-",
+      "ts": 1783224311.6843622,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1783224311.6865172,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: DeepPipeline T2–T6 (full)",
+      "ts": 1783224311.730721,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [DEEP-PIPELINE]: Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1783224311.7593474,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1783224311.7620757,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1783224311.766948,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "📚 [KB-RETRIEVED]: 8 chunks (≥0.45), 6 high-quality (≥0.72). Sufficient=True",
+      "ts": 1783224311.8647673,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1783224311.889216,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER`...",
+      "ts": 1783224581.3674285,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "⏱️ [FORGE-ATTEMPT-1]: Model `PLANNER` response time: 50.56s.",
+      "ts": 1783224631.9302974,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-2]: Đang đúc kết chiến lược bằng vai trò `RESERVE_AGENT`...",
+      "ts": 1783224631.9570227,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "⏱️ [FORGE-ATTEMPT-2]: Model `RESERVE_AGENT` response time: 139.51s.",
+      "ts": 1783224771.4678485,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-3]: Đang đúc kết chiến lược bằng vai trò `RESERVE_AGENT`...",
+      "ts": 1783224771.4710379,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "🚨 [T2/T3 FAULT]: Stage ForgeStage timed out after 600 seconds.",
+      "ts": 1783224912.0810056,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: DEEP — tra cứu tri thức chuyên sâu.",
+      "ts": 1783224922.358753,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=deep_full mode=deep tags=-",
+      "ts": 1783224922.3632917,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1783224922.3651457,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: DeepPipeline T2–T6 (full)",
+      "ts": 1783224922.3980372,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [DEEP-PIPELINE]: Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1783224922.4226208,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1783224922.424892,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1783224922.43013,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "📚 [KB-RETRIEVED]: 8 chunks (≥0.45), 6 high-quality (≥0.72). Sufficient=True",
+      "ts": 1783224922.7463918,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1783224922.7484605,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "FORGE",
+      "msg": "⚡ [SMART-GATE]: KB sufficient + task=CHAT. Skip LLM forge, inject KB answer step.",
+      "ts": 1783224922.749053,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1783224922.751697,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1783224922.7525926,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "📊 [BLUEPRINT SEALED]: 1 bước thực thi đã được đúc kết.",
+      "ts": 1783224922.7535453,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚙️ [T4]: Khởi động DAG Parallel Executor...",
+      "ts": 1783224922.7559595,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [DAG-SCHEDULER]: Thực thi song song 1 bước: ['step_01']",
+      "ts": 1783224922.767703,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔬 [T4: SURGERY] [SYSTEM_CORE_EXECUTOR] Đang kiểm tra an toàn & khóa tài nguyên...",
+      "ts": 1783224931.3201077,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T4: SURGERY] [SYSTEM_CORE_EXECUTOR] Đang áp dụng chính sách thực thi...",
+      "ts": 1783224931.3220625,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "💉 [T4: SURGERY] [SYSTEM_CORE_EXECUTOR] Đang nạp DNA & nén bối cảnh...",
+      "ts": 1783224931.323261,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "CRITICAL:ALPHA",
+      "msg": "🚨 [SỰ CỐ HỆ THỐNG]: 'JKAIIntelligenceEngine' object has no attribute 'get_insights'",
+      "ts": 1783224931.3288946,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "CRITICAL:ALPHA",
+      "msg": "🛑 [STOP]: Bước `step_01` thất bại: 'JKAIIntelligenceEngine' object has no attribute 'get_insights'. Ngắt chuỗi hành pháp.",
+      "ts": 1783224931.3306746,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "⚖️ [STEP CRITIC]: Phát hiện lỗi tại bước step_01. Kích hoạt Dynamic Re-planning...",
+      "ts": 1783224931.334781,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🔄 [RE-PLANNING]: Đã cập nhật kế hoạch động. Nhận thêm 1 bước mới.",
+      "ts": 1783224961.7307847,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [DAG-SCHEDULER]: Thực thi song song 1 bước: ['step_02']",
+      "ts": 1783224961.7356915,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "WARN",
+      "msg": "⚠️ [T4]: Executor trả về 500 cho bước step_02 (Thử lại 1/3).",
+      "ts": 1783224961.7466693,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "WARN",
+      "msg": "⚠️ [T4]: Executor trả về 500 cho bước step_02 (Thử lại 2/3).",
+      "ts": 1783224963.7573905,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "WARN",
+      "msg": "⚠️ [T4]: Executor trả về 500 cho bước step_02 (Thử lại 3/3).",
+      "ts": 1783224967.77047,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "⚖️ [STEP CRITIC]: Phát hiện lỗi tại bước step_02. Kích hoạt Dynamic Re-planning...",
+      "ts": 1783224967.7754288,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hợp",
+      "ts": 1783225004.8563783,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " lệ",
+      "ts": 1783225004.9205084,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " của",
+      "ts": 1783225004.9839559,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " các",
+      "ts": 1783225005.046901,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " tài",
+      "ts": 1783225005.1105847,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " liệu",
+      "ts": 1783225005.1746604,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " liên",
+      "ts": 1783225005.2382326,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " quan",
+      "ts": 1783225005.3014328,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " đến",
+      "ts": 1783225005.3641768,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hợp",
+      "ts": 1783225005.427028,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " đồng",
+      "ts": 1783225005.4898596,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " Sys",
+      "ts": 1783225005.5525534,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "me",
+      "ts": 1783225005.6197972,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": ".\"",
+      "ts": 1783225005.683349,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n    },",
+      "ts": 1783225005.8736305,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n    {",
+      "ts": 1783225006.0602355,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225006.255126,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "id",
+      "ts": 1783225006.3182092,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225006.381395,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225006.4448366,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "step",
+      "ts": 1783225006.5083055,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_",
+      "ts": 1783225006.57288,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "0",
+      "ts": 1783225006.6362286,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "4",
+      "ts": 1783225006.6997764,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\",",
+      "ts": 1783225006.762768,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225006.9556909,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "action",
+      "ts": 1783225007.0199618,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225007.0833251,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225007.1462483,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "extract",
+      "ts": 1783225007.209163,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_latest",
+      "ts": 1783225007.2721329,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_contract",
+      "ts": 1783225007.335925,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\",",
+      "ts": 1783225007.3982491,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225007.5876505,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "description",
+      "ts": 1783225007.651174,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225007.7135584,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225007.7772863,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "Từ",
+      "ts": 1783225007.8401306,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " kết",
+      "ts": 1783225007.9032183,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " quả",
+      "ts": 1783225007.966693,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " tìm",
+      "ts": 1783225008.03127,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " kiếm",
+      "ts": 1783225008.0940413,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " ở",
+      "ts": 1783225008.1572254,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " bước",
+      "ts": 1783225008.2198687,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " trước",
+      "ts": 1783225008.2831156,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": ",",
+      "ts": 1783225008.3464103,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " trích",
+      "ts": 1783225008.4096482,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " xuất",
+      "ts": 1783225008.4732373,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " thông",
+      "ts": 1783225008.5363548,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " tin",
+      "ts": 1783225008.6003516,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " về",
+      "ts": 1783225008.6625433,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hợp",
+      "ts": 1783225008.7256405,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " đồng",
+      "ts": 1783225008.788707,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " gần",
+      "ts": 1783225008.8519733,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " nhất",
+      "ts": 1783225008.9154415,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " (",
+      "ts": 1783225008.9785764,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "theo",
+      "ts": 1783225009.041502,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " ngày",
+      "ts": 1783225009.104958,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " ký",
+      "ts": 1783225009.167825,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hoặc",
+      "ts": 1783225009.2304647,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " thời",
+      "ts": 1783225009.2935085,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " gian",
+      "ts": 1783225009.3568537,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " cập",
+      "ts": 1783225009.4211073,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " nhật",
+      "ts": 1783225009.4853578,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " mới",
+      "ts": 1783225009.5493705,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " nhất",
+      "ts": 1783225009.61212,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": ").",
+      "ts": 1783225009.6758955,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\",",
+      "ts": 1783225009.739168,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225009.9295068,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "parameters",
+      "ts": 1783225009.992298,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225010.0552146,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " {",
+      "ts": 1783225010.1182246,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n        \"",
+      "ts": 1783225010.3077946,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "field",
+      "ts": 1783225010.37126,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_to",
+      "ts": 1783225010.435162,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_extract",
+      "ts": 1783225010.4984174,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225010.5619175,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225010.625102,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "date",
+      "ts": 1783225010.689195,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_signed",
+      "ts": 1783225010.7521653,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_or",
+      "ts": 1783225010.819213,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_updated",
+      "ts": 1783225010.8822315,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\",",
+      "ts": 1783225010.9450336,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n        \"",
+      "ts": 1783225011.1376154,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "sort",
+      "ts": 1783225011.202251,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_order",
+      "ts": 1783225011.2698696,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225011.3335402,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225011.3971658,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "desc",
+      "ts": 1783225011.4603672,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\"",
+      "ts": 1783225011.5239217,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      },",
+      "ts": 1783225011.71525,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225011.907558,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "expected",
+      "ts": 1783225011.9742055,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_output",
+      "ts": 1783225012.0369534,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225012.1001074,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225012.163237,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "Chi",
+      "ts": 1783225012.2277129,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " tiết",
+      "ts": 1783225012.291519,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " của",
+      "ts": 1783225012.355272,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hợp",
+      "ts": 1783225012.4192414,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " đồng",
+      "ts": 1783225012.483905,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " Sys",
+      "ts": 1783225012.5485048,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "me",
+      "ts": 1783225012.6119986,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " gần",
+      "ts": 1783225012.6748781,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " nhất",
+      "ts": 1783225012.7386343,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": ".\"",
+      "ts": 1783225012.8012516,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n    }",
+      "ts": 1783225012.9923978,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n  ]",
+      "ts": 1783225013.1831586,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n}",
+      "ts": 1783225013.3112688,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n```",
+      "ts": 1783225013.4385602,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🔄 [RE-PLANNING]: Đã cập nhật kế hoạch động. Nhận thêm 2 bước mới.",
+      "ts": 1783225013.8070786,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [DAG-SCHEDULER]: Thực thi song song 2 bước: ['step_03', 'step_04']",
+      "ts": 1783225013.8108387,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "WARN",
+      "msg": "⚠️ [T4]: Executor trả về 500 cho bước step_04 (Thử lại 1/3).",
+      "ts": 1783225013.8226814,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "WARN",
+      "msg": "⚠️ [T4]: Executor trả về 500 cho bước step_03 (Thử lại 1/3).",
+      "ts": 1783225013.8298013,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "WARN",
+      "msg": "⚠️ [T4]: Executor trả về 500 cho bước step_04 (Thử lại 2/3).",
+      "ts": 1783225015.836936,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "WARN",
+      "msg": "⚠️ [T4]: Executor trả về 500 cho bước step_03 (Thử lại 2/3).",
+      "ts": 1783225015.8435996,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "WARN",
+      "msg": "⚠️ [T4]: Executor trả về 500 cho bước step_04 (Thử lại 3/3).",
+      "ts": 1783225019.8493133,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "WARN",
+      "msg": "⚠️ [T4]: Executor trả về 500 cho bước step_03 (Thử lại 3/3).",
+      "ts": 1783225019.8565748,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "⚖️ [STEP CRITIC]: Phát hiện lỗi tại bước step_04. Kích hoạt Dynamic Re-planning...",
+      "ts": 1783225019.8598738,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-07-05T04:17:22.308983] [PLANNER] [Task: ZENITH_0507-1105_c62a42] Ch",
+      "ts": 1783225042.3089893,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "ào",
+      "ts": 1783225042.3792698,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " Master",
+      "ts": 1783225042.4430315,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": ",",
+      "ts": 1783225042.5072484,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " dưới",
+      "ts": 1783225042.569391,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " đây",
+      "ts": 1783225042.6339955,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " là",
+      "ts": 1783225042.697403,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " kế",
+      "ts": 1783225042.7614934,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hoạch",
+      "ts": 1783225042.824116,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " động",
+      "ts": 1783225042.8868546,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " (",
+      "ts": 1783225042.9499679,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "Dynamic",
+      "ts": 1783225043.014036,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " Re",
+      "ts": 1783225043.078172,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "-pl",
+      "ts": 1783225043.1422293,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "anning",
+      "ts": 1783225043.2088876,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": ")",
+      "ts": 1783225043.27581,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " được",
+      "ts": 1783225043.3418698,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " xây",
+      "ts": 1783225043.4048276,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " dựng",
+      "ts": 1783225043.4680185,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " để",
+      "ts": 1783225043.5321114,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " khắc",
+      "ts": 1783225043.5960083,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " phục",
+      "ts": 1783225043.6597755,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " lỗi",
+      "ts": 1783225043.7270122,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " `",
+      "ts": 1783225043.792446,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "Executor",
+      "ts": 1783225043.8563092,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " failed",
+      "ts": 1783225043.920832,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " with",
+      "ts": 1783225043.9882355,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " code",
+      "ts": 1783225044.0558472,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " 5",
+      "ts": 1783225044.1835816,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "0",
+      "ts": 1783225044.2490788,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "0",
+      "ts": 1783225044.3138347,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "`",
+      "ts": 1783225044.3767133,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " và",
+      "ts": 1783225044.442422,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " truy",
+      "ts": 1783225044.5056386,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " cập",
+      "ts": 1783225044.5699525,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " thông",
+      "ts": 1783225044.6330492,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " tin",
+      "ts": 1783225044.6963315,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " về",
+      "ts": 1783225044.7592347,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hợp",
+      "ts": 1783225044.8219252,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " đồng",
+      "ts": 1783225044.886542,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " gần",
+      "ts": 1783225044.9541671,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " nhất",
+      "ts": 1783225045.0180306,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " của",
+      "ts": 1783225045.081069,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " Sys",
+      "ts": 1783225045.1457815,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "me",
+      "ts": 1783225045.2088227,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": ".",
+      "ts": 1783225045.2730315,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n\nL",
+      "ts": 1783225045.4018228,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "ỗi",
+      "ts": 1783225045.4704165,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " `",
+      "ts": 1783225045.535063,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "code",
+      "ts": 1783225045.600374,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " 5",
+      "ts": 1783225045.727431,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "0",
+      "ts": 1783225045.7918134,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "0",
+      "ts": 1783225045.855044,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "`",
+      "ts": 1783225045.9217515,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " thường",
+      "ts": 1783225045.9851477,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " chỉ",
+      "ts": 1783225046.048344,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " ra",
+      "ts": 1783225046.113511,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " sự",
+      "ts": 1783225046.17869,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " cố",
+      "ts": 1783225046.2434096,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " trong",
+      "ts": 1783225046.3076286,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " quá",
+      "ts": 1783225046.3731427,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " trình",
+      "ts": 1783225046.4353998,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " xử",
+      "ts": 1783225046.5002184,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " lý",
+      "ts": 1783225046.5638695,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " nội",
+      "ts": 1783225046.6290414,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " bộ",
+      "ts": 1783225046.6937444,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hoặc",
+      "ts": 1783225046.7589638,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " thiếu",
+      "ts": 1783225046.824321,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " quyền",
+      "ts": 1783225046.8877409,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " truy",
+      "ts": 1783225046.9534433,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " cập",
+      "ts": 1783225047.0181537,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " dữ",
+      "ts": 1783225047.0848954,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " liệu",
+      "ts": 1783225047.149722,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " thực",
+      "ts": 1783225047.2140737,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " tế",
+      "ts": 1783225047.2790244,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " từ",
+      "ts": 1783225047.3433046,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " các",
+      "ts": 1783225047.4073045,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " công",
+      "ts": 1783225047.4715097,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " cụ",
+      "ts": 1783225047.5366166,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hiện",
+      "ts": 1783225047.6018133,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " tại",
+      "ts": 1783225047.6674733,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": ".",
+      "ts": 1783225047.7321384,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " Do",
+      "ts": 1783225047.7955909,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " đó",
+      "ts": 1783225047.8601809,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": ",",
+      "ts": 1783225047.9285333,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " kế",
+      "ts": 1783225047.994036,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hoạch",
+      "ts": 1783225048.0582988,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " mới",
+      "ts": 1783225048.1243448,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " sẽ",
+      "ts": 1783225048.1883385,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " chuyển",
+      "ts": 1783225048.253466,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hướng",
+      "ts": 1783225048.322749,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " sang",
+      "ts": 1783225048.387387,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " sử",
+      "ts": 1783225048.4508994,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " dụng",
+      "ts": 1783225048.5146356,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " trực",
+      "ts": 1783225048.5799918,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " tiếp",
+      "ts": 1783225048.6454287,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " các",
+      "ts": 1783225048.708082,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " công",
+      "ts": 1783225048.7730565,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " cụ",
+      "ts": 1783225048.8361769,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " có",
+      "ts": 1783225048.9016743,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " sẵn",
+      "ts": 1783225048.9657543,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " (`",
+      "ts": 1783225049.029615,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "filesystem",
+      "ts": 1783225049.0958347,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "`,",
+      "ts": 1783225049.159948,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " `",
+      "ts": 1783225049.223485,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "q",
+      "ts": 1783225049.2889168,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "dr",
+      "ts": 1783225049.3522043,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "ant",
+      "ts": 1783225049.4161491,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "`)",
+      "ts": 1783225049.48027,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " để",
+      "ts": 1783225049.5445187,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " tìm",
+      "ts": 1783225049.608614,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " kiếm",
+      "ts": 1783225049.673495,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " và",
+      "ts": 1783225049.737568,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " xác",
+      "ts": 1783225049.8016856,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " minh",
+      "ts": 1783225049.8650115,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " thông",
+      "ts": 1783225049.9286344,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " tin",
+      "ts": 1783225049.993272,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " thay",
+      "ts": 1783225050.0565162,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " vì",
+      "ts": 1783225050.1195881,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " gọi",
+      "ts": 1783225050.1829002,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " lại",
+      "ts": 1783225050.2462163,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " các",
+      "ts": 1783225050.3089643,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " executor",
+      "ts": 1783225050.3731241,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " đã",
+      "ts": 1783225050.439873,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " thất",
+      "ts": 1783225050.5020268,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " bại",
+      "ts": 1783225050.5656266,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": ".",
+      "ts": 1783225050.6318736,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n\n```",
+      "ts": 1783225050.7611153,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "json",
+      "ts": 1783225050.8264818,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n{",
+      "ts": 1783225050.955151,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n  \"",
+      "ts": 1783225051.1475868,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "steps",
+      "ts": 1783225051.2128177,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225051.2763057,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " [",
+      "ts": 1783225051.3395677,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n    {",
+      "ts": 1783225051.5347745,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225051.729319,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "id",
+      "ts": 1783225051.7967803,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225051.8618157,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225051.9265487,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "step",
+      "ts": 1783225051.9899697,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_",
+      "ts": 1783225052.0541134,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "0",
+      "ts": 1783225052.1167183,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "5",
+      "ts": 1783225052.1804235,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\",",
+      "ts": 1783225052.249482,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225052.44308,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "action",
+      "ts": 1783225052.5076094,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225052.575789,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225052.6402476,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "search",
+      "ts": 1783225052.7030942,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_files",
+      "ts": 1783225052.7667458,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\",",
+      "ts": 1783225052.83171,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225053.0230353,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "description",
+      "ts": 1783225053.0887125,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225053.1525416,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225053.215974,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "S",
+      "ts": 1783225053.2795312,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "ử",
+      "ts": 1783225053.3494895,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " dụng",
+      "ts": 1783225053.4131966,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " công",
+      "ts": 1783225053.4764993,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " cụ",
+      "ts": 1783225053.5428972,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " filesystem",
+      "ts": 1783225053.6077323,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " để",
+      "ts": 1783225053.6745765,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " quét",
+      "ts": 1783225053.738073,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " thư",
+      "ts": 1783225053.8025434,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " mục",
+      "ts": 1783225053.8673804,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " chứa",
+      "ts": 1783225053.933531,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hợp",
+      "ts": 1783225053.9983866,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " đồng",
+      "ts": 1783225054.0629594,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hoặc",
+      "ts": 1783225054.1267984,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " dữ",
+      "ts": 1783225054.1924498,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " liệu",
+      "ts": 1783225054.2555559,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " Sys",
+      "ts": 1783225054.3197863,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "me",
+      "ts": 1783225054.3834875,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": ",",
+      "ts": 1783225054.4470115,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " tìm",
+      "ts": 1783225054.509203,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " kiếm",
+      "ts": 1783225054.5722792,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " các",
+      "ts": 1783225054.6438074,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " file",
+      "ts": 1783225054.7077534,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " có",
+      "ts": 1783225054.7721136,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " tên",
+      "ts": 1783225054.8365412,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " liên",
+      "ts": 1783225054.9005783,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " quan",
+      "ts": 1783225054.9637127,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " đến",
+      "ts": 1783225055.0280583,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " '",
+      "ts": 1783225055.0931277,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "Sys",
+      "ts": 1783225055.1574748,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "me",
+      "ts": 1783225055.2218435,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "'",
+      "ts": 1783225055.2863839,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " và",
+      "ts": 1783225055.3513284,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " từ",
+      "ts": 1783225055.4185374,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " khóa",
+      "ts": 1783225055.4826586,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " '",
+      "ts": 1783225055.5470529,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "h",
+      "ts": 1783225055.6126947,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "ợp",
+      "ts": 1783225055.6772652,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " đồng",
+      "ts": 1783225055.7434444,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "',",
+      "ts": 1783225055.8089595,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " '",
+      "ts": 1783225055.8720734,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "contract",
+      "ts": 1783225055.9396036,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "'.",
+      "ts": 1783225056.0043807,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\",",
+      "ts": 1783225056.0693202,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225056.26129,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "tool",
+      "ts": 1783225056.3270872,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225056.3915863,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225056.4575627,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "filesystem",
+      "ts": 1783225056.5211778,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\"",
+      "ts": 1783225056.585304,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n    },",
+      "ts": 1783225056.7861998,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n    {",
+      "ts": 1783225056.985562,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225057.1819658,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "id",
+      "ts": 1783225057.2466004,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225057.3121486,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225057.3775904,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "step",
+      "ts": 1783225057.4429696,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_",
+      "ts": 1783225057.5079765,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "0",
+      "ts": 1783225057.5730875,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "6",
+      "ts": 1783225057.6362271,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\",",
+      "ts": 1783225057.7002652,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225057.8952742,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "action",
+      "ts": 1783225057.9592881,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225058.0234535,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225058.0882812,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "read",
+      "ts": 1783225058.1523252,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_file",
+      "ts": 1783225058.2179642,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\",",
+      "ts": 1783225058.2819421,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225058.4835064,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "description",
+      "ts": 1783225058.546391,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225058.6104367,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225058.673574,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "Đọc",
+      "ts": 1783225058.7373035,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " nội",
+      "ts": 1783225058.8001745,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " dung",
+      "ts": 1783225058.8631167,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " của",
+      "ts": 1783225058.9281845,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " file",
+      "ts": 1783225058.996257,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hợp",
+      "ts": 1783225059.060412,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " đồng",
+      "ts": 1783225059.124244,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " tìm",
+      "ts": 1783225059.1881976,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " được",
+      "ts": 1783225059.2534149,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " trong",
+      "ts": 1783225059.3205812,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " bước",
+      "ts": 1783225059.3854795,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " trước",
+      "ts": 1783225059.4491196,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " để",
+      "ts": 1783225059.5135283,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " xác",
+      "ts": 1783225059.576379,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " định",
+      "ts": 1783225059.6407661,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " đối",
+      "ts": 1783225059.7037013,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " tượng",
+      "ts": 1783225059.7668319,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " mua",
+      "ts": 1783225059.8299644,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hàng",
+      "ts": 1783225059.8944812,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " gần",
+      "ts": 1783225059.9592576,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " nhất",
+      "ts": 1783225060.0256646,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": ".\",",
+      "ts": 1783225060.0892243,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225060.2820303,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "tool",
+      "ts": 1783225060.3457303,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225060.4086123,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225060.4718406,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "filesystem",
+      "ts": 1783225060.5371003,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\"",
+      "ts": 1783225060.6002507,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n    },",
+      "ts": 1783225060.7916062,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n    {",
+      "ts": 1783225060.982832,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225061.1756334,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "id",
+      "ts": 1783225061.240309,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225061.3069434,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225061.3714929,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "step",
+      "ts": 1783225061.4354029,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_",
+      "ts": 1783225061.4983444,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "0",
+      "ts": 1783225061.5616124,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "7",
+      "ts": 1783225061.6255522,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\",",
+      "ts": 1783225061.6896083,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225061.8802092,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "action",
+      "ts": 1783225061.9441633,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225062.008437,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225062.0727282,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "query",
+      "ts": 1783225062.1361244,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_vector",
+      "ts": 1783225062.1995332,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_db",
+      "ts": 1783225062.2628644,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\",",
+      "ts": 1783225062.328896,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225062.5219672,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "description",
+      "ts": 1783225062.5870368,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225062.6494124,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225062.7127042,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "Nếu",
+      "ts": 1783225062.777503,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " không",
+      "ts": 1783225062.841809,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " tìm",
+      "ts": 1783225062.905588,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " thấy",
+      "ts": 1783225062.9694843,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " file",
+      "ts": 1783225063.034414,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " trực",
+      "ts": 1783225063.0978184,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " tiếp",
+      "ts": 1783225063.1627026,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": ",",
+      "ts": 1783225063.226228,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " sử",
+      "ts": 1783225063.289969,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " dụng",
+      "ts": 1783225063.3522742,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " Q",
+      "ts": 1783225063.4173543,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "dr",
+      "ts": 1783225063.4816182,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "ant",
+      "ts": 1783225063.5447857,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " để",
+      "ts": 1783225063.6087716,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " truy",
+      "ts": 1783225063.6725636,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " vấn",
+      "ts": 1783225063.739403,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " vector",
+      "ts": 1783225063.8044527,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " chứa",
+      "ts": 1783225063.8691797,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " thông",
+      "ts": 1783225063.9327905,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " tin",
+      "ts": 1783225063.9962075,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " về",
+      "ts": 1783225064.0614712,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " các",
+      "ts": 1783225064.125373,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " giao",
+      "ts": 1783225064.1902447,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " dịch",
+      "ts": 1783225064.2545907,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " Sys",
+      "ts": 1783225064.318077,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "me",
+      "ts": 1783225064.3819156,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " dựa",
+      "ts": 1783225064.445849,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " trên",
+      "ts": 1783225064.510685,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " ngữ",
+      "ts": 1783225064.574411,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " cảnh",
+      "ts": 1783225064.640294,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " '",
+      "ts": 1783225064.703093,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "m",
+      "ts": 1783225064.7682385,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "ua",
+      "ts": 1783225064.832282,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hàng",
+      "ts": 1783225064.8954155,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " gần",
+      "ts": 1783225064.963716,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " nhất",
+      "ts": 1783225065.0278606,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "'.",
+      "ts": 1783225065.092077,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\",",
+      "ts": 1783225065.157899,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225065.357191,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "tool",
+      "ts": 1783225065.420486,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225065.4854493,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225065.5508926,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "q",
+      "ts": 1783225065.6162689,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "dr",
+      "ts": 1783225065.6817703,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "ant",
+      "ts": 1783225065.7466161,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\"",
+      "ts": 1783225065.811594,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n    },",
+      "ts": 1783225066.0067408,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n    {",
+      "ts": 1783225066.2003334,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225066.393115,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "id",
+      "ts": 1783225066.4603388,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225066.525551,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225066.5912766,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "step",
+      "ts": 1783225066.65791,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_",
+      "ts": 1783225066.7220476,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "0",
+      "ts": 1783225066.786537,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "8",
+      "ts": 1783225066.8520167,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\",",
+      "ts": 1783225066.9167156,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225067.1093087,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "action",
+      "ts": 1783225067.1728446,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225067.2366173,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225067.3006985,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "synthesize",
+      "ts": 1783225067.3655841,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "_result",
+      "ts": 1783225067.4294884,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\",",
+      "ts": 1783225067.4927325,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225067.687123,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "description",
+      "ts": 1783225067.7513826,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225067.8155487,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225067.879349,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "Tổng",
+      "ts": 1783225067.9431493,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hợp",
+      "ts": 1783225068.0071156,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " kết",
+      "ts": 1783225068.0718145,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " quả",
+      "ts": 1783225068.1359754,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " từ",
+      "ts": 1783225068.1997426,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " file",
+      "ts": 1783225068.2642038,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hoặc",
+      "ts": 1783225068.335439,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " vector",
+      "ts": 1783225068.40069,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " database",
+      "ts": 1783225068.465451,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " để",
+      "ts": 1783225068.52914,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " trả",
+      "ts": 1783225068.5932589,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " lời",
+      "ts": 1783225068.6593587,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " câu",
+      "ts": 1783225068.7229004,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hỏi",
+      "ts": 1783225068.785986,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " về",
+      "ts": 1783225068.849184,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " đối",
+      "ts": 1783225068.912804,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " tượng",
+      "ts": 1783225068.9778516,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " mua",
+      "ts": 1783225069.0427,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " hàng",
+      "ts": 1783225069.1072266,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " gần",
+      "ts": 1783225069.1711588,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " nhất",
+      "ts": 1783225069.235594,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " của",
+      "ts": 1783225069.3002453,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " Sys",
+      "ts": 1783225069.3644655,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "me",
+      "ts": 1783225069.4299033,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": ".\",",
+      "ts": 1783225069.4953277,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n      \"",
+      "ts": 1783225069.6875057,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "tool",
+      "ts": 1783225069.7528698,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\":",
+      "ts": 1783225069.8170943,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": " \"",
+      "ts": 1783225069.8811364,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "internal",
+      "ts": 1783225069.9472191,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\"",
+      "ts": 1783225070.0119426,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n    }",
+      "ts": 1783225070.2049992,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n  ]",
+      "ts": 1783225070.4036312,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n}",
+      "ts": 1783225070.5327334,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "\n```",
+      "ts": 1783225070.663369,
+      "source": "PLANNER",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🔄 [RE-PLANNING]: Đã cập nhật kế hoạch động. Nhận thêm 4 bước mới.",
+      "ts": 1783225070.9992054,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [DAG-SCHEDULER]: Thực thi song song 4 bước: ['step_05', 'step_06', 'step_07', 'step_08']",
+      "ts": 1783225071.0022817,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All connection attempts failed | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All connection attempts failed\"}",
+      "ts": 1783225077.1263664,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+      "ts": 1783225077.1296864,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1105_c62a42"
+    }
+  ],
+  "artifacts": {
+    "plan": "hợp đồng gần đây nhất của Sysme là mua gì ?",
+    "walkthrough": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

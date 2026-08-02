@@ -127,7 +127,7 @@ class ModelRouter:
                         continue
 
                     key = re.sub(r'[^a-zA-Z0-9_-]', '', parts[1].replace('**', '')).strip().upper()
-                    target = re.sub(r'[^a-zA-Z0-9:._-]', '', parts[2].replace('**', '')).strip().lower()
+                    target = re.sub(r'[^a-zA-Z0-9:._/-]', '', parts[2].replace('**', '')).strip().lower()
                     if not key or not target: continue
 
                     def get_val(h_name, is_float=False):
@@ -164,8 +164,11 @@ class ModelRouter:
                         # ⚠️ [NOTE]: Không truyền 'profile' vào Ollama options — đây là meta-data nội bộ
                         final_opts.update(opts_block)
                         
-                        # 🚀 [CPU-TURBO]: Tự động inject tối ưu CPU cho mọi role num_gpu=0
-                        if final_opts.get('num_gpu', 100) == 0:
+                        idx_hw = next((i for i, h in enumerate(headers) if 'HW' in h or 'HARDWARE' in h), -1)
+                        hardware = parts[idx_hw].replace('**', '').strip().upper() if idx_hw != -1 else "GPU"
+
+                        # [HYBRID MOE & CPU TURBO]: Inject mmap zero-copy cho cả CPU và mô hình chia RAM/VRAM MoE
+                        if final_opts.get('num_gpu', 100) == 0 or "MOE" in p_name or "RAM" in hardware:
                             final_opts['use_mmap'] = True
                             final_opts['num_batch'] = 512
                         
@@ -179,9 +182,6 @@ class ModelRouter:
                                 keep_alive = keep_alive_raw
                         except Exception:
                             keep_alive = "5m"
-                        
-                        idx_hw = next((i for i, h in enumerate(headers) if 'HW' in h or 'HARDWARE' in h), -1)
-                        hardware = parts[idx_hw].replace('**', '').strip().upper() if idx_hw != -1 else "GPU"
 
                         new_r_cache[key] = {
                             'model': target,

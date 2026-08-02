@@ -1,0 +1,76 @@
+{
+  "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/ZENITH_ULTRA_VISION/manifest.json - Role: Z-SOS Manifest for Multi-Lens Code Audit - Ownership: Mr LeeTrung - Status: Active | Version: SDS v1.0 ",
+  "id": "ZENITH_ULTRA_VISION",
+  "name": "Zenith Ultra-Vision",
+  "version": "1.0.0",
+  "description": "Multi-Lens Autonomous Auditor: Orchestrates a team of specialized sub-agents to review code through Security, Performance, Logic, and Testability lenses with independent verification.",
+  "author": "JKAI-Zenith",
+  "triggers": [
+    "ultra review",
+    "kiểm định đa chiều",
+    "multi-lens audit",
+    "deep code review",
+    "x-ray code",
+    "audit logic",
+    "security audit",
+    "overview",
+    "the multi lens framework  he thong lang kinh",
+    "1    security lens  lang kinh bao mat",
+    "2    performance lens  lang kinh hieu nang",
+    "3    logic   edge case lens  lang kinh logic   bien",
+    "lang",
+    "kinh",
+    "khong",
+    "nang",
+    "logic",
+    "kiem",
+    "lens",
+    "bang",
+    "file",
+    "zenith_ultra_vision",
+    "skill",
+    "agent",
+    "tac vu"
+  ],
+  "domain": "CORE",
+  "config": {
+    "lenses": [
+      "SECURITY",
+      "PERFORMANCE",
+      "LOGIC",
+      "TESTABILITY"
+    ],
+    "auto_verification": true,
+    "report_format": "markdown_table"
+  },
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "target_path": {
+          "type": "string",
+          "description": "Path to the file or directory to audit."
+        },
+        "focus_areas": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Specific lenses to focus on (optional)."
+        },
+        "verification_depth": {
+          "type": "string",
+          "enum": [
+            "shallow",
+            "deep",
+            "experimental"
+          ],
+          "default": "deep"
+        }
+      },
+      "required": [
+        "target_path"
+      ]
+    }
+  }
+}

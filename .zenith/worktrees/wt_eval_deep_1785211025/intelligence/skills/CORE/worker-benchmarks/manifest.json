@@ -1,0 +1,48 @@
+{
+  "id": "WORKER_BENCHMARKS",
+  "name": "Zenith Worker Benchmarks",
+  "version": "1.0.0",
+  "description": "Performance evaluation core: Measures the efficiency, accuracy, and resource consumption of individual agents and sub-processes.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "đánh giá hiệu năng",
+    "worker benchmarks",
+    "đo lường năng suất đặc vụ",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "nang",
+    "hieu",
+    "luong",
+    "thuc",
+    "viec",
+    "nhat",
+    "cung",
+    "cong",
+    "quan",
+    "hinh",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "agent_id": {
+          "type": "string",
+          "description": "ID of the agent to benchmark."
+        },
+        "test_suite": {
+          "type": "string",
+          "description": "The benchmark test suite to run."
+        }
+      }
+    }
+  }
+}

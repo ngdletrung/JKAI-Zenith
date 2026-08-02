@@ -1,0 +1,64 @@
+{
+  "comment": " [ZENITH FILE DIRECTIVE] - File: intelligence/skills/CORE/ZENITH_STRATEGIC_PLANNER/manifest.json - Role: Z-SOS Manifest for Intent Reasoning - Ownership: Mr LeeTrung - Status: Active | Version: SDS v1.0 ",
+  "id": "ZENITH_STRATEGIC_PLANNER",
+  "name": "Zenith Strategic Planner",
+  "version": "1.0.0",
+  "description": "Intent Recognition & Architectural Reasoning: Decodes vague user requests into precise technical roadmaps by analyzing context, history, and project goals.",
+  "author": "JKAI-Zenith",
+  "triggers": [
+    "lập kế hoạch",
+    "giải mã ý đồ",
+    "strategic plan",
+    "intent recognition",
+    "roadmap creation",
+    "architectural reasoning",
+    "blueprint",
+    "overview",
+    "reasoning mechanisms  co che thau hieu",
+    "1    intent decoding  giai ma y  o",
+    "2  architectural mapping  anh xa kien truc",
+    "3  blueprint projection  ban thao chien luoc",
+    "hieu",
+    "master",
+    "khong",
+    "thuc",
+    "thay",
+    "tinh",
+    "nhat",
+    "canh",
+    "zenith",
+    "file",
+    "skill",
+    "agent",
+    "tac vu"
+  ],
+  "domain": "CORE",
+  "config": {
+    "reasoning_mode": "architectural",
+    "validation_required": true,
+    "max_steps_per_plan": 10
+  },
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "user_intent": {
+          "type": "string",
+          "description": "The raw, potentially vague command from the user."
+        },
+        "context_depth": {
+          "type": "string",
+          "enum": [
+            "shallow",
+            "deep",
+            "historical"
+          ],
+          "default": "deep"
+        }
+      },
+      "required": [
+        "user_intent"
+      ]
+    }
+  }
+}

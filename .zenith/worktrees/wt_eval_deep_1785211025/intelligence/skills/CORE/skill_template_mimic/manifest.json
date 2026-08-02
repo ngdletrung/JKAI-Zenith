@@ -1,0 +1,58 @@
+{
+  "id": "SKILL_TEMPLATE_MIMIC",
+  "name": "Zenith Template Mimic",
+  "version": "1.0.0",
+  "description": "Style and structure replicator: Learns the 'soul' of any document template and applies it to generate new content with perfect alignment.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "học mẫu tài liệu",
+    "mimic template",
+    "sao chép định dạng",
+    "đúc tài liệu",
+    "apply template",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "dang",
+    "lieu",
+    "nang",
+    "quan",
+    "dung",
+    "thuc",
+    "hoan",
+    "nhat",
+    "master",
+    "chuyen",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "learn_template",
+            "apply_template"
+          ],
+          "description": "Action to perform."
+        },
+        "template_name": {
+          "type": "string",
+          "description": "Unique name for the template."
+        }
+      },
+      "required": [
+        "action",
+        "template_name"
+      ]
+    }
+  }
+}

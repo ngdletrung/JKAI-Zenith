@@ -43,11 +43,18 @@ const formatTimeAgo = (ts: number): string => {
 };
 
 export const ProposalPlanTab = memo(() => {
-  const { backgroundProposals, removeBackgroundProposal, updateProposalStatus } = useZenithStore();
+  const { backgroundProposals, removeBackgroundProposal, updateProposalStatus, language } = useZenithStore();
   const [authProposal, setAuthProposal] = useState<string | null>(null);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
 
-  if (!backgroundProposals || backgroundProposals.length === 0) return null;
+  const uniqueProposals = React.useMemo(() => {
+    if (!backgroundProposals) return [];
+    const map = new Map<string, BackgroundProposal>();
+    backgroundProposals.forEach(p => { if (p && p.id) map.set(p.id, p); });
+    return Array.from(map.values());
+  }, [backgroundProposals]);
+
+  if (!uniqueProposals || uniqueProposals.length === 0) return null;
 
   const toggleExpand = (id: string) => {
     setExpandedIds(prev => {
@@ -95,13 +102,13 @@ export const ProposalPlanTab = memo(() => {
         <Sparkles className="w-4 h-4 text-fuchsia-400" />
         <h3 className="text-[12px] font-black uppercase tracking-widest text-white/90">Đề xuất từ Hệ thống</h3>
         <div className="ml-auto bg-fuchsia-500/20 text-fuchsia-400 text-[10px] font-bold px-2.5 py-0.5 rounded-full border border-fuchsia-500/30">
-          {backgroundProposals.length}
+          {uniqueProposals.length}
         </div>
       </div>
 
       <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden custom-scroll p-4 space-y-3">
         <AnimatePresence>
-          {backgroundProposals.map((p) => {
+          {uniqueProposals.map((p) => {
             const cfg = getConfig(p.proposal_type);
             const isExpanded = expandedIds.has(p.id);
             const isLong = p.description && p.description.length > 500;
@@ -173,6 +180,7 @@ export const ProposalPlanTab = memo(() => {
                   <div className="px-5 pb-4 animate-in fade-in slide-in-from-bottom-2">
                     <div className="pt-3 border-t border-white/5">
                       <NuclearApprovalPad
+                        language={language || 'en'}
                         onApprove={(code) => handleApprove(p, code)}
                         onCancel={() => setAuthProposal(null)}
                       />

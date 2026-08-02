@@ -70,6 +70,34 @@ class CognitiveCritic:
                 
         return {"approved": True, "reason": "Logic Validated."}
 
+    def validate_blueprint(self, original_goal: str, steps: list) -> dict:
+        """
+        Kiểm định toàn bộ kế hoạch (blueprint steps) trước khi đưa vào DAG Executor
+        để bảo đảm Không Có Sự Bóp Méo Mục Tiêu (Goal Mutation) và Trôi Dạt Suy Luận (Reasoning Drift).
+        """
+        for idx, step in enumerate(steps):
+            subgoal = str(step.get("action", "") or step.get("description", "") or step.get("goal", "") or "")
+            if not subgoal:
+                continue
+            # Kiểm tra Goal Integrity
+            integrity_score = self.goal_monitor.check_integrity(original_goal, subgoal)
+            if integrity_score < 0.25:
+                return {
+                    "approved": False,
+                    "reason": f"Bước {idx+1} ('{subgoal[:50]}...') vi phạm tính toàn vẹn mục tiêu (Score: {integrity_score:.2f})."
+                }
+
+            # Kiểm tra Reasoning Drift
+            sub_lower = subgoal.lower()
+            orig_lower = original_goal.lower()
+            if ("ram" in orig_lower or "bộ nhớ tạm" in orig_lower) and any(w in sub_lower for w in ["format", "delete_file", "rm -rf", "xóa file"]):
+                return {
+                    "approved": False,
+                    "reason": f"Bước {idx+1} vi phạm lập luận logic: Dùng lệnh xóa dữ liệu vật lý để giải phóng RAM."
+                }
+                
+        return {"approved": True, "reason": "Zero Drift Validated."}
+
     def detect_recursive_confusion(self, trace_history: list) -> bool:
         if len(trace_history) < 3:
             return False
@@ -79,3 +107,4 @@ class CognitiveCritic:
             return True
             
         return False
+

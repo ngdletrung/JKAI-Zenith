@@ -21,7 +21,7 @@ class CognitiveMemory:
     trước khi kích hoạt các luồng tư duy phức tạp thưa Master.
     """
     def __init__(self):
-        self.collection = "jkai_zenith_intel"
+        self.collection = "jkai_knowledge"
         self.cache_dir = os.path.join(path_manager.get_root(), "intelligence", "storage", "neural_cache")
         os.makedirs(self.cache_dir, exist_ok=True)
         
@@ -101,7 +101,7 @@ class CognitiveMemory:
                         data = json.load(f)
                     cached_time = data.get("timestamp", 0)
                     age = time.time() - cached_time
-                    ttl = self.time_sensitive_ttl if self._is_time_sensitive(clean_query) else self.default_ttl
+                    ttl = self.ttl_map["time_sensitive"] if self._is_time_sensitive(clean_query) else self.ttl_map["session"]
                     
                     if age < ttl:
                         msg = f"💾 [DISK-HIT]: Trúng đích bộ nhớ đĩa (Age: {age:.0f}s)"
@@ -147,6 +147,7 @@ class CognitiveMemory:
             if emb:
                 qdrant_meta = {
                     "namespace": "neural_cache",
+                    "source": "cache",
                     "original_query": query,
                     "timestamp": time.time(),
                     "session_id": session_id,

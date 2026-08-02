@@ -1,0 +1,6 @@
+{
+  "target_file": "path/to/file",
+  "reason": "Lỗi 'category' trong router đã xảy ra 8 lần, gây ra failure sau 2 lần. Nguyên nhân gốc rễ là việc dữ liệu 'category' không được xử lý đúng trong quá trình thực thi.",
+  "proposed_code": "Để sửa lỗi này, cần kiểm tra và sửa đoạn code liên quan đến xử lý dữ liệu 'category'. Có thể sử dụng hàm kiểm tra dữ liệu trước khi thực hiện các thao tác với 'category'. Ví dụ: if (data.category) {...}",
+  "impact": "Sửa lỗi này sẽ giúp hệ thống tránh bị crash và đảm bảo rằng dữ liệu 'category' được xử lý đúng, cải thiện hiệu suất và ổn định của hệ thống."
+}

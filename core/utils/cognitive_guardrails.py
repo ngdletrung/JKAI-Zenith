@@ -231,6 +231,38 @@ class CognitiveGuardrails:
             )
         return GuardrailViolation(False, False, "ok", "", "")
 
+    def check_parametric_usage(
+        self,
+        query_type: str,
+        has_rag_context: bool,
+    ) -> GuardrailViolation:
+        """
+        [ANTI-HALLUCINATION]: Canh bao khi model sap dung parametric memory
+        cho cau hoi FACT_CRITICAL ma khong co RAG context.
+
+        Args:
+            query_type: Ket qua tu QueryClassifier (FACT_CRITICAL, PARAMETRIC_SAFE, ...)
+            has_rag_context: True neu RAG da tim duoc tai lieu lien quan.
+        """
+        if query_type in ("FACT_CRITICAL", "TEMPORAL_SENSITIVE") and not has_rag_context:
+            violation = GuardrailViolation(
+                should_abort  = False,
+                should_warn   = True,
+                violation     = "parametric_risk",
+                reason        = (
+                    f"Cau hoi loai '{query_type}' yeu cau du lieu thuc te "
+                    f"nhung khong tim thay RAG context. Nguy co hallucination cao."
+                ),
+                suggested_action = (
+                    "Bat buoc web search hoac tra loi [JKAI-UNVERIFIED]. "
+                    "Khong de model tu su dung du lieu train."
+                ),
+            )
+            self._record_violation(violation)
+            return violation
+        return GuardrailViolation(False, False, "ok", "", "")
+
+
     def get_health_report(self) -> Dict[str, Any]:
         """Snapshot trạng thái guardrails hiện tại."""
         elapsed = (time.time() - self._start_time) / 60

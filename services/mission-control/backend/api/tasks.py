@@ -125,7 +125,7 @@ def submit_task():
         "mode": mode,
         "lang": data.get("lang", "vi"),
         "images": images,
-        "source": "Web",
+        "source": "WEB",
         "attached_files": saved_files,
         "attached_files_content": attached_files_content.strip(),
         "mission_id": mission_id,

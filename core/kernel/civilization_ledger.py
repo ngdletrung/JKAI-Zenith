@@ -92,6 +92,8 @@ class CivilizationLedger:
                     "task_id": task_id,
                     "goal": goal,
                     "type": "distilled_lesson",
+                    "memory_type": "lesson",
+                    "source": "wisdom",
                     "timestamp": time.time(),
                     "has_failures": len(failed_steps) > 0
                 }

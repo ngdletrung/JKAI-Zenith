@@ -1,0 +1,52 @@
+{
+  "id": "SKILL_GIAM_SAT_HE_THONG",
+  "name": "Zenith Telemetry & Monitoring",
+  "version": "1.0.0",
+  "description": "System health core: Monitors CPU, RAM, Disk, and logs to ensure optimal performance and security of the Zenith infrastructure.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "giám sát hệ thống",
+    "kiểm tra sức khỏe pc",
+    "system telemetry",
+    "quét lỗi log",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "thong",
+    "giam",
+    "phan",
+    "hanh",
+    "trang",
+    "nang",
+    "master",
+    "hieu",
+    "hoac",
+    "trinh",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "bao_cao_suc_khoe_he_thong",
+            "quet_loi_log_tu_dong"
+          ],
+          "description": "Monitoring action."
+        }
+      },
+      "required": [
+        "action"
+      ]
+    }
+  }
+}

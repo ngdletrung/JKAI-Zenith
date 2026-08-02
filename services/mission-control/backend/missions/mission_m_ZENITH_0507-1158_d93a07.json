@@ -1,0 +1,63 @@
+{
+  "id": "m_ZENITH_0507-1158_d93a07",
+  "title": "giá vàng thế giới hôm nay thế nào ?",
+  "goal": "giá vàng thế giới hôm nay thế nào ?",
+  "status": "failed",
+  "ts": 1783227577.6350086,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "giá vàng thế giới hôm nay thế nào ?",
+      "ts": 1783227536.2021344,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1158_d93a07"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_0507-1158_d93a07` initialized | Trace: `trace_d93a07`. Runtime ready.",
+      "ts": 1783227536.2049568,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1158_d93a07"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1783227540.55006,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1158_d93a07"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1783227551.717553,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1158_d93a07"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1783227568.1803527,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1158_d93a07"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist\"}",
+      "ts": 1783227577.5943074,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1158_d93a07"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+      "ts": 1783227577.5997424,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0507-1158_d93a07"
+    }
+  ],
+  "artifacts": {
+    "plan": "giá vàng thế giới hôm nay thế nào ?",
+    "walkthrough": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

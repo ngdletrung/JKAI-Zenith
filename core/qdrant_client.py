@@ -177,6 +177,28 @@ class QdrantClientWrapper:
         }
         return await self.upsert_batch([point], "jkai_skills")
 
+    async def delete_points(self, collection: str, filter_dict: dict):
+        """Xóa các điểm trong collection dựa trên bộ lọc filter_dict."""
+        target_collection = collection or self.collection_name
+        payload = {}
+        if filter_dict:
+            must_filters = []
+            for k, v in filter_dict.items():
+                if isinstance(v, list):
+                    must_filters.append({"key": k, "match": {"any": v}})
+                else:
+                    must_filters.append({"key": k, "match": {"value": v}})
+            payload["filter"] = {"must": must_filters}
+            
+        async with self._semaphore:
+            try:
+                client = self._get_async_client()
+                resp = await client.post(f"{self.url}/collections/{target_collection}/points/delete", json=payload)
+                return resp.status_code == 200
+            except Exception as e:
+                logger.error(f"[QDRANT-DELETE-ERR] {e}")
+                return False
+
     # ── COMPATIBILITY LAYER ─────────────────────────────────
     
     async def init_collection(self, collection_name: str, vector_size: int = 768):

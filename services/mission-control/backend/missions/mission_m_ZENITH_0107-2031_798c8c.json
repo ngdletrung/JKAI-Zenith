@@ -1,0 +1,84 @@
+{
+  "id": "m_ZENITH_0107-2031_798c8c",
+  "title": "Việt Nam có bao nhiêu tỉnh thành?",
+  "goal": "Việt Nam có bao nhiêu tỉnh thành?",
+  "status": "failed",
+  "ts": 1782912699.9586823,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "Việt Nam có bao nhiêu tỉnh thành?",
+      "ts": 1782912675.864174,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2031_798c8c"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_0107-2031_798c8c` initialized | Trace: `trace_798c8c`. Runtime ready.",
+      "ts": 1782912675.8662884,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2031_798c8c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1782912679.5180113,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2031_798c8c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1782912679.520346,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2031_798c8c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1782912685.3535266,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2031_798c8c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1782912685.3574498,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2031_798c8c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1782912693.916521,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2031_798c8c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1782912693.9194965,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2031_798c8c"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist\"}",
+      "ts": 1782912699.9414532,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2031_798c8c"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+      "ts": 1782912699.944423,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2031_798c8c"
+    }
+  ],
+  "artifacts": {
+    "plan": "Việt Nam có bao nhiêu tỉnh thành?",
+    "walkthrough": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

@@ -1,0 +1,3773 @@
+{
+  "id": "m_ZENITH_0407-1940_6694db",
+  "title": "hợp đồng gần đây nhất của Sysme là mua gì ?",
+  "goal": "hợp đồng gần đây nhất của Sysme là mua gì ?\n\n[KẾT QUẢ]\n# Báo cáo Sự cố và Phân tích Nguyên nhân Nhiệm vụ Sysme\n\n## Tổng quan về Kết quả Thực thi\nNhiệm vụ xác định hợp đồng gần đây nhất của **Sysme** đã thất bại. Hệ thống không thể truy xuất dữ liệu liên quan do lỗi cấu trúc trong lớp xử lý trí tuệ.\n\n*   **Trạng thái nhiệm vụ**: THẤT BẠI (FAIL)\n*   **Điểm số đánh giá**: 0.0/1.0\n*   **Thời điểm xảy ra**: Thứ Bảy, ngày 04 tháng 07 năm 2026 lúc 19:48:12\n\n## Chi tiết Lỗi và Nguyên nhân\nLỗi được ghi nhận trong quá trình thực thi của đối tượng `JKAIIntelligenceEngine`. Hệ thống thiếu phương thức truy xuất dữ liệu cần thiết để lấy thông tin từ cơ sở tri thức.\n\n*   **Mã lỗi**: `'JKAIIntelligenceEngine' object has no attribute 'get_insights'`\n*   **Vị trí xảy ra**: Trong lớp `JKAIIntelligenceEngine`, khi cố gắng gọi phương thức `get_insights()`.\n*   **Dữ liệu đầu ra**: Rỗng (`{}`), xác nhận rằng không có bằng chứng nào được thu thập để hoàn thành nhiệm vụ.\n\n## Phân tích Nguyên nhân Kỹ thuật\nSự thất bại này là do sự thiếu hụt trong kiến trúc lớp xử lý, cụ thể:\n\n1.  **Thiếu phương thức truy xuất (Missing Method)**: Đối tượng `JKAIIntelligenceEngine` hiện tại không định nghĩa hoặc chưa được khởi tạo đúng cách để bao gồm thuộc tính/mét-hoạt `get_insights`.\n2.  **Mất kết nối với nguồn dữ liệu**: Do thiếu phương thức này, hệ thống không thể giao tiếp với các dịch vụ như Qdrant (Vector DB) hay Filesystem để tìm kiếm thông tin về hợp đồng Sysme.\n\n## Hành động Khắc phục Đề xuất\nĐể khôi phục khả năng thực thi nhiệm vụ và thu thập bằng chứng chính xác, cần tiến hành các bước sau:\n\n1.  **Kiểm tra Định nghĩa Lớp**: Xác minh trong file nguồn của `JKAIIntelligenceEngine` xem phương thức `get_insights()` đã được định nghĩa chưa hoặc có lỗi cú pháp gì không.\n2.  **Khởi tạo Lại Dịch vụ Trí tuệ**: Nếu là vấn đề khởi động, cần restart container chứa dịch vụ này để đảm bảo các thuộc tính cơ bản (như vector store client) được load đúng.\n3.  **Cập nhật Logic Truy xuất**: Đảm bảo phương thức `get_insights` có logic gọi đúng đến công cụ tìm kiếm (ví dụ: sử dụng tool `qdrant` hoặc `filesystem`) với query phù hợp cho \"hợp đồng Sysme\".\n\n## Kết luận\nNhiệm vụ không thể hoàn thành do lỗi kỹ thuật cấp lớp. Cần sửa chữa mã nguồn trước khi thử nghiệm lại nhiệm vụ thu thập dữ liệu về **Sysme**.\n\n---\n👉 Tổng hợp lúc 07h48m12s PM (Thứ Bảy, ngày 04 tháng 07 năm 2026)\n\nBan Thư Ký JKAI Zenith",
+  "status": "completed",
+  "ts": 1783169354.684879,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "hợp đồng gần đây nhất của Sysme là mua gì ?",
+      "ts": 1783168804.161466,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_0407-1940_6694db` initialized | Trace: `trace_6694db`. Runtime ready.",
+      "ts": 1783168804.1648948,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: DEEP — lỗi/debug.",
+      "ts": 1783168812.4675498,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=deep_full mode=deep tags=-",
+      "ts": 1783168812.4707646,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1783168812.4731672,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: DeepPipeline T2–T6 (full)",
+      "ts": 1783168812.492506,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [DEEP-PIPELINE]: Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1783168812.5035975,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1783168812.5064454,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1783168812.5133336,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "📚 [KB-RETRIEVED]: 8 chunks (≥0.45), 6 high-quality (≥0.72). Sufficient=True",
+      "ts": 1783168812.636988,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1783168812.6603901,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER`...",
+      "ts": 1783168863.0509007,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "⏱️ [FORGE-ATTEMPT-1]: Model `PLANNER` response time: 66.82s.",
+      "ts": 1783168929.8702617,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-2]: Đang đúc kết chiến lược bằng vai trò `RESERVE_AGENT`...",
+      "ts": 1783168929.8912227,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "⏱️ [FORGE-ATTEMPT-2]: Model `RESERVE_AGENT` response time: 153.27s.",
+      "ts": 1783169083.159605,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-3]: Đang đúc kết chiến lược bằng vai trò `RESERVE_AGENT`...",
+      "ts": 1783169083.1626947,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "⏱️ [FORGE-ATTEMPT-3]: Model `RESERVE_AGENT` response time: 177.17s.",
+      "ts": 1783169260.3308237,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "WARN",
+      "msg": "⚠️ [TOOL-SANITY]: Lần thử cuối vẫn ảo giác tool ['QDRANT']. Đành phải tước bỏ bước này để cứu kế hoạch.",
+      "ts": 1783169260.338111,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1783169260.342926,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1783169260.344286,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "📊 [BLUEPRINT SEALED]: 1 bước thực thi đã được đúc kết.",
+      "ts": 1783169260.3451045,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚙️ [T4]: Khởi động DAG Parallel Executor...",
+      "ts": 1783169260.3479438,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [DAG-SCHEDULER]: Thực thi song song 1 bước: ['auto_recovery_01']",
+      "ts": 1783169260.3865955,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SYSTEM:ALPHA",
+      "msg": "⚡ [SWARM-MODE]: Kích hoạt 1 nơ-ron thực thi song song.",
+      "ts": 1783169260.4098105,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔬 [T4: SURGERY] [OMNI_SEARCH_ENGINE] Đang kiểm tra an toàn & khóa tài nguyên...",
+      "ts": 1783169267.0646782,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T4: SURGERY] [OMNI_SEARCH_ENGINE] Đang áp dụng chính sách thực thi...",
+      "ts": 1783169267.0716078,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "💉 [T4: SURGERY] [OMNI_SEARCH_ENGINE] Đang nạp DNA & nén bối cảnh...",
+      "ts": 1783169267.0728323,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "CRITICAL:ALPHA",
+      "msg": "🚨 [SỰ CỐ HỆ THỐNG]: 'JKAIIntelligenceEngine' object has no attribute 'get_insights'",
+      "ts": 1783169267.1084526,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "CRITICAL:ALPHA",
+      "msg": "🛑 [STOP]: Bước `auto_recovery_01` thất bại: 'JKAIIntelligenceEngine' object has no attribute 'get_insights'. Ngắt chuỗi hành pháp.",
+      "ts": 1783169267.111381,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "⚖️ [STEP CRITIC]: Phát hiện lỗi tại bước auto_recovery_01. Kích hoạt Dynamic Re-planning...",
+      "ts": 1783169267.1167653,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "WARN",
+      "msg": "⚠️ [RE-PLANNING]: Phản hồi re-plan không chứa danh sách steps hợp lệ.",
+      "ts": 1783169292.5486875,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "✅ [T4]: Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1783169292.550873,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "⚖️ [T5]: Khởi động phiên Thẩm định Tư pháp...",
+      "ts": 1783169292.5534194,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "⚖️ [T5]: Phán quyết — FAIL (Score: 0.00)",
+      "ts": 1783169292.5755408,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "📝 [T6]: Ban Thư Ký đang soạn Báo cáo...",
+      "ts": 1783169292.5780542,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\n*",
+      "ts": 1783169326.2159905,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "   **",
+      "ts": 1783169326.3215199,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Thời",
+      "ts": 1783169326.375223,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " điểm",
+      "ts": 1783169326.4288058,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " xảy",
+      "ts": 1783169326.4819791,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " ra",
+      "ts": 1783169326.5345762,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "**:",
+      "ts": 1783169326.587856,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Thứ",
+      "ts": 1783169326.6408298,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Bảy",
+      "ts": 1783169326.6927235,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ",",
+      "ts": 1783169326.746169,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " ngày",
+      "ts": 1783169326.7991111,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " 0",
+      "ts": 1783169326.9063337,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "4",
+      "ts": 1783169326.958206,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tháng",
+      "ts": 1783169327.0111585,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " 0",
+      "ts": 1783169327.1149807,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "7",
+      "ts": 1783169327.1678,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " năm",
+      "ts": 1783169327.2201474,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " 2",
+      "ts": 1783169327.3250568,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "0",
+      "ts": 1783169327.377658,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "2",
+      "ts": 1783169327.4301767,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "6",
+      "ts": 1783169327.4830172,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " lúc",
+      "ts": 1783169327.5356789,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " 1",
+      "ts": 1783169327.6415699,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "9",
+      "ts": 1783169327.6939328,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ":",
+      "ts": 1783169327.7453976,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "4",
+      "ts": 1783169327.7982748,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "8",
+      "ts": 1783169327.8504493,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ":",
+      "ts": 1783169327.9035912,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "1",
+      "ts": 1783169327.956809,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "2",
+      "ts": 1783169328.011081,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\n\n##",
+      "ts": 1783169328.1157608,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Chi",
+      "ts": 1783169328.1688442,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tiết",
+      "ts": 1783169328.2212915,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " L",
+      "ts": 1783169328.2735043,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ỗi",
+      "ts": 1783169328.32602,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " và",
+      "ts": 1783169328.378782,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Nguyên",
+      "ts": 1783169328.4312742,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nhân",
+      "ts": 1783169328.4830508,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\nL",
+      "ts": 1783169328.5879517,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ỗi",
+      "ts": 1783169328.6407518,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " được",
+      "ts": 1783169328.694018,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " ghi",
+      "ts": 1783169328.746756,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nhận",
+      "ts": 1783169328.798486,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " trong",
+      "ts": 1783169328.8500912,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " quá",
+      "ts": 1783169328.9027815,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " trình",
+      "ts": 1783169328.9564834,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thực",
+      "ts": 1783169329.0077293,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thi",
+      "ts": 1783169329.0603664,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " của",
+      "ts": 1783169329.1140606,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " đối",
+      "ts": 1783169329.1658046,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tượng",
+      "ts": 1783169329.2183435,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " `",
+      "ts": 1783169329.2716153,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "JK",
+      "ts": 1783169329.3252382,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "AI",
+      "ts": 1783169329.3777604,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Int",
+      "ts": 1783169329.431088,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "elligence",
+      "ts": 1783169329.4837048,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Engine",
+      "ts": 1783169329.5358536,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "`.",
+      "ts": 1783169329.5944052,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Hệ",
+      "ts": 1783169329.647362,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thống",
+      "ts": 1783169329.6995409,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thiếu",
+      "ts": 1783169329.7531033,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " phương",
+      "ts": 1783169329.8064375,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thức",
+      "ts": 1783169329.8591073,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " truy",
+      "ts": 1783169329.9116702,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " xuất",
+      "ts": 1783169329.965139,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " dữ",
+      "ts": 1783169330.019409,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " liệu",
+      "ts": 1783169330.0729299,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cần",
+      "ts": 1783169330.126362,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thiết",
+      "ts": 1783169330.1788933,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " để",
+      "ts": 1783169330.231517,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " lấy",
+      "ts": 1783169330.2849774,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thông",
+      "ts": 1783169330.337725,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tin",
+      "ts": 1783169330.3898613,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " từ",
+      "ts": 1783169330.442876,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cơ",
+      "ts": 1783169330.4970686,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " sở",
+      "ts": 1783169330.549832,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tri",
+      "ts": 1783169330.6019475,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thức",
+      "ts": 1783169330.6544976,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ".",
+      "ts": 1783169330.7077472,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\n\n*",
+      "ts": 1783169330.8129458,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "   **",
+      "ts": 1783169330.9186232,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Mã",
+      "ts": 1783169330.9721584,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " lỗi",
+      "ts": 1783169331.024344,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "**:",
+      "ts": 1783169331.0777738,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " `'",
+      "ts": 1783169331.1311853,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "JK",
+      "ts": 1783169331.1848264,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "AI",
+      "ts": 1783169331.2368717,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Int",
+      "ts": 1783169331.2897377,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "elligence",
+      "ts": 1783169331.3426304,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Engine",
+      "ts": 1783169331.395831,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "'",
+      "ts": 1783169331.4487407,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " object",
+      "ts": 1783169331.501031,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " has",
+      "ts": 1783169331.5538764,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " no",
+      "ts": 1783169331.6065414,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " attribute",
+      "ts": 1783169331.6591828,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " '",
+      "ts": 1783169331.7117903,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "get",
+      "ts": 1783169331.7642245,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "_ins",
+      "ts": 1783169331.8166966,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ights",
+      "ts": 1783169331.8693764,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "'",
+      "ts": 1783169331.9220126,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "`",
+      "ts": 1783169331.974084,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\n*",
+      "ts": 1783169332.0799115,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "   **",
+      "ts": 1783169332.1850464,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "V",
+      "ts": 1783169332.2373672,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ị",
+      "ts": 1783169332.2905152,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " trí",
+      "ts": 1783169332.3428469,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " xảy",
+      "ts": 1783169332.3964071,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " ra",
+      "ts": 1783169332.4501278,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "**:",
+      "ts": 1783169332.5027225,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Trong",
+      "ts": 1783169332.556482,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " lớp",
+      "ts": 1783169332.609597,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " `",
+      "ts": 1783169332.6621604,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "JK",
+      "ts": 1783169332.7149377,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "AI",
+      "ts": 1783169332.7672157,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Int",
+      "ts": 1783169332.8200502,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "elligence",
+      "ts": 1783169332.872575,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Engine",
+      "ts": 1783169332.9257965,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "`,",
+      "ts": 1783169332.9788568,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " khi",
+      "ts": 1783169333.0307908,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cố",
+      "ts": 1783169333.083833,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " gắng",
+      "ts": 1783169333.1363285,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " gọi",
+      "ts": 1783169333.1895225,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " phương",
+      "ts": 1783169333.2426188,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thức",
+      "ts": 1783169333.2950997,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " `",
+      "ts": 1783169333.347306,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "get",
+      "ts": 1783169333.399357,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "_ins",
+      "ts": 1783169333.451654,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ights",
+      "ts": 1783169333.504325,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "()",
+      "ts": 1783169333.5573893,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "`.",
+      "ts": 1783169333.610167,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\n*",
+      "ts": 1783169333.7128065,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "   **",
+      "ts": 1783169333.8185194,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "D",
+      "ts": 1783169333.8721411,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ữ",
+      "ts": 1783169333.9259584,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " liệu",
+      "ts": 1783169333.9804857,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " đầu",
+      "ts": 1783169334.0345678,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " ra",
+      "ts": 1783169334.0873191,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "**:",
+      "ts": 1783169334.1403315,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " R",
+      "ts": 1783169334.1923053,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ỗng",
+      "ts": 1783169334.2453403,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " (`",
+      "ts": 1783169334.297688,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "{",
+      "ts": 1783169334.3508217,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "}`",
+      "ts": 1783169334.4034042,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "),",
+      "ts": 1783169334.4560115,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " xác",
+      "ts": 1783169334.509113,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nhận",
+      "ts": 1783169334.5628827,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " rằng",
+      "ts": 1783169334.6231134,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " không",
+      "ts": 1783169334.6758804,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " có",
+      "ts": 1783169334.7280834,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " bằng",
+      "ts": 1783169334.7803013,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " chứng",
+      "ts": 1783169334.832473,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nào",
+      "ts": 1783169334.8851826,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " được",
+      "ts": 1783169334.9380317,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thu",
+      "ts": 1783169334.9913862,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thập",
+      "ts": 1783169335.0434027,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " để",
+      "ts": 1783169335.0955548,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hoàn",
+      "ts": 1783169335.1477861,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thành",
+      "ts": 1783169335.2008743,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nhiệm",
+      "ts": 1783169335.253884,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " vụ",
+      "ts": 1783169335.3071048,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ".",
+      "ts": 1783169335.3602366,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\n\n##",
+      "ts": 1783169335.4671388,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Phân",
+      "ts": 1783169335.5194442,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tích",
+      "ts": 1783169335.5716727,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Nguyên",
+      "ts": 1783169335.6238663,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nhân",
+      "ts": 1783169335.6760492,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Kỹ",
+      "ts": 1783169335.7286313,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thuật",
+      "ts": 1783169335.782439,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\nSự",
+      "ts": 1783169335.8875313,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thất",
+      "ts": 1783169335.9401855,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " bại",
+      "ts": 1783169335.99264,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " này",
+      "ts": 1783169336.0456362,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " là",
+      "ts": 1783169336.0993562,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " do",
+      "ts": 1783169336.1517658,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " sự",
+      "ts": 1783169336.204247,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thiếu",
+      "ts": 1783169336.2620661,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hụt",
+      "ts": 1783169336.3164816,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " trong",
+      "ts": 1783169336.3692334,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " kiến",
+      "ts": 1783169336.4224806,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " trúc",
+      "ts": 1783169336.4757025,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " lớp",
+      "ts": 1783169336.5284874,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " xử",
+      "ts": 1783169336.5810459,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " lý",
+      "ts": 1783169336.6348157,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ",",
+      "ts": 1783169336.6874845,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cụ",
+      "ts": 1783169336.740732,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thể",
+      "ts": 1783169336.7935245,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ":",
+      "ts": 1783169336.8473814,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\n\n1",
+      "ts": 1783169336.9527445,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ".",
+      "ts": 1783169337.007765,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "  **",
+      "ts": 1783169337.1142836,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Th",
+      "ts": 1783169337.1668658,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "iếu",
+      "ts": 1783169337.220345,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " phương",
+      "ts": 1783169337.2734663,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thức",
+      "ts": 1783169337.3265433,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " truy",
+      "ts": 1783169337.3794248,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " xuất",
+      "ts": 1783169337.432628,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " (",
+      "ts": 1783169337.4849691,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Missing",
+      "ts": 1783169337.5383484,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Method",
+      "ts": 1783169337.5920727,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ")**",
+      "ts": 1783169337.645119,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ":",
+      "ts": 1783169337.6981308,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Đối",
+      "ts": 1783169337.7513447,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tượng",
+      "ts": 1783169337.805492,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " `",
+      "ts": 1783169337.8595922,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "JK",
+      "ts": 1783169337.9117172,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "AI",
+      "ts": 1783169337.96398,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Int",
+      "ts": 1783169338.016384,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "elligence",
+      "ts": 1783169338.0696852,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Engine",
+      "ts": 1783169338.1230173,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "`",
+      "ts": 1783169338.1775887,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hiện",
+      "ts": 1783169338.2309365,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tại",
+      "ts": 1783169338.2832484,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " không",
+      "ts": 1783169338.3358293,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " định",
+      "ts": 1783169338.3882995,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nghĩa",
+      "ts": 1783169338.4425533,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hoặc",
+      "ts": 1783169338.4956467,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " chưa",
+      "ts": 1783169338.550145,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " được",
+      "ts": 1783169338.6034577,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " khởi",
+      "ts": 1783169338.655787,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tạo",
+      "ts": 1783169338.7084749,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " đúng",
+      "ts": 1783169338.76111,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cách",
+      "ts": 1783169338.8137522,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " để",
+      "ts": 1783169338.8665798,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " bao",
+      "ts": 1783169338.9194553,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " gồm",
+      "ts": 1783169338.9722962,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thuộc",
+      "ts": 1783169339.02508,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tính",
+      "ts": 1783169339.0775535,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "/m",
+      "ts": 1783169339.1306546,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ét",
+      "ts": 1783169339.1872427,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "-h",
+      "ts": 1783169339.2399318,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "o",
+      "ts": 1783169339.2945268,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ạt",
+      "ts": 1783169339.3462934,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " `",
+      "ts": 1783169339.3984163,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "get",
+      "ts": 1783169339.4519749,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "_ins",
+      "ts": 1783169339.5046504,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ights",
+      "ts": 1783169339.5578747,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "`.",
+      "ts": 1783169339.6167622,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\n2",
+      "ts": 1783169339.7229207,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ".",
+      "ts": 1783169339.7801836,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "  **",
+      "ts": 1783169339.8878512,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "M",
+      "ts": 1783169339.9395068,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ất",
+      "ts": 1783169339.9918838,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " kết",
+      "ts": 1783169340.0440726,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nối",
+      "ts": 1783169340.0965893,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " với",
+      "ts": 1783169340.150085,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nguồn",
+      "ts": 1783169340.2026126,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " dữ",
+      "ts": 1783169340.2571545,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " liệu",
+      "ts": 1783169340.3105288,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "**:",
+      "ts": 1783169340.3644521,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Do",
+      "ts": 1783169340.417367,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thiếu",
+      "ts": 1783169340.4704676,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " phương",
+      "ts": 1783169340.5239744,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thức",
+      "ts": 1783169340.5767732,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " này",
+      "ts": 1783169340.6300979,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ",",
+      "ts": 1783169340.683116,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hệ",
+      "ts": 1783169340.7346156,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thống",
+      "ts": 1783169340.7873535,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " không",
+      "ts": 1783169340.840894,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thể",
+      "ts": 1783169340.8935053,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " giao",
+      "ts": 1783169340.9460406,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tiếp",
+      "ts": 1783169340.9994376,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " với",
+      "ts": 1783169341.053084,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " các",
+      "ts": 1783169341.1049564,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " dịch",
+      "ts": 1783169341.158272,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " vụ",
+      "ts": 1783169341.211379,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " như",
+      "ts": 1783169341.2638144,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Q",
+      "ts": 1783169341.316908,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "dr",
+      "ts": 1783169341.3706665,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ant",
+      "ts": 1783169341.4237401,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " (",
+      "ts": 1783169341.476707,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Vector",
+      "ts": 1783169341.5299041,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " DB",
+      "ts": 1783169341.5836813,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ")",
+      "ts": 1783169341.637727,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hay",
+      "ts": 1783169341.691278,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " File",
+      "ts": 1783169341.74458,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "system",
+      "ts": 1783169341.7971065,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " để",
+      "ts": 1783169341.8504782,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tìm",
+      "ts": 1783169341.9038699,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " kiếm",
+      "ts": 1783169341.957707,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thông",
+      "ts": 1783169342.0104403,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tin",
+      "ts": 1783169342.0639472,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " về",
+      "ts": 1783169342.1155353,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hợp",
+      "ts": 1783169342.167853,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " đồng",
+      "ts": 1783169342.2205064,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Sys",
+      "ts": 1783169342.2729807,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "me",
+      "ts": 1783169342.3262382,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ".",
+      "ts": 1783169342.379719,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\n\n##",
+      "ts": 1783169342.486779,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Hành",
+      "ts": 1783169342.539788,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " động",
+      "ts": 1783169342.5926156,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Khắc",
+      "ts": 1783169342.6480765,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " phục",
+      "ts": 1783169342.6996508,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Đề",
+      "ts": 1783169342.7524483,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " xuất",
+      "ts": 1783169342.805368,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\nĐể",
+      "ts": 1783169342.9109116,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " khôi",
+      "ts": 1783169342.9644525,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " phục",
+      "ts": 1783169343.0184755,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " khả",
+      "ts": 1783169343.0716698,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " năng",
+      "ts": 1783169343.125141,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thực",
+      "ts": 1783169343.1775248,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thi",
+      "ts": 1783169343.2300367,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nhiệm",
+      "ts": 1783169343.2828872,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " vụ",
+      "ts": 1783169343.336428,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " và",
+      "ts": 1783169343.391298,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thu",
+      "ts": 1783169343.44453,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thập",
+      "ts": 1783169343.5011277,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " bằng",
+      "ts": 1783169343.554013,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " chứng",
+      "ts": 1783169343.607027,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " chính",
+      "ts": 1783169343.659751,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " xác",
+      "ts": 1783169343.712735,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ",",
+      "ts": 1783169343.765667,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cần",
+      "ts": 1783169343.8197582,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tiến",
+      "ts": 1783169343.8719504,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hành",
+      "ts": 1783169343.9251926,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " các",
+      "ts": 1783169343.978103,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " bước",
+      "ts": 1783169344.0316064,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " sau",
+      "ts": 1783169344.084436,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ":",
+      "ts": 1783169344.1382627,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\n\n1",
+      "ts": 1783169344.2462504,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ".",
+      "ts": 1783169344.2983053,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "  **",
+      "ts": 1783169344.4043622,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Ki",
+      "ts": 1783169344.4573417,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ểm",
+      "ts": 1783169344.5104568,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tra",
+      "ts": 1783169344.5643935,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Định",
+      "ts": 1783169344.623257,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nghĩa",
+      "ts": 1783169344.6758919,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Lớp",
+      "ts": 1783169344.7341964,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "**:",
+      "ts": 1783169344.7930138,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Xác",
+      "ts": 1783169344.8473694,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " minh",
+      "ts": 1783169344.9016213,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " trong",
+      "ts": 1783169344.9548447,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " file",
+      "ts": 1783169345.007537,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nguồn",
+      "ts": 1783169345.060794,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " của",
+      "ts": 1783169345.1141086,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " `",
+      "ts": 1783169345.1665163,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "JK",
+      "ts": 1783169345.2192566,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "AI",
+      "ts": 1783169345.2727513,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Int",
+      "ts": 1783169345.325054,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "elligence",
+      "ts": 1783169345.378239,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Engine",
+      "ts": 1783169345.4317653,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "`",
+      "ts": 1783169345.4846554,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " xem",
+      "ts": 1783169345.537293,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " phương",
+      "ts": 1783169345.5900316,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thức",
+      "ts": 1783169345.6423213,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " `",
+      "ts": 1783169345.6944797,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "get",
+      "ts": 1783169345.7474844,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "_ins",
+      "ts": 1783169345.8005283,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ights",
+      "ts": 1783169345.854129,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "()`",
+      "ts": 1783169345.9070246,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " đã",
+      "ts": 1783169345.960458,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " được",
+      "ts": 1783169346.014671,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " định",
+      "ts": 1783169346.067609,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nghĩa",
+      "ts": 1783169346.1211581,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " chưa",
+      "ts": 1783169346.1738985,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hoặc",
+      "ts": 1783169346.227522,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " có",
+      "ts": 1783169346.2809823,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " lỗi",
+      "ts": 1783169346.3341103,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cú",
+      "ts": 1783169346.3865833,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " pháp",
+      "ts": 1783169346.4400713,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " gì",
+      "ts": 1783169346.4930985,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " không",
+      "ts": 1783169346.546849,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ".",
+      "ts": 1783169346.59918,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\n2",
+      "ts": 1783169346.7037823,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ".",
+      "ts": 1783169346.756108,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "  **",
+      "ts": 1783169346.862907,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Kh",
+      "ts": 1783169346.9154098,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ởi",
+      "ts": 1783169346.968148,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tạo",
+      "ts": 1783169347.0229955,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Lại",
+      "ts": 1783169347.0769904,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Dịch",
+      "ts": 1783169347.1304896,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " vụ",
+      "ts": 1783169347.1831117,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Trí",
+      "ts": 1783169347.235677,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tuệ",
+      "ts": 1783169347.288919,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "**:",
+      "ts": 1783169347.3415475,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Nếu",
+      "ts": 1783169347.3941545,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " là",
+      "ts": 1783169347.447185,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " vấn",
+      "ts": 1783169347.5003967,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " đề",
+      "ts": 1783169347.5540442,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " khởi",
+      "ts": 1783169347.6076024,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " động",
+      "ts": 1783169347.660723,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ",",
+      "ts": 1783169347.7132468,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cần",
+      "ts": 1783169347.7658865,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " restart",
+      "ts": 1783169347.8182328,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " container",
+      "ts": 1783169347.8721707,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " chứa",
+      "ts": 1783169347.9252198,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " dịch",
+      "ts": 1783169347.978054,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " vụ",
+      "ts": 1783169348.0311615,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " này",
+      "ts": 1783169348.083899,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " để",
+      "ts": 1783169348.1366124,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " đảm",
+      "ts": 1783169348.1891646,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " bảo",
+      "ts": 1783169348.2421846,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " các",
+      "ts": 1783169348.2961812,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thuộc",
+      "ts": 1783169348.3501415,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tính",
+      "ts": 1783169348.4042625,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cơ",
+      "ts": 1783169348.4569426,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " bản",
+      "ts": 1783169348.5093687,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " (",
+      "ts": 1783169348.5623498,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "như",
+      "ts": 1783169348.615026,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " vector",
+      "ts": 1783169348.6679823,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " store",
+      "ts": 1783169348.7216537,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " client",
+      "ts": 1783169348.7753837,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ")",
+      "ts": 1783169348.8289807,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " được",
+      "ts": 1783169348.8816833,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " load",
+      "ts": 1783169348.9350584,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " đúng",
+      "ts": 1783169348.9892614,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ".",
+      "ts": 1783169349.0423582,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\n3",
+      "ts": 1783169349.151238,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ".",
+      "ts": 1783169349.2030785,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "  **",
+      "ts": 1783169349.3088903,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Cập",
+      "ts": 1783169349.3616939,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nhật",
+      "ts": 1783169349.4152305,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Logic",
+      "ts": 1783169349.468453,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Truy",
+      "ts": 1783169349.520636,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " xuất",
+      "ts": 1783169349.572625,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "**:",
+      "ts": 1783169349.6345348,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Đảm",
+      "ts": 1783169349.687239,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " bảo",
+      "ts": 1783169349.7395365,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " phương",
+      "ts": 1783169349.7920308,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thức",
+      "ts": 1783169349.8444915,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " `",
+      "ts": 1783169349.8968315,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "get",
+      "ts": 1783169349.9494424,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "_ins",
+      "ts": 1783169350.0022724,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ights",
+      "ts": 1783169350.055536,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "`",
+      "ts": 1783169350.1083977,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " có",
+      "ts": 1783169350.163015,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " logic",
+      "ts": 1783169350.2209997,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " gọi",
+      "ts": 1783169350.2744582,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " đúng",
+      "ts": 1783169350.3285718,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " đến",
+      "ts": 1783169350.3830025,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " công",
+      "ts": 1783169350.436687,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cụ",
+      "ts": 1783169350.494036,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tìm",
+      "ts": 1783169350.5526576,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " kiếm",
+      "ts": 1783169350.606382,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " (",
+      "ts": 1783169350.6611547,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ví",
+      "ts": 1783169350.714898,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " dụ",
+      "ts": 1783169350.7691584,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ":",
+      "ts": 1783169350.823699,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " sử",
+      "ts": 1783169350.8816237,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " dụng",
+      "ts": 1783169350.9350498,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tool",
+      "ts": 1783169350.9883666,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " `",
+      "ts": 1783169351.0417283,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "q",
+      "ts": 1783169351.094886,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "dr",
+      "ts": 1783169351.1489663,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ant",
+      "ts": 1783169351.2023575,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "`",
+      "ts": 1783169351.254886,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hoặc",
+      "ts": 1783169351.30736,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " `",
+      "ts": 1783169351.3605042,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "filesystem",
+      "ts": 1783169351.4125683,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "`)",
+      "ts": 1783169351.4653263,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " với",
+      "ts": 1783169351.5177467,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " query",
+      "ts": 1783169351.570501,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " phù",
+      "ts": 1783169351.6229234,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hợp",
+      "ts": 1783169351.6759143,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cho",
+      "ts": 1783169351.7278428,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " \"",
+      "ts": 1783169351.780724,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "h",
+      "ts": 1783169351.8333716,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ợp",
+      "ts": 1783169351.8862665,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " đồng",
+      "ts": 1783169351.939383,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Sys",
+      "ts": 1783169351.9927795,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "me",
+      "ts": 1783169352.045223,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\".",
+      "ts": 1783169352.1000047,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\n\n##",
+      "ts": 1783169352.2073588,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Kết",
+      "ts": 1783169352.2610376,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " luận",
+      "ts": 1783169352.314611,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\nN",
+      "ts": 1783169352.4202065,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "hi",
+      "ts": 1783169352.472918,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ệm",
+      "ts": 1783169352.5253584,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " vụ",
+      "ts": 1783169352.5789795,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " không",
+      "ts": 1783169352.631976,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thể",
+      "ts": 1783169352.6849341,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hoàn",
+      "ts": 1783169352.7372127,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thành",
+      "ts": 1783169352.7893353,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " do",
+      "ts": 1783169352.8462322,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " lỗi",
+      "ts": 1783169352.8985777,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " kỹ",
+      "ts": 1783169352.9517744,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thuật",
+      "ts": 1783169353.0054302,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cấp",
+      "ts": 1783169353.0572069,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " lớp",
+      "ts": 1783169353.1106043,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ".",
+      "ts": 1783169353.1638534,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Cần",
+      "ts": 1783169353.21762,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " sửa",
+      "ts": 1783169353.2688718,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " chữa",
+      "ts": 1783169353.3220716,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " mã",
+      "ts": 1783169353.375312,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nguồn",
+      "ts": 1783169353.4276292,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " trước",
+      "ts": 1783169353.4813592,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " khi",
+      "ts": 1783169353.5348465,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thử",
+      "ts": 1783169353.5880938,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nghiệm",
+      "ts": 1783169353.6418037,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " lại",
+      "ts": 1783169353.6951578,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nhiệm",
+      "ts": 1783169353.7483509,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " vụ",
+      "ts": 1783169353.8011298,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thu",
+      "ts": 1783169353.8548906,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thập",
+      "ts": 1783169353.908444,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " dữ",
+      "ts": 1783169353.9616416,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " liệu",
+      "ts": 1783169354.0136573,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " về",
+      "ts": 1783169354.065692,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " **",
+      "ts": 1783169354.1185403,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Sys",
+      "ts": 1783169354.1711667,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "me",
+      "ts": 1783169354.225468,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "**.",
+      "ts": 1783169354.2783616,
+      "source": "SUMMARIZER",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "✅ [T6]: Báo cáo đã soạn thảo hoàn tất.",
+      "ts": 1783169354.6413345,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "# Báo cáo Sự cố và Phân tích Nguyên nhân Nhiệm vụ Sysme\n\n## Tổng quan về Kết quả Thực thi\nNhiệm vụ xác định hợp đồng gần đây nhất của **Sysme** đã thất bại. Hệ thống không thể truy xuất dữ liệu liên quan do lỗi cấu trúc trong lớp xử lý trí tuệ.\n\n*   **Trạng thái nhiệm vụ**: THẤT BẠI (FAIL)\n*   **Điểm số đánh giá**: 0.0/1.0\n*   **Thời điểm xảy ra**: Thứ Bảy, ngày 04 tháng 07 năm 2026 lúc 19:48:12\n\n## Chi tiết Lỗi và Nguyên nhân\nLỗi được ghi nhận trong quá trình thực thi của đối tượng `JKAIIntelligenceEngine`. Hệ thống thiếu phương thức truy xuất dữ liệu cần thiết để lấy thông tin từ cơ sở tri thức.\n\n*   **Mã lỗi**: `'JKAIIntelligenceEngine' object has no attribute 'get_insights'`\n*   **Vị trí xảy ra**: Trong lớp `JKAIIntelligenceEngine`, khi cố gắng gọi phương thức `get_insights()`.\n*   **Dữ liệu đầu ra**: Rỗng (`{}`), xác nhận rằng không có bằng chứng nào được thu thập để hoàn thành nhiệm vụ.\n\n## Phân tích Nguyên nhân Kỹ thuật\nSự thất bại này là do sự thiếu hụt trong kiến trúc lớp xử lý, cụ thể:\n\n1.  **Thiếu phương thức truy xuất (Missing Method)**: Đối tượng `JKAIIntelligenceEngine` hiện tại không định nghĩa hoặc chưa được khởi tạo đúng cách để bao gồm thuộc tính/mét-hoạt `get_insights`.\n2.  **Mất kết nối với nguồn dữ liệu**: Do thiếu phương thức này, hệ thống không thể giao tiếp với các dịch vụ như Qdrant (Vector DB) hay Filesystem để tìm kiếm thông tin về hợp đồng Sysme.\n\n## Hành động Khắc phục Đề xuất\nĐể khôi phục khả năng thực thi nhiệm vụ và thu thập bằng chứng chính xác, cần tiến hành các bước sau:\n\n1.  **Kiểm tra Định nghĩa Lớp**: Xác minh trong file nguồn của `JKAIIntelligenceEngine` xem phương thức `get_insights()` đã được định nghĩa chưa hoặc có lỗi cú pháp gì không.\n2.  **Khởi tạo Lại Dịch vụ Trí tuệ**: Nếu là vấn đề khởi động, cần restart container chứa dịch vụ này để đảm bảo các thuộc tính cơ bản (như vector store client) được load đúng.\n3.  **Cập nhật Logic Truy xuất**: Đảm bảo phương thức `get_insights` có logic gọi đúng đến công cụ tìm kiếm (ví dụ: sử dụng tool `qdrant` hoặc `filesystem`) với query phù hợp cho \"hợp đồng Sysme\".\n\n## Kết luận\nNhiệm vụ không thể hoàn thành do lỗi kỹ thuật cấp lớp. Cần sửa chữa mã nguồn trước khi thử nghiệm lại nhiệm vụ thu thập dữ liệu về **Sysme**.\n\n---\n👉 Tổng hợp lúc 07h48m12s PM (Thứ Bảy, ngày 04 tháng 07 năm 2026)\n\nBan Thư Ký JKAI Zenith",
+      "ts": 1783169354.6488204,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1940_6694db"
+    }
+  ],
+  "artifacts": {
+    "plan": "hợp đồng gần đây nhất của Sysme là mua gì ?",
+    "walkthrough": "# Báo cáo Sự cố và Phân tích Nguyên nhân Nhiệm vụ Sysme\n\n## Tổng quan về Kết quả Thực thi\nNhiệm vụ xác định hợp đồng gần đây nhất của **Sysme** đã thất bại. Hệ thống không thể truy xuất dữ liệu liên quan do lỗi cấu trúc trong lớp xử lý trí tuệ.\n\n*   **Trạng thái nhiệm vụ**: THẤT BẠI (FAIL)\n*   **Điểm số đánh giá**: 0.0/1.0\n*   **Thời điểm xảy ra**: Thứ Bảy, ngày 04 tháng 07 năm 2026 lúc 19:48:12\n\n## Chi tiết Lỗi và Nguyên nhân\nLỗi được ghi nhận trong quá trình thực thi của đối tượng `JKAIIntelligenceEngine`. Hệ thống thiếu phương thức truy xuất dữ liệu cần thiết để lấy thông tin từ cơ sở tri thức.\n\n*   **Mã lỗi**: `'JKAIIntelligenceEngine' object has no attribute 'get_insights'`\n*   **Vị trí xảy ra**: Trong lớp `JKAIIntelligenceEngine`, khi cố gắng gọi phương thức `get_insights()`.\n*   **Dữ liệu đầu ra**: Rỗng (`{}`), xác nhận rằng không có bằng chứng nào được thu thập để hoàn thành nhiệm vụ.\n\n## Phân tích Nguyên nhân Kỹ thuật\nSự thất bại này là do sự thiếu hụt trong kiến trúc lớp xử lý, cụ thể:\n\n1.  **Thiếu phương thức truy xuất (Missing Method)**: Đối tượng `JKAIIntelligenceEngine` hiện tại không định nghĩa hoặc chưa được khởi tạo đúng cách để bao gồm thuộc tính/mét-hoạt `get_insights`.\n2.  **Mất kết nối với nguồn dữ liệu**: Do thiếu phương thức này, hệ thống không thể giao tiếp với các dịch vụ như Qdrant (Vector DB) hay Filesystem để tìm kiếm thông tin về hợp đồng Sysme.\n\n## Hành động Khắc phục Đề xuất\nĐể khôi phục khả năng thực thi nhiệm vụ và thu thập bằng chứng chính xác, cần tiến hành các bước sau:\n\n1.  **Kiểm tra Định nghĩa Lớp**: Xác minh trong file nguồn của `JKAIIntelligenceEngine` xem phương thức `get_insights()` đã được định nghĩa chưa hoặc có lỗi cú pháp gì không.\n2.  **Khởi tạo Lại Dịch vụ Trí tuệ**: Nếu là vấn đề khởi động, cần restart container chứa dịch vụ này để đảm bảo các thuộc tính cơ bản (như vector store client) được load đúng.\n3.  **Cập nhật Logic Truy xuất**: Đảm bảo phương thức `get_insights` có logic gọi đúng đến công cụ tìm kiếm (ví dụ: sử dụng tool `qdrant` hoặc `filesystem`) với query phù hợp cho \"hợp đồng Sysme\".\n\n## Kết luận\nNhiệm vụ không thể hoàn thành do lỗi kỹ thuật cấp lớp. Cần sửa chữa mã nguồn trước khi thử nghiệm lại nhiệm vụ thu thập dữ liệu về **Sysme**.\n\n---\n👉 Tổng hợp lúc 07h48m12s PM (Thứ Bảy, ngày 04 tháng 07 năm 2026)\n\nBan Thư Ký JKAI Zenith",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

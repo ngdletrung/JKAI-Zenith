@@ -26,23 +26,36 @@ export const AlertBlock = memo(({ type, children }: { type: string, children: an
   );
 });
 
-export const CodeBlock = memo(({ children }: { children: any }) => {
+export const CodeBlock = memo(({ children, lang }: { children: any, lang?: string }) => {
   const [copied, setCopied] = useState(false);
   const text = String(children).replace(/\n$/, '');
   const handleCopy = () => {
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-    toast.success('Đã sao chép chữ ký hệ thống', { id: 'copy-code' });
+    toast.success('Đã sao chép mã nguồn', { id: 'copy-code' });
   };
   return (
-    <div className="relative group/code my-3">
-      <pre className="p-4 rounded-xl bg-black/40 border border-white/5 font-mono text-[11px] overflow-x-auto custom-scroll">
+    <div className="relative group/code my-3 rounded-xl overflow-hidden border border-white/10 bg-black/60 shadow-xl">
+      <div className="flex items-center justify-between px-3.5 py-1.5 bg-white/[0.04] border-b border-white/5 text-[10px] font-mono text-white/40">
+        <span className="uppercase tracking-widest font-bold text-sky-400/90">{lang || 'CODE'}</span>
+        <button onClick={handleCopy} className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white/60 hover:text-white transition-all">
+          {copied ? (
+            <>
+              <Check className="w-3 h-3 text-emerald-400" />
+              <span className="text-emerald-400 text-[9px] font-bold uppercase">Copied!</span>
+            </>
+          ) : (
+            <>
+              <Copy className="w-3 h-3" />
+              <span className="text-[9px] font-bold uppercase">Copy</span>
+            </>
+          )}
+        </button>
+      </div>
+      <pre className="p-4 font-mono text-[11px] leading-relaxed overflow-x-auto custom-scroll text-slate-200">
         {children}
       </pre>
-      <button onClick={handleCopy} className="absolute top-2 right-2 p-1.5 rounded-lg bg-white/5 border border-white/10 opacity-0 group-hover/code:opacity-100 transition-all hover:bg-white/10">
-        {copied ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3 text-white/40" />}
-      </button>
     </div>
   );
 });
@@ -109,7 +122,7 @@ export const MarkdownRenderer = memo(({ content }: { content: string }) => {
           }
 
           const isFilePath = isInline && (contentStr.includes('/') || contentStr.includes('\\')) && (contentStr.includes('.') || contentStr.length > 5);
-          if (!isInline) return <CodeBlock>{children}</CodeBlock>;
+          if (!isInline) return <CodeBlock lang={lang}>{children}</CodeBlock>;
 
           return (
             <code className="px-1.5 py-0.5 rounded bg-white/10 text-cyan-300 font-mono text-[11px] group/file cursor-pointer relative" onClick={() => {

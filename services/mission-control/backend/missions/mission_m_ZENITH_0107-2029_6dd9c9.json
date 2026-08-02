@@ -1,0 +1,84 @@
+{
+  "id": "m_ZENITH_0107-2029_6dd9c9",
+  "title": "Mat troi moc huong nao?",
+  "goal": "Mat troi moc huong nao?",
+  "status": "failed",
+  "ts": 1782912598.0402052,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "Mat troi moc huong nao?",
+      "ts": 1782912548.1180174,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2029_6dd9c9"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_0107-2029_6dd9c9` initialized | Trace: `trace_6dd9c9`. Runtime ready.",
+      "ts": 1782912548.1215763,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2029_6dd9c9"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1782912563.3929255,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2029_6dd9c9"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1782912563.3954597,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2029_6dd9c9"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1782912577.924659,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2029_6dd9c9"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1782912577.9278622,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2029_6dd9c9"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1782912592.002916,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2029_6dd9c9"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1782912592.005059,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2029_6dd9c9"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist\"}",
+      "ts": 1782912598.0262997,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2029_6dd9c9"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+      "ts": 1782912598.0285313,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2029_6dd9c9"
+    }
+  ],
+  "artifacts": {
+    "plan": "Mat troi moc huong nao?",
+    "walkthrough": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

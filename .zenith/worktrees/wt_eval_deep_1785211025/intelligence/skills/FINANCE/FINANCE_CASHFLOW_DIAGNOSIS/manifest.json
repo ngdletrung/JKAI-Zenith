@@ -1,0 +1,47 @@
+{
+  "id": "FINANCE_CASHFLOW_DIAGNOSIS",
+  "name": "Finance Cashflow Diagnosis",
+  "version": "1.0.0",
+  "description": "id: FINANCE_CASHFLOW_DIAGNOSIS",
+  "author": "JKAI Zenith",
+  "domain": "FINANCE",
+  "triggers": [
+    "tong quan",
+    "phac  o van hanh  operational protocol",
+    "phase 1  investigation  tham  inh",
+    "phase 2  action  thuc thi",
+    "luat tai chinh  financial laws",
+    "chinh",
+    "tien",
+    "chan",
+    "dong",
+    "phan",
+    "tich",
+    "thuc",
+    "lieu",
+    "toan",
+    "finance_cashflow_diagnosis",
+    "zenith",
+    "finance",
+    "cashflow",
+    "diagnosis",
+    "type",
+    "tai chinh",
+    "dau tu",
+    "co phieu",
+    "chung khoan",
+    "dong tien"
+  ],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "query": {
+        "type": "string",
+        "description": "Input query or task description"
+      }
+    },
+    "required": [
+      "query"
+    ]
+  }
+}

@@ -8,7 +8,7 @@ export const ZenithService = {
       const res = await fetch(`${API_BASE}/api/submit_task`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ goal, mode })
+        body: JSON.stringify({ goal, mode, source: 'WEB' })
       });
       return res.json();
     } catch (e) {

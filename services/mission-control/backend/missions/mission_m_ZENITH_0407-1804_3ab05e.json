@@ -1,0 +1,42 @@
+{
+  "id": "m_ZENITH_0407-1804_3ab05e",
+  "title": "hợp đồng gần đây nhất của Sysme là mua gì ?",
+  "goal": "hợp đồng gần đây nhất của Sysme là mua gì ?",
+  "status": "failed",
+  "ts": 1783163071.3984396,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "hợp đồng gần đây nhất của Sysme là mua gì ?",
+      "ts": 1783163054.7490692,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1804_3ab05e"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_0407-1804_3ab05e` initialized | Trace: `trace_3ab05e`. Runtime ready.",
+      "ts": 1783163054.7513425,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1804_3ab05e"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: [Errno -2] Name or service not known | manifest={\"status\": \"error\", \"error\": \"Receptionist error: [Errno -2] Name or service not known\"}",
+      "ts": 1783163071.3681602,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1804_3ab05e"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: [Errno -2] Name or service not known)",
+      "ts": 1783163071.3709831,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0407-1804_3ab05e"
+    }
+  ],
+  "artifacts": {
+    "plan": "hợp đồng gần đây nhất của Sysme là mua gì ?",
+    "walkthrough": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: [Errno -2] Name or service not known)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

@@ -21,7 +21,7 @@ class PreflightStage(ExecutionStage):
         task_id = state["task_id"]
         
         engine.publish_progress(81, f"🔬 [T4: SURGERY] [{tool_name}] Đang kiểm tra an toàn & khóa tài nguyên...", "preflight", task_id)
-        await executor._pre_flight_check(tool_name, args, task_id)
+        await executor._pre_flight_check(tool_name, args, task_id, state)
         return state
 
 class PolicyResolutionStage(ExecutionStage):

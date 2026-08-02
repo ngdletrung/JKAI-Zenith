@@ -23,7 +23,7 @@ logger = logging.getLogger("jkai.skill_deck")
 _MANUAL_DECK_OVERRIDES: Dict[str, str] = {
     "7001": "SKILL_HUEIC_TAO_SKILL_DE_XUAT_THEO_FORM",
     "1001": "BROWSER_VISION_OPS",
-    "1002": "SKILL_AGENTIC_DEBATE",
+    "1002": "HOI_DONG_CHUYEN_GIA",
     "1006": "OMNI_SEARCH_ENGINE",
 }
 

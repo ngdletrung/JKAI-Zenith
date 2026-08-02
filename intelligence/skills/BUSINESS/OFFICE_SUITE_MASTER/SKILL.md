@@ -1,13 +1,14 @@
 ---
 aliases_vn:
 - skill zenith office master
+- SKILL_ZENITH_OFFICE_MASTER
 author: Zenith Forge Auto
 domain: CORE
-id: SKILL_ZENITH_OFFICE_MASTER
+id: OFFICE_SUITE_MASTER
 intent_pairs:
 - - EXECUTE
-  - SKILL_ZENITH_OFFICE_MASTER
-name_vn: Kỹ năng Skill zenith office master
+  - OFFICE_SUITE_MASTER
+name_vn: Kỹ năng Office Suite Master
 priority: NORMAL
 related_skills: []
 version: 1.0.0

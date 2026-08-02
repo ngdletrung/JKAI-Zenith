@@ -1,0 +1,48 @@
+{
+  "id": "INTERVIEW_ME",
+  "name": "Interview Me",
+  "version": "1.0.0",
+  "description": "Engages in a structured interview with the Master to clarify ambiguous requirements.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "phỏng vấn master",
+    "interview me",
+    "grill me",
+    "chất vấn",
+    "overview",
+    "when to use",
+    "loading constraints",
+    "the process",
+    "step 1  hypothesize  with a confidence number",
+    "user",
+    "what",
+    "they",
+    "want",
+    "question",
+    "confidence",
+    "line",
+    "before",
+    "step",
+    "number",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string",
+          "description": "The current clarification query."
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
+  }
+}

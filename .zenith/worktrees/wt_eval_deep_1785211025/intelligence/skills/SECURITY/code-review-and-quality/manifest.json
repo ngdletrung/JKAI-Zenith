@@ -1,0 +1,46 @@
+{
+  "id": "CODE_REVIEW_AND_QUALITY",
+  "name": "Code Review And Quality",
+  "version": "1.0.0",
+  "description": "Reviews code across 5 axes to ensure highest quality and readability standards.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "nghiệm thu code",
+    "code review",
+    "chất lượng code",
+    "overview",
+    "when to use",
+    "the five axis review",
+    "1  correctness",
+    "2  readability   simplicity",
+    "code",
+    "change",
+    "review",
+    "does",
+    "what",
+    "tests",
+    "security",
+    "before",
+    "feature",
+    "there",
+    "bao mat",
+    "an ninh",
+    "hack",
+    "tan cong",
+    "lo hong"
+  ],
+  "domain": "SECURITY",
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "target": {
+        "type": "string",
+        "description": "The file or diff to review."
+      }
+    },
+    "required": [
+      "target"
+    ]
+  },
+  "output_format": "JSON"
+}

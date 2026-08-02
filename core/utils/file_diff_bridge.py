@@ -38,14 +38,22 @@ def emit_file_edit(
     open_tab: bool = True,
 ) -> str:
     """
-    Redis → Mission Control socket `file_edit` + log tag FILE-EDIT (JSON).
-    Trả về chuỗi diff.
+    Redis -> Mission Control socket `file_edit` + log tag FILE-EDIT (JSON).
+    Payload bao gom added/removed de hien thi "+X -Y" kieu Antigravity.
+    Tra ve chuoi diff.
     """
     diff_str = build_unified_diff(path, old_text, new_text)
+
+    # Dem so dong them / xoa (bo qua header --- +++)
+    added   = sum(1 for l in diff_str.splitlines() if l.startswith('+') and not l.startswith('+++'))
+    removed = sum(1 for l in diff_str.splitlines() if l.startswith('-') and not l.startswith('---'))
+
     payload = {
         "type": "file_edit",
         "path": path.replace("\\", "/"),
         "diff": diff_str,
+        "added": added,
+        "removed": removed,
         "task_id": task_id,
         "ts": time.time(),
         "open_tab": open_tab,
@@ -71,6 +79,7 @@ def emit_file_edit(
         pass
 
     return diff_str
+
 
 
 def read_text_if_exists(abs_path: str) -> str:

@@ -1,0 +1,84 @@
+{
+  "id": "m_ZENITH_0107-2030_53a46a",
+  "title": "Viet Nam co bao nhieu tinh thanh?",
+  "goal": "Viet Nam co bao nhieu tinh thanh?",
+  "status": "failed",
+  "ts": 1782912627.712084,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "Viet Nam co bao nhieu tinh thanh?",
+      "ts": 1782912603.5962436,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2030_53a46a"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_0107-2030_53a46a` initialized | Trace: `trace_53a46a`. Runtime ready.",
+      "ts": 1782912603.5988572,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2030_53a46a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1782912607.061055,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2030_53a46a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1782912607.0637975,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2030_53a46a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1782912612.9290397,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2030_53a46a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1782912612.9317744,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2030_53a46a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1782912621.6685536,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2030_53a46a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ZENITH]: Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1782912621.6714797,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2030_53a46a"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist\"}",
+      "ts": 1782912627.6937897,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2030_53a46a"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+      "ts": 1782912627.6968935,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_0107-2030_53a46a"
+    }
+  ],
+  "artifacts": {
+    "plan": "Viet Nam co bao nhieu tinh thanh?",
+    "walkthrough": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

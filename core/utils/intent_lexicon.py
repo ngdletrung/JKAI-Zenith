@@ -3,10 +3,20 @@ import json
 from functools import lru_cache
 from typing import Dict, List, Tuple, Optional, Any
 
+# Reuse canonical normalization from the shared regex library
+from core.utils.regex.locale.vi_vn import clean_vn_for_match
+
 # ==========================================
 # 1. Ý ĐỊNH CỐT LÕI (CORE & ADVANCED INTENTS)
 # ==========================================
 
+# NOTE — Keyword overlap with core/utils/regex/locale/vi_vn.py:
+#   EXPLAIN/ANALYZE ↔ KNOWLEDGE_QUERY (giải thích, phân tích, kiểm tra...)
+#   EDIT   ↔ FIX_VI (sửa, fix, repair...)
+#   DEBUG  ↔ ERROR_VI (lỗi, bug, crash...)
+#   SEARCH ↔ SEARCH_NEWS (tìm kiếm, tra cứu, search...)
+# Keywords are the canonical source here; vi_vn.py regex patterns derive from them.
+# Keep both in sync when adding/modifying common Vietnamese keywords.
 INTENT_BOOKS = {
     "CREATE": {
         "ancient": ["khởi tạo", "thiết lập", "xây dựng", "tạo lập", "sáng tác", "soạn thảo", "đúc kết", "kiến tạo", "khai sinh", "dựng nên", "hình thành", "chế tác", "tạo ra", "đặt nền", "mở đầu", "phôi thai", "lập nên", "khởi xướng", "kiến thiết", "gây dựng"],
@@ -14,6 +24,7 @@ INTENT_BOOKS = {
         "slang": ["vẽ ra", "làm cho tôi", "tạo hộ", "viết giúp", "build dùm", "tạo đi", "làm đi", "viết cho mình", "phun ra", "đẻ ra", "nặn ra", "chế ra", "cào ra", "múa code", "lên dàn", "triển luôn"],
         "technical": ["scaffold", "provision", "instantiate", "bootstrap", "boilerplate", "init", "seed", "stub", "mock", "template", "code gen", "touch", "mkdir", "create-react-app", "vite", "next-app", "fastapi-gen", "docker-compose up", "terraform apply", "helm install"],
     },
+    # EDIT ↔ vi_vn.FIX_VI: keywords "sửa", "fix" appear in both
     "EDIT": {
         "ancient": ["hiệu đính", "chỉnh lý", "tu bổ", "sửa đổi", "cải biên", "cập nhật", "tinh chỉnh", "tu chỉnh", "điều chỉnh", "cải thiện", "nâng cấp", "hoàn thiện", "trau chuốt", "chỉnh sửa", "bổ sung", "cải tổ", "đại tu", "sắp xếp lại"],
         "modern": ["edit", "update", "modify", "patch", "change", "refactor", "fix", "improve", "revise", "rework", "tweak", "adjust", "alter", "transform", "migrate", "upgrade", "reformat", "lint", "prettify", "beautify"],
@@ -32,6 +43,7 @@ INTENT_BOOKS = {
         "slang": ["check giúp", "soi giúp", "xem thử", "coi thử", "bắt bệnh", "bắt lỗi", "mổ xẻ giúp", "check xem", "xem lại đi", "quét qua giúp", "ngó thử", "nhìn lướt", "đào bới", "bới lông tìm vết"],
         "technical": ["root cause analysis", "profiling", "benchmarking", "trace analysis", "system audit", "observability", "performance analysis", "static analysis", "dynamic analysis", "fuzzing", "log parsing", "telemetry inspection", "flamegraph", "memory heap dump", "ast parsing", "network sniffing"],
     },
+    # EXPLAIN ↔ vi_vn.KNOWLEDGE_QUERY: keywords "giải thích", "explain", "hướng dẫn", "là gì" overlap
     "EXPLAIN": {
         "ancient": ["khai sáng", "giảng giải", "minh giải", "diễn giải", "luận giải", "thuyết minh", "giải nghĩa", "khai trí", "soi đường", "chỉ bảo", "hướng dẫn", "truyền đạt"],
         "modern": ["explain", "clarify", "describe", "elaborate", "illustrate", "teach", "guide", "demonstrate", "show", "instruct", "inform", "educate", "unpack"],
@@ -52,6 +64,7 @@ INTENT_BOOKS = {
     },
 }
 
+# DEBUG ↔ vi_vn.ERROR_VI + AUDIT_VI: keywords "lỗi", "bug", "crash", "check", "phân tích" overlap
 ADVANCED_INTENT_BOOKS = {
     "DEBUG": {
         "ancient": ["truy lỗi", "bắt bệnh", "dò xét", "giám định lỗi", "khảo sát dị thường", "truy nguyên", "truy căn", "định bệnh hệ thống", "tầm tra khiếm khuyết"],
@@ -59,6 +72,7 @@ ADVANCED_INTENT_BOOKS = {
         "slang": ["vá bug", "sửa hộ", "fix dùm", "lỗi rồi", "toang rồi", "cháy rồi", "banh rồi", "die rồi", "gãy rồi", "crash", "tèo rồi", "nổ rồi", "chết rồi"],
         "technical": ["stack trace", "root cause", "exception handling", "memory leak", "race condition", "deadlock", "segmentation fault", "profiling", "telemetry"],
     },
+    # SEARCH ↔ vi_vn.SEARCH_NEWS: keywords "tìm kiếm", "tra cứu", "search", "news" overlap
     "SEARCH": {
         "ancient": ["truy tìm", "tầm soát", "tra cứu", "khảo sát thực địa", "truy khảo", "tầm nã thông tin", "sưu tầm", "dò la", "thăm dò"],
         "modern": ["search", "find", "lookup", "query", "scan", "google", "internet search", "web search", "tìm kiếm", "tra cứu", "lấy thông tin", "tin tức", "tín tức", "tin tuc", "tin"],
@@ -259,20 +273,16 @@ CONTEXT_BOOKS = {
 def _normalize(goal: str) -> str:
     if not goal:
         return ""
-    patterns = {
-        '[àáảãạăằắẳẵặâầấẩẫậ]': 'a', '[èéẻẽẹêềếểễệ]': 'e', '[ìíỉĩị]': 'i',
-        '[òóỏõọôồốổỗộơờớởỡợ]': 'o', '[ùúủũụưừứửữự]': 'u', '[ỳýỷỹỵ]': 'y', '[đ]': 'd'
-    }
-    # Loại bỏ các ký tự dấu câu cơ bản để tránh block text bị phân tách sai lệch
     clean = re.sub(r'[.,\/#!$%\^&\*;:{}=\-_`~()!?]', ' ', goal.lower())
     clean = " " + " ".join(clean.split()) + " "
-    
     for slang, correct in MULTI_LANG_ALIAS.items():
         clean = clean.replace(slang, f" {correct.strip()} ")
-        
+    clean = clean_vn_for_match(clean)
     return " ".join(clean.split())
 
 def _build_layer(*books) -> list:
+    # Note: keyword-based, not regex-pattern-based. For regex patterns
+    # that match these same intents see core/utils/regex/locale/vi_vn.py.
     combined_flat = {}
     for book in books:
         for intent, categories in book.items():
@@ -330,13 +340,35 @@ def _classify_layer(clean_goal: str, compiled_patterns: list) -> dict:
 # 6. CÁC HÀM TRÍCH XUẤT THÔNG TIN THỰC THỂ
 # ==========================================
 
+def _find_word_positions(clean_goal: str, term: str) -> List[int]:
+    """Vị trí từ trong chuỗi đã chuẩn hóa (ranh giới từ), tránh khớp substring nhầm."""
+    if not term:
+        return []
+    tokens = clean_goal.split()
+    n = len(term.split())
+    positions = []
+    for i in range(len(tokens) - n + 1):
+        if " ".join(tokens[i : i + n]) == term:
+            positions.append(i)
+    return positions
+
+
+def _pair_near(clean_goal: str, act: str, obj: str, window: int = 2) -> bool:
+    """Pair chỉ hợp lệ khi act & obj đều hiện diện ở ranh giới từ và gần nhau."""
+    pos_act = _find_word_positions(clean_goal, act)
+    pos_obj = _find_word_positions(clean_goal, obj)
+    if not pos_act or not pos_obj:
+        return False
+    return any(abs(a - o) <= window for a in pos_act for o in pos_obj)
+
+
 def extract_action_pairs(clean_goal: str) -> List[Tuple[str, str, str]]:
     pairs = []
     for intent, pair_list in ACTION_PAIR_BOOK.items():
         for (act, obj) in pair_list:
             norm_act = _normalize(act)
             norm_obj = _normalize(obj)
-            if norm_act in clean_goal and norm_obj in clean_goal:
+            if _pair_near(clean_goal, norm_act, norm_obj):
                 pairs.append((intent, act, obj))
     return list(set(pairs))
 
@@ -346,7 +378,7 @@ def extract_context_pairs(clean_goal: str) -> List[Tuple[str, str, str]]:
         for (val1, val2) in pair_list:
             norm_v1 = _normalize(val1)
             norm_v2 = _normalize(val2)
-            if norm_v1 in clean_goal and norm_v2 in clean_goal:
+            if _pair_near(clean_goal, norm_v1, norm_v2):
                 pairs.append((intent, val1, val2))
     return list(set(pairs))
 
@@ -365,20 +397,25 @@ def extract_entities(clean_goal: str) -> Dict[str, List[str]]:
         result[k] = list(set(result[k]))
     return result
 
-# Compile toàn bộ Layer tĩnh một lần duy nhất lúc khởi chạy hệ thống
-_L_TASK      = _build_layer(INTENT_BOOKS, ADVANCED_INTENT_BOOKS)
-_L_DOMAIN    = _build_layer(DOMAIN_BOOKS)
-_L_POLITE    = _build_layer(POLITENESS_BOOK)
-_L_QTYPE     = _build_layer(QUESTION_TYPE_BOOK)
-_L_FORMAT    = _build_layer(CONTENT_FORMAT_BOOK)
-_L_PERSONA   = _build_layer(USER_PERSONA_BOOK)
-_L_NEGATION  = _build_layer(NEGATION_BOOK)
-_L_SOCIAL    = _build_layer(SOCIAL_EMOTION_BOOKS)
-_L_COGNITIVE = _build_layer(COGNITIVE_SIGNALS)
-_L_PRIORITY  = _build_layer(PRIORITY_BOOK)
-_L_STYLE     = _build_layer(EXECUTION_STYLE)
-_L_META      = _build_layer(META_BOOKS)
-_L_LANG      = _build_layer(LANGUAGE_INDICATORS)
+# Lazy layer compilation — built on first full_classify() call, not at import time
+# This shaves ~50-100ms off JKAI startup (11 layers × ~100-400 regex each)
+@lru_cache(maxsize=1)
+def _get_all_layers() -> Dict[str, list]:
+    return {
+        "task":      _build_layer(INTENT_BOOKS, ADVANCED_INTENT_BOOKS),
+        "domain":    _build_layer(DOMAIN_BOOKS),
+        "polite":    _build_layer(POLITENESS_BOOK),
+        "qtype":     _build_layer(QUESTION_TYPE_BOOK),
+        "format":    _build_layer(CONTENT_FORMAT_BOOK),
+        "persona":   _build_layer(USER_PERSONA_BOOK),
+        "negation":  _build_layer(NEGATION_BOOK),
+        "social":    _build_layer(SOCIAL_EMOTION_BOOKS),
+        "cognitive": _build_layer(COGNITIVE_SIGNALS),
+        "priority":  _build_layer(PRIORITY_BOOK),
+        "style":     _build_layer(EXECUTION_STYLE),
+        "meta":      _build_layer(META_BOOKS),
+        "lang":      _build_layer(LANGUAGE_INDICATORS),
+    }
 
 # ==========================================
 # 7. HÀM PHÂN TÍCH TỔNG LỰC CHÍNH (MASTER SOVEREIGN)
@@ -391,36 +428,34 @@ def full_classify(goal: str) -> dict:
         return {"task": {"value": None, "confidence": 0.0, "candidates": []}}
 
     clean = _normalize(goal)
-    
-    # 1. Trích xuất cơ bản thông qua khớp Layer từ vựng định sẵn
-    task_res = _classify_layer(clean, _L_TASK)
-    neg_res = _classify_layer(clean, _L_NEGATION)
-    lang_res = _classify_layer(clean, _L_LANG)
-    
-    # 2. XỬ LÝ LOGIC PHỦ ĐỊNH (Cải tiến quan trọng)
-    # Nếu câu chứa cụm từ phủ định đứng trước intent, ta hạ mức độ tin cậy của intent đó xuống.
+    layers = _get_all_layers()
+
+    task_res = _classify_layer(clean, layers["task"])
+    neg_res = _classify_layer(clean, layers["negation"])
+    lang_res = _classify_layer(clean, layers["lang"])
+
     if neg_res["value"] is not None and task_res["value"] is not None:
-        task_res["confidence"] *= 0.2  # Giảm trọng số tin cậy do dính phủ định
-        
+        task_res["confidence"] *= 0.2
+
     return {
         "task": task_res,
-        "social": _classify_layer(clean, _L_SOCIAL),
-        "domain": _classify_layer(clean, _L_DOMAIN),
-        "politeness": _classify_layer(clean, _L_POLITE),
-        "question_type": _classify_layer(clean, _L_QTYPE),
-        "format": _classify_layer(clean, _L_FORMAT),
-        "persona": _classify_layer(clean, _L_PERSONA),
+        "social": _classify_layer(clean, layers["social"]),
+        "domain": _classify_layer(clean, layers["domain"]),
+        "politeness": _classify_layer(clean, layers["polite"]),
+        "question_type": _classify_layer(clean, layers["qtype"]),
+        "format": _classify_layer(clean, layers["format"]),
+        "persona": _classify_layer(clean, layers["persona"]),
         "negation": neg_res,
-        "cognitive": _classify_layer(clean, _L_COGNITIVE),
-        "priority": _classify_layer(clean, _L_PRIORITY),
-        "style": _classify_layer(clean, _L_STYLE),
-        "meta": _classify_layer(clean, _L_META),
+        "cognitive": _classify_layer(clean, layers["cognitive"]),
+        "priority": _classify_layer(clean, layers["priority"]),
+        "style": _classify_layer(clean, layers["style"]),
+        "meta": _classify_layer(clean, layers["meta"]),
         "language": lang_res["value"] if lang_res["value"] else "UNDETERMINED",
         "action_pairs": extract_action_pairs(clean),
         "context_pairs": extract_context_pairs(clean),
         "scalar": extract_scalar(clean),
         "entities": extract_entities(clean),
-        "is_question": goal.strip().endswith('?') or _classify_layer(clean, _L_QTYPE)["value"] is not None
+        "is_question": goal.strip().endswith('?') or _classify_layer(clean, layers["qtype"])["value"] is not None
     }
 
 def get_role_lexicon(role: str) -> str:

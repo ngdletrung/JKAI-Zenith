@@ -1,0 +1,25 @@
+{
+  "id": "SKILL_STRATEGIC_WRITER",
+  "name": "Strategic Writer",
+  "version": "1.0.0",
+  "domain": "BUSINESS",
+  "description": "Kỹ năng thực thi chuyên biệt Strategic Writer thưa Master.",
+  "triggers": [
+    "skill_strategic_writer",
+    "skill_strategic_writer"
+  ],
+  "parameters": {
+    "type": "object",
+    "properties": {
+      "goal": {
+        "type": "string",
+        "description": "Yêu cầu thực thi"
+      }
+    },
+    "required": [
+      "goal"
+    ]
+  },
+  "output_format": "Markdown",
+  "author": "Antigravity / Master LeeTrung"
+}

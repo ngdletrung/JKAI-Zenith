@@ -19,11 +19,30 @@ _RUN_HELP_RE = re.compile(
     re.IGNORECASE,
 )
 
+# Phát hiện khi Master muốn THỰC THI skill với dữ liệu thật (không phải hỏi cách dùng).
+# Ví dụ: "dùng skill #1002 để tranh luận về X", "chạy hội đồng về vấn đề Y",
+#        "hãy dùng skill ... để phân tích ...", "sử dụng kỹ năng ... cho ..."
+_EXECUTE_INTENT_RE = re.compile(
+    r"(?:"
+    r"(?:dùng|dung|sử\s*dụng|su\s*dung|hãy\s*dùng|hay\s*dung|kích\s*hoạt|kich\s*hoat|triệu\s*hồi|trieu\s*hoi)"
+    r"\s+(?:skill|kỹ\s*năng|ky\s*nang|hội\s*đồng|hoi\s*dong|#\d+)[^?!.\n]{0,80}"
+    r"(?:để|de|về|ve|cho|với|voi|phân\s*tích|phan\s*tich|tranh\s*luận|tranh\s*luan|thảo\s*luận|thao\s*luan|giải\s*quyết|giai\s*quyet|đánh\s*giá|danh\s*gia)"
+    r")",
+    re.IGNORECASE,
+)
+
 _DECK_REF = re.compile(r"#(\d{2,5})")
 
 
 def goal_is_skill_run_help(goal: str) -> bool:
+    """Trả về True nếu Master muốn BIẾT cách dùng skill (run guide).
+    Trả về False nếu Master muốn THỰC THI skill với dữ liệu thật.
+    """
     if not goal or goal.strip().startswith("/"):
+        return False
+    # Nếu câu có execute intent (có mệnh đề mục đích/dữ liệu kèm) → đây là lệnh chạy thật,
+    # không phải hỏi cách dùng → bypass run_guide, để pipeline xử lý tiếp.
+    if _EXECUTE_INTENT_RE.search(goal):
         return False
     return bool(_RUN_HELP_RE.search(goal))
 

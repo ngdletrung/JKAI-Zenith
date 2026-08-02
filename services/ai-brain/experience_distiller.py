@@ -23,13 +23,38 @@ class ExperienceDistiller:
             "archive", "obsidian"
         ]
 
-    async def distill_recent_tasks(self):
-        """🔄 [AUTO-DISTILL-ALL]: Tầm soát và đúc kết các task chạy gần đây thưa Master."""
-        logger.info("🧪 [DISTILLER] Bắt đầu quét các tác vụ gần đây để đúc kết tri thức...")
-        logs = redis_safe(lambda r: r.lrange(self.log_history_key, 0, 500), [])
+    async def is_system_idle(self) -> bool:
+        """Kiểm tra tải hệ thống và số lượng tác vụ người dùng để nhường tài nguyên thưa Master."""
+        try:
+            import psutil
+            cpu = psutil.cpu_percent(interval=0.1)
+            mem = psutil.virtual_memory().percent
+            if cpu > 40 or mem > 70:
+                logger.info(f"🌀 [EVOLVE-PREEMPT] Hệ thống bận (cpu={cpu}%, mem={mem}%) — nhường tài nguyên.")
+                return False
+        except Exception:
+            pass
+        try:
+            active = redis_safe(lambda r: r.scard("active_tasks"), 0)
+            if active and int(active) > 0:
+                logger.info(f"🌀 [EVOLVE-PREEMPT] Phát hiện {active} tác vụ người dùng đang chạy — nhường tài nguyên.")
+                return False
+        except Exception:
+            pass
+        return True
+
+    async def distill_recent_tasks(self, max_tasks: int = 20):
+        """🔄 [AUTO-DISTILL-ALL]: Tầm soát và đúc kết các task chạy gần đây thưa Master.
+        
+        Args:
+            max_tasks: Giới hạn số task tối đa xử lý trong chu kỳ nếu rảnh.
+        """
+        logger.info(f"🧪 [DISTILLER] Bắt đầu quét tác vụ gần đây (max={max_tasks})...")
+        logs = redis_safe(lambda r: r.lrange(self.log_history_key, 0, 499), [])
         
         unique_tasks = {}
-        for l in logs:
+        # Quét log để trích xuất tất cả task IDs (cũ trước mới sau để gối đầu cuốn chiếu)
+        for l in reversed(logs):
             try:
                 data = json.loads(l)
                 tid = data.get("task_id")
@@ -40,20 +65,46 @@ class ExperienceDistiller:
             except Exception: pass
             
         if not unique_tasks:
-            logger.info("⚠️ [DISTILLER] Không tìm thấy tác vụ nào cần đúc kết gần đây thưa Master.")
+            logger.info("⚠️ [DISTILLER] Không tìm thấy tác vụ nào trong nhật ký thưa Master.")
             return
             
+        processed = 0
         for tid, goal in unique_tasks.items():
+            if processed >= max_tasks:
+                break
+                
+            # 🛡️ 1. GIAO THỨC TỰ NGẮT: Nhường tài nguyên ngay lập tức nếu hệ thống hết rảnh
+            if not await self.is_system_idle():
+                logger.info("🛑 [DISTILLER] Tự động ngắt nhường CPU/VRAM cho Master.")
+                break
+                
+            # 🛡️ 2. CHECKPOINT: Bỏ qua nếu task này đã được đúc kết trước đó
+            is_processed = redis_safe(lambda r: r.sismember("zenith:distilled_tasks", tid), False)
+            if is_processed:
+                continue
+                
+            logger.info(f"🧪 [DISTILLER] Tiến hành đúc kết nhiệm vụ cuốn chiếu: {tid} ('{goal}')")
             try:
-                await self.distill_task(tid, goal)
+                await asyncio.wait_for(
+                    self.distill_task(tid, goal),
+                    timeout=120,
+                )
+                # Đánh dấu đã hoàn tất đúc kết vào Redis Set
+                redis_safe(lambda r: (
+                    r.sadd("zenith:distilled_tasks", tid),
+                    r.expire("zenith:distilled_tasks", 259200) # Hạn dùng 3 ngày để giải phóng bộ nhớ
+                ))
+                processed += 1
+            except asyncio.TimeoutError:
+                logger.warning(f"⏱️ [DISTILLER] Timeout task {tid}, bỏ qua")
             except Exception as e:
-                logger.error(f"❌ [DISTILLER-ERR] Lỗi khi đúc kết task {tid}: {e}")
+                logger.error(f"❌ [DISTILLER-ERR] Lỗi task {tid}: {e}")
 
     async def distill_task(self, task_id: str, goal: str):
         logger.info(f"🧪 [DISTILLER] Analyzing task {task_id}: '{goal}'")
         
         # 1. Thu thập dữ liệu (Logs)
-        logs = redis_safe(lambda r: r.lrange(self.log_history_key, 0, 100), [])
+        logs = redis_safe(lambda r: r.lrange(self.log_history_key, 0, 499), [])
         relevant_logs = []
         for l in logs:
             try:
@@ -103,7 +154,9 @@ class ExperienceDistiller:
             role="EXECUTOR",
             profile="ELITE", # 💎 Ép buộc sử dụng nơ-ron mạnh nhất thưa Master
             json_mode=True,
-            keep_alive=-1    # Giữ nơ-ron thường trú để chắt lọc liên tục
+            keep_alive=-1,    # Giữ nơ-ron thường trú để chắt lọc liên tục
+            task_id="omni_evolve",
+            stealth=True
         )
 
         if isinstance(distilled_data, dict):
@@ -177,7 +230,9 @@ class ExperienceDistiller:
                 role="PLANNER",
                 profile="STRICT",
                 json_mode=True,
-                skip_memory=True
+                skip_memory=True,
+                task_id="omni_evolve",
+                stealth=True
             )
             
             if isinstance(patch_data, dict) and patch_data.get("target_file"):

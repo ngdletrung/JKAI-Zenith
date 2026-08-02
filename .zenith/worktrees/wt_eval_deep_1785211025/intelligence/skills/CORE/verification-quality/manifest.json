@@ -1,0 +1,52 @@
+{
+  "id": "VERIFICATION_QUALITY",
+  "name": "Zenith Verification & Quality Assurance",
+  "version": "1.0.0",
+  "description": "Output integrity core: Validates AI results, ensures technical accuracy, and maintains high-fidelity standards for all deliverables.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "kiểm định chất lượng",
+    "verification quality",
+    "thẩm định kết quả",
+    "qa-audit",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "kiem",
+    "thuc",
+    "thong",
+    "verification",
+    "luong",
+    "quality",
+    "rang",
+    "tinh",
+    "nguon",
+    "soat",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "result_to_verify": {
+          "type": "string",
+          "description": "The result or data to verify."
+        },
+        "standards": {
+          "type": "string",
+          "description": "Specific standards or criteria for verification."
+        }
+      },
+      "required": [
+        "result_to_verify"
+      ]
+    }
+  }
+}

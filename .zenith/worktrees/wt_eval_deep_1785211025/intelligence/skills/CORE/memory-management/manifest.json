@@ -1,0 +1,50 @@
+{
+  "id": "MEMORY_MANAGEMENT",
+  "name": "Zenith Memory Management",
+  "version": "1.0.0",
+  "description": "Cognitive retention core: Manages short-term and long-term memory, pruning outdated information and prioritizing strategic context.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "quản lý bộ nhớ",
+    "dọn dẹp memory",
+    "quản lý ngữ cảnh",
+    "memory prune",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "quan",
+    "thong",
+    "nang",
+    "hoac",
+    "zenith",
+    "hieu",
+    "giup",
+    "token",
+    "canh",
+    "lien",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "prune",
+            "retrieve",
+            "persist"
+          ],
+          "description": "Memory management action."
+        }
+      }
+    }
+  }
+}

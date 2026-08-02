@@ -1,0 +1,69 @@
+{
+  "id": "IMAGE_GEN_FORGE",
+  "name": "Zenith Image Generation Forge",
+  "version": "1.0.0",
+  "description": "Creative visual core: Generates high-quality images using Stable Diffusion (SDNext) based on natural language prompts.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "tạo ảnh",
+    "vẽ tranh",
+    "generate image",
+    "stable diffusion",
+    "mắt thần sáng tạo",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "thong",
+    "thuat",
+    "thanh",
+    "giao",
+    "khong",
+    "sang",
+    "hien",
+    "thuc",
+    "tuong",
+    "hinh",
+    "skill",
+    "agent",
+    "tac vu",
+    "nhiem vu",
+    "xu ly"
+  ],
+  "domain": "CORE",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "prompt": {
+          "type": "string",
+          "description": "Visual description of the image to generate (English recommended)."
+        },
+        "negative_prompt": {
+          "type": "string",
+          "description": "Elements to exclude from the image.",
+          "default": "blurry, low quality, watermark, text, signature, deformed"
+        },
+        "width": {
+          "type": "integer",
+          "description": "Image width.",
+          "default": 512
+        },
+        "height": {
+          "type": "integer",
+          "description": "Image height.",
+          "default": 512
+        },
+        "steps": {
+          "type": "integer",
+          "description": "Number of denoising steps.",
+          "default": 20
+        }
+      },
+      "required": [
+        "prompt"
+      ]
+    }
+  }
+}

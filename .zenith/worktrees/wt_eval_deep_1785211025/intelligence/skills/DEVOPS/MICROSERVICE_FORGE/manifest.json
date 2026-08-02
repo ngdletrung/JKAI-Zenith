@@ -1,0 +1,54 @@
+{
+  "id": "MICROSERVICE_FORGE",
+  "name": "Zenith Microservice Forge",
+  "version": "1.0.0",
+  "description": "Instant infrastructure architect: Automates the entire lifecycle of a new service from code generation to Dockerization and docker-compose integration.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "kiến tạo dịch vụ",
+    "forge service",
+    "tạo microservice",
+    "tự động hóa docker",
+    "triển khai dịch vụ mới",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "viec",
+    "nang",
+    "tang",
+    "thong",
+    "microservice_forge",
+    "infrastructure",
+    "thiet",
+    "truc",
+    "rong",
+    "master",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "service_name": {
+          "type": "string",
+          "description": "Name of the new microservice."
+        },
+        "requirements": {
+          "type": "string",
+          "description": "Functional requirements for the service."
+        }
+      },
+      "required": [
+        "service_name",
+        "requirements"
+      ]
+    }
+  }
+}

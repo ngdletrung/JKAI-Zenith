@@ -94,13 +94,17 @@ class ToolRouter:
             skill_dir = os.path.dirname(rel_path_clean)
             
             # Khớp chính xác logic_file theo cấu trúc thư mục dạng cây của skill
-            logic_file = os.path.join(self.skills_root, os.path.basename(skill_dir), "logic.py")
+            # Dùng rel path từ registry để giữ nguyên cây thư mục (vd: BUSINESS/OFFICE_SUITE_MASTER)
+            rel_subdir = re.sub(r'^skills[/\\]', '', skill_dir)
+            logic_file = os.path.join(self.skills_root, rel_subdir, "logic.py")
             if not os.path.exists(logic_file):
-                # Dự phòng tìm trực tiếp theo cấu trúc tương đối đầy đủ từ hệ thống registry
-                base_parent = os.path.dirname(self.skills_root)
-                logic_file = os.path.normpath(os.path.join(base_parent, rel_path_clean, "..", "logic.py"))
-                if not os.path.exists(logic_file): 
-                    continue
+                # Dự phòng: dùng basename (legacy fallback cho skill ở root)
+                logic_file = os.path.join(self.skills_root, os.path.basename(skill_dir), "logic.py")
+                if not os.path.exists(logic_file):
+                    base_parent = os.path.dirname(self.skills_root)
+                    logic_file = os.path.normpath(os.path.join(base_parent, rel_path_clean, "..", "logic.py"))
+                    if not os.path.exists(logic_file): 
+                        continue
                 
             try:
                 with open(logic_file, 'r', encoding='utf-8') as f:
@@ -166,6 +170,21 @@ class ToolRouter:
             
             tool_name_normalized = normalize_skill_name(str(tool_name)) if tool_name is not None else ""
             
+            # 🚀 [DYNAMIC-CODE-INTERPRETER]: Cho phép thực thi trực tiếp mã Python động mà không bị chặn bởi registry
+            dynamic_code_tools = ["python_execute", "run_python", "code_interpreter", "python_interpreter", "execute_python_script"]
+            if tool_name and any(str(tool_name).lower() == ct for ct in dynamic_code_tools):
+                code = kwargs.get("code") or kwargs.get("script") or kwargs.get("python_code") or ""
+                if code:
+                    import subprocess, sys
+                    print(f"⚡ [CODE-INTERPRETER]: Thực thi mã Python động ({len(code)} chars)...")
+                    proc = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, timeout=60)
+                    return {
+                        "status": "success" if proc.returncode == 0 else "error",
+                        "stdout": proc.stdout,
+                        "stderr": proc.stderr,
+                        "exit_code": proc.returncode
+                    }
+
             # 🛡️ [Z-SOS-RESOLVER]: Kiểm tra xem có phải Plugin chuẩn Z-SOS không
             if self._dynamic_tool_map is None:
                 self._build_dynamic_tool_map(all_skills)
@@ -173,7 +192,10 @@ class ToolRouter:
             if tool_name in self._plugin_map or tool_name_normalized in self._plugin_map:
                 plugin = self._plugin_map.get(tool_name) or self._plugin_map.get(tool_name_normalized)
                 print(f"[Z-SOS-EXEC]: Chuyển hướng thực thi sang Plugin OS: {tool_name}")
-                return await self._execute_zsos_plugin(plugin, kwargs)
+                zsos_result = await self._execute_zsos_plugin(plugin, kwargs)
+                if zsos_result is not None:
+                    return zsos_result
+                print(f"[Z-SOS-EXEC]: Không tìm thấy execute(), fallback sang dynamic resolver.")
 
             # 🧠 [DYNAMIC-RESOLVER]: Khớp nối thông minh
 
@@ -341,7 +363,11 @@ class ToolRouter:
 
             if cache_key in self._module_cache:
                 module = self._module_cache[cache_key]
-                target_func = self._find_tool_in_module(module, tool_name)
+                target_func = (
+                    self._find_tool_in_module(module, tool_name) or
+                    self._find_tool_in_module(module, kwargs.get("action")) or
+                    self._find_tool_in_module(module, kwargs.get("method"))
+                )
             
             if not target_func:
                 spec = importlib.util.spec_from_file_location(f"{skill_folder}.logic", logic_file)
@@ -349,7 +375,11 @@ class ToolRouter:
                 sys.modules[module.__name__] = module
                 spec.loader.exec_module(module)
                 self._module_cache[cache_key] = module
-                target_func = self._find_tool_in_module(module, tool_name)
+                target_func = (
+                    self._find_tool_in_module(module, tool_name) or
+                    self._find_tool_in_module(module, kwargs.get("action")) or
+                    self._find_tool_in_module(module, kwargs.get("method"))
+                )
 
             if not target_func:
                 return {"status": "error", "msg": f"Tool function '{tool_name}' not found in {logic_file}."}
@@ -422,7 +452,10 @@ class ToolRouter:
             # [PROTOCOL-FUSION]: Ho tro da dang phuong thuc goi thua Master
             target_func = getattr(module, "execute", None)
             if not target_func:
-                # Fallback: Tim ham trung ten Plugin hoac Folder thua Master
+                # Try: action/method from kwargs, plugin ID, folder name
+                action = kwargs.get("action") or kwargs.get("method")
+                target_func = getattr(module, action, None) if action else None
+            if not target_func:
                 target_func = getattr(module, plugin['id'], None) or \
                               getattr(module, os.path.basename(os.path.dirname(logic_file)), None)
             
@@ -459,7 +492,8 @@ class ToolRouter:
                         return await target_func(**cleaned_kwargs)
                     return target_func(**cleaned_kwargs)
             else:
-                return {"status": "error", "message": f"Plugin {plugin.get('id', 'unknown')} logic.py has no execute() or matching function."}
+                # Fall through to standard dynamic resolution
+                return None
         except Exception as e:
             import traceback
             print(f"❌ [Z-SOS-EXEC-ERR]: {traceback.format_exc()}")

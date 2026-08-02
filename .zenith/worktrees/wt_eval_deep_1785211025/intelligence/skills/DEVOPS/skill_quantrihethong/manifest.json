@@ -1,0 +1,63 @@
+{
+  "id": "SKILL_QUANTRIHETHONG",
+  "name": "Zenith System Administration",
+  "version": "1.0.0",
+  "description": "Enterprise-grade system management: Handles safe file I/O with automated backups, soft-delete mechanisms, and storage telemetry.",
+  "author": "Zenith Kernel",
+  "triggers": [
+    "quản trị hệ thống",
+    "ghi tệp an toàn",
+    "xóa tệp soft-delete",
+    "phục hồi tệp",
+    "thống kê dung lượng",
+    "overview",
+    "detailed features",
+    "reasoning strategy",
+    "strategic value",
+    "edge cases   risks",
+    "lieu",
+    "thong",
+    "khong",
+    "toan",
+    "gian",
+    "cung",
+    "quan",
+    "thuc",
+    "hien",
+    "thiet",
+    "deploy",
+    "pipeline",
+    "ci cd",
+    "git",
+    "commit"
+  ],
+  "domain": "DEVOPS",
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "action": {
+          "type": "string",
+          "enum": [
+            "ghi_tep_an_toan",
+            "xoa_tep_an_toan",
+            "phuc_hoi_tep",
+            "thong_ke_dung_luong"
+          ],
+          "description": "Admin action."
+        },
+        "path": {
+          "type": "string",
+          "description": "Target file path."
+        },
+        "content": {
+          "type": "string",
+          "description": "Content for safe write."
+        }
+      },
+      "required": [
+        "action"
+      ]
+    }
+  }
+}

@@ -12,7 +12,7 @@ class HomunculusManager:
     Inspired by ECC-main architecture.
     """
     
-    VAULT_DIR = Path("d:/Docker/JKAI/intelligence/vault")
+    VAULT_DIR = Path(os.getenv("JKAI_VAULT_DIR", os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "intelligence", "vault")))
     REGISTRY_FILE = VAULT_DIR / "projects.json"
     
     def __init__(self, current_path: str = "."):
