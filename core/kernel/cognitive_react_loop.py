@@ -62,28 +62,44 @@ class CognitiveReActLoop:
             if code_blocks or has_action_keyword:
                 action_content = thought_text
                 turn.action = action_content
-                
-                # Thực thi mã Python động từ LLM output
+
+                # Check ExecutionIntegrityLayer before running dynamic code
                 try:
-                    if code_blocks:
-                        python_code = code_blocks[0].strip()
-                    else:
-                        python_code = "print('Action acknowledged - no code block found')"
-                    
-                    proc = subprocess.run(
-                        [sys.executable, "-c", python_code],
-                        capture_output=True, text=True, timeout=30
+                    from core.kernel.execution_integrity import ExecutionIntegrityLayer, DecisionOutcome
+                    from core.kernel.task_contract_store import get_active_contract, get_active_policy
+
+                    integrity = ExecutionIntegrityLayer(mission_id=task_id)
+                    contract = get_active_contract(task_id)
+                    policy = get_active_policy(task_id)
+
+                    decision = integrity.authorize(
+                        action="python_execute",
+                        arguments={"code": code_blocks[0].strip() if code_blocks else ""},
+                        task_contract=contract,
+                        policy=policy
                     )
-                    obs_res = {
-                        "stdout": proc.stdout,
-                        "stderr": proc.stderr,
-                        "exit_code": proc.returncode
-                    }
-                    turn.observation = json.dumps(obs_res, ensure_ascii=False)
-                except subprocess.TimeoutExpired:
-                    turn.observation = json.dumps({"error": "Execution timed out after 30s"})
+
+                    if decision.outcome != DecisionOutcome.ALLOW:
+                        turn.observation = json.dumps({
+                            "error": f"[EXECUTION-DENIED]: {decision.reason}",
+                            "subprocess_invoked": False,
+                            "decision_outcome": decision.outcome.value
+                        }, ensure_ascii=False)
+                    else:
+                        python_code = code_blocks[0].strip() if code_blocks else "print('No code block')"
+                        proc = subprocess.run(
+                            [sys.executable, "-c", python_code],
+                            capture_output=True, text=True, timeout=30
+                        )
+                        obs_res = {
+                            "stdout": proc.stdout,
+                            "stderr": proc.stderr,
+                            "exit_code": proc.returncode,
+                            "subprocess_invoked": True
+                        }
+                        turn.observation = json.dumps(obs_res, ensure_ascii=False)
                 except Exception as e:
-                    turn.observation = json.dumps({"error": str(e)})
+                    turn.observation = json.dumps({"error": f"Execution gate error: {str(e)}", "subprocess_invoked": False})
 
                 # Cập nhật lịch sử cuộc thoại cho lượt tư duy tiếp theo
                 conversation_history.append({"role": "assistant", "content": thought_text})

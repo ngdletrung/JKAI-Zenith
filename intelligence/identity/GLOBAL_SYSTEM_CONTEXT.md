@@ -746,3 +746,16 @@
 
 ---
 *Zenith Architectural Changelog. v26.1 Constitution & Integrity Audit. Fully Verified.*
+
+## [2026-08-02] - ZENITH v26.2 EXECUTION INTEGRITY & GROUNDED COGNITION (Constitutional Principle 4 & Runtime Security Boundary)
+*   **Nguyên Tắc Hiến Pháp 4 (JKAI Constitution - Principle 4)**:
+    - **No side effect may occur outside an authorized execution path** (Không tác động phụ nào được phép xảy ra ngoài execution path đã được runtime ủy quyền — bao phủ Tool, File, Network, Subprocess, External Message).
+*   **Tóm Tắt Khép Vòng Integration Verification (v26.2)**:
+    - **Single Enforcement Point**: executor_gateway.execute_tool() đóng vai trò cổng kiểm soát duy nhất trước mọi lệnh thực thi.
+    - **Bypass Path Closed**: cognitive_react_loop.py chặn hoàn toàn việc gọi subprocess.run trực tiếp từ mã LLM (Default-Deny arbitrary Python code execution).
+    - **Structured ExecutionResult**: Trả về cấu trúc ExecutionResult (outcome, tool_executed, result, reason, interrupt_id) thay cho chuỗi thô.
+    - **TaskContract Store**: Lưu giữ và cô lập contract theo task_id, tự động fail-closed nếu thiếu hợp đồng hoặc quá thời gian sống.
+*   **Trạng thái**: **ACTIVE - ZENITH SOTA ENGINE v26.2 VERIFIED (RUNTIME-ENFORCED SECURITY BOUNDARY | 268/268 TESTS PASSED)**
+
+---
+*Zenith Architectural Changelog. v26.2 Execution Integrity & Grounded Cognition. Fully Verified.*

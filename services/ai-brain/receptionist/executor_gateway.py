@@ -15,6 +15,10 @@ class ExecutorGateway:
     """
     JKAI Zenith - Executor Gateway
     Secure execution broker using capability tokens.
+
+    [v26.2] ExecutionIntegrityLayer is wired here as the SINGLE enforcement point.
+    All tool calls — from ReAct loop, skill executor, project agent — pass through
+    execute_tool(), so enforcing integrity here closes all execution paths simultaneously.
     """
     def __init__(self, http_client):
         self.http_client = http_client
@@ -31,14 +35,110 @@ class ExecutorGateway:
         return resp.json()
 
     async def execute_tool(self, request: ExecutionRequest, task_id: str) -> str:
+        """
+        [v26.2] Execution entry point with integrated security gate.
+
+        Order of evaluation:
+          1. ExecutionIntegrityLayer.authorize() — TaskContract + DecisionAuthority + Risk
+          2. If DENY → return denial string immediately (no executor call)
+          3. If REQUIRE_APPROVAL → log interrupt, return approval-required string (no executor call)
+          4. If ALLOW → proceed to executor HTTP dispatch as before
+        """
+        # ------------------------------------------------------------------ #
+        # [EXECUTION INTEGRITY GATE] — wire before ANY tool dispatch          #
+        # ------------------------------------------------------------------ #
+        try:
+            from core.kernel.execution_integrity import ExecutionIntegrityLayer, DecisionOutcome
+            from core.kernel.task_contract_store import get_active_contract, get_active_policy
+
+            task_contract = get_active_contract(task_id)
+            policy = get_active_policy(task_id)
+
+            integrity = ExecutionIntegrityLayer(mission_id=task_id)
+            decision = integrity.authorize(
+                action=request.tool_name,
+                arguments=dict(request.tool_args or {}),
+                task_contract=task_contract,
+                policy=policy,
+            )
+
+            if decision.outcome == DecisionOutcome.DENY:
+                self._log(
+                    "INTEGRITY",
+                    f"[HARD-DENY] Tool '{request.tool_name}' blocked. Reason: {decision.reason}",
+                    task_id,
+                )
+                from core.kernel.execution_integrity import ExecutionResult
+                return ExecutionResult(
+                    outcome=DecisionOutcome.DENY,
+                    tool_executed=False,
+                    reason=decision.reason,
+                    action=request.tool_name
+                )
+
+            if decision.outcome == DecisionOutcome.REQUIRE_APPROVAL:
+                self._log(
+                    "INTEGRITY",
+                    f"[APPROVAL-REQUIRED] Tool '{request.tool_name}' halted. "
+                    f"InterruptID={decision.interrupt_id}. Reason: {decision.reason}",
+                    task_id,
+                )
+                from core.kernel.execution_integrity import ExecutionResult
+                return ExecutionResult(
+                    outcome=DecisionOutcome.REQUIRE_APPROVAL,
+                    tool_executed=False,
+                    reason=decision.reason,
+                    interrupt_id=decision.interrupt_id,
+                    action=request.tool_name
+                )
+
+            # ALLOW — fall through to executor dispatch below
+            self._log(
+                "INTEGRITY",
+                f"[ALLOW] Tool '{request.tool_name}' authorized by ExecutionIntegrityLayer.",
+                task_id,
+                stealth=True,
+            )
+
+        except ImportError as e:
+            # Integrity layer unavailable — fail-closed: log and deny
+            self._log("INTEGRITY", f"[FAIL-CLOSED] ExecutionIntegrityLayer import failed: {e}. Denying tool.", task_id)
+            from core.kernel.execution_integrity import ExecutionResult, DecisionOutcome
+            return ExecutionResult(
+                outcome=DecisionOutcome.DENY,
+                tool_executed=False,
+                reason=f"Execution Integrity Layer unavailable — fail-closed. {e}",
+                action=request.tool_name
+            )
+        except Exception as e:
+            # Unexpected error in integrity check — fail-closed
+            self._log("INTEGRITY", f"[FAIL-CLOSED] Integrity check error: {e}. Denying tool.", task_id)
+            from core.kernel.execution_integrity import ExecutionResult, DecisionOutcome
+            return ExecutionResult(
+                outcome=DecisionOutcome.DENY,
+                tool_executed=False,
+                reason=f"Integrity check raised an unexpected error — fail-closed. {e}",
+                action=request.tool_name
+            )
+
+        # ------------------------------------------------------------------ #
+        # Authorized — proceed to executor                                     #
+        # ------------------------------------------------------------------ #
         self._log("EXECUTOR", f"Safe execution: {request.tool_name}(...) - TraceID: {request.trace_id}", task_id)
         is_success = False
         output = "No output."
         try:
+            from core.kernel.execution_integrity import ExecutionResult, DecisionOutcome
             if request.tool_name.upper().startswith("OPENHANDS"):
                 from .openhands_provider import openhands_provider
                 res = await openhands_provider.execute_mission(request.tool_args.get("query", ""), task_id)
-                return res.get("output") or res.get("message")
+                out_val = res.get("output") or res.get("message")
+                return ExecutionResult(
+                    outcome=DecisionOutcome.ALLOW,
+                    tool_executed=True,
+                    result=out_val,
+                    action=request.tool_name
+                )
 
             from core.utils.registry import registry
             payload = {
@@ -59,7 +159,12 @@ class ExecutorGateway:
                     data = await self._post_to_executor(f"{executor_url}/call_tool", payload, request.timeout)
 
                     if data.get("status") == "needs_auth":
-                        return f"[SOVEREIGN-AUTH-REQUIRED]: Action '{request.tool_name}' on restricted area blocked. Master credentials required."
+                        return ExecutionResult(
+                            outcome=DecisionOutcome.REQUIRE_APPROVAL,
+                            tool_executed=False,
+                            reason=f"Action '{request.tool_name}' on restricted area blocked. Master credentials required.",
+                            action=request.tool_name
+                        )
 
                     if data.get("status") == "error":
                         is_success = False
@@ -75,7 +180,12 @@ class ExecutorGateway:
                             is_success = True
 
                     self._log("EXECUTOR", f"Executor {name} success ({len(str(output))} chars)", task_id)
-                    return output
+                    return ExecutionResult(
+                        outcome=DecisionOutcome.ALLOW,
+                        tool_executed=is_success,
+                        result=output,
+                        action=request.tool_name
+                    )
 
                 except Exception as e:
                     last_exception = e
@@ -85,12 +195,22 @@ class ExecutorGateway:
 
             output = f"Error calling executor: {last_exception}"
             is_success = False
-            return output
+            return ExecutionResult(
+                outcome=DecisionOutcome.ALLOW,
+                tool_executed=False,
+                result=output,
+                action=request.tool_name
+            )
 
         except Exception as e:
             output = f"Error calling executor: {e}"
             is_success = False
-            return output
+            return ExecutionResult(
+                outcome=DecisionOutcome.ALLOW,
+                tool_executed=False,
+                result=output,
+                action=request.tool_name
+            )
         finally:
             try:
                 from redis_client import get_redis
@@ -116,3 +236,4 @@ class ExecutorGateway:
                 "task_id": task_id
             })
         except Exception: pass
+
