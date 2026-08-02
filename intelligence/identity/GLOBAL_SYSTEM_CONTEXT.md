@@ -759,3 +759,14 @@
 
 ---
 *Zenith Architectural Changelog. v26.2 Execution Integrity & Grounded Cognition. Fully Verified.*
+
+## [2026-08-02] - ZENITH v26.2 HARDENED & FROZEN: 3-LAYER ARCHITECTURE & COGNITIVE SCALING
+*   **Tuyên Tuyên Bố Trạng Thái**:
+    - "Các bypass vectors hiện được xác định trong Permanent Execution Security Matrix đã được kiểm chứng và bị chặn."
+*   **Khung Kiến Trúc 3 Tầng**:
+    1. **COGNITIVE LAYER**: LLM + Compiler + UCWS + Policy ("What should I do?")
+    2. **AUTHORITY LAYER**: Task Contract + ExecutionIntegrityLayer ("May I do it?")
+    3. **EXECUTION LAYER**: Executor Gateway + Tool Actuators ("Actually do it.")
+*   **Giả Thuyết Cognitive Scaling**:
+    - Model Intelligence scaling độc lập hoàn toàn với Execution Authority (Authority = CONSTANT).
+    - Quy tắc sửa lỗi (Debugging Rule): Phân loại sự cố thành Context Problem, Model Capability, hoặc Runtime Enforcement. Tuyệt đối KHÔNG thêm subsystem/agent/memory mới khi gặp sự cố tư duy của mô hình.
