@@ -683,3 +683,19 @@
 *Zenith Architectural Changelog. v25.0. Systems Engineering & Operational History. Fully Verified.*
 
 
+## [2026-08-02] - ZENITH v26.0: COGNITIVE CONTEXT COMPILER & POLICY ENGINE (Compiled Cognition, Task Contracts & Context Budgeting)
+*   **Bối cảnh (Why)**:
+    - Nâng cấp tầng "Code Mềm" (Soft Code & Cognitive Behavior Layer) song song với tầng "Khung Xương" (UCWS & CCE v25.0).
+    - Thay thế System Prompt văn bản tĩnh khổng lồ bằng cơ chế Context Engineering biên dịch tĩnh/động từ trạng thái hiện tại của World State.
+*   **Giải pháp (How)**:
+    - **Cognitive Context Compiler (`cognitive_context_compiler.py`)**: Biên dịch Prompt động từ $\text{Prompt}_t = \text{Compile}(\text{Identity}, \text{Mission}_t, \text{WorldState}_t, \text{Memory}_t, \text{CognitiveMode}_t, \text{Policy}_t, \text{TaskContract}_t)$. Tích hợp Context Budgeter tự động kiểm soát dung lượng token cho GPU local.
+    - **Structured Task Contract (`task_contract.py`)**: Đóng gói nhiệm vụ thành hợp đồng gồm `objective`, `constraints`, `forbidden_actions`, `success_criteria`, `risk_level`, `required_evidence`.
+    - **Structured Cognitive Policy (`cognitive_policy.py`)**: Thiết lập các quy tắc vận hành nhất quán: Truth Policy, Tool Policy, Memory Policy, Risk Policy, Interruption Policy.
+    - **Adaptive Cognitive Modes**: Hỗ trợ 9 chế độ nhận thức (`REACTIVE`, `ANALYTICAL`, `PLANNING`, `EXECUTION`, `DEBUGGING`, `REFLECTION`, `RECOVERY`, `LEARNING`, `EXPLORATION`).
+    - **Runtime Integration**: Nối trực tiếp vào `MasterPromptArchitect.build_master_system_prompt()`.
+*   **Trạng thái**: **ACTIVE - ZENITH SOTA ENGINE v26.0 CONTEXT COMPILER LIVE VERIFIED (247/247 TESTS PASSED)**
+
+---
+*Zenith Architectural Changelog. v26.0. Systems Engineering & Operational History. Fully Verified.*
+
+

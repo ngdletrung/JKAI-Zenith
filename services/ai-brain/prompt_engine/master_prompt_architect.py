@@ -25,15 +25,20 @@ class MasterPromptArchitect:
         extra_tools: list = None,
         prompt_variant: str = "FULL",
     ) -> str:
+        # 🧠 [COGNITIVE-CONTEXT-COMPILER]: Compile cognition prompt from Identity, WorldState, Policy, and Memory
+        compiled_cognition = ""
+        try:
+            from prompt_engine.cognitive_context_compiler import CognitiveContextCompiler
+            mode = "PLANNING" if task_type == "DEEP_PLAN" else ("EXECUTION" if extra_tools else "REACTIVE")
+            compiler = CognitiveContextCompiler(mission_id=task_id)
+            compiled_cognition = compiler.compile(role=role, cognitive_mode=mode)
+        except Exception as c_err:
+            logger.debug(f"[CONTEXT-COMPILER-ERR]: {c_err}")
+
         if prompt_variant == "LEAN":
             lean_p = self._build_lean_prompt(role, task_type)
-            try:
-                from core.utils.active_core_memory import get_all_blocks_prompt
-                cm_p = get_all_blocks_prompt()
-                if cm_p:
-                    return f"{lean_p}\n{cm_p}"
-            except Exception:
-                pass
+            if compiled_cognition:
+                return f"{compiled_cognition}\n\n{lean_p}"
             return lean_p
 
         rules_data = load_rules()
