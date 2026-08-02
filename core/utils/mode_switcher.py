@@ -117,7 +117,7 @@ class ModeSwitcher:
                     if self._current_mode != "FAST":
                         engine_instance.publish_mission_log(
                             "SYSTEM",
-                            f"[ENGINE-READY]: FAST mode — Qwen3-30B already resident in RAM/VRAM. Zero-latency start.",
+                            f"[ENGINE-READY]: FAST mode — {fast_model} already resident in RAM/VRAM. Zero-latency start.",
                             task_id
                         )
                         ModeSwitcher._current_mode = "FAST"
@@ -133,7 +133,7 @@ class ModeSwitcher:
                     if self._is_model_loaded(fast_model, loaded_models):
                         engine_instance.publish_mission_log(
                             "SYSTEM",
-                            f"[ENGINE-READY]: FAST mode — Qwen3-30B confirmed resident after recheck. Zero-latency start.",
+                            f"[ENGINE-READY]: FAST mode — {fast_model} confirmed resident after recheck. Zero-latency start.",
                             task_id
                         )
                         ModeSwitcher._current_mode = "FAST"

@@ -183,8 +183,17 @@ class ModelRouter:
                         except Exception:
                             keep_alive = "5m"
 
+                        idx_cap = next((i for i, h in enumerate(headers) if 'CAPABILITY' in h or 'CAPABILITIES' in h), -1)
+                        cap_val = parts[idx_cap].replace('**', '').strip() if idx_cap != -1 else ""
+
+                        idx_qual = next((i for i, h in enumerate(headers) if 'QUALITY' in h), -1)
+                        qual_val = parts[idx_qual].replace('**', '').strip() if idx_qual != -1 else "medium"
+
                         new_r_cache[key] = {
+                            'role': key,
                             'model': target,
+                            'capability': cap_val,
+                            'quality': qual_val,
                             'options': final_opts,
                             'keep_alive': keep_alive,
                             'hardware': hardware,
@@ -196,8 +205,18 @@ class ModelRouter:
             for rk, rv in new_r_cache.items():
                 new_role_config_cache[rk] = self._dict_to_role_config(rv)
             self._role_config_cache = new_role_config_cache
-            logger.info(f"✅ [ROUTER]: Đã nạp {len(new_r_cache)} quy tắc nơ-ron (VRAM-Aware).")
+            logger.info(f"✅ [ROUTER]: Đã nạp {len(new_r_cache)} quy tắc nơ-ron (VRAM-Aware & AMG v2).")
         except Exception as e:
             logger.error(f"❌ [ROUTER-PARSE-ERR]: {e}")
+
+    def resolve_execution_profile(self, role: str):
+        """
+        AMG v2 primary entry point.
+        Converts role config → ExecutionProfile using AMG ExecutionPolicy / PortfolioGovernor.
+        """
+        config = self.get_role_config(role)
+        from core.governor.execution_policy import ExecutionPolicy
+        policy = ExecutionPolicy()
+        return policy.derive_profile(config)
 
 mission_router = None

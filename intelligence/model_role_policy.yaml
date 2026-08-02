@@ -1,0 +1,102 @@
+# ============================================================
+# JKAI ZENITH — Model Role Policy Override
+# File: intelligence/model_role_policy.yaml
+#
+# Purpose:
+#   Override AMG's automatic role scoring WEIGHTS per role.
+#   This does NOT override per-model decisions (that would break
+#   the model-agnostic architecture).
+#
+#   Only role scoring weights and minimum thresholds can be adjusted.
+#
+# Architecture invariant:
+#   AMG may NOT be configured to prefer a specific model by name.
+#   Only capabilities (ModelClass) can be weighted.
+# ============================================================
+
+roles:
+  RECEPTIONIST:
+    # Fast response is priority for reception
+    scoring_weights:
+      reasoning: 1.0
+      general: 3.0
+      tool_use: 1.0
+    minimum_capability_score: 0.20
+    latency_target: low      # "low" | "medium" | "high"
+
+  CHAT:
+    scoring_weights:
+      general: 3.0
+      reasoning: 1.0
+    minimum_capability_score: 0.20
+    latency_target: low
+
+  PLANNER:
+    # Reasoning + tool_use critical for planning
+    scoring_weights:
+      reasoning: 4.0
+      general: 1.0
+      moe: 2.0
+      tool_use: 2.0
+    minimum_capability_score: 0.55
+    latency_target: medium
+
+  EXECUTOR:
+    scoring_weights:
+      coding: 4.0
+      general: 1.0
+      tool_use: 3.0
+    minimum_capability_score: 0.50
+    latency_target: medium
+
+  EXECUTOR_ALPHA:
+    scoring_weights:
+      coding: 4.0
+      general: 1.0
+      tool_use: 3.0
+    minimum_capability_score: 0.50
+    latency_target: medium
+
+  EXECUTOR_BETA:
+    scoring_weights:
+      coding: 4.0
+      general: 1.0
+      tool_use: 3.0
+    minimum_capability_score: 0.50
+    latency_target: medium
+
+  DEEP_REASONER:
+    # Must have strong reasoning — never degrade silently
+    scoring_weights:
+      reasoning: 5.0
+      moe: 3.0
+      general: 1.0
+    minimum_capability_score: 0.70
+    latency_target: high
+
+  CRITIC:
+    scoring_weights:
+      reasoning: 3.0
+      general: 2.0
+    minimum_capability_score: 0.40
+    latency_target: medium
+
+  SUMMARIZER:
+    scoring_weights:
+      general: 3.0
+    minimum_capability_score: 0.20
+    latency_target: low
+
+  VISION:
+    # Must have VISION class — no degradation to non-vision models
+    scoring_weights:
+      vision: 5.0
+    minimum_capability_score: 0.90
+    latency_target: medium
+
+  EMBEDDER:
+    # Must be embedding model — no degradation
+    scoring_weights:
+      embedding: 5.0
+    minimum_capability_score: 0.90
+    latency_target: low
