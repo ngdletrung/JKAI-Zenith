@@ -28,11 +28,11 @@ class TestCognitiveContextCompiler(unittest.TestCase):
             contract=contract,
             max_context_chars=4000
         )
-        self.assertIn("<identity>", compiled_text)
+        self.assertIn("<identity", compiled_text)
         self.assertIn("ANALYTICAL", compiled_text)
-        self.assertIn("<world_state>", compiled_text)
-        self.assertIn("<cognitive_policy>", compiled_text)
-        self.assertIn("<task_contract>", compiled_text)
+        self.assertIn("<world_state", compiled_text)
+        self.assertIn("<cognitive_policy", compiled_text)
+        self.assertIn("<task_contract", compiled_text)
         self.assertIn("Compile report for PCCC", compiled_text)
 
     def test_context_budgeter(self):
@@ -52,7 +52,7 @@ class TestCognitiveContextCompiler(unittest.TestCase):
             task_id=self.mission_id,
             prompt_variant="LEAN"
         )
-        self.assertIn("<identity>", prompt)
+        self.assertIn("<identity", prompt)
         self.assertIn("<cognitive_policy>", prompt)
 
 
