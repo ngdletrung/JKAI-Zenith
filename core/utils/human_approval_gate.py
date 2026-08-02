@@ -53,7 +53,7 @@ def eval_tool_risk(tool_name: str, args: Dict[str, Any]) -> Tuple[bool, str]:
 
     # 2. Check high-risk file modification
     if any(kw in tool_upper for kw in ["WRITE", "REPLACE", "DELETE"]):
-        path = str(args.get("path") or args.get("TargetFile") or args.get("target") or "")
+        path = str(args.get("path") or args.get("TargetFile") or args.get("target") or args.get("file_path") or "")
         for f in _HIGH_RISK_FILES:
             if f.lower() in path.lower():
                 reason = f"Modification of critical system file detected: '{f}'"

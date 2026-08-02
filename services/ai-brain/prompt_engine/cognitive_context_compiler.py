@@ -74,7 +74,7 @@ class CognitiveContextCompiler:
             "</identity>"
         )
 
-        # 2. Mission & Provenance Tagged WorldState (with Entity & State Context Projection)
+        # 2. Mission & Provenance Tagged WorldState (Entity, Relationship & Causality Context Projection)
         entities_projection = {}
         for eid, edata in ucws.current_state.entities.items():
             edict = edata if isinstance(edata, dict) else (edata.dict() if hasattr(edata, 'dict') else {})
@@ -85,6 +85,22 @@ class CognitiveContextCompiler:
                 "status": data_inner.get("status", "active"),
             }
 
+        relationships_projection = []
+        for rkey, rtargets in ucws.current_state.relationships.items():
+            relationships_projection.append({
+                "relation": str(rkey),
+                "targets": [str(t) for t in rtargets] if isinstance(rtargets, list) else [str(rtargets)]
+            })
+
+        causality_projection = []
+        for edge in ucws.provenance.causality_graph[-5:]:
+            edict = edge if isinstance(edge, dict) else (edge.dict() if hasattr(edge, 'dict') else {})
+            causality_projection.append({
+                "cause": edict.get("cause", "unknown"),
+                "effect": edict.get("effect", "unknown"),
+                "confidence": edict.get("confidence", 0.9)
+            })
+
         state_snapshot = {
             "world_version": ucws.world_version,
             "mission_id": self.mission_id,
@@ -92,6 +108,8 @@ class CognitiveContextCompiler:
             "stage": ucws.current_state.state.get("stage", "ACTIVE"),
             "last_cycle": ucws.current_state.state.get("last_cycle_id", "none"),
             "entities": entities_projection,
+            "relationships": relationships_projection,
+            "causality_edges": causality_projection,
             "system_state": ucws.current_state.state
         }
         diff = self.compute_context_diff(state_snapshot)
