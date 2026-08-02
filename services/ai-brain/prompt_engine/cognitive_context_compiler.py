@@ -74,13 +74,25 @@ class CognitiveContextCompiler:
             "</identity>"
         )
 
-        # 2. Mission & Provenance Tagged WorldState
+        # 2. Mission & Provenance Tagged WorldState (with Entity & State Context Projection)
+        entities_projection = {}
+        for eid, edata in ucws.current_state.entities.items():
+            edict = edata if isinstance(edata, dict) else (edata.dict() if hasattr(edata, 'dict') else {})
+            data_inner = edict.get("data", edict)
+            entities_projection[str(eid)] = {
+                "name": data_inner.get("name", str(eid)),
+                "type": data_inner.get("type", "entity"),
+                "status": data_inner.get("status", "active"),
+            }
+
         state_snapshot = {
             "world_version": ucws.world_version,
             "mission_id": self.mission_id,
             "entities_count": len(ucws.current_state.entities),
             "stage": ucws.current_state.state.get("stage", "ACTIVE"),
-            "last_cycle": ucws.current_state.state.get("last_cycle_id", "none")
+            "last_cycle": ucws.current_state.state.get("last_cycle_id", "none"),
+            "entities": entities_projection,
+            "system_state": ucws.current_state.state
         }
         diff = self.compute_context_diff(state_snapshot)
 

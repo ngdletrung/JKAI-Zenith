@@ -723,3 +723,26 @@
 
 ---
 *Zenith Architectural Changelog. v26.1. Systems Engineering & Operational History. Fully Verified.*
+
+
+## [2026-08-02] - ZENITH v26.1 BENCHMARK INTEGRITY AUDIT & HI?N PHÁP NH?N TH?C (JKAI Constitution & Behavioral Verification Audit)
+*   **B?i c?nh (Why)**:
+    - Áp d?ng b? ki?m tra di?m s? c?ng (**Strict Score Assertions**: Score_B >= 0.60 & Score_B >= Score_A) trên LLM real (qwen2.5-coder:3b) dã phát hi?n ra 5/6 test FAIL do kho?ng cách gi?a C?u trúc Prompt và Hành vi th?c nghi?m LLM.
+    - Phát hi?n ra 4 l? h?ng c?t lõi gi?a Ki?n trúc và Hành vi:
+      1. Context Projection Gap: UCWS luu tên entity (hop_dong_2026.docx), nhung Compiler ch? render metadata (entities_count: 1), khi?n LLM không th?y entity.
+      2. Provenance Reasoning Gap: N?p source="UCWS" nhung chua render giá tr? chi ti?t làm LLM b? user prompt câu h?i d?n d?t.
+      3. Execution Authority Gap: N?p <decision_authority>can_send_external_message: false</decision_authority> nhung LLM 3B v?n sinh text email. Prompt-level authority KHÔNG TH? thay th? Runtime Tool Gateway.
+      4. Evaluator Semantics Gap: So sánh t? khóa c?ng (keyword matching) có sai s? l?n tru?c di?n d?t t? nhiên c?a LLM.
+*   **Ba Nguyên T?c Hi?n Pháp JKAI (JKAI Constitution)**:
+    1. **Structural authority is not execution authority** (Quy?n h?n du?c bi?u di?n trong Context không d?ng nghia v?i quy?n h?n du?c th?c thi trong Runtime).
+    2. **World State knowledge is not Cognitive Context until explicitly projected** (Tri th?c trong World State chua ph?i là Cognitive Context cho t?i khi du?c chi?u minh b?ch vào text context c?a mô hình).
+    3. **A passing structural test does not establish behavioral correctness** (M?t test c?u trúc xanh không kh?ng d?nh hành vi nh?n th?c chu?n xác).
+*   **Gi?i pháp & Roadmap v26.2 (Ðóng bang Ki?n trúc)**:
+    - **Architecture Freeze**: Không thêm module, subsystem, planner hay memory engine m?i.
+    - **Focus 1 — Context Projection**: Nâng c?p CognitiveContextCompiler d? chi?u chi ti?t entity & state vào context mô hình.
+    - **Focus 2 — Execution Integrity Layer**: Xây d?ng Runtime Tool Gateway (ALLOW / DENY / REQUIRE_APPROVAL) làm hard security boundary ? t?ng th?c thi.
+    - **Focus 3 — Benchmark Integrity & Raw Evidence**: Luu gi? v?t raw responses ([raw_benchmark_v2_evidence.json](file:///d:/Docker/JKAI/tests/raw_benchmark_v2_evidence.json)) và nâng c?p evaluator ng? nghia.
+*   **Tr?ng thái**: **ACTIVE - ZENITH SOTA ENGINE v26.1 AUDITED (ARCHITECTURE FROZEN | FOCUS: EXECUTION INTEGRITY)**
+
+---
+*Zenith Architectural Changelog. v26.1 Constitution & Integrity Audit. Fully Verified.*
