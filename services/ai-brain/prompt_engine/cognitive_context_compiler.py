@@ -87,7 +87,7 @@ class CognitiveContextCompiler:
         world_sec = (
             f"<world_state source=\"UCWS\" version=\"v{ucws.world_version}\" confidence=\"0.99\">\n"
             f"  <current_state>{json.dumps(state_snapshot, ensure_ascii=False)}</current_state>\n"
-            f"  <context_diff>{json.dumps(diff, ensure_ascii=False)}</context_diff>\n"
+            f"  <compiled_context_snapshot_diff>{json.dumps(diff, ensure_ascii=False)}</compiled_context_snapshot_diff>\n"
             "</world_state>"
         )
 

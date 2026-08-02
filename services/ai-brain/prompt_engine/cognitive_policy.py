@@ -3,7 +3,7 @@
 # - File: services/ai-brain/prompt_engine/cognitive_policy.py
 # - Role: Structured Cognitive Policy Definition
 # - Ownership: Master LeeTrung
-# - Status: Active | Version: SDS v26.0 (Cognitive Context Compiler Layer)
+# - Status: Active | Version: SDS v26.1 (Cognitive Behavior — Provenance & 9-Mode Enforcement)
 # -----------------------------------------------------------------------------
 
 from typing import Dict, Any, List
