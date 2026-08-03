@@ -209,14 +209,85 @@ class ModelRouter:
         except Exception as e:
             logger.error(f"❌ [ROUTER-PARSE-ERR]: {e}")
 
-    def resolve_execution_profile(self, role: str):
+    def resolve_execution_profile(self, role: str, hw_state=None, task_id: str = ""):
         """
         AMG v2 primary entry point.
-        Converts role config → ExecutionProfile using AMG ExecutionPolicy / PortfolioGovernor.
+        Converts role config → ExecutionProfile using AMG pipeline.
+
+        Routing logic:
+            model == "auto"     → PortfolioGovernor (capability/quality scoring)
+            model is explicit   → build_legacy_profile (direct mapping, no scoring)
+
+        Args:
+            role     : Role name (e.g. "PLANNER", "RECEPTIONIST")
+            hw_state : HardwareState (optional — fetched from HardwareMonitor if None)
+            task_id  : Optional task ID for DecisionTrace linkage
+
+        Returns:
+            ExecutionProfile — consumed by engine.call_chat() / NeuralRuntime.execute()
+
+        Backward compatibility:
+            Callers can still use get_role_config() — it is NOT affected.
+            This method is additive (new code path only).
         """
+        import time
+        t0 = time.time()
+
         config = self.get_role_config(role)
+        if not config:
+            logger.warning(f"[ROUTER-AMG]: No config for role={role!r}, using CHAT fallback")
+            config = self._role_mapping_cache.get("CHAT", {})
+
+        model = config.get("model", "").strip()
+
         from core.governor.execution_policy import ExecutionPolicy
         policy = ExecutionPolicy()
-        return policy.derive_profile(config)
+
+        # Inject live HardwareState if caller didn't supply one
+        if hw_state is None:
+            try:
+                from core.governor.hardware_monitor import HardwareMonitor
+                hw_state = HardwareMonitor.get_state()
+                policy._get_governor()._hw = hw_state
+            except Exception as e:
+                logger.debug(f"[ROUTER-AMG]: HardwareMonitor unavailable: {e}")
+
+        profile = policy.derive_profile(config)
+
+        # Record decision trace (non-blocking, best-effort)
+        try:
+            from core.governor.decision_trace import get_tracer, DecisionTrace
+            latency_ms = (time.time() - t0) * 1000
+            if model.lower() == "auto" or model == "":
+                # For auto-routing: try to build trace from governor decision
+                # (PortfolioGovernor may not expose GovernorDecision directly here,
+                #  so we build a simplified trace from the resulting profile)
+                trace = DecisionTrace(
+                    trace_id=__import__("uuid").uuid4().hex,
+                    role_name=role.upper(),
+                    task_id=task_id,
+                    selected_model=profile.model_name,
+                    resolved_via=getattr(profile, "resolved_via", "auto"),
+                    backend=profile.backend,
+                    num_ctx=profile.num_ctx,
+                    temperature=profile.temperature,
+                    capability_requirements=[c.strip() for c in config.get("capability", "").split(",") if c.strip()],
+                    quality_target=config.get("quality", "medium"),
+                    hardware_state_vram_free_mb=getattr(hw_state, "vram_free_mb", 0.0) if hw_state else 0.0,
+                    hardware_state_ram_free_gb=getattr(hw_state, "ram_free_gb", 0.0) if hw_state else 0.0,
+                    decision_latency_ms=latency_ms,
+                    decision_summary=(
+                        f"AMG auto-routed role={role!r} → {profile.model_name!r} "
+                        f"via {getattr(profile, 'resolved_via', 'auto')} in {latency_ms:.1f}ms"
+                    ),
+                )
+            else:
+                trace = DecisionTrace.explicit(role=role, model_name=model, task_id=task_id)
+            get_tracer().record(trace)
+        except Exception as te:
+            logger.debug(f"[ROUTER-TRACE]: Could not record trace: {te}")
+
+        return profile
+
 
 mission_router = None

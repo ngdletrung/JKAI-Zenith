@@ -1,6 +1,8 @@
 from pydantic import BaseModel, Field
 from typing import Dict, Optional, Any
 from enum import Enum
+from dataclasses import dataclass, field as dc_field
+
 
 
 class ModelOptions(BaseModel):
@@ -93,4 +95,69 @@ SKILL_CATEGORY_PERMISSIONS: Dict[str, list[Permission]] = {
     "COMMANDS": [Permission.SHELL_EXEC, Permission.FILESYSTEM_READ],
 }
 
+
+# ---------------------------------------------------------------------------
+# Resource Contract — M4: HardwareScheduler ResourceRequest API
+# ---------------------------------------------------------------------------
+
+class BackendType(str, Enum):
+    """
+    Compute backend for a task execution.
+    Replaces the raw string "GPU" / "CPU" / "HYBRID" previously passed
+    to HardwareScheduler.acquire_gpu_lock(model_name, model_size_gb).
+
+    This enum is the single authority on backend naming across:
+        ExecutionProfile.backend → ResourceRequest.backend → HardwareScheduler.acquire()
+    """
+    GPU    = "GPU"     # All layers on GPU VRAM
+    CPU    = "CPU"     # All layers in RAM (no GPU)
+    HYBRID = "HYBRID"  # Layers split: N on GPU, rest in RAM
+
+
+@dataclass
+class ResourceRequest:
+    """
+    Hardware resource contract produced by ExecutionProfile.to_resource_request().
+    Consumed by HardwareScheduler.acquire(task_id, resource_request).
+
+    Design invariant:
+        HardwareScheduler must NEVER inspect model_name.
+        It only sees: backend, gpu_memory_mb, ram_memory_mb, gpu_layers, concurrency.
+
+    Usage:
+        profile = amg.resolve(role="PLANNER", ...)
+        req = profile.to_resource_request()
+        acquired = await scheduler.acquire(task_id, req)
+
+    Field semantics:
+        gpu_memory_mb : VRAM reservation in MiB (0 for CPU-only)
+        ram_memory_mb : RAM reservation in MiB (can be 0 if pure GPU)
+        gpu_layers    : Expected GPU layer count (informational for scheduling)
+        concurrency   : Number of parallel decode slots this execution occupies
+    """
+    backend: BackendType = BackendType.CPU
+    gpu_memory_mb: float = 0.0          # VRAM footprint in MiB
+    ram_memory_mb: float = 0.0          # RAM footprint in MiB
+    gpu_layers: int = 0                  # GPU layer count (informational)
+    concurrency: int = 1                 # Parallel request slots needed
+
+    def __post_init__(self):
+        # Validate backend enum (allow string construction)
+        if isinstance(self.backend, str):
+            self.backend = BackendType(self.backend.upper())
+
+    @property
+    def is_gpu_bound(self) -> bool:
+        return self.backend in (BackendType.GPU, BackendType.HYBRID) and self.gpu_memory_mb > 0
+
+    @property
+    def is_cpu_bound(self) -> bool:
+        return self.backend == BackendType.CPU
+
+    def __repr__(self) -> str:
+        return (
+            f"ResourceRequest(backend={self.backend.value}, "
+            f"gpu={self.gpu_memory_mb:.0f}MB, ram={self.ram_memory_mb:.0f}MB, "
+            f"layers={self.gpu_layers}, concurrency={self.concurrency})"
+        )
 
