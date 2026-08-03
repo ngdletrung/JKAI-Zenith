@@ -94,20 +94,26 @@ try {
     if ($gpuAlive -and $cpuAlive) {
         Write-KuteLog "Ollama Dual-Engine services are ALREADY ONLINE (GPU:11434, CPU:11435). Skipping restart." "SUCCESS"
     } else {
-        Write-KuteLog "Cleaning stale process memory..." "PROCESS"
+        Write-KuteLog "Cleaning stale process memory & resetting engine state..." "PROCESS"
+        
+        # 1. Force kill stale powershell script runners
         Get-CimInstance Win32_Process -Filter "Name = 'powershell.exe'" -ErrorAction SilentlyContinue | Where-Object {
             $_.CommandLine -match "run_ollama_gpu\.ps1" -or $_.CommandLine -match "run_ollama_cpu\.ps1"
         } | ForEach-Object {
             Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue
         }
 
-        if (-not $gpuAlive -or -not $cpuAlive) {
-            Get-Process "ollama*", "llama-server*" -ErrorAction SilentlyContinue | Stop-Process -Force
-            Start-Sleep -Seconds 2
-        }
+        # 2. Force kill any lingering Ollama or llama-server processes cleanly
+        Get-Process "ollama*", "llama-server*" -ErrorAction SilentlyContinue | Stop-Process -Force
+        Start-Sleep -Seconds 2
+
+        # 3. Reset alive state variables so BOTH engines restart cleanly
+        $gpuAlive = $false
+        $cpuAlive = $false
 
         # Start GPU Engine if not alive
         if (-not $gpuAlive) {
+
             $env:OLLAMA_HOST              = $OLLAMA_GPU_HOST
             $env:GGML_VK_VISIBLE_DEVICES  = "0"
             $env:OLLAMA_LLM_LIBRARY       = ""
