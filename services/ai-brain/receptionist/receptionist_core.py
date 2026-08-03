@@ -137,8 +137,8 @@ class Receptionist:
         is_fast = ms.is_fast if ms else os_plan.is_fast
         use_full = ms.use_deep_full if ms else os_plan.use_deep_full
 
-        # [NEW]: Kích hoạt StatePipeline (StepRunner) nếu có MissionState thưa Master (Trừ khi ở chế độ DEEP hoặc FAST)
-        if ms and ms.execution_plan and not (is_fast or is_deep or ms.pipeline in ("fast", "deep") or ms.execution_mode in ("fast", "deep") or kwargs.get("mode") in ("fast", "deep")):
+        # 🛡️ [STATE-PIPELINE-ACTUATOR]: Kích hoạt StatePipeline (StepRunner) khi có execution_plan để thực thi Tool thực tế
+        if ms and ms.execution_plan:
             try:
                 from state_pipeline import StatePipeline
                 sp = StatePipeline()
