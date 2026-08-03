@@ -28,6 +28,8 @@ class TestStatePipeline(unittest.TestCase):
         self.pipeline._cognitive_failures = 2
         # Simulate success
         async def _test():
+            if self.pipeline._cognitive_lock is None:
+                self.pipeline._cognitive_lock = asyncio.Lock()
             async with self.pipeline._cognitive_lock:
                 self.pipeline._cognitive_failures = 0
         asyncio.run(_test())
