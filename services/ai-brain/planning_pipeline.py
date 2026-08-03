@@ -88,7 +88,13 @@ class ContextStage(PlanningStage):
             structured = [d for d in structured if d.get("score", 0) >= 0.45]
             high_quality = [d for d in structured if d.get("score", 0) >= 0.72]
 
-            neural_context["kb_context"] = kb_ctx
+            # 🛡️ Anti-Hallucination Firewall: Chỉ giữ kb_context nếu có ít nhất 1 chunk chất lượng cao (>=0.72)
+            # Tránh rác bối cảnh rò rỉ làm nghiêng lệch mô hình PLANNER với các truy vấn chung
+            if len(high_quality) > 0:
+                neural_context["kb_context"] = kb_ctx
+            else:
+                neural_context["kb_context"] = ""
+
             neural_context["kb_structured"] = structured
             neural_context["kb_sufficient"] = (
                 len(high_quality) >= 2 and len(kb_ctx) >= 200
