@@ -1121,7 +1121,7 @@ class JKAIIntelligenceEngine:
                 if use_manual_react:
                     self.publish_mission_log("INFO", f"🔄 [MANUAL-REACT]: Đang thử lại với Giao thức ReAct thủ công cho {final_model}...")
                 else:
-                    self.publish_mission_log("WARN", f"[FALLBACK]: Khoi chay co che du phong cho {final_model}...")
+                    self.publish_mission_log("WARN", f"⚠️ [FALLBACK]: Khởi chạy cơ chế dự phòng cho mô hình {final_model}...")
                     try:
                         from core.utils.hardware_scheduler import hardware_scheduler
                         fb_info = await hardware_scheduler.resolve_smart_fallback(final_model, self, [role, "RECEPTIONIST", "RESERVE_AGENT"])
@@ -1131,7 +1131,7 @@ class JKAIIntelligenceEngine:
                             if role not in ['RECEPTIONIST', 'PLANNER', 'CRITIC'] or fb_info.get("role") not in ["RESERVE_AGENT", "RECEPTIONIST"]:
                                 role = fb_info.get("role", role)
                             role_cfg = self.get_role_config(role)
-                            self.publish_mission_log("INFO", f"[SMART-FALLBACK]: Dong bo mo hinh thanh cong. Chuyen sang Role: {role}, Model: {final_model}")
+                            self.publish_mission_log("INFO", f"🔄 [SMART-FALLBACK]: Đồng bộ mô hình thành công. Chuyển sang Vai trò: {role}, Mô hình: {final_model}")
                         else:
                             break # No fallback found
                     except Exception as fb_err:

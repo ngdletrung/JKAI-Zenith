@@ -185,9 +185,11 @@ class ModeSwitcher:
 
                 # Not fully loaded -> Evict FAST model if needed and load DEEP cluster
                 if self._current_mode != "DEEP":
+                    rec_cfg = engine_instance.get_role_config("RECEPTIONIST")
+                    rec_model = rec_cfg.get("model", "RECEPTIONIST") if isinstance(rec_cfg, dict) else getattr(rec_cfg, "model", "RECEPTIONIST")
                     engine_instance.publish_mission_log(
                         "SYSTEM",
-                        "🔄 [ENGINE-SWITCH]: Chuyển sang quy trình DEEP — Giải phóng mô hình RECEPTIONIST (Qwen3-30B) khỏi RAM/VRAM và nạp cụm mô hình DEEP...",
+                        f"🔄 [ENGINE-SWITCH]: Chuyển sang quy trình DEEP — Đồng bộ chuyển đổi mô hình Lễ Tân (`{rec_model}`) sang cụm mô hình DEEP...",
                         task_id
                     )
                     await self._evict_roles(["RECEPTIONIST"], engine_instance, client, hosts)
