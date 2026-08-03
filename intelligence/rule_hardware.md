@@ -42,19 +42,19 @@ CPU_OMP_NUM_THREADS=20
 ## 🕹️ 3. Active Role Mapping
 | Role | Active Model | Hardware | num_ctx | Temp | num_gpu | num_thread | top_p | repeat_penalty | KEEP_ALIVE | Active Profile | Capability | Quality |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| RECEPTIONIST | qwen3.5:4b | **GPU/VRAM** | 4096 | 0.20 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general,reasoning,tool_use | medium |
-| PLANNER | qwen3.5:latest | **GPU/VRAM** | 8192 | 0.05 | 100 | 20 | 0.90 | 1.05 | **-1** | PREMIUM_RESPONSE | reasoning,planning | high |
+| RECEPTIONIST | llama3.2:3b | **GPU/VRAM** | 4096 | 0.20 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general,reasoning,tool_use | medium |
+| PLANNER | qwen3.5:4b | **GPU/VRAM** | 8192 | 0.05 | 100 | 20 | 0.90 | 1.05 | **-1** | FAST_RESPONSE | reasoning,planning | high |
 | CRITIC | qwen3.5:4b | **GPU/VRAM** | 4096 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | reasoning | high |
-| SUMMARIZER | qwen3.5:4b | **GPU/VRAM** | 4096 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general | medium |
-| EXECUTOR | qwen2.5-coder:14b | **CPU/RAM** | 8192 | 0.00 | 0 | 20 | 0.85 | 1.05 | **-1** | RAM_OPTIMIZED | coding,tool_use | high |
-| EXECUTOR_ALPHA | qwen2.5-coder:14b | **CPU/RAM** | 8192 | 0.00 | 0 | 20 | 0.85 | 1.05 | **-1** | RAM_OPTIMIZED | coding,tool_use | high |
-| EXECUTOR_BETA | qwen2.5-coder:14b | **CPU/RAM** | 8192 | 0.00 | 0 | 20 | 0.85 | 1.05 | **-1** | RAM_OPTIMIZED | coding,tool_use | high |
-| DEEP_REASONER | qwen3.5:latest | **GPU/VRAM** | 8192 | 0.25 | 100 | 20 | 0.90 | 1.10 | **-1** | PREMIUM_RESPONSE | reasoning | highest |
+| SUMMARIZER | llama3.2:3b | **GPU/VRAM** | 4096 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general | medium |
+| EXECUTOR | qwen2.5-coder:3b | **GPU/VRAM** | 8192 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
+| EXECUTOR_ALPHA | qwen2.5-coder:3b | **GPU/VRAM** | 8192 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
+| EXECUTOR_BETA | qwen2.5-coder:3b | **GPU/VRAM** | 8192 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
+| DEEP_REASONER | qwen3.5:4b | **GPU/VRAM** | 8192 | 0.25 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | reasoning | highest |
 | EMBEDDER | nomic-embed-text:latest | **CPU/RAM** | 2048 | 0.00 | 0 | 20 | 1.00 | 1.00 | **-1** | STABLE_SYNC | embedding | medium |
 | GRAPHIC_MASTER | SDXL-Turbo-ROCm | **GPU/VRAM** | 0 | 0.00 | 100 | 0 | -1 | -1 | **0** | ULTRA_ART | | |
-
 | VISION | moondream:latest | **CPU/RAM** | 2048 | 0.10 | 0 | 20 | 0.90 | 1.10 | **0** | RAM_OPTIMIZED | vision | medium |
 | VOICE | faster-whisper | **CPU/RAM** | 512 | 0.00 | 0 | 0 | 1.00 | 1.00 | **0** | RAM_OPTIMIZED | | |
+
 
 
 
