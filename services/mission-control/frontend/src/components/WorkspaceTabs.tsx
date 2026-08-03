@@ -647,9 +647,16 @@ export const ArtifactGallery = memo(({ content, type }: { content: string, type:
       raw.includes('Khởi tạo nhiệm vụ để tạo dữ liệu') ||
       raw.includes('Không tìm thấy Hồ sơ')
     ) return [];
-    if (type === 'walkthrough') return [{ title: 'Giải pháp', body: raw }];
-    if (type === 'plan') return [{ title: 'Kế hoạch kiến trúc', body: raw }];
-    const blocks = raw.split(/#\s+/).filter(Boolean);
+    if (type === 'walkthrough') {
+
+      const firstLine = raw.split('\n')[0].replace(/^#+\s*/, '').trim();
+      return [{ title: firstLine || 'Giải pháp kiến trúc', body: raw.replace(/^#+\s*.*\n?/, '') }];
+    }
+    if (type === 'plan') {
+      const firstLine = raw.split('\n')[0].replace(/^#+\s*/, '').trim();
+      return [{ title: firstLine || 'Kế hoạch kiến trúc', body: raw.replace(/^#+\s*.*\n?/, '') }];
+    }
+
     if (blocks.length <= 1 && !raw.includes('\n#')) return [{ title: type === 'tasks' ? 'Nhiệm vụ' : type, body: raw }];
     return blocks.map(b => ({ title: b.split('\n')[0].trim(), body: b.split('\n').slice(1).join('\n').trim() }));
   }, [content, type]);
