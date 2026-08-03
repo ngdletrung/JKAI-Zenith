@@ -43,17 +43,18 @@ CPU_OMP_NUM_THREADS=20
 | Role | Active Model | Hardware | num_ctx | Temp | num_gpu | num_thread | top_p | repeat_penalty | KEEP_ALIVE | Active Profile | Capability | Quality |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | RECEPTIONIST | qwen3.5:4b | **GPU/VRAM** | 4096 | 0.20 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general,reasoning,tool_use | medium |
-| PLANNER | qwen2.5:14b | **CPU/RAM** | 8192 | 0.05 | 0 | 20 | 0.90 | 1.05 | **-1** | RAM_OPTIMIZED | reasoning,planning | high |
+| PLANNER | qwen3.5:latest | **GPU/VRAM** | 8192 | 0.05 | 100 | 20 | 0.90 | 1.05 | **-1** | PREMIUM_RESPONSE | reasoning,planning | high |
 | CRITIC | qwen3.5:4b | **GPU/VRAM** | 4096 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | reasoning | high |
 | SUMMARIZER | qwen3.5:4b | **GPU/VRAM** | 4096 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general | medium |
-| EXECUTOR | qwen2.5-coder:7b | **GPU/VRAM** | 8192 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | PREMIUM_RESPONSE | coding,tool_use | high |
-| EXECUTOR_ALPHA | qwen2.5-coder:7b | **GPU/VRAM** | 8192 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | PREMIUM_RESPONSE | coding,tool_use | high |
-| EXECUTOR_BETA | qwen2.5-coder:7b | **GPU/VRAM** | 8192 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | PREMIUM_RESPONSE | coding,tool_use | high |
-| DEEP_REASONER | qwen2.5:14b | **CPU/RAM** | 8192 | 0.25 | 0 | 20 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED | reasoning | highest |
+| EXECUTOR | qwen2.5-coder:14b | **CPU/RAM** | 8192 | 0.00 | 0 | 20 | 0.85 | 1.05 | **-1** | RAM_OPTIMIZED | coding,tool_use | high |
+| EXECUTOR_ALPHA | qwen2.5-coder:14b | **CPU/RAM** | 8192 | 0.00 | 0 | 20 | 0.85 | 1.05 | **-1** | RAM_OPTIMIZED | coding,tool_use | high |
+| EXECUTOR_BETA | qwen2.5-coder:14b | **CPU/RAM** | 8192 | 0.00 | 0 | 20 | 0.85 | 1.05 | **-1** | RAM_OPTIMIZED | coding,tool_use | high |
+| DEEP_REASONER | qwen3.5:latest | **GPU/VRAM** | 8192 | 0.25 | 100 | 20 | 0.90 | 1.10 | **-1** | PREMIUM_RESPONSE | reasoning | highest |
 | EMBEDDER | auto | **CPU/RAM** | 1024 | 0.00 | 0 | 20 | 1.00 | 1.00 | **-1** | STABLE_SYNC | embedding | medium |
 | GRAPHIC_MASTER | SDXL-Turbo-ROCm | **GPU/VRAM** | 0 | 0.00 | 100 | 0 | -1 | -1 | **0** | ULTRA_ART | | |
-| VISION | auto | **auto** | 2048 | 0.10 | 0 | 20 | 0.90 | 1.10 | **0** | RAM_OPTIMIZED | vision | medium |
+| VISION | moondream:latest | **CPU/RAM** | 2048 | 0.10 | 0 | 20 | 0.90 | 1.10 | **0** | RAM_OPTIMIZED | vision | medium |
 | VOICE | faster-whisper | **CPU/RAM** | 512 | 0.00 | 0 | 0 | 1.00 | 1.00 | **0** | RAM_OPTIMIZED | | |
+
 
 
 
