@@ -192,7 +192,45 @@ class NeuralRuntime:
                     return 200, json.dumps(parsed, ensure_ascii=False)
         return 500, json.dumps({"error": "No response from neural core"}, ensure_ascii=False)
 
+    async def execute(
+        self,
+        messages: List[Dict[str, Any]],
+        profile: Any,
+        task_id: str = "system",
+        stream: bool = False,
+    ) -> Tuple[int, str]:
+        """
+        AMG v2 primary execution entry point (M5).
+        Converts ExecutionProfile → Ollama payload via profile.to_ollama_payload()
+        and executes with full circuit breaker resilience.
+        """
+        payload = profile.to_ollama_payload(messages=messages, stream=stream)
+        return await self.call_chat(payload, task_id=task_id)
+
+    async def execute_profile_stream(
+        self,
+        messages: List[Dict[str, Any]],
+        profile: Any,
+        task_id: str = "system",
+    ) -> AsyncGenerator[str, None]:
+        """
+        AMG v2 primary streaming entry point (M5).
+        Converts ExecutionProfile → Ollama payload via profile.to_ollama_payload()
+        and streams tokens with watchdog protection.
+        """
+        payload = profile.to_ollama_payload(messages=messages, stream=True)
+        async for chunk in self.execute_chat_stream(payload, task_id=task_id):
+            if isinstance(chunk, dict):
+                if chunk.get("type") == "chunk":
+                    token = chunk.get("data", {}).get("message", {}).get("content", "")
+                    if token:
+                        yield token
+            elif isinstance(chunk, str):
+                yield chunk
+
+
     async def get_embeddings(self, text: str, model: Optional[str] = None, options: dict = None, keep_alive = None) -> List[float]:
+
         """🏙️ [MEMORY-ENCODING]: Chuyển đổi văn bản thành Vector tri thức.
         options & keep_alive: Bắt buộc truyền để Ollama không reload model với config khác.
         """
