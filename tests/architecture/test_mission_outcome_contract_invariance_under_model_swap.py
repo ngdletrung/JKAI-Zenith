@@ -1,11 +1,11 @@
 """
-JKAI ZENITH — ARCHITECTURE TEST SUITE: MISSION BEHAVIOR & SUITABILITY HARD CONSTRAINTS
-tests/architecture/test_mission_behavior_invariance_under_model_swap.py
+JKAI ZENITH — ARCHITECTURE TEST SUITE: OUTCOME CONTRACT INVARIANCE
+tests/architecture/test_mission_outcome_contract_invariance_under_model_swap.py
 
 Architectural Invariants Enforced:
-    1. Swapping model providers or runtime backends MUST NOT alter the Mission ID,
-       Mission Goal, Success Criteria, or Cognitive State Machine progression.
-       Proves true Provider & Implementation Neutrality in the Cognitive Kernel.
+    1. Outcome Contract Invariance: Swapping model providers or runtime backends MUST NOT alter the
+       Mission ID, Mission Goal, Success Criteria, or Outcome Contract validation.
+       Different models are free to use dynamic execution traces, tool order, or wording.
     2. Hard Constraint Rule: SuitabilityEngine MUST mark candidate ineligible (suitability=0.0)
        if it fails hard constraints (e.g. required context_limit or modality).
 """
@@ -15,9 +15,9 @@ from core.contracts import MissionContext, MissionState, SuccessCriteria, TaskRe
 from core.governance.model.evidence import SuitabilityEngine, CapabilityVector, ModelPerformanceProfile
 
 
-class TestMissionBehaviorInvarianceUnderModelSwap:
+class TestMissionOutcomeContractInvarianceUnderModelSwap:
 
-    def test_mission_state_and_criteria_invariant_across_swaps(self):
+    def test_outcome_contract_invariant_across_model_swaps(self):
         criteria = SuccessCriteria(required_elements=["citations", "structured_json"], min_quality_score=0.85)
 
         # Scenario A: Model A (e.g. Qwen)
@@ -30,7 +30,7 @@ class TestMissionBehaviorInvarianceUnderModelSwap:
         mission_b.state = MissionState.RUNNING
         task_b = TaskRequirement(role="PLANNER", quality_target="high")
 
-        # Cognitive Kernel properties MUST be identical
+        # Outcome Contract properties MUST be identical
         assert mission_a.goal == mission_b.goal
         assert mission_a.state == mission_b.state
         assert mission_a.success_criteria.required_elements == mission_b.success_criteria.required_elements
