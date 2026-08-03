@@ -42,8 +42,9 @@ CPU_OMP_NUM_THREADS=20
 ## 🕹️ 3. Active Role Mapping
 | Role | Active Model | Hardware | num_ctx | Temp | num_gpu | num_thread | top_p | repeat_penalty | KEEP_ALIVE | Active Profile | Capability | Quality |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| RECEPTIONIST | llama3.2:3b | **GPU/VRAM** | 4096 | 0.20 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general,reasoning,tool_use | medium |
+| RECEPTIONIST | qwen3.5:4b | **GPU/VRAM** | 4096 | 0.20 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general,reasoning,tool_use | medium |
 | PLANNER | qwen3.5:4b | **GPU/VRAM** | 8192 | 0.05 | 100 | 20 | 0.90 | 1.05 | **-1** | FAST_RESPONSE | reasoning,planning | high |
+
 | CRITIC | qwen3.5:4b | **GPU/VRAM** | 4096 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | reasoning | high |
 | SUMMARIZER | llama3.2:3b | **GPU/VRAM** | 4096 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general | medium |
 | EXECUTOR | qwen2.5-coder:3b | **GPU/VRAM** | 8192 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
