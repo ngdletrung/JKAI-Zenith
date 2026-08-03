@@ -416,3 +416,59 @@ class ExecutionProfile:
         # Raw overrides have highest precedence
         opts.update(self.raw_options)
         return {k: v for k, v in opts.items() if v is not None}
+
+    def to_ollama_payload(
+        self,
+        messages: Optional[List[Dict[str, Any]]] = None,
+        stream: bool = False,
+    ) -> Dict[str, Any]:
+        """
+        Serialize ExecutionProfile to complete Ollama /api/chat payload.
+        Consumed by NeuralRuntime and Engine.
+        """
+        payload: Dict[str, Any] = {
+            "model": self.model_name,
+            "options": self.to_ollama_options(),
+            "stream": stream,
+            "keep_alive": self.keep_alive,
+        }
+        if messages is not None:
+            payload["messages"] = messages
+        return payload
+
+    def to_resource_request(self):
+        """
+        Convert ExecutionProfile to ResourceRequest for HardwareScheduler.
+        M4 resource enforcement contract.
+        """
+        from core.utils.models import ResourceRequest, BackendType
+
+        gpu_mb = 0.0
+        ram_mb = 0.0
+
+        if self.capability_profile and self.capability_profile.memory_profile:
+            mem = self.capability_profile.memory_profile
+            gpu_mb = float(getattr(mem, "estimated_gpu_resident_mb", 0.0))
+            ram_mb = float(getattr(mem, "estimated_ram_resident_mb", 0.0))
+        elif self.backend == "GPU":
+            gpu_mb = 4000.0
+        elif self.backend == "HYBRID":
+            gpu_mb = 3500.0
+            ram_mb = 8000.0
+        else:
+            ram_mb = 4000.0
+
+        backend_enum = BackendType.CPU
+        try:
+            backend_enum = BackendType(self.backend.upper())
+        except ValueError:
+            pass
+
+        return ResourceRequest(
+            backend=backend_enum,
+            gpu_memory_mb=gpu_mb,
+            ram_memory_mb=ram_mb,
+            gpu_layers=self.num_gpu_layers,
+            concurrency=1,
+        )
+

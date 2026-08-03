@@ -520,10 +520,15 @@ class JKAIIntelligenceEngine:
                 val = r.decr(self._get_active_key(model_name))
                 if val < 0: r.set(self._get_active_key(model_name), 0)
             except Exception: pass
-        # [MODE-SWITCHER-LOCK]: Bộ điều chuyển làn (ModeSwitcher) duy trì trạng thái cư trú của model trong RAM/VRAM.
-        # Không gửi keep_alive=0 tại đây để cho phép tái dùng mãi theo từng chế độ Fast/Deep.
+    def resolve_execution_profile(self, role: str, hw_state=None, task_id: str = ""):
+        """
+        AMG v2 primary entry point for Engine.
+        Delegates role → ExecutionProfile resolution to ModelRouter (AMG bridge).
+        """
+        return self._router.resolve_execution_profile(role, hw_state=hw_state, task_id=task_id or "")
 
     def get_role_config(self, role):
+
         self._get_smart_params()
         role = role.upper()
         role_data = self._role_mapping_cache.get(role)
@@ -997,9 +1002,37 @@ class JKAIIntelligenceEngine:
                 continue
                 
         # [PROMPT-ENGINE-INJECTION]: Single entry point — inject_to_messages + cognitive_bridge + memory
-        from prompt_engine.core import prompt_core
+        try:
+            from prompt_engine.core import prompt_core
+        except ImportError:
+            import sys
+            from pathlib import Path
+            _brain_path = str(Path(__file__).resolve().parent.parent.parent / "services" / "ai-brain")
+            if _brain_path not in sys.path:
+                sys.path.insert(0, _brain_path)
+            try:
+                from prompt_engine.core import prompt_core
+            except ImportError:
+                prompt_core = None
+
+        # 🏛️ [AMG v2 GOVERNOR]: Resolve ExecutionProfile via AMG bridge
+
+        from core.governor.model_capabilities import ExecutionProfile
+        if isinstance(profile, ExecutionProfile):
+            exec_profile = profile
+        else:
+            exec_profile = self.resolve_execution_profile(role, task_id=task_id)
+
+        if model:
+            exec_profile.model_name = model
+        if options:
+            exec_profile.raw_options.update(options)
+        if keep_alive is not None:
+            exec_profile.keep_alive = str(keep_alive)
+
         role_cfg = self.get_role_config(role)
-        final_model = model or role_cfg.get('model')
+        final_model = model or exec_profile.model_name or role_cfg.get('model')
+
 
         memory_context = ""
         # ⚡ [LAZY-RAG-GATE]: Chỉ kích hoạt RAG Qdrant khi query có chứa từ khóa tra cứu KB hoặc khi force_rag=True
@@ -1170,9 +1203,11 @@ class JKAIIntelligenceEngine:
             # [PROFILE-INJECTION]: Hợp nhất cấu hình Profile nếu có 
             final_options = options or role_cfg.get('options', {}).copy()
             target_profile = profile or final_options.get('profile')
-            
-            if target_profile and target_profile.upper() in self.profiles:
+            if isinstance(target_profile, str) and target_profile.upper() in self.profiles:
+
+
                 preset = self.profiles[target_profile.upper()]
+
                 # Chỉ ghi đè các tham số chưa có 
                 for k, v in preset.items():
                     if k.lower() not in final_options:
