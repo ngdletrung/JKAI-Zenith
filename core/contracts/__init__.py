@@ -15,7 +15,7 @@ from core.contracts.ingress import IngressGoal, IngressEvent
 from core.contracts.mission import MissionContext, MissionState
 from core.contracts.task import TaskRequirement, CapabilityRequirement
 from core.contracts.execution import ExecutionProfile, ExecutionIntent, ExecutionResult
-from core.contracts.resource import ResourceIntent, ResourceAllocation, ResourceRequest
+from core.contracts.resource import ResourceIntent, ResourceAllocation, ResourceRequest, BackendType
 from core.contracts.observation import Observation, Telemetry
 from core.contracts.events import DomainEvent, ExecutionCompletedEvent, FallbackActivatedEvent
 
@@ -32,10 +32,12 @@ __all__ = [
     "ResourceIntent",
     "ResourceAllocation",
     "ResourceRequest",
+    "BackendType",
     "Observation",
     "Telemetry",
     "DomainEvent",
     "ExecutionCompletedEvent",
     "FallbackActivatedEvent",
 ]
+
 
