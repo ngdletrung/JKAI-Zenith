@@ -69,8 +69,25 @@ class ExecutionLease:
 
 
 @dataclass
+class ExecutionAttempt:
+    """
+    Single execution attempt instance bridging Lease + Grant + Runtime + Observation.
+    A Mission consists of 1..N ExecutionAttempts.
+    Swapping models or retrying creates a new ExecutionAttempt without corrupting MissionContract.
+    """
+    attempt_id: str = field(default_factory=lambda: uuid.uuid4().hex[:12])
+    mission_id: str = ""
+    attempt_number: int = 1
+    lease: Optional[ExecutionLease] = None
+    grant: Optional[ResourceGrant] = None
+    status: str = "PENDING"             # "PENDING" | "RUNNING" | "COMPLETED" | "FAILED"
+    timestamp: float = field(default_factory=time.time)
+
+
+@dataclass
 class GovernorDecision:
     """Comprehensive decision artifact emitted by Governance."""
+
     selected_model: str
     selected_runtime: str
     execution_profile: ExecutionProfile
