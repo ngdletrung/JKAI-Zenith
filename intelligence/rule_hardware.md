@@ -42,18 +42,19 @@ CPU_OMP_NUM_THREADS=20
 ## 🕹️ 3. Active Role Mapping
 | Role | Active Model | Hardware | num_ctx | Temp | num_gpu | num_thread | top_p | repeat_penalty | KEEP_ALIVE | Active Profile | Capability | Quality |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| RECEPTIONIST | hf.co/unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:UD-Q4_K_XL | **GPU/VRAM** | 8192 | 0.20 | 32 | 20 | 0.90 | 1.10 | **-1** | MOE_SPLIT_APEX | general,reasoning,tool_use | medium |
-| PLANNER | qwen3.5:4b | **GPU/VRAM** | 8192 | 0.05 | 100 | 20 | 0.90 | 1.05 | **-1** | PREMIUM_RESPONSE | reasoning,planning | high |
-| CRITIC | hf.co/bartowski/google_gemma-4-E2B-it-GGUF:Q4_K_M | **GPU/VRAM** | 4096 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | reasoning | high |
-| SUMMARIZER | hf.co/bartowski/google_gemma-4-E2B-it-GGUF:Q4_K_M | **GPU/VRAM** | 4096 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general | medium |
-| EXECUTOR | qwen2.5-coder:3b | **CPU/RAM** | 4096 | 0.00 | 0 | 20 | 0.85 | 1.05 | **-1** | RAM_OPTIMIZED | coding,tool_use | high |
-| EXECUTOR_ALPHA | qwen2.5-coder:3b | **CPU/RAM** | 4096 | 0.00 | 0 | 20 | 0.85 | 1.05 | **-1** | RAM_OPTIMIZED | coding,tool_use | high |
-| EXECUTOR_BETA | qwen2.5-coder:3b | **CPU/RAM** | 4096 | 0.00 | 0 | 20 | 0.85 | 1.05 | **-1** | RAM_OPTIMIZED | coding,tool_use | high |
-| DEEP_REASONER | hf.co/unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:UD-Q4_K_XL | **CPU/RAM** | 8192 | 0.25 | 32 | 20 | 0.90 | 1.10 | **-1** | MOE_SPLIT_APEX | reasoning | highest |
-| EMBEDDER | nomic-embed-text:latest | **CPU/RAM** | 1024 | 0.00 | 0 | 20 | 1.00 | 1.00 | **-1** | STABLE_SYNC | embedding | medium |
+| RECEPTIONIST | auto | **auto** | 8192 | 0.20 | 32 | 20 | 0.90 | 1.10 | **-1** | MOE_SPLIT_APEX | general,reasoning,tool_use | medium |
+| PLANNER | auto | **auto** | 8192 | 0.05 | 100 | 20 | 0.90 | 1.05 | **-1** | PREMIUM_RESPONSE | reasoning,planning | high |
+| CRITIC | auto | **auto** | 4096 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | reasoning | high |
+| SUMMARIZER | auto | **auto** | 4096 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general | medium |
+| EXECUTOR | auto | **auto** | 4096 | 0.00 | 0 | 20 | 0.85 | 1.05 | **-1** | RAM_OPTIMIZED | coding,tool_use | high |
+| EXECUTOR_ALPHA | auto | **auto** | 4096 | 0.00 | 0 | 20 | 0.85 | 1.05 | **-1** | RAM_OPTIMIZED | coding,tool_use | high |
+| EXECUTOR_BETA | auto | **auto** | 4096 | 0.00 | 0 | 20 | 0.85 | 1.05 | **-1** | RAM_OPTIMIZED | coding,tool_use | high |
+| DEEP_REASONER | auto | **auto** | 8192 | 0.25 | 32 | 20 | 0.90 | 1.10 | **-1** | MOE_SPLIT_APEX | reasoning | highest |
+| EMBEDDER | auto | **CPU/RAM** | 1024 | 0.00 | 0 | 20 | 1.00 | 1.00 | **-1** | STABLE_SYNC | embedding | medium |
 | GRAPHIC_MASTER | SDXL-Turbo-ROCm | **GPU/VRAM** | 0 | 0.00 | 100 | 0 | -1 | -1 | **0** | ULTRA_ART | | |
-| VISION | moondream:latest | **CPU/RAM** | 2048 | 0.10 | 0 | 20 | 0.90 | 1.10 | **0** | RAM_OPTIMIZED | vision | medium |
+| VISION | auto | **auto** | 2048 | 0.10 | 0 | 20 | 0.90 | 1.10 | **0** | RAM_OPTIMIZED | vision | medium |
 | VOICE | faster-whisper | **CPU/RAM** | 512 | 0.00 | 0 | 0 | 1.00 | 1.00 | **0** | RAM_OPTIMIZED | | |
+
 
 ---
 

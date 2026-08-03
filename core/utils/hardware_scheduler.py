@@ -3,8 +3,28 @@ import logging
 import httpx
 from typing import Optional
 from core.utils.redis_client import redis_safe
+from core.utils.models import ResourceRequest, BackendType
 
 logger = logging.getLogger('HardwareScheduler')
+
+
+class _ResourceContextManager:
+    """Async context manager wrapper for HardwareScheduler resource acquisition."""
+    def __init__(self, scheduler, task_id: str, request: ResourceRequest, timeout: Optional[int] = None):
+        self.scheduler = scheduler
+        self.task_id = task_id
+        self.request = request
+        self.timeout = timeout
+        self.acquired = False
+
+    async def __aenter__(self) -> bool:
+        self.acquired = await self.scheduler.acquire(self.task_id, self.request, self.timeout)
+        return self.acquired
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        if self.acquired:
+            await self.scheduler.release(self.task_id, self.request)
+
 
 class HardwareScheduler:
     """
@@ -18,7 +38,34 @@ class HardwareScheduler:
         self.lane_capacity = 2 # Tối đa 2 đặc vụ GPU (Chừa lane chạy song song cho Embedder)
         self.cpu_lane_capacity = 2 # 🖥️ Hỗ trợ tối đa 2 đặc vụ CPU chạy song song (Xeon E5-2699 v4 44-Threads dư sức tải)
 
+    async def acquire(self, task_id: str, request: ResourceRequest, timeout: Optional[int] = None) -> bool:
+        """
+        AMG v2 Resource Enforcement primary contract (M4).
+        Acquires hardware resources specified in a model-agnostic ResourceRequest.
+        Does NOT inspect model_name.
+        """
+        if request.is_cpu_bound:
+            return await self.acquire_cpu_lock(task_id, timeout=timeout)
+        else:
+            size_gb = request.gpu_memory_mb / 1024.0 if request.gpu_memory_mb > 0 else 4.0
+            return await self.acquire_gpu_lock(task_id, model_size_gb=size_gb, model_name="resource_request", timeout=timeout)
+
+    async def release(self, task_id: Optional[str] = None, request: Optional[ResourceRequest] = None):
+        """
+        AMG v2 Resource Enforcement release contract (M4).
+        Releases hardware resources for a task.
+        """
+        if request and request.is_cpu_bound:
+            await self.release_cpu_lock(task_id)
+        else:
+            await self.release_gpu_lock(task_id)
+
+    def acquire_context(self, task_id: str, request: ResourceRequest, timeout: Optional[int] = None):
+        """Async context manager wrapper for resource acquisition and release."""
+        return _ResourceContextManager(self, task_id, request, timeout)
+
     async def acquire_cpu_lock(self, task_id: str, timeout: int = None) -> bool:
+
         """🖥️ [CPU-CONCURRENCY-GUARD]: Giới hạn strictly tối đa 2 Đặc vụ CPU chạy song song."""
         wait_timeout = timeout or self.lock_timeout
         start_time = asyncio.get_event_loop().time()
