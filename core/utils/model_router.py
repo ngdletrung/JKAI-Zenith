@@ -258,31 +258,27 @@ class ModelRouter:
         try:
             from core.governor.decision_trace import get_tracer, DecisionTrace
             latency_ms = (time.time() - t0) * 1000
-            if model.lower() == "auto" or model == "":
-                # For auto-routing: try to build trace from governor decision
-                # (PortfolioGovernor may not expose GovernorDecision directly here,
-                #  so we build a simplified trace from the resulting profile)
-                trace = DecisionTrace(
-                    trace_id=__import__("uuid").uuid4().hex,
-                    role_name=role.upper(),
-                    task_id=task_id,
-                    selected_model=profile.model_name,
-                    resolved_via=getattr(profile, "resolved_via", "auto"),
-                    backend=profile.backend,
-                    num_ctx=profile.num_ctx,
-                    temperature=profile.temperature,
-                    capability_requirements=[c.strip() for c in config.get("capability", "").split(",") if c.strip()],
-                    quality_target=config.get("quality", "medium"),
-                    hardware_state_vram_free_mb=getattr(hw_state, "vram_free_mb", 0.0) if hw_state else 0.0,
-                    hardware_state_ram_free_gb=getattr(hw_state, "ram_free_gb", 0.0) if hw_state else 0.0,
-                    decision_latency_ms=latency_ms,
-                    decision_summary=(
-                        f"AMG auto-routed role={role!r} → {profile.model_name!r} "
-                        f"via {getattr(profile, 'resolved_via', 'auto')} in {latency_ms:.1f}ms"
-                    ),
-                )
-            else:
-                trace = DecisionTrace.explicit(role=role, model_name=model, task_id=task_id)
+            resolved_via = getattr(profile, "resolved_via", "explicit" if model.lower() not in ("auto", "") else "auto")
+            trace = DecisionTrace(
+                trace_id=__import__("uuid").uuid4().hex,
+                role_name=role.upper(),
+                task_id=task_id,
+                selected_model=profile.model_name,
+                resolved_via=resolved_via,
+                backend=profile.backend,
+                num_ctx=profile.num_ctx,
+                temperature=profile.temperature,
+                capability_requirements=[c.strip() for c in config.get("capability", "").split(",") if c.strip()],
+                quality_target=config.get("quality", "medium"),
+                hardware_state_vram_free_mb=getattr(hw_state, "vram_free_mb", 0.0) if hw_state else 0.0,
+                hardware_state_ram_free_gb=getattr(hw_state, "ram_free_gb", 0.0) if hw_state else 0.0,
+                decision_latency_ms=latency_ms,
+                decision_summary=(
+                    f"role={role!r} resolved to {profile.model_name!r} "
+                    f"via {resolved_via} in {latency_ms:.1f}ms"
+                    + (f" [config_model={model!r}]" if model and model != profile.model_name else "")
+                ),
+            )
             get_tracer().record(trace)
         except Exception as te:
             logger.debug(f"[ROUTER-TRACE]: Could not record trace: {te}")
