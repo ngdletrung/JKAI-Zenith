@@ -71,6 +71,20 @@ class CapabilityEvidence:
 
 
 @dataclass
+class SuitabilityVector:
+    """Multi-dimensional suitability vector explaining governance decision rationale."""
+    capability_fit: float = 0.5
+    quality_fit: float = 0.5
+    context_fit: float = 0.5
+    tool_fit: float = 0.5
+    resource_fit: float = 0.5
+    latency_fit: float = 0.5
+    reliability_fit: float = 0.5
+    policy_fit: float = 1.0
+    empirical_fit: float = 0.5
+
+
+@dataclass
 class SuitabilityScore:
     """Suitability score computed by Governance SuitabilityEngine (Capability vs Context vs Resource vs Risk)."""
     eligible: bool = True
@@ -80,7 +94,9 @@ class SuitabilityScore:
     latency_fit: float = 0.5
     empirical_reliability: float = 0.5
     suitability_score: float = 0.5
+    vector: SuitabilityVector = field(default_factory=SuitabilityVector)
     rationale: str = ""
+
 
 
 class SuitabilityEngine:

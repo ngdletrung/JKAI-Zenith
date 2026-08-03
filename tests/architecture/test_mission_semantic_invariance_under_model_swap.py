@@ -1,39 +1,40 @@
 """
-JKAI ZENITH — ARCHITECTURE TEST SUITE: OUTCOME CONTRACT INVARIANCE
-tests/architecture/test_mission_outcome_contract_invariance_under_model_swap.py
+JKAI ZENITH — ARCHITECTURE TEST SUITE: MISSION SEMANTIC INVARIANCE
+tests/architecture/test_mission_semantic_invariance_under_model_swap.py
 
-Architectural Invariants Enforced:
-    1. Outcome Contract Invariance: Swapping model providers or runtime backends MUST NOT alter the
-       Mission ID, Mission Goal, Success Criteria, or Outcome Contract validation.
-       Different models are free to use dynamic execution traces, tool order, or wording.
+Architectural Invariants Enforced (PILLAR #7):
+    1. Mission Semantic Invariance: Swapping model providers or runtime backends MUST NOT alter
+       the Mission Contract, Goal, Constraints, Success Criteria, Security Policy, or Outcome Contract.
+       Different models are explicitly ALLOWED to have different execution trajectories, tool ordering,
+       reasoning wording, or token counts.
     2. Hard Constraint Rule: SuitabilityEngine MUST mark candidate ineligible (suitability=0.0)
        if it fails hard constraints (e.g. required context_limit or modality).
 """
 
 import pytest
-from core.contracts import MissionContext, MissionState, SuccessCriteria, TaskRequirement
+from core.contracts import MissionContext, MissionState, MissionContract, SuccessCriteria, TaskRequirement
 from core.governance.model.evidence import SuitabilityEngine, CapabilityVector, ModelPerformanceProfile
 
 
-class TestMissionOutcomeContractInvarianceUnderModelSwap:
+class TestMissionSemanticInvarianceUnderModelSwap:
 
-    def test_outcome_contract_invariant_across_model_swaps(self):
+    def test_mission_semantic_contract_invariant_across_model_swaps(self):
         criteria = SuccessCriteria(required_elements=["citations", "structured_json"], min_quality_score=0.85)
+        contract = MissionContract(goal="Extract quarterly KPI metrics", success_criteria=criteria, safety_policy="STRICT_DENY_FIRST")
 
         # Scenario A: Model A (e.g. Qwen)
-        mission_a = MissionContext(goal="Extract quarterly KPI metrics", success_criteria=criteria)
-        mission_a.state = MissionState.RUNNING
+        mission_a = MissionContext(contract=contract, state=MissionState.RUNNING)
         task_a = TaskRequirement(role="PLANNER", quality_target="high")
 
         # Scenario B: Model B (e.g. Gemma) after model swap
-        mission_b = MissionContext(goal="Extract quarterly KPI metrics", success_criteria=criteria)
-        mission_b.state = MissionState.RUNNING
+        mission_b = MissionContext(contract=contract, state=MissionState.RUNNING)
         task_b = TaskRequirement(role="PLANNER", quality_target="high")
 
-        # Outcome Contract properties MUST be identical
-        assert mission_a.goal == mission_b.goal
+        # Semantic Mission Contract properties MUST be 100% identical
+        assert mission_a.contract.goal == mission_b.contract.goal
+        assert mission_a.contract.safety_policy == mission_b.contract.safety_policy
         assert mission_a.state == mission_b.state
-        assert mission_a.success_criteria.required_elements == mission_b.success_criteria.required_elements
+        assert mission_a.contract.success_criteria.required_elements == mission_b.contract.success_criteria.required_elements
         assert task_a.role == task_b.role
         assert task_a.quality_target == task_b.quality_target
 
