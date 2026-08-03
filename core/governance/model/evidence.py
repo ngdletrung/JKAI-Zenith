@@ -1,14 +1,24 @@
 """
-JKAI ZENITH — GOVERNANCE DOMAIN: CAPABILITY EVIDENCE & PERFORMANCE PROFILE
+JKAI ZENITH — GOVERNANCE DOMAIN: MODEL IDENTITY, EVIDENCE & PERFORMANCE PROFILE
 File: core/governance/model/evidence.py
 
-Multi-source capability evidence gathering, confidence scoring,
-CapabilityVector representation, and ModelPerformanceProfile.
+Tri-tiered CapabilityEvidence (Static, Runtime, Empirical), ModelIdentity,
+Continuous CapabilityVector, and ModelPerformanceProfile.
 """
 
 from dataclasses import dataclass, field
 from typing import Dict, Any, List, Optional
 import time
+import uuid
+
+
+@dataclass
+class ModelIdentity:
+    """Canonical model identity separate from human-facing model names."""
+    provider: str                      # "ollama" | "vllm" | "llamacpp" | "remote"
+    name: str                          # Human-facing model reference
+    digest: str = ""                   # Content digest or SHA256
+    model_id: str = field(default_factory=lambda: uuid.uuid4().hex[:12])
 
 
 @dataclass
@@ -20,6 +30,9 @@ class CapabilityVector:
     vision: float = 0.0
     tool_calling: float = 0.5
     multilingual: float = 0.5
+    vietnamese: float = 0.5
+    context_handling: float = 0.5
+    latency: float = 0.5
 
 
 @dataclass
@@ -37,11 +50,19 @@ class ModelPerformanceProfile:
 
 @dataclass
 class CapabilityEvidence:
-    """Represents multi-source evidence for a model capability."""
+    """
+    Tri-tiered evidence for a model capability.
+    Evidence layers:
+        - "static": metadata, /api/show, parameter count, architecture
+        - "runtime": latency, tokens/sec, VRAM/RAM pressure, failure rate
+        - "empirical": task success rate, tool-call success, Vietnamese response quality, RAG grounding
+    """
     feature: str                        # "reasoning" | "coding" | "tool_use" | "vision" | "planning"
     source: str                         # "model_metadata" | "benchmark" | "rule_hardware" | "telemetry"
+    evidence_type: str = "static"       # "static" | "runtime" | "empirical"
     confidence: float = 1.0             # 0.0 - 1.0 confidence score
     reliability: str = "HIGH"           # "LOW" | "MEDIUM" | "HIGH"
+    sample_count: int = 1
     details: Dict[str, Any] = field(default_factory=dict)
     timestamp: float = field(default_factory=time.time)
 
@@ -54,7 +75,13 @@ class CapabilityInference:
         if not feature_evidence:
             return 0.5  # default neutral score
 
-        weighted_sum = sum(e.confidence * (1.0 if e.reliability == "HIGH" else 0.7) for e in feature_evidence)
-        weight_total = sum(1.0 if e.reliability == "HIGH" else 0.7 for e in feature_evidence)
+        weighted_sum = sum(
+            e.confidence * (1.0 if e.reliability == "HIGH" else 0.7) * (1.2 if e.evidence_type == "empirical" else 1.0)
+            for e in feature_evidence
+        )
+        weight_total = sum(
+            (1.0 if e.reliability == "HIGH" else 0.7) * (1.2 if e.evidence_type == "empirical" else 1.0)
+            for e in feature_evidence
+        )
 
         return min(1.0, max(0.0, weighted_sum / weight_total)) if weight_total > 0 else 0.5

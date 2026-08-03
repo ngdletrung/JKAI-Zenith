@@ -3,7 +3,7 @@ JKAI ZENITH — CAPABILITIES DOMAIN (ACTION DOMAIN)
 Package: core/capabilities/
 
 Responsibility:
-    Native Tools, Function Calling, Dynamic Skills, and Capability Adapters.
+    Native Tools, Function Calling, Dynamic Skills, Capability Broker, and Adapters.
 
 Constitutional Invariant:
     Capabilities represent Action abilities available to JKAI.
@@ -11,5 +11,10 @@ Constitutional Invariant:
 """
 
 from core.kernel.skill_tool_registry import SkillToolRegistry
+from core.capabilities.capability_broker import CapabilityBroker, CapabilitySet
 
-__all__ = ["SkillToolRegistry"]
+__all__ = [
+    "SkillToolRegistry",
+    "CapabilityBroker",
+    "CapabilitySet",
+]
