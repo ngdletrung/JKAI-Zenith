@@ -67,8 +67,51 @@ class CapabilityEvidence:
     timestamp: float = field(default_factory=time.time)
 
 
+@dataclass
+class SuitabilityScore:
+    """Suitability score computed by Governance SuitabilityEngine (Capability vs Context vs Resource vs Risk)."""
+    capability_match: float = 0.5
+    resource_fit: float = 0.5
+    latency_fit: float = 0.5
+    empirical_reliability: float = 0.5
+    suitability_score: float = 0.5
+    rationale: str = ""
+
+
+class SuitabilityEngine:
+    """
+    Governance Suitability Engine.
+    Computes suitability_score = f(CapabilityVector, TaskRequirement, RuntimeState, PerformanceProfile, ResourceState).
+    Distinguishes 'having capability' from 'is optimal to execute right now'.
+    """
+
+    def compute_suitability(
+        self,
+        vector: CapabilityVector,
+        perf: ModelPerformanceProfile,
+        quality_target: str = "medium",
+        latency_target: str = "medium",
+    ) -> SuitabilityScore:
+        cap_match = (vector.reasoning + vector.coding + vector.instruction) / 3.0
+        res_fit = 0.9 if perf.failure_rate < 0.05 else 0.5
+        lat_fit = 0.9 if (latency_target == "low" and perf.latency_p50 < 3.0) else 0.7
+        emp_rel = perf.quality_score * (1.0 - perf.failure_rate)
+
+        final_score = (cap_match * 0.35) + (res_fit * 0.25) + (lat_fit * 0.20) + (emp_rel * 0.20)
+
+        return SuitabilityScore(
+            capability_match=cap_match,
+            resource_fit=res_fit,
+            latency_fit=lat_fit,
+            empirical_reliability=emp_rel,
+            suitability_score=round(final_score, 4),
+            rationale=f"Suitability calculated: cap={cap_match:.2f}, emp={emp_rel:.2f}",
+        )
+
+
 class CapabilityInference:
     """Infers composite capability scores from multiple CapabilityEvidence entries."""
+
 
     def infer_score(self, evidence_list: List[CapabilityEvidence], feature: str) -> float:
         feature_evidence = [e for e in evidence_list if e.feature.lower() == feature.lower()]

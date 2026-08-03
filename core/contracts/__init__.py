@@ -12,8 +12,9 @@ Constitutional Invariant:
 """
 
 from core.contracts.ingress import IngressGoal, IngressEvent
-from core.contracts.mission import MissionContext, MissionState
+from core.contracts.mission import MissionContext, MissionState, SuccessCriteria
 from core.contracts.task import TaskRequirement, CapabilityRequirement
+
 from core.contracts.execution import ExecutionProfile, ExecutionIntent, ExecutionResult, GovernorDecision
 from core.contracts.resource import ResourceIntent, ResourceAllocation, ResourceRequest, BackendType
 from core.contracts.observation import Observation, Telemetry
@@ -24,7 +25,9 @@ __all__ = [
     "IngressEvent",
     "MissionContext",
     "MissionState",
+    "SuccessCriteria",
     "TaskRequirement",
+
     "CapabilityRequirement",
     "ExecutionProfile",
     "ExecutionIntent",
