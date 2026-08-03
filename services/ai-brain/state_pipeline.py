@@ -144,14 +144,14 @@ class StatePipeline:
                             exec_plan.steps = [
                                 ExecutionPlanStep(step_id="S1_FAST_REACTIVE", description="Phản xạ trả lời nhanh", assigned_agent="general")
                             ]
-                async with self._cognitive_lock:
-                    self._cognitive_failures += 1
-                    self._cognitive_failures_ts = time.time()
-                engine.publish_mission_log("WARN", f"️ [COGNITIVE-CB]: Cognitive override thất bại ({self._cognitive_failures}/3).", task_id, trace_id)
+                    # Reset failure count on successful override
+                    async with self._cognitive_lock:
+                        self._cognitive_failures = 0
             except Exception as override_err:
                 async with self._cognitive_lock:
                     self._cognitive_failures += 1
                     self._cognitive_failures_ts = time.time()
+                engine.publish_mission_log("WARN", f"⚠️ [COGNITIVE-CB]: Cognitive override thất bại ({self._cognitive_failures}/3): {override_err}", task_id, trace_id)
                 logger.warning("[STATE-PIPELINE] Cognitive override verification failed (%d/3): %s", self._cognitive_failures, override_err)
 
         engine.publish_mission_log(

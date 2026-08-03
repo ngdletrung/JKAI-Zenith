@@ -121,6 +121,19 @@ async def startup_event():
     # ⏳ [NEURAL-STABILIZATION]: Chờ 30 giây để hạ tầng ổn định thưa Master
     async def delayed_warmup():
         await asyncio.sleep(5)
+        
+        # 🏛️ [AMG-v2]: Real-time Model Discovery & Registry Population on Startup
+        try:
+            from core.runtime.runtime_discovery import RuntimeDiscovery
+            from core.governor.model_registry import ModelRegistry
+            discovery = RuntimeDiscovery()
+            snap = discovery.snapshot()
+            registry = ModelRegistry()
+            registry.discover(snap)
+            logger.info(f"🏛️ [AMG-DISCOVERY]: Discover sequence complete — {snap.log_summary()}")
+        except Exception as amg_err:
+            logger.warning(f"⚠️ [AMG-DISCOVERY-ERR]: Failed to discover models on startup: {amg_err}")
+
         await engine.warmup_all_models()
         
         #  [STARTUP-SYNC]: Tự động đồng bộ hóa toàn diện khi khởi động thưa Master

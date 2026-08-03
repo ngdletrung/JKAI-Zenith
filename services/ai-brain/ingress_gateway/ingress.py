@@ -78,6 +78,16 @@ class IngressGateway:
 
         # 2. TUONG LUA NGU NGHIA (skip SSM-enriched goals — system content, not user input)
         fw_res = {"safe": True}
+        
+        # 3. 🛡️ [DURABLE-EVENT-SOURCING]: Record event to Kernel EventStore
+        try:
+            from core.kernel.mission_runtime import MissionRuntime
+            from core.kernel.models import MissionContext
+            kernel_rt = MissionRuntime()
+            ctx = MissionContext(objective=goal, caller_id=task_id)
+            kernel_rt.submit_mission(ctx)
+        except Exception as k_err:
+            logger.debug("[INGRESS]: Kernel event logging skipped: %s", k_err)
         if "<ZENITH_SKILL_ACTIVATED>" in goal:
             logger.debug("[INGRESS-FIREWALL]: SSM-enriched goal, skipping firewall.")
         else:
