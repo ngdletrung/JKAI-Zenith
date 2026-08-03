@@ -1,13 +1,38 @@
 """
-JKAI ZENITH — GOVERNANCE DOMAIN: CAPABILITY EVIDENCE
+JKAI ZENITH — GOVERNANCE DOMAIN: CAPABILITY EVIDENCE & PERFORMANCE PROFILE
 File: core/governance/model/evidence.py
 
-Multi-source capability evidence gathering and confidence scoring.
+Multi-source capability evidence gathering, confidence scoring,
+CapabilityVector representation, and ModelPerformanceProfile.
 """
 
 from dataclasses import dataclass, field
 from typing import Dict, Any, List, Optional
 import time
+
+
+@dataclass
+class CapabilityVector:
+    """Continuous multi-dimensional capability scores (0.0 - 1.0) replacing rigid enum classifications."""
+    reasoning: float = 0.5
+    coding: float = 0.5
+    general: float = 0.5
+    vision: float = 0.0
+    tool_calling: float = 0.5
+    multilingual: float = 0.5
+
+
+@dataclass
+class ModelPerformanceProfile:
+    """Observed runtime performance profile dynamically updated from Observation telemetry."""
+    role: str = "PLANNER"
+    quality_score: float = 0.90
+    latency_p50: float = 2.0
+    latency_p95: float = 5.0
+    tool_success_rate: float = 0.95
+    structured_output_rate: float = 0.98
+    failure_rate: float = 0.01
+    sample_count: int = 0
 
 
 @dataclass

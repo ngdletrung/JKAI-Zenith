@@ -1,13 +1,15 @@
 """
-JKAI ZENITH — CONTRACT KERNEL: EXECUTION
+JKAI ZENITH — CONTRACT KERNEL: EXECUTION & GOVERNOR DECISION
 File: core/contracts/execution.py
 
-Contracts for ExecutionProfile, ExecutionIntent, and ExecutionResult.
-Pure semantic contracts without runtime-specific parameters (num_gpu, keep_alive).
+Contracts for ExecutionProfile, ExecutionIntent, ExecutionResult, and GovernorDecision.
+Pure semantic contracts without runtime-specific parameters.
 """
 
 from dataclasses import dataclass, field
 from typing import Dict, Any, List, Optional
+import uuid
+from core.contracts.resource import ResourceIntent
 
 
 @dataclass
@@ -71,6 +73,23 @@ class ExecutionProfile:
         if messages is not None:
             payload["messages"] = messages
         return payload
+
+
+@dataclass
+class GovernorDecision:
+    """
+    Governance Decision Contract.
+    Encapsulates selected model, execution profile, resource intent, and decision rationale
+    for auditability, explainability, and replay.
+    """
+    selected_model: str
+    selected_runtime: str = "ollama"
+    execution_profile: Optional[ExecutionProfile] = None
+    resource_intent: Optional[ResourceIntent] = None
+    fallback_chain: List[str] = field(default_factory=list)
+    confidence: float = 1.0
+    rationale: str = ""
+    decision_trace_id: str = field(default_factory=lambda: uuid.uuid4().hex)
 
 
 @dataclass
