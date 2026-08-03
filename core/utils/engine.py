@@ -1483,13 +1483,14 @@ class JKAIIntelligenceEngine:
                                 # [CPU-XEON-PREFILL]: Model chạy trên CPU (Port 11435 như PLANNER) cần ít nhất 240s để nạp và prefill ngữ cảnh lớn (~3000 tokens) trước khi trả về token đầu tiên
                                 custom_timeout = httpx.Timeout(600.0, connect=10.0, read=240.0)
                             elif any(k in m_name_low for k in ['30b', '32b', '70b', 'moe', 'xl', '72b']):
-                                # Mô hình Titan MoE (như Qwen3-30B Active 3B): Cần 90s-120s cho nạp VRAM/RAM và prefill suy luận sâu, tuyệt đối không chém ngang tai giữa chừng!
-                                custom_timeout = httpx.Timeout(600.0, connect=10.0, read=120.0)
+                                # Mô hình Titan MoE (như Qwen3-30B Active 3B): Cần 180s-300s cho nạp VRAM/RAM và prefill suy luận sâu, tuyệt đối không chém ngang tai giữa chừng!
+                                custom_timeout = httpx.Timeout(600.0, connect=15.0, read=300.0)
                             elif any(k in m_name_low for k in ['14b', '13b', '11b']):
-                                custom_timeout = httpx.Timeout(600.0, connect=10.0, read=75.0)
+                                custom_timeout = httpx.Timeout(600.0, connect=15.0, read=180.0)
                             else:
-                                # Mô hình gọn trên GPU (<14B): Read timeout 60s
-                                custom_timeout = httpx.Timeout(600.0, connect=10.0, read=60.0)
+                                # Mô hình gọn trên GPU (<14B): Read timeout 180s để đảm bảo không đứt nối khi Ollama bận
+                                custom_timeout = httpx.Timeout(600.0, connect=15.0, read=180.0)
+
                             
                         async with client.stream('POST', req_url, headers=req_headers, json=req_payload, timeout=custom_timeout) as resp:
                             if resp.status_code != 200:
