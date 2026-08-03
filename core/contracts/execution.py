@@ -42,19 +42,30 @@ class ExecutionIntent:
 
 
 @dataclass
+class ResourceGrant:
+    """Resource grant reference bound to an ExecutionLease."""
+    grant_id: str = field(default_factory=lambda: uuid.uuid4().hex[:12])
+    compute_class: str = "HEAVY"
+    acceleration: str = "GPU_PREFERRED"
+    granted_allocation: Optional[ResourceAllocation] = None
+
+
+@dataclass
 class ExecutionLease:
     """
     Execution Lease granted by Governance to Runtime.
     Runtime MUST execute strictly within the bounds of the granted lease.
+    Decouples semantic authority from physical hardware allocation via ResourceGrant.
     """
     lease_id: str = field(default_factory=lambda: uuid.uuid4().hex[:12])
     mission_id: str = ""
     task_id: str = ""
     execution_intent: ExecutionIntent = field(default_factory=ExecutionIntent)
-    resource_allocation: Optional[ResourceAllocation] = None
+    resource_grant: Optional[ResourceGrant] = None
     authority_scope: List[str] = field(default_factory=lambda: ["read", "write_draft"])
     budget_seconds: float = 60.0
     expires_at: float = field(default_factory=lambda: time.time() + 60.0)
+
 
 
 @dataclass
