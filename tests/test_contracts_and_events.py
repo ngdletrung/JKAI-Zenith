@@ -45,12 +45,24 @@ class TestContractsKernel:
         assert req.capabilities[0].name == "reasoning"
 
     def test_execution_contracts(self):
-        profile = ExecutionProfile(
+        from core.governor.model_capabilities import ExecutionProfile as GovernorExecutionProfile
+
+        # Test pure semantic contract shim
+        sem_profile = ExecutionProfile(
+            model_name="qwen3.5:4b",
+            role_name="PLANNER",
+            context_window=4096
+        )
+        assert sem_profile.model_name == "qwen3.5:4b"
+        assert sem_profile.role_name == "PLANNER"
+
+        # Test governor hardware execution profile
+        gov_profile = GovernorExecutionProfile(
             model_name="qwen3.5:4b",
             role_name="PLANNER",
             num_gpu_layers=32,
         )
-        payload = profile.to_ollama_payload(stream=True)
+        payload = gov_profile.to_ollama_payload(stream=True)
         assert payload["model"] == "qwen3.5:4b"
         assert payload["options"]["num_gpu"] == 32
 
