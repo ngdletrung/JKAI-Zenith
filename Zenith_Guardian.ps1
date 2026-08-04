@@ -153,51 +153,9 @@ try {
                     Write-KuteLog "Ollama Dual-Engine services are READY!" "SUCCESS"
                     
                     # 🚀 [ACTIVE-MODEL-PRELOADER]: Nạp sẵn toàn bộ Active Model từ rule_hardware.md vào VRAM/RAM ngay khi khởi động
-                    Write-KuteLog "Parsing rule_hardware.md to preload active models..." "PROCESS"
-                    if (Test-Path $RULE_FILE) {
-                        $ruleLines = Get-Content $RULE_FILE
-                        $modelMap = @{}
-                        foreach ($rline in $ruleLines) {
-                            if ($rline -match '^\|\s*([A-Z_]+)\s*\|\s*([a-zA-Z0-9\.\:\_-]+)\s*\|\s*\*\*([^\*]+)\*\*') {
-                                $rRole = $matches[1].Trim()
-                                $rModel = $matches[2].Trim()
-                                $rHw = $matches[3].Trim()
-                                if ($rModel -ne "auto" -and $rModel -ne "Active Model" -and $rModel -ne "sdxl-turbo-rocm" -and $rModel -ne "faster-whisper") {
-                                    $rHost = if ($rHw -match "CPU") { $OLLAMA_CPU_HOST } else { $OLLAMA_GPU_HOST }
-                                    if (-not $modelMap.ContainsKey($rModel)) {
-                                        $modelMap[$rModel] = [PSCustomObject]@{ model = $rModel; roles = @($rRole); host = $rHost; hw = $rHw }
-                                    } else {
-                                        $modelMap[$rModel].roles += $rRole
-                                    }
-                                }
-                            }
-                        }
-
-                        $uniqueModels = $modelMap.Values
-                        Write-KuteLog "Discovered $($uniqueModels.Count) unique active model(s) for preloading." "PROCESS"
-                        $idx = 1
-                        foreach ($m in $uniqueModels) {
-                            $roleList = $m.roles -join ", "
-                            $targetName = if ($m.hw -match "CPU") { "CPU RAM (11435)" } else { "GPU VRAM (11434)" }
-                            Write-KuteLog "[$idx/$($uniqueModels.Count)] Preloading model '$($m.model)' [$roleList] into $targetName..." "PROCESS"
-                            $sw = [System.Diagnostics.Stopwatch]::StartNew()
-                            try {
-                                if ($m.model -match "embed") {
-                                    $bodyObj = @{ model = $m.model; prompt = "warmup"; keep_alive = -1 } | ConvertTo-Json
-                                    $endpointUrl = "http://$($m.host)/api/embeddings"
-                                } else {
-                                    $bodyObj = @{ model = $m.model; prompt = ""; keep_alive = -1; stream = $false } | ConvertTo-Json
-                                    $endpointUrl = "http://$($m.host)/api/generate"
-                                }
-                                $res = Invoke-RestMethod -Uri $endpointUrl -Method Post -Body $bodyObj -ContentType "application/json" -TimeoutSec 60 -ErrorAction Stop
-                                $sw.Stop()
-                                Write-KuteLog "Model '$($m.model)' loaded successfully into $targetName ($([math]::Round($sw.Elapsed.TotalSeconds, 1))s)." "SUCCESS"
-                            } catch {
-                                $sw.Stop()
-                                Write-KuteLog "Model '$($m.model)' preloading triggered/skipped: $($_.Exception.Message)" "WARNING"
-                            }
-                            $idx++
-                        }
+                    $PreloaderScript = "D:\Docker\JKAI\scripts\preload_models.py"
+                    if (Test-Path $PreloaderScript) {
+                        python $PreloaderScript
                     }
                     break
                 }
