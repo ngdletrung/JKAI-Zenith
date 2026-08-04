@@ -82,6 +82,8 @@ class UniversalCognitionCortex:
             constraints.append("PRESERVE_EXISTING_FORMAT")
         if "không dùng" in g_lower or "tránh" in g_lower:
             constraints.append("AVOID_SPECIFIED_DEPENDENCIES")
+        if "ưu tiên" in g_lower or "hết hạn" in g_lower:
+            constraints.append("PRIORITIZE_URGENT_ITEMS")
         if target_fmt != "markdown":
             constraints.append(f"MUST_OUTPUT_VALID_{target_fmt.upper()}_FILE")
 
@@ -90,6 +92,10 @@ class UniversalCognitionCortex:
             entities.append("TEAM_WORKLOAD")
         if "báo cáo" in g_lower or "tiến độ" in g_lower:
             entities.append("PROGRESS_REPORT")
+        if "hợp đồng" in g_lower or "contract" in g_lower:
+            entities.append("CONTRACT_DOCUMENTS")
+        if "bất thường" in g_lower or "anomaly" in g_lower:
+            entities.append("ANOMALY_DETECTION")
 
         # 3. Tiêu chí thành công (Success Criteria)
         success_criteria: List[str] = []
@@ -125,7 +131,6 @@ class UniversalCognitionCortex:
 
         logger.info(
             f"🧠 [UNIVERSAL-COGNITION-CORTEX]: Perceived Goal='{g[:40]}...' -> "
-            f"Type={request.deliverable.type.value}, Format={request.deliverable.format}, "
-            f"Depth={request.execution_depth}"
+            f"Type={request.deliverable.type.value}, Format={request.deliverable.format}"
         )
         return request

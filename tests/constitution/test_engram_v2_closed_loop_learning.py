@@ -17,9 +17,9 @@ from core.memory.recall_engine import RecallEngine
 
 
 def test_engram_v2_closed_loop_learning_improves_attempt_count():
-    task_sig = "GENERAL_xlsx"
     goal = "tạo file excel báo cáo"
     req = UniversalCognitionCortex.perceive(goal)
+    task_sig = f"{req.intent}_{req.deliverable.format}"
 
     # === RUN 1: NO PRIOR MEMORY (Attempts = 2) ===
     # Attempt 1: Strategy A (raw_stream) fails verification
