@@ -36,7 +36,7 @@ class EntityResolver:
 
         pronoun = match.group(0).lower()
         if not entity_stack:
-            logger.warning(f"🔍 [RESOLVER-WARN]: Pronoun '{pronoun}' found, but entity stack is empty.")
+            logger.warning("[RESOLVER-WARN] Pronoun '%s' found, but entity stack is empty.", pronoun)
             return None, 0.0
 
         # Heuristics:

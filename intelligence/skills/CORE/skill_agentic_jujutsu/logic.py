@@ -58,7 +58,7 @@ class AgenticJujutsu:
                 json.dump(bank, f, indent=2, ensure_ascii=False)
                 f.truncate()
             
-            engine.publish_mission_log("JUJUTSU", f"🥋 [TRAJECTORY]: Hành trình '{action}' đã được niêm phong lượng tử.")
+            engine.publish_mission_log("JUJUTSU", f"[TRAJECTORY]: Hành trình '{action}' đã được niêm phong lượng tử.")
             return {"status": "success", "fingerprint": fingerprint}
             
         except Exception as e:
@@ -82,10 +82,10 @@ class AgenticJujutsu:
                 entry["fingerprint"] = stored_fp # Restore for next check
             
             if not tampered_entries:
-                engine.publish_mission_log("JUJUTSU", "✅ [INTEGRITY]: Mọi quỹ đạo tư duy đều an toàn, không có dấu hiệu xâm nhập.")
+                engine.publish_mission_log("JUJUTSU", "[INTEGRITY]: Mọi quỹ đạo tư duy đều an toàn, không có dấu hiệu xâm nhập.")
                 return {"status": "success", "integrity": "SOLID"}
             else:
-                engine.publish_mission_log("JUJUTSU", f"🚨 [WARNING]: Phát hiện {len(tampered_entries)} dấu hiệu giả mạo nơ-ron!")
+                engine.publish_mission_log("JUJUTSU", f"[WARNING]: Phát hiện {len(tampered_entries)} dấu hiệu giả mạo nơ-ron!")
                 return {"status": "compromised", "ids": tampered_entries}
                 
         except Exception as e:

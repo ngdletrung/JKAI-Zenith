@@ -57,7 +57,7 @@ class UnifiedRetriever:
                 cached = r.get(cache_key)
                 if cached:
                     data = json.loads(cached)
-                    engine.publish_mission_log("BRAIN", f"⚡ [CACHE-HIT]: Trả về kết quả tìm kiếm đã cache thưa Master: '{query[:30]}...'", stealth=True)
+                    engine.publish_mission_log("BRAIN", f"[CACHE-HIT]: Trả về kết quả tìm kiếm đã cache thưa Master: '{query[:30]}...'", stealth=True)
                     return RetrievalResult(
                         results=data.get("results", []),
                         sources=data.get("sources", []),

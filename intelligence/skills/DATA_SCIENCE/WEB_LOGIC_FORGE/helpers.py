@@ -18,7 +18,7 @@ async def wait_for_selector_smart(page, selector, timeout=10000):
         await page.wait_for_selector(selector, timeout=timeout)
         return True
     except Exception as e:
-        logger.warning(f"⚠️ [SMART-WAIT]: Không tìm thấy {selector}. Đang thử cuộn trang...")
+        logger.warning("[SMART-WAIT]: Không tìm thấy %s. Đang thử cuộn trang...", selector)
         await page.evaluate("window.scrollBy(0, 500)")
         try:
             await page.wait_for_selector(selector, timeout=timeout/2)

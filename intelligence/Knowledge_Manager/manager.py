@@ -469,7 +469,7 @@ class ConnectionManager:
                                     active_workers += 1
                                     task = asyncio.create_task(_worker())
                                     worker_tasks.append(task)
-                                logger.info(f"🚀 [AUTOSCALER] Scaled UP worker pool to {active_workers} (RAM ratio: {mem_ratio:.2f})")
+                                logger.info("[AUTOSCALER] Scaled UP worker pool to %s (RAM ratio: %.2f)", active_workers, mem_ratio)
 
                 # 5. Khởi tạo số lượng worker ban đầu thích ứng với bộ nhớ hiện tại thưa Master
                 mem_max = _read_cgroup_int("/sys/fs/cgroup/memory.max", 16*1024*1024*1024)
@@ -481,7 +481,7 @@ class ConnectionManager:
                     initial_workers = 15  # Bộ nhớ còn trống nhiều -> Chạy ngay 15 luồng thưa Master
 
                 active_workers = initial_workers
-                logger.info(f"⚡ [AUTOSCALER] Initializing worker pool with {initial_workers} workers (RAM ratio: {mem_ratio:.2f})")
+                logger.info("[AUTOSCALER] Initializing worker pool with %s workers (RAM ratio: %.2f)", initial_workers, mem_ratio)
 
                 # Tạo các task worker ban đầu
                 for _ in range(initial_workers):

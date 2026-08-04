@@ -73,7 +73,7 @@ def submit_task():
             content = f.get("content", "") # Base64 string
             
             if len(content) > (MAX_FILE_SIZE * 1.4): # Ước tính Base64 overhead
-                logger.warning(f"⚠️ [FILE-SIZE-EXCEEDED]: {name} quá lớn, đã bị từ chối.")
+                logger.warning("[FILE-SIZE-EXCEEDED]: %s quá lớn, đã bị từ chối.", name)
                 continue
 
             if name and content:
@@ -112,7 +112,7 @@ def submit_task():
 
     # 🚀 [METADATA-ENRICHMENT]: Bổ sung thông tin định danh
     trace_id = f"trace_{uid}"
-    logger.info(f"🚀 [TASK-SUBMIT]: ID={task_id}, Trace={trace_id}, Mission={mission_id}")
+    logger.info("[TASK-SUBMIT]: ID=%s, Trace=%s, Mission=%s", task_id, trace_id, mission_id)
     
     images = data.get("images", [])
     # Nén thẳng nội dung file vào Goal để đảm bảo mô hình chắc chắn đọc được

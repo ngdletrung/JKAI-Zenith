@@ -23,7 +23,7 @@ class ReferenceManager:
             with open(file_path, "rb") as f:
                 return hashlib.sha256(f.read()).hexdigest()
         except Exception as e:
-            logger.error(f"❌ [CHECKSUM-ERR]: Failed to read {file_path}: {e}")
+            logger.error("[CHECKSUM-ERR] Failed to read %s: %s", file_path, e)
             return None
 
     def add_reference(self, refs: MissionReferences, ref_id: str, file_path: str, line_range: str = None) -> CitationItem:
@@ -78,7 +78,7 @@ class ReferenceManager:
                     if abs_source not in refs.dependency_graph[abs_potential]:
                         refs.dependency_graph[abs_potential].append(abs_source)
         except Exception as e:
-            logger.warning(f"⚠️ [DEP-ANALYZER-WARN]: Failed dependency analysis for {file_path}: {e}")
+            logger.warning("[DEP-ANALYZER-WARN] Failed dependency analysis for %s: %s", file_path, e)
 
     def get_cascading_impact(self, refs: MissionReferences, modified_file: str) -> List[str]:
         """Finds all downstream files impacted by a modification to modified_file."""

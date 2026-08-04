@@ -96,7 +96,7 @@ class StatePipeline:
         if exec_plan.is_provisional and exec_plan.estimated_cost >= 3.0 and allow_override:
             engine.publish_mission_log(
                 "SYSTEM",
-                f" [COGNITIVE-OVERRIDE]: Kế hoạch chi phí cao ({exec_plan.estimated_cost}) có độ tin cậy thấp ({exec_plan.confidence_score}). Trình dự thảo kế hoạch cho LLM phản biện...",
+                f"[COGNITIVE-OVERRIDE] Kế hoạch chi phí cao ({exec_plan.estimated_cost}) có độ tin cậy thấp ({exec_plan.confidence_score}). Trình dự thảo kế hoạch cho LLM phản biện...",
                 task_id, trace_id
             )
             
@@ -127,7 +127,7 @@ class StatePipeline:
                     
                     engine.publish_mission_log(
                         "WARN",
-                        f" [LLM-OVERRIDDEN]: LLM phủ quyết kế hoạch! Lý do: {reason} | Chuyển hướng sang: {new_pipeline}",
+                        f"[LLM-OVERRIDDEN] LLM phủ quyết kế hoạch! Lý do: {reason} | Chuyển hướng sang: {new_pipeline}",
                         task_id, trace_id
                     )
                     
@@ -151,12 +151,12 @@ class StatePipeline:
                 async with self._cognitive_lock:
                     self._cognitive_failures += 1
                     self._cognitive_failures_ts = time.time()
-                engine.publish_mission_log("WARN", f"⚠️ [COGNITIVE-CB]: Cognitive override thất bại ({self._cognitive_failures}/3): {override_err}", task_id, trace_id)
+                engine.publish_mission_log("WARN", f"[COGNITIVE-CB] Cognitive override thất bại ({self._cognitive_failures}/3): {override_err}", task_id, trace_id)
                 logger.warning("[STATE-PIPELINE] Cognitive override verification failed (%d/3): %s", self._cognitive_failures, override_err)
 
         engine.publish_mission_log(
             "SYSTEM", 
-            f" [STEP-RUNNER]: Bắt đầu chạy kế hoạch ({exec_plan.selected_pipeline}) | Tổng: {len(exec_plan.steps)} bước", 
+            f"[STEP-RUNNER] Bắt đầu chạy kế hoạch ({exec_plan.selected_pipeline}) | Tổng: {len(exec_plan.steps)} bước", 
             task_id, trace_id
         )
 
@@ -174,7 +174,7 @@ class StatePipeline:
         for i, step in enumerate(exec_plan.steps):
             engine.publish_mission_log(
                 "ZENITH", 
-                f" [STEP-RUNNING]: Bước {i+1}/{len(exec_plan.steps)}: {step.step_id} — {step.description}", 
+                f"[STEP-RUNNING] Bước {i+1}/{len(exec_plan.steps)}: {step.step_id} — {step.description}", 
                 task_id, trace_id
             )
             step.status = "running"
@@ -200,9 +200,9 @@ class StatePipeline:
                     diff = _diff_snapshot(step_before, step_after) if step_before else []
                     if not diff:
                         engine._increment_stat("forge_noop")
-                        engine.publish_mission_log("WARN", f" [FORGE-NOOP]: S2_FORGE chạy xong nhưng không có file nào thay đổi.", task_id, trace_id)
+                        engine.publish_mission_log("WARN", "[FORGE-NOOP] S2_FORGE chạy xong nhưng không có file nào thay đổi.", task_id, trace_id)
                     else:
-                        engine.publish_mission_log("BRAIN", f" [FORGE-DONE]: {len(diff)} file đã được thay đổi.", task_id, trace_id)
+                        engine.publish_mission_log("BRAIN", f"[FORGE-DONE] {len(diff)} file đã được thay đổi.", task_id, trace_id)
                         # [ARTIFACT]: Ghi nhận tất cả file thay đổi với diff preview
                         ArtifactTracker.record_file_diff(task_id, step_before, step_after, ws_root)
                     result["files_changed"] = diff[:10]
@@ -214,7 +214,7 @@ class StatePipeline:
                         err_msg = str(result.get("errors", []))
                         engine.publish_mission_log(
                             "BRAIN", 
-                            f" [IN-LOOP-REFLECT]: Phát hiện lỗi kiểm định. Tự động kích hoạt chu kỳ tự khắc phục tại chỗ (Lần {_retry_count + 1}/2)...", 
+                            f"[IN-LOOP-REFLECT] Phát hiện lỗi kiểm định. Tự động kích hoạt chu kỳ tự khắc phục tại chỗ (Lần {_retry_count + 1}/2)...", 
                             task_id, trace_id
                         )
                         retry_forge = ExecutionPlanStep(
@@ -234,14 +234,14 @@ class StatePipeline:
                 ArtifactTracker.record_step(task_id, step.step_id, step.description, "completed")
                 engine.publish_mission_log(
                     "ZENITH", 
-                    f" [STEP-DONE]: Hoàn tất bước {step.step_id}.", 
+                    f"[STEP-DONE] Hoàn tất bước {step.step_id}.", 
                     task_id, trace_id
                 )
             except asyncio.TimeoutError:
                 step.status = "failed"
                 timeout = step_timeouts.get(step.step_id, 90)
                 ArtifactTracker.record_step(task_id, step.step_id, step.description, "failed", detail=f"Timeout sau {timeout}s")
-                engine.publish_mission_log("ERROR", f" [STEP-TIMEOUT]: Bước {step.step_id} vượt quá {timeout}s.", task_id, trace_id)
+                engine.publish_mission_log("ERROR", f"[STEP-TIMEOUT] Bước {step.step_id} vượt quá {timeout}s.", task_id, trace_id)
                 engine._increment_stat("step_timeout")
                 self._record_engram_failure(step.step_id, f"Timeout after {timeout}s", task_id, trace_id)
                 break
@@ -250,7 +250,7 @@ class StatePipeline:
                 ArtifactTracker.record_step(task_id, step.step_id, step.description, "failed", detail=str(step_err)[:200])
                 engine.publish_mission_log(
                     "ERROR", 
-                    f" [STEP-FAILED]: Bước {step.step_id} gặp sự cố: {step_err}", 
+                    f"[STEP-FAILED] Bước {step.step_id} gặp sự cố: {step_err}", 
                     task_id, trace_id
                 )
                 self._record_engram_failure(step.step_id, str(step_err), task_id, trace_id)
@@ -300,7 +300,7 @@ class StatePipeline:
             if any(s.step_id in ("S2_FORGE_RETRY", "S_RECOVERY_CHAT") for s in exec_plan.steps) and all_completed:
                 from experience_distiller import distiller
                 asyncio.create_task(distiller.distill_task(task_id, mission_state.goal))
-                engine.publish_mission_log("BRAIN", " [PERSISTENT-MASTERY]: Kích hoạt ExperienceDistiller cô đặc bài học tự sửa chữa vào vùng nhớ dài hạn.", task_id, trace_id)
+                engine.publish_mission_log("BRAIN", "[PERSISTENT-MASTERY] Kích hoạt ExperienceDistiller cô đặc bài học tự sửa chữa vào vùng nhớ dài hạn.", task_id, trace_id)
         except Exception:
             pass
 
@@ -332,10 +332,10 @@ class StatePipeline:
 
         # 2. Bước quét mã nguồn / tìm kiếm tài liệu (Reconnaissance)
         elif step.step_id == "S1_RECON":
-            engine.publish_mission_log("BRAIN", " [RECON]: Định vị và phân tích cấu trúc workspace...", task_id, trace_id)
+            engine.publish_mission_log("BRAIN", "[RECON] Định vị và phân tích cấu trúc workspace...", task_id, trace_id)
             ws_path = mission_state.workspace_target or self.workspace_path
             if ws_path in ("/", "/root", "/var", "/etc", "/usr", ""):
-                engine.publish_mission_log("WARN", f"️ [RECON-SKIP]: Workspace path unsafe ({ws_path}), bỏ qua scan.", task_id, trace_id)
+                engine.publish_mission_log("WARN", f"[RECON-SKIP] Workspace path unsafe ({ws_path}), bỏ qua scan.", task_id, trace_id)
                 return {"status": "skipped", "workspace": ws_path, "files_found": 0, "sample_files": []}
             goal_lower = mission_state.goal.lower()
             keywords = [w for w in goal_lower.split() if len(w) > 2]
@@ -378,16 +378,16 @@ class StatePipeline:
                 skill_data = plugin_manager.match_and_load_skills(mission_state.goal, max_skills=2)
                 result["dynamic_skills"] = skill_data
                 context["active_skills_payload"] = skill_data.get("payload", "")
-                engine.publish_mission_log("BRAIN", f" [DYNAMIC-SKILL]: Nạp {skill_data['count']} kỹ năng ({', '.join(skill_data['skills'])}) vào ngữ cảnh lập luận.", task_id, trace_id)
+                engine.publish_mission_log("BRAIN", f"[DYNAMIC-SKILL] Nạp {skill_data['count']} kỹ năng ({', '.join(skill_data['skills'])}) vào ngữ cảnh lập luận.", task_id, trace_id)
             except Exception as skill_err:
-                logger.debug(f"[DYNAMIC-SKILL] Không thể nạp kỹ năng: {skill_err}")
+                logger.debug("[DYNAMIC-SKILL] Không thể nạp kỹ năng: %s", skill_err)
 
-            engine.publish_mission_log("BRAIN", f" [RECON-DONE]: Tìm thấy {len(findings)} file liên quan.", task_id, trace_id)
+            engine.publish_mission_log("BRAIN", f"[RECON-DONE] Tìm thấy {len(findings)} file liên quan.", task_id, trace_id)
             return result
 
         # 3. Bước áp dụng chỉnh sửa mã nguồn (Code Forge)
         elif step.step_id == "S2_FORGE":
-            engine.publish_mission_log("BRAIN", " [FORGE]: Đang tiến hành chỉnh sửa mã nguồn...", task_id, trace_id)
+            engine.publish_mission_log("BRAIN", "[FORGE] Đang tiến hành chỉnh sửa mã nguồn...", task_id, trace_id)
             # ── SUBAGENT WORKTREE ISOLATION: Tạo nhánh làm việc độc lập cho Đại Lý ──
             worktree_path = await self._setup_agent_worktree(task_id, trace_id)
             if worktree_path:
@@ -412,7 +412,7 @@ class StatePipeline:
 
         # 3b. Bước Tự Khắc Phục Lỗi Tại Chỗ (In-Loop Self-Correction)
         elif step.step_id == "S2_FORGE_RETRY":
-            engine.publish_mission_log("BRAIN", " [FORGE-RETRY]: Đang tự động suy đoán và sửa lại mã nguồn bị lỗi...", task_id, trace_id)
+            engine.publish_mission_log("BRAIN", "[FORGE-RETRY] Đang tự động suy đoán và sửa lại mã nguồn bị lỗi...", task_id, trace_id)
             try:
                 from deep_pipeline import DeepPipeline
                 from planner import Planner
@@ -498,10 +498,10 @@ class StatePipeline:
                 f" (Tong {checked} file quet)"
             )
             if is_clean:
-                engine.publish_mission_log("BRAIN", f"[VERIFY-DONE]: Sach. {summary}", task_id, trace_id)
+                engine.publish_mission_log("BRAIN", f"[VERIFY-DONE] Sạch. {summary}", task_id, trace_id)
                 await self._teardown_and_merge_worktree(task_id, trace_id, success=True)
             else:
-                engine.publish_mission_log("WARN", f"[VERIFY-DONE]: Co loi. {summary}", task_id, trace_id)
+                engine.publish_mission_log("WARN", f"[VERIFY-DONE] Có lỗi. {summary}", task_id, trace_id)
                 await self._teardown_and_merge_worktree(task_id, trace_id, success=False)
             return {
                 "status": "passed" if is_clean else "failed",
@@ -512,11 +512,11 @@ class StatePipeline:
 
         # 5. Bước phản biện chất lượng (Audit)
         elif step.step_id == "S4_AUDIT":
-            engine.publish_mission_log("BRAIN", " [AUDIT]: Gửi bản nháp qua Hội đồng nơ-ron...", task_id, trace_id)
+            engine.publish_mission_log("BRAIN", "[AUDIT] Gửi bản nháp qua Hội đồng nơ-ron...", task_id, trace_id)
             ws_path = mission_state.workspace_target or self.workspace_path
             # Guard: không audit ở root
             if ws_path in ("/", "/root", "/var", "/etc", "/usr", ""):
-                engine.publish_mission_log("WARN", f"️ [AUDIT-SKIP]: Workspace path unsafe ({ws_path}), bỏ qua audit.", task_id, trace_id)
+                engine.publish_mission_log("WARN", f"[AUDIT-SKIP] Workspace path unsafe ({ws_path}), bỏ qua audit.", task_id, trace_id)
                 return {"status": "skipped", "reason": f"unsafe workspace: {ws_path}"}
             prior_result = step_results.get("S2_FORGE", step_results.get("S1_RECON", {}))
             changed_files = prior_result.get("sample_files", prior_result.get("files_found", 0))
@@ -536,13 +536,13 @@ class StatePipeline:
                     timeout=30.0
                 )
                 verdict = critic_res.get("answer", "") if isinstance(critic_res, dict) else str(critic_res)
-                engine.publish_mission_log("BRAIN", f" [AUDIT-DONE]: {verdict[:200]}", task_id, trace_id)
+                engine.publish_mission_log("BRAIN", f"[AUDIT-DONE] {verdict[:200]}", task_id, trace_id)
                 return {"status": "success", "verdict": verdict}
             except asyncio.TimeoutError:
-                engine.publish_mission_log("WARN", "️ [AUDIT-TIMEOUT]: Critic không phản hồi trong 30s.", task_id, trace_id)
+                engine.publish_mission_log("WARN", "[AUDIT-TIMEOUT] Critic không phản hồi trong 30s.", task_id, trace_id)
                 return {"status": "timeout", "verdict": "Bỏ qua audit (Critic timeout)."}
             except Exception as critic_err:
-                engine.publish_mission_log("WARN", f"️ [AUDIT-FALLBACK]: {critic_err}", task_id, trace_id)
+                engine.publish_mission_log("WARN", f"[AUDIT-FALLBACK] {critic_err}", task_id, trace_id)
                 return {"status": "success", "verdict": "Bỏ qua audit (Critic không khả dụng)."}
 
         # Bước phục hồi khi gặp lỗi
@@ -557,7 +557,7 @@ class StatePipeline:
         trace_id = mission_state.trace_id or task_id
         engine.publish_mission_log(
             "WARN", 
-            f" [RECOVERY-HANDLER]: Phát hiện sự cố ở bước {step.step_id} ({err}). Tiến hành sao lưu dự phòng vào Git Stash...", 
+            f"[RECOVERY-HANDLER] Phát hiện sự cố ở bước {step.step_id} ({err}). Tiến hành sao lưu dự phòng vào Git Stash...", 
             task_id, trace_id
         )
         try:
@@ -569,9 +569,9 @@ class StatePipeline:
                 stderr=asyncio.subprocess.PIPE
             )
             stdout, stderr = await proc.communicate()
-            logger.info(f"[STATE-PIPELINE] Git stash completed. Output: {stdout.decode().strip()}")
+            logger.info("[STATE-PIPELINE] Git stash completed. Output: %s", stdout.decode().strip())
         except Exception as e:
-            logger.error(f"[STATE-PIPELINE] Git stash failed: {e}")
+            logger.error("[STATE-PIPELINE] Git stash failed: %s", e)
             # Fallback nếu stash lỗi thì restore
             try:
                 proc = await asyncio.create_subprocess_exec(
@@ -585,7 +585,7 @@ class StatePipeline:
         """Cầu nối ghi nhận tri thức ngoại lệ vào EngramLearner để chuyển hoá thành quy luật vĩnh cửu."""
         try:
             from prompt_engine.claw_compactor.engram_learner import EngramLearner
-            engine.publish_mission_log("BRAIN", f" [ENGRAM-LEARN]: Thu nhận dữ liệu sự cố bước {step_id} vào Engram v2 để tiến hóa quy luật khắc phục.", task_id, trace_id)
+            engine.publish_mission_log("BRAIN", f"[ENGRAM-LEARN] Thu nhận dữ liệu sự cố bước {step_id} vào Engram v2 để tiến hóa quy luật khắc phục.", task_id, trace_id)
         except Exception:
             pass
 
@@ -603,10 +603,10 @@ class StatePipeline:
                 )
                 await proc.communicate()
                 if proc.returncode == 0:
-                    engine.publish_mission_log("SYSTEM", f" [WORKTREE]: Tạo vùng cách ly an toàn tại {worktree_dir} cho đại lý con.", task_id, trace_id)
+                    engine.publish_mission_log("SYSTEM", f"[WORKTREE] Tạo vùng cách ly an toàn tại {worktree_dir} cho đại lý con.", task_id, trace_id)
                     return worktree_dir
         except Exception as e:
-            logger.debug(f"[WORKTREE]: Không thể khởi tạo worktree: {e}")
+            logger.debug("[WORKTREE] Không thể khởi tạo worktree: %s", e)
         return None
 
     async def _teardown_and_merge_worktree(self, task_id: str, trace_id: str, success: bool):
@@ -621,9 +621,9 @@ class StatePipeline:
                     cwd=self.workspace_path, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
                 )
                 await proc_merge.communicate()
-                engine.publish_mission_log("SYSTEM", f" [WORKTREE-MERGED]: Kiểm định Passed! Đã hợp nhất thành công mã nguồn từ vùng cách ly về nhánh chính.", task_id, trace_id)
+                engine.publish_mission_log("SYSTEM", f"[WORKTREE-MERGED] Kiểm định Passed! Đã hợp nhất thành công mã nguồn từ vùng cách ly về nhánh chính.", task_id, trace_id)
             else:
-                engine.publish_mission_log("WARN", f" [WORKTREE-ABORT]: Hủy vùng cách ly do kiểm định thất bại, không làm xáo trộn mã nguồn gốc.", task_id, trace_id)
+                engine.publish_mission_log("WARN", "[WORKTREE-ABORT] Hủy vùng cách ly do kiểm định thất bại, không làm xáo trộn mã nguồn gốc.", task_id, trace_id)
                 
             proc_rm = await asyncio.create_subprocess_exec(
                 "git", "worktree", "remove", "--force", worktree_dir,
@@ -631,4 +631,4 @@ class StatePipeline:
             )
             await proc_rm.communicate()
         except Exception as e:
-            logger.debug(f"[WORKTREE]: Lỗi khi dọn dẹp worktree: {e}")
+            logger.debug("[WORKTREE] Lỗi khi dọn dẹp worktree: %s", e)

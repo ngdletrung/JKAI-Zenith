@@ -54,7 +54,7 @@ class QueenCoordinator:
                 "timestamp": time.time()
             }
             
-            engine.publish_mission_log("QUEEN", "👑 [SOVEREIGN]: Dominance hierarchy established. Swarm state: ACTIVE.")
+            engine.publish_mission_log("QUEEN", "[SOVEREIGN]: Dominance hierarchy established. Swarm state: ACTIVE.")
             return {"status": "success", "data": status_data}
             
         except Exception as e:
@@ -91,7 +91,7 @@ class QueenCoordinator:
             if quotas:
                 default_allocation["compute_units"].update(quotas)
             
-            engine.publish_mission_log("QUEEN", "⚖️ [RESOURCES]: Computational lifelines allocated. Protection protocols: ENABLED.")
+            engine.publish_mission_log("QUEEN", "[RESOURCES]: Computational lifelines allocated. Protection protocols: ENABLED.")
             return {"status": "success", "allocation": default_allocation}
             
         except Exception as e:
@@ -113,7 +113,7 @@ class QueenCoordinator:
                 "timestamp": time.time()
             }
             
-            engine.publish_mission_log("QUEEN", f"🏥 [HEALTH]: Hive coherence: {health_metrics['coherence_score']*100:.1f}%. Neurons: STABLE.")
+            engine.publish_mission_log("QUEEN", f"[HEALTH]: Hive coherence: {health_metrics['coherence_score']*100:.1f}%. Neurons: STABLE.")
             return {"status": "success", "health": health_metrics}
             
         except Exception as e:
@@ -141,7 +141,7 @@ class QueenCoordinator:
                 skip_memory=True
             )
             
-            engine.publish_mission_log("QUEEN", f"📜 [REPORT]: {report}")
+            engine.publish_mission_log("QUEEN", f"[REPORT]: {report}")
             return {"status": "success", "report": report}
             
         except Exception as e:

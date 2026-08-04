@@ -30,14 +30,14 @@ class ExperienceDistiller:
             cpu = psutil.cpu_percent(interval=0.1)
             mem = psutil.virtual_memory().percent
             if cpu > 40 or mem > 70:
-                logger.info(f"🌀 [EVOLVE-PREEMPT] Hệ thống bận (cpu={cpu}%, mem={mem}%) — nhường tài nguyên.")
+                logger.info("[EVOLVE-PREEMPT] Hệ thống bận (cpu=%s%%, mem=%s%%) — nhường tài nguyên.", cpu, mem)
                 return False
         except Exception:
             pass
         try:
             active = redis_safe(lambda r: r.scard("active_tasks"), 0)
             if active and int(active) > 0:
-                logger.info(f"🌀 [EVOLVE-PREEMPT] Phát hiện {active} tác vụ người dùng đang chạy — nhường tài nguyên.")
+                logger.info("[EVOLVE-PREEMPT] Phát hiện %s tác vụ người dùng đang chạy — nhường tài nguyên.", active)
                 return False
         except Exception:
             pass
@@ -49,7 +49,7 @@ class ExperienceDistiller:
         Args:
             max_tasks: Giới hạn số task tối đa xử lý trong chu kỳ nếu rảnh.
         """
-        logger.info(f"🧪 [DISTILLER] Bắt đầu quét tác vụ gần đây (max={max_tasks})...")
+        logger.info("[DISTILLER] Bắt đầu quét tác vụ gần đây (max=%s)...", max_tasks)
         logs = redis_safe(lambda r: r.lrange(self.log_history_key, 0, 499), [])
         
         unique_tasks = {}
@@ -65,7 +65,7 @@ class ExperienceDistiller:
             except Exception: pass
             
         if not unique_tasks:
-            logger.info("⚠️ [DISTILLER] Không tìm thấy tác vụ nào trong nhật ký thưa Master.")
+            logger.info("[DISTILLER] Không tìm thấy tác vụ nào trong nhật ký thưa Master.")
             return
             
         processed = 0
@@ -75,7 +75,7 @@ class ExperienceDistiller:
                 
             # 🛡️ 1. GIAO THỨC TỰ NGẮT: Nhường tài nguyên ngay lập tức nếu hệ thống hết rảnh
             if not await self.is_system_idle():
-                logger.info("🛑 [DISTILLER] Tự động ngắt nhường CPU/VRAM cho Master.")
+                logger.info("[DISTILLER] Tự động ngắt nhường CPU/VRAM cho Master.")
                 break
                 
             # 🛡️ 2. CHECKPOINT: Bỏ qua nếu task này đã được đúc kết trước đó
@@ -83,7 +83,7 @@ class ExperienceDistiller:
             if is_processed:
                 continue
                 
-            logger.info(f"🧪 [DISTILLER] Tiến hành đúc kết nhiệm vụ cuốn chiếu: {tid} ('{goal}')")
+            logger.info("[DISTILLER] Tiến hành đúc kết nhiệm vụ cuốn chiếu: %s ('%s')", tid, goal)
             try:
                 await asyncio.wait_for(
                     self.distill_task(tid, goal),
@@ -96,12 +96,12 @@ class ExperienceDistiller:
                 ))
                 processed += 1
             except asyncio.TimeoutError:
-                logger.warning(f"⏱️ [DISTILLER] Timeout task {tid}, bỏ qua")
+                logger.warning("[DISTILLER] Timeout task %s, bỏ qua", tid)
             except Exception as e:
-                logger.error(f"❌ [DISTILLER-ERR] Lỗi task {tid}: {e}")
+                logger.error("[DISTILLER-ERR] Lỗi task %s: %s", tid, e)
 
     async def distill_task(self, task_id: str, goal: str):
-        logger.info(f"🧪 [DISTILLER] Analyzing task {task_id}: '{goal}'")
+        logger.info("[DISTILLER] Analyzing task %s: '%s'", task_id, goal)
         
         # 1. Thu thập dữ liệu (Logs)
         logs = redis_safe(lambda r: r.lrange(self.log_history_key, 0, 499), [])
@@ -114,7 +114,7 @@ class ExperienceDistiller:
             except Exception: pass
         
         if not relevant_logs:
-            logger.warning("⚠️ [DISTILLER] No relevant logs found for distillation.")
+            logger.warning("[DISTILLER] No relevant logs found for distillation.")
             return
 
         # 2. Xây dựng Prompt phân tích Đa tầng thưa Master
@@ -145,7 +145,7 @@ class ExperienceDistiller:
 
         # 🛡️ [ABORT-CHECK]: Kiểm tra tín hiệu dừng trước khi gọi model nặng thưa Master
         if redis_safe(lambda r: r.get("agent:stop_signal")) in [b'true', 'true']:
-            logger.info("🛑 [DISTILLER]: Master đã ngắt mạch. Hủy bỏ phiên chắt lọc thưa Master.")
+            logger.info("[DISTILLER]: Master đã ngắt mạch. Hủy bỏ phiên chắt lọc thưa Master.")
             return
 
         # 🥇 GIAO THỨC TINH HOA: Sử dụng EXECUTOR với Profile ELITE để triệu hồi model mạnh nhất thưa Master
@@ -201,7 +201,7 @@ class ExperienceDistiller:
 
     async def propose_self_patch(self, task_id: str, goal: str, logs: list):
         """🏛️ [SELF-SURGERY]: Tự đề xuất bản vá mã nguồn để sửa lỗi logic thưa Master."""
-        logger.info(f"🔬 [SELF-SURGERY] Đang phân tích lỗi để tự đề xuất bản vá cho Task {task_id}...")
+        logger.info("[SELF-SURGERY] Đang phân tích lỗi để tự đề xuất bản vá cho Task %s...", task_id)
         
         log_text = "\n".join(logs[-20:])
         patch_prompt = f"""
@@ -263,7 +263,7 @@ class ExperienceDistiller:
                     metadata=patch_data
                 )
         except Exception as e:
-            logger.error(f"❌ [SURGERY-ERR]: {e}")
+            logger.error("[SURGERY-ERR]: %s", e)
 
     async def _package_knowledge(self, data: dict, goal: str, pillar: str):
         """Đóng gói tri thức vào 12 Trụ cột thưa Master"""
@@ -293,7 +293,7 @@ class ExperienceDistiller:
         # 2. Cập nhật trực tiếp vào Bản đồ Tri thức (MAP_*.md) thưa Master
         await self._update_map_file(pillar, data, goal)
         
-        logger.info(f"💎 [DISTILLER] Knowledge crystallized and routed to Pillar: {pillar}")
+        logger.info("[DISTILLER] Knowledge crystallized and routed to Pillar: %s", pillar)
 
     def _write_file(self, path: str, content: str):
         with open(path, "w", encoding="utf-8") as f:
@@ -327,7 +327,7 @@ class ExperienceDistiller:
                 return registry
             await asyncio.to_thread(_sync_update)
         except Exception as e:
-            logger.error(f"❌ [REGISTRY-ERR] {e}")
+            logger.error("[REGISTRY-ERR] %s", e)
 
     async def _update_map_file(self, pillar: str, data: dict, goal: str):
         """Cập nhật các file MAP_*.md thưa Master"""

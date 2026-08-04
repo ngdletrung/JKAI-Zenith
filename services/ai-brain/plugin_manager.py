@@ -35,10 +35,10 @@ class PluginManager:
 
     async def scan_plugins(self):
         """🛡️ Quét toàn bộ thư mục skills để tìm các Plugin có 'Passport' (manifest.json)."""
-        logger.info(f"🚀 [Z-SOS] Scanning all skills for Z-SOS manifests in {self.skills_root}")
+        logger.info("[Z-SOS] Scanning all skills for Z-SOS manifests in %s", self.skills_root)
         
         if not os.path.exists(self.skills_root):
-            logger.error("❌ Skills directory not found!")
+            logger.error("Skills directory not found!")
             return
 
         found_plugins = {}
@@ -61,9 +61,9 @@ class PluginManager:
                         "logic_path": str(logic_path) if logic_path.exists() else None,
                         "dossier_path": str(dossier_path) if dossier_path.exists() else None
                     }
-                    logger.info(f"✅ Discovered plugin: {plugin_id} (v{manifest.get('version')})")
+                    logger.info("Discovered plugin: %s (v%s)", plugin_id, manifest.get('version'))
                 except Exception as e:
-                    logger.error(f"❌ Error loading manifest at {manifest_path}: {e}")
+                    logger.error("Error loading manifest at %s: %s", manifest_path, e)
 
         self.registry["plugins"] = found_plugins
         import datetime

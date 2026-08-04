@@ -74,7 +74,7 @@ class CognitiveEventBus:
     def __init__(self):
         self._subscribers: Dict[str, List[Callable[[CognitiveEvent], Awaitable[None]]]] = {}
         self._lock = asyncio.Lock()
-        logger.info("🏛️ [EVENT-BUS-INIT]: Khởi tạo thành công hệ thống đường truyền thần kinh lõi Zenith v6.0.")
+        logger.info("[EVENT-BUS-INIT]: Khởi tạo thành công hệ thống đường truyền thần kinh lõi Zenith v6.0.")
 
     def subscribe(self, event_type: str, callback: Callable[[CognitiveEvent], Awaitable[None]]):
         """
@@ -83,7 +83,7 @@ class CognitiveEventBus:
         if event_type not in self._subscribers:
             self._subscribers[event_type] = []
         self._subscribers[event_type].append(callback)
-        logger.debug(f"🧬 [SUBSCRIBE]: Đã gắn thụ thể callback '{callback.__name__}' cho tín hiệu '{event_type}'.")
+        logger.debug("[SUBSCRIBE]: Đã gắn thụ thể callback '%s' cho tín hiệu '%s'.", callback.__name__, event_type)
 
     async def publish(self, event: CognitiveEvent):
         """
@@ -96,7 +96,7 @@ class CognitiveEventBus:
         # 🏢 LOG VĂN PHÒNG CHUẨN DOANH NGHIỆP
         engine.publish_mission_log(
             "EVENT_BUS",
-            f"⚡ [NƠ-RON PHÁT SÓNG] Tín hiệu: {event.event_type} | HLC: {event.hlc_timestamp} | Actor: {event.agent_id}",
+            f"[NƠ-RON PHÁT SÓNG] Tín hiệu: {event.event_type} | HLC: {event.hlc_timestamp} | Actor: {event.agent_id}",
             event.task_id,
             "sys"
         )
@@ -116,7 +116,7 @@ class CognitiveEventBus:
                 }
             )
         except Exception as e:
-            logger.error(f"❌ [EVENT-BUS-SQLITE-ERR]: Lỗi lưu trữ Cold Path thưa Master: {e}")
+            logger.error("[EVENT-BUS-SQLITE-ERR]: Lỗi lưu trữ Cold Path thưa Master: %s", e)
 
         # 2. Phát sóng nóng thông qua Redis Pub/Sub (Hot Path)
         def _redis_publish(r):
@@ -141,13 +141,13 @@ class CognitiveEventBus:
                 try:
                     tasks.append(asyncio.create_task(cb(event)))
                 except Exception as ex:
-                    logger.error(f"❌ [DISPATCH-ERR]: Thụ thể '{cb.__name__}' lỗi đăng ký: {ex}")
+                    logger.error("[DISPATCH-ERR]: Thụ thể '%s' lỗi đăng ký: %s", cb.__name__, ex)
             
             if tasks:
                 results = await asyncio.gather(*tasks, return_exceptions=True)
                 for cb, res in zip(callbacks, results):
                     if isinstance(res, Exception):
-                        logger.error(f"❌ [CALLBACK-EXEC-ERR]: Thụ thể '{cb.__name__}' sập khi xử lý '{event.event_type}' thưa Master: {res}")
+                        logger.error("[CALLBACK-EXEC-ERR]: Thụ thể '%s' sập khi xử lý '%s' thưa Master: %s", cb.__name__, event.event_type, res)
 
         asyncio.create_task(_dispatch_all())
 

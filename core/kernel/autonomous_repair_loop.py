@@ -78,7 +78,7 @@ class AutonomousRepairLoop:
 
         last_stderr = ""
         for attempt in range(1, self.max_fix_attempts + 1):
-            logger.info(f"🔄 [REPAIR-LOOP-ATTEMPT-{attempt}]: Thực thi tệp `{script_file.name}` (Lần {attempt}/{self.max_fix_attempts})...")
+            logger.info("[REPAIR-LOOP-ATTEMPT-%s]: Thực thi tệp `%s` (Lần %s/%s)...", attempt, script_file.name, attempt, self.max_fix_attempts)
 
             # 2. Thực thi tệp Python
             proc = subprocess.run([sys.executable, str(script_file)], capture_output=True, text=True, timeout=60)
@@ -86,7 +86,7 @@ class AutonomousRepairLoop:
             if proc.returncode == 0:
                 # NẾU THÀNH CÔNG -> Commit transaction & Dọn dẹp backup .bak
                 saga_atomic_healer.commit_transaction(task_id)
-                logger.info(f"✅ [REPAIR-LOOP-SUCCESS]: Tệp `{script_file.name}` đã chạy thành công sau {attempt} lần thử!")
+                logger.info("[REPAIR-LOOP-SUCCESS]: Tệp `%s` đã chạy thành công sau %s lần thử!", script_file.name, attempt)
                 self._write_trace(task_id, str(script_file), {
                     "ts": time.time(), "status": "success", "attempts": attempt,
                     "stdout_tail": proc.stdout[-500:], "stderr": proc.stderr[-500:]
@@ -100,7 +100,7 @@ class AutonomousRepairLoop:
 
             # NẾU THẤT BẠI -> Thu thập Traceback lỗi
             last_stderr = proc.stderr or proc.stdout
-            logger.warning(f"⚠️ [REPAIR-LOOP-FAIL-{attempt}]: Tệp `{script_file.name}` bị lỗi (Exit code: {proc.returncode}). Traceback:\n{last_stderr[:300]}")
+            logger.warning("[REPAIR-LOOP-FAIL-%s]: Tệp `%s` bị lỗi (Exit code: %s). Traceback:\n%s", attempt, script_file.name, proc.returncode, last_stderr[:300])
             self._write_trace(task_id, str(script_file), {
                 "ts": time.time(), "status": "failed", "attempt": attempt,
                 "exit_code": proc.returncode, "stderr_tail": last_stderr[-500:]
@@ -126,7 +126,7 @@ class AutonomousRepairLoop:
             if clean_code and len(clean_code) > 10:
                 with open(script_file, "w", encoding="utf-8") as f:
                     f.write(clean_code)
-                logger.info(f"🛠️ [CODE-PATCHED]: Đã áp dụng bản sửa lỗi mới cho `{script_file.name}`.")
+                logger.info("[CODE-PATCHED]: Đã áp dụng bản sửa lỗi mới cho `%s`.", script_file.name)
 
         # NẾU VẪN THẤT BẠI SAU MAX ATTEMPTS -> Rollback khôi phục tệp .bak ban đầu
         saga_atomic_healer.rollback_transaction(task_id, error_detail=last_stderr)

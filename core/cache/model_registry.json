@@ -1,1 +1,29 @@
-{}
+{
+  "test-model:7b": {
+    "model_name": "test-model:7b",
+    "architecture": "llama",
+    "family": "llama",
+    "context_length_max": 8192,
+    "model_classes": [
+      "TOOL_USE",
+      "GENERAL"
+    ],
+    "has_vision": false,
+    "has_tool_calling": true,
+    "is_embedding_only": false,
+    "assessment_confidence": 0.7,
+    "last_inspected_at": 1785846754.6432173,
+    "ollama_digest": "abc123",
+    "memory": {
+      "weight_file_size_gb": 4.5,
+      "quantization": "Q4_K_M",
+      "bytes_per_param": 0.5,
+      "total_parameters_b": 7.0,
+      "active_parameters_b": 7.0,
+      "num_layers": 32,
+      "is_moe": false,
+      "kv_cache_mb_per_1k_ctx": 256.0,
+      "detection_method": "api_show"
+    }
+  }
+}

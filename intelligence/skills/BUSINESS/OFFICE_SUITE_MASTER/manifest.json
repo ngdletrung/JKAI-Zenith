@@ -40,8 +40,23 @@
           "type": "string",
           "enum": [
             "read",
+            "read_file",
             "write_word",
-            "write_excel"
+            "create_word",
+            "docx",
+            "edit_word",
+            "write_excel",
+            "create_excel",
+            "xlsx",
+            "edit_excel",
+            "write_pdf",
+            "create_pdf",
+            "pdf",
+            "add_chart",
+            "create_chart",
+            "chart",
+            "create_document",
+            "plan_dossier"
           ],
           "description": "Office task to perform."
         },
@@ -51,18 +66,36 @@
         },
         "content": {
           "type": "string",
-          "description": "Content for Word document."
+          "description": "Content for Word document or PDF."
         },
         "data": {
           "type": "array",
           "items": {
             "type": "object"
           },
-          "description": "Data for Excel sheet."
+          "description": "Data for Excel sheet or chart."
+        },
+        "columns": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Column names for Excel table."
+        },
+        "rows": {
+          "type": "array",
+          "items": { "type": "array" },
+          "description": "Row values for Excel table."
         },
         "filename": {
           "type": "string",
           "description": "Base filename for the output."
+        },
+        "file_path": {
+          "type": "string",
+          "description": "Path to existing file for read/edit."
+        },
+        "goal": {
+          "type": "string",
+          "description": "User intent for auto/plan_dossier actions."
         }
       },
       "required": [

@@ -35,11 +35,11 @@ class AgentGoalSolver:
         3. Enforces Context Pruner
         4. Runs execution loop with tool validation & autonomous self-repair fallback
         """
-        logger.info(f"🚀 [GOAL-SOLVER-START] Initiating Goal Task `{task_id}`: '{user_prompt[:80]}...'")
+        logger.info("[GOAL-SOLVER-START] Initiating Goal Task `%s`: '%s...'", task_id, user_prompt[:80])
 
         # Step 1: Select Specialized Agent
         agent = agent_router.route_task(user_prompt)
-        logger.info(f"🤖 [GOAL-SOLVER] Selected Agent: `{agent['name']}` (Model: `{agent.get('model_preference', 'qwen3.5:4b')}`)")
+        logger.info("[GOAL-SOLVER] Selected Agent: `%s` (Model: `%s`)", agent['name'], agent.get('model_preference', 'qwen3.5:4b'))
 
         # Step 2: Build Master Prompt
         from core.utils.engine import engine
@@ -54,7 +54,7 @@ class AgentGoalSolver:
 
         while steps_taken < max_steps:
             steps_taken += 1
-            logger.info(f"🔄 [GOAL-SOLVER-STEP {steps_taken}/{max_steps}] Querying Model...")
+            logger.info("[GOAL-SOLVER-STEP %s/%s] Querying Model...", steps_taken, max_steps)
 
             # Step 3: Prune context to fit token window
             pruned_msgs = context_manager.prune_messages(messages)
@@ -68,7 +68,7 @@ class AgentGoalSolver:
                     skip_build_final=False
                 )
             except Exception as e:
-                logger.error(f"❌ [GOAL-SOLVER-ERR] Engine call failed: {e}")
+                logger.error("[GOAL-SOLVER-ERR] Engine call failed: %s", e)
                 return {"status": "error", "task_id": task_id, "error": str(e), "steps": steps_taken}
 
             messages.append({"role": "assistant", "content": response_text})
@@ -79,7 +79,7 @@ class AgentGoalSolver:
 
             if not tool_name:
                 # LLM produced non-tool conversational output -> Goal Complete or direct answer
-                logger.info(f"✅ [GOAL-SOLVER-COMPLETE] Goal solved in {steps_taken} steps!")
+                logger.info("[GOAL-SOLVER-COMPLETE] Goal solved in %s steps!", steps_taken)
                 return {
                     "status": "success",
                     "task_id": task_id,
@@ -90,7 +90,7 @@ class AgentGoalSolver:
                 }
 
             if tool_name and args is not None:
-                logger.info(f"🛠️ [GOAL-SOLVER-TOOL] Invoking tool `{tool_name}` with args: {args}")
+                logger.info("[GOAL-SOLVER-TOOL] Invoking tool `%s` with args: %s", tool_name, args)
                 
                 # Special handle: Python script execution -> Send to Autonomous Repair Loop
                 if tool_name in ["run_python_script", "execute_script", "python_runner"] and "script_path" in args:

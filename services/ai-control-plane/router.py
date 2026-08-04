@@ -44,11 +44,11 @@ class ServiceRouter:
                 resp = await self.client.post(url, json=json)
                 if resp.status_code < 500:
                     return resp
-                logger.warning(f"⚠️ [ROUTER-RETRY]: Attempt {i+1} for {url} got HTTP {resp.status_code}")
+                logger.warning("[ROUTER-RETRY]: Attempt %s for %s got HTTP %s", i+1, url, resp.status_code)
             except (httpx.ConnectError, httpx.TimeoutException) as e:
                 if i == max_retries - 1: raise e
                 wait = (i + 1) * 1.5
-                logger.warning(f"⚠️ [ROUTER-RETRY]: Attempt {i+1} after {wait}s due to: {e}")
+                logger.warning("[ROUTER-RETRY]: Attempt %s after %ss due to: %s", i+1, wait, e)
                 await asyncio.sleep(wait)
                 continue
             except Exception as e:
@@ -98,7 +98,7 @@ class ServiceRouter:
             steps = data.get("steps", [])
             if steps and steps[0].get("hardware_target") == "BETA":
                 target_url = self.executor_cpu_url
-                logger.info(f"📡 [ROUTER]: Routing to BETA (CPU) Executor.")
+                logger.info("[ROUTER]: Routing to BETA (CPU) Executor.")
 
             resp = await self._post_with_retry(f"{target_url}/execute", json=data)
             return self._safe_json(resp, {"status": "error", "output": "Executor error."})

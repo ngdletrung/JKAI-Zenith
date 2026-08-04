@@ -132,10 +132,10 @@ async def conduct_research(topic: str, task_id: str = None) -> Dict[str, Any]:
     3. Su dung FactVerifier doi chieu cheo de phat hien bat dong thuan va xung dot ky thuat.
     4. Gui bao cao hoan chinh duoc gan chan trang trich dan chi tiet toi LLM PLANNER.
     """
-    engine.publish_mission_log("RESEARCH_START", f"🔍 [RESEARCH]: Bắt đầu nhiệm vụ tầm soát tri thức: `{topic}`", task_id)
+    engine.publish_mission_log("RESEARCH_START", "[RESEARCH]: Bắt đầu nhiệm vụ tầm soát tri thức: `%s`", topic, task_id)
 
     # Buoc 1: Tim kiem so bo
-    engine.publish_mission_log("RESEARCH_SEARCH", f"📡 [TAVILY]: Đang trinh sát Internet để tìm nguồn dữ liệu...", task_id)
+    engine.publish_mission_log("RESEARCH_SEARCH", "[TAVILY]: Đang trinh sát Internet để tìm nguồn dữ liệu...", task_id)
     sources = await _search_web(topic)
     raw_content = []
     candidates = []
@@ -145,7 +145,7 @@ async def conduct_research(topic: str, task_id: str = None) -> Dict[str, Any]:
         url = source.get("url", "")
         if not url or "ranked.internal" in url:
             continue
-        engine.publish_mission_log("RESEARCH_READ", f"📄 [RESEARCH]: Đang thấu thị nội dung từ: `{url}`", task_id)
+        engine.publish_mission_log("RESEARCH_READ", "[RESEARCH]: Đang thấu thị nội dung từ: `%s`", url, task_id)
         content = await _deep_read(url, topic)
         if content:
             raw_content.append(f"[Nguồn: {url}]\n{content}")
@@ -202,7 +202,7 @@ THÔNG TIN:
 BÁO CÁO NGHIÊN CỨU:"""
 
     # Buoc 4: Tong hop qua engine (role PLANNER = tu duy chien luoc)
-    engine.publish_mission_log("RESEARCH_SYNTHESIS", f"🧠 [PLANNER]: Đang đúc kết báo cáo nghiên cứu chuyên sâu...", task_id)
+    engine.publish_mission_log("RESEARCH_SYNTHESIS", "[PLANNER]: Đang đúc kết báo cáo nghiên cứu chuyên sâu...", task_id)
     synthesis = await engine.call_chat(
         messages=[{"role": "user", "content": synthesis_prompt}],
         role="PLANNER",

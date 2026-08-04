@@ -45,7 +45,7 @@ class CognitiveReActLoop:
 
         final_response = ""
         for turn_idx in range(1, self.max_turns + 1):
-            logger.info(f"🔄 [REACT-TURN-{turn_idx}]: Bắt đầu chu kỳ tư duy ReAct lượt {turn_idx}/{self.max_turns}...")
+            logger.info("[REACT-TURN-%s]: Bắt đầu chu kỳ tư duy ReAct lượt %s/%s...", turn_idx, turn_idx, self.max_turns)
             
             # Gọi LLM để sinh ra Thought & Action
             thought_text = await engine.call_chat(conversation_history, role=role, task_id=task_id, skip_build_final=True)

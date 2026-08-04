@@ -431,6 +431,20 @@ async def orchestrate_request(
             is_deep = False
             is_fast = True
 
+        # 🧠 [UNIVERSAL-COGNITION]: Phân tích ý định tổng quan cho MỌI yêu cầu tạo tệp/tác vụ phức tạp
+        try:
+            from core.utils.universal_intent_cortex import UniversalCognitionEngine
+            cog = UniversalCognitionEngine.analyze_goal(g)
+            if cog.requires_file_generation:
+                is_deep = True
+                is_fast = False
+                plan.pipeline = "deep"
+                plan.execution_mode = "deep"
+                plan.os_intent = "build"
+                _log(plan, "ZENITH", f"🧠 [UNIVERSAL-COGNITION]: Nhận diện yêu cầu tạo tệp thực sự ({cog.target_extension}) → Ép kích hoạt DEEP_PIPELINE & PLANNER.")
+        except Exception as cog_err:
+            logger.debug("[OS] UniversalCognitionEngine error: %s", cog_err)
+
     # ── T7 (mới): Khởi tạo MissionState & WorldState trước thưa Master ──
     try:
         trace_id = kwargs.get("trace_id") or task_id

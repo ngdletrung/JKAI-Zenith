@@ -65,7 +65,7 @@ class InternalEventBus:
                 stream_key = f"stream:events:{event.event_type}"
                 r.xadd(stream_key, event.to_dict(), maxlen=5000)
             except Exception as redis_err:
-                logger.warning(f"⚠️ [EVENT-STREAM-ERR] XADD failed: {redis_err}")
+                logger.warning("[EVENT-STREAM-ERR] XADD failed: %s", redis_err)
 
     def subscribe(self, event_type: str, handler: Callable):
         if event_type not in self.subscribers:

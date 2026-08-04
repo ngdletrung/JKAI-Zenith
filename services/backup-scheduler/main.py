@@ -11,16 +11,16 @@ from scripts.backup_database import backup_postgres, backup_qdrant_collections
 
 def main():
     interval_hours = int(os.getenv("BACKUP_INTERVAL_HOURS", "24"))
-    logger.info(f"🔄 [BACKUP-SCHEDULER-INIT]: Dịch vụ sao lưu tự động định kỳ mỗi {interval_hours} giờ khởi chạy...")
+    logger.info("[BACKUP-SCHEDULER-INIT]: Dịch vụ sao lưu tự động định kỳ mỗi %s giờ khởi chạy...", interval_hours)
     
     while True:
         try:
-            logger.info("🐘 [CRON-TRIGGER]: Bắt đầu tiến trình sao lưu PostgreSQL & Qdrant...")
+            logger.info("[CRON-TRIGGER]: Bắt đầu tiến trình sao lưu PostgreSQL & Qdrant...")
             backup_postgres()
             backup_qdrant_collections()
-            logger.info(f"✅ [CRON-SUCCESS]: Hoàn tất sao lưu. Chờ {interval_hours} giờ cho chu kỳ tiếp theo.")
+            logger.info("[CRON-SUCCESS]: Hoàn tất sao lưu. Chờ %s giờ cho chu kỳ tiếp theo.", interval_hours)
         except Exception as e:
-            logger.error(f"❌ [CRON-ERR] Lỗi sao lưu: {e}")
+            logger.error("[CRON-ERR] Lỗi sao lưu: %s", e)
             
         time.sleep(interval_hours * 3600)
 

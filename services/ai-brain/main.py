@@ -66,7 +66,7 @@ def sync_hlc_from_payload(payload):
             received_ts = HlcTimestamp.from_str(hlc_str)
             hlc.update(received_ts)
         except Exception as e:
-            logger.error(f" [HLC-SYNC-ERR]: {e}")
+            logger.error("[HLC-SYNC-ERR] %s", e)
 
 def _publish_log(tag: str, msg: str, task_id: str = 'system'):
     logger.info(f'[{tag}] {msg}')
@@ -112,7 +112,7 @@ async def _safe_get_json(request: Request):
         content = body.decode('utf-8-sig')
         return json.loads(content)
     except Exception as e:
-        logger.error(f" [SANITIZER-ERR]: {e}")
+        logger.error("[SANITIZER-ERR] %s", e)
         return None
 
 @app.on_event('startup')
@@ -124,15 +124,17 @@ async def startup_event():
         
         # 🏛️ [AMG-v2]: Real-time Model Discovery & Registry Population on Startup
         try:
-            from core.runtime.runtime_discovery import RuntimeDiscovery
+            from core.runtime.ollama_adapter import OllamaRuntimeAdapter
             from core.governor.model_registry import ModelRegistry
-            discovery = RuntimeDiscovery()
-            snap = discovery.snapshot()
+            adapters = [
+                OllamaRuntimeAdapter(host=engine.ollama_host_gpu),
+                OllamaRuntimeAdapter(host=engine.ollama_host_cpu),
+            ]
             registry = ModelRegistry()
-            registry.discover(snap)
-            logger.info(f"🏛️ [AMG-DISCOVERY]: Discover sequence complete — {snap.log_summary()}")
+            n = await registry.discover(adapters)
+            logger.info("[AMG-DISCOVERY] Registry populated — %s models registered.", n)
         except Exception as amg_err:
-            logger.warning(f"⚠️ [AMG-DISCOVERY-ERR]: Failed to discover models on startup: {amg_err}")
+            logger.warning("[AMG-DISCOVERY-ERR] Failed to discover models on startup: %s", amg_err)
 
         await engine.warmup_all_models()
         
@@ -141,7 +143,7 @@ async def startup_event():
             from core.tools.sync_pipeline import run_sync_pipeline
             asyncio.create_task(run_sync_pipeline("startup_sync"))
         except Exception as startup_err:
-            logger.error(f" [STARTUP-SYNC-ERR]: {startup_err}")
+            logger.error("[STARTUP-SYNC-ERR] %s", startup_err)
             
         asyncio.create_task(_autonomous_evolution_loop())
         asyncio.create_task(_import_watcher_loop())
@@ -156,14 +158,14 @@ async def _system_is_idle() -> bool:
         cpu = psutil.cpu_percent(interval=0.5)
         mem = psutil.virtual_memory().percent
         if cpu > 40 or mem > 70:
-            logger.info(f" [EVOLVE] System busy (cpu={cpu}%, mem={mem}%) — deferring")
+            logger.info("[EVOLVE] System busy (cpu=%s%%, mem=%s%%) — deferring", cpu, mem)
             return False
     except Exception:
         pass
     try:
         active = redis_safe(lambda r: r.scard("active_tasks"), 0)
         if active and int(active) > 0:
-            logger.info(f" [EVOLVE] {active} active tasks — deferring")
+            logger.info("[EVOLVE] %s active tasks — deferring", active)
             return False
     except Exception:
         pass
@@ -187,9 +189,9 @@ async def _autonomous_evolution_loop():
                 )
                 _publish_log("ZENITH", " [OMNI-EVOLVE]: Đã hoàn tất đúc kết nơ-ron.")
             except asyncio.TimeoutError:
-                logger.warning(" [EVOLVE] Timeout — distiller took >7200s, aborting")
+                logger.warning("[EVOLVE] Timeout — distiller took >7200s, aborting")
             except Exception as e:
-                logger.error(f" [EVOLVE-ERR]: {e}")
+                logger.error("[EVOLVE-ERR] %s", e)
                 await asyncio.sleep(300)
 
 _import_watcher_lock = False
@@ -218,14 +220,14 @@ async def _import_watcher_loop():
                         total = result.get("total", 0)
                         _publish_log("ZENITH", f" Auto-sync hoàn tất: {ok}/{total} phases OK ({result.get('msg', '')})")
                     except Exception as pipe_err:
-                        logger.error(f"[IMPORT-WATCHER] {pipe_err}")
+                        logger.error("[IMPORT-WATCHER] %s", pipe_err)
                     finally:
                         _import_watcher_lock = False
                 known_files = current
             else:
                 known_files = current
         except Exception as e:
-            logger.error(f"[IMPORT-WATCHER-ERR] {e}")
+            logger.error("[IMPORT-WATCHER-ERR] %s", e)
         await asyncio.sleep(30)
 
 @app.get('/health')
@@ -491,7 +493,7 @@ async def plan_task(request: Request):
         return result
     except Exception as e:
         import traceback
-        logger.error(f'[PLAN-ERR] {e}\n{traceback.format_exc()}')
+        logger.error("[PLAN-ERR] %s\n%s", e, traceback.format_exc())
         _publish_log('SYS_LOG', f'Loi Planner: {str(e)}')
         return {"steps": [], "ambiguous": False, "error": str(e)}
 
@@ -502,7 +504,7 @@ async def review_plan(request: Request):
     try:
         return await critic.review_plan(data.get('goal', ''), data.get('steps', []))
     except Exception as e:
-        logger.error(f'[REVIEW-ERR] {e}')
+        logger.error("[REVIEW-ERR] %s", e)
         return {"approved": True, "feedback": f"Critic error (auto-approved): {str(e)}"}
 
 @app.post('/dispatch')
@@ -566,7 +568,7 @@ async def distill_knowledge(request: Request):
         return {"status": "distillation_initiated", "task_id": task_id}
 
     except Exception as e:
-        logger.error(f" [DISTILL-ERR]: {e}")
+        logger.error("[DISTILL-ERR] %s", e)
         return {"status": "error", "reason": str(e)}
 
 def normalize_and_format_answer(answer: Any) -> str:
@@ -619,7 +621,7 @@ async def _neural_council_audit(goal: str, answer: str, task_id: str):
         ]
         answer_lower = answer.lower()
         if any(kw in answer_lower for kw in refusal_keywords):
-            logger.info("️ [NEURAL-COUNCIL]: Refusal/safety response detected. Bypassing audit thưa Master.")
+            logger.info("[NEURAL-COUNCIL] Refusal/safety response detected. Bypassing audit thưa Master.")
             return answer, True, []
  
         audit_prompt = (

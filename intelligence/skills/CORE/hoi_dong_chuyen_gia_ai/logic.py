@@ -28,7 +28,7 @@ RULES_SOFTWARE_PATH = os.path.join(_PROJECT_ROOT, "intelligence", "rules_softwar
 def load_api_keys_from_markdown(file_path: str = RULES_SOFTWARE_PATH) -> Dict[str, Dict[str, str]]:
     config = {}
     if not os.path.exists(file_path):
-        logger.error(f"❌ Không tìm thấy file cấu hình API: {file_path}")
+        logger.error("Không tìm thấy file cấu hình API: %s", file_path)
         return config
     try:
         with open(file_path, "r", encoding="utf-8") as f:
@@ -48,7 +48,7 @@ def load_api_keys_from_markdown(file_path: str = RULES_SOFTWARE_PATH) -> Dict[st
                             "provider": provider_raw
                         }
     except Exception as e:
-        logger.error(f"❌ Lỗi khi đọc rules_software.md: {e}")
+        logger.error("Lỗi khi đọc rules_software.md: %s", e)
     return config
 
 
@@ -66,7 +66,7 @@ def load_manifest_config() -> Dict[str, Any]:
             conflict_threshold = float(cfg.get("conflict_threshold", 0.5))
             nodes = cfg.get("nodes", [])
     except Exception as e:
-        logger.warning(f"⚠️ Không thể đọc manifest.json: {e}")
+        logger.warning("Không thể đọc manifest.json: %s", e)
     return {"max_rounds": max_rounds, "conflict_threshold": conflict_threshold, "nodes": nodes}
 
 
@@ -104,9 +104,9 @@ async def _post_and_parse(client: httpx.AsyncClient, base_url: str, api_key: str
                 content = re.sub(r"\n?```$", "", content.strip())
             return json.loads(content)
         else:
-            logger.error(f"❌ {label} error HTTP {response.status_code}")
+            logger.error("%s error HTTP %s", label, response.status_code)
     except Exception as e:
-        logger.error(f"❌ Lỗi parse/gọi {label}: {e}")
+        logger.error("Lỗi parse/gọi %s: %s", label, e)
     return None
 
 
@@ -245,7 +245,7 @@ async def execute(input_data: Dict[str, Any]) -> Dict[str, Any]:
             if r == 1:
                 # ── Round 1: Independent Analysis ──
                 transcript_lines.append("### ⚡ VÒNG 1: PHÂN TÍCH ĐỘC LẬP")
-                engine.publish_mission_log("ZENITH", f"⚡ [HOI_DONG] Vòng 1: Phân tích độc lập...", task_id)
+                engine.publish_mission_log("ZENITH", "[HOI_DONG] Vòng 1: Phân tích độc lập...", task_id)
                 node_tasks = []
                 node_names = []
 
@@ -257,9 +257,9 @@ async def execute(input_data: Dict[str, Any]) -> Dict[str, Any]:
                         cfg = api_config[key_var]
                         node_tasks.append(call_cloud_node(client, name, model, cfg["base_url"], cfg["api_key"], question, focus_area=focus_area))
                         node_names.append(name)
-                        engine.publish_mission_log("ZENITH", f"🧠 [HOI_DONG] Triệu hồi {name} ({model})...", task_id)
+                        engine.publish_mission_log("ZENITH", f"[HOI_DONG] Triệu hồi {name} ({model})...", task_id)
                     else:
-                        engine.publish_mission_log("WARN", f"⚠️ [HOI_DONG] {name}: không có API key ({key_var})", task_id)
+                        engine.publish_mission_log("WARN", f"[HOI_DONG] {name}: không có API key ({key_var})", task_id)
 
                 if not node_tasks:
                     break
@@ -272,23 +272,23 @@ async def execute(input_data: Dict[str, Any]) -> Dict[str, Any]:
                         transcript_lines.append(f"* **{name}**: {msg}")
                         engine.publish_mission_log("WARN", f"[HOI_DONG] {msg}", task_id)
                     else:
-                        engine.publish_mission_log("ZENITH", f"🔍 [HOI_DONG] Raw response from {name}:\n{json.dumps(res, ensure_ascii=False, indent=2)}", task_id)
+                        engine.publish_mission_log("ZENITH", f"[HOI_DONG] Raw response from {name}:\n{json.dumps(res, ensure_ascii=False, indent=2)}", task_id)
                         confidence = res.get('confidence', 0.0)
                         details = _format_opinion_details(res)
                         transcript_lines.append(f"* **{name}** (Độ tự tin: {confidence}):\n{details}")
                         claims_str = ", ".join(res.get("claims", []))[:300]
-                        engine.publish_mission_log("ZENITH", f"✅ [HOI_DONG] {name} hoàn tất (conf={confidence}): {claims_str}", task_id)
+                        engine.publish_mission_log("ZENITH", f"[HOI_DONG] {name} hoàn tất (conf={confidence}): {claims_str}", task_id)
 
             else:
                 # ── Round r > 1: Debate / Cross-Debate ──
                 conflict_score = calculate_conflict_score(opinions)
                 if conflict_score < conflict_threshold:
-                    engine.publish_mission_log("ZENITH", f"📊 [HOI_DONG] Consensus reached early at Round {r-1} (Conflict Score: {conflict_score:.2f} < {conflict_threshold}). Stopping debate.", task_id)
+                    engine.publish_mission_log("ZENITH", f"[HOI_DONG] Consensus reached early at Round {r-1} (Conflict Score: {conflict_score:.2f} < {conflict_threshold}). Stopping debate.", task_id)
                     transcript_lines.append(f"\n* **Đạt đồng thuận sớm:** Chỉ số xung đột {conflict_score:.2f} nằm dưới ngưỡng {conflict_threshold}.")
                     break
 
                 transcript_lines.append(f"\n### 🔥 VÒNG {r}: TRANH LUẬN & PHẢN BIỆN CHÉO")
-                engine.publish_mission_log("ZENITH", f"🔥 [HOI_DONG] Vòng {r}: Tranh luận & phản biện chéo...", task_id)
+                engine.publish_mission_log("ZENITH", f"[HOI_DONG] Vòng {r}: Tranh luận & phản biện chéo...", task_id)
                 debate_tasks = []
                 debate_names = []
 
@@ -301,30 +301,30 @@ async def execute(input_data: Dict[str, Any]) -> Dict[str, Any]:
                         prior = {k: v for k, v in opinions.items() if k != name}
                         debate_tasks.append(call_cloud_node(client, name, model, cfg["base_url"], cfg["api_key"], question, prior_opinions=prior, focus_area=focus_area))
                         debate_names.append(name)
-                        engine.publish_mission_log("ZENITH", f"🔄 [HOI_DONG] {name} đang phản biện ở vòng {r}...", task_id)
+                        engine.publish_mission_log("ZENITH", f"[HOI_DONG] {name} đang phản biện ở vòng {r}...", task_id)
 
                 if debate_tasks:
                     debate_results = await asyncio.gather(*debate_tasks)
                     for name, res in zip(debate_names, debate_results):
                         if not res.get("skipped"):
                           opinions[name] = res
-                          engine.publish_mission_log("ZENITH", f"🔍 [HOI_DONG] Raw response from {name} (Round {r}):\n{json.dumps(res, ensure_ascii=False, indent=2)}", task_id)
+                          engine.publish_mission_log("ZENITH", f"[HOI_DONG] Raw response from {name} (Round {r}):\n{json.dumps(res, ensure_ascii=False, indent=2)}", task_id)
                           details = _format_opinion_details(res)
                           transcript_lines.append(f"* **{name} (Cập nhật quan điểm ở Vòng {r}):**\n{details}")
                           claims_str = ", ".join(res.get("claims", []))[:300]
-                          engine.publish_mission_log("ZENITH", f"✅ [HOI_DONG] {name} phản biện hoàn tất ở vòng {r}: {claims_str}", task_id)
+                          engine.publish_mission_log("ZENITH", f"[HOI_DONG] {name} phản biện hoàn tất ở vòng {r}: {claims_str}", task_id)
 
             conflict_score = calculate_conflict_score(opinions)
             transcript_lines.append(f"\n* **Chỉ số xung đột (Conflict Score) sau Vòng {r}:** {conflict_score:.2f} (Ngưỡng: {conflict_threshold})")
-            engine.publish_mission_log("ZENITH", f"📊 [HOI_DONG] Conflict Score sau Vòng {r}: {conflict_score:.2f}", task_id)
+            engine.publish_mission_log("ZENITH", f"[HOI_DONG] Conflict Score sau Vòng {r}: {conflict_score:.2f}", task_id)
 
         # ── Consensus Summary ──
         transcript_lines.append("\n### 🤝 KẾT LUẬN ĐỒNG THUẬN")
-        engine.publish_mission_log("ZENITH", "🤝 [HOI_DONG] Consensus Builder đang tổng hợp...", task_id)
+        engine.publish_mission_log("ZENITH", "[HOI_DONG] Consensus Builder đang tổng hợp...", task_id)
         consensus = await build_consensus(client, opinions, question, api_config)
         final_decision = consensus.get("final_decision", "Không thể hoàn thành dung hợp ý kiến.")
         transcript_lines.append(final_decision)
-        engine.publish_mission_log("ZENITH", f"✅ [HOI_DONG] Consensus hoàn tất:\n{final_decision[:500]}", task_id)
+        engine.publish_mission_log("ZENITH", f"[HOI_DONG] Consensus hoàn tất:\n{final_decision[:500]}", task_id)
 
     full_transcript = "\n".join(transcript_lines)
 

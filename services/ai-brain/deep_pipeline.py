@@ -69,7 +69,7 @@ class DeepPipeline:
         try:
             await mode_switcher.switch_to("DEEP", engine, task_id)
         except Exception as e_ms:
-            logger.warning(f"[DEEP-PIPELINE] Mode switcher err: {e_ms}")
+            logger.warning("[DEEP-PIPELINE] Mode switcher err: %s", e_ms)
 
         # [PILLAR 9 & PARENTAL HERITAGE: CONTEXT FOG SEVERANCE & MEMORY PRUNING]
         try:
@@ -85,15 +85,15 @@ class DeepPipeline:
                 pruned_recs = res_prune.get("pruned_records", [])
                 if len(pruned_recs) < len(history):
                     history = [rec["original"] for rec in pruned_recs]
-                    engine.publish_mission_log("SYSTEM", f"🧹 [CONTEXT FOG SEVERANCE]: Đã thanh lọc {res_prune.get('reduction_percentage')}% rác lịch sử hội thoại trước chặng T2/T3.", task_id, trace_id, stealth=True)
+                    engine.publish_mission_log("SYSTEM", f"[CONTEXT FOG SEVERANCE] Đã thanh lọc {res_prune.get('reduction_percentage')}% rác lịch sử hội thoại trước chặng T2/T3.", task_id, trace_id, stealth=True)
         except Exception as e_prune:
-            logger.warning(f"[DEEP-PIPELINE] Memory pruning skipped: {e_prune}")
+            logger.warning("[DEEP-PIPELINE] Memory pruning skipped: %s", e_prune)
 
         for attempt in range(max_attempts):
             if attempt > 0:
                 engine.publish_mission_log(
                     "SYSTEM",
-                    f"🔄 [REPLAN-ATTEMPT]: Critic không phê duyệt. Lập kế hoạch lại. Attempt {attempt + 1}/{max_attempts}",
+                    f"[REPLAN-ATTEMPT] Critic không phê duyệt. Lập kế hoạch lại. Attempt {attempt + 1}/{max_attempts}",
                     task_id,
                     trace_id
                 )
@@ -133,7 +133,7 @@ class DeepPipeline:
             if any(w in verdict for w in ["SUCCESS", "PARTIAL", "PASS", "APPROVED", "VALID", "OK"]) or is_architectural:
                 engine.publish_mission_log(
                     "SYSTEM",
-                    f"✅ [CRITIC-PASSED]: Thẩm định thành công ({verdict}{' - Architectural Consensus' if is_architectural else ''}), duyệt báo cáo T5/T6.",
+                    f"[CRITIC-PASSED] Thẩm định thành công ({verdict}{' - Architectural Consensus' if is_architectural else ''}), duyệt báo cáo T5/T6.",
                     task_id,
                     trace_id
                 )
@@ -169,7 +169,7 @@ class DeepPipeline:
 
         engine.publish_mission_log(
             "SYSTEM",
-            f"🧠 [DEEP-PIPELINE]: Khởi động luồng chiến lược 5 tầng (T2→T6).",
+            "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
             task_id, trace_id, stealth=True
         )
 
@@ -202,9 +202,9 @@ class DeepPipeline:
             with TraceContext("DeepPipeline-T2T3", trace_id=trace_id):
                 plan_state = await self._planning.execute(initial_state)
         except Exception as e:
-            logger.error(f"🚨 [DEEP-T2T3-ERR]: {e}")
-            engine.publish_mission_log("ERROR", f"🚨 [T2/T3 FAULT]: {e}", task_id, trace_id)
-            return {"answer": f"❌ [PLANNER ERROR]: Không thể lập kế hoạch - {e}", "task_id": task_id}
+            logger.error("[DEEP-PIPELINE] T2/T3 error: %s", e)
+            engine.publish_mission_log("ERROR", f"[T2/T3 FAULT] {e}", task_id, trace_id)
+            return {"answer": f"[PLANNER ERROR] Không thể lập kế hoạch - {e}", "task_id": task_id}
 
         final_plan = plan_state.get("final_plan", {})
         steps = final_plan.get("steps", [])
@@ -227,7 +227,7 @@ class DeepPipeline:
         else:
             engine.publish_mission_log(
                 "PLANNER",
-                f"📊 [BLUEPRINT SEALED]: Không có bước thực thi cụ thể nào được tạo.",
+                f"[BLUEPRINT SEALED] Không có bước thực thi cụ thể nào được tạo.",
                 task_id, trace_id,
                 stealth=True
             )
@@ -237,8 +237,8 @@ class DeepPipeline:
                 q = getattr(blueprint, "question", None) or getattr(blueprint, "clarification_question", None)
                 if not q or q.strip() == "":
                     q = "Không tìm thấy dữ liệu liên quan trong cơ sở tri thức nội bộ. Vui lòng cung cấp tài liệu hoặc làm rõ từ khóa truy vấn."
-                return {"answer": f"🔍 [YÊU CẦU XÁC MINH TRI THỨC]: {q}", "task_id": task_id}
-            return {"answer": "⚠️ [PLANNER]: Không tạo được bước thực thi.", "task_id": task_id}
+                return {"answer": f"[YÊU CẦU XÁC MINH TRI THỨC] {q}", "task_id": task_id}
+            return {"answer": "[PLANNER] Không tạo được bước thực thi.", "task_id": task_id}
 
         # ── COGNITIVE CRITIC GUARD: Thẩm định logic và tính toàn vẹn mục tiêu ──
         try:
@@ -247,11 +247,11 @@ class DeepPipeline:
             critic_verdict = critic.validate_blueprint(goal, steps)
             if not critic_verdict.get("approved", True):
                 reason = critic_verdict.get("reason", "Phát hiện suy luận phi logic.")
-                engine.publish_mission_log("WARN", f" [COGNITIVE-CRITIC]: Từ chối kế hoạch: {reason}", task_id, trace_id)
-                return {"answer": f"[REASONING DRIFT PROTECTED]: {reason}", "task_id": task_id}
-            engine.publish_mission_log("BRAIN", " [COGNITIVE-CRITIC]: Thẩm định kế hoạch an toàn (Zero Reasoning Drift).", task_id, trace_id)
+                engine.publish_mission_log("WARN", f"[COGNITIVE-CRITIC] Từ chối kế hoạch: {reason}", task_id, trace_id)
+                return {"answer": f"[REASONING DRIFT PROTECTED] {reason}", "task_id": task_id}
+            engine.publish_mission_log("BRAIN", "[COGNITIVE-CRITIC] Thẩm định kế hoạch an toàn (Zero Reasoning Drift).", task_id, trace_id)
         except Exception as critic_e:
-            logger.debug(f"[COGNITIVE-CRITIC]: Bỏ qua kiểm tra: {critic_e}")
+            logger.debug("[COGNITIVE-CRITIC] Bỏ qua kiểm tra: %s", critic_e)
 
         # 🛡️ [SELF-REFLECTION-GUARD]: Rà soát blueprint có placeholder không
         blocked_step_ids: set = set()
@@ -262,11 +262,11 @@ class DeepPipeline:
                 if not audit["is_clean"]:
                     blocked_step_ids.add(step.get("id", ""))
                     engine.publish_mission_log(
-                        "WARN", f"🛡️ [REFLECTION]: Chặn bước chứa placeholder/stub {step.get('id', '?')} - {audit.get('reason', '')}",
+                        "WARN", f"[REFLECTION] Chặn bước chứa placeholder/stub {step.get('id', '?')} - {audit.get('reason', '')}",
                         task_id, trace_id
                     )
         except Exception as refl_e:
-            logger.warning(f"🛡️ [REFLECTION-GUARD-ERR]: {refl_e}")
+            logger.warning("[DEEP-PIPELINE] Reflection guard error: %s", refl_e)
 
         # ═══════════════════════════════════════════
         # T4: Gọi Executor thực thi Blueprint (DAG Parallel)
@@ -289,15 +289,15 @@ class DeepPipeline:
                             pass
                     engine.publish_mission_log(
                         "SYSTEM",
-                        f"🔄 [CHECKPOINT]: Đã khôi phục {len(executed_step_ids)} bước hoàn thành trước đó.",
+                        f"[CHECKPOINT] Đã khôi phục {len(executed_step_ids)} bước hoàn thành trước đó.",
                         task_id, trace_id, stealth=True
                     )
         except Exception as e:
-            logger.warning(f"⚠️ [CHECKPOINT-RECOVERY-ERR]: {e}")
+            logger.warning("[DEEP-PIPELINE] Checkpoint recovery error: %s", e)
 
         try:
             engine.publish_mission_log(
-                "EXECUTOR", "⚙️ [T4]: Khởi động DAG Parallel Executor...", task_id, trace_id
+                "EXECUTOR", "[T4] Khởi động DAG Parallel Executor...", task_id, trace_id
             )
             # Doc tu shared context de biet intent
             cached = engine.request_cache.get(task_id, {})
@@ -325,7 +325,7 @@ class DeepPipeline:
                 while len(executed_step_ids) < len(steps):
                     r_stop = engine._get_redis()
                     if r_stop and (r_stop.get("agent:stop_signal") in [b'true', 'true'] or r_stop.get(f"agent:stop_signal:{task_id}") in [b'true', 'true']):
-                        engine.publish_mission_log("STOP", "🛑 [STOP]: Nhận lệnh Dừng khẩn cấp từ Master. Ngắt chuỗi hành pháp.", task_id, trace_id)
+                        engine.publish_mission_log("STOP", "[STOP] Nhận lệnh dừng khẩn cấp từ Master. Đang ngắt quy trình.", task_id, trace_id)
                         raise MasterAbortException("Mission aborted by Master.")
 
             # Tìm các bước sẵn sàng chạy
@@ -353,7 +353,7 @@ class DeepPipeline:
                     in_prog_str = ", ".join([f"`[/]` **{s['id']}**" for s in ready_steps])
                     engine.publish_mission_log(
                         "EXECUTOR",
-                        f"🚀 **[TRIỂN KHAI BƯỚC]** Đang khởi chạy thực thi song song: {in_prog_str}",
+                        f"[TRIỂN KHAI BƯỚC] Đang khởi chạy thực thi song song: {in_prog_str}",
                         task_id, trace_id,
                         stealth=False
                     )
@@ -381,7 +381,7 @@ class DeepPipeline:
                                     if file_size > 10000:
                                         engine.publish_mission_log(
                                             "SYSTEM",
-                                            f"🔄 [LARGE-FILE-DETECTED]: Phát hiện tệp tin lớn ({file_size} bytes). Tự động kích hoạt cơ chế đọc tuần tự Map-Reduce tại chỗ...",
+                                            f"[LARGE-FILE-DETECTED] Phát hiện tệp tin lớn ({file_size} bytes). Tự động kích hoạt cơ chế đọc tuần tự Map-Reduce tại chỗ...",
                                             task_id, trace_id
                                         )
                                         try:
@@ -433,13 +433,13 @@ class DeepPipeline:
                                     break
                                 else:
                                     engine.publish_mission_log(
-                                        "WARN", f"⚠️ [T4]: Executor trả về {resp.status_code} cho bước {step['id']} (Thử lại {attempt + 1}/{max_attempts}).", task_id, trace_id
+                                        "WARN", f"[T4] Executor trả về {resp.status_code} cho bước {step['id']} (Thử lại {attempt + 1}/{max_attempts}).", task_id, trace_id
                                     )
                                     if attempt < max_attempts - 1:
                                         await asyncio.sleep(base_delay * (2 ** attempt))
                             except Exception as e:
                                 engine.publish_mission_log(
-                                    "WARN", f"⚠️ [T4 FAULT]: Lỗi kết nối ở bước {step['id']}: {e} (Thử lại {attempt + 1}/{max_attempts}).", task_id, trace_id
+                                    "WARN", f"[T4 FAULT] Lỗi kết nối ở bước {step['id']}: {e} (Thử lại {attempt + 1}/{max_attempts}).", task_id, trace_id
                                 )
                                 if attempt < max_attempts - 1:
                                     await asyncio.sleep(base_delay * (2 ** attempt))
@@ -467,7 +467,7 @@ class DeepPipeline:
                     if completed_ids: status_report.append("Hoàn tất: " + ", ".join(completed_ids))
                     if failed_ids: status_report.append("Cảnh báo: " + ", ".join(failed_ids))
                     if status_report:
-                        engine.publish_mission_log("EXECUTOR", f"⚡ **[CÂY KẾ TẢI BƯỚC]** {' | '.join(status_report)}", task_id, trace_id, stealth=False)
+                        engine.publish_mission_log("EXECUTOR", f"[CÂY KẾ TẢI BƯỚC] {' | '.join(status_report)}", task_id, trace_id, stealth=False)
 
                     any_step_failed = False
                     failed_step_info = None
@@ -485,7 +485,7 @@ class DeepPipeline:
                             if r:
                                 r.hset(checkpoint_key, s_id, json.dumps(s_res))
                         except Exception as e:
-                            logger.warning(f"⚠️ [CHECKPOINT-SAVE-ERR]: {e}")
+                            logger.warning("[DEEP-PIPELINE] Checkpoint save error: %s", e)
 
                         # [SILENT-FAILURE HUNTER]
                         if isinstance(s_res, dict) and s_res.get("status") == "success":
@@ -510,7 +510,7 @@ class DeepPipeline:
                             audit = self_reflection_guard.audit_response(output_text)
                             if not audit["is_clean"]:
                                 engine.publish_mission_log(
-                                    "SYSTEM", f"🛡️ [REFLECTION]: Phát hiện placeholder tại bước {s_id} - {audit['reason']}",
+                                    "SYSTEM", f"[REFLECTION] Phát hiện placeholder tại bước {s_id} - {audit['reason']}",
                                     task_id, trace_id, stealth=True
                                 )
                         except Exception:
@@ -544,12 +544,12 @@ class DeepPipeline:
                     if critical_info_missing:
                         engine.publish_mission_log(
                             "ERROR",
-                            f"🚨 [FAIL-FAST]: {missing_info_reason} Dừng quy trình để tránh chạy sai lệch.",
+                            f"[FAIL-FAST] {missing_info_reason} Dừng quy trình để tránh chạy sai lệch.",
                             task_id, trace_id
                         )
                         engine.request_cache.pop(task_id, None)
                         return {
-                            "answer": f"🔍 [YÊU CẦU XÁC MINH TRI THỨC]: Quy trình thực thi bị dừng do thiếu thông tin/tài liệu nguồn quan trọng: {missing_info_reason} Vui lòng cung cấp tài liệu chính xác hoặc hiệu chỉnh câu hỏi.",
+                            "answer": f"[YÊU CẦU XÁC MINH TRI THỨC] Quy trình thực thi bị dừng do thiếu thông tin/tài liệu nguồn quan trọng: {missing_info_reason} Vui lòng cung cấp tài liệu chính xác hoặc hiệu chỉnh câu hỏi.",
                             "task_id": task_id,
                             "steps": steps
                         }
@@ -558,7 +558,7 @@ class DeepPipeline:
                     if any_step_failed:
                         engine.publish_mission_log(
                             "CRITIC",
-                            f"⚖️ [STEP CRITIC]: Phát hiện lỗi tại bước {failed_step_info['id']}. Kích hoạt Dynamic Re-planning...",
+                            f"[STEP CRITIC] Phát hiện lỗi tại bước {failed_step_info['id']}. Kích hoạt Dynamic Re-planning...",
                             task_id, trace_id
                         )
                         remaining_steps = [s for s in steps if s["id"] not in executed_step_ids]
@@ -615,34 +615,34 @@ class DeepPipeline:
                                 steps = already_run + new_steps_list
                                 engine.publish_mission_log(
                                     "PLANNER",
-                                    f"🔄 [RE-PLANNING]: Đã cập nhật kế hoạch động. Nhận thêm {len(new_steps_list)} bước mới.",
+                                    f"[RE-PLANNING] Đã cập nhật kế hoạch động. Nhận thêm {len(new_steps_list)} bước mới.",
                                     task_id, trace_id
                                 )
                             else:
                                 engine.publish_mission_log(
                                     "WARN",
-                                    "⚠️ [RE-PLANNING]: Phản hồi re-plan không chứa danh sách steps hợp lệ.",
+                                    "[RE-PLANNING] Phản hồi re-plan không chứa danh sách steps hợp lệ.",
                                     task_id, trace_id
                                 )
                         except Exception as e:
                             engine.publish_mission_log(
-                                "WARN", f"⚠️ [RE-PLANNING-ERR]: Không thể lập lại kế hoạch: {e}", task_id, trace_id
+                                "WARN", f"[RE-PLANNING-ERR] Không thể lập lại kế hoạch: {e}", task_id, trace_id
                             )
 
             engine.publish_mission_log(
                 "EXECUTOR",
-                f"✅ [T4]: Thực thi DAG hoàn tất — {len(execution_results)} kết quả.",
+                f"[T4] Thực thi DAG hoàn tất — {len(execution_results)} kết quả.",
                 task_id, trace_id,
             )
         except Exception as e:
-            logger.warning(f"⚠️ [DEEP-T4-ERR]: {e}")
-            engine.publish_mission_log("WARN", f"⚠️ [T4 FAULT]: {e}.", task_id, trace_id)
+            logger.warning("[DEEP-PIPELINE] T4 error: %s", e)
+            engine.publish_mission_log("WARN", f"[T4 FAULT] {e}.", task_id, trace_id)
 
         # 🛡️ [ANTIGRAVITY SOVEREIGN REACT RESILIENCE]: Nếu chuỗi tool trả về trống hoặc tác vụ mang tính kiến trúc, 
         # lập tức kích hoạt bộ Khung xương Tác Vụ Động (Dynamic Architectural Synthesis) thay vì Fail-Fast gục ngã.
         if not execution_results or not self._has_valid_evidence(execution_results):
             engine.publish_mission_log(
-                "EXECUTOR", "⚡ [SOVEREIGN REACT ENGINE]: Kích hoạt tổng hợp Kiến trúc & Nơ-ron (Neural Architectural Synthesis) cho mục tiêu phức tạp...", task_id, trace_id
+                "EXECUTOR", "[SOVEREIGN REACT ENGINE] Kích hoạt tổng hợp Kiến trúc & Nơ-ron (Neural Architectural Synthesis) cho mục tiêu phức tạp...", task_id, trace_id
             )
             execution_results = {
                 "step_01_neural_synthesis": {
@@ -660,7 +660,7 @@ class DeepPipeline:
             await ScopedMemoryManager.distill(mc.mission_state_v2.state.memory, log_text, task_id=task_id)
             ctx_mgr.save(mc)
         except Exception as mem_err:
-            logger.warning(f"⚠️ [MEMORY-CONSOLIDATION-ERR]: Failed to distill memory: {mem_err}")
+            logger.warning("[DEEP-PIPELINE] Memory consolidation error: %s", mem_err)
 
         # ═══════════════════════════════════════════
         # T5: CRITIC kiểm duyệt kết quả thực thi
@@ -671,7 +671,7 @@ class DeepPipeline:
         try:
             engine.publish_mission_log(
                 "CRITIC",
-                "⚖️ [T5]: Khởi động phiên Thẩm định Tư pháp...",
+                "[T5] Khởi động phiên Thẩm định Tư pháp...",
                 task_id,
                 trace_id
             )
@@ -739,7 +739,7 @@ class DeepPipeline:
 
             engine.publish_mission_log(
                 "CRITIC",
-                f"⚖️ [T5]: Phán quyết — {judicial_review.get('verdict','N/A')} "
+                f"[T5] Phán quyết — {judicial_review.get('verdict','N/A')} "
                 f"(Score: {judicial_review.get('accuracy_score',0):.2f})",
                 task_id,
                 trace_id,
@@ -747,11 +747,11 @@ class DeepPipeline:
 
         except Exception as e:
 
-            logger.warning(f"⚠️ [DEEP-T5-ERR]: {e}")
+            logger.warning("[DEEP-PIPELINE] T5 error: %s", e)
 
             engine.publish_mission_log(
                 "WARN",
-                f"⚠️ [T5 FAULT]: {e} — Critic unavailable.",
+                f"[T5 FAULT] {e} — Critic unavailable.",
                 task_id,
                 trace_id
             )
@@ -773,7 +773,7 @@ class DeepPipeline:
         # ═══════════════════════════════════════════
         try:
             engine.publish_mission_log(
-                "SUMMARIZER", "📝 [T6]: Ban Thư Ký đang soạn Báo cáo...", task_id, trace_id
+                "SUMMARIZER", "[T6] Ban Thư Ký đang soạn Báo cáo...", task_id, trace_id
             )
             manifesto = await engine.get_brain_knowledge("agent_summarizer.md") or "Bạn là Thư ký Zenith T6."
             judicial_info = (
@@ -836,14 +836,14 @@ class DeepPipeline:
                 final_answer += signature
                 
             engine.publish_mission_log(
-                "SUMMARIZER", "✅ [T6]: Báo cáo đã soạn thảo hoàn tất.", task_id, trace_id
+                "SUMMARIZER", "[T6] Báo cáo đã soạn thảo hoàn tất.", task_id, trace_id
             )
         except Exception as e:
-            logger.error(f"🚨 [DEEP-T6-ERR]: {e}")
-            final_answer = f"✅ Kế hoạch đã được lập và thực thi. Xem tab Kế hoạch để chi tiết. [{e}]"
+            logger.error("[DEEP-PIPELINE] T6 error: %s", e)
+            final_answer = f"Kế hoạch đã được lập và thực thi. Xem tab Kế hoạch để chi tiết. [{e}]"
 
         engine.request_cache.pop(task_id, None)
-        logger.info(f"🧠 [DEEP-PIPELINE]: Hoàn tất toàn bộ T2→T6 cho task {task_id}")
+        logger.info("[DEEP-PIPELINE] Hoàn tất toàn bộ T2→T6 cho task %s", task_id)
 
         # Update mission context at the end of execution to preserve conversation history
         try:
@@ -865,9 +865,9 @@ class DeepPipeline:
             ctx_mgr.update_from_answer(mc, goal, res_content)
             ctx_mgr.link_conversation("default", task_id)
             ctx_mgr.save(mc)
-            logger.info(f"🧠 [DEEP-PIPELINE] Context saved successfully for task {task_id}")
+            logger.info("[DEEP-PIPELINE] Context saved successfully for task %s", task_id)
         except Exception as ctx_err:
-            logger.warning(f"[DEEP-PIPELINE] Context save failed, continuing: {ctx_err}")
+            logger.warning("[DEEP-PIPELINE] Context save failed, continuing: %s", ctx_err)
 
         fallback_report = (
             f"Báo cáo Master! Chuỗi hành pháp chuyên sâu T2-T6 cho yêu cầu: **{goal}** "

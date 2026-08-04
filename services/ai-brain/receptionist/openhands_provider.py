@@ -22,7 +22,7 @@ class OpenHandsProvider:
         🚀 Chuyển giao nhiệm vụ cho OpenHands.
         Trong Giai đoạn 1, chúng ta thực hiện routing và logging cơ bản.
         """
-        logger.info(f"📤 [OPENHANDS] Đang chuyển giao nhiệm vụ `{task_id}` thưa Master.")
+        logger.info("[OPENHANDS] Đang chuyển giao nhiệm vụ `%s` thưa Master.", task_id)
         
         try:
             # TODO: Triển khai giao tiếp REST/WebSocket thực tế với OpenHands 0.9+
@@ -31,12 +31,12 @@ class OpenHandsProvider:
             # Giả lập phản hồi từ OpenHands Runtime
             return {
                 "status": "success",
-                "output": f"💎 [OPENHANDS-READY]: Đã tiếp nhận chỉ thị: '{prompt[:50]}...'. OpenHands đang khởi tạo Sandbox chuyên dụng.",
+                "output": f"[OPENHANDS-READY]: Đã tiếp nhận chỉ thị: '{prompt[:50]}...'. OpenHands đang khởi tạo Sandbox chuyên dụng.",
                 "provider": "OpenHands"
             }
             
         except Exception as e:
-            logger.error(f"❌ [OPENHANDS-PROVIDER-ERR]: {str(e)}")
+            logger.error("[OPENHANDS-PROVIDER-ERR] %s", str(e))
             return {
                 "status": "error", 
                 "message": f"Lỗi kết nối OpenHands: {str(e)}. Vui lòng kiểm tra container `openhands`."

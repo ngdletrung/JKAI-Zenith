@@ -28,7 +28,7 @@ class SearchBrowseAgent:
     def _log(self, msg: str):
         try:
             from core.utils.engine import engine
-            engine.publish_mission_log("SEARCH_BROWSE", f"📡 [RECURSIVE-RECON]: {msg}", self.task_id)
+            engine.publish_mission_log("SEARCH_BROWSE", "[RECURSIVE-RECON]: %s", msg, self.task_id)
         except ImportError:
             print(f"📡 [RECURSIVE-RECON]: {msg}")
 

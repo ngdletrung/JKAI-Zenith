@@ -39,7 +39,7 @@ class ReconStage(PlanningStage):
             
             return state
         except Exception as e:
-            engine.publish_mission_log("ERROR", f"🚨 [STAGE-FAULT]: ReconStage thất bại - {str(e)}", state.get("task_id", "sys"), state.get("trace_id", "system"))
+            engine.publish_mission_log("ERROR", f"[STAGE-FAULT] ReconStage thất bại - {str(e)}", state.get("task_id", "sys"), state.get("trace_id", "system"))
             raise e
 
 class ContextStage(PlanningStage):
@@ -104,20 +104,20 @@ class ContextStage(PlanningStage):
             if kb_ctx:
                 engine.publish_mission_log(
                     "BRAIN",
-                    f"📚 [KB-RETRIEVED]: {len(structured)} chunks (≥0.45), {len(high_quality)} high-quality (≥0.72). "
+                    f"[KB-RETRIEVED] {len(structured)} chunks (≥0.45), {len(high_quality)} high-quality (≥0.72). "
                     f"Sufficient={neural_context['kb_sufficient']}",
                     task_id, trace_id, stealth=True
                 )
             else:
                 engine.publish_mission_log(
-                    "BRAIN", "📭 [KB-EMPTY]: Không tìm thấy tài liệu liên quan trong Qdrant.",
+                    "BRAIN", "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
                     task_id, trace_id, stealth=True
                 )
 
             state["neural_context"] = neural_context
             return state
         except Exception as e:
-            engine.publish_mission_log("ERROR", f"🚨 [STAGE-FAULT]: ContextStage thất bại - {str(e)}", state.get("task_id", "sys"), state.get("trace_id", "system"))
+            engine.publish_mission_log("ERROR", f"[STAGE-FAULT] ContextStage thất bại - {str(e)}", state.get("task_id", "sys"), state.get("trace_id", "system"))
             raise e
 
 
@@ -146,7 +146,7 @@ class ForgeStage(PlanningStage):
             if task_type in ("LOOKUP", "CHAT"):
                 engine.publish_mission_log(
                     "FORGE",
-                    f"⚡ [SMART-GATE]: KB sufficient + task={task_type}. Skip LLM forge, answer from KB.",
+                    f"[SMART-GATE] KB sufficient + task={task_type}. Skip LLM forge, answer from KB.",
                     task_id, trace_id, stealth=True
                 )
                 from planner import Blueprint, PlanStep, HardwareTarget
@@ -271,7 +271,7 @@ class ForgeStage(PlanningStage):
                         available_tools = [k.upper() for k in skills_dict.keys()][:10]
                     planner._inject_plan_schema_enums(schema, available_tools)
                 except Exception as e:
-                    logger.debug(f"[DYNAMIC-SCHEMA] ForgeStage failed to inject enum: {e}")
+                    logger.debug("[DYNAMIC-SCHEMA] ForgeStage failed to inject enum: %s", e)
 
             try:
                 raw_res = await asyncio.wait_for(
@@ -288,12 +288,12 @@ class ForgeStage(PlanningStage):
                     timeout=240.0 # 🛡️ [DYNAMIC-TIMEOUT]: Cho phép thời gian suy luận rộng rãi cho các task kiến trúc phức tạp
                 )
             except asyncio.TimeoutError:
-                logger.warning(f"⚠️ [FORGE-ATTEMPT-{attempt}-TIMEOUT]: Model `{current_role}` timed out after 240s. Chuyển sang trạm nơ-ron kế tiếp...")
+                logger.warning("[FORGE-ATTEMPT-%s-TIMEOUT] Model `%s` timed out after 240s. Chuyển sang trạm nơ-ron kế tiếp...", attempt, current_role)
                 if attempt < 3:
                     continue
                 raise
             latency = time.time() - start_time
-            engine.publish_mission_log("LATENCY", f"⏱️ [FORGE-ATTEMPT-{attempt}]: Model `{current_role}` response time: {round(latency, 2)}s.", task_id, trace_id)
+            engine.publish_mission_log("LATENCY", f"[FORGE-ATTEMPT-{attempt}] Model `{current_role}` response time: {round(latency, 2)}s.", task_id, trace_id)
             
             try:
                 if not raw_res: raise ValueError("AI trả về chuỗi rỗng.")
@@ -308,7 +308,7 @@ class ForgeStage(PlanningStage):
                 elif isinstance(raw_res, str):
                     json_str = repair_json(raw_res)
                     if not json_str: 
-                        engine.publish_mission_log("WARN", f"⚠️ [PARSING-FAULT]: Không phát hiện định dạng JSON từ `{current_role}`.", task_id, trace_id)
+                        engine.publish_mission_log("WARN", f"[PARSING-FAULT] Không phát hiện định dạng JSON từ `{current_role}`.", task_id, trace_id)
                         raise ValueError("Không tìm thấy JSON.")
                     parsed_json = json.loads(json_str)
 
@@ -385,7 +385,7 @@ class ForgeStage(PlanningStage):
                             not any(word.lower() in raw_query.lower() for word in goal.split() if len(word) > 3)
                         )
                         if is_hallucinated:
-                            logger.warning(f"⚠️ [QUERY-SANITY]: Detected hallucinated query, reverting to original goal.")
+                            logger.warning("[QUERY-SANITY] Detected hallucinated query, reverting to original goal.")
                             step.setdefault("args", {})["query"] = goal
 
                 # 🛡️ [TOOL-SANITY-FIREWALL]: Ngăn chặn AI bịa ra tool ảo (Hallucination)
@@ -393,7 +393,7 @@ class ForgeStage(PlanningStage):
                     skills_dict = await planner.orchestrator.get_all_skills_dict()
                     available_tools = [k.upper() for k in skills_dict.keys()]
                 except Exception as e:
-                    logger.warning(f"⚠️ [TOOL-SANITY-LOAD-ERR]: Error loading registry_Map_skills.json: {e}")
+                    logger.warning("[TOOL-SANITY-LOAD-ERR] Error loading registry_Map_skills.json: %s", e)
                     available_tools = []
                     
                 valid_tool_names = set(available_tools + ["OMNI_SEARCH_ENGINE", "SEARCH_WEB_GLOBAL", "BROWSER_CONTROL", "CODE_EXECUTION", "READ_FILE", "REWRITE_FILE", "VIEW_FILE", "LLM_ANALYSIS", "ASK_USER", "FILE_WARDEN", "PYTHON_REPL", "SYSTEM_CMD", "FILESYSTEM", "DOCKER", "BASH", "EXECUTE_COMMAND", "MISSION_CONTROL", "SCAFFOLD_PROJECT", "WRITE_CODE", "RUN_TEST", "WRITE_FILE", "CREATE_FILE", "PYTHON_EXECUTE", "ANALYSIS", "ARCHITECTURE_DESIGN"])
@@ -408,17 +408,17 @@ class ForgeStage(PlanningStage):
                     if tool in valid_tool_names or any(t in tool for t in ["WRITE_", "READ_", "RUN_", "TEST", "CODE", "ANALYS", "EXEC", "DOCKER"]):
                         valid_steps.append(step)
                     else:
-                        logger.warning(f"⚠️ [TOOL-SANITY]: Hallucinated tool `{tool}`. Dropping step.")
+                        logger.warning("[TOOL-SANITY] Hallucinated tool `%s`. Dropping step.", tool)
                         dropped_tools.append(tool)
                         if "id" in step:
                             dropped_ids.add(step["id"])
                             
                 # 🔄 [SELF-CORRECTION-REFLEX]: Ép AI làm lại nếu bịa ra tool (Chỉ kích hoạt ở attempt 1 & 2)
                 if dropped_tools and attempt < 3:
-                    engine.publish_mission_log("WARN", f"⚠️ [SELF-CORRECTION]: Phát hiện AI ảo giác tạo tool giả {dropped_tools}. Đang ép buộc suy nghĩ lại!", task_id, trace_id, stealth=False)
+                    engine.publish_mission_log("WARN", f"[SELF-CORRECTION] Phát hiện AI ảo giác tạo tool giả {dropped_tools}. Đang ép buộc suy nghĩ lại!", task_id, trace_id, stealth=False)
                     raise ValueError(f"You hallucinated invalid tools: {dropped_tools}. You MUST use ONLY valid tools like SEARCH_WEB_GLOBAL, CODE_EXECUTION, WRITE_CODE, RUN_TEST, READ_FILE, REWRITE_FILE, VIEW_FILE, FILESYSTEM, DOCKER, SYSTEM_CMD. Please rewrite the ENTIRE plan.")
                 elif dropped_tools and attempt == 3:
-                    engine.publish_mission_log("WARN", f"⚠️ [TOOL-SANITY]: Lần thử cuối vẫn ảo giác tool {dropped_tools}. Đành phải tước bỏ bước này để cứu kế hoạch.", task_id, trace_id, stealth=False)
+                    engine.publish_mission_log("WARN", f"[TOOL-SANITY] Lần thử cuối vẫn ảo giác tool {dropped_tools}. Đành phải tước bỏ bước này để cứu kế hoạch.", task_id, trace_id, stealth=False)
                 
                 # Dọn dẹp depends_on mồ côi do xóa step
                 for step in valid_steps:
@@ -452,7 +452,7 @@ class ForgeStage(PlanningStage):
                 return state
                 
             except Exception as e:
-                logger.warning(f"⚠️ [FORGE-RETRY-{attempt}]: {e}")
+                logger.warning("[FORGE-RETRY-%s] %s", attempt, e)
                 if attempt == 1:
                     messages.append({"role": "user", "content": "[RETRY REQUIRED] Your previous response was invalid. Respond with ONLY a valid JSON object. No markdown, no explanations, no text outside the JSON. Follow the schema exactly."})
                 if attempt == 3: raise e
@@ -491,7 +491,7 @@ class DAGOptimizerStage(PlanningStage):
                             q.append(s_id)
             
             if visited != len(steps) and len(steps) > 1:
-                engine.publish_mission_log("WARN", "⚠️ [DAG-FAULT]: Phát hiện đồ thị vòng lặp vô tận (Deadlock). Đang bẻ gãy liên kết...", task_id, trace_id)
+                engine.publish_mission_log("WARN", "[DAG-FAULT] Phát hiện đồ thị vòng lặp vô tận (Deadlock). Đang bẻ gãy liên kết...", task_id, trace_id)
                 for i in range(1, len(steps)):
                     steps[i].depends_on = [steps[i-1].id]
                     steps[i].parallel = False
@@ -511,7 +511,7 @@ class DAGOptimizerStage(PlanningStage):
                             if prev_step_id not in s.depends_on:
                                 s.depends_on.append(prev_step_id)
                                 s.parallel = False
-                                engine.publish_mission_log("INFO", f"🛡️ [DAG-CRDT]: Đã vá Race Condition cho `{target}` (Ép {s.id} đợi {prev_step_id})", task_id, trace_id, stealth=True)
+                                engine.publish_mission_log("INFO", f"[DAG-CRDT] Đã vá Race Condition cho `{target}` (Ép {s.id} đợi {prev_step_id})", task_id, trace_id, stealth=True)
                         target_map[target] = s.id
 
             # 3. Auto-Parallelization
@@ -523,13 +523,13 @@ class DAGOptimizerStage(PlanningStage):
             # 4. Topological Wave Generation (SOTA 2026 Parallel Accelerator)
             from core.utils.dag_runner import build_dag_waves
             state["execution_waves"] = build_dag_waves([s.model_dump() for s in steps])
-            engine.publish_mission_log("INFO", f"⚡ [DAG-WAVES]: Đã phân tầng {len(state['execution_waves'])} sóng thực thi song song cho {len(steps)} bước.", task_id, trace_id, stealth=True)
+            engine.publish_mission_log("INFO", f"[DAG-WAVES] Đã phân tầng {len(state['execution_waves'])} sóng thực thi song song cho {len(steps)} bước.", task_id, trace_id, stealth=True)
 
             state["blueprint_obj"] = blueprint_obj
             return state
             
         except Exception as e:
-            engine.publish_mission_log("ERROR", f"🚨 [STAGE-FAULT]: DAGOptimizerStage thất bại - {str(e)}", state.get("task_id", "sys"), state.get("trace_id", "system"))
+            engine.publish_mission_log("ERROR", f"[STAGE-FAULT] DAGOptimizerStage thất bại - {str(e)}", state.get("task_id", "sys"), state.get("trace_id", "system"))
             raise e
 
 class PolicyStage(PlanningStage):
@@ -561,7 +561,7 @@ class PolicyStage(PlanningStage):
             state["final_plan"] = final_plan
             return state
         except Exception as e:
-            engine.publish_mission_log("ERROR", f"🚨 [STAGE-FAULT]: PolicyStage thất bại - {str(e)}", state.get("task_id", "sys"), state.get("trace_id", "system"))
+            engine.publish_mission_log("ERROR", f"[STAGE-FAULT] PolicyStage thất bại - {str(e)}", state.get("task_id", "sys"), state.get("trace_id", "system"))
             raise e
 
 class PlanningPipeline:
@@ -585,7 +585,7 @@ class PlanningPipeline:
                 remaining_stages.append(stage)
                 
         if recon_stage and context_stage:
-            logger.info("⚡ [PARALLEL-PLANNING]: Kích hoạt luồng song song ReconStage + ContextStage...")
+            logger.info("[PARALLEL-PLANNING] Kích hoạt luồng song song ReconStage + ContextStage...")
             
             # 🛡️ [DEEPCOPY-ISOLATION]: Sử dụng deepcopy để triệt tiêu hoàn toàn race conditions
             async def run_recon():
@@ -603,14 +603,14 @@ class PlanningPipeline:
             
             # Kiểm thử và cấu trúc cứu vớt thông tin
             if isinstance(recon_res, Exception):
-                logger.error(f"🚨 [PARTIAL-FAILURE]: Nhánh ReconStage lỗi: {recon_res}")
+                logger.error("[PARTIAL-FAILURE] Nhánh ReconStage lỗi: %s", recon_res)
                 recon_res = {
                     "skill_dna": "[SKILL DNA]: Fallback global search active.",
                     "pre_flight": [],
                     "top_k_ids": ["OMNI_SEARCH_ENGINE"]
                 }
             if isinstance(context_res, Exception):
-                logger.error(f"🚨 [PARTIAL-FAILURE]: Nhánh ContextStage lỗi: {context_res}")
+                logger.error("[PARTIAL-FAILURE] Nhánh ContextStage lỗi: %s", context_res)
                 context_res = {
                     "neural_context": {
                         "reliability": "DEGRADED", 
@@ -628,14 +628,14 @@ class PlanningPipeline:
             # Luồng tuần tự dự phòng
             for stage in self.stages:
                 if isinstance(stage, (ReconStage, ContextStage)):
-                    logger.info(f"🚀 [STAGE]: {stage.__class__.__name__} starting...")
+                    logger.info("[STAGE] %s starting...", stage.__class__.__name__)
                     try:
                         # Canh gác treo Stage bằng Timeout 120s
                         state = await asyncio.wait_for(stage.run(state), timeout=120.0)
                     except asyncio.TimeoutError:
-                        logger.error(f"🚨 [STAGE-TIMEOUT]: Stage {stage.__class__.__name__} timed out after 120 seconds.")
+                        logger.error("[STAGE-TIMEOUT] Stage %s timed out after 120 seconds.", stage.__class__.__name__)
                     except Exception as e:
-                        logger.error(f"🚨 [STAGE-FAULT]: Stage {stage.__class__.__name__} failed: {e}")
+                        logger.error("[STAGE-FAULT] Stage %s failed: %s", stage.__class__.__name__, e)
                     
         # Chạy các stage còn lại tuần tự với State Checkpointing (SOTA 2026)
         for stage in remaining_stages:
@@ -647,13 +647,13 @@ class PlanningPipeline:
                 from core.utils.state_checkpoint import load_checkpoint, save_checkpoint
                 cached_state = load_checkpoint(task_id, stage_name)
                 if cached_state and ("raw_blueprint" in cached_state or "final_plan" in cached_state):
-                    logger.info(f"⚡ [CHECKPOINT-RESUME]: Task {task_id} nạp lại kết quả stage {stage_name} từ disk, bỏ qua LLM call.")
+                    logger.info("[CHECKPOINT-RESUME] Task %s nạp lại kết quả stage %s từ disk, bỏ qua LLM call.", task_id, stage_name)
                     state.update(cached_state)
                     continue
             except Exception as ckpt_err:
-                logger.debug(f"[CHECKPOINT-CHECK] {stage_name}: {ckpt_err}")
+                logger.debug("[CHECKPOINT-CHECK] %s: %s", stage_name, ckpt_err)
 
-            logger.info(f"🚀 [STAGE]: {stage_name} starting...")
+            logger.info("[STAGE] %s starting...", stage_name)
             try:
                 # 🕒 [STAGE-TIMEOUT-GUARD]: Timeout 600s
                 state = await asyncio.wait_for(stage.run(state), timeout=600.0)
@@ -666,13 +666,13 @@ class PlanningPipeline:
                     update_mission_world_state(task_id, "state_data", {stage_name: "COMPLETED"})
                     record_causality_link(task_id, cause=f"Stage_{stage_name}", effect=f"Stage {stage_name} output generated", status="SUCCESS")
                 except Exception as save_err:
-                    logger.debug(f"[CHECKPOINT-SAVE-ERR] {stage_name}: {save_err}")
+                    logger.debug("[CHECKPOINT-SAVE-ERR] %s: %s", stage_name, save_err)
             except asyncio.TimeoutError:
                 err_msg = f"Stage {stage_name} timed out after 600 seconds."
-                logger.error(f"🚨 [STAGE-FAULT]: {err_msg}")
+                logger.error("[STAGE-FAULT] %s", err_msg)
                 raise TimeoutError(err_msg)
             except Exception as e:
-                logger.error(f"🚨 [STAGE-FAULT]: Stage {stage_name} timed out or failed: {e}")
+                logger.error("[STAGE-FAULT] Stage %s timed out or failed: %s", stage_name, e)
                 raise e
 
         # Clear checkpoints upon mission completion

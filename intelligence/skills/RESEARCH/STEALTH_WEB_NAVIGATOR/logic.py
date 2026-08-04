@@ -55,8 +55,8 @@ async def STEALTH_WEB_NAVIGATOR(
     """
     engine.publish_mission_log(
         "STEALTH_NAV",
-        f"🕵️ [CLOAK-LAUNCH]: Kích hoạt Đặc Vụ Ẩn Danh → `{url}`\n"
-        f"🎯 Nhiệm vụ: {objective}",
+        "[CLOAK-LAUNCH]: Kích hoạt Đặc Vụ Ẩn Danh -> `%s`\nNhiệm vụ: %s",
+        url, objective,
         task_id, trace_id,
     )
 
@@ -76,14 +76,15 @@ async def STEALTH_WEB_NAVIGATOR(
         if data.get("status") == "success":
             engine.publish_mission_log(
                 "STEALTH_NAV",
-                f"✅ [CLOAK-SUCCESS]: Đặc vụ hoàn thành nhiệm vụ.\n"
-                f"📊 Kết quả: {str(data.get('analysis', ''))[:300]}",
+                "[CLOAK-SUCCESS]: Đặc vụ hoàn thành nhiệm vụ.\nKết quả: %s",
+                str(data.get('analysis', ''))[:300],
                 task_id, trace_id,
             )
         else:
             engine.publish_mission_log(
                 "STEALTH_NAV",
-                f"⚠️ [CLOAK-PARTIAL]: Agent trả về trạng thái không rõ: {data}",
+                "[CLOAK-PARTIAL]: Agent trả về trạng thái không rõ: %s",
+                data,
                 task_id, trace_id,
             )
 
@@ -92,13 +93,13 @@ async def STEALTH_WEB_NAVIGATOR(
     except httpx.TimeoutException:
         msg = f"[CLOAK-TIMEOUT]: Đặc vụ vượt quá {_TIMEOUT}s — trang đích có thể đang xử lý."
         log.error(msg)
-        engine.publish_mission_log("STEALTH_NAV", f"⏱️ {msg}", task_id, trace_id)
+        engine.publish_mission_log("STEALTH_NAV", "%s", msg, task_id, trace_id)
         return {"status": "error", "msg": msg}
 
     except Exception as e:
         msg = f"[CLOAK-ERR]: {e}"
         log.exception(msg)
-        engine.publish_mission_log("STEALTH_NAV", f"❌ {msg}", task_id, trace_id)
+        engine.publish_mission_log("STEALTH_NAV", "%s", msg, task_id, trace_id)
         return {"status": "error", "msg": str(e)}
 
 
@@ -124,7 +125,8 @@ async def stealth_screenshot(
     """
     engine.publish_mission_log(
         "STEALTH_NAV",
-        f"📸 [CLOAK-SNAP]: Chụp ảnh ẩn danh → `{url}`",
+        "[CLOAK-SNAP]: Chụp ảnh ẩn danh -> `%s`",
+        url,
         task_id, trace_id,
     )
 
@@ -138,8 +140,9 @@ async def stealth_screenshot(
 
         engine.publish_mission_log(
             "STEALTH_NAV",
-            f"✅ [SNAP-DONE]: Ảnh đã chụp → `{data.get('filename', 'unknown')}`",
-            task_id, trace_id,
+        "[SNAP-DONE]: Ảnh đã chụp -> `%s`",
+        data.get('filename', 'unknown'),
+        task_id, trace_id,
         )
         return data
 

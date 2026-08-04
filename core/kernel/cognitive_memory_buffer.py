@@ -51,7 +51,7 @@ class CognitiveMemoryBuffer:
 
         compressed_list.extend(recent_turns)
         pruned = total_tokens - sum(self._estimate_tokens(m.get("content", "")) for m in compressed_list)
-        logger.info(f"🧠 [MEMORY-COMPRESSED]: Đã nén {len(old_turns)} tin nhắn cũ (~{pruned} tokens) vào Engram Summary. Giữ lại {len(recent_turns)} tin nhắn gần nhất.")
+        logger.info("[MEMORY-COMPRESSED]: Đã nén %s tin nhắn cũ (~%s tokens) vào Engram Summary. Giữ lại %s tin nhắn gần nhất.", len(old_turns), pruned, len(recent_turns))
         return compressed_list
 
 cognitive_memory_buffer = CognitiveMemoryBuffer()

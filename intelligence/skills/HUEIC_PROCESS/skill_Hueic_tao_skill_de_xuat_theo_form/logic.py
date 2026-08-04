@@ -34,7 +34,7 @@ class HueicSkillForge:
 
     async def _analyze_phase(self, skill_name_raw, files, task_id):
         """Bước 2 & 3: Deep Scan & Variable Listing."""
-        engine.publish_mission_log("HUEIC_FORGE", "🔍 [DEEP-SCAN]: Đang thực hiện thấu thị đa tầng tài liệu mẫu...", task_id)
+        engine.publish_mission_log("HUEIC_FORGE", "[DEEP-SCAN]: Đang thực hiện thấu thị đa tầng tài liệu mẫu...", task_id)
         
         if not files:
             return "❌ [FORGE]: Không tìm thấy tệp tin mẫu để phân tích."
@@ -65,7 +65,7 @@ class HueicSkillForge:
         )
 
         msg = f"🏛️ [HUEIC-ANALYSIS]: Đã hoàn tất bóc tách nơ-ron.\n\n{analysis_res}\n\n**Master hãy xác nhận danh sách trên hoặc yêu cầu điều chỉnh để tôi tiến hành đúc Skill!**"
-        engine.publish_mission_log("HUEIC_FORGE", "✅ [ANALYSIS-DONE]: Đã trình bảng biến số cho Master.", task_id)
+        engine.publish_mission_log("HUEIC_FORGE", "[ANALYSIS-DONE]: Đã trình bảng biến số cho Master.", task_id)
         return msg
 
     async def _forge_phase(self, skill_name_raw, files, confirmed_vars, task_id):
@@ -76,7 +76,7 @@ class HueicSkillForge:
         skill_dir = Path(os.path.join(self.skills_root, skill_id))
         os.makedirs(skill_dir, exist_ok=True)
 
-        engine.publish_mission_log("HUEIC_FORGE", f"🛠️ [FORGE]: Đang đúc kết Skill `{skill_id}` tại Tầng 0...", task_id)
+        engine.publish_mission_log("HUEIC_FORGE", "[FORGE]: Đang đúc kết Skill `%s` tại Tầng 0...", skill_id, task_id)
 
         # 1. Tạo bộ hồ sơ 5 file (HUEIC Standard)
         (skill_dir / "logic.py").write_text("# Logic thực thi HUEIC\n", encoding="utf-8")

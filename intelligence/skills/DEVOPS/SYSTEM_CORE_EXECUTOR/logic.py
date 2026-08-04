@@ -59,7 +59,7 @@ async def write_to_file(path: str, content: str, overwrite: bool = False, task_i
         if report.factors:
             log_msg = auditor.format_report_for_log(report)
             tag = "RISK" if report.is_dangerous else "AUDIT"
-            engine.publish_mission_log(tag, f"🔍 Thẩm định tệp `{path}`:\n{log_msg}", task_id)
+            engine.publish_mission_log(tag, f"Thẩm định tệp `{path}`:\n{log_msg}", task_id)
 
         with open(path, "w", encoding="utf-8") as f:
             f.write(content)
@@ -86,7 +86,7 @@ async def replace_file_content(path: str, target: str, replacement: str, task_id
         if report.factors:
             log_msg = auditor.format_report_for_log(report)
             tag = "RISK" if report.is_dangerous else "AUDIT"
-            engine.publish_mission_log(tag, f"🔍 Thẩm định phẫu thuật trên `{path}`:\n{log_msg}", task_id)
+            engine.publish_mission_log(tag, f"Thẩm định phẫu thuật trên `{path}`:\n{log_msg}", task_id)
 
         with open(path, "w", encoding="utf-8") as f:
             f.write(new_content)
@@ -103,7 +103,7 @@ async def run_command(command: str, task_id: str = "sys"):
         if report.factors:
             log_msg = auditor.format_report_for_log(report)
             tag = "RISK" if report.is_dangerous else "AUDIT"
-            engine.publish_mission_log(tag, f"🔍 Thẩm định mật lệnh `{command}`:\n{log_msg}", task_id)
+            engine.publish_mission_log(tag, f"Thẩm định mật lệnh `{command}`:\n{log_msg}", task_id)
 
         # Chạy lệnh trong shell
         process = await asyncio.create_subprocess_shell(

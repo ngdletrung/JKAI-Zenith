@@ -156,7 +156,7 @@ class MissionRuntime:
         
         # Budget check
         if self.state.budget.current_cost_usd >= self.state.budget.max_cost_usd:
-            logger.warning(f"⚠️ [BUDGET-EXCEEDED]: {self.state.budget.current_cost_usd} >= {self.state.budget.max_cost_usd}. Terminating.")
+            logger.warning("[BUDGET-EXCEEDED] %s >= %s. Terminating.", self.state.budget.current_cost_usd, self.state.budget.max_cost_usd)
             await self.emit("MissionFailed", {"reason": "Budget limit exceeded"})
 
     async def emit(self, event_type: str, payload: Dict[str, Any]):
@@ -172,25 +172,25 @@ class MissionRuntime:
         if step_id in self.snapshots:
             self.state = self.snapshots[step_id].model_copy(deep=True)
             self.event_log = self.event_log[:step_id]
-            logger.info(f"⏪ [ROLLBACK]: State rolled back to step {step_id}.")
+            logger.info("[ROLLBACK] State rolled back to step %s.", step_id)
             await self.emit("StateRollbacked", {"target_step": step_id})
         else:
-            logger.error(f"❌ [ROLLBACK-ERR]: Step {step_id} not found in snapshots.")
+            logger.error("[ROLLBACK-ERR] Step %s not found in snapshots.", step_id)
 
     # Capability Registry Actions
     def register_capability(self, name: str, handler: Callable):
         self._capabilities[name] = handler
-        logger.info(f"⚙️ [CAPABILITY-REGISTERED]: {name}")
+        logger.info("[CAPABILITY-REGISTERED] %s", name)
 
     async def execute_capability(self, name: str, *args, **kwargs) -> Any:
         if name not in self._capabilities:
             raise ValueError(f"Capability '{name}' is not registered.")
         
-        logger.info(f"🚀 [EXEC-CAPABILITY]: {name} with args={args}, kwargs={kwargs}")
+        logger.info("[EXEC-CAPABILITY] %s with args=%s, kwargs=%s", name, args, kwargs)
         await self.emit("CostIncurred", {"tool_calls": 1})
         try:
             res = await self._capabilities[name](*args, **kwargs)
             return res
         except Exception as e:
-            logger.error(f"❌ [CAPABILITY-ERR]: {name} failed: {e}")
+            logger.error("[CAPABILITY-ERR] %s failed: %s", name, e)
             raise e

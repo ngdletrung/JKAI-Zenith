@@ -62,7 +62,7 @@ Output valid JSON matching the RoutingDecision schema.
             {"role": "user", "content": f"Task: {goal}"}
         ]
 
-        logger.info(f"🧭 [META-PLANNER]: Routing task: '{goal[:50]}...'")
+        logger.info("[META-PLANNER]: Routing task: '%s...'", goal[:50])
         
         # Use MINI_PLANNER role as this is a fast, structured classification task
         try:

@@ -35,7 +35,7 @@ class SystemXRayMonitor:
 
     async def get_full_diagnostics(self, task_id: str = "sys") -> Dict[str, Any]:
         """Cuộc tổng duyệt sức khỏe toàn diện."""
-        engine.publish_mission_log("X-RAY", "👁️ [X-RAY]: Bắt đầu quét thấu thị toàn bộ hệ thống...", task_id)
+        engine.publish_mission_log("X-RAY", "[X-RAY]: Bắt đầu quét thấu thị toàn bộ hệ thống...", task_id)
         
         # 1. Thu thập dữ liệu phần cứng (Host & Container)
         host_vitals = await self._call_satellite("Get-CimInstance Win32_OperatingSystem | Select-Object FreePhysicalMemory, TotalVisibleMemorySize")
@@ -84,7 +84,7 @@ class SystemXRayMonitor:
             rf.section("Thoi gian"),
             rf.kvdict({"timestamp": report["timestamp"]})
         ])
-        engine.publish_mission_log("MISSION_RESULT", f"📊 [REPORT]:\n{report_text}", task_id)
+        engine.publish_mission_log("MISSION_RESULT", f"[REPORT]:\n{report_text}", task_id)
         return report
 
 _instance = SystemXRayMonitor()

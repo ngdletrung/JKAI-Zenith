@@ -11,11 +11,11 @@ try:
     from markitdown import MarkItDown
     _md = MarkItDown()
     CONVERTER_AVAILABLE = True
-    logger.info("✅ [CONVERTER-CORE] MarkItDown Engine Integrated.")
+    logger.info("[CONVERTER-CORE] MarkItDown Engine Integrated.")
 except ImportError:
     _md = None
     CONVERTER_AVAILABLE = False
-    logger.warning("⚠️ [CONVERTER-CORE] MarkItDown not found. Multimodal conversion disabled.")
+    logger.warning("[CONVERTER-CORE] MarkItDown not found. Multimodal conversion disabled.")
 
 class JKAI_Converter:
     @staticmethod

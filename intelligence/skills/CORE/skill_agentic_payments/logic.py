@@ -15,7 +15,7 @@ class PaymentSpecialist:
         """
         🚀 Giao thức Thanh toán Đa phương.
         """
-        engine.publish_mission_log("PAYMENT", f"💰 [TRANSACTION]: Đang khởi tạo giao thức thanh toán với các tham số: {kwargs}")
+        engine.publish_mission_log("PAYMENT", f"[TRANSACTION]: Đang khởi tạo giao thức thanh toán với các tham số: {kwargs}")
         
         # Giả lập logic xử lý thanh toán tinh nhuệ
         from core.utils.knowledge_brain import knowledge_brain
@@ -24,7 +24,7 @@ class PaymentSpecialist:
         
         res = await knowledge_brain.ask(prompt, tier=2, task_id=task_id)
         
-        engine.publish_mission_log("PAYMENT", "✅ [SUCCESS]: Giao dịch đã được phê duyệt và niêm phong mã hóa.")
+        engine.publish_mission_log("PAYMENT", "[SUCCESS]: Giao dịch đã được phê duyệt và niêm phong mã hóa.")
         
         return {
             "status": "success",

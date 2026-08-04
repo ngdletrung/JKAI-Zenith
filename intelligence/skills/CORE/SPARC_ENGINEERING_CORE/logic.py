@@ -13,17 +13,17 @@ class SPARCWorkflow:
         """
         🚀 Kích hoạt Giao thức SPARC: Từ ý tưởng đến mã nguồn hoàn thiện.
         """
-        engine.publish_mission_log("SPARC", f"💻 [START]: Khởi động quy trình SPARC cho nhiệm vụ: {task}")
+        engine.publish_mission_log("SPARC", f"[START]: Khởi động quy trình SPARC cho nhiệm vụ: {task}")
         
         results = {}
         for phase in self.phases:
-            engine.publish_mission_log("SPARC", f"🧬 [PHASE]: Đang thực hiện {phase}...")
+            engine.publish_mission_log("SPARC", f"[PHASE]: Đang thực hiện {phase}...")
             
             # Thực thi logic cho từng Phase
             phase_result = await self._run_phase(phase, task, results)
             results[phase] = phase_result
             
-            engine.publish_mission_log("SPARC", f"✅ [DONE]: {phase} hoàn tất.")
+            engine.publish_mission_log("SPARC", f"[DONE]: {phase} hoàn tất.")
             await asyncio.sleep(1) # Phản xạ nơ-ron
 
         return {

@@ -13,7 +13,7 @@ async def capture_vision(url: str, task_id: str = "vision"):
     """
     browser_url = os.getenv("BROWSER_URL", "http://ai-browser:8000/screenshot")
     
-    engine.publish_mission_log("EYE", f"👁️ [EYE-ACTIVATE]: Đang yêu cầu Vệ tinh chụp ảnh thực địa: {url}", task_id)
+    engine.publish_mission_log("EYE", "[EYE-ACTIVATE]: Đang yêu cầu Vệ tinh chụp ảnh thực địa: %s", url, task_id)
     
     try:
         async with httpx.AsyncClient(timeout=60.0) as client:
@@ -26,7 +26,7 @@ async def capture_vision(url: str, task_id: str = "vision"):
                 
                 # 📡 [QUANTUM-LEAP]: Triệu hồi Trí tuệ Thị giác (Vision Analysis)
                 vision_url = browser_url.replace("/screenshot", "/vision")
-                engine.publish_mission_log("EYE", "🧠 [EYE-ANALYSIS]: Đang tiến hành Audit thị giác thực địa...", task_id)
+                engine.publish_mission_log("EYE", "[EYE-ANALYSIS]: Đang tiến hành Audit thị giác thực địa...", task_id)
                 
                 prompt = "Analyze this interface. Is everything working correctly? Are there any errors, overlapping elements, or broken UI components? Focus on system stability."
                 
@@ -52,7 +52,7 @@ async def capture_vision(url: str, task_id: str = "vision"):
                 
     except Exception as e:
         logger.error(f"[EYE-LOGIC-ERR] {e}")
-        engine.publish_mission_log("EYE", f"❌ [EYE-FAIL]: Không thể kích hoạt thị giác: {e}", task_id)
+        engine.publish_mission_log("EYE", "[EYE-FAIL]: Không thể kích hoạt thị giác: %s", e, task_id)
         return {"status": "error", "msg": str(e)}
 
 async def skill_neural_eye(**kwargs):

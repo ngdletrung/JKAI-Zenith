@@ -221,7 +221,7 @@ Mục tiêu cần thực hiện cho Master: "{goal}"
 
         # [HYBRID-PROMPT-ENGINE]: Áp dụng Giao thức Prompt Kép Hybrid siêu tốc (1ms) cho mọi chế độ (DEEP & FAST)
         # Loại bỏ nút thắt cổ chai 3 bước gọi LLM-Forge (tốn >250s gây nghẽn CPU/VRAM)
-        engine.publish_mission_log("FORGE", "⚡ [PROMPT-FORGE]: Đang áp dụng Giao thức Prompt Kép Hybrid siêu tốc (1ms).", "prompt_forge")
+        engine.publish_mission_log("FORGE", "[PROMPT-FORGE]: Đang áp dụng Giao thức Prompt Kép Hybrid siêu tốc (1ms).", "prompt_forge")
         return PromptForge.compile_hybrid_prompt(goal, soul, agent_profiles, project_wisdom)
 
 prompt_forge = PromptForge()

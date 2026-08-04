@@ -25,9 +25,9 @@ class MissionScheduler:
         """Transitions state to a target lifecycle if permitted."""
         current = state.lifecycle
         if target_lifecycle not in self.ALLOWED_TRANSITIONS.get(current, set()):
-            logger.error(f"❌ [LIFECYCLE-ERR]: Invalid transition requested: {current} -> {target_lifecycle} (Reason: {reason})")
+            logger.error("[LIFECYCLE-ERR] Invalid transition requested: %s -> %s (Reason: %s)", current, target_lifecycle, reason)
             return False
 
-        logger.info(f"🔄 [LIFECYCLE-TRANSITION]: {current} -> {target_lifecycle} | Reason: {reason}")
+        logger.info("[LIFECYCLE-TRANSITION] %s -> %s | Reason: %s", current, target_lifecycle, reason)
         state.lifecycle = target_lifecycle
         return True

@@ -29,7 +29,7 @@ async def GITHUB_SCANNER(query: str) -> str:
     """
     # 1. Chuẩn hóa truy vấn tìm kiếm cho thời điểm tháng 05/2026
     search_query = f"trending github repositories {query} May 2026"
-    logger.info(f"🔍 [GITHUB-SCANNER]: Đang trinh sát GitHub cho: {search_query}")
+    logger.info("[GITHUB-SCANNER] Đang trinh sát GitHub cho: %s", search_query)
     
     # 2. Thực thi siêu tìm kiếm toàn cầu
     try:
@@ -69,5 +69,5 @@ async def GITHUB_SCANNER(query: str) -> str:
         return table_content
 
     except Exception as e:
-        logger.exception(f"💥 [CRITICAL]: Lỗi hệ thống khi thực thi GITHUB_SCANNER: {e}")
+        logger.exception("[CRITICAL] Lỗi hệ thống khi thực thi GITHUB_SCANNER: %s", e)
         return f"❌ [SYSTEM ERROR]: Đã xảy ra lỗi khi quét GitHub: {str(e)}"

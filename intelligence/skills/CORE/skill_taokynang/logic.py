@@ -13,13 +13,13 @@ class ZenithSkillFactory:
 
     async def tao_ky_nang_elite(self, skill_id, skill_name, description="", task_id="sys"):
         """Giao thức kiến tạo 4 tệp tin chuẩn Corporate!"""
-        engine.publish_mission_log("FACTORY_INIT", f"🏭 [FACTORY]: Khởi động dây chuyền đúc kỹ năng mới: `{skill_name}` (#{skill_id})", task_id)
+        engine.publish_mission_log("FACTORY_INIT", f"[FACTORY]: Khởi động dây chuyền đúc kỹ năng mới: `{skill_name}` (#{skill_id})", task_id)
         
         path = os.path.join(self.skills_root, skill_id)
         os.makedirs(path, exist_ok=True)
         
         # 1. logic.py (Mã nguồn thực thi)
-        engine.publish_mission_log("FACTORY_CODE", f"🛠️ [FACTORY]: Đang phẫu thuật mã nguồn logic cho `{skill_id}`...", task_id)
+        engine.publish_mission_log("FACTORY_CODE", f"[FACTORY]: Đang phẫu thuật mã nguồn logic cho `{skill_id}`...", task_id)
         logic_template = f'''"""
 🔬 JKAI ZENITH: {skill_name} LOGIC
 Thực thi chuyên sâu chuẩn Elite.
@@ -35,7 +35,7 @@ class SkillLogic:
 
     async def execute(self, **kwargs):
         task_id = kwargs.get("task_id", "sys")
-        engine.publish_mission_log("{skill_id.upper()}", "🚀 [EXECUTING]: {skill_name} đang được triển khai...", task_id)
+        engine.publish_mission_log("{skill_id.upper()}", "[EXECUTING]: {skill_name} đang được triển khai...", task_id)
         
         # Logic thực thi của Master tại đây
         

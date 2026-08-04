@@ -2,7 +2,7 @@
 color 0A
 title [JKAI ZENITH - AMG BOOTSTRAP]
 echo ==============================================================================
-echo   JKAI ZENITH: STARTING INFRASTRUCTURE & AMG v2 DECISION ENGINE
+echo   JKAI ZENITH: STARTING INFRASTRUCTURE ^& AMG v2 DECISION ENGINE
 echo ==============================================================================
 cd /d "D:\Docker\JKAI"
 

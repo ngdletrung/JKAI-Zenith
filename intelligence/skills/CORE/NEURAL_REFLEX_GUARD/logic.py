@@ -35,7 +35,7 @@ async def run_reflex_check(path: str = ".", auto_fix: bool = True):
     3. Run Tests (if possible).
     4. Report.
     """
-    engine.publish_mission_log("REFLEX_START", f"🧠 [REFLEX]: Kích hoạt phản xạ tự trị tại: `{path}`")
+    engine.publish_mission_log("REFLEX_START", f"[REFLEX]: Kích hoạt phản xạ tự trị tại: `{path}`")
     
     results = {
         "lint": "Not checked",
@@ -50,19 +50,19 @@ async def run_reflex_check(path: str = ".", auto_fix: bool = True):
     
     # 2. Run Checks
     if is_python:
-        engine.publish_mission_log("REFLEX_LINT", "🐍 [PYTHON]: Đang chạy Flake8/Black check...")
+        engine.publish_mission_log("REFLEX_LINT", "[PYTHON]: Đang chạy Flake8/Black check...")
         # Giả lập lệnh chạy lint (trong thực tế sẽ dùng subprocess)
         results["lint"] = "✅ PASSED (Simulated)"
         
         if os.path.exists(os.path.join(abs_path, 'pytest.ini')) or os.path.exists(os.path.join(abs_path, 'tests')):
-            engine.publish_mission_log("REFLEX_TEST", "🧪 [PYTEST]: Đang thực thi bộ test...")
+            engine.publish_mission_log("REFLEX_TEST", "[PYTEST]: Đang thực thi bộ test...")
             results["test"] = "✅ 12/12 PASSED"
             
     elif is_node:
-        engine.publish_mission_log("REFLEX_LINT", "📦 [NODE]: Đang chạy ESLint...")
+        engine.publish_mission_log("REFLEX_LINT", "[NODE]: Đang chạy ESLint...")
         results["lint"] = "✅ CLEAN"
         
-        engine.publish_mission_log("REFLEX_BUILD", "🏗️ [BUILD]: Kiểm tra khả năng đóng gói...")
+        engine.publish_mission_log("REFLEX_BUILD", "[BUILD]: Kiểm tra khả năng đóng gói...")
         results["build"] = "✅ READY"
 
     # 3. Final Report

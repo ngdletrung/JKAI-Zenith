@@ -30,7 +30,7 @@ class TemplateMimic:
 
     async def learn_template(self, file_path: str, template_name: str, task_id: str = "sys"):
         """Đọc và học cấu trúc từ một file mẫu."""
-        engine.publish_mission_log("MIMIC", f"🧐 Đang nghiên cứu file mẫu: `{os.path.basename(file_path)}`", task_id)
+        engine.publish_mission_log("MIMIC", f"Đang nghiên cứu file mẫu: `{os.path.basename(file_path)}`", task_id)
         engine.publish_progress(20, "Đang trích xuất nội dung...", task_id)
 
         try:
@@ -75,18 +75,18 @@ class TemplateMimic:
             with open(save_path, "w", encoding="utf-8") as f:
                 json.dump(blueprint, f, indent=4, ensure_ascii=False)
 
-            engine.publish_mission_log("MIMIC", f"✅ Đã học xong biểu mẫu: `{template_name}`. Sẵn sàng tái tạo!", task_id)
+            engine.publish_mission_log("MIMIC", f"Đã học xong biểu mẫu: `{template_name}`. Sẵn sàng tái tạo!", task_id)
             engine.publish_progress(100, "Hoàn tất học mẫu.", task_id)
             
             return {"status": "success", "template": blueprint}
 
         except Exception as e:
-            logger.error(f"❌ [MIMIC-LEARN-ERR] {e}")
+            logger.error("[MIMIC-LEARN-ERR] %s", e)
             return {"status": "error", "msg": str(e)}
 
     async def apply_template(self, template_name: str, data: Dict[str, Any], output_name: str, task_id: str = "sys"):
         """Áp dụng biểu mẫu đã học vào dữ liệu mới."""
-        engine.publish_mission_log("MIMIC", f"⚒️ Đang đúc tài liệu mới dựa trên mẫu: `{template_name}`", task_id)
+        engine.publish_mission_log("MIMIC", f"Đang đúc tài liệu mới dựa trên mẫu: `{template_name}`", task_id)
         
         template_file = self.vault_path / f"{template_name}.json"
         if not template_file.exists():
@@ -128,7 +128,7 @@ class TemplateMimic:
         with open(final_path, "w", encoding="utf-8") as f:
             f.write(result)
 
-        engine.publish_mission_log("MIMIC", f"🚀 Đã kiến tạo thành công tài liệu: `{output_name}.md` tại files/output.", task_id)
+        engine.publish_mission_log("MIMIC", f"Đã kiến tạo thành công tài liệu: `{output_name}.md` tại files/output.", task_id)
         engine.publish_progress(100, "Nhiệm vụ hoàn tất.", task_id)
         
         return {"status": "success", "path": str(final_path)}

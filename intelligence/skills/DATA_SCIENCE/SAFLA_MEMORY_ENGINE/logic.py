@@ -48,7 +48,7 @@ class SAFLANeural:
             )
             
             if success:
-                engine.publish_mission_log("SAFLA", f"🧠 [ASSIMILATE]: Tri thức đã được nhập tâm vào tầng {tier.upper()}.")
+                engine.publish_mission_log("SAFLA", "[ASSIMILATE]: Tri thức đã được nhập tâm vào tầng %s.", tier.upper())
                 return {"status": "success"}
             return {"status": "error", "message": "Qdrant upsert failed"}
             
@@ -82,7 +82,7 @@ class SAFLANeural:
                 "query": query
             }
             
-            engine.publish_mission_log("SAFLA", f"🔍 [RECALL]: Đã truy hồi được {len(semantic_hits) + len(episodic_hits)} mảnh ký ức liên quan.")
+            engine.publish_mission_log("SAFLA", "[RECALL]: Đã truy hồi được %s mảnh ký ức liên quan.", len(semantic_hits) + len(episodic_hits))
             return {"status": "success", "memory": unified_memory}
             
         except Exception as e:
@@ -112,7 +112,7 @@ class SAFLANeural:
             # Lưu khái niệm mới vào tầng Semantic
             await self.assimilate(concept, tier="semantic", metadata={"type": "forged_concept"})
             
-            engine.publish_mission_log("SAFLA", "🔥 [FORGE]: Khái niệm vĩ mô mới đã được đúc thành công.")
+            engine.publish_mission_log("SAFLA", "[FORGE]: Khái niệm vĩ mô mới đã được đúc thành công.")
             return {"status": "success", "concept": concept}
             
         except Exception as e:

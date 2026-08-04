@@ -59,7 +59,7 @@ class ContextCompressor:
         if tokens < self.threshold_tokens:
             return self._prune_tool_outputs(messages)
 
-        logger.info(f"🔄 [HERMES-COMPRESSION]: Đang nén bối cảnh ({tokens} tokens)...")
+        logger.info("[HERMES-COMPRESSION]: Đang nén bối cảnh (%s tokens)...", tokens)
         
         # 1. Phân đoạn bối cảnh
         head = messages[:self.protect_head]
@@ -103,7 +103,7 @@ class ContextCompressor:
             return head + [compressed_msg] + tail
 
         except Exception as e:
-            logger.error(f"❌ [COMPRESSION-FAILED]: Hermes compression failed: {e}")
+            logger.error("[COMPRESSION-FAILED]: Hermes compression failed: %s", e)
             return self._prune_tool_outputs(messages)
 
 

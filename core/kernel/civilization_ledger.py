@@ -41,7 +41,7 @@ class CivilizationLedger:
             # 🏢 LOG VĂN PHÒNG CHUẨN DOANH NGHIỆP
             engine.publish_mission_log(
                 "WISDOM_LEDGER",
-                f"🏛️ [BAN LƯU TRỮ VĂN MINH] Đang thu nhận và chưng cất hồ sơ chiến dịch `{task_id}`...",
+                f"[BAN LƯU TRỮ VĂN MINH] Đang thu nhận và chưng cất hồ sơ chiến dịch `{task_id}`...",
                 task_id
             )
 
@@ -101,7 +101,7 @@ class CivilizationLedger:
 
             engine.publish_mission_log(
                 "WISDOM_LEDGER",
-                f"✨ [CHƯNG CẤT THÀNH CÔNG] Bài học của Sứ mệnh `{task_id}` đã chính thức đồng bộ lên Sổ cái Văn minh toàn cầu! 🏛️💎",
+                f"[CHƯNG CẤT THÀNH CÔNG] Bài học của Sứ mệnh `{task_id}` đã chính thức đồng bộ lên Sổ cái Văn minh toàn cầu!",
                 task_id
             )
             return distilled_lesson
@@ -109,7 +109,7 @@ class CivilizationLedger:
         except Exception as e:
             engine.publish_mission_log(
                 "ERROR",
-                f"❌ [LỖI GHI SỔ CÁI VĂN MINH] Thất bại khi lưu trữ tri thức: {str(e)}",
+                f"[LỖI GHI SỔ CÁI VĂN MINH] Thất bại khi lưu trữ tri thức: {str(e)}",
                 task_id
             )
             return None
@@ -143,7 +143,7 @@ class CivilizationLedger:
                 })
             return lessons
         except Exception as e:
-            logger.error(f"❌ [LỖI TRUY LỤC SỔ CÁI VĂN MINH]: {str(e)}")
+            logger.error("[LỖI TRUY LỤC SỔ CÁI VĂN MINH]: %s", str(e))
             return []
 
 civilization_ledger = CivilizationLedger()

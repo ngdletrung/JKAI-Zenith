@@ -399,7 +399,7 @@ class Dispatcher:
                         goal = ssm.get("enriched_goal")
                         engine.publish_mission_log(
                             "DISPATCHER",
-                            " [SSM-AUTO-ACTIVATE]: Match found. Enriched goal.",
+                            "[SSM-AUTO-ACTIVATE] Match found. Enriched goal.",
                             task_id,
                             stealth=True
                         )
@@ -420,7 +420,7 @@ class Dispatcher:
             if difficulty.level == DifficultyLevel.L0_REFLEX:
                 engine.publish_mission_log(
                     "DISPATCHER",
-                    f"[L0-REFLEX]: Direct reply path — {difficulty.reason}",
+                    f"[L0-REFLEX] Direct reply path — {difficulty.reason}",
                     task_id,
                     stealth=True,
                 )
@@ -454,7 +454,7 @@ class Dispatcher:
             if cached:
                 engine.publish_mission_log(
                     "DISPATCHER",
-                    " [CACHE-HIT]: Sử dụng cached dispatch.",
+                    "[CACHE-HIT] Sử dụng cached dispatch.",
                     task_id,
                     stealth=True
                 )
@@ -473,7 +473,7 @@ class Dispatcher:
             # -------------------------------------------------------------------
             engine.publish_mission_log(
                 "DISPATCHER",
-                " [LLM-FALLBACK]: Reflex không chắc chắn. Đang gọi LLM...",
+                "[LLM-FALLBACK] Reflex không chắc chắn. Đang gọi LLM...",
                 task_id,
             )
 
@@ -486,7 +486,7 @@ class Dispatcher:
 
             engine.publish_mission_log(
                 "DISPATCHER",
-                f"[LATENCY]: {latency} ms",
+                f"[LATENCY] {latency} ms",
                 task_id,
                 stealth=True
             )
@@ -517,7 +517,7 @@ class Dispatcher:
 
             engine.publish_mission_log(
                 "DISPATCHER",
-                f"️ [DECK-REFLEX]: {primary.display_id} → `{primary.registry_id}`",
+                f"[DECK-REFLEX] {primary.display_id} → `{primary.registry_id}`",
                 task_id,
                 stealth=True,
             )
@@ -659,7 +659,7 @@ class Dispatcher:
         engine.publish_mission_log(
             "DISPATCHER",
             (
-                f" [REFLEX]: skill={best_rule.skill} | "
+                f"[REFLEX] skill={best_rule.skill} | "
                 f"score={best_score} | "
                 f"confidence={confidence:.2f} | "
                 f"matched={matched_keywords}"
@@ -762,7 +762,7 @@ class Dispatcher:
                 
                 engine.publish_mission_log(
                     "DISPATCHER",
-                    f" [LLM-DECISION]: Chốt kỹ năng `{skill_id}` (Conf: {confidence}). Lý do: {reasoning}",
+                    f"[LLM-DECISION] Chốt kỹ năng `{skill_id}` (Conf: {confidence}). Lý do: {reasoning}",
                     task_id
                 )
                 
@@ -784,7 +784,7 @@ class Dispatcher:
                     telemetry={"source": "llm_brain", "model": "dispatcher"}
                 )
         except Exception as e:
-            logger.error(f" [LLM-DISPATCH-ERR]: {e}")
+            logger.error("[DISPATCHER] LLM dispatch error: %s", e)
 
         # Fallback cuối cùng nếu cả LLM cũng lỗi
         return RoutingManifest(

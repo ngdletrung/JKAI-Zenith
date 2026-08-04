@@ -23,7 +23,7 @@ logging.basicConfig(level=logging.INFO)
 
 async def start_worker():
     """🚀 [ZENITH-WORKER]: Khoi chay nơ-ron thuc thi độc lập."""
-    logger.info("🏛️ [JKAI-ZENITH] v4.1 Cognitive Worker Engine Online.")
+    logger.info("[JKAI-ZENITH] v4.1 Cognitive Worker Engine Online.")
     
     # 💎 [RESOURCE-INIT]: Khoi tao cac tuyen synapse
     router = ServiceRouter()
@@ -44,7 +44,7 @@ async def start_worker():
     try:
         await engine.warmup_all_models()
     except Exception as e:
-        logger.warning(f"⚠️ [WARMUP-WARN]: {e}")
+        logger.warning("[WARMUP-WARN]: %s", e)
 
     # 🔗 [TASK-LOOP]: Bat dau vong lap hap thu nhiem vu
     await task_manager.start()
@@ -53,4 +53,4 @@ if __name__ == "__main__":
     try:
         asyncio.run(start_worker())
     except KeyboardInterrupt:
-        logger.info("🛑 [WORKER]: Master da ngat mach. Dang tat he thong thưa Ngai.")
+        logger.info("[WORKER]: Master da ngat mach. Dang tat he thong thưa Ngai.")

@@ -22,14 +22,21 @@ Kỹ năng tự động được đúc bởi Zenith Forge.
 ## 🛠️ CÁC HÀM CỐT LÕI
 - `__init__`
 - `_get_path`
-- `read_any`
-- `write_word`
-- `write_excel`
-- `process_office_mission`
-- `execute_office_task`
+- `read_any` — đọc mọi file (docx/xlsx/pdf/txt) → markdown
+- `write_word` — tạo văn bản Word chuẩn hành chính VN (A4, header/footer, markdown→table)
+- `edit_word` — chỉnh sửa file Word có sẵn (replace chuỗi giữ định dạng, append)
+- `write_excel` — tạo bảng Excel chuyên nghiệp (header đậm, số format, autofilter, freeze)
+- `edit_excel` — sửa file Excel có sẵn (set ô, append dòng)
+- `add_chart` — vẽ biểu đồ bar/line/pie từ dữ liệu
+- `write_pdf` — tạo PDF A4 hỗ trợ tiếng Việt (font Unicode nhúng)
+- `process_office_mission` — điều phối tác vụ, tự hỏi lại thông tin thiếu
+- `execute_office_task` — entrypoint async
 
 ## ⚖️ GIAO THỨC VẬN HÀNH
-- Tự động thực thi theo logic trong `logic.py`.
+- Mọi tác vụ đi qua `process_office_mission(action=..., **kwargs)`.
+- Hành động `auto`/`plan_dossier`/`create_document` với goal mơ hồ sẽ trả `status: need_info` + câu hỏi bổ sung thay vì bịa nội dung.
+- Output được ghi vào `FILES_OUTPUT` (mặc định `workspace/outputs`).
+- Các action: read, write_word, write_excel, write_pdf, add_chart, edit_word, edit_excel.
 
 ## ⚠️ SAI LẦM THƯỜNG GẶP (COMMON PITFALLS)
 - **Word Formatting Destruction:** Việc dùng `.text` trực tiếp trên Paragraph hoặc Cell sẽ làm vỡ định dạng font chữ Times New Roman và in đậm/màu chữ của template. BẮT BUỘC phải dùng phương pháp XML Deepcopy dòng và thay thế trên từng Run để giữ nguyên định dạng.

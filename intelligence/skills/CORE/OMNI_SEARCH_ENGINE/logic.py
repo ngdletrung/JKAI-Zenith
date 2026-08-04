@@ -1440,7 +1440,7 @@ class OmniSearchEngine:
         
         # Neu la FAST mode, chay 1 Pass duy nhat de toi uu thoi gian thua Master
         if mode == "fast":
-            engine.publish_mission_log("SEARCH", f"⚡ Sử dụng Single-Pass Synthesis để tối ưu thời gian thưa Master. Độ tự tin: {confidence_percentage}%", "unknown")
+            engine.publish_mission_log("SEARCH", f"Sử dụng Single-Pass Synthesis để tối ưu thời gian thưa Master. Độ tự tin: {confidence_percentage}%", "unknown")
             final_res = await engine.call_chat(
                 messages=[{"role": "user", "content": draft_prompt}],
                 role="SUMMARIZER",

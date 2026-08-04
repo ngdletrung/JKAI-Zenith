@@ -19,7 +19,7 @@ class SyncKnowledgeElite:
         self.skills_base = Path(skills_path)
 
     async def sync_all(self, task_id: str = "sys"):
-        engine.publish_mission_log("SYNC", "🚀 [ELITE-SYNC]: Bắt đầu chiến dịch đồng hóa tri thức mới...", task_id)
+        engine.publish_mission_log("SYNC", "[ELITE-SYNC]: Bắt đầu chiến dịch đồng hóa tri thức mới...", task_id)
         
         if not self.incoming_dir.exists():
             return {"status": "idle", "msg": "Kho lưu trữ import_dump trống."}
@@ -46,7 +46,7 @@ class SyncKnowledgeElite:
                     code = logic_file.read_text(encoding="utf-8")
                     is_safe, msg = skill_forge.security_scan(code)
                     if not is_safe:
-                        engine.publish_mission_log("SECURITY", f"🚨 [BLOCKED]: {skill_id} bị chặn do {msg}", task_id)
+                        engine.publish_mission_log("SECURITY", f"[BLOCKED]: {skill_id} bị chặn do {msg}", task_id)
                         continue
                     
                     # 2. Phân loại Domain (Dựa trên tên hoặc mặc định)
@@ -97,7 +97,7 @@ class SyncKnowledgeElite:
                     map_path.write_text(content, encoding="utf-8")
                     
                     count += 1
-                    engine.publish_mission_log("SYNC", f"✅ [ASSIMILATED]: {skill_id} -> {target_domain} ({global_id})", task_id)
+                    engine.publish_mission_log("SYNC", f"[ASSIMILATED]: {skill_id} -> {target_domain} ({global_id})", task_id)
 
         await knowledge_orchestrator.sync_sovereign_registry()
         return {"status": "success", "synced_count": count}

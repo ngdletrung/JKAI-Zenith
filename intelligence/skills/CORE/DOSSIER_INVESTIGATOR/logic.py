@@ -19,7 +19,7 @@ class DossierInvestigator:
         """
         🚀 Giao thức Trinh sát Fan-out: Quét song song đa nguồn.
         """
-        engine.publish_mission_log("DOSSIER", f"🔍 [START]: Bắt đầu trinh sát hạt giống: {seed}")
+        engine.publish_mission_log("DOSSIER", f"[START]: Bắt đầu trinh sát hạt giống: {seed}")
         
         dossier = {
             "seed": seed,

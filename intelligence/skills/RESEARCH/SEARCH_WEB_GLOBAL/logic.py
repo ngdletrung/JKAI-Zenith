@@ -120,7 +120,7 @@ class CircuitBreaker:
         if self._state == CircuitState.OPEN:
             if time.time() - self._opened_at > self.recovery_timeout:
                 self._state = CircuitState.HALF_OPEN
-                log.warning(f"[{self.name}] Circuit HALF-OPEN — đang thử phục hồi...")
+                log.warning("[%s] Circuit HALF-OPEN — đang thử phục hồi...", self.name)
                 # [PROBE-ASSIST]: Khi HALF_OPEN, trigger probe async để cập nhật sức khỏe backend
                 # Không await — chạy ngầm, không block request hiện tại
                 try:
@@ -142,8 +142,8 @@ class CircuitBreaker:
             self._state = CircuitState.OPEN
             self._opened_at = time.time()
             log.error(
-                f"[{self.name}] Circuit OPEN sau {self._failures} lỗi liên tiếp. "
-                f"Tạm ngưng {self.recovery_timeout}s."
+                "[%s] Circuit OPEN sau %s lỗi liên tiếp. Tạm ngưng %ss.",
+                self.name, self._failures, self.recovery_timeout
             )
 
 _cb_tavily = CircuitBreaker("Tavily", fail_threshold=4, recovery_timeout=60)
@@ -347,7 +347,7 @@ async def _retry_async(coro_fn, retries: int = 3, base_delay: float = 1.0):
         except Exception as exc:
             last_exc = exc
             wait = base_delay * (2 ** attempt)
-            log.warning(f"Lần {attempt+1}/{retries} thất bại ({exc}). Thử lại sau {wait:.1f}s...")
+            log.warning("Lần %s/%s thất bại (%s). Thử lại sau %.1fs...", attempt + 1, retries, exc, wait)
             await asyncio.sleep(wait)
     raise last_exc  # type: ignore
 
@@ -425,7 +425,7 @@ def _bm25_score(query: str, text: str, k1: float = 1.5, b: float = 0.75) -> floa
 
 def kham_pha_du_an(start_path: str = ".") -> dict:
     """Tự thám hiểm cấu trúc thư mục của dự án (Tối ưu hóa bộ nhớ với Generator)."""
-    log.info(f"🗺️ [JKAI-EXPLORE] Scouting project structure from: {start_path}")
+    log.info("[JKAI-EXPLORE] Scouting project structure from: %s", start_path)
     structure = []
     start_p = Path(start_path)
     
@@ -458,12 +458,12 @@ async def truy_luc_tri_thuc(query: str, task_id: str = "sys", trace_id: str = "s
     """
     cache_key = f"rag:{query}"
     if cached := _cache.get(cache_key):
-        log.info(f"[RAG-CACHE HIT] query='{query}'")
+        log.info("[RAG-CACHE HIT] query='%s'", query)
         return cached
 
     engine.publish_mission_log(
         "BRAIN_QUERY",
-        f"🧠 [NEURAL-SEARCH]: Truy xuất tri thức cho: `{query}`",
+        f"[NEURAL-SEARCH] Truy xuất tri thức cho: `{query}`",
         task_id, trace_id,
     )
 
@@ -1009,7 +1009,7 @@ async def SEARCH_WEB_GLOBAL(
         if exact_date not in query:
             query = f"{query} {exact_date}"
             time_appended = True
-            log.info(f"🕒 [FRESHNESS-BOOST]: Appended today's exact date. New query: '{query}'")
+            log.info("[FRESHNESS-BOOST] Appended today's exact date. New query: '%s'", query)
             
     # 2. "tháng trước" / "last month" -> append previous month "tháng MM/YYYY"
     elif "tháng trước" in query_lower or "last month" in query_lower:
@@ -1022,7 +1022,7 @@ async def SEARCH_WEB_GLOBAL(
         if prev_month_str not in query_lower:
             query = f"{query} {prev_month_str}"
             time_appended = True
-            log.info(f"🕒 [FRESHNESS-BOOST]: Appended previous month. New query: '{query}'")
+            log.info("[FRESHNESS-BOOST] Appended previous month. New query: '%s'", query)
             
     # 3. "tháng này" / "this month" / "tuần này" / "this week" -> append current month "tháng MM/YYYY"
     elif any(kw in query_lower for kw in ["tháng này", "this month", "tuần này", "this week"]):
@@ -1030,7 +1030,7 @@ async def SEARCH_WEB_GLOBAL(
         if month_str not in query_lower:
             query = f"{query} {month_str}"
             time_appended = True
-            log.info(f"🕒 [FRESHNESS-BOOST]: Appended current month. New query: '{query}'")
+            log.info("[FRESHNESS-BOOST] Appended current month. New query: '%s'", query)
 
     # 4. Fallback: general news/latest queries -> append current year if no 4-digit year exists
     if not time_appended:
@@ -1038,7 +1038,7 @@ async def SEARCH_WEB_GLOBAL(
         if re.search(temporal_patterns, query_lower):
             if not re.search(r"\b\d{4}\b", query):
                 query = f"{query} {current_year}"
-                log.info(f"🕒 [FRESHNESS-BOOST]: Fallback appended current year. New query: '{query}'")
+                log.info("[FRESHNESS-BOOST] Fallback appended current year. New query: '%s'", query)
     cache_key = f"web:{query}:{search_depth}"
     if cached := _cache.get(cache_key):
         engine.publish_mission_log("WEB_CACHE", f"WEB-CACHE: Using cached results for {query}", task_id, trace_id)
@@ -1076,7 +1076,7 @@ async def SEARCH_WEB_GLOBAL(
                     try:
                         resp.raise_for_status()
                     except httpx.HTTPStatusError as e:
-                        log.error(f"Tavily API failed with status {resp.status_code}: {resp.text}")
+                        log.error("Tavily API failed with status %s: %s", resp.status_code, resp.text)
                         engine.publish_mission_log("WEB_ERR", f"TAVILY-HTTP-ERR: {resp.status_code} - {resp.text}", task_id, trace_id)
                         raise e
                     return resp.json()
@@ -1121,7 +1121,7 @@ async def SEARCH_WEB_GLOBAL(
                 verifier = FactVerifier()
                 v_data = verifier.verify_and_detect_contradictions(candidates)
                 if v_data["contradiction_warnings"]:
-                    warn_msg = "⚠️ [FACT-CONFLICTS] Phat hien mau thuan ky thuat:\n" + "\n".join(v_data["contradiction_warnings"][:3])
+                    warn_msg = "[FACT-CONFLICTS] Phat hien mau thuan ky thuat:\n" + "\n".join(v_data["contradiction_warnings"][:3])
                     engine.publish_mission_log("WEB_WARN", warn_msg, task_id, trace_id)
 
                 combined_raw = "\n\n".join(combined_raw_parts)
@@ -1145,7 +1145,7 @@ async def SEARCH_WEB_GLOBAL(
         except Exception as e:
             _cb_tavily.record_failure()
             engine.publish_mission_log("WEB_ERR", f"TAVILY-FAIL: {e} - cascading to DuckDuckGo...", task_id, trace_id)
-            log.error(f"Tavily search failed: {e}")
+            log.error("Tavily search failed: %s", e)
     else:
         reason_parts = []
         if not tavily_api_key:
@@ -1208,7 +1208,7 @@ async def SEARCH_WEB_GLOBAL(
                 verifier = FactVerifier()
                 v_data = verifier.verify_and_detect_contradictions(candidates)
                 if v_data["contradiction_warnings"]:
-                    warn_msg = "⚠️ [FACT-CONFLICTS] Phat hien mau thuan ky thuat:\n" + "\n".join(v_data["contradiction_warnings"][:3])
+                    warn_msg = "[FACT-CONFLICTS] Phat hien mau thuan ky thuat:\n" + "\n".join(v_data["contradiction_warnings"][:3])
                     engine.publish_mission_log("WEB_WARN", warn_msg, task_id, trace_id)
 
                 combined_raw = "\n\n".join(combined_raw_parts)
@@ -1233,7 +1233,7 @@ async def SEARCH_WEB_GLOBAL(
                 engine.publish_mission_log("WEB_WARN", f"DUCKDUCKGO-EMPTY: No results for {query} - cascading to Browser...", task_id, trace_id)
         except Exception as e:
             engine.publish_mission_log("WEB_ERR", f"DUCKDUCKGO-FAIL: {e} - cascading to Browser...", task_id, trace_id)
-            log.error(f"DuckDuckGo search failed: {e}")
+            log.error("DuckDuckGo search failed: %s", e)
 
     # Phase 3: Browser Search (DuckDuckGo HTML Scraping)
     engine.publish_mission_log("WEB_SEARCH", f"BROWSER-SEARCH: Cascading to Browser Search for {query}", task_id, trace_id)
@@ -1246,7 +1246,7 @@ async def SEARCH_WEB_GLOBAL(
             engine.publish_mission_log("WEB_WARN", f"BROWSER-EMPTY: Browser search returned empty results - cascading to Cloud LLM...", task_id, trace_id)
     except Exception as e:
         engine.publish_mission_log("WEB_ERR", f"BROWSER-FAIL: {e} - cascading to Cloud LLM...", task_id, trace_id)
-        log.error(f"Browser fallback failed: {e}")
+        log.error("Browser fallback failed: %s", e)
 
     # Phase 4: Cloud LLM Search
     engine.publish_mission_log("WEB_SEARCH", f"CLOUD-LLM: Cascading to Cloud LLM search for {query}", task_id, trace_id)
@@ -1283,7 +1283,7 @@ async def SEARCH_WEB_GLOBAL(
             engine.publish_mission_log("WEB_WARN", f"CLOUD-LLM-EMPTY: Cloud LLM returned empty response", task_id, trace_id)
     except Exception as e:
         engine.publish_mission_log("WEB_ERR", f"CLOUD-LLM-FAIL: {e}", task_id, trace_id)
-        log.error(f"Cloud LLM fallback failed: {e}")
+        log.error("Cloud LLM fallback failed: %s", e)
 
     # Fallback absolute: All sources failed
     engine.publish_mission_log("WEB_ERR", "ALL-SOURCES-FAILED: Tavily, DuckDuckGo, Browser, Cloud LLM đều thất bại hoặc trả về rỗng.", task_id, trace_id)
@@ -1518,13 +1518,13 @@ async def cao_du_lieu_web(
     """Trich xuat van ban tu URL qua Crawl4AI (uu tien) hoac Jina (du phong) voi cache."""
     cache_key = f"scrape:{url}"
     if cached := _cache.get(cache_key):
-        log.info(f"[SCRAPE-CACHE HIT] url='{url}'")
+        log.info("[SCRAPE-CACHE HIT] url='%s'", url)
         return cached
 
     # 1. Thu cao du lieu sieu toc bang Crawl4AI thuan tuyet
     try:
         engine.publish_mission_log(
-            "SCRAPER", f"🕷️ [CRAWL4AI]: Boc tach du lieu tu URL: `{url}`...", task_id, trace_id
+            "SCRAPER", f"[CRAWL4AI] Boc tach du lieu tu URL: `{url}`...", task_id, trace_id
         )
         from intelligence.skills.CORE.duyet_browse_zenith.logic import ai_browse
         browse_res = await ai_browse(url=url, action="extract_text", task_id=task_id, trace_id=trace_id)
@@ -1535,14 +1535,14 @@ async def cao_du_lieu_web(
             _cache.set(cache_key, out, ttl=1800)
             return out
     except Exception as crawl_err:
-        log.warning(f"[CRAWL4AI-SCRAPE-WARN] Crawl4AI that bai: {crawl_err}. Chuyener sang Jina.ai...")
+        log.warning("[CRAWL4AI-SCRAPE-WARN] Crawl4AI thất bại: %s. Chuyển sang Jina.ai...", crawl_err)
 
     # 2. Du phong: Trich xuat qua Jina.ai
     if _cb_jina.is_open:
         return {"status": "error", "msg": "Ca Crawl4AI va Jina deu khong the trich xuat du lieu."}
 
     engine.publish_mission_log(
-        "SCRAPER", f"📄 [JINA-FALLBACK]: Boc tach du lieu tu URL: `{url}`...", task_id, trace_id
+        "SCRAPER", f"[JINA-FALLBACK] Boc tach du lieu tu URL: `{url}`...", task_id, trace_id
     )
 
     async def _do_scrape():
@@ -1563,7 +1563,7 @@ async def cao_du_lieu_web(
         return out
     except Exception as e:
         _cb_jina.record_failure()
-        log.error(f"[SCRAPE] Jina that bai: {e}")
+        log.error("[SCRAPE] Jina thất bại: %s", e)
         return {"status": "error", "msg": str(e)}
 
 async def read_url_content(url: str, task_id: str = "sys", trace_id: str = "system") -> dict:
@@ -1695,14 +1695,14 @@ async def _index_single_file(
                                 0, f"🧬 Đã vector hoá {count_dict['count']} phân đoạn...", "smart_index"
                             )
                 except Exception as exc:
-                    log.warning(f"[INDEX-CHUNK] {full_path.name}[{i}]: {exc}")
+                    log.warning("[INDEX-CHUNK] %s[%s]: %s", full_path.name, i, exc)
                     errors += 1
 
             # Execute all chunks in parallel using asyncio.gather
             await asyncio.gather(*[_embed_chunk(i, c) for i, c in enumerate(chunks)])
 
         except Exception as exc:
-            log.error(f"[INDEX-FILE] {full_path}: {exc}")
+            log.error("[INDEX-FILE] %s: %s", full_path, exc)
             errors += 1
 
     return count, errors
@@ -1718,7 +1718,7 @@ async def dong_bo_toan_dien_qdrant(
     """
     engine.publish_mission_log(
         "SMART_INDEX",
-        f"🌀 [ELITE-INDEX]: Khởi động Quy trình Tổng chỉ mục Thông minh tại: `{folder_path}`"
+        f"[ELITE-INDEX] Khởi động Quy trình Tổng chỉ mục Thông minh tại: `{folder_path}`"
     )
 
     base = Path(folder_path)
@@ -1735,7 +1735,7 @@ async def dong_bo_toan_dien_qdrant(
         return valid_files
 
     target_files = await asyncio.to_thread(get_all_files)
-    log.info(f"[INDEX] Tìm thấy {len(target_files)} file để index.")
+    log.info("[INDEX] Tìm thấy %s file để index.", len(target_files))
 
     semaphore = asyncio.Semaphore(max_concurrency)
     count_dict = {"count": 0}
@@ -1754,7 +1754,7 @@ async def dong_bo_toan_dien_qdrant(
             total_errors += e
 
     msg = f"Đã hoàn tất Tổng chỉ mục Thông minh. Đã nạp thành công {total_count} phân đoạn tri thức có ngữ cảnh vào Qdrant Vault, {total_errors} lỗi."
-    engine.publish_mission_log("SMART_INDEX", f"✅ [INDEX-COMPLETE]: {msg}")
+    engine.publish_mission_log("SMART_INDEX", f"[INDEX-COMPLETE] {msg}")
     return {
         "status": "success",
         "msg": msg,
@@ -1804,7 +1804,7 @@ async def truy_luc_thuc_dia(
 
     engine.publish_mission_log(
         "GREP",
-        f"🔎 [GREP-v2] query=`{query}` ext=`{extension}` fuzzy={fuzzy} path=`{search_path}`",
+        f"[GREP-v2] query=`{query}` ext=`{extension}` fuzzy={fuzzy} path=`{search_path}`",
         task_id,
     )
 
@@ -1858,7 +1858,7 @@ async def truy_luc_thuc_dia(
             report += f"- {tag} `{r['file']}:{r['line']}` -> {r['content'][:90]}\n"
         
         engine.publish_mission_log(
-            "GREP", f"✅ [GREP-SUCCESS]: Hoàn tất trích xuất {len(results)} điểm tương quan.", task_id
+            "GREP", f"[GREP-SUCCESS] Hoàn tất trích xuất {len(results)} điểm tương quan.", task_id
         )
         return {
             "status": "success", 
@@ -1886,7 +1886,7 @@ async def run_search_doctor(engine_instance=None, task_id: str = "doctor") -> di
       - overall (str): "ok" | "degraded" | "critical"
     """
     _eng = engine_instance or engine
-    _eng.publish_mission_log("SYSTEM_HEALTH", "🩺 [SEARCH-DOCTOR]: Bắt đầu chẩn đoán toàn bộ Search Backends...", task_id)
+    _eng.publish_mission_log("SYSTEM_HEALTH", "[SEARCH-DOCTOR] Bắt đầu chẩn đoán toàn bộ Search Backends...", task_id)
 
     # Probe song song tất cả backends
     await _search_probe.probe_all()
@@ -1899,17 +1899,17 @@ async def run_search_doctor(engine_instance=None, task_id: str = "doctor") -> di
     if all(s == BackendStatus.DEAD for s in statuses):
         overall = "critical"
         _eng.publish_mission_log("SYSTEM_HEALTH",
-            "🚨 [SEARCH-CRITICAL]: TẤT CẢ backends đang DEAD. Hệ thống tìm kiếm không thể hoạt động!", task_id)
+            "[SEARCH-CRITICAL] TẤT CẢ backends đang DEAD. Hệ thống tìm kiếm không thể hoạt động!", task_id)
     elif any(s in (BackendStatus.OK, BackendStatus.DEGRADED) for s in statuses):
         dead_count = sum(1 for s in statuses if s == BackendStatus.DEAD)
         if dead_count > 0:
             overall = "degraded"
             _eng.publish_mission_log("SYSTEM_HEALTH",
-                f"⚠️ [SEARCH-DEGRADED]: {dead_count} backend(s) DEAD, nhưng vẫn còn backup hoạt động.", task_id)
+                f"[SEARCH-DEGRADED] {dead_count} backend(s) DEAD, nhưng vẫn còn backup hoạt động.", task_id)
         else:
             overall = "ok"
             _eng.publish_mission_log("SYSTEM_HEALTH",
-                "✅ [SEARCH-HEALTHY]: Tất cả backends đang hoạt động tốt.", task_id)
+                "[SEARCH-HEALTHY] Tất cả backends đang hoạt động tốt.", task_id)
     else:
         overall = "unknown"
 

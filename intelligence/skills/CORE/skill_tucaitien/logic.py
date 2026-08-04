@@ -543,7 +543,7 @@ REQUIRED INSTRUCTIONS:
         )
 
         # ── SECTION 2: MAP/DECK ──
-        engine.publish_mission_log("TUCAITIEN", "📦 Dang tai SkillDeckIndex...", _tid)
+        engine.publish_mission_log("TUCAITIEN", "Dang tai SkillDeckIndex...", _tid)
         try:
             from core.utils.skill_deck_index import SkillDeckIndex
             deck = SkillDeckIndex.get()
@@ -559,7 +559,7 @@ REQUIRED INSTRUCTIONS:
             sections.append(f"## 1. MAP/DECK REGISTRY\n| Trang thai | Loi: {e} |")
 
         # ── SECTION 3: MODULES ──
-        engine.publish_mission_log("TUCAITIEN", "📂 Dang kiem tra module...", _tid)
+        engine.publish_mission_log("TUCAITIEN", "Dang kiem tra module...", _tid)
         core_targets = [
             ("services/ai-brain/planner.py", "Agent registry, plan validation"),
             ("services/ai-brain/receptionist/receptionist_core.py", "Ingress / DEEP routing"),
@@ -575,13 +575,13 @@ REQUIRED INSTRUCTIONS:
         sections.append("## 2. MODULES\n| Trang thai | Module | Ghi chu |\n| --- | --- | --- |\n" + "\n".join(mod_rows))
 
         # ── SECTION 4: REPO AUDIT ──
-        engine.publish_mission_log("TUCAITIEN", "🔍 Dang ra soat ma nguon...", _tid)
+        engine.publish_mission_log("TUCAITIEN", "Dang ra soat ma nguon...", _tid)
         try:
             from core.utils.repo_surgeon import audit_repo
             repo_data = audit_repo(optimization_goal)
             syn_n = len(repo_data.get("syntax_errors") or [])
             bug_n = len(repo_data.get("common_bugs") or [])
-            engine.publish_mission_log("TUCAITIEN", f"✅ Ra soat xong: {syn_n} loi cu phap, {bug_n} loi tiem an.", _tid)
+            engine.publish_mission_log("TUCAITIEN", f"Ra soat xong: {syn_n} loi cu phap, {bug_n} loi tiem an.", _tid)
 
             audit_lines = []
 
@@ -650,7 +650,7 @@ REQUIRED INSTRUCTIONS:
             sections.append(f"## 3. PHAT HIEN LOI\n| Loi | {e} |")
 
         # ── SECTION 5: SELF-DIAGNOSIS ──
-        engine.publish_mission_log("TUCAITIEN", "🚑 Dang quet loi tu cac nhiem vu gan day...", _tid)
+        engine.publish_mission_log("TUCAITIEN", "Dang quet loi tu cac nhiem vu gan day...", _tid)
         diag_lines = []
         try:
             import httpx
@@ -702,7 +702,7 @@ REQUIRED INSTRUCTIONS:
                 sub = await self.phau_thuat_logic(skill_id=chosen, optimization_goal=optimization_goal, dry_run=dry_run, **_sk2)
                 sections.append(f"## 6. THU NGHIEM SKILL `{chosen}`\n" + str(sub.get("output", sub)))
                 lines_out = sep.join(sections)
-                engine.publish_mission_log("TUCAITIEN", "✅ Hoan tat.", _tid)
+                engine.publish_mission_log("TUCAITIEN", "Hoan tat.", _tid)
                 return {"output": lines_out, "status": sub.get("status", "success"), "nested": sub}
 
         sections.append(
@@ -713,7 +713,7 @@ REQUIRED INSTRUCTIONS:
         )
 
         lines_out = sep.join(sections)
-        engine.publish_mission_log("TUCAITIEN", "✅ Hoan tat.", _tid)
+        engine.publish_mission_log("TUCAITIEN", "Hoan tat.", _tid)
         return {"output": lines_out, "status": "success"}
 
     async def tu_nang_cap_ban_than(self, **kwargs) -> Dict[str, Any]:

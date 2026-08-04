@@ -115,7 +115,7 @@ class JKAIIntelligenceEngine:
                         with open(os.path.join(agents_dir, file), "r", encoding="utf-8") as f:
                             self.agent_profiles_cache[file] = f.read()[:1000]
         except Exception as _e:
-            logger.warning(f"[ENGINE] Không thể tải hồ sơ đặc vụ: {_e}")
+            logger.warning("[ENGINE] Không thể tải hồ sơ đặc vụ: %s", _e)
 
     def _bridge_cognitive_schema(self, model_name: str, messages: list) -> list:
         """[COGNITIVE-BRIDGE]: Dong bo 'khau vi' tri thuc theo kien truc Model."""
@@ -379,7 +379,7 @@ class JKAIIntelligenceEngine:
             if model and model not in unique_models:
                 unique_models[model] = {'role': role, 'cfg': cfg}
         
-        logger.info(f"[GUARDIAN] Khởi động Giao thức Triệu hồi ({len(unique_models)} model)...")
+        logger.info("[GUARDIAN] Khởi động Giao thức Triệu hồi (%s model)...", len(unique_models))
         client = self._get_client()
         
         available_tags = {self.ollama_host_gpu: [], self.ollama_host_cpu: []}
@@ -395,7 +395,7 @@ class JKAIIntelligenceEngine:
                 if ps_resp.status_code == 200:
                     loaded_models[host].extend([m['name'].lower() for m in ps_resp.json().get('models', [])])
             except Exception as _e:
-                logger.warning(f"[GUARDIAN] Không thể kết nối {host}: {_e}")
+                logger.warning("[GUARDIAN] Không thể kết nối %s: %s", host, _e)
 
         for model, info in unique_models.items():
             cfg = info['cfg']
@@ -420,8 +420,8 @@ class JKAIIntelligenceEngine:
             total_tags = len(available_tags[target_host]) + len(available_tags[other_host])
 
             if total_tags > 0 and not model_in_target and not model_in_other:
-                logger.error(f"❌ [GUARDIAN] KHÔNG TÌM THẤY ĐẶC VỤ `{model}` TRONG PHÁO ĐÀI!")
-                self.publish_mission_log("CRITICAL", f"[SỰ CỐ TÀI SẢN]: Đặc vụ `{model}` (Role: {role}) không tồn tại trong Thư viện. Cần Master Pull ngay !")
+                logger.error("[GUARDIAN] Đặc vụ `%s` không tồn tại trong thư viện!", model)
+                self.publish_mission_log("CRITICAL", f"[SỰ CỐ TÀI SẢN] Đặc vụ `{model}` (Role: {role}) không tồn tại trong Thư viện. Cần Master Pull ngay!")
                 continue
                 
             # [MASTER-DIRECTIVE]: Tuyệt đối không tự ý nhảy Host nếu không tìm thấy đặc vụ thưa Master.
@@ -430,17 +430,17 @@ class JKAIIntelligenceEngine:
             #    target_host = other_host
 
             if any(model in m for m in loaded_models[target_host]):
-                logger.info(f"[GUARDIAN] Đặc vụ `{model}` đã có mặt tại vị trí ({target_host}).")
+                logger.info("[GUARDIAN] Đặc vụ `%s` đã có mặt tại vị trí (%s).", model, target_host)
                 # [PURGE-MISPLACED]: Nếu model cũng đang load ở port sai, giải phóng để giữ đúng Hardware Affinity
                 if any(model in m for m in loaded_models[other_host]):
-                    logger.warning(f"🧹 [GUARDIAN] Đặc vụ `{model}` đang chiếm cả {other_host} — dọn dẹp...")
+                    logger.warning("[GUARDIAN] Đặc vụ `%s` đang chiếm cả %s — dọn dẹp...", model, other_host)
                     try:
                         await client.post(f"{other_host}/api/generate", json={"model": model, "prompt": "", "keep_alive": 0}, timeout=30.0)
                     except Exception: pass
                 continue
 
             try:
-                logger.info(f"[GUARDIAN] Đang triệu hồi: {model} (Role: {role}) trên {target_host}...")
+                logger.info("[GUARDIAN] Đang triệu hồi: %s (Role: %s) trên %s...", model, role, target_host)
                 keep_alive = cfg.keep_alive
                 try:
                     if str(keep_alive) == "-1": keep_alive = -1
@@ -453,19 +453,19 @@ class JKAIIntelligenceEngine:
                 }, timeout=600.0)
                 # [PURGE-MISPLACED]: Sau khi load đúng port, dọn dẹp bản copy ở port sai nếu có
                 if any(model in m for m in loaded_models[other_host]):
-                    logger.warning(f"🧹 [GUARDIAN] Đặc vụ `{model}` cũng đang chiếm {other_host} — dọn dẹp...")
+                    logger.warning("[GUARDIAN] Đặc vụ `%s` cũng đang chiếm %s — dọn dẹp...", model, other_host)
                     try:
                         await client.post(f"{other_host}/api/generate", json={"model": model, "prompt": "", "keep_alive": 0}, timeout=30.0)
                     except Exception: pass
             except Exception as e:
-                logger.error(f"❌ [GUARDIAN] Trục trặc khi triệu hồi {model}: {e}")
+                logger.error("[GUARDIAN] Trục trặc khi triệu hồi %s: %s", model, e)
             
     # Alias for backward compatibility 
     warmup_models = warmup_all_models
 
     async def flush_gpu_memory(self, task_id="system"):
-        """🧹 [SOVEREIGN ARBITRATOR]: Xả toàn bộ nơ-ron GPU để dọn đường cho Xưởng vẽ ."""
-        self.publish_mission_log("VRAM_FLUSH", "🧹 [SOVEREIGN]: Đang thực hiện Surgical Flush để giải phóng VRAM...", task_id)
+        """Xả toàn bộ nơ-ron GPU để dọn đường cho Xưởng vẽ."""
+        self.publish_mission_log("VRAM_FLUSH", "[SOVEREIGN] Đang thực hiện Surgical Flush để giải phóng VRAM...", task_id)
         client = self._get_client()
         try:
             for host in [self.ollama_host_gpu, self.ollama_host_cpu]:
@@ -474,25 +474,25 @@ class JKAIIntelligenceEngine:
                     models = resp.json().get("models", [])
                     for m in models:
                         name = m["name"]
-                        self.publish_mission_log("VRAM_FLUSH", f"♻️ [SOVEREIGN]: Đang giải phóng: {name} tren {host}", task_id)
+                        self.publish_mission_log("VRAM_FLUSH", f"[SOVEREIGN] Đang giải phóng: {name} tren {host}", task_id)
                         await client.post(f"{host}/api/chat", json={
                             "model": name, "messages": [], "keep_alive": 0
                         })
-            self.publish_mission_log("VRAM_FLUSH", "✨ [SOVEREIGN]: VRAM đã được thanh lọc !", task_id)
+            self.publish_mission_log("VRAM_FLUSH", "[SOVEREIGN] VRAM đã được thanh lọc!", task_id)
             return True
         except Exception as e:
-            self.publish_mission_log("ERROR", f"❌ [VRAM-ERR]: {e}", task_id)
+            self.publish_mission_log("ERROR", f"[VRAM-ERR] {e}", task_id)
             return False
 
     async def restore_neural_corps(self, task_id="system"):
-        """[SOVEREIGN ARBITRATOR]: Tái triệu hồi các quân đoàn nơ-ron ."""
-        self.publish_mission_log("VRAM_RESTORE", "[SOVEREIGN]: Đang tái triệu hồi quân đoàn nơ-ron chiến lược...", task_id)
+        """Tái triệu hồi các quân đoàn nơ-ron."""
+        self.publish_mission_log("VRAM_RESTORE", "[SOVEREIGN] Đang tái triệu hồi quân đoàn nơ-ron chiến lược...", task_id)
         try:
             await self.warmup_all_models()
-            self.publish_mission_log("VRAM_RESTORE", "[SOVEREIGN]: Hệ thống đã quay lại trạng thái chiến đấu tối thượng.", task_id)
+            self.publish_mission_log("VRAM_RESTORE", "[SOVEREIGN] Hệ thống đã quay lại trạng thái chiến đấu tối thượng.", task_id)
             return True
         except Exception as e:
-            self.publish_mission_log("ERROR", f"❌ [RESTORE-ERR]: {e}", task_id)
+            self.publish_mission_log("ERROR", f"[RESTORE-ERR] {e}", task_id)
             return False
 
     def _get_active_key(self, model_name):
@@ -540,7 +540,7 @@ class JKAIIntelligenceEngine:
                 return role_data if isinstance(role_data, dict) else role_data.to_dict()
         
         if not role_data:
-            logger.warning(f"[ENGINE] Role '{role}' undefined. Activating fallback protocol...")
+            logger.warning("[ENGINE] Role '%s' undefined. Activating fallback protocol...", role)
             for backup_role in ["PLANNER", "EXECUTOR", "RECEPTIONIST"]:
                 backup_data = self._role_mapping_cache.get(backup_role)
                 if backup_data:
@@ -617,7 +617,7 @@ class JKAIIntelligenceEngine:
                                         'base_url': url_clean if url_clean.startswith('http') else None
                                     }
             except Exception as e:
-                logger.error(f"Error parsing rules_software.md: {e}")
+                logger.error("Error parsing rules_software.md: %s", e)
         
         # Fallback to environment variables
         for p in ['gemini', 'anthropic', 'openai', 'deepseek', 'tavily']:
@@ -830,7 +830,7 @@ class JKAIIntelligenceEngine:
                             }
                         }
         except Exception as e:
-            logger.warning(f"GEOLOCATION-PIPELINE-GPS-ERR: {e}")
+            logger.warning("GEOLOCATION-PIPELINE-GPS-ERR: %s", e)
 
         # Step 3: IP Geolocation (Network Triangulation Fallback)
         apis = [
@@ -962,14 +962,14 @@ class JKAIIntelligenceEngine:
                 client = self._get_client()
                 health = await client.get(f"{service_url}/health", timeout=5.0)
                 if health.status_code != 200:
-                    logger.warning(f"[PRE-FLIGHT] Service {service_name} ({service_url}) đang bận hoặc lỗi. Đang chuyển hướng...")
+                    logger.warning("[PRE-FLIGHT] Service %s (%s) đang bận hoặc lỗi. Đang chuyển hướng...", service_name, service_url)
                     continue
                     
                 # 🔒 [NEURAL-AUDIT]: Kiểm tra xem có xung đột GPU không 
                 r = self._get_redis()
                 if r and r.get("lock:gpu_vram"):
                     # Nếu GPU đang bị khóa bởi tác vụ quan trọng, ta sẽ chờ thay vì gây xung đột 
-                    logger.info(f"[NEURAL-QUEUE] GPU đang bận. {service_name} sẽ chờ nơ-ron giải phóng...")
+                    logger.info("[NEURAL-QUEUE] GPU đang bận. %s sẽ chờ nơ-ron giải phóng...", service_name)
 
                 self._publish_thought(role, f"[ROUTING]: Đang chuyển hướng tới {service_name} ({service_url})...", task_id)
                 from core.utils.otlp_tracer import generate_trace_parent
@@ -990,7 +990,7 @@ class JKAIIntelligenceEngine:
                 t_elapsed_ms = (time.perf_counter() - t_start) * 1000.0
                 self.publish_mission_log(
                     "SYSTEM",
-                    f"⚡ [TELEMETRY]: Role={role} | Model={model or 'default'} | Latency={t_elapsed_ms:.1f}ms | Output={len(ans)} chars",
+                    f"[TELEMETRY] Role={role} | Model={model or 'default'} | Latency={t_elapsed_ms:.1f}ms | Output={len(ans)} chars",
                     task_id
                 )
                 return ans
@@ -998,7 +998,7 @@ class JKAIIntelligenceEngine:
                 r_check = self._get_redis()
                 if r_check and (r_check.get("agent:stop_signal") in [b'true', 'true'] or (task_id and r_check.get(f"agent:stop_signal:{task_id}") in [b'true', 'true'])):
                     raise MasterAbortException("Mission aborted by Master.") from e
-                logger.error(f"❌ [ENGINE-CHAT-ERR]: {type(e).__name__}: {repr(e)}")
+                logger.error("[ENGINE-CHAT-ERR] %s: %r", type(e).__name__, e)
                 continue
                 
         # [PROMPT-ENGINE-INJECTION]: Single entry point — inject_to_messages + cognitive_bridge + memory
@@ -1109,19 +1109,19 @@ class JKAIIntelligenceEngine:
                 'tiny' in f_model_lower
             ):
                 use_manual_react = True
-                self._publish_thought(role, f"🧠 [PROACTIVE-REACT]: Model {final_model} thuộc nhóm tối ưu ReAct văn bản. Kích hoạt Giao thức ReAct Thủ công chủ động để bỏ qua độ trễ lỗi API thưa Master.", task_id)
+                self._publish_thought(role, f"[PROACTIVE-REACT] Model {final_model} thuộc nhóm tối ưu ReAct văn bản. Kích hoạt Giao thức ReAct Thủ công chủ động để bỏ qua độ trễ lỗi API thưa Master.", task_id)
         
         forced_cloud = False
         for attempt in range(max_attempts):
             if ledger.exceeded:
-                self.publish_mission_log("WARN", f"💰 [COST-GOVERNOR]: Task {task_id} đã vượt ngân sách. Dừng retry.", task_id)
+                self.publish_mission_log("WARN", f"[COST-GOVERNOR] Task {task_id} đã vượt ngân sách. Dừng retry.", task_id)
                 break
                 
             if attempt > 0:
                 if use_manual_react:
-                    self.publish_mission_log("INFO", f"🔄 [MANUAL-REACT]: Đang thử lại với Giao thức ReAct thủ công cho {final_model}...")
+                    self.publish_mission_log("INFO", f"[MANUAL-REACT] Đang thử lại với Giao thức ReAct thủ công cho {final_model}...")
                 else:
-                    self.publish_mission_log("WARN", f"⚠️ [FALLBACK]: Khởi chạy cơ chế dự phòng cho mô hình {final_model}...")
+                    self.publish_mission_log("WARN", f"[FALLBACK] Khởi chạy cơ chế dự phòng cho mô hình {final_model}...")
                     try:
                         from core.utils.hardware_scheduler import hardware_scheduler
                         fb_info = await hardware_scheduler.resolve_smart_fallback(final_model, self, [role, "RECEPTIONIST", "RESERVE_AGENT"])
@@ -1131,7 +1131,7 @@ class JKAIIntelligenceEngine:
                             if role not in ['RECEPTIONIST', 'PLANNER', 'CRITIC'] or fb_info.get("role") not in ["RESERVE_AGENT", "RECEPTIONIST"]:
                                 role = fb_info.get("role", role)
                             role_cfg = self.get_role_config(role)
-                            self.publish_mission_log("INFO", f"🔄 [SMART-FALLBACK]: Đồng bộ mô hình thành công. Chuyển sang Vai trò: {role}, Mô hình: {final_model}")
+                            self.publish_mission_log("INFO", f"[SMART-FALLBACK] Đồng bộ mô hình thành công. Chuyển sang Vai trò: {role}, Mô hình: {final_model}")
                         else:
                             break # No fallback found
                     except Exception as fb_err:
@@ -1148,15 +1148,15 @@ class JKAIIntelligenceEngine:
             # [COST-GOVERNOR]: Route to Gemini only when context truly exceeds local capacity (>8000 tokens)
             if estimated_tokens > 8000 and gemini_key and not any(final_model.lower().startswith(p) for p in ['gemini-', 'gpt-', 'claude-']):
                 if attempt > 0 and forced_cloud:
-                    self.publish_mission_log("ERROR", f"❌ Ngữ cảnh quá lớn ({estimated_tokens} tokens) nhưng Cloud API đã thất bại. Hủy bỏ để bảo vệ hệ thống.", task_id)
+                    self.publish_mission_log("ERROR", f"Ngữ cảnh quá lớn ({estimated_tokens} tokens) nhưng Cloud API đã thất bại. Hủy bỏ để bảo vệ hệ thống.", task_id)
                     return "Error: Context too large and Cloud Fallback API failed. Task aborted."
                 
                 if ledger.cloud_calls_made >= budget.max_cloud_calls:
-                    self.publish_mission_log("WARN", f"💰 [COST-GOVERNOR]: Đã đạt giới hạn cloud calls ({budget.max_cloud_calls}). Giữ local.", task_id)
+                    self.publish_mission_log("WARN", f"[COST-GOVERNOR] Đã đạt giới hạn cloud calls ({budget.max_cloud_calls}). Giữ local.", task_id)
                 elif ledger.estimated_cost_usd >= budget.max_cloud_cost_usd:
-                    self.publish_mission_log("WARN", f"💰 [COST-GOVERNOR]: Đã vượt ngân sách cloud (${budget.max_cloud_cost_usd}). Giữ local.", task_id)
+                    self.publish_mission_log("WARN", f"[COST-GOVERNOR] Đã vượt ngân sách cloud (${budget.max_cloud_cost_usd}). Giữ local.", task_id)
                 else:
-                    self.publish_mission_log("INFO", f"🔄 Ngữ cảnh lớn ({estimated_tokens} tokens). Chuyển hướng sang Gemini.")
+                    self.publish_mission_log("INFO", f"Ngữ cảnh lớn ({estimated_tokens} tokens). Chuyển hướng sang Gemini.")
                     # Sửa lại model name cho đúng chuẩn API Google
                     final_model = "models/gemini-3.5-flash"
                     forced_cloud = True
@@ -1196,7 +1196,7 @@ class JKAIIntelligenceEngine:
                 prov_url = prov_cfg.get('base_url')
                 if not prov_key:
                     # If cloud is requested but key is not configured, fallback to local Ollama
-                    self.publish_mission_log("WARN", f"Không tìm thấy API Key cho {cloud_provider.upper()} trong rules_software.md. Chuyển sang dùng model local .")
+                    self.publish_mission_log("WARN", f"Không tìm thấy API Key cho {cloud_provider.upper()} trong rules_software.md. Chuyển sang dùng model local.")
                     is_cloud = False
 
             
@@ -1263,7 +1263,7 @@ class JKAIIntelligenceEngine:
             _model_is_vision = any(v in final_model.lower() for v in _vision_models)
             if images and len(messages) > 0:
                 if not _model_is_vision:
-                    _non_vision_warn = f"⚠️ Model '{final_model}' không hỗ trợ đọc ảnh. JKAI sẽ bỏ qua ảnh đã gửi và xử lý nội dung text."
+                    _non_vision_warn = f"Model '{final_model}' không hỗ trợ đọc ảnh. JKAI sẽ bỏ qua ảnh đã gửi và xử lý nội dung text."
                     self.publish_mission_log("WARN", _non_vision_warn, task_id)
                     self._publish_thought(role, _non_vision_warn, task_id)
                 else:
@@ -1334,7 +1334,7 @@ class JKAIIntelligenceEngine:
                     payload['options']['num_predict'] = 256
             
             start_time = time.time()
-            logger.info(f"[ENGINE] call_chat: {final_model} (Role: {role}) | think={payload.get('think')} | tools={len(payload.get('tools', []))} | msgs={repr(payload.get('messages', []))[:200]}")
+            logger.info("[ENGINE] call_chat: %s (Role: %s) | think=%s | tools=%d | msgs=%r", final_model, role, payload.get('think'), len(payload.get('tools', [])), repr(payload.get('messages', []))[:200])
             self._publish_thought(role, f"Initializing execution stream with model {final_model}... (Context: {final_options.get('num_ctx', 'default')})", task_id)
             
             client = self._get_client()
@@ -1494,7 +1494,7 @@ class JKAIIntelligenceEngine:
                             
                         async with client.stream('POST', req_url, headers=req_headers, json=req_payload, timeout=custom_timeout) as resp:
                             if resp.status_code != 200:
-                                logger.error(f"❌ [API-ERR] {resp.status_code} for {final_model}")
+                                logger.error("[API-ERR] %s for %s", resp.status_code, final_model)
                                 err_body = await resp.aread() if hasattr(resp, 'aread') else b''
                                 err_text = err_body.decode('utf-8', errors='replace')[:300] if err_body else ''
                                 err_msg = f"Error: [API-ERR] Server/API trả về mã {resp.status_code}. {err_text}"
@@ -1589,24 +1589,24 @@ class JKAIIntelligenceEngine:
                                     try:
                                         chunk = json.loads(line)
                                     except Exception as je:
-                                        logger.warning(f"⚠️ [JSON-DECODE-WARN] Không thể giải mã dòng stream Ollama: '{line}'. Lỗi: {je}")
+                                        logger.warning("[JSON-DECODE-WARN] Không thể giải mã dòng stream Ollama: '%s'. Lỗi: %s", line, je)
                                         continue
                                     # 🖼️ [STREAM-VISION-CHECK]: Phát hiện lỗi ảnh trong stream
                                     if 'error' in chunk:
                                         err_stream = chunk['error']
                                         if "not support image" in err_stream.lower() or "image input" in err_stream.lower():
-                                            _vis_stream_msg = f"❌ Model '{final_model}' không hỗ trợ đọc ảnh. Vui lòng dùng vision model (moondream, llava...) hoặc gửi yêu cầu không kèm ảnh."
+                                            _vis_stream_msg = f"Model '{final_model}' không hỗ trợ đọc ảnh. Vui lòng dùng vision model (moondream, llava...) hoặc gửi yêu cầu không kèm ảnh."
                                             self._publish_thought(role, _vis_stream_msg, task_id)
                                             return _vis_stream_msg
-                                        self._publish_thought(role, f"⚠️ [STREAM-ERR]: {err_stream}", task_id)
+                                        self._publish_thought(role, f"[STREAM-ERR] {err_stream}", task_id)
                                         continue
                                     if chunk.get('done') or 'error' in chunk:
-                                        logger.info(f"🏁 [OLLAMA CHUNK DONE/ERR]: done_reason={chunk.get('done_reason')} | eval_count={chunk.get('eval_count', 0)} | raw={chunk}")
+                                        logger.info("[OLLAMA CHUNK DONE/ERR] done_reason=%s | eval_count=%s | raw=%s", chunk.get('done_reason'), chunk.get('eval_count', 0), chunk)
                                     msg_obj = chunk.get('message', {})
                                     token = msg_obj.get('content', '')
                                     reasoning_token = msg_obj.get('reasoning_content', '')
                                     if 'tool_calls' in msg_obj and msg_obj['tool_calls']:
-                                        logger.info(f"🛠️ [STREAM TOOL CALL FOUND]: {msg_obj['tool_calls']}")
+                                        logger.info("[STREAM TOOL CALL FOUND] %s", msg_obj['tool_calls'])
                                         # Ollama might send tool_calls in the chunk
                                         for tc in msg_obj['tool_calls']:
                                             if tc not in final_tool_calls:
@@ -1742,12 +1742,12 @@ class JKAIIntelligenceEngine:
                 full_content = response_filter.strip_emoji(full_content)
 
                 # [LATENCY-REPORT]: Chuyển thành log nội bộ thay vì public
-                logger.info(f"⏱️ [{role}] {final_model}: {duration:.2f}s | full_len={len(full_content)} | think_len={len(thinking_content)}")
+                logger.info("[%s] %s: %.2fs | full_len=%d | think_len=%d", role, final_model, duration, len(full_content), len(thinking_content))
                 if not full_content and thinking_content:
                     full_content = thinking_content
 
                 if final_tool_calls:
-                    self._publish_thought(role, f"🛠️ [TOOL-EXECUTION]: Executing {len(final_tool_calls)} tools.", task_id)
+                    self._publish_thought(role, f"[TOOL-EXECUTION] Executing {len(final_tool_calls)} tools.", task_id)
                     return {"answer": full_content, "tool_calls": final_tool_calls}
 
                 if json_mode or schema:
@@ -1773,7 +1773,7 @@ class JKAIIntelligenceEngine:
                 # [SMART-FAILOVER-PROTOCOL]: Tự động chuyển vùng nếu trạm chính thực sự bị sập (ConnectError/ConnectTimeout)
                 # Tuyệt đối KHÔNG tự ý chuyển vùng khi bị ReadTimeout để tránh gọi sai phần cứng (gọi CPU model lên GPU gây nghẽn VRAM) thưa Master.
                 if isinstance(e, (httpx.ConnectError, httpx.ConnectTimeout, httpx.ReadError)) and not kwargs.get('is_fallback_attempt'):
-                    self.publish_mission_log("WARNING", f"📡 [CONNECTION-LOST]: Trạm tại {req_url} gặp sự cố ({type(e).__name__}). Đang chuyển vùng dự phòng...", task_id)
+                    self.publish_mission_log("WARNING", f"[CONNECTION-LOST] Trạm tại {req_url} gặp sự cố ({type(e).__name__}). Đang chuyển vùng dự phòng...", task_id)
                     # Thử trạm còn lại
                     other_host = self.ollama_host_cpu if target_ollama_host == self.ollama_host_gpu else self.ollama_host_gpu
                     kwargs['is_fallback_attempt'] = True
@@ -1783,15 +1783,15 @@ class JKAIIntelligenceEngine:
                         if check_resp.status_code == 200:
                             models = [m['name'].lower() for m in check_resp.json().get('models', [])]
                             if any(final_model.lower() in m for m in models):
-                                self.publish_mission_log("INFO", f"✅ [FAILOVER-SUCCESS]: Đã chuyển kết nối mô hình {final_model} tới trạm dự phòng {other_host}.", task_id)
+                                self.publish_mission_log("INFO", f"[FAILOVER-SUCCESS] Đã chuyển kết nối mô hình {final_model} tới trạm dự phòng {other_host}.", task_id)
                                 return await self.call_chat(messages=messages, role=role, model=final_model, task_id=task_id, task_budget=budget, **kwargs)
                     except Exception:
                         pass
 
                 if isinstance(e, httpx.ConnectError):
-                    err_str = f"🛑 [CONNECT-FAILED]: Không thể kết nối tới mô hình {final_model} tại {req_url}."
+                    err_str = f"[CONNECT-FAILED] Không thể kết nối tới mô hình {final_model} tại {req_url}."
                 elif isinstance(e, httpx.TimeoutException):
-                    err_str = f"⏳ [TIMEOUT]: Mô hình {final_model} vượt quá thời gian phản hồi (>900s)."
+                    err_str = f"[TIMEOUT] Mô hình {final_model} vượt quá thời gian phản hồi (>900s)."
                 
                 err_msg = f"Error: [ENGINE-ERR] {err_str}"
                 logger.error(err_msg)
@@ -1799,19 +1799,19 @@ class JKAIIntelligenceEngine:
                 
                 # [SMART-ERROR-RECOVERY]: Phát hiện lỗi Quota/429 để ép chuyển vùng nơ-ron
                 if any(x in err_str.lower() for x in ["429", "quota", "rate limit", "limit exceeded", "exhausted"]):
-                    self.publish_mission_log("CRITICAL", f"🚨 [CLOUD-QUOTA-EXCEEDED]: API {final_model} cạn kiệt tài nguyên. Kích hoạt mô hình dự phòng.", task_id)
+                    self.publish_mission_log("CRITICAL", f"[CLOUD-QUOTA-EXCEEDED] API {final_model} cạn kiệt tài nguyên. Kích hoạt mô hình dự phòng.", task_id)
                     
                     try:
                         from core.utils.hardware_scheduler import hardware_scheduler
                         fb_info = await hardware_scheduler.resolve_smart_fallback(final_model, self, [role, "RECEPTIONIST", "RESERVE_AGENT"])
                         if fb_info and fb_info.get("model"):
                             final_model = fb_info["model"]
-                            self.publish_mission_log("INFO", f"✅ [DYNAMIC-RECOVERY]: Đã chuyển mô hình sang `{final_model}` ({fb_info.get('hardware')}).", task_id)
+                            self.publish_mission_log("INFO", f"[DYNAMIC-RECOVERY] Đã chuyển mô hình sang `{final_model}` ({fb_info.get('hardware')}).", task_id)
                         else:
-                            logger.error(f"❌ [FALLBACK-FAILED]: Không tìm thấy mô hình dự phòng hợp lệ cho Role `{role}`.")
+                            logger.error("[FALLBACK-FAILED] Không tìm thấy mô hình dự phòng hợp lệ cho Role `%s`.", role)
                             return f"Error: [RESOURCE-EXHAUSTED] Mọi mô hình dự phòng cho Role `{role}` đã cạn kiệt."
                     except Exception as fb_err:
-                        logger.error(f"❌ [FALLBACK-CRITICAL]: {fb_err}")
+                        logger.error("[FALLBACK-CRITICAL] %s", fb_err)
                         return f"Error: [FALLBACK-CRITICAL] {fb_err}"
 
                     kwargs['skip_memory'] = True # Giảm tải ngữ cảnh để Local chạy mượt hơn

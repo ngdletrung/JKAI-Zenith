@@ -21,26 +21,25 @@
             "deck_number": "1023",
             "command_deck_id": "#1023"
         },
-        "SKILL_ZENITH_OFFICE_MASTER": {
+        "OFFICE_SUITE_MASTER": {
             "aliases_vn": [
-                "skill zenith office master"
+                "skill zenith office master",
+                "SKILL_ZENITH_OFFICE_MASTER"
             ],
             "author": "Zenith Forge Auto",
             "domain": "CORE",
-            "id": "SKILL_ZENITH_OFFICE_MASTER",
+            "id": "OFFICE_SUITE_MASTER",
             "intent_pairs": [
                 [
                     "EXECUTE",
-                    "SKILL_ZENITH_OFFICE_MASTER"
+                    "OFFICE_SUITE_MASTER"
                 ]
             ],
-            "name_vn": "Kỹ năng Skill zenith office master",
+            "name_vn": "Kỹ năng Office Suite Master",
             "priority": "NORMAL",
             "related_skills": [],
             "version": "1.0.0",
-            "rel_path": "skills/BUSINESS/OFFICE_SUITE_MASTER/SKILL.md",
-            "deck_number": "1071",
-            "command_deck_id": "#1071"
+            "rel_path": "skills/BUSINESS/OFFICE_SUITE_MASTER/SKILL.md"
         },
         "SKILL_MED_21_VIRAL_ENG": {
             "aliases_vn": [
@@ -3800,5 +3799,5 @@
             "rel_path": "skills/CORE/SYNC_KNOWLEDGE_QUANTUM/schema.json"
         }
     },
-    "last_sync": 1785332304.841447
+    "last_sync": 1785595438.7201235
 }

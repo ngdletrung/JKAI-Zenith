@@ -54,7 +54,7 @@ class SecurityMonitor:
                                             "severity": "CRITICAL"
                                         })
                     except Exception as e:
-                        logger.error(f"❌ Error scanning {file_path}: {e}")
+                        logger.error("Error scanning %s: %s", file_path, e)
         return leaks
 
     async def _is_git_ignored(self, file_path: str) -> bool:
@@ -75,7 +75,7 @@ class SecurityMonitor:
     async def run_audit_loop(self):
         """Vòng lặp giám sát liên tục."""
         while True:
-            logger.info("🛡️ Starting security audit scan...")
+            logger.info("Starting security audit scan...")
             leaks = await self.scan_for_leaks()
             if leaks:
                 self._report_leaks(leaks)

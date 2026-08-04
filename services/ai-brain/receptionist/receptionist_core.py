@@ -325,7 +325,7 @@ class Receptionist:
                 _realtime_re = re.compile(r"\b(thời tiết|weather|tin tức|news|giá vàng|tỷ giá|chứng khoán|hôm nay|bây giờ|bao nhiêu|mấy|số lượng|dân số|diện tích|khoảng cách|ai là|năm bao nhiêu|thứ mấy)\b", re.I)
                 is_realtime_need = bool(_realtime_re.search(step_goal))
         except Exception as e:
-            logger.error(f"IntentCortex bypass error: {e}")
+            logger.error("IntentCortex bypass error: %s", e)
 
         # [INTERNAL-DATA GATE]: Neu query muon tim du lieu noi bo, khong force web search
         _internal_keywords = ["nội bộ", "trong máy", "trong hệ thống", "đã lưu", "đã có"]
@@ -488,7 +488,7 @@ class Receptionist:
                             force_synthesis = True
                         continue
             except Exception as e:
-                logger.debug(f"JSON Hallucination Parse Skip: {e}")
+                logger.debug("JSON Hallucination Parse Skip: %s", e)
                 pass
 
             if force_synthesis or turn > 0 or not any(x in res_content for x in ["Action:", "execute_skill", "name:", "skill_id:"]):
@@ -572,7 +572,7 @@ class Receptionist:
                     self._log("ZENITH", f"Hoàn tất chưng cất trong 3ms (Cắt từ {len(raw_data)} còn {len(distilled_obs)} ký tự) thưa Master.", task_id)
                     return distilled_obs
             except Exception as e:
-                logger.error(f"Error importing or running chunk_and_rank_segments: {e}")
+                logger.error("Error importing or running chunk_and_rank_segments: %s", e)
             
             # 3. [FALLBACK]: Cat tho neu co su co
             return raw_data[:2500] + "\n\n... [Fallback: Cắt tỉa thô]"
@@ -633,9 +633,13 @@ class Receptionist:
 
                 output_str = str(res)
                 self._log("SYSTEM", f"Đã nhận dữ liệu từ `{skill_id}` ({len(output_str)} ký tự)", task_id, trace_id=trace_id)
+                # [NEED-INFO-PROTOCOL]: Kỹ năng báo thiếu thông tin -> chuyển thành câu hỏi cho Master
+                if isinstance(res, dict) and res.get("status") == "need_info":
+                    question = res.get("question") or "Thiếu thông tin để hoàn tất."
+                    return f"[CẦN-BỔ-SUNG-THÔNG-TIN] {question} — Hãy hỏi lại Master những mục này, KHÔNG tự bịa nội dung."
                 return res
             except Exception as e:
-                logger.error(f"Execution Error: {e}")
+                logger.error("Execution Error: %s", e)
                 return f"Error executing tool: {e}"
 
         # [BATCH-TIMEOUT]: Giới hạn 60s cho toàn bộ batch song song
@@ -669,7 +673,7 @@ class Receptionist:
             if steps:
                 return steps
         except Exception as e:
-            logger.error(f"[STRATEGIC-PLAN] Planner fallback: {e}")
+            logger.error("[STRATEGIC-PLAN] Planner fallback: %s", e)
 
         return [goal]
 

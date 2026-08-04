@@ -67,21 +67,21 @@ class PromptAssembler:
         if estimate_tokens(assembled_sys_prompt + "\n" + high_section) <= token_limit:
             assembled_sys_prompt += "\n" + high_section
         else:
-            logger.warning("⚠️ [BUDGET-LIMIT]: High-priority facts excluded/truncated due to token budget constraint.")
+            logger.warning("[BUDGET-LIMIT] High-priority facts excluded/truncated due to token budget constraint.")
 
         # Add Medium Priority
         if estimate_tokens(assembled_sys_prompt + "\n" + medium_section) <= token_limit:
             assembled_sys_prompt += "\n" + medium_section
         else:
-            logger.warning("⚠️ [BUDGET-LIMIT]: Medium-priority memory/citations truncated due to token budget constraint.")
+            logger.warning("[BUDGET-LIMIT] Medium-priority memory/citations truncated due to token budget constraint.")
 
         # Add Low Priority
         if estimate_tokens(assembled_sys_prompt + "\n" + low_section) <= token_limit:
             assembled_sys_prompt += "\n" + low_section
         else:
-            logger.warning("⚠️ [BUDGET-LIMIT]: Low-priority KB chunks truncated due to token budget constraint.")
+            logger.warning("[BUDGET-LIMIT] Low-priority KB chunks truncated due to token budget constraint.")
 
         fingerprint = self.get_fingerprint(assembled_sys_prompt)
-        logger.info(f"🔑 [PROMPT-ASSEMBLED]: Fingerprint: {fingerprint[:8]}... Under limit: {estimate_tokens(assembled_sys_prompt)}/{token_limit} tokens.")
+        logger.info("[PROMPT-ASSEMBLED] Fingerprint: %s... Under limit: %s/%s tokens.", fingerprint[:8], estimate_tokens(assembled_sys_prompt), token_limit)
         
         return assembled_sys_prompt, fingerprint

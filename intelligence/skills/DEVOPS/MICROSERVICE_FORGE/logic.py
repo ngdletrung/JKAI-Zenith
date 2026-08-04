@@ -20,10 +20,10 @@ class InstantForge:
         """
         Khởi tạo và triển khai một service mới.
         """
-        engine.publish_mission_log("FORGE_INIT", f"🔥 [FORGE]: Bắt đầu quy trình kiến tạo dịch vụ mới: `{service_name}`", task_id)
+        engine.publish_mission_log("FORGE_INIT", f"[FORGE]: Bắt đầu quy trình kiến tạo dịch vụ mới: `{service_name}`", task_id)
 
         # 1. AI Thiết kế kiến trúc
-        engine.publish_mission_log("FORGE_PLAN", f"🧠 [FORGE]: Đang triệu tập Kiến trúc sư Hệ thống để thiết kế Blueprint cho `{service_name}`...", task_id)
+        engine.publish_mission_log("FORGE_PLAN", f"[FORGE]: Đang triệu tập Kiến trúc sư Hệ thống để thiết kế Blueprint cho `{service_name}`...", task_id)
         prompt = f"""Bạn là Kiến trúc sư Hệ thống của JKAI Zenith. 
         Nhiệm vụ: Thiết kế mã nguồn cho một Microservice Python mới.
         Yêu cầu Master: {requirements}
@@ -65,7 +65,7 @@ class InstantForge:
         (target_dir / "requirements.txt").write_text(forge_plan.get("requirements_txt", ""), encoding="utf-8")
         (target_dir / "Dockerfile").write_text(forge_plan.get("dockerfile", ""), encoding="utf-8")
 
-        engine.publish_mission_log("FORGE_WRITE", f"🛠️ [FORGE]: Đã phẫu thuật xong bộ hồ sơ 5 file và Docker cho `{service_name}`.", task_id)
+        engine.publish_mission_log("FORGE_WRITE", f"[FORGE]: Đã phẫu thuật xong bộ hồ sơ 5 file và Docker cho `{service_name}`.", task_id)
 
         # 3. Cập nhật Docker Compose
         try:
@@ -84,9 +84,9 @@ class InstantForge:
             with open(self.compose_path, 'w', encoding='utf-8') as f:
                 yaml.dump(compose_data, f, sort_keys=False)
             
-            engine.publish_mission_log("FORGE_INFRA", f"📜 [FORGE]: Đã cập nhật `docker-compose.yml`. Service đã sẵn sàng nạp.", task_id)
+            engine.publish_mission_log("FORGE_INFRA", f"[FORGE]: Đã cập nhật `docker-compose.yml`. Service đã sẵn sàng nạp.", task_id)
         except Exception as e:
-            engine.publish_mission_log("ERROR", f"❌ [FORGE-ERR] Lỗi cập nhật hạ tầng: {e}", task_id)
+            engine.publish_mission_log("ERROR", f"[FORGE-ERR] Lỗi cập nhật hạ tầng: {e}", task_id)
 
         # 📊 [MISSION DEBRIEF] - Báo cáo Lò rèn
         report = f"""# 🔥 [MISSION DEBRIEF] - INSTANT FORGE ONLINE

@@ -51,5 +51,5 @@ async def forge_web_skill(domain: str, skill_name: str, code: str, capability: s
             "skill_id": skill_id
         }
     except Exception as e:
-        logger.error(f"❌ [NEURAL-EYE-FORGE-ERR]: {e}")
+        logger.error("[NEURAL-EYE-FORGE-ERR] %s", e)
         return {"status": "error", "msg": str(e)}

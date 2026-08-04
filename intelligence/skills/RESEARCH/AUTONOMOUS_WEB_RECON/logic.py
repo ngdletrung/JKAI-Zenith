@@ -28,8 +28,8 @@ async def execute(params: Dict[str, Any]) -> Dict[str, Any]:
 
     engine.publish_mission_log(
         "RECON", 
-        f"🚀 [TRINH SÁT TỰ TRỊ]: Bắt đầu nhiệm vụ trinh sát mục tiêu: `{objective}`", 
-        task_id, trace_id
+        "[TRINH SÁT TỰ TRỊ]: Bắt đầu nhiệm vụ trinh sát mục tiêu: `%s`", 
+        objective, task_id, trace_id
     )
 
     # 📡 [SATELLITE-LINK]: Gọi ai-browser service
@@ -68,8 +68,8 @@ async def execute(params: Dict[str, Any]) -> Dict[str, Any]:
 
                 engine.publish_mission_log(
                     "RECON", 
-                    f"✅ [HOÀN TẤT]: Trinh sát hoàn tất sau {duration:.2f}s.\n\n**Kết quả phân tích:**\n{analysis}", 
-                    task_id, trace_id
+                    "[HOÀN TẤT]: Trinh sát hoàn tất sau %.2fs.\n\n**Kết quả phân tích:**\n%s", 
+                    duration, analysis, task_id, trace_id
                 )
                 
                 return {
@@ -81,11 +81,11 @@ async def execute(params: Dict[str, Any]) -> Dict[str, Any]:
                 }
             else:
                 error_msg = f"Browser Satellite returned error: {resp.status_code}"
-                engine.publish_mission_log("ERROR", f"❌ [TRINH SÁT THẤT BẠI]: {error_msg}", task_id, trace_id)
+                engine.publish_mission_log("ERROR", "[TRINH SÁT THẤT BẠI]: %s", error_msg, task_id, trace_id)
                 return {"status": "error", "msg": error_msg}
                 
     except Exception as e:
-        engine.publish_mission_log("ERROR", f"❌ [TRINH SÁT LỖI HỆ THỐNG]: {str(e)}", task_id, trace_id)
+        engine.publish_mission_log("ERROR", "[TRINH SÁT LỖI HỆ THỐNG]: %s", str(e), task_id, trace_id)
         return {"status": "error", "msg": str(e)}
 
 async def search_and_analyze(query: str, task_id: str = "sys", trace_id: str = "sys") -> Dict[str, Any]:

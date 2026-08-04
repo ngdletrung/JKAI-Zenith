@@ -14,7 +14,7 @@ async def audit_code(file_path: str, task_id: str = "audit"):
     """
     🔬 [QUANTUM-AUDIT]: Thẩm định mã nguồn đa tầng và kiến tạo giải pháp.
     """
-    engine.publish_mission_log("AUDIT", f"🔍 [AUDIT-START]: Đang thẩm định chuyên sâu: `{file_path}`", task_id)
+    engine.publish_mission_log("AUDIT", "[AUDIT-START]: Đang thẩm định chuyên sâu: `%s`", file_path, task_id)
 
     if not os.path.exists(file_path):
         return {"status": "error", "msg": f"Tệp tin không tồn tại: {file_path}"}
@@ -80,7 +80,7 @@ async def audit_code(file_path: str, task_id: str = "audit"):
         with open(report_file, "w", encoding="utf-8") as f:
             f.write(report_md)
 
-        engine.publish_mission_log("AUDIT", f"✅ [AUDIT-SUCCESS]: Đã niêm phong báo cáo tại Vault. Điểm: {response['score']}/100", task_id)
+        engine.publish_mission_log("AUDIT", "[AUDIT-SUCCESS]: Đã niêm phong báo cáo tại Vault. Điểm: %s/100", response['score'], task_id)
         
         return {
             "status": "success",

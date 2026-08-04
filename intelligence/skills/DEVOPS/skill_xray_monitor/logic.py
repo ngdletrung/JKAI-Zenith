@@ -41,10 +41,10 @@ class XRayMonitor:
                 res = await client.get(f"{self.ollama_url}/api/tags")
                 models = res.json().get("models", [])
                 
-                engine.publish_mission_log("X-RAY", f"👁️ [OLLAMA]: Phát hiện {len(models)} mô hình đang trực chiến.")
+                engine.publish_mission_log("X-RAY", f"[OLLAMA]: Phát hiện {len(models)} mô hình đang trực chiến.")
                 return {"status": "success", "models_count": len(models), "models": models}
         except Exception as e:
-            engine.publish_mission_log("X-RAY", "⚠️ [OLLAMA]: Không thể kết nối với Ollama. Hạ tầng có thể đang offline.")
+            engine.publish_mission_log("X-RAY", "[OLLAMA]: Không thể kết nối với Ollama. Hạ tầng có thể đang offline.")
             return {"status": "error", "message": str(e)}
 
     async def get_system_vitals(self) -> Dict[str, Any]:
@@ -61,7 +61,7 @@ class XRayMonitor:
             "timestamp": time.time()
         }
         
-        engine.publish_mission_log("X-RAY", "📊 [VITALS]: Thông số thực tế đã được thu thập từ Satellite.")
+        engine.publish_mission_log("X-RAY", "[VITALS]: Thông số thực tế đã được thu thập từ Satellite.")
         return {"status": "success", "vitals": vitals}
 
     async def neural_flow_diagnostic(self) -> Dict[str, Any]:
@@ -74,7 +74,7 @@ class XRayMonitor:
             "latency_avg_ms": 45.2
         }
         
-        engine.publish_mission_log("X-RAY", "🧠 [DIAGNOSTIC]: Luồng tư duy đạt độ gắn kết cao. Không phát hiện tắc nghẽn nơ-ron.")
+        engine.publish_mission_log("X-RAY", "[DIAGNOSTIC]: Luồng tư duy đạt độ gắn kết cao. Không phát hiện tắc nghẽn nơ-ron.")
         return {"status": "success", "diagnostic": diagnostic}
 
 # Singleton

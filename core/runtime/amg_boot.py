@@ -130,7 +130,7 @@ class AMGBootstrap:
         self.lifecycle.dry_run = request.dry_run
 
         # Phase 1: Discovery
-        logger.info(f"[AMG-BOOT] Phase 1: Discovering runtime endpoints...")
+        logger.info("[AMG-BOOT] Phase 1: Discovering runtime endpoints...")
         snap = self.discovery.snapshot()
         if not snap.any_alive:
             raise RuntimeError("No Ollama endpoints available. Ensure Zenith_Guardian has started services.")
@@ -169,7 +169,7 @@ class AMGBootstrap:
         decisions = self._make_decisions(request, registry, hw_state)
 
         # Phase 4: Lifecycle Execution (unless dry_run)
-        logger.info(f"[AMG-BOOT] Phase 4: Executing lifecycle policy (dry_run={request.dry_run})...")
+        logger.info("[AMG-BOOT] Phase 4: Executing lifecycle policy (dry_run=%s)...", request.dry_run)
         for d in decisions:
             if d.warmup_policy == "WARM" and not request.dry_run:
                 self.lifecycle.load(d.profile)
@@ -277,7 +277,7 @@ def main():
         bootstrapper.boot(req)
         sys.exit(0)
     except Exception as e:
-        logger.error(f"[AMG-BOOT] Boot failed: {e}")
+        logger.error("[AMG-BOOT] Boot failed: %s", e)
         sys.exit(1)
 
 

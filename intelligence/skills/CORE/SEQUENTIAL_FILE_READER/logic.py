@@ -73,10 +73,10 @@ class SequentialReader:
                 chunks.append("\n".join(current_chunk_lines))
 
             num_chunks = len(chunks)
-            logger.info(f"📚 [SEQUENTIAL-READER]: File size={file_len} chars. Chunking into {num_chunks} chunks (size={chunk_size}).")
+            logger.info("[SEQUENTIAL-READER] File size=%s chars. Chunking into %s chunks (size=%s).", file_len, num_chunks, chunk_size)
             engine.publish_mission_log(
                 "SYSTEM",
-                f"📚 [SEQUENTIAL-READER]: Đang nạp tệp ({file_len} ký tự). Phân rã thành {num_chunks} mảnh thông minh...",
+                f"[SEQUENTIAL-READER] Đang nạp tệp ({file_len} ký tự). Phân rã thành {num_chunks} mảnh thông minh...",
                 task_id
             )
 

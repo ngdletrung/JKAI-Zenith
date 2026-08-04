@@ -26,7 +26,7 @@ async def execute(params: Dict[str, Any]) -> Dict[str, Any]:
     trace_id = params.get("trace_id", "sys")
     try:
         from core.utils.engine import engine
-        engine.publish_mission_log("BROWSER_OPS", f"👁️ [THIÊN NHÃN-HYBRID] Đang triển khai mục tiêu tới: `{url}`...", task_id, trace_id)
+        engine.publish_mission_log("BROWSER_OPS", f"[THIÊN NHÃN-HYBRID] Đang triển khai mục tiêu tới: `{url}`...", task_id, trace_id)
     except ImportError:
         pass
 
@@ -108,7 +108,7 @@ async def ai_browse(url: str, action: str = "extract_text", task_id: str = "sys"
     """
     try:
         from core.utils.engine import engine
-        engine.publish_mission_log("BROWSER_OPS", f"🌐 [BROWSER-USE]: Khởi kích vệ tinh để {action} tại: `{url}`...", task_id, trace_id)
+        engine.publish_mission_log("BROWSER_OPS", f"[BROWSER-USE]: Khởi kích vệ tinh để {action} tại: `{url}`...", task_id, trace_id)
     except Exception:
         pass
 
@@ -116,7 +116,7 @@ async def ai_browse(url: str, action: str = "extract_text", task_id: str = "sys"
     if action == "extract_text":
         try:
             from core.utils.engine import engine
-            engine.publish_mission_log("BROWSER_OPS", f"🕷️ [CRAWL4AI]: Tien hanh cao du lieu sieu toc tai: `{url}`...", task_id, trace_id)
+            engine.publish_mission_log("BROWSER_OPS", f"[CRAWL4AI]: Tien hanh cao du lieu sieu toc tai: `{url}`...", task_id, trace_id)
         except Exception:
             pass
         
@@ -127,7 +127,7 @@ async def ai_browse(url: str, action: str = "extract_text", task_id: str = "sys"
             if markdown_content:
                 try:
                     from core.utils.engine import engine
-                    engine.publish_mission_log("BROWSER_OPS", f"✅ [CRAWL4AI]: Cao du lieu thanh cong! Trich xuat `{len(markdown_content)}` ky tu thua Master.", task_id, trace_id)
+                    engine.publish_mission_log("BROWSER_OPS", f"[CRAWL4AI]: Cao du lieu thanh cong! Trich xuat `{len(markdown_content)}` ky tu thua Master.", task_id, trace_id)
                 except Exception:
                     pass
                 return {
@@ -141,7 +141,7 @@ async def ai_browse(url: str, action: str = "extract_text", task_id: str = "sys"
         # Neu Crawl4AI that bai, tu dong chuyen sang browser-use visual agent
         try:
             from core.utils.engine import engine
-            engine.publish_mission_log("BROWSER_OPS", f"⚠️ [CRAWL4AI-FALLBACK]: Crawl4AI that bai hoac rong. Tu dong chuyen sang ve tinh thi giac browser-use thua Master...", task_id, trace_id)
+            engine.publish_mission_log("BROWSER_OPS", f"[CRAWL4AI-FALLBACK]: Crawl4AI that bai hoac rong. Tu dong chuyen sang ve tinh thi giac browser-use thua Master...", task_id, trace_id)
         except Exception:
             pass
 

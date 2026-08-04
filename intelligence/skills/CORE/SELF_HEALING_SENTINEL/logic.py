@@ -434,7 +434,7 @@ class SelfHealing:
             "💡 Sửa **mã repo** (services/core): đã chạy trong block RÀ SOÁT REPO; "
             "file thử tại `scratch/sandbox/repo_candidates/`."
         )
-        engine.publish_mission_log("ZENITH-WARRIOR", "✅ [REMEDIATION]: Hoàn tất.", task_id)
+        engine.publish_mission_log("ZENITH-WARRIOR", "[REMEDIATION] Hoàn tất.", task_id)
         return "\n".join(lines)
 
     async def skill_self_healing(
@@ -552,7 +552,7 @@ class SelfHealing:
         allow_restart: bool = False,
     ):
         """🏛️ [SUPREME-AUDIT]: Cuộc tổng duyệt binh lực của Master LeeTrung."""
-        engine.publish_mission_log("ZENITH-WARRIOR", "🛡️ [CHIẾN BINH ZENITH]: Đang thực hiện Tổng giám định hệ thống theo lệnh Master...", task_id)
+        engine.publish_mission_log("ZENITH-WARRIOR", "[CHIẾN BINH ZENITH] Đang thực hiện Tổng giám định hệ thống theo lệnh Master...", task_id)
         
         sep = "\n\n---\n\n"
         sec = []
@@ -593,13 +593,13 @@ class SelfHealing:
         except Exception:
             sec.append("- Ollama: 🚨 Lỗi kết nối")
 
-        engine.publish_mission_log("ZENITH-WARRIOR", "🕵️ Đang phân tích nhật ký chiến trường...", task_id)
+        engine.publish_mission_log("ZENITH-WARRIOR", "Đang phân tích nhật ký chiến trường...", task_id)
         # 4. Tổng truy vết Nhật ký (The Big Sieve)
         sec.append("\n🕵️ **PHÂN TÍCH NHẬT KÝ CHIẾN TRƯỜNG (FULL SCAN):**")
         audit_res = await self._audit_all_logs()
         sec.append(audit_res)
 
-        engine.publish_mission_log("ZENITH-WARRIOR", "💾 Đang kiểm tra hạ tầng dữ liệu...", task_id)
+        engine.publish_mission_log("ZENITH-WARRIOR", "Đang kiểm tra hạ tầng dữ liệu...", task_id)
         # 5. Kiểm tra hạ tầng Redis & Database
         sec.append("\n💾 **HẠ TRẦNG DỮ LIỆU:**")
         try:
@@ -712,7 +712,7 @@ class SelfHealing:
         if audit_intelligence:
             sec.append(self._audit_intelligence_stack())
 
-        engine.publish_mission_log("ZENITH-WARRIOR", "📂 Đang rà soát mã nguồn...", task_id)
+        engine.publish_mission_log("ZENITH-WARRIOR", "Đang rà soát mã nguồn...", task_id)
         try:
             from core.utils.repo_surgeon import (
                 audit_repo,
@@ -726,7 +726,7 @@ class SelfHealing:
             sec.append(format_audit_report(repo_data, inst))
             syn_n = len(repo_data.get("syntax_errors") or [])
             bug_n = len(repo_data.get("common_bugs") or [])
-            engine.publish_mission_log("ZENITH-WARRIOR", f"✅ Rà soát xong: {syn_n} lỗi cú pháp, {bug_n} lỗi tiềm ẩn.", task_id)
+            engine.publish_mission_log("ZENITH-WARRIOR", f"Rà soát xong: {syn_n} lỗi cú pháp, {bug_n} lỗi tiềm ẩn.", task_id)
             want_llm_fix = auto_repair and (
                 syn_n > 0
                 or bool(re.search(r"\b(sửa|sua|fix|patch|repo|mã|ma|code)\b", inst, re.I))
@@ -761,7 +761,7 @@ class SelfHealing:
             )
 
         final_msg = "\n".join(sec)
-        engine.publish_mission_log("ZENITH-WARRIOR", "✅ [GIÁM ĐỊNH XONG]: Báo cáo đã sẵn sàng.", task_id)
+        engine.publish_mission_log("ZENITH-WARRIOR", "[GIÁM ĐỊNH XONG] Báo cáo đã sẵn sàng.", task_id)
 
         if "🚨" in final_msg and not auto_repair:
             engine.publish_mission_log(

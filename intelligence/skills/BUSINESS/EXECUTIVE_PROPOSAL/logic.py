@@ -10,7 +10,7 @@ class ExecutiveForge:
 
     async def forge_strategic_proposal(self, project_data: str, objectives: str, task_id: str = "sys") -> str:
         """Kiến tạo đề xuất chiến lược dựa trên dữ liệu và mục tiêu."""
-        engine.publish_mission_log("EXECUTIVE", "🏛️ Đang khởi động Lò đúc Chiến lược...", task_id)
+        engine.publish_mission_log("EXECUTIVE", "Đang khởi động Lò đúc Chiến lược...", task_id)
         
         prompt = f"""
         [HỆ THỐNG KIẾN TẠO CHIẾN LƯỢC ZENITH v2.0]
@@ -40,14 +40,14 @@ class ExecutiveForge:
             task_id=task_id
         )
         
-        engine.publish_mission_log("EXECUTIVE", "✅ Đã đúc xong Bản đề xuất Chiến lược!", task_id)
+        engine.publish_mission_log("EXECUTIVE", "Đã đúc xong Bản đề xuất Chiến lược!", task_id)
         engine.publish_progress(100, "Nhiệm vụ hoàn tất.", task_id)
         
         return proposal
 
     async def generate_executive_summary(self, complex_content: str, task_id: str = "sys") -> str:
         """Tóm tắt điều hành dành riêng cho Tổng Giám Đốc."""
-        engine.publish_mission_log("EXECUTIVE", "📊 Đang cô đọng thông tin cho Master...", task_id)
+        engine.publish_mission_log("EXECUTIVE", "Đang cô đọng thông tin cho Master...", task_id)
         
         prompt = f"""
         Tóm tắt nội dung sau đây thành một BẢN TÓM TẮT ĐIỀU HÀNH (Executive Summary).

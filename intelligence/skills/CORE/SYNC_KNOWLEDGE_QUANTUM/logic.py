@@ -34,7 +34,7 @@ class JKAI_Assimilator:
                 self.registry = json.load(f)
         except Exception:
             self.registry = {}
-            logger.error("❌ [ASSIMILATOR] Could not load registry.json")
+            logger.error("[ASSIMILATOR] Could not load registry.json")
 
         # 🌍 Environment detection
         from core.config import settings
@@ -69,7 +69,7 @@ class JKAI_Assimilator:
                 path.mkdir(parents=True, exist_ok=True)
             except FileExistsError:
                 if not path.is_dir():
-                    logger.warning(f"⚠️ [ASSIMILATOR-WARN] Path {path} exists but is not a directory!")
+                    logger.warning("[ASSIMILATOR-WARN] Path %s exists but is not a directory!", path)
 
         # Lazy-init engine để tránh crash khi import module
         self._engine = None
@@ -103,7 +103,7 @@ class JKAI_Assimilator:
             return {"status": "idle", "msg": "Kho lưu trữ sạch."}
 
         total = min(len(items), limit)
-        logger.info(f"🚀 [ELITE] Initiating Neural Assimilation Protocol: {total} documents...")
+        logger.info("[ELITE] Initiating Neural Assimilation Protocol: %s documents...", total)
         
         results = []
         completed = 0
@@ -126,13 +126,13 @@ class JKAI_Assimilator:
             status_msg = f"💎 [ASSIMILATING] {completed}/{total} - {res.get('item', 'Unknown')}"
             engine.publish_progress(pct, status_msg, task_id)
             if completed % 5 == 0 or completed == total:
-                engine.publish_mission_log("ASSIMILATOR", f"🦾 Đã đồng hóa {completed}/{total} tài liệu vào Registry.", task_id)
+                engine.publish_mission_log("ASSIMILATOR", f"Đã đồng hóa {completed}/{total} tài liệu vào Registry.", task_id)
 
         return {"status": "success", "results": results, "output": f"✅ [ELITE] Assimilated {completed} documents into the ecosystem."}
 
     def pre_audit_cleanup(self):
         """Rà soát và xóa bỏ các chỉ mục không còn tồn tại tệp tin thực tế."""
-        logger.info("🛡️ [AUDIT] Bắt đầu rà soát Hồ sơ Trí tuệ (Ghost Cleaning)...")
+        logger.info("[AUDIT] Bắt đầu rà soát Hồ sơ Trí tuệ (Ghost Cleaning)...")
         for category in self.dest_map.keys():
             map_filename = f"MAP_{category.upper()}.md"
             map_path = self.base_dir / map_filename
@@ -164,9 +164,9 @@ class JKAI_Assimilator:
                 
                 if cleaned_count > 0:
                     map_path.write_text("\n".join(new_lines), encoding="utf-8")
-                    logger.info(f"🧹 [CLEANED] Đã xóa {cleaned_count} bóng ma khỏi {map_filename}")
+                    logger.info("[CLEANED] Đã xóa %s bóng ma khỏi %s", cleaned_count, map_filename)
             except Exception as e:
-                logger.error(f"❌ [AUDIT-ERR] {map_filename}: {e}")
+                logger.error("[AUDIT-ERR] %s: %s", map_filename, e)
 
     async def run_general_offensive(self, task_id: str = "sys", limit_folders: int = 5):
         """
@@ -174,12 +174,12 @@ class JKAI_Assimilator:
         Assimilating knowledge from archive/import_dump in batches.
         """
         # B0: PROTOCOL STARTUP
-        engine.publish_mission_log("ASSIMILATOR", f"☢️ [NUCLEAR-SYNC] Initiating Offensive Protocol v13.0... (Batch: {limit_folders} targets)", task_id)
+        engine.publish_mission_log("ASSIMILATOR", f"[NUCLEAR-SYNC] Initiating Offensive Protocol v13.0... (Batch: {limit_folders} targets)", task_id)
         engine.publish_progress(5, "Đang quét kho lưu trữ...", task_id)
         
         import_dump = self.base_dir / "archive" / "import_dump"
         if not import_dump.exists():
-            engine.publish_mission_log("ASSIMILATOR", "❌ [OFFENSIVE-CANCEL] Không tìm thấy Import Dump.", task_id)
+            engine.publish_mission_log("ASSIMILATOR", "[OFFENSIVE-CANCEL] Không tìm thấy Import Dump.", task_id)
             return {"status": "error", "msg": "Import Dump missing."}
 
         report_stats = {"total_folders": 0, "ok": 0, "not_ok": 0, "processed_files": 0}
@@ -193,7 +193,7 @@ class JKAI_Assimilator:
         total_found = len(all_dirs)
         target_dirs = all_dirs[:limit_folders]
         
-        engine.publish_mission_log("ASSIMILATOR", f"🔍 Phát hiện {total_found} thư mục. Tiến hành tấn công {len(target_dirs)} mục tiêu hàng đầu.", task_id)
+        engine.publish_mission_log("ASSIMILATOR", f"Phát hiện {total_found} thư mục. Tiến hành tấn công {len(target_dirs)} mục tiêu hàng đầu.", task_id)
 
         # B1: QUÉT & NHẬN DIỆN
         for i, current_path in enumerate(target_dirs):
@@ -201,17 +201,17 @@ class JKAI_Assimilator:
             if not files: continue
             
             report_stats["total_folders"] += 1
-            logger.info(f"📁 [B1-SCAN] Đang xử lý thư mục: {current_path.name} ({len(files)} tệp)")
+            logger.info("[B1-SCAN] Đang xử lý thư mục: %s (%s tệp)", current_path.name, len(files))
             
             # Xử lý nhóm file liên quan
             result = await self.process_elite_group(current_path, files, task_id=task_id)
             
             if result["status"] == "success":
                 report_stats["ok"] += 1
-                engine.publish_mission_log("ASSIMILATOR", f"✅ [B3-OK] Đã đồng hóa: `{current_path.name}`", task_id)
+                engine.publish_mission_log("ASSIMILATOR", f"[B3-OK] Đã đồng hóa: `{current_path.name}`", task_id)
             else:
                 report_stats["not_ok"] += 1
-                engine.publish_mission_log("ASSIMILATOR", f"⚠️ [B3-SKIP/ERROR] `{current_path.name}`: {result.get('msg', 'Unknown')}", task_id)
+                engine.publish_mission_log("ASSIMILATOR", f"[B3-SKIP/ERROR] `{current_path.name}`: {result.get('msg', 'Unknown')}", task_id)
             
             report_stats["processed_files"] += len(files)
             
@@ -236,7 +236,7 @@ class JKAI_Assimilator:
 
             # B2: NEURAL AUDIT (Kiểm định C1, C2, C3)
             audit_result = await self.neural_audit(context_content, folder_path.name, profile=profile, task_id=task_id)
-            logger.info(f"🔍 [AUDIT-RESULT] {folder_path.name}: OK={audit_result.get('is_ok')} | Category={audit_result.get('category')} | Reason={audit_result.get('reason')}")
+            logger.info("[AUDIT-RESULT] %s: OK=%s | Category=%s | Reason=%s", folder_path.name, audit_result.get('is_ok'), audit_result.get('category'), audit_result.get('reason'))
             
             if not audit_result.get("is_ok"):
                 # 🔴 TRƯỜNG HỢP NOT OK -> CÁCH LY
@@ -246,7 +246,7 @@ class JKAI_Assimilator:
             return await self.assimilate_elite_folder(folder_path, files, audit_result, profile=profile, task_id=task_id)
 
         except Exception as e:
-            logger.error(f"❌ [GROUP-ERR] {folder_path}: {e}")
+            logger.error("[GROUP-ERR] %s: %s", folder_path, e)
             return {"status": "error", "msg": str(e)}
 
     async def neural_audit(self, content: str, folder_name: str, profile: str = "UNIFIED_ELITE", task_id: str = "sys") -> Dict:
@@ -297,7 +297,7 @@ class JKAI_Assimilator:
         if folder_path.exists():
             shutil.move(str(folder_path), str(quarantine_path))
             (quarantine_path / "rejection_note.md").write_text(f"# ❌ LÝ DO CÁCH LY\n\n{reason}", encoding="utf-8")
-            logger.warning(f"🔴 [QUARANTINE] Đã cách ly: {relative_path} -> {reason}")
+            logger.warning("[QUARANTINE] Đã cách ly: %s -> %s", relative_path, reason)
         return {"status": "quarantined", "path": str(quarantine_path)}
 
     async def assimilate_elite_folder(self, folder_path: Path, files: List[str], audit: Dict, profile: str = "UNIFIED_ELITE", task_id: str = "sys"):
@@ -309,11 +309,11 @@ class JKAI_Assimilator:
         target_category_dir = self.dest_map.get(category, self.dest_map["knowledge"])
         dest_dir = target_category_dir / folder_name
         dest_dir.mkdir(parents=True, exist_ok=True)
-        logger.info(f"📍 [TARGET-PATH] Lưu trữ tại: {dest_dir.absolute()}")
+        logger.info("[TARGET-PATH] Lưu trữ tại: %s", dest_dir.absolute())
         
         # 🔱 GIAO THỨC SINH TRƯỞNG BỘ TỨ (Dành riêng cho Skills)
         if category == "skills":
-            logger.info(f"🧬 [EVOLVING] Đang kiến tạo Bộ Tứ Elite cho kỹ năng: {folder_name}")
+            logger.info("[EVOLVING] Đang kiến tạo Bộ Tứ Elite cho kỹ năng: %s", folder_name)
             
             # Đọc nội dung gốc để AI phẫu thuật
             original_content = ""
@@ -349,7 +349,7 @@ class JKAI_Assimilator:
             syntax_ok = self.check_python_syntax(dest_dir / "logic.py")
             audit["effectiveness"] = 1.0 if syntax_ok else 0.5
             if not syntax_ok:
-                logger.warning(f"⚠️ [HEALTH-CHECK] Kỹ năng {folder_name} có lỗi cú pháp Python.")
+                logger.warning("[HEALTH-CHECK] Kỹ năng %s có lỗi cú pháp Python.", folder_name)
         else:
             # Đối với các loại khác: Di chuyển và chuẩn hóa tên
             for f_name in files:
@@ -362,8 +362,8 @@ class JKAI_Assimilator:
         if folder_path.exists() and not os.listdir(folder_path):
             folder_path.rmdir()
             
-        logger.info(f"🟢 [ASSIMILATED] {category}/{folder_name} - OK")
-        engine.publish_mission_log("ASSIMILATOR", f"🧬 [PILLAR-UPDATE] Trụ cột `{category.upper()}` vừa tiếp nhận: `{folder_name}`", task_id)
+        logger.info("[ASSIMILATED] %s/%s - OK", category, folder_name)
+        engine.publish_mission_log("ASSIMILATOR", f"[PILLAR-UPDATE] Trụ cột `{category.upper()}` vừa tiếp nhận: `{folder_name}`", task_id)
         return {"status": "success", "dest": str(dest_dir)}
 
     async def generate_elite_suite(self, content: str, name: str, profile: str = "UNIFIED_ELITE", task_id: str = "sys") -> Dict:
@@ -408,7 +408,7 @@ class JKAI_Assimilator:
             # 📄 [CONVERTING] Triết xuất tri thức qua Core Converter
             return await converter.to_markdown(str(file_path))
         except Exception as e:
-            logger.error(f"❌ [READ-ERR] {file_path.name}: {e}")
+            logger.error("[READ-ERR] %s: %s", file_path.name, e)
             return f"\n[ERROR READING {file_path.name}]\n"
 
     def check_python_syntax(self, file_path: Path) -> bool:
@@ -502,8 +502,8 @@ Tư lệnh thực thi: **JKAI_ASSIMILATOR v12.0**
 Hệ thống đã được thanh lọc và nạp vào Vector Database chuẩn v12.0. Mọi tri thức mới đã sẵn sàng phục vụ. 💎🫡🦾🚀🌌
 """
         report_path.write_text(content, encoding="utf-8")
-        logger.info(f"📋 [REPORT] Đã xuất báo cáo: {report_name}")
-        engine.publish_mission_log("MISSION_REPORT", f"📜 [FINAL] Chiến dịch đồng bộ hoàn tất. Đã xuất báo cáo: `{report_name}`")
+        logger.info("[REPORT] Đã xuất báo cáo: %s", report_name)
+        engine.publish_mission_log("MISSION_REPORT", f"[FINAL] Chiến dịch đồng bộ hoàn tất. Đã xuất báo cáo: `{report_name}`")
         return content
 
     async def process_item(self, item: Path, profile: str = "UNIFIED_ELITE"):
@@ -515,8 +515,8 @@ Hệ thống đã được thanh lọc và nạp vào Vector Database chuẩn v1
             # [ECC-INSPIRED] 🛡️ SECURITY INSTINCT: Proactive sensitive data scan
             security_report = self.security_scan(content, item.name)
             if security_report.get("is_dangerous"):
-                logger.warning(f"🚨 [SECURITY-ALERT] {item.name}: {security_report.get('reason')}")
-                engine.publish_mission_log("SECURITY", f"🚨 Cảnh báo bảo mật: `{item.name}` chứa {security_report.get('reason')}", task_id="sys")
+                logger.warning("[SECURITY-ALERT] %s: %s", item.name, security_report.get('reason'))
+                engine.publish_mission_log("SECURITY", f"[SECURITY] Cảnh báo bảo mật: `{item.name}` chứa {security_report.get('reason')}", task_id="sys")
                 # Auto-quarantine for critical security risks
                 if security_report.get("severity") == "CRITICAL":
                     return await self.quarantine_folder(item.parent, f"SECURITY_CRITICAL: {security_report.get('reason')}")
@@ -525,7 +525,7 @@ Hệ thống đã được thanh lọc và nạp vào Vector Database chuẩn v1
             assimilated_data = await self.ai_scrub(content, item.name, profile=profile)
             
             if assimilated_data.get("status") == "error" or not assimilated_data.get("content"):
-                logger.error(f"❌ [ASSIMILATOR-ERR] Trí tuệ nhân tạo không thể xử lý (JSON parsing lỗi hoặc nội dung rỗng): {item.name}")
+                logger.error("[ASSIMILATOR-ERR] Trí tuệ nhân tạo không thể xử lý (JSON parsing lỗi hoặc nội dung rỗng): %s", item.name)
                 return {"item": item.name, "status": "error", "msg": "AI Scrub failed to return valid JSON content."}
             
             # Document identification post-assimilation
@@ -569,7 +569,7 @@ Hệ thống đã được thanh lọc và nạp vào Vector Database chuẩn v1
             )
 
             self.archive_done(item)
-            logger.info(f"✅ [ZENITH-OK] {item.name} -> {new_filename}")
+            logger.info("[ZENITH-OK] %s -> %s", item.name, new_filename)
             return {
                 "item": item.name, 
                 "status": "success", 
@@ -581,7 +581,7 @@ Hệ thống đã được thanh lọc và nạp vào Vector Database chuẩn v1
             }
 
         except Exception as e:
-            logger.error(f"❌ [ASSIMILATOR-ERR] {item.name}: {e}")
+            logger.error("[ASSIMILATOR-ERR] %s: %s", item.name, e)
             return {"item": item.name, "status": "error", "msg": str(e)}
 
     def _update_registry(self, category: str, filename: str, notes: str, rating: int):
@@ -630,7 +630,7 @@ Hệ thống đã được thanh lọc và nạp vào Vector Database chuẩn v1
             registry_path.write_text(json.dumps(data, indent=2, ensure_ascii=False), encoding="utf-8")
             return existing_id
         except Exception as e:
-            logger.error(f"❌ [REGISTRY-ERR] {e}")
+            logger.error("[REGISTRY-ERR] %s", e)
             return None
 
     def update_master_index(self, category: str, filename: str, notes: str, stars: str, assigned_id: str = None):
@@ -660,7 +660,7 @@ Hệ thống đã được thanh lọc và nạp vào Vector Database chuẩn v1
             content += new_entry
             map_path.write_text(content, encoding="utf-8")
         except Exception as e:
-            logger.error(f"❌ [MAP-UPDATE-ERR] {e}")
+            logger.error("[MAP-UPDATE-ERR] %s", e)
 
     def detect_category(self, item: Path, ai_suggestion: str = None) -> str:
         """Phân loại tài liệu bằng trí tuệ nhân tạo hoặc hậu kiểm."""

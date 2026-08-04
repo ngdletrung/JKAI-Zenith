@@ -84,7 +84,7 @@ class IngressGateway:
             from core.kernel.mission_runtime import MissionRuntime
             from core.kernel.models import MissionContext
             kernel_rt = MissionRuntime()
-            ctx = MissionContext(objective=goal, caller_id=task_id)
+            ctx = MissionContext(goal=goal)
             kernel_rt.submit_mission(ctx)
         except Exception as k_err:
             logger.debug("[INGRESS]: Kernel event logging skipped: %s", k_err)

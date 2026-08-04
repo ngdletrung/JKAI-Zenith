@@ -13,7 +13,7 @@ class WebPathfinder:
         """
         🚀 Giao thức Web-Pathfinding: Tìm con đường ngắn nhất tới mục tiêu.
         """
-        engine.publish_mission_log("PATHFINDER", f"🌐 [NAVIGATE]: Đang tìm đường tại {url} để đạt mục tiêu: {goal}")
+        engine.publish_mission_log("PATHFINDER", "[NAVIGATE]: Đang tìm đường tại %s để đạt mục tiêu: %s", url, goal)
         
         # 1. Phân tích trang web (Sử dụng Browser Tool của hệ thống)
         # TODO: Tích hợp thực tế với Browser tool
@@ -25,7 +25,7 @@ class WebPathfinder:
             # 2. Sử dụng nơ-ron để "nhìn" trang và quyết định bước tiếp theo
             decision = await self._decide_next_move(url, goal)
             
-            engine.publish_mission_log("PATHFINDER", f"🛣️ [STEP {current_step+1}]: {decision['action']} -> {decision['reason']}")
+            engine.publish_mission_log("PATHFINDER", "[STEP %s]: %s -> %s", current_step+1, decision['action'], decision['reason'])
             
             if decision['status'] == "reached":
                 return {"status": "success", "msg": f"🎯 [GOAL]: Đã đạt mục tiêu: {goal}"}

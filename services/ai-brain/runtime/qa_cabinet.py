@@ -20,7 +20,7 @@ class QACabinet:
 
     async def perform_fanout_review(self, goal: str, diff_text: str, task_id: str = "qa_fanout") -> dict:
         """Chạy song song 3 đặc vụ thẩm định mã nguồn thưa Master."""
-        engine.publish_mission_log("QA", "🔬 [QA-CABINET]: Bắt đầu phân rã thẩm định song song qua 3 Ban chuyên trách...", task_id)
+        engine.publish_mission_log("QA", "[QA-CABINET]: Bắt đầu phân rã thẩm định song song qua 3 Ban chuyên trách...", task_id)
         
         t0 = time.time()
         
@@ -37,12 +37,12 @@ class QACabinet:
         for name, res in zip(tasks.keys(), results):
             if isinstance(res, Exception):
                 reports[name] = f"Error during review: {res}"
-                engine.publish_mission_log("QA_ERR", f"❌ [QA-FAIL]: Ban {name} gặp lỗi: {res}", task_id)
+                engine.publish_mission_log("QA_ERR", f"[QA-FAIL]: Ban {name} gặp lỗi: {res}", task_id)
             else:
                 reports[name] = res
         
         latency = (time.time() - t0) * 1000
-        engine.publish_mission_log("QA", f"✅ [QA-CABINET]: Hoàn tất thẩm định song song trong {latency:.0f}ms thưa Master.", task_id)
+        engine.publish_mission_log("QA", f"[QA-CABINET]: Hoàn tất thẩm định song song trong {latency:.0f}ms thưa Master.", task_id)
         
         # Tổng hợp báo cáo
         summary = (

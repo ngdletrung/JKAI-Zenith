@@ -43,7 +43,7 @@ class V3Performance:
             optimized_len = sum(len(m.get("content", "")) for m in optimized_messages)
             self.performance_stats["tokens_optimized"] += (original_len - optimized_len)
             
-            engine.publish_mission_log("PERFORMANCE", f"⚡ [FLASH]: Đã tối ưu hóa {original_len - optimized_len} ký tự ngữ cảnh. Tăng tốc 2.4x.")
+            engine.publish_mission_log("PERFORMANCE", f"[FLASH]: Đã tối ưu hóa {original_len - optimized_len} ký tự ngữ cảnh. Tăng tốc 2.4x.")
             return optimized_messages
             
         except Exception as e:
@@ -72,7 +72,7 @@ class V3Performance:
             )
             
             latency = (time.time() - start_time) * 1000
-            engine.publish_mission_log("PERFORMANCE", f"🌪️ [HNSW]: Tìm kiếm hoàn tất trong {latency:.2f}ms. Độ lợi tốc độ: 150x-12,500x.")
+            engine.publish_mission_log("PERFORMANCE", f"[HNSW]: Tìm kiếm hoàn tất trong {latency:.2f}ms. Độ lợi tốc độ: 150x-12,500x.")
             return results
             
         except Exception as e:
@@ -89,7 +89,7 @@ class V3Performance:
                 "Periodic HNSW index rebuild suggested"
             ]
         }
-        engine.publish_mission_log("PERFORMANCE", "📊 [AUDIT]: Hệ thống đang vận hành ở ngưỡng hiệu suất tối ưu.")
+        engine.publish_mission_log("PERFORMANCE", "[AUDIT]: Hệ thống đang vận hành ở ngưỡng hiệu suất tối ưu.")
         return audit
 
 # Singleton

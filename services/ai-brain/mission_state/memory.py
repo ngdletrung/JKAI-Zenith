@@ -48,7 +48,7 @@ class ScopedMemoryManager:
     def clear_tool_memory(memory: ScopedMemory):
         """Volatile memory manager: cleans up temporary execution variables to save token budget."""
         memory.tool_memory.clear()
-        logger.info("🗑️ [MEM-CLEARED]: Scoped Tool memory cleared successfully.")
+        logger.info("[MEM-CLEARED] Scoped Tool memory cleared successfully.")
 
     @staticmethod
     async def distill(memory: ScopedMemory, task_log_text: str, task_id: str = "sys") -> str:
@@ -82,8 +82,8 @@ class ScopedMemoryManager:
             
             # Clear tool memory
             memory.tool_memory.clear()
-            logger.info("🧠 [MEMORY-CONSOLIDATED]: Verbose logs distilled and tool memory cleared.")
+            logger.info("[MEMORY-CONSOLIDATED] Verbose logs distilled and tool memory cleared.")
             return summary
         except Exception as e:
-            logger.error(f"❌ [MEMORY-CONSOLIDATION-ERR]: Failed to distill memory: {e}")
+            logger.error("[MEMORY-CONSOLIDATION-ERR] Failed to distill memory: %s", e)
             return ""

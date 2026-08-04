@@ -28,7 +28,7 @@ class CognitiveLoop:
         self.is_finished = False
 
     def _log(self, tag: str, msg: str, stealth: bool = False):
-        engine.publish_mission_log(tag, f"💎🫡 [LOOP]: {msg}", self.task_id, stealth=stealth)
+        engine.publish_mission_log(tag, f"[LOOP]: {msg}", self.task_id, stealth=stealth)
 
     async def run(self):
         """Kích hoạt chu trình tự trị nhận thức 7 bước thưa Master."""

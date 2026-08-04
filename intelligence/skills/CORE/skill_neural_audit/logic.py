@@ -9,7 +9,7 @@ def neural_audit(task_id: str, mission_goal: str, execution_log: str) -> dict:
     🧠 [NEURAL AUDIT]: Giao thức Thẩm định Nơ-ron và Tiến hóa Chiến lược.
     Phân tích kết quả nhiệm vụ và trích xuất "Neural DNA" cho các lần thực thi sau.
     """
-    engine.publish_mission_log("AUDIT_INIT", f"⚖️ [AUDIT]: Bắt đầu thẩm định chiến lược cho nhiệm vụ: `{task_id}`", task_id)
+    engine.publish_mission_log("AUDIT_INIT", f"[AUDIT]: Bắt đầu thẩm định chiến lược cho nhiệm vụ: `{task_id}`", task_id)
 
     # 1. Triệu tập Hội đồng Thẩm phán (CRITIC) để phân tích
     audit_prompt = f"""Bạn là Thẩm phán Tối cao của JKAI Zenith. 
@@ -42,9 +42,9 @@ def neural_audit(task_id: str, mission_goal: str, execution_log: str) -> dict:
     try:
         with open(lessons_path, "a", encoding="utf-8") as f:
             f.write(lesson_entry)
-        engine.publish_mission_log("AUDIT_SUCCESS", "📚 [AUDIT]: Đã đồng hóa bài học kinh nghiệm vào Strategic Lessons!", task_id)
+        engine.publish_mission_log("AUDIT_SUCCESS", "[AUDIT]: Đã đồng hóa bài học kinh nghiệm vào Strategic Lessons!", task_id)
     except Exception as e:
-        engine.publish_mission_log("ERROR", f"❌ [AUDIT-ERR]: Không thể lưu bài học: {e}", task_id)
+        engine.publish_mission_log("ERROR", f"[AUDIT-ERR]: Không thể lưu bài học: {e}", task_id)
 
     return {
         "status": "success",

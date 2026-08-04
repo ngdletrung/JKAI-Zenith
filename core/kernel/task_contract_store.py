@@ -34,7 +34,13 @@ def set_active_contract(task_id: str, contract: Any) -> None:
 
 
 def get_active_contract(task_id: str) -> Optional[Any]:
-    """Retrieve the active TaskContract for the given task_id. Auto-initializes default authority if missing."""
+    """Retrieve the active TaskContract for the given task_id. Returns None if not set."""
+    with _lock:
+        return _contract_store.get(task_id)
+
+
+def get_or_create_default_contract(task_id: str) -> Any:
+    """Retrieve active contract or create default contract if missing."""
     with _lock:
         contract = _contract_store.get(task_id)
         if not contract:
@@ -50,7 +56,7 @@ def get_active_contract(task_id: str) -> Optional[Any]:
                     )
                 )
                 _contract_store[task_id] = contract
-                logger.info(f"[CONTRACT-STORE] Auto-created default TaskContract for task_id={task_id}")
+                logger.info(f"[CONTRACT-STORE] Registered default TaskContract for task_id={task_id}")
             except Exception as e:
                 logger.warning(f"[CONTRACT-STORE] Auto-init default contract failed: {e}")
         return _contract_store.get(task_id)

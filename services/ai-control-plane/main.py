@@ -145,7 +145,7 @@ async def submit_task(payload: dict):
     
     goal_raw = payload.get("goal", "")
     # 🔍 [DEBUG-GATE]: Xem Master đang gửi gì
-    logger.info(f"🔍 [GATE-IN]: Raw Goal: '{goal_raw}'")
+    logger.info("[GATE-IN]: Raw Goal: '%s'", goal_raw)
     
     # 🚀 [STEP-0]: ABSOLUTE ROOT REFLEX (Chặn đứng tại Gốc)
     if ReflexGate.is_social(goal_raw):
@@ -164,7 +164,7 @@ async def submit_task(payload: dict):
         msg_payload = json.dumps({"id": f"reflex_j_{fake_tid}", "tag": "JKAI", "msg": ans, "ts": time.time(), "task_id": fake_tid})
         redis_safe(lambda r: r.publish("monitor:log_channel", msg_payload))
         
-        logger.info(f"⚡ [REFLEX-HIT]: Dashboard notified for '{goal_raw}'")
+        logger.info("[REFLEX-HIT]: Dashboard notified for '%s'", goal_raw)
         return {
             "status": "success", 
             "task_id": fake_tid,
@@ -172,7 +172,7 @@ async def submit_task(payload: dict):
             "is_social": True
         }
     
-    logger.info(f"🏛️ [MISSION-PATH]: Proceeding with mission for '{goal_raw}'")
+    logger.info("[MISSION-PATH]: Proceeding with mission for '%s'", goal_raw)
 
     raw_tid = payload.get("task_id")
     if raw_tid and str(raw_tid).startswith("default_"):
@@ -188,7 +188,7 @@ async def submit_task(payload: dict):
 
     # 🛡️ [MODE-VALIDATION]: Intent mode verification
     if mode not in VALID_MODES:
-        logger.warning(f"⚠️ [ILLEGAL-MODE]: Agent rejected cognitive mode '{mode}'.")
+        logger.warning("[ILLEGAL-MODE]: Agent rejected cognitive mode '%s'.", mode)
         return {"status": "error", "msg": f"Invalid mode: {mode}"}
 
     # 🔐 [IDEMPOTENCY-CHECK]: Task duplicate prevention
@@ -199,7 +199,7 @@ async def submit_task(payload: dict):
         return False
     
     if not redis_safe(_check_duplicate):
-        logger.info(f"♻️ [IDEMPOTENCY]: Mission {trace_id} previously accepted.")
+        logger.info("[IDEMPOTENCY]: Mission %s previously accepted.", trace_id)
         return {"status": "queued", "task_id": task_id, "note": "idempotent_hit"}
 
     # 🧹 [ZENITH-PURGE]: Clearing inhibit flags (Stop/Pause)

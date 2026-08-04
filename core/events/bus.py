@@ -43,7 +43,7 @@ class EventBus:
             try:
                 tasks.append(asyncio.create_task(h(event)))
             except Exception as e:
-                logger.error(f"❌ [EVENT-BUS-ERR]: Handler dispatch error: {e}")
+                logger.error("[EVENT-BUS-ERR]: Handler dispatch error: %s", e)
 
         if tasks:
             await asyncio.gather(*tasks, return_exceptions=True)

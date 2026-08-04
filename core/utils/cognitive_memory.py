@@ -82,7 +82,7 @@ class CognitiveMemory:
                         ttl = self.ttl_map["time_sensitive"] if self._is_time_sensitive(clean_query) else self.ttl_map["session"]
                         
                         if age < ttl:
-                            msg = f"🎯 [NEURAL-HIT]: Phản xạ nơ-ron (Score: {score:.2f}, Session: {entry_session or 'Global'})"
+                            msg = f"[NEURAL-HIT]: Phản xạ nơ-ron (Score: {score:.2f}, Session: {entry_session or 'Global'})"
                             engine.publish_mission_log("CACHE", msg, task_id)
                             logger.info(msg)
                             return {
@@ -104,7 +104,7 @@ class CognitiveMemory:
                     ttl = self.ttl_map["time_sensitive"] if self._is_time_sensitive(clean_query) else self.ttl_map["session"]
                     
                     if age < ttl:
-                        msg = f"💾 [DISK-HIT]: Trúng đích bộ nhớ đĩa (Age: {age:.0f}s)"
+                        msg = f"[DISK-HIT]: Trúng đích bộ nhớ đĩa (Age: {age:.0f}s)"
                         engine.publish_mission_log("CACHE", msg, task_id)
                         return {
                             "answer": data.get("content", data.get("answer", "")),
@@ -114,7 +114,7 @@ class CognitiveMemory:
                 except Exception: pass
 
         except Exception as e:
-            logger.error(f"⚠️ [COG-MEM-ERR]: {e}")
+            logger.error("[COG-MEM-ERR]: %s", e)
             
         return None
 
@@ -139,7 +139,7 @@ class CognitiveMemory:
             with open(cache_file, "w", encoding="utf-8") as f:
                 json.dump(payload, f, ensure_ascii=False, indent=4)
         except Exception as e:
-            logger.warning(f"❌ [DISK-WRITE-ERR]: {e}")
+            logger.warning("[DISK-WRITE-ERR]: %s", e)
 
         # 2. Lưu Qdrant Cache (Vectorized)
         try:
@@ -160,9 +160,9 @@ class CognitiveMemory:
                     collection=self.collection,
                     vector_size=len(emb)
                 )
-                logger.info(f"✅ [COG-STORE]: Đã hóa thạch tri thức (Session: {session_id or 'Global'})")
+                logger.info("[COG-STORE]: Đã hóa thạch tri thức (Session: %s)", session_id or "Global")
         except Exception as e:
-            logger.warning(f"❌ [QDRANT-WRITE-ERR]: {e}")
+            logger.warning("[QDRANT-WRITE-ERR]: %s", e)
 
     async def purge_session(self, session_id: str):
         """🧹 [SESSION-PURGE]: Xóa sạch rác tri thức của một phiên thưa Master."""
@@ -174,8 +174,8 @@ class CognitiveMemory:
                 collection=self.collection,
                 filter_dict={"session_id": session_id}
             )
-            logger.info(f"🧹 [NEURAL-PURGE]: Đã giải phóng nơ-ron cho Session {session_id}")
+            logger.info("[NEURAL-PURGE]: Đã giải phóng nơ-ron cho Session %s", session_id)
         except Exception as e:
-            logger.error(f"❌ [PURGE-ERR]: {e}")
+            logger.error("[PURGE-ERR]: %s", e)
 
 cognitive_memory = CognitiveMemory()

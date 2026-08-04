@@ -65,10 +65,10 @@ class QdrantClientWrapper:
                 current_size = current_config.get("size")
                 
                 if current_size != vector_size:
-                    logger.warning(f"⚠️ [QDRANT-MISMATCH]: Collection `{target}` co kich thuoc {current_size} nhung yeu cau {vector_size}. Dang tai cau truc...")
+                    logger.warning("[QDRANT-MISMATCH]: Collection `%s` co kich thuoc %s nhung yeu cau %s. Dang tai cau truc...", target, current_size, vector_size)
                     # 🏛️ [TOP-DOWN-LOG]: Thong bao cho Master qua kenh chinh thuc
                     from core.utils.mission_bus import mission_bus
-                    mission_bus.publish_log("AUDIT:qdrant_client.py", f"🔄 [NEURAL-RESIZE]: Tái cấu trúc `{target}` ({current_size} -> {vector_size}) để đồng bộ tri thức.")
+                    mission_bus.publish_log("AUDIT:qdrant_client.py", f"[NEURAL-RESIZE]: Tái cấu trúc `{target}` ({current_size} -> {vector_size}) để đồng bộ tri thức.")
                     await client.delete(f"{self.url}/collections/{target}")
                 else:
                     self._collection_cache.add(target)

@@ -95,7 +95,7 @@ class CapabilityRegistry:
         if cap not in self._providers:
             self._providers[cap] = []
         self._providers[cap].append(provider)
-        logger.info(f"➕ Đã đăng ký Provider '{provider.name}' cho Capability '{cap}'")
+        logger.info("Đã đăng ký Provider '%s' cho Capability '%s'", provider.name, cap)
 
     def get_providers_for(self, capability: str) -> List[CapabilityProvider]:
         return self._providers.get(capability, [])

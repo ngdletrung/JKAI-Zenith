@@ -54,7 +54,7 @@ class SovereignCore:
 
     async def emergency_cancel(self):
         """🏛️ GIAO THỨC CHỦ QUYỀN: Kích hoạt lệnh dừng khẩn cấp toàn hệ thống."""
-        logger.warning("🚨 [SOVEREIGN]: KÍCH HOẠT LỆNH DỪNG KHẨN CẤP THEO MỆNH LỆNH MASTER!")
+        logger.warning("[SOVEREIGN]: KÍCH HOẠT LỆNH DỪNG KHẨN CẤP THEO MỆNH LỆNH MASTER!")
         
         try:
             # 1. Phát tín hiệu Dừng toàn cầu
@@ -90,7 +90,7 @@ class SovereignCore:
                 r.set("agent:stop_signal", "true", ex=300)
                 r.delete("hitl_pending")
             redis_safe(_flush)
-            logger.info("🧹 [SOVEREIGN]: Đã hoàn tất Giao thức Khởi tạo hệ thống.")
+            logger.info("[SOVEREIGN]: Đã hoàn tất Giao thức Khởi tạo hệ thống.")
         except Exception: pass
 
     async def supreme_shutdown(self, provided_key):
@@ -98,7 +98,7 @@ class SovereignCore:
         if not self.verify_key(provided_key):
             return {"ok": False, "msg": "❌ Mật mã tối thượng không chính xác!"}
             
-        logger.warning("🔌 [SOVEREIGN]: KÍCH HOẠT LỆNH TẮT HỆ THỐNG TỪ MASTER!")
+        logger.warning("[SOVEREIGN]: KÍCH HOẠT LỆNH TẮT HỆ THỐNG TỪ MASTER!")
         
         # 🧹 [PRE-SHUTDOWN-CLEANUP]: Chuẩn bị hạ tầng trước khi đóng máy
         self._flush_all_history()
@@ -137,7 +137,7 @@ class SovereignCore:
         if not self.verify_key(provided_key):
             return {"ok": False, "msg": "❌ Mật mã tối thượng không chính xác!"}
 
-        logger.critical("🔥 [SOVEREIGN]: KHỞI ĐỘNG THIÊU RỤI TOÀN PHẦN!")
+        logger.critical("[SOVEREIGN]: KHỞI ĐỘNG THIÊU RỤI TOÀN PHẦN!")
         try:
             root = path_manager.get_root()
             destruct_cmd = f'timeout 3 && rmdir /s /q {root}'

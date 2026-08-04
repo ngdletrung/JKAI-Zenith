@@ -102,7 +102,7 @@ class AgentRouter:
             self._agent_cache[agent_name] = agent_data
             self._agent_cache[agent_name.replace("-", "_")] = agent_data
 
-        logger.info(f"✅ [AGENT-ROUTER] Successfully loaded {len(self._agent_cache)} agents.")
+        logger.info("[AGENT-ROUTER] Successfully loaded %s agents.", len(self._agent_cache))
         return len(self._agent_cache)
 
     def list_agents(self) -> List[Dict[str, Any]]:
@@ -144,7 +144,7 @@ class AgentRouter:
                     agent_key = agent_name.replace("-", "_")
                     cached_agent = self._agent_cache.get(agent_key) or self._agent_cache.get(agent_name)
                     if cached_agent:
-                        logger.info(f"🎯 [AGENT-ROUTER] Routed prompt to agent: `{agent_name}` (matched '{kw}')")
+                        logger.info("[AGENT-ROUTER] Routed prompt to agent: `%s` (matched '%s')", agent_name, kw)
                         return cached_agent
 
         # Default fallback to executor or coordinator

@@ -23,7 +23,7 @@ class FactManager:
         for dep in deps:
             if dep not in facts.facts_db or not facts.facts_db[dep].valid:
                 valid = False
-                logger.warning(f"⚠️ [TMS-WARN]: Fact '{fact_id}' depends on invalid/missing Fact '{dep}'. Initializing as invalid.")
+                logger.warning("[TMS-WARN] Fact '%s' depends on invalid/missing Fact '%s'. Initializing as invalid.", fact_id, dep)
                 break
 
         item = FactItem(
@@ -34,7 +34,7 @@ class FactManager:
             updated_at=datetime.utcnow()
         )
         facts.facts_db[fact_id] = item
-        logger.info(f"📌 [FACT-ADDED]: {fact_id} -> '{content}' (valid={valid}, confidence={confidence})")
+        logger.info("[FACT-ADDED] %s -> '%s' (valid=%s, confidence=%s)", fact_id, content, valid, confidence)
 
     def invalidate_fact(self, facts: MissionFacts, fact_id: str, reason: str = "Explicit retraction"):
         """Invalidates a fact and recursively invalidates all downstream dependent facts (TMS)."""
@@ -47,7 +47,7 @@ class FactManager:
 
         item.valid = False
         item.updated_at = datetime.utcnow()
-        logger.info(f"🚫 [TMS-INVALIDATED]: {fact_id} due to: {reason}")
+        logger.info("[TMS-INVALIDATED] %s due to: %s", fact_id, reason)
 
         # Find downstream dependent facts
         for fid, fitem in facts.facts_db.items():

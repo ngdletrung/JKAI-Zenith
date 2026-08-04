@@ -22,7 +22,7 @@ class SkillForge:
         self.map_path = self.workspace / "intelligence" / "MAP_SKILLS.md"
 
     async def forge_new_skill(self, description: str, task_id: str = "forge", trace_id: str = "sys"):
-        engine.publish_mission_log("FORGE", f"🛠️ [MASTER-FORGE]: Bắt đầu tiến trình đúc kết năng lực mới: '{description[:60]}...'", task_id, trace_id)
+        engine.publish_mission_log("FORGE", f"[MASTER-FORGE]: Bắt đầu tiến trình đúc kết năng lực mới: '{description[:60]}...'", task_id, trace_id)
         
         try:
             # 🧠 Phase 1: Neural Design & Validation
@@ -94,11 +94,11 @@ class SkillForge:
             # 🗺️ Phase 3: Sovereign Integration (Nhất thể hóa Chủ quyền)
             await self._sync_to_system(data, target_dir)
             
-            engine.publish_mission_log("FORGE", f"✅ [FORGE-SUCCESS]: Kỹ năng Elite `{skill_id}` đã sẵn sàng thực thi!", task_id, trace_id)
+            engine.publish_mission_log("FORGE", f"[FORGE-SUCCESS]: Kỹ năng Elite `{skill_id}` đã sẵn sàng thực thi!", task_id, trace_id)
             return {"status": "success", "skill_id": skill_id, "path": str(target_dir)}
 
         except Exception as e:
-            engine.publish_mission_log("ERROR", f"🚨 [FORGE-FAULT]: {str(e)}", task_id, trace_id)
+            engine.publish_mission_log("ERROR", f"[FORGE-FAULT]: {str(e)}", task_id, trace_id)
             return {"status": "error", "msg": str(e)}
 
     def _get_next_global_id(self, domain):

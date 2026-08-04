@@ -24,11 +24,11 @@ class ZenithSteward:
 
         try:
             # 🕒 [DEADLOCK-PROTECTION]: Giới hạn thời gian chờ khóa GPU
-            logger.info(f"⏳ [STEWARD] Requesting GPU for {requested_service}...")
+            logger.info("[STEWARD] Requesting GPU for %s...", requested_service)
             await asyncio.wait_for(self.gpu_lock.acquire(), timeout=60.0)
             
             if self.current_tenant == requested_service:
-                logger.info(f"✨ [STEWARD] {requested_service} already has GPU.")
+                logger.info("[STEWARD] %s already has GPU.", requested_service)
                 # Nếu là SD, kiểm tra xem nó còn sống không
                 if requested_service == 'stable-diffusion':
                     if not await self._is_container_running('stable-diffusion'):
@@ -36,7 +36,7 @@ class ZenithSteward:
                 return True
 
             # 🔄 [TENANT-SWITCH]: Switching active VRAM owner
-            logger.info(f"🔄 [STEWARD] Switching GPU: {self.current_tenant} -> {requested_service}")
+            logger.info("[STEWARD] Switching GPU: %s -> %s", self.current_tenant, requested_service)
             
             # 1. Giải phóng chủ nhân cũ
             if self.current_tenant == 'ollama':
@@ -52,10 +52,10 @@ class ZenithSteward:
             return True
 
         except asyncio.TimeoutError:
-            logger.error("🚨 [STEWARD] GPU Lock Timeout! System overloaded.")
+            logger.error("[STEWARD] GPU Lock Timeout! System overloaded.")
             return False
         except Exception as e:
-            logger.error(f"❌ [STEWARD] GPU Permission Error: {e}")
+            logger.error("[STEWARD] GPU Permission Error: %s", e)
             if self.gpu_lock.locked():
                 self.gpu_lock.release()
             return False
@@ -68,9 +68,9 @@ class ZenithSteward:
                 for m in ps.json().get("models", []):
                     await self._client.post(f"{self.ollama_host}/api/generate", 
                         json={"model": m['name'], "keep_alive": 0}, timeout=5.0)
-            logger.info("🗑️ [STEWARD] Ollama VRAM purged.")
+            logger.info("[STEWARD] Ollama VRAM purged.")
         except Exception as e:
-            logger.error(f"❌ [STEWARD] Failed to unload Ollama: {e}")
+            logger.error("[STEWARD] Failed to unload Ollama: %s", e)
 
     async def _is_container_running(self, name: str):
         try:
@@ -83,13 +83,13 @@ class ZenithSteward:
         except Exception: return False
 
     async def _start_container(self, name: str):
-        logger.info(f"🚀 [STEWARD] Starting {name} container...")
+        logger.info("[STEWARD] Starting %s container...", name)
         proc = await asyncio.create_subprocess_exec("docker", "start", name)
         await proc.wait()
         await asyncio.sleep(5) 
 
     async def _stop_container(self, name: str):
-        logger.info(f"🛑 [STEWARD] Stopping {name} container to reclaim VRAM...")
+        logger.info("[STEWARD] Stopping %s container to reclaim VRAM...", name)
         proc = await asyncio.create_subprocess_exec("docker", "stop", name)
         await proc.wait()
 
@@ -99,14 +99,14 @@ class ZenithSteward:
         """
         try:
             if service == 'stable-diffusion':
-                logger.info("✅ [STEWARD] Graphics task done. Auto-closing SD to free VRAM.")
+                logger.info("[STEWARD] Graphics task done. Auto-closing SD to free VRAM.")
                 await self._stop_container('stable-diffusion')
                 self.current_tenant = None
             else:
-                logger.info(f"✅ [STEWARD] {service} task done. Keeping in VRAM for performance.")
+                logger.info("[STEWARD] %s task done. Keeping in VRAM for performance.", service)
         finally:
             if self.gpu_lock.locked():
                 self.gpu_lock.release()
-                logger.info("🔓 [STEWARD] GPU Lock released.")
+                logger.info("[STEWARD] GPU Lock released.")
 
 steward = ZenithSteward()

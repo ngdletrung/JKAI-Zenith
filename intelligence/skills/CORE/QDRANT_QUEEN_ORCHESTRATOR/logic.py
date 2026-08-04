@@ -14,7 +14,7 @@ class QdrantQueen:
         """
         🚀 Giao thức Q-Rank: Chọn lọc quân đoàn đặc vụ tinh nhuệ.
         """
-        engine.publish_mission_log("QUEEN", f"👑 [SOVEREIGN]: Đang điều phối quân đoàn cho nhiệm vụ: {task}")
+        engine.publish_mission_log("QUEEN", f"[SOVEREIGN]: Đang điều phối quân đoàn cho nhiệm vụ: {task}")
         
         # 1. Sử dụng Q-Rank để chọn đặc vụ
         ranked_agents = await qdrant_client.qrank_select_agent(task, limit=3)
@@ -30,7 +30,7 @@ class QdrantQueen:
         # 2. Giải trình lựa chọn (Explainable AI)
         explanation = await self._explain_selection(task, ranked_agents)
         
-        engine.publish_mission_log("QUEEN", f"💡 [EXPLANATION]: {explanation}")
+        engine.publish_mission_log("QUEEN", f"[EXPLANATION]: {explanation}")
         
         return {
             "status": "success",

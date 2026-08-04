@@ -154,7 +154,7 @@ class CognitiveTransactionManager:
                     try:
                         shutil.copy2(file_path, backup_path)
                         tx.backups[file_path] = backup_path
-                        logger.debug(f"⚙️ [TX-BACKUP]: Đã tạo snapshot sao lưu an toàn tại `{backup_path}`.")
+                        logger.debug("[TX-BACKUP]: Đã tạo snapshot sao lưu an toàn tại `%s`.", backup_path)
                     except Exception as e:
                         logger.error(f"❌ [TX-BACKUP-ERR]: Không thể sao lưu file `{file_path}`: {e}")
                 else:

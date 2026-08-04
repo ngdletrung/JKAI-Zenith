@@ -1,4 +1,3 @@
-import importlib
 import importlib.util
 import os
 import sys
@@ -38,7 +37,7 @@ class ToolRouter:
                 socket_connect_timeout=5, socket_timeout=10
             )
         except Exception as e:
-            print(f"⚠️ [ROUTER-REDIS-WARN] Khởi tạo Redis thất bại: {e}")
+            print(f"[ROUTER-REDIS-WARN] Khởi tạo Redis thất bại: {e}")
             self._redis_conn = None
 
     def _find_tool_in_module(self, module, tool_name):
@@ -69,7 +68,7 @@ class ToolRouter:
                             setattr(module, f"_auto_jkai_{cls.__name__}", instance)
                             return method
                     except Exception as e:
-                        print(f"⚠️ [ROUTER-AUTO-INIT] Không thể tự khởi tạo {cls.__name__}: {e}")
+                        print(f"[ROUTER-AUTO-INIT] Không thể tự khởi tạo {cls.__name__}: {e}")
 
         # 4. 🔗 [CASE-INSENSITIVE FALLBACK]: Khớp tên hàm bất kể viết hoa/thường
         tool_name_lower = tool_name.lower()
@@ -77,7 +76,7 @@ class ToolRouter:
             if attr_name.lower() == tool_name_lower:
                 attr = getattr(module, attr_name)
                 if inspect.isroutine(attr):
-                    print(f"🔗 [ROUTER-CASE-FIX]: '{tool_name}' → khớp hàm '{attr_name}' theo case-insensitive")
+                    print(f"[ROUTER-CASE-FIX] '{tool_name}' → khớp hàm '{attr_name}' (case-insensitive)")
                     return attr
         return None
 
@@ -118,7 +117,7 @@ class ToolRouter:
                             # 🛡️ [CASE-INSENSITIVE MAP]: Lưu cả key viết thường để khớp mọi biến thể hoa/thường từ control-plane
                             dynamic_map[func_name.lower()] = skill_id
             except Exception as e:
-                print(f"⚠️ [ROUTER-DISCOVERY] Lỗi khi quét map từ file {logic_file}: {e}")
+                print(f"[ROUTER-DISCOVERY] Lỗi khi quét map từ file {logic_file}: {e}")
         
         self._dynamic_tool_map = dynamic_map
         
@@ -145,22 +144,22 @@ class ToolRouter:
                                 "logic_file": os.path.join(root, "logic.py"),
                                 "manifest": manifest
                             }
-                            print(f"✅ [Z-SOS-DISCOVERY]: Đã nạp plugin {plugin_id}")
+                            print(f"[Z-SOS-DISCOVERY] Đã nạp plugin {plugin_id}")
                 except Exception as e:
-                    print(f"❌ [Z-SOS-ERR]: Lỗi nạp plugin tại {root}: {e}")
+                    print(f"[Z-SOS-ERR] Lỗi nạp plugin tại {root}: {e}")
 
     async def call_tool(self, tool_name: str, **kwargs):
-        print(f"🔌 [JKAI-ROUTER] Centralized Routing to: {tool_name}")
+        print(f"[JKAI-ROUTER] Điều phối công cụ: {tool_name}")
 
         # 🛡️ [STOP-CHECK]: Kiểm tra Phản xạ Dừng khẩn cấp trước khi thực thi
         if self._redis_conn:
             try:
                 stop_sig = self._redis_conn.get("agent:stop_signal")
                 if stop_sig in ['true', '1', b'true']:
-                    print(f"🛑 [ROUTER] Execution cancelled by Master for tool: {tool_name}")
+                    print(f"[ROUTER] Hủy thực thi theo lệnh Master cho tool: {tool_name}")
                     return {"status": "error", "msg": "🛑 [STOPPED]: Tiến trình thực thi đã bị Master ngắt quãng."}
             except Exception as redis_err: 
-                print(f"⚠️ [ROUTER-REDIS-WARN]: Không thể check stop_signal: {redis_err}")
+                print(f"[ROUTER-REDIS-WARN] Không thể kiểm tra stop_signal: {redis_err}")
 
         try:
             # 🧪 [ADR-100]: Lazy-Load shared lookup
@@ -175,8 +174,8 @@ class ToolRouter:
             if tool_name and any(str(tool_name).lower() == ct for ct in dynamic_code_tools):
                 code = kwargs.get("code") or kwargs.get("script") or kwargs.get("python_code") or ""
                 if code:
-                    import subprocess, sys
-                    print(f"⚡ [CODE-INTERPRETER]: Thực thi mã Python động ({len(code)} chars)...")
+                    import subprocess
+                    print(f"[CODE-INTERPRETER] Thực thi mã Python động ({len(code)} chars)...")
                     proc = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, timeout=60)
                     return {
                         "status": "success" if proc.returncode == 0 else "error",
@@ -191,11 +190,11 @@ class ToolRouter:
             
             if tool_name in self._plugin_map or tool_name_normalized in self._plugin_map:
                 plugin = self._plugin_map.get(tool_name) or self._plugin_map.get(tool_name_normalized)
-                print(f"[Z-SOS-EXEC]: Chuyển hướng thực thi sang Plugin OS: {tool_name}")
+                print(f"[Z-SOS-EXEC] Chuyển hướng thực thi sang Plugin OS: {tool_name}")
                 zsos_result = await self._execute_zsos_plugin(plugin, kwargs)
                 if zsos_result is not None:
                     return zsos_result
-                print(f"[Z-SOS-EXEC]: Không tìm thấy execute(), fallback sang dynamic resolver.")
+                print("[Z-SOS-EXEC] Không tìm thấy execute(), fallback sang dynamic resolver.")
 
             # 🧠 [DYNAMIC-RESOLVER]: Khớp nối thông minh
 
@@ -213,7 +212,7 @@ class ToolRouter:
                 resolved_upper = resolved_tool_name.upper()
                 skill_info = all_skills.get(resolved_upper)
                 if skill_info:
-                    print(f"🔗 [ROUTER-CASE-FIX]: '{resolved_tool_name}' → khớp registry key '{resolved_upper}'")
+                    print(f"[ROUTER-CASE-FIX] '{resolved_tool_name}' → khớp registry key '{resolved_upper}'")
                     resolved_tool_name = resolved_upper
 
             if not skill_info and tool_name_normalized:
@@ -221,7 +220,7 @@ class ToolRouter:
                     if normalize_skill_name(str(s_id)) == tool_name_normalized:
                         skill_info = s_data
                         resolved_tool_name = s_id
-                        print(f"🔗 [ROUTER-NORMALIZED-ID]: '{tool_name}' → '{s_id}'")
+                        print(f"[ROUTER-NORMALIZED-ID] '{tool_name}' → '{s_id}'")
                         break
 
             if not skill_info and tool_name_normalized:
@@ -238,12 +237,12 @@ class ToolRouter:
                     if tool_name_normalized in normalized_candidates:
                         skill_info = s_data
                         resolved_tool_name = s_id
-                        print(f"🔗 [ROUTER-NORMALIZED-NAME]: '{tool_name}' → registry `{s_id}`")
+                        print(f"[ROUTER-NORMALIZED-NAME] '{tool_name}' → registry `{s_id}`")
                         break
             
             if not skill_info:
                 # 📡 [AUTO-SYNC-PROTOCOL]: Nếu không thấy, tự động tái thiết bản đồ nơ-ron
-                print(f"🔄 [ROUTER-SYNC]: Kỹ năng '{resolved_tool_name}' chưa có trong bản đồ. Đang tự động đồng bộ...")
+                print(f"[ROUTER-SYNC] Kỹ năng '{resolved_tool_name}' chưa có trong bản đồ. Đang tự động đồng bộ...")
                 all_skills_full = await orchestrator.sync_sovereign_registry()
                 all_skills = all_skills_full.get("skills", {})
                 skill_info = all_skills.get(resolved_tool_name) or all_skills.get(resolved_tool_name.upper())
@@ -258,7 +257,7 @@ class ToolRouter:
                             skill_info = s_data
                             resolved_tool_name = s_id
                             print(
-                                f"🔗 [ROUTER-DECK-NUM]: #{clean_num} → registry `{s_id}` "
+                                f"[ROUTER-DECK-NUM] #{clean_num} → registry `{s_id}` "
                                 f"(deck_number field)"
                             )
                             break
@@ -282,11 +281,11 @@ class ToolRouter:
                         )
                         if skill_info:
                             print(
-                                f"🔗 [ROUTER-DECK]: '{tool_name}' → {deck_entry.display_id} "
+                                f"[ROUTER-DECK] '{tool_name}' → {deck_entry.display_id} "
                                 f"→ `{resolved_tool_name}`"
                             )
                 except Exception as deck_err:
-                    print(f"[ROUTER-DECK] skip: {deck_err}")
+                    print(f"[ROUTER-DECK] Bỏ qua: {deck_err}")
 
             if not skill_info:
                 # Thử tìm theo name/id/global_id case-insensitive nếu key vẫn không khớp
@@ -301,7 +300,7 @@ class ToolRouter:
                     clean_target = target.replace("#", "")
                     if deck_num and deck_num == clean_target:
                         skill_info = s_data
-                        print(f"🔗 [ROUTER-DECK-FIELD]: #{clean_target} → `{s_id}`")
+                        print(f"[ROUTER-DECK-FIELD] #{clean_target} → `{s_id}`")
                         break
                     if cmd_deck and cmd_deck.replace("#", "") == clean_target:
                         skill_info = s_data
@@ -316,7 +315,7 @@ class ToolRouter:
                     clean_gid = g_id_str.replace("#", "")
                     if g_id_str == target or clean_gid == clean_target or (clean_target.endswith(clean_gid) and len(clean_gid) > 0):
                         skill_info = s_data
-                        print(f"🔗 [ROUTER-GLOBAL-MATCH]: '{target}' khớp với kỹ năng `{s_id}` (GlobalID: {g_id_str})")
+                        print(f"[ROUTER-GLOBAL-MATCH] '{target}' khớp với kỹ năng `{s_id}` (GlobalID: {g_id_str})")
                         break
             
             if not skill_info:
@@ -355,7 +354,7 @@ class ToolRouter:
                 category = Path(skill_folder).parts[0].upper() if skill_folder else ""
             required_perms = SKILL_CATEGORY_PERMISSIONS.get(category, [Permission.FILESYSTEM_READ, Permission.LLM_CALL])
             if Permission.SOVEREIGN not in required_perms:
-                print(f"🛡️ [PERMISSION] Skill '{tool_name}' (category: {category}) → {required_perms}")
+                print(f"[PERMISSION] Skill '{tool_name}' (category: {category}) → {required_perms}")
 
             # 🚀 [QUANTUM-LOAD]: Nạp module trực tiếp từ path đã định danh
             cache_key = skill_folder
@@ -397,7 +396,7 @@ class ToolRouter:
                 for synonym in ["search_query", "q", "search", "topic", "text", "url_or_query"]:
                     if synonym in kwargs:
                         kwargs["query"] = kwargs.pop(synonym)
-                        print(f"🧬 [ROUTER-AUTO-HEAL]: Tự động ánh xạ tham số '{synonym}' -> 'query'.")
+                        print(f"[ROUTER-AUTO-HEAL] Tự động ánh xạ tham số '{synonym}' -> 'query'.")
                         break
             
             # [GENERIC-FALLBACK]: Nếu chỉ có duy nhất 1 tham số bắt buộc, và kwargs chứa 1 tham số không khớp tên, tự động map
@@ -406,7 +405,7 @@ class ToolRouter:
                 if len(other_keys) == 1:
                     single_key = other_keys[0]
                     kwargs[required_params[0]] = kwargs.pop(single_key)
-                    print(f"🧬 [ROUTER-AUTO-HEAL]: Tự động ánh xạ tham số duy nhất '{single_key}' -> '{required_params[0]}'.")
+                    print(f"[ROUTER-AUTO-HEAL] Tự động ánh xạ tham số duy nhất '{single_key}' -> '{required_params[0]}'.")
 
             # Lọc bỏ các kwargs không hợp lệ nếu hàm không nhận **kwargs
             has_var_keyword = any(p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values())
@@ -421,7 +420,7 @@ class ToolRouter:
             
         except Exception as e:
             import traceback
-            print(f"❌ [ROUTER-CRITICAL-ERROR]: {traceback.format_exc()}")
+            print(f"[ROUTER-CRITICAL-ERROR] {traceback.format_exc()}")
             return {"status": "error", "msg": f"Router failed: {str(e)}"}
 
     async def _execute_zsos_plugin(self, plugin, kwargs):
@@ -496,11 +495,11 @@ class ToolRouter:
                 return None
         except Exception as e:
             import traceback
-            print(f"❌ [Z-SOS-EXEC-ERR]: {traceback.format_exc()}")
+            print(f"[Z-SOS-EXEC-ERR] {traceback.format_exc()}")
             return {"status": "error", "message": str(e)}
 
     def invalidate_cache(self):
         """Xóa cache module để buộc nạp lại từ disk."""
         self._module_cache.clear()
         self._dynamic_tool_map = None # Xóa luôn bản đồ động
-        print("🔄 [JKAI-ROUTER] Cache invalidated safely.")
+        print("[JKAI-ROUTER] Đã xóa cache module.")

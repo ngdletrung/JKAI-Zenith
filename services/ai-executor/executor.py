@@ -1,15 +1,12 @@
 import asyncio
-from typing import List, Dict, Any, Optional, Union
+from typing import List, Dict, Any, Optional
 import os
 import json
 import time
-import httpx
 import psutil
 import hashlib
 
 from core.utils.engine import engine
-from core.utils.knowledge_brain import knowledge_brain
-from core.config import settings
 from tool_router import ToolRouter
 from redis_client import redis_safe
 
@@ -18,11 +15,9 @@ from enum import Enum
 # 🏛️ [ZENITH-CORE-MODULAR]: Nạp các module tối thượng
 from core.utils.sovereign_guard import SovereignGuard
 from core.utils.crdt_engine import ZenithCRDT
-from core.utils.security import security_engine
 from core.utils.execution_policy import get_policy_engine, WorldState, ReasoningDepth, ExecutionPolicy
 from core.utils.failure_memory import failure_memory, FailureStage
 from core.utils.cognitive_guardrails import guardrail_registry, GuardrailException
-from core.utils.doctrine_engine import doctrine_engine
 
 class FailureType(str, Enum):
     NETWORK = "NETWORK"
@@ -41,22 +36,19 @@ class Executor:
     """
     def __init__(self):
         self.router = ToolRouter()
-        self.client = httpx.AsyncClient(
-            timeout=httpx.Timeout(900.0, connect=60.0),
-            limits=httpx.Limits(max_keepalive_connections=50, max_connections=100)
-        )
         self.policy_engine = get_policy_engine(failure_memory.get_tool_failure_rate)
         self._session_failures = 0
         self._local_loop_cache = {}
 
     def _get_redis(self):
-        # Tránh lỗi circular import
-        import redis
-        return redis.Redis(host=os.getenv("REDIS_HOST", "redis"), port=6379, db=0, decode_responses=True)
+        from redis_client import get_redis
+        return get_redis()
 
     def _get_task_lang(self, task_id: str) -> str:
         try:
             r = self._get_redis()
+            if not r:
+                return "vi"
             lang = r.hget(f"task:meta:{task_id}", "lang")
             return lang if lang in ("vi", "en") else "vi"
         except Exception:
@@ -129,12 +121,12 @@ class Executor:
             final_state = await pipeline.execute(state)
             return final_state["final_response"]
         except GuardrailException as ge:
-            self._log("GUARDRAIL", f"🛑 [CHẶN]: {ge}", task_id, trace_id)
+            self._log("GUARDRAIL", f"[BỊ CHẶN] {ge}", task_id, trace_id)
             return {"status": "error", "msg": f"Guardrail Violation: {ge}"}
         except InterruptedError:
             return {"status": "error", "msg": "Nhiệm vụ đã dừng theo lệnh Master."}
         except Exception as e:
-            self._log("CRITICAL", f"🚨 [SỰ CỐ HỆ THỐNG]: {e}", task_id, trace_id)
+            self._log("CRITICAL", f"[LỖI HỆ THỐNG] {e}", task_id, trace_id)
             return {"status": "error", "msg": str(e)}
         finally:
             # 🔓 [RELEASE-LOCK]: Giải phóng phong ấn
@@ -158,13 +150,13 @@ class Executor:
             current_role = os.getenv("EXECUTOR_ROLE", "ALPHA")
             
             if owner and owner != current_role:
-                self._log("CRDT", f"🔒 [COLLISION]: Tập tin `{os.path.basename(target_path)}` đang được phẫu thuật bởi {owner}. Đang chờ nơ-ron rảnh...", task_id)
+                self._log("CRDT", f"[XUNG ĐỘT GHI] File `{os.path.basename(target_path)}` đang được xử lý bởi {owner}. Đang chờ...", task_id)
                 # Chờ đợi kiên nhẫn
                 for _ in range(10): 
                     await asyncio.sleep(1)
                     if not crdt.get_lock_owner(): break
                 else:
-                    self._log("CRDT", f"⚠️ [TIMEOUT]: {current_role} buộc phải tiếp quản quyền ghi từ {owner}.", task_id)
+                    self._log("CRDT", f"[HẾT GIỜ] {current_role} buộc phải tiếp quản quyền ghi từ {owner}.", task_id)
             
             # Đặt phong ấn mới (acquire_lock() dùng self.node_id từ constructor, không cần tham số)
             crdt.acquire_lock()
@@ -211,14 +203,14 @@ class Executor:
             "read_file", "write_to_file", "search_memory", "SEARCH_WEB_GLOBAL",
         ]
         if any(t in tool_name for t in exempt_tools):
-            self._log("CRITIC", f"✅ [CORE EXEMPT]: Skill `{tool_name}` được tự động phê duyệt.", task_id)
+            self._log("CRITIC", f"[TỰ ĐỘNG PHÊ DUYỆT] Kỹ năng `{tool_name}` thuộc nhóm tin cậy.", task_id)
             return
 
         check_prompt = f"Mục tiêu: {args.get('expert_mindset', 'N/A')}\nCông cụ: {tool_name}\n\nPhù hợp không thưa Đặc vụ? Trả về 'REJECT: lý do' hoặc 'APPROVE'."
         current_role = os.getenv("EXECUTOR_ROLE", "ALPHA").upper()
         critic_role = "CRITIC"
         suitability = await engine.call_chat([{"role": "user", "content": check_prompt}], role=critic_role, task_id=task_id, skip_build_final=True)
-        self._log("CRITIC", f"🧐 [Suitability Check]: {suitability}", task_id)
+        self._log("CRITIC", f"[ĐÁNH GIÁ PHÙ HỢP] {suitability}", task_id)
         if "REJECT" in suitability.upper():
             raise GuardrailException(f"Executor REJECT: {suitability}")
 
@@ -243,7 +235,7 @@ class Executor:
                 loop_count = self._local_loop_cache[loop_key]
 
             if loop_count > 3:
-                self._log("GUARDRAIL", f"🛑 [LOOP-DETECTED]: Ngắt mạch lặp nơ-ron tại Executor cho `{tool_name}`.", task_id)
+                self._log("GUARDRAIL", f"[NGẮT VÒNG LẶP] Công cụ `{tool_name}` lặp lại quá nhiều lần với tham số giống hệt. Đã chặn để tránh cạn kiệt tài nguyên.", task_id)
                 return {"status": "error", "msg": f"Neural Circuit Breaker: Tool `{tool_name}` is repeating excessively with identical parameters. Execution blocked to prevent resource exhaustion."}
         except Exception: pass
 
@@ -272,10 +264,10 @@ class Executor:
                 from core.kernel.autonomous_repair_loop import autonomous_repair_loop
                 repair = await autonomous_repair_loop.execute_and_self_heal(logic_path, task_id)
                 if repair.get("status") == "success":
-                    self._log("REPAIR", f"Auto-repaired logic.py for {tool_name}, retrying...", task_id)
+                    self._log("REPAIR", f"[TỰ SỬA] Đã sửa logic.py của `{tool_name}`, thử lại...", task_id)
                     return await asyncio.wait_for(self.router.call_tool(tool_name, **args), timeout=policy.timeout)
         except Exception as repair_err:
-            self._log("REPAIR", f"Repair loop failed: {repair_err}", task_id)
+            self._log("REPAIR", f"[TỰ SỬA] Thất bại: {repair_err}", task_id)
 
         self._session_failures += 1
         return {"status": "error", "msg": f"Thất bại sau {policy.max_retry} lần: {last_error}"}
@@ -388,16 +380,17 @@ class Executor:
         
         if is_success:
             content = result.get("content") or result.get("data") or result.get("path")
-            if content: engine.set_insight(task_id, f"res_{tool_name}", content)
+            if content and hasattr(engine, "set_insight"):
+                engine.set_insight(task_id, f"res_{tool_name}", content)
             
             path_arg = args.get("path") or args.get("TargetFile") or args.get("file_path") or args.get("target") or ""
             action = self._classify_action(tool_name, lang, past_tense=True)
             if path_arg:
-                self._log("EXECUTOR", f"*[{action}]* `{path_arg}`", task_id)
+                self._log("EXECUTOR", f"[{action}] `{path_arg}`", task_id)
             elif result.get("output") or result.get("msg"):
-                self._log("EXECUTOR", f"*[{action}]* `{tool_name}`", task_id)
+                self._log("EXECUTOR", f"[{action}] `{tool_name}`", task_id)
             else:
-                self._log("EXECUTOR", f"*[{action}]* ...", task_id)
+                self._log("EXECUTOR", f"[{action}] ...", task_id)
             return {"status": "success", "output": result}
         
         return result
@@ -433,7 +426,7 @@ class Executor:
             
             tasks = []
             if parallel_batch:
-                self._log("SYSTEM", f"⚡ [SWARM-MODE]: Kích hoạt {len(parallel_batch)} nơ-ron thực thi song song.", task_id)
+                self._log("SYSTEM", f"[SWARM] Kích hoạt {len(parallel_batch)} tác vụ thực thi song song.", task_id)
                 for s in parallel_batch:
                     tasks.append(self.call_tool(
                         s["tool"], s.get("args", {}), task_id, trace_id,
@@ -459,7 +452,7 @@ class Executor:
                 executed_steps.add(step["id"])
                 if isinstance(res, dict) and res.get("status") == "error":
                     err_msg = res.get("msg", "Unknown error")
-                    self._log("CRITICAL", f"🛑 [STOP]: Bước `{step['id']}` thất bại: {err_msg}. Ngắt chuỗi hành pháp.", task_id)
+                    self._log("CRITICAL", f"[DỪNG CHUỖI] Bước `{step['id']}` thất bại: {err_msg}. Đang ngắt lộ trình.", task_id)
                     return {"status": "failed", "results": results}
                     
         return {"status": "completed", "results": results}
@@ -480,15 +473,15 @@ class Executor:
         # 2. Cognitive paths
         prompt = f"Lỗi loại {fail_type}: {error_msg}. Đề xuất args mới cho {step['tool']}. Trả về JSON."
         correction = await engine.call_chat([{"role": "user", "content": prompt}], role="CRITIC", json_mode=True, skip_build_final=True)
-        self._log("SYSTEM", f"🛠️ [Self-Heal Suggestion]: {correction}", task_id)
+        self._log("SYSTEM", f"[ĐỀ XUẤT TỰ SỬA] {correction}", task_id)
         if isinstance(correction, dict):
             action_desc = f"Áp dụng mã tự phục hồi (Code Fix) cho công cụ {step['tool']}. Thay đổi: {json.dumps(correction, ensure_ascii=False)}"
             is_approved = await guard.ensure_approval(task_id, action_desc, is_core=True)
             if is_approved:
-                self._log("SYSTEM", f"✅ [SELF-HEAL]: Master đã cấp phép. Đang áp dụng mã phục hồi...", task_id)
+                self._log("SYSTEM", f"[TỰ SỬA] Được phê duyệt. Đang áp dụng bản vá...", task_id)
                 return await self.call_tool(step["tool"], correction, task_id)
             else:
-                self._log("SYSTEM", f"🛑 [SELF-HEAL]: Master từ chối cấp phép. Không áp dụng mã phục hồi.", task_id)
+                self._log("SYSTEM", f"[TỰ SỬA] Không được phê duyệt. Bỏ qua bản vá.", task_id)
                 return {"status": "error", "msg": "Tự phục hồi bị từ chối bởi Master."}
         return {"status": "error", "msg": "Không thể phục hồi."}
 

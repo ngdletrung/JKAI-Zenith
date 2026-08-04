@@ -20,7 +20,7 @@ class PreflightStage(ExecutionStage):
         args = state["args"]
         task_id = state["task_id"]
         
-        engine.publish_progress(81, f"🔬 [T4: SURGERY] [{tool_name}] Đang kiểm tra an toàn & khóa tài nguyên...", "preflight", task_id)
+        engine.publish_progress(81, f"[KIỂM TRA] [{tool_name}] Đang kiểm tra an toàn & khóa tài nguyên...", "preflight", task_id)
         await executor._pre_flight_check(tool_name, args, task_id, state)
         return state
 
@@ -33,7 +33,7 @@ class PolicyResolutionStage(ExecutionStage):
         task_id = state["task_id"]
         override = state.get("policy_override")
         
-        engine.publish_progress(83, f"⚖️ [T4: SURGERY] [{tool_name}] Đang áp dụng chính sách thực thi...", "policy", task_id)
+        engine.publish_progress(83, f"[CHÍNH SÁCH] [{tool_name}] Đang áp dụng chính sách thực thi...", "policy", task_id)
         policy = await executor._resolve_execution_policy(tool_name, args, task_id, override)
         # 🔗 [TRACE-ALIGNMENT]: Đảm bảo trace_id được truyền xuyên suốt nơ-ron
         setattr(policy, "trace_id", state.get("trace_id", "system"))
@@ -47,7 +47,7 @@ class IntelligenceInjectionStage(ExecutionStage):
         task_id = state["task_id"]
         tool_name = state["tool_name"]
         
-        engine.publish_progress(85, f"💉 [T4: SURGERY] [{tool_name}] Đang nạp DNA & nén bối cảnh...", "intelligence", task_id)
+        engine.publish_progress(85, f"[BỐI CẢNH] [{tool_name}] Đang nạp ngữ cảnh & nén thông tin...", "intelligence", task_id)
         # Tích hợp Context Compression
         args = await executor._inject_intelligence(
             state["tool_name"], state["args"], task_id,
@@ -79,11 +79,11 @@ class SurgicalExecutionStage(ExecutionStage):
         action = executor._classify_action(tool_name, state.get("lang", "vi"), past_tense=False)
         path_arg = args.get("path") or args.get("TargetFile") or args.get("file_path") or args.get("target") or ""
         if path_arg:
-            engine.publish_mission_log("EXECUTOR", f"*[{action}]* `{path_arg}`", task_id)
+            engine.publish_mission_log("EXECUTOR", f"[{action}] `{path_arg}`", task_id)
         else:
-            engine.publish_mission_log("EXECUTOR", f"*[{action}]* `{tool_name}`", task_id)
+            engine.publish_mission_log("EXECUTOR", f"[{action}] `{tool_name}`", task_id)
         
-        engine.publish_progress(90, f"⚔️ [T4: SURGERY] [{tool_name}] Bắt đầu thực thi ...", "execution", task_id)
+        engine.publish_progress(90, f"[THỰC THI] [{tool_name}] Bắt đầu thực thi...", "execution", task_id)
         result = await executor._execute_with_retry(
             tool_name, state["args"], task_id, state["policy"]
         )
@@ -109,6 +109,6 @@ class ExecutionPipeline:
     async def execute(self, initial_state: Dict[str, Any]) -> Dict[str, Any]:
         state = initial_state
         for stage in self.stages:
-            logger.info(f"🔴 [EXEC-STAGE]: {stage.__class__.__name__} starting...")
+            logger.info("[EXEC-STAGE] %s starting...", stage.__class__.__name__)
             state = await stage.run(state)
         return state
