@@ -20,6 +20,7 @@ logger = logging.getLogger("jkai.capabilities.broker")
 class CapabilitySet:
     """Tập hợp năng lực thực thi được môi giới cấp phát."""
     capabilities: List[str] = field(default_factory=list)
+    tools: List[str] = field(default_factory=lambda: ["search_web"])
 
 
 class CapabilityBroker:
@@ -27,6 +28,9 @@ class CapabilityBroker:
 
     def register_tool(self, tool_name: str, tool_def: Any = None):
         self.TOOL_MAPPING[tool_name] = tool_name
+
+    def resolve_capabilities(self, requirement: Any) -> CapabilitySet:
+        return CapabilitySet(capabilities=["web_search", "python_interpreter"])
 
     TOOL_MAPPING = {
         "xlsx_generation": "openpyxl",
