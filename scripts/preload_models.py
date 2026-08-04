@@ -33,13 +33,20 @@ def preload_active_models():
                 hw = cols[2]
                 keep_alive = cols[9].replace("*", "").strip()
 
+                try:
+                    num_ctx = int(cols[3])
+                except Exception:
+                    num_ctx = 8192
+
                 # ONLY PRELOAD IF KEEP_ALIVE IS -1 AND MODEL IS NOT AUTO
                 if keep_alive == "-1" and model not in ("auto", "Active Model"):
                     host = "http://127.0.0.1:11435" if "CPU" in hw else "http://127.0.0.1:11434"
                     if model not in model_map:
-                        model_map[model] = {"model": model, "roles": [role], "host": host, "hw": hw}
+                        model_map[model] = {"model": model, "roles": [role], "host": host, "hw": hw, "num_ctx": num_ctx}
                     else:
                         model_map[model]["roles"].append(role)
+                        if num_ctx > model_map[model]["num_ctx"]:
+                            model_map[model]["num_ctx"] = num_ctx
 
     unique_models = list(model_map.values())
     print(f"📦 [PRELOADER]: Found {len(unique_models)} active model(s) in rule_hardware.md to preload.")
@@ -48,17 +55,18 @@ def preload_active_models():
         model = item["model"]
         roles_str = ", ".join(item["roles"])
         host = item["host"]
+        num_ctx = item.get("num_ctx", 8192)
         hw_label = "CPU RAM (11435)" if "CPU" in item["hw"] else "GPU VRAM (11434)"
         
-        print(f"⏳ [{idx}/{len(unique_models)}] Preloading '{model}' [{roles_str}] into {hw_label}...")
+        print(f"⏳ [{idx}/{len(unique_models)}] Preloading '{model}' (ctx={num_ctx}) [{roles_str}] into {hw_label}...")
         t0 = time.time()
         try:
             if "embed" in model.lower():
                 url = f"{host}/api/embeddings"
-                payload = {"model": model, "prompt": "warmup", "keep_alive": -1}
+                payload = {"model": model, "prompt": "warmup", "keep_alive": -1, "options": {"num_ctx": num_ctx}}
             else:
                 url = f"{host}/api/generate"
-                payload = {"model": model, "prompt": "", "keep_alive": -1, "stream": False}
+                payload = {"model": model, "prompt": "", "keep_alive": -1, "stream": False, "options": {"num_ctx": num_ctx}}
 
             data = json.dumps(payload).encode("utf-8")
             req = urllib.request.Request(url, data=data, headers={"Content-Type": "application/json"})
