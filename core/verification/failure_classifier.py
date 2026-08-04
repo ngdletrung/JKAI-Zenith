@@ -25,10 +25,14 @@ class LegacyClassificationResult:
 class FailureClassifier:
     """Bộ Phân Loại Lỗi Tác Chiến (Failure Classifier)."""
 
-    def classify(self, eval_res: Any, obs: Any = None) -> LegacyClassificationResult:
+    @classmethod
+    def classify(cls, eval_res: Any, obs: Any = None) -> LegacyClassificationResult:
         if obs and getattr(obs, "status_code", 0) == 507:
             return LegacyClassificationResult(category="RESOURCE_FAILURE", recommended_recovery="FALLBACK_MODEL")
-        return LegacyClassificationResult(category="KNOWLEDGE_FAILURE", recommended_recovery="MORE_CONTEXT")
+        crit = getattr(eval_res, "criteria_results", {})
+        if isinstance(crit, dict) and crit.get("hallucination_threshold") is False:
+            return LegacyClassificationResult(category="KNOWLEDGE_FAILURE", recommended_recovery="MORE_CONTEXT")
+        return LegacyClassificationResult(category="RESOURCE_FAILURE", recommended_recovery="FALLBACK_MODEL")
 
     @classmethod
     def classify_failure(cls, missing_criteria: List[str], logs: List[str]) -> tuple[FailureClassification, RecoveryStrategy]:
@@ -40,7 +44,7 @@ class FailureClassifier:
                 return FailureClassification.POLICY_FAILURE, RecoveryStrategy.ABORT
             if "EXCEL_CORRUPTED" in miss or "FILE_EMPTY_ZERO_BYTES" in miss:
                 return FailureClassification.VERIFICATION_FAILURE, RecoveryStrategy.DIAGNOSE_AND_REPAIR
-            if "PHYSICAL_FILE_MISSING" in miss or "TOOL_EXCEPTION" in miss:
+            if "PHYSICAL_FILE_MISSING" in miss or "TOOL_EXCEPTION" in miss or "DRIVE_QUOTA_EXCEEDED" in miss:
                 return FailureClassification.TOOL_FAILURE, RecoveryStrategy.SUBSTITUTE_CAPABILITY
             if "MODEL_HALLUCINATION" in miss or "INVALID_JSON_FORMAT" in miss:
                 return FailureClassification.MODEL_FAILURE, RecoveryStrategy.CHANGE_MODEL
