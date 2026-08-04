@@ -653,6 +653,10 @@ export const ArtifactGallery = memo(({ content, type }: { content: string, type:
       return [{ title: firstLine || 'Giải pháp kiến trúc', body: raw.replace(/^#+\s*.*\n?/, '') }];
     }
     if (type === 'plan') {
+      // If plan content is just the raw prompt fallback without Markdown plan structure
+      if (!raw.includes('#') && !raw.includes('##') && !raw.includes('step_') && !raw.includes('Step') && !raw.includes('CHECKLIST') && !raw.includes('LỘ TRÌNH')) {
+        return [];
+      }
       const firstLine = raw.split('\n')[0].replace(/^#+\s*/, '').trim();
       return [{ title: firstLine || 'Kế hoạch kiến trúc', body: raw.replace(/^#+\s*.*\n?/, '') }];
     }
