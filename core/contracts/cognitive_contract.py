@@ -2,8 +2,7 @@
 JKAI ZENITH — KERNEL CONTRACT: COGNITIVE RUNTIME CONTRACTS (v2.1)
 File: core/contracts/cognitive_contract.py
 
-Chứa các Hợp đồng dữ liệu bất biến (Immutable Dataclass Contracts) định hình chuẩn giao tiếp
-giữa Universal Cognition, Mission Builder, Planner, AMG Governor, Capability Broker, Verifier và Engram v2.
+Canonical owner for CognitiveRequest, DeliverableSpec, and MissionDefinition.
 """
 
 from __future__ import annotations
@@ -12,6 +11,8 @@ from enum import Enum
 from typing import Dict, Any, List, Optional
 import time
 import uuid
+
+from core.contracts.identity_contract import IdentityChain
 
 
 class DeliverableType(str, Enum):
@@ -25,22 +26,6 @@ class RenderingHint(str, Enum):
     DOWNLOAD_LINK = "DOWNLOAD_LINK"
     EMBEDDED_ARTIFACT = "EMBEDDED_ARTIFACT"
     INLINE_CHAT = "INLINE_CHAT"
-
-
-@dataclass(frozen=True)
-class IdentityChain:
-    """
-    Chuỗi định danh 8 mắc xích bất biến cho tác chiến tự chủ.
-    request_id -> mission_id -> plan_id -> task_id -> attempt_id -> execution_id -> observation_id -> verification_id
-    """
-    request_id: str = field(default_factory=lambda: f"req_{uuid.uuid4().hex[:10]}")
-    mission_id: str = field(default_factory=lambda: f"mis_{uuid.uuid4().hex[:10]}")
-    plan_id: str = field(default_factory=lambda: f"pln_{uuid.uuid4().hex[:10]}")
-    task_id: str = field(default_factory=lambda: f"tsk_{uuid.uuid4().hex[:10]}")
-    attempt_id: str = field(default_factory=lambda: f"att_{uuid.uuid4().hex[:10]}")
-    execution_id: str = field(default_factory=lambda: f"exe_{uuid.uuid4().hex[:10]}")
-    observation_id: str = field(default_factory=lambda: f"obs_{uuid.uuid4().hex[:10]}")
-    verification_id: str = field(default_factory=lambda: f"ver_{uuid.uuid4().hex[:10]}")
 
 
 @dataclass(frozen=True)

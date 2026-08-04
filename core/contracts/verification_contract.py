@@ -13,7 +13,29 @@ from typing import Dict, Any, List, Optional
 import time
 import uuid
 
-from core.contracts.cognitive_contract import IdentityChain
+from core.contracts.identity_contract import IdentityChain
+
+
+class RuntimeState(str, Enum):
+    """Trạng thái máy máy tác chiến (State Machine Coordinator)."""
+    # Non-Terminal States
+    RECEIVED = "RECEIVED"
+    COGNIZED = "COGNIZED"
+    MISSIONED = "MISSIONED"
+    PLANNED = "PLANNED"
+    RESOLVED = "RESOLVED"
+    EXECUTING = "EXECUTING"
+    OBSERVED = "OBSERVED"
+    VERIFYING = "VERIFYING"
+    RETRYING = "RETRYING"
+    SUBSTITUTING = "SUBSTITUTING"
+    CHANGING_MODEL = "CHANGING_MODEL"
+    REPLANNING = "REPLANNING"
+    DIAGNOSING = "DIAGNOSING"
+    CLARIFICATION_REQUIRED = "CLARIFICATION_REQUIRED"
+    # Terminal States (Tuyệt đối không transition ra khỏi 2 trạng thái này)
+    DELIVERED = "DELIVERED"
+    ABORTED = "ABORTED"
 
 
 class FailureClassification(str, Enum):
@@ -23,8 +45,8 @@ class FailureClassification(str, Enum):
     MODEL_FAILURE = "MODEL_FAILURE"             # Lỗi LLM hallucination/format -> CHANGE_MODEL
     PLAN_FAILURE = "PLAN_FAILURE"               # Task graph rỗng/thiếu bước -> REPLAN
     VERIFICATION_FAILURE = "VERIFICATION_FAILURE"# Tool chạy thành công nhưng output không đúng mission -> DIAGNOSE/REPAIR
-    INPUT_FAILURE = "INPUT_FAILURE"             # Yêu cầu mâu thuẫn/rỗng -> REQUEST_CLARIFICATION
-    POLICY_FAILURE = "POLICY_FAILURE"           # Vi phạm bảo mật Zero-Trust -> ABORT
+    INPUT_FAILURE = "INPUT_FAILURE"             # Yêu cầu mâu thuẫn/rỗng -> CLARIFICATION_REQUIRED
+    POLICY_FAILURE = "POLICY_FAILURE"           # Vi phạm bảo mật Zero-Trust -> ABORTED
 
 
 class RecoveryStrategy(str, Enum):
