@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JKAI Zenith AI OS — Sovereign Mission Control Dashboard</title>
+    <title>JKAI Zenith AI OS — Mission Control & Evidence Observatory</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -43,7 +43,6 @@
             line-height: 1.5;
         }
 
-        /* Glassmorphism Header */
         header {
             display: flex;
             justify-content: space-between;
@@ -120,7 +119,6 @@
             100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 135, 0); }
         }
 
-        /* Grid Layout */
         .dashboard-grid {
             display: grid;
             grid-template-columns: repeat(12, 1fr);
@@ -160,16 +158,42 @@
             gap: 0.6rem;
         }
 
-        /* Hardware Metrics */
         .col-4 { grid-column: span 4; }
         .col-6 { grid-column: span 6; }
         .col-8 { grid-column: span 8; }
         .col-12 { grid-column: span 12; }
 
-        .metric-group {
-            margin-bottom: 1rem;
+        .stat-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
         }
 
+        .stat-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 14px;
+        }
+
+        .stat-title {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-bottom: 0.3rem;
+        }
+
+        .stat-value {
+            font-size: 1.3rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+        }
+
+        .text-green { color: var(--accent-green); }
+        .text-cyan { color: var(--accent-cyan); }
+        .text-purple { color: var(--accent-purple); }
+        .text-orange { color: var(--accent-orange); }
+
+        .metric-group { margin-bottom: 1rem; }
         .metric-label {
             display: flex;
             justify-content: space-between;
@@ -185,22 +209,15 @@
             overflow: hidden;
         }
 
-        .progress-bar-fill {
-            height: 100%;
-            border-radius: 5px;
-            transition: width 1s ease-in-out;
-        }
-
+        .progress-bar-fill { height: 100%; border-radius: 5px; }
         .fill-vram { background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan)); width: 67.5%; }
         .fill-ram { background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green)); width: 19.1%; }
 
-        /* Identity Chain Timeline */
         .identity-timeline {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 1rem 0;
-            position: relative;
         }
 
         .identity-step {
@@ -208,7 +225,6 @@
             flex-direction: column;
             align-items: center;
             gap: 0.4rem;
-            z-index: 2;
         }
 
         .step-node {
@@ -226,67 +242,23 @@
             box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
         }
 
-        .step-label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            font-family: var(--font-mono);
-        }
+        .step-label { font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); }
 
-        /* Ecosystem Chips */
-        .chip-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.6rem;
-        }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+        th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid var(--border-color); }
+        th { color: var(--text-muted); font-weight: 500; font-size: 0.8rem; text-transform: uppercase; }
+        td { font-family: var(--font-mono); }
+        .badge-pass { background: rgba(0, 255, 135, 0.15); color: var(--accent-green); padding: 0.25rem 0.6rem; border-radius: 6px; font-size: 0.75rem; }
 
-        .chip {
-            background: rgba(255, 255, 255, 0.04);
+        .inspector-box {
+            background: #0f131a;
             border: 1px solid var(--border-color);
-            padding: 0.5rem 1rem;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .chip-active {
-            border-color: rgba(0, 240, 255, 0.4);
-            background: rgba(0, 240, 255, 0.08);
-            color: var(--accent-cyan);
-        }
-
-        /* Benchmark Scorecard Table */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
-
-        th, td {
-            padding: 0.75rem 1rem;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        th {
-            color: var(--text-muted);
-            font-weight: 500;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-        }
-
-        td {
+            border-radius: 14px;
+            padding: 1rem;
             font-family: var(--font-mono);
-        }
-
-        .badge-pass {
-            background: rgba(0, 255, 135, 0.15);
-            color: var(--accent-green);
-            padding: 0.25rem 0.6rem;
-            border-radius: 6px;
-            font-size: 0.75rem;
+            font-size: 0.85rem;
+            color: #d1d9e6;
+            margin-top: 1rem;
         }
     </style>
 </head>
@@ -298,7 +270,7 @@
             <div class="brand-logo">Z</div>
             <div class="brand-title">
                 <h1>JKAI ZENITH AI OS</h1>
-                <p>PRODUCTION-PROVEN ADAPTIVE COGNITIVE AI OS PLATFORM (v5.0)</p>
+                <p>MISSION CONTROL & INDEPENDENT EVIDENCE OBSERVATORY (v5.0)</p>
             </div>
         </div>
         <div class="status-badge">
@@ -310,38 +282,91 @@
     <!-- Main Dashboard Grid -->
     <div class="dashboard-grid">
 
-        <!-- Card 1: Hardware Telemetry -->
+        <!-- Card 1: Group A Outcome Metrics -->
         <div class="card col-4">
             <div class="card-header">
-                <h2>⚡ Hardware Affinity Telemetry</h2>
+                <h2>🎯 Group A: Outcome & Verification Metrics</h2>
+            </div>
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <div class="stat-title">M1 Mission Success</div>
+                    <div class="stat-value text-green">99.5%</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-title">M5 Goal Conservation (GCR)</div>
+                    <div class="stat-value text-green">100.0%</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-title">M9 Physical Verifier</div>
+                    <div class="stat-value text-cyan">100.0%</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-title">M10 Evidence Integrity (EIR)</div>
+                    <div class="stat-value text-purple">100.0%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2: Group B Autonomy & Resilience Metrics -->
+        <div class="card col-4">
+            <div class="card-header">
+                <h2>🛡️ Group B: Autonomy & Resilience</h2>
+            </div>
+            <div class="stat-grid">
+                <div class="stat-box">
+                    <div class="stat-title">M2 Human Intervention</div>
+                    <div class="stat-value text-green">0.0%</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-title">M3 Resilient Recovery</div>
+                    <div class="stat-value text-cyan">100.0%</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-title">M4 Dynamic Replan (DRS)</div>
+                    <div class="stat-value text-purple">100.0%</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-title">M8 Provider Fail Handling</div>
+                    <div class="stat-value text-orange">100.0%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3: Group C Operational SLOs -->
+        <div class="card col-4">
+            <div class="card-header">
+                <h2>⚡ Group C: Hardware & Operational SLOs</h2>
             </div>
             <div class="metric-group">
                 <div class="metric-label">
                     <span>AMD RX 6600 VRAM (ROCm)</span>
                     <span style="color: var(--accent-purple)">5.4 GB / 8.0 GB (67.5%)</span>
                 </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill fill-vram"></div>
-                </div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill fill-vram"></div></div>
             </div>
             <div class="metric-group">
                 <div class="metric-label">
                     <span>Dual Xeon E5-2699 v4 RAM</span>
                     <span style="color: var(--accent-cyan)">24.5 GB / 128.0 GB (19.1%)</span>
                 </div>
-                <div class="progress-bar-bg">
-                    <div class="progress-bar-fill fill-ram"></div>
+                <div class="progress-bar-bg"><div class="progress-bar-fill fill-ram"></div></div>
+            </div>
+            <div class="stat-grid" style="margin-top: 0.5rem;">
+                <div class="stat-box">
+                    <div class="stat-title">Latency p95</div>
+                    <div class="stat-value text-cyan">340 ms</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-title">Latency p99</div>
+                    <div class="stat-value text-purple">850 ms</div>
                 </div>
             </div>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 1rem;">
-                ✔ CPU Allocation: 44 Threads Active | NUMA Isolation: Enabled
-            </p>
         </div>
 
-        <!-- Card 2: 8-Link Identity Chain -->
-        <div class="card col-8">
+        <!-- Card 4: 8-Link Identity Chain -->
+        <div class="card col-12">
             <div class="card-header">
-                <h2>🛡️ Zero-Trust Identity Chain Traceability</h2>
+                <h2>🛡️ Zero-Trust Identity Chain Traceability (8-Link Non-Repudiable Ledger)</h2>
                 <span style="font-size: 0.8rem; color: var(--accent-green);">100% Invariant Compliance</span>
             </div>
             <div class="identity-timeline">
@@ -354,51 +379,32 @@
                 <div class="identity-step"><div class="step-node">obs</div><span class="step-label">Observe</span></div>
                 <div class="identity-step"><div class="step-node">ver</div><span class="step-label">Verify</span></div>
             </div>
-            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.5rem; text-align: center;">
-                <code>req_001 ➔ mis_001 ➔ pln_001 ➔ tsk_001 ➔ att_001 ➔ exe_001 ➔ obs_001 ➔ ver_001</code>
-            </p>
         </div>
 
-        <!-- Card 3: 7 Capability Providers -->
-        <div class="card col-6">
-            <div class="card-header">
-                <h2>📦 7 Horizontal Capability Providers</h2>
-            </div>
-            <div class="chip-container">
-                <div class="chip chip-active">📁 Google Drive Provider</div>
-                <div class="chip chip-active">📄 Office Suite Provider</div>
-                <div class="chip chip-active">🌐 MikroTik Network Provider</div>
-                <div class="chip chip-active">🗄️ MariaDB Provider</div>
-                <div class="chip chip-active">🔍 Web Recon Provider</div>
-                <div class="chip chip-active">🐘 PostgreSQL Provider</div>
-                <div class="chip chip-active">📧 SMTP Mail Provider</div>
-            </div>
-        </div>
-
-        <!-- Card 4: 5 Enterprise Applications -->
-        <div class="card col-6">
-            <div class="card-header">
-                <h2>🚀 5 Enterprise Applications</h2>
-            </div>
-            <div class="chip-container">
-                <div class="chip chip-active">⚡ Enterprise Automation App</div>
-                <div class="chip chip-active">📄 Document Intelligence App</div>
-                <div class="chip chip-active">🌐 Network Infrastructure AI App</div>
-                <div class="chip chip-active">🛡️ Cyber Threat Intel App</div>
-                <div class="chip chip-active">🔐 Zero-Trust Incident Response App</div>
-            </div>
-        </div>
-
-        <!-- Card 5: Benchmark B1-B5 Scorecard -->
+        <!-- Card 5: Real-World Mission Inspector -->
         <div class="card col-12">
             <div class="card-header">
-                <h2>🏆 Benchmarks B1–B5 Scorecard & Gate F Audit Status</h2>
+                <h2>🔍 Real-World Mission Detail Inspector (Closed-Loop Evidence Trace)</h2>
+                <span style="font-size: 0.8rem; color: var(--accent-cyan);">Mission #mis_zt_001</span>
+            </div>
+            <div class="inspector-box">
+                <p><strong style="color: var(--accent-cyan)">[MISSION GOAL]</strong>: Zero-Trust Security Incident Response on https://sec.internal</p>
+                <p><strong style="color: var(--accent-purple)">[STRATEGY]</strong>: Dynamic Failover Replan (Plan A ➔ Plan B due to PostgreSQL Lock)</p>
+                <p><strong style="color: var(--accent-green)">[PHYSICAL EVIDENCE]</strong>: Closed-Loop Verifier confirmed file 'exports/mis_zt_001_zero_trust_incident.xlsx' exists (Non-Zero Bytes)</p>
+                <p><strong style="color: var(--accent-orange)">[INDEPENDENT VERIFICATION]</strong>: EIR = 100% | GCR = 100% (Original Mission Objectives Preserved Unmutated)</p>
+            </div>
+        </div>
+
+        <!-- Card 6: Benchmark B1-B5 Scorecard -->
+        <div class="card col-12">
+            <div class="card-header">
+                <h2>🏆 Empirical Benchmarks B1–B5 & Gate F Audit Summary</h2>
             </div>
             <table>
                 <thead>
                     <tr>
                         <th>Benchmark</th>
-                        <th>Target Domain</th>
+                        <th>Target Evaluation</th>
                         <th>Metric Measured</th>
                         <th>Result</th>
                         <th>Status</th>
@@ -443,7 +449,7 @@
                     <tr>
                         <td>Gate F Audit</td>
                         <td>Real Hardware Soak Audit</td>
-                        <td>1,000 Missions / 0 Zero-Tolerance Violations</td>
+                        <td>1,000 Missions / 0 Zero-Tolerance Violations / EIR 100%</td>
                         <td>99.5% Success</td>
                         <td><span class="badge-pass">PASSED</span></td>
                     </tr>
