@@ -117,7 +117,6 @@ class UniversalCognitionCortex:
             deliverable=deliverable_spec,
             constraints=constraints,
             entities=entities,
-            execution_depth=exec_depth,
             risk_level=risk_lvl,
             success_criteria=success_criteria,
             authority_required=["read", "write_file"] if requires_file else ["read"],

@@ -22,7 +22,7 @@ from core.contracts.capability_contract import (
     ExecutionProfile,
 )
 from core.cognitive.universal_cognition import UniversalCognitionCortex
-from core.cognitive.verifier import CognitiveVerifier
+from core.verification.verifier import CognitiveVerifier
 
 
 def test_identity_chain_8_steps():
