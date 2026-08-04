@@ -1,6 +1,10 @@
-﻿# run_ollama_cpu.ps1 - CPU Engine Monitor Window
-# Env vars (OLLAMA_HOST=11435, OLLAMA_NO_GPU=1...) ke thua tu Zenith_Guardian.ps1
+# run_ollama_cpu.ps1 - CPU Engine Monitor Window (100% CPU RAM Isolation)
 param([string]$LogPath)
+
+$env:OLLAMA_HOST             = "127.0.0.1:11435"
+$env:OLLAMA_NO_GPU           = "1"
+$env:GGML_VK_VISIBLE_DEVICES = ""
+$env:OLLAMA_LLM_LIBRARY      = "cpu"
 
 $Host.UI.RawUI.WindowTitle = "[OLLAMA-CPU :11435]"
 

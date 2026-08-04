@@ -1,6 +1,9 @@
-﻿# run_ollama_gpu.ps1 - GPU Engine (Vulkan) Monitor Window
-# Env vars (OLLAMA_HOST, GGML_VK_VISIBLE_DEVICES...) ke thua tu Zenith_Guardian.ps1
+# run_ollama_gpu.ps1 - GPU Engine (Vulkan) Monitor Window (100% GPU VRAM Isolation)
 param([string]$LogPath)
+
+$env:OLLAMA_HOST             = "127.0.0.1:11434"
+$env:GGML_VK_VISIBLE_DEVICES = "0"
+$env:OLLAMA_NO_GPU           = ""
 
 $Host.UI.RawUI.WindowTitle = "[OLLAMA-GPU :11434]"
 
