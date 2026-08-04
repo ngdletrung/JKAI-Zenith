@@ -23,21 +23,23 @@ def preload_active_models():
     with open(rule_file, "r", encoding="utf-8") as f:
         content = f.read()
 
-    # Parse Section 3 table lines
-    pattern = r'^\|\s*([A-Z_]+)\s*\|\s*([^\|]+)\|\s*\*\*([^\*]+)\*\*'
-    matches = re.findall(pattern, content, re.MULTILINE)
-
     model_map = {}
-    for role, model_raw, hw_raw in matches:
-        model = model_raw.strip()
-        hw = hw_raw.strip()
-        if model in ("auto", "Active Model") or "SDXL" in model or "whisper" in model:
-            continue
-        host = "http://127.0.0.1:11435" if "CPU" in hw else "http://127.0.0.1:11434"
-        if model not in model_map:
-            model_map[model] = {"model": model, "roles": [role], "host": host, "hw": hw}
-        else:
-            model_map[model]["roles"].append(role)
+    for line in content.splitlines():
+        if line.startswith("|") and not line.startswith("| Role") and not line.startswith("| :"):
+            cols = [c.strip() for c in line.split("|")[1:-1]]
+            if len(cols) >= 10:
+                role = cols[0]
+                model = cols[1]
+                hw = cols[2]
+                keep_alive = cols[9].replace("*", "").strip()
+
+                # ONLY PRELOAD IF KEEP_ALIVE IS -1 AND MODEL IS NOT AUTO
+                if keep_alive == "-1" and model not in ("auto", "Active Model"):
+                    host = "http://127.0.0.1:11435" if "CPU" in hw else "http://127.0.0.1:11434"
+                    if model not in model_map:
+                        model_map[model] = {"model": model, "roles": [role], "host": host, "hw": hw}
+                    else:
+                        model_map[model]["roles"].append(role)
 
     unique_models = list(model_map.values())
     print(f"📦 [PRELOADER]: Found {len(unique_models)} active model(s) in rule_hardware.md to preload.")
