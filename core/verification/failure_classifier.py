@@ -16,8 +16,19 @@ from core.contracts.verification_contract import (
 logger = logging.getLogger("jkai.verification.classifier")
 
 
+class LegacyClassificationResult:
+    def __init__(self, category: str, recommended_recovery: str):
+        self.category = category
+        self.recommended_recovery = recommended_recovery
+
+
 class FailureClassifier:
     """Bộ Phân Loại Lỗi Tác Chiến (Failure Classifier)."""
+
+    def classify(self, eval_res: Any, obs: Any = None) -> LegacyClassificationResult:
+        if obs and getattr(obs, "status_code", 0) == 507:
+            return LegacyClassificationResult(category="RESOURCE_FAILURE", recommended_recovery="FALLBACK_MODEL")
+        return LegacyClassificationResult(category="KNOWLEDGE_FAILURE", recommended_recovery="MORE_CONTEXT")
 
     @classmethod
     def classify_failure(cls, missing_criteria: List[str], logs: List[str]) -> tuple[FailureClassification, RecoveryStrategy]:

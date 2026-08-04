@@ -70,6 +70,7 @@ class CognitiveVerifier:
                         import openpyxl
                         wb = openpyxl.load_workbook(target_path, read_only=True)
                         logs.append(f"✅ Excel integrity verified: {len(wb.sheetnames)} sheets found ({wb.sheetnames}).")
+                        wb.close()
                     except Exception as e:
                         missing.append(f"EXCEL_CORRUPTED: {e}")
                         logs.append(f"❌ Excel integrity check failed: {e}")
