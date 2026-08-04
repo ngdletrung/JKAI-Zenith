@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JKAI Zenith AI OS — Bảng Điều Khiển & Đài Quan Sát Bằng Chứng Độc Lập</title>
+    <title>JKAI Zenith AI OS — Dynamic Mission Control & Evidence Observatory</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -19,7 +19,6 @@
             --accent-purple: #7000ff;
             --accent-green: #00ff87;
             --accent-orange: #ff9900;
-            --accent-red: #ff4757;
             --text-main: #f0f4fc;
             --text-muted: #8a99ad;
             --font-main: 'Outfit', sans-serif;
@@ -68,6 +67,24 @@
         }
 
         .brand-title p { font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); }
+
+        .header-controls { display: flex; align-items: center; gap: 1.5rem; }
+
+        .lang-switcher {
+            display: flex; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color);
+            padding: 4px; border-radius: 30px; gap: 4px;
+        }
+
+        .lang-btn {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 0.4rem 0.9rem; border-radius: 20px; font-weight: 600; font-size: 0.8rem;
+            cursor: pointer; transition: all 0.2s ease; font-family: var(--font-mono);
+        }
+
+        .lang-btn.active {
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            color: #fff; box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+        }
 
         .status-badge {
             display: flex; align-items: center; gap: 0.75rem;
@@ -125,10 +142,7 @@
         .fill-vram { background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan)); width: 67.5%; }
         .fill-ram { background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green)); width: 19.1%; }
 
-        .identity-timeline {
-            display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;
-        }
-
+        .identity-timeline { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
         .identity-step { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
 
         .step-node {
@@ -138,7 +152,7 @@
             box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
         }
 
-        .step-label { font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); }
+        .step-label { font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); text-align: center; }
 
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         th, td { padding: 0.65rem 0.85rem; text-align: left; border-bottom: 1px solid var(--border-color); }
@@ -160,12 +174,18 @@
             <div class="brand-logo">Z</div>
             <div class="brand-title">
                 <h1>JKAI ZENITH AI OS</h1>
-                <p>PRODUCTION-PROVEN ADAPTIVE COGNITIVE AI OS PLATFORM — BẢNG ĐIỀU KHIỂN NHÀ NHIỆM VỤ & ĐÀI QUAN SÁT BẰNG CHỨNG ĐỘC LẬP (4 TẦNG TRUTH SURFACE)</p>
+                <p id="sub-title">PRODUCTION-PROVEN ADAPTIVE COGNITIVE AI OS PLATFORM — BẢNG ĐIỀU KHIỂN & ĐÀI QUAN SÁT BẰNG CHỨNG ĐỘC LẬP</p>
             </div>
         </div>
-        <div class="status-badge">
-            <div class="pulse-dot"></div>
-            <span>CHẾ ĐỘ THƯỜNG TRỰC VẬN HÀNH SẢN XUẤT</span>
+        <div class="header-controls">
+            <div class="lang-switcher">
+                <button id="btn-vi" class="lang-btn active" onclick="setLang('vi')">🇻🇳 VN</button>
+                <button id="btn-en" class="lang-btn" onclick="setLang('en')">🇬🇧 EN</button>
+            </div>
+            <div class="status-badge">
+                <div class="pulse-dot"></div>
+                <span id="status-text">CHẾ ĐỘ THƯỜNG TRỰC VẬN HÀNH SẢN XUẤT</span>
+            </div>
         </div>
     </header>
 
@@ -175,23 +195,23 @@
         <!-- Layer 1: Mission Outcome -->
         <div class="card col-3">
             <div class="card-header">
-                <h2>🎯 Tầng 1: Kết Quả Nhiệm Vụ (Mission Outcome)</h2>
+                <h2 id="l1-title">🎯 Tầng 1: Kết Quả Nhiệm Vụ</h2>
             </div>
             <div class="stat-grid">
                 <div class="stat-box">
-                    <div class="stat-title">M1 Thành Công (Success Rate)</div>
+                    <div class="stat-title" id="m1-title">M1 Thành Công</div>
                     <div class="stat-value text-green">99.5%</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-title">M5 Bảo Toàn Mục Tiêu (GCR)</div>
+                    <div class="stat-title" id="m5-title">M5 Bảo Toàn Mục Tiêu</div>
                     <div class="stat-value text-green">100.0%</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-title">M9 Thẩm Định Vật Lý (Verifier)</div>
+                    <div class="stat-title" id="m9-title">M9 Thẩm Định Vật Lý</div>
                     <div class="stat-value text-cyan">100.0%</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-title">Thất Bại An Toàn (Graceful Fail)</div>
+                    <div class="stat-title" id="fail-title">Thất Bại An Toàn</div>
                     <div class="stat-value text-orange">0.5% (5/1k)</div>
                 </div>
             </div>
@@ -200,23 +220,23 @@
         <!-- Layer 2: Autonomy & Resilience -->
         <div class="card col-3">
             <div class="card-header">
-                <h2>🛡️ Tầng 2: Tự Chủ & Khôi Phục (Autonomy)</h2>
+                <h2 id="l2-title">🛡️ Tầng 2: Tự Chủ & Khôi Phục</h2>
             </div>
             <div class="stat-grid">
                 <div class="stat-box">
-                    <div class="stat-title">M3 Tự Khôi Phục (Recovery)</div>
+                    <div class="stat-title" id="m3-title">M3 Tự Khôi Phục</div>
                     <div class="stat-value text-cyan">100.0%</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-title">M4 Replan Tự Động (DRS)</div>
+                    <div class="stat-title" id="m4-title">M4 Replan Tự Động</div>
                     <div class="stat-value text-purple">100.0%</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-title">Can Thiệp Thừa (Unnecessary)</div>
+                    <div class="stat-title" id="m2-title">Can Thiệp Thừa</div>
                     <div class="stat-value text-green">0.0%</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-title">Ủy Quyền An Toàn (Policy Gate)</div>
+                    <div class="stat-title" id="policy-title">Ủy Quyền An Toàn</div>
                     <div class="stat-value text-orange">2.1% (Auth)</div>
                 </div>
             </div>
@@ -225,23 +245,23 @@
         <!-- Layer 3: Independent Evidence Integrity -->
         <div class="card col-3">
             <div class="card-header">
-                <h2>🔍 Tầng 3: Bằng Chứng Độc Lập (Evidence)</h2>
+                <h2 id="l3-title">🔍 Tầng 3: Bằng Chứng Độc Lập</h2>
             </div>
             <div class="stat-grid">
                 <div class="stat-box">
-                    <div class="stat-title">EIR-S (Bằng Chứng Kết Quả)</div>
+                    <div class="stat-title" id="eirs-title">EIR-S Bằng Chứng Kết Quả</div>
                     <div class="stat-value text-green">100.00%</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-title">ECR (Độ Phủ Bằng Chứng)</div>
+                    <div class="stat-title" id="ecr-title">ECR Độ Phủ Bằng Chứng</div>
                     <div class="stat-value text-cyan">100.00%</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-title">Chuỗi Danh Tính (Identity)</div>
+                    <div class="stat-title" id="chain-title">Chuỗi Danh Tính</div>
                     <div class="stat-value text-purple">8 / 8 Mắt Xích</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-title">Lỗi Vi Phạm Hiến Pháp</div>
+                    <div class="stat-title" id="viol-title">Lỗi Vi Phạm Hiến Pháp</div>
                     <div class="stat-value text-green">0 Lỗi</div>
                 </div>
             </div>
@@ -250,7 +270,7 @@
         <!-- Layer 4: Operational SLO & Resource -->
         <div class="card col-3">
             <div class="card-header">
-                <h2>⚡ Tầng 4: Chỉ Số Vận Hành SLO (Hardware)</h2>
+                <h2 id="l4-title">⚡ Tầng 4: Chỉ Số Vận Hành SLO</h2>
             </div>
             <div class="metric-group">
                 <div class="metric-label"><span>VRAM (AMD RX 6600 8GB)</span><span style="color: var(--accent-purple)">5.4 GB (67.5%)</span></div>
@@ -261,100 +281,100 @@
                 <div class="progress-bar-bg"><div class="progress-bar-fill fill-ram"></div></div>
             </div>
             <div class="stat-grid" style="margin-top: 0.4rem;">
-                <div class="stat-box"><div class="stat-title">Độ Trễ p95</div><div class="stat-value text-cyan">340 ms</div></div>
-                <div class="stat-box"><div class="stat-title">Độ Trễ p99</div><div class="stat-value text-purple">850 ms</div></div>
+                <div class="stat-box"><div class="stat-title" id="p95-title">Độ Trễ p95</div><div class="stat-value text-cyan">340 ms</div></div>
+                <div class="stat-box"><div class="stat-title" id="p99-title">Độ Trễ p99</div><div class="stat-value text-purple">850 ms</div></div>
             </div>
         </div>
 
         <!-- Card 5: 8-Link Identity Chain -->
         <div class="card col-12">
             <div class="card-header">
-                <h2>🛡️ Chuỗi Danh Tính Zero-Trust 8 Mắt Xích Bất Biến (Identity Chain Traceability)</h2>
-                <span style="font-size: 0.8rem; color: var(--accent-green);">100% Tuân Thủ Hiến Pháp</span>
+                <h2 id="identity-header">🛡️ Chuỗi Danh Tính Zero-Trust 8 Mắt Xích Bất Biến</h2>
+                <span style="font-size: 0.8rem; color: var(--accent-green);" id="compliance-text">100% Tuân Thủ Hiến Pháp</span>
             </div>
             <div class="identity-timeline">
-                <div class="identity-step"><div class="step-node">req</div><span class="step-label">Yêu Cầu</span></div>
-                <div class="identity-step"><div class="step-node">mis</div><span class="step-label">Nhiệm Vụ</span></div>
-                <div class="identity-step"><div class="step-node">pln</div><span class="step-label">Lộ Trình</span></div>
-                <div class="identity-step"><div class="step-node">tsk</div><span class="step-label">Tác Vụ</span></div>
-                <div class="identity-step"><div class="step-node">att</div><span class="step-label">Thử Nghiệm</span></div>
-                <div class="identity-step"><div class="step-node">exe</div><span class="step-label">Thi Hành</span></div>
-                <div class="identity-step"><div class="step-node">obs</div><span class="step-label">Quan Sát</span></div>
-                <div class="identity-step"><div class="step-node">ver</div><span class="step-label">Thẩm Định</span></div>
+                <div class="identity-step"><div class="step-node">req</div><span class="step-label" id="step-req">Yêu Cầu</span></div>
+                <div class="identity-step"><div class="step-node">mis</div><span class="step-label" id="step-mis">Nhiệm Vụ</span></div>
+                <div class="identity-step"><div class="step-node">pln</div><span class="step-label" id="step-pln">Lộ Trình</span></div>
+                <div class="identity-step"><div class="step-node">tsk</div><span class="step-label" id="step-tsk">Tác Vụ</span></div>
+                <div class="identity-step"><div class="step-node">att</div><span class="step-label" id="step-att">Thử Nghiệm</span></div>
+                <div class="identity-step"><div class="step-node">exe</div><span class="step-label" id="step-exe">Thi Hành</span></div>
+                <div class="identity-step"><div class="step-node">obs</div><span class="step-label" id="step-obs">Quan Sát</span></div>
+                <div class="identity-step"><div class="step-node">ver</div><span class="step-label" id="step-ver">Thẩm Định</span></div>
             </div>
         </div>
 
         <!-- Card 6: Real-World Mission Inspector -->
         <div class="card col-12">
             <div class="card-header">
-                <h2>🔍 Đài Quan Sát Nhiệm Vụ Real-Time (Kiểm Tra Traceback Bằng Chứng Closed-Loop)</h2>
-                <span style="font-size: 0.8rem; color: var(--accent-cyan);">Mã Nhiệm Vụ #mis_zt_001</span>
+                <h2 id="inspector-header">🔍 Đài Quan Sát Nhiệm Vụ Real-Time (Traceback Closed-Loop)</h2>
+                <span style="font-size: 0.8rem; color: var(--accent-cyan);">Mission #mis_zt_001</span>
             </div>
-            <div class="inspector-box">
-                <p><strong style="color: var(--accent-cyan)">[MỤC TIÊU NHIỆM VỤ]</strong>: Xử Lý Sự Cố An Ninh Mạng Zero-Trust trên https://sec.internal</p>
-                <p><strong style="color: var(--accent-purple)">[CHIẾN LƯỢC DAG v3]</strong>: Plan A ➔ Quan Sát (Khóa CSDL PostgreSQL) ➔ ASR ➔ Replan B (Failover Read Replica)</p>
-                <p><strong style="color: var(--accent-green)">[BẰNG CHỨNG VẬT LÝ]</strong>: Thẩm định viên Physical Verifier xác nhận tệp 'exports/mis_zt_001_zero_trust_incident.xlsx' tồn tại (Cấu trúc XML/ZIP hợp lệ, Ô dữ liệu chính xác)</p>
-                <p><strong style="color: var(--accent-orange)">[XÁC MINH ĐỘC LẬP]</strong>: EIR-S = 100.00% | ECR = 100.00% | GCR = 100.00% (Không tự nhận kết quả, Mục tiêu ban đầu giữ nguyên)</p>
+            <div class="inspector-box" id="inspector-content">
+                <p><strong style="color: var(--accent-cyan)">[MỤC TIÊU]</strong>: Xử Lý Sự Cố An Ninh Mạng Zero-Trust trên https://sec.internal</p>
+                <p><strong style="color: var(--accent-purple)">[CHIẾN LƯỢC]</strong>: Plan A ➔ Quan Sát (Khóa CSDL PostgreSQL) ➔ ASR ➔ Replan B (Failover Read Replica)</p>
+                <p><strong style="color: var(--accent-green)">[BẰNG CHỨNG VẬT LÝ]</strong>: Physical Verifier xác nhận tệp 'exports/mis_zt_001_zero_trust_incident.xlsx' tồn tại (Cấu trúc XML/ZIP hợp lệ)</p>
+                <p><strong style="color: var(--accent-orange)">[XÁC MINH ĐỘC LẬP]</strong>: EIR-S = 100.00% | ECR = 100.00% | GCR = 100.00% (Zero Self-Reported Bias)</p>
             </div>
         </div>
 
         <!-- Card 7: Benchmark B1-B5 Scorecard -->
         <div class="card col-12">
             <div class="card-header">
-                <h2>🏆 Bảng Thống Kê Thử Nghiệm Thực Nghiệm Benchmarks B1–B5 & Kiểm Toán Gate F</h2>
+                <h2 id="scorecard-header">🏆 Bảng Thống Kê Benchmarks B1–B5 & Kiểm Toán Gate F</h2>
             </div>
             <table>
                 <thead>
                     <tr>
-                        <th>Bài Thử Nghiệm</th>
-                        <th>Miền Đánh Giá</th>
-                        <th>Chỉ Số Đo Lường</th>
-                        <th>Kết Quả</th>
-                        <th>Trạng Thái</th>
+                        <th id="th-bmark">Bài Thử Nghiệm</th>
+                        <th id="th-target">Miền Đánh Giá</th>
+                        <th id="th-metric">Chỉ Số Đo Lường</th>
+                        <th id="th-result">Kết Quả</th>
+                        <th id="th-status">Trạng Thái</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>B1</td>
-                        <td>Giải Quyết Mục Tiêu Mới (Open Goal)</td>
+                        <td id="b1-desc">Giải Quyết Mục Tiêu Mới (Novel Open Goal)</td>
                         <td>OGR (Open Goal Res) + NAR (Novel Autonomy)</td>
                         <td>100.0%</td>
-                        <td><span class="badge-pass">ĐẠT THẨM ĐỊNH</span></td>
+                        <td><span class="badge-pass">PASSED / ĐẠT</span></td>
                     </tr>
                     <tr>
                         <td>B2</td>
-                        <td>Khôi Phục Khi Thiếu Công Cụ</td>
+                        <td id="b2-desc">Khôi Phục Khi Thiếu Công Cụ (Capability Failure)</td>
                         <td>UCR-5 (Controlled Failure on Missing Tools)</td>
                         <td>100.0%</td>
-                        <td><span class="badge-pass">ĐẠT THẨM ĐỊNH</span></td>
+                        <td><span class="badge-pass">PASSED / ĐẠT</span></td>
                     </tr>
                     <tr>
                         <td>B3</td>
-                        <td>Môi Trường Thay Đổi Đột Ngột</td>
+                        <td id="b3-desc">Môi Trường Thay Đổi Đột Ngột (Mid-Mission Change)</td>
                         <td>ASR + DRS (Dynamic Replan) + GCR (Goal Conservation)</td>
                         <td>100.0%</td>
-                        <td><span class="badge-pass">ĐẠT THẨM ĐỊNH</span></td>
+                        <td><span class="badge-pass">PASSED / ĐẠT</span></td>
                     </tr>
                     <tr>
                         <td>B4</td>
-                        <td>Thẩm Định Tiêu Chi Nghiêm Ngặt</td>
+                        <td id="b4-desc">Thẩm Định Tiêu Chí Nghiêm Ngặt (Strict Criteria)</td>
                         <td>ACR (Auto Completion) + GCR (100% Goal Intact)</td>
                         <td>100.0%</td>
-                        <td><span class="badge-pass">ĐẠT THẨM ĐỊNH</span></td>
+                        <td><span class="badge-pass">PASSED / ĐẠT</span></td>
                     </tr>
                     <tr>
                         <td>B5</td>
-                        <td>Tự Chủ Chuỗi Nhiệm Vụ Dài Hạn</td>
+                        <td id="b5-desc">Tự Chủ Chuỗi Nhiệm Vụ Dài Hạn (Long Horizon)</td>
                         <td>HSR (Supervision Reduction) + P3 Concurrency</td>
                         <td>100.0%</td>
-                        <td><span class="badge-pass">ĐẠT THẨM ĐỊNH</span></td>
+                        <td><span class="badge-pass">PASSED / ĐẠT</span></td>
                     </tr>
                     <tr>
                         <td>Gate F Audit</td>
-                        <td>Kiểm Toán Ngâm Tải Phần Cứng Thực Tế</td>
+                        <td id="gf-desc">Kiểm Toán Ngâm Tải Phần Cứng Thực Tế (Real Hardware Soak)</td>
                         <td>1,000 Missions / 0 Lỗi Vi Phạm Hiến Pháp / EIR-S 100%</td>
-                        <td>99.5% Thành Công</td>
-                        <td><span class="badge-pass">ĐẠT THẨM ĐỊNH</span></td>
+                        <td>99.5% Success</td>
+                        <td><span class="badge-pass">PASSED / ĐẠT</span></td>
                     </tr>
                 </tbody>
             </table>
@@ -362,5 +382,155 @@
 
     </div>
 
+    <!-- Client-Side Interactive Language Switcher Script -->
+    <script>
+        const i18n = {
+            vi: {
+                subtitle: "PRODUCTION-PROVEN ADAPTIVE COGNITIVE AI OS PLATFORM — BẢNG ĐIỀU KHIỂN & ĐÀI QUAN SÁT BẰNG CHỨNG ĐỘC LẬP",
+                status: "CHẾ ĐỘ THƯỜNG TRỰC VẬN HÀNH SẢN XUẤT",
+                l1Title: "🎯 Tầng 1: Kết Quả Nhiệm Vụ",
+                m1Title: "M1 Thành Công",
+                m5Title: "M5 Bảo Toàn Mục Tiêu",
+                m9Title: "M9 Thẩm Định Vật Lý",
+                failTitle: "Thất Bại An Toàn",
+                l2Title: "🛡️ Tầng 2: Tự Chủ & Khôi Phục",
+                m3Title: "M3 Tự Khôi Phục",
+                m4Title: "M4 Replan Tự Động",
+                m2Title: "Can Thiệp Thừa",
+                policyTitle: "Ủy Quyền An Toàn",
+                l3Title: "🔍 Tầng 3: Bằng Chứng Độc Lập",
+                eirsTitle: "EIR-S Bằng Chứng Outcome",
+                ecrTitle: "ECR Độ Phủ Bằng Chứng",
+                chainTitle: "Chuỗi Danh Tính",
+                violTitle: "Lỗi Vi Phạm Hiến Pháp",
+                l4Title: "⚡ Tầng 4: Chỉ Số Vận Hành SLO",
+                p95Title: "Độ Trễ p95",
+                p99Title: "Độ Trễ p99",
+                identityHeader: "🛡️ Chuỗi Danh Tính Zero-Trust 8 Mắt Xích Bất Biến",
+                complianceText: "100% Tuân Thủ Hiến Pháp",
+                stepReq: "Yêu Cầu", stepMis: "Nhiệm Vụ", stepPln: "Lộ Trình", stepTsk: "Tác Vụ",
+                stepAtt: "Thử Nghiệm", stepExe: "Thi Hành", stepObs: "Quan Sát", stepVer: "Thẩm Định",
+                inspectorHeader: "🔍 Đài Quan Sát Nhiệm Vụ Real-Time (Traceback Closed-Loop)",
+                scorecardHeader: "🏆 Bảng Thống Kê Benchmarks B1–B5 & Kiểm Toán Gate F",
+                thBmark: "Bài Thử Nghiệm", thTarget: "Miền Đánh Giá", thMetric: "Chỉ Số Đo Lường", thResult: "Kết Quả", thStatus: "Trạng Thái",
+                b1Desc: "Giải Quyết Mục Tiêu Mới (Novel Open Goal)",
+                b2Desc: "Khôi Phục Khi Thiếu Công Cụ (Capability Failure)",
+                b3Desc: "Môi Trường Thay Đổi Đột Ngột (Mid-Mission Change)",
+                b4Desc: "Thẩm Định Tiêu Chí Nghiêm Ngặt (Strict Criteria)",
+                b5Desc: "Tự Chủ Chuỗi Nhiệm Vụ Dài Hạn (Long Horizon)",
+                gfDesc: "Kiểm Toán Ngâm Tải Phần Cứng Thực Tế (Real Hardware Soak)",
+                inspectorText: `
+                    <p><strong style="color: var(--accent-cyan)">[MỤC TIÊU]</strong>: Xử Lý Sự Cố An Ninh Mạng Zero-Trust trên https://sec.internal</p>
+                    <p><strong style="color: var(--accent-purple)">[CHIẾN LƯỢC]</strong>: Plan A ➔ Quan Sát (Khóa CSDL PostgreSQL) ➔ ASR ➔ Replan B (Failover Read Replica)</p>
+                    <p><strong style="color: var(--accent-green)">[BẰNG CHỨNG VẬT LÝ]</strong>: Physical Verifier xác nhận tệp 'exports/mis_zt_001_zero_trust_incident.xlsx' tồn tại (Cấu trúc XML/ZIP hợp lệ)</p>
+                    <p><strong style="color: var(--accent-orange)">[XÁC MINH ĐỘC LẬP]</strong>: EIR-S = 100.00% | ECR = 100.00% | GCR = 100.00% (Zero Self-Reported Bias)</p>
+                `
+            },
+            en: {
+                subtitle: "PRODUCTION-PROVEN ADAPTIVE COGNITIVE AI OS PLATFORM — MISSION CONTROL & EVIDENCE OBSERVATORY",
+                status: "STANDING PRODUCTION OPERATION MODE",
+                l1Title: "🎯 Layer 1: Mission Outcome",
+                m1Title: "M1 Success Rate",
+                m5Title: "M5 Goal Conservation",
+                m9Title: "M9 Physical Verifier",
+                failTitle: "Graceful Failures",
+                l2Title: "🛡️ Layer 2: Autonomy & Resilience",
+                m3Title: "M3 Resilient Recovery",
+                m4Title: "M4 Dynamic Replan",
+                m2Title: "Unnecessary Human",
+                policyTitle: "Safety Policy Gate",
+                l3Title: "🔍 Layer 3: Evidence Integrity",
+                eirsTitle: "EIR-S Outcome Evidence",
+                ecrTitle: "ECR Evidence Coverage",
+                chainTitle: "Identity Chain",
+                violTitle: "Zero-Tolerance Violations",
+                l4Title: "⚡ Layer 4: Operational SLOs",
+                p95Title: "Latency p95",
+                p99Title: "Latency p99",
+                identityHeader: "🛡️ Zero-Trust Identity Chain Traceability",
+                complianceText: "100% Invariant Compliance",
+                stepReq: "Request", stepMis: "Mission", stepPln: "Plan", stepTsk: "Task",
+                stepAtt: "Attempt", stepExe: "Execute", stepObs: "Observe", stepVer: "Verify",
+                inspectorHeader: "🔍 Real-World Mission Detail Inspector (Closed-Loop Trace)",
+                scorecardHeader: "🏆 Empirical Benchmarks B1–B5 & Gate F Audit Summary",
+                thBmark: "Benchmark", thTarget: "Evaluation Target", thMetric: "Metric Measured", thResult: "Result", thStatus: "Status",
+                b1Desc: "Novel Open Goal Resolution",
+                b2Desc: "Capability Failure Recovery",
+                b3Desc: "Mid-Mission World Change Replan",
+                b4Desc: "Strict Criteria Verification",
+                b5Desc: "Human-Free Long Horizon Autonomy",
+                gfDesc: "Real Hardware Soak Audit (1,000 Missions)",
+                inspectorText: `
+                    <p><strong style="color: var(--accent-cyan)">[MISSION GOAL]</strong>: Zero-Trust Security Incident Response on https://sec.internal</p>
+                    <p><strong style="color: var(--accent-purple)">[STRATEGY DAG v3]</strong>: Plan A ➔ Observation (PostgreSQL Lock) ➔ ASR ➔ Replan B (Read Replica Failover)</p>
+                    <p><strong style="color: var(--accent-green)">[PHYSICAL STATE]</strong>: Physical Verifier confirmed file 'exports/mis_zt_001_zero_trust_incident.xlsx' (XML/ZIP Validated)</p>
+                    <p><strong style="color: var(--accent-orange)">[INDEPENDENT VERIFICATION]</strong>: EIR-S = 100.00% | ECR = 100.00% | GCR = 100.00% (Zero Self-Reported Bias)</p>
+                `
+            }
+        };
+
+        function setLang(lang) {
+            localStorage.setItem('jkai_dashboard_lang', lang);
+            document.getElementById('btn-vi').classList.toggle('active', lang === 'vi');
+            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
+            
+            const t = i18n[lang];
+            document.getElementById('sub-title').textContent = t.subtitle;
+            document.getElementById('status-text').textContent = t.status;
+            document.getElementById('l1-title').textContent = t.l1Title;
+            document.getElementById('m1-title').textContent = t.m1Title;
+            document.getElementById('m5-title').textContent = t.m5Title;
+            document.getElementById('m9-title').textContent = t.m9Title;
+            document.getElementById('fail-title').textContent = t.failTitle;
+            
+            document.getElementById('l2-title').textContent = t.l2Title;
+            document.getElementById('m3-title').textContent = t.m3Title;
+            document.getElementById('m4-title').textContent = t.m4Title;
+            document.getElementById('m2-title').textContent = t.m2Title;
+            document.getElementById('policy-title').textContent = t.policyTitle;
+            
+            document.getElementById('l3-title').textContent = t.l3Title;
+            document.getElementById('eirs-title').textContent = t.eirsTitle;
+            document.getElementById('ecr-title').textContent = t.ecrTitle;
+            document.getElementById('chain-title').textContent = t.chainTitle;
+            document.getElementById('viol-title').textContent = t.violTitle;
+            
+            document.getElementById('l4-title').textContent = t.l4Title;
+            document.getElementById('p95-title').textContent = t.p95Title;
+            document.getElementById('p99-title').textContent = t.p99Title;
+            
+            document.getElementById('identity-header').textContent = t.identityHeader;
+            document.getElementById('compliance-text').textContent = t.complianceText;
+            document.getElementById('step-req').textContent = t.stepReq;
+            document.getElementById('step-mis').textContent = t.stepMis;
+            document.getElementById('step-pln').textContent = t.stepPln;
+            document.getElementById('step-tsk').textContent = t.stepTsk;
+            document.getElementById('step-att').textContent = t.stepAtt;
+            document.getElementById('step-exe').textContent = t.stepExe;
+            document.getElementById('step-obs').textContent = t.stepObs;
+            document.getElementById('step-ver').textContent = t.stepVer;
+            
+            document.getElementById('inspector-header').textContent = t.inspectorHeader;
+            document.getElementById('inspector-content').innerHTML = t.inspectorText;
+            
+            document.getElementById('scorecard-header').textContent = t.scorecardHeader;
+            document.getElementById('th-bmark').textContent = t.thBmark;
+            document.getElementById('th-target').textContent = t.thTarget;
+            document.getElementById('th-metric').textContent = t.thMetric;
+            document.getElementById('th-result').textContent = t.thResult;
+            document.getElementById('th-status').textContent = t.thStatus;
+            
+            document.getElementById('b1-desc').textContent = t.b1Desc;
+            document.getElementById('b2-desc').textContent = t.b2Desc;
+            document.getElementById('b3-desc').textContent = t.b3Desc;
+            document.getElementById('b4-desc').textContent = t.b4Desc;
+            document.getElementById('b5-desc').textContent = t.b5Desc;
+            document.getElementById('gf-desc').textContent = t.gfDesc;
+        }
+
+        // Initialize language from localStorage or default to 'vi'
+        const savedLang = localStorage.getItem('jkai_dashboard_lang') || 'vi';
+        setLang(savedLang);
+    </script>
 </body>
 </html>
