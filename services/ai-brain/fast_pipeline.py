@@ -103,7 +103,7 @@ class FastPipeline:
         if math_res:
             engine.publish_mission_log(
                 "SYSTEM",
-                f"⚡ [MATH-REFLEX]: Tính toán phản xạ thần tốc dưới 1ms thưa Master.",
+                f"[MATH-REFLEX] Đã giải quyết bằng phép tính phản xạ.",
                 task_id, trace_id, stealth=True
             )
             return {"answer": math_res, "task_id": task_id, "pipeline": "fast", "cached": True}
@@ -114,7 +114,7 @@ class FastPipeline:
             if cached_res and cached_res.get("cache_hit") is True:
                 engine.publish_mission_log(
                     "SYSTEM",
-                    f"⚡ [SEMANTIC-CACHE HIT]: Phục hồi phản hồi siêu tốc dưới 50ms thưa Master.",
+                    f"[SEMANTIC-CACHE HIT] Phục hồi phản hồi từ bộ nhớ đệm ngữ nghĩa.",
                     task_id, trace_id, stealth=True
                 )
                 ans = cached_res.get("response", {})
@@ -124,17 +124,17 @@ class FastPipeline:
                     return ans
                 return {"answer": str(ans), "task_id": task_id, "pipeline": "fast", "cached": True}
         except Exception as e_cache:
-            logger.warning(f"[FAST-PIPELINE] Semantic cache get skipped: {e_cache}")
+            logger.warning("[FAST-PIPELINE] Semantic cache get skipped: %s", e_cache)
 
         # [ENGINE SWITCH]: Cầu nối điều phối nạp tĩnh mô hình cho luồng FAST
         try:
             await mode_switcher.switch_to("FAST", engine, task_id)
         except Exception as e_ms:
-            logger.warning(f"[FAST-PIPELINE] Mode switcher err: {e_ms}")
+            logger.warning("[FAST-PIPELINE] Mode switcher err: %s", e_ms)
 
         engine.publish_mission_log(
             "SYSTEM",
-            f"⚡ [FAST-PIPELINE]: Khởi động RECEPTIONIST ReAct ({max_turns} turns).",
+            f"[FAST-PIPELINE] Khởi động RECEPTIONIST ReAct ({max_turns} turns).",
             task_id, trace_id, stealth=True
         )
 
@@ -161,7 +161,7 @@ class FastPipeline:
             mc.runtime["trace_id"] = trace_id
             ctx_mgr.save(mc)
         except Exception as ctx_err:
-            logger.warning(f"[FAST-PIPELINE] Context init failed, continuing: {ctx_err}")
+            logger.warning("[FAST-PIPELINE] Context init failed, continuing: %s", ctx_err)
             mc = ctx_mgr.get_or_create(task_id, goal=goal)
 
         client = await self._get_http_client()
@@ -204,7 +204,7 @@ class FastPipeline:
             _pool_content = mc.pool_best_content(goal)
             if _pool_content:
                 _pool_hit = True
-                engine.publish_mission_log("BRAIN", f"📦 [POOL-HIT]: Dùng data pool {len(_pool_content)} chars cho '{goal[:60]}'", task_id, trace_id, stealth=True)
+                engine.publish_mission_log("BRAIN", f"[POOL-HIT] Dùng data pool {len(_pool_content)} chars cho '{goal[:60]}'", task_id, trace_id, stealth=True)
         except Exception:
             pass
 
@@ -234,7 +234,7 @@ class FastPipeline:
                     goal=goal, manifesto="", skills_dna="",
                     kb_context="", kb_sufficient=False
                 )
-                engine.publish_mission_log("BRAIN", "🔒 [INTERNAL-DATA GATE]: Query nội bộ → skip KB search, force tool call.", task_id, trace_id, stealth=True)
+                engine.publish_mission_log("BRAIN", "[INTERNAL-DATA GATE] Query nội bộ → bỏ qua KB search, buộc gọi tool.", task_id, trace_id, stealth=True)
             elif diff_res.level in (DifficultyLevel.L0_REFLEX, DifficultyLevel.L1_SIMPLE) or matched_skill_id == "GREETING":
                 # L0/L1 fast-path: Skip KB search to avoid 3500+ char prompt bloat
                 kb_ctx = ""
@@ -243,7 +243,7 @@ class FastPipeline:
                     goal=goal, manifesto="", skills_dna="",
                     kb_context="", kb_sufficient=True
                 )
-                engine.publish_mission_log("BRAIN", "⚡ [L0/L1 ZERO-RAG BYPASS]: Yêu cầu L0/L1 -> Bỏ qua RAG, phản xạ tức thì với LEAN prompt.", task_id, trace_id, stealth=True)
+                engine.publish_mission_log("BRAIN", "[L0/L1 ZERO-RAG BYPASS] Yêu cầu L0/L1 → bỏ qua RAG, phản xạ trực tiếp.", task_id, trace_id, stealth=True)
             elif any(kw in goal.lower() for kw in ["tôi hỏi", "trình độ", "bạn là ai", "tính nhanh", "tại sao", "vì sao", "như thế nào", "kiến trúc", "cấu hình", "siêu mượt", "giải mã", "active 3b", "qwen", "xeon", "rx 6600"]):
                 # Tác vụ nhận thức OS, hội thoại hoặc phân tích kỹ thuật thưa Master → skip RAG để đạt hiệu suất Supersonic
                 kb_ctx = ""
@@ -252,7 +252,7 @@ class FastPipeline:
                     goal=goal, manifesto="", skills_dna="",
                     kb_context="", kb_sufficient=True
                 )
-                engine.publish_mission_log("BRAIN", "⚡ [ZERO-RAG BYPASS]: Truy vấn suy luận/nhận thức nội tại -> Bỏ qua RAG, suy luận trực tiếp từ VRAM/RAM 30B MoE.", task_id, trace_id, stealth=True)
+                engine.publish_mission_log("BRAIN", "[ZERO-RAG BYPASS] Truy vấn suy luận/nhận thức nội tại → bỏ qua RAG, suy luận trực tiếp.", task_id, trace_id, stealth=True)
             else:
                 kb_intel = await knowledge_orchestrator.smart_retrieve(goal, task_id, top_k=1, expansion_radius=150)
                 kb_ctx = (kb_intel or {}).get("context", "").strip()
@@ -268,7 +268,7 @@ class FastPipeline:
                     if resolver.is_anaphora(goal) and not mc.conversation.get("last_subject"):
                         _kb_sufficient = False
                         engine.publish_mission_log(
-                            "BRAIN", "⚠️ [CONTEXT-WARN]: Phát hiện đại từ chưa giải nghĩa. Khóa cứng KB Sufficient=False để tránh nhiễu.",
+                            "BRAIN", "[CONTEXT-WARN] Phát hiện đại từ chưa giải nghĩa. Khóa cứng KB Sufficient=False để tránh nhiễu.",
                             task_id, trace_id, stealth=True
                         )
                 except Exception as resolver_err:
@@ -280,7 +280,7 @@ class FastPipeline:
                 )
                 
                 if kb_ctx:
-                    engine.publish_mission_log("BRAIN", f"📚 [FAST-KB]: Đã cấu trúc XML cho {len(high_q)} KB chunks. Sufficient={_kb_sufficient}", task_id, trace_id, stealth=True)
+                    engine.publish_mission_log("BRAIN", f"[FAST-KB] Đã cấu trúc XML cho {len(high_q)} KB chunks. Sufficient={_kb_sufficient}", task_id, trace_id, stealth=True)
                 mc.pool_push("kb", goal, kb_ctx)
         except Exception as _kb_err:
             logger.debug("[FAST-KB] smart_retrieve skip: %s", _kb_err)
@@ -304,19 +304,19 @@ class FastPipeline:
             if _kb_sufficient:
                 is_realtime_need = False
                 engine.publish_mission_log(
-                    "BRAIN", "🔒 [FAST KB-GATE]: KB đủ, bỏ qua realtime web search.",
+                    "BRAIN", "[FAST KB-GATE] KB đủ, bỏ qua tìm kiếm web thời gian thực.",
                     task_id, trace_id, stealth=True
                 )
             elif not is_realtime_need:
                 engine.publish_mission_log(
-                    "BRAIN", "⚡ [FAST REFLEX-GATE]: Tác vụ hội thoại / suy luận nội tại -> Kích hoạt nơ-ron phản xạ trực tiếp.",
+                    "BRAIN", "[FAST REFLEX-GATE] Tác vụ hội thoại / suy luận nội tại → phản xạ trực tiếp.",
                     task_id, trace_id, stealth=True
                 )
 
         force_synthesis = False
         if is_realtime_need and "<ZENITH_SKILL_ACTIVATED>" not in goal:
             engine.publish_mission_log(
-                "ZENITH", "Pre-routing/Intent-Forcing: Real-time query detected. Executing search directly.",
+                "ZENITH", "Phát hiện truy vấn thời gian thực. Đang thực thi tìm kiếm trực tiếp.",
                 task_id, trace_id=trace_id
             )
             tool_calls = [{
@@ -331,7 +331,7 @@ class FastPipeline:
             comp_threshold = 1500
             if obs and len(obs) > comp_threshold:
                 engine.publish_mission_log(
-                    "ZENITH", f"DEEP-DISTILLING: Large search data ({len(obs)} chars). Distilling...",
+                    "ZENITH", f"Đang chưng cất dữ liệu tìm kiếm lớn ({len(obs)} chars)...",
                     task_id, trace_id=trace_id
                 )
                 distilled_obs = await self._distill_knowledge(step_goal, obs, task_id)
@@ -371,7 +371,7 @@ class FastPipeline:
             for turn in range(max_turns):
                 r_stop = engine._get_redis()
                 if r_stop and (r_stop.get("agent:stop_signal") in [b'true', 'true'] or r_stop.get(f"agent:stop_signal:{task_id}") in [b'true', 'true']):
-                    engine.publish_mission_log("STOP", "🛑 [STOP]: Nhận lệnh Dừng khẩn cấp từ Master. Ngắt chuỗi hành pháp.", task_id, trace_id)
+                    engine.publish_mission_log("STOP", "[STOP] Nhận lệnh dừng khẩn cấp từ Master. Đang ngắt quy trình.", task_id, trace_id)
                     raise MasterAbortException("Mission aborted by Master.")
 
                 # Chi compact khi context thuc su lon (>4000 chars), khong goi LLM moi turn
@@ -379,7 +379,8 @@ class FastPipeline:
                 if len(context_str) > 4000:
                     context = await compaction_engine.condense(context, task_id)
 
-                tools = [] if force_synthesis else await self._get_tool_spec(goal=goal, intent=manifest.intent if manifest else "", skill=matched_skill_id)
+                manifest_intent = getattr(manifest, "intent", getattr(manifest, "os_intent", "")) if manifest else ""
+                tools = [] if force_synthesis else await self._get_tool_spec(goal=goal, intent=manifest_intent, skill=matched_skill_id)
                 if diff_res.level in (DifficultyLevel.L0_REFLEX, DifficultyLevel.L1_SIMPLE) or matched_skill_id == "GREETING":
                     from prompt_engine.master_prompt_architect import master_prompt_architect
                     system_content = master_prompt_architect._build_lean_prompt("RECEPTIONIST", "CHAT")
@@ -399,18 +400,18 @@ class FastPipeline:
                     break
 
                 res_content = response.get("answer", "") if isinstance(response, dict) else response
-                logger.info(f"⚡ [FAST RECEPTIONIST OUTPUT]: len={len(str(res_content))} | preview={repr(str(res_content)[:150])}")
+                logger.info("[FAST RECEPTIONIST OUTPUT] len=%d preview=%r", len(str(res_content)), repr(str(res_content)[:150]))
 
                 # 🛡️ [SELF-REFLECTION-GUARD]: Phát hiện placeholder — chỉ log, không gọi LLM fix (tránh cascade)
                 try:
                     audit = self_reflection_guard.audit_response(str(res_content))
                     if not audit["is_clean"]:
                         engine.publish_mission_log(
-                            "SYSTEM", f"🛡️ [REFLECTION]: Phát hiện placeholder - {audit['reason']}",
+                            "SYSTEM", f"[REFLECTION] Phát hiện placeholder - {audit['reason']}",
                             task_id, trace_id, stealth=True
                         )
                 except Exception as ref_e:
-                    logger.debug(f"[SELF-REFLECTION]: Skip - {ref_e}")
+                    logger.debug("[SELF-REFLECTION] Skip - %s", ref_e)
 
                 # [NATIVE PARITY]: Trích xuất tool_calls từ cả dict object của Ollama lẫn chuỗi text
                 tool_calls = []
@@ -423,7 +424,7 @@ class FastPipeline:
                         tool_calls.append(tc)
 
                 if tool_calls and not force_synthesis:
-                    logger.info(f"🛠️ [FAST REACT TOOL EXECUTING]: {len(tool_calls)} tool(s) | {tool_calls}")
+                    logger.info("[FAST REACT TOOL EXECUTING] %d tool(s) | %s", len(tool_calls), tool_calls)
                     with TraceContext("react_search_step", trace_id=trace_id):
                         obs = await self._run_skills(tool_calls, task_id, gateway, trace_id)
                     
@@ -445,11 +446,11 @@ class FastPipeline:
                     if critical_info_missing:
                         engine.publish_mission_log(
                             "ERROR",
-                            f"🚨 [FAST FAIL-FAST]: {missing_info_reason} Dừng quy trình để tránh chạy sai lệch.",
+                            f"[FAST FAIL-FAST] {missing_info_reason} Dừng quy trình để tránh chạy sai lệch.",
                             task_id, trace_id
                         )
                         return {
-                            "answer": f"🔍 [YÊU CẦU XÁC MINH TRI THỨC - FAST]: Quy trình thực thi nhanh (Fast Mode) bị dừng do thiếu thông tin/tài liệu nguồn quan trọng: {missing_info_reason} Vui lòng cung cấp tài liệu chính xác hoặc hiệu chỉnh câu hỏi.",
+                            "answer": f"Quy trình thực thi nhanh bị dừng do thiếu thông tin/tài liệu nguồn quan trọng: {missing_info_reason} Vui lòng cung cấp tài liệu chính xác hoặc hiệu chỉnh câu hỏi.",
                             "task_id": task_id,
                             "pipeline": "fast"
                         }
@@ -470,14 +471,14 @@ class FastPipeline:
                     break
 
         if not res_content:
-            logger.warning(f"⚠️ [FAST FALLBACK]: res_content bị trống rỗng! Đang dùng fallback mặc định cho task {task_id}.")
+            logger.warning("[FAST FALLBACK] res_content bị trống rỗng! Đang dùng fallback mặc định cho task %s.", task_id)
             res_content = f"Báo cáo Master! Hệ thống đã xử lý hoàn tất yêu cầu: **{goal}**. (Chuỗi văn bản suy luận từ mô hình trả về trống, các tác vụ công cụ ngầm đã thi hành trọn vẹn)."
 
         now = datetime.datetime.utcnow() + datetime.timedelta(hours=7)
         signature = f"\n\n---\nPhản hồi lúc {now.hour:02d}h{now.minute:02d}m ngày {now.day:02d}/{now.month:02d}/{now.year}"
 
         engine.publish_mission_log(
-            "SYSTEM", f"✅ [FAST-PIPELINE]: Hoàn tất ReAct loop cho task {task_id}",
+            "SYSTEM", f"[FAST-PIPELINE] Hoàn tất ReAct loop cho task {task_id}",
             task_id, trace_id, stealth=True
         )
 
@@ -581,6 +582,15 @@ class FastPipeline:
             "tao_excel": "OFFICE_SUITE_MASTER", "tao_file_excel": "OFFICE_SUITE_MASTER",
             "create_excel_chart": "OFFICE_SUITE_MASTER", "excel_chart": "OFFICE_SUITE_MASTER",
             "quanlyvanphong": "skill_quanlyvanphong", "xuat_bao_cao": "skill_quanlyvanphong",
+            "write_word": "OFFICE_SUITE_MASTER", "create_word": "OFFICE_SUITE_MASTER", "tao_word": "OFFICE_SUITE_MASTER",
+            "create_docx": "OFFICE_SUITE_MASTER", "viet_word": "OFFICE_SUITE_MASTER", "tao_docx": "OFFICE_SUITE_MASTER",
+            "write_pdf": "OFFICE_SUITE_MASTER", "create_pdf": "OFFICE_SUITE_MASTER", "tao_pdf": "OFFICE_SUITE_MASTER",
+            "xuat_pdf": "OFFICE_SUITE_MASTER", "tao_file_pdf": "OFFICE_SUITE_MASTER",
+            "add_chart": "OFFICE_SUITE_MASTER", "create_chart": "OFFICE_SUITE_MASTER", "ve_bieu_do": "OFFICE_SUITE_MASTER",
+            "edit_word": "OFFICE_SUITE_MASTER", "edit_excel": "OFFICE_SUITE_MASTER", "sua_word": "OFFICE_SUITE_MASTER",
+            "sua_excel": "OFFICE_SUITE_MASTER", "read_document": "OFFICE_SUITE_MASTER", "doc_tai_lieu": "OFFICE_SUITE_MASTER",
+            "create_document": "OFFICE_SUITE_MASTER", "plan_dossier": "OFFICE_SUITE_MASTER", "tao_ho_so": "OFFICE_SUITE_MASTER",
+            "soan_ho_so": "OFFICE_SUITE_MASTER", "tao_van_ban": "OFFICE_SUITE_MASTER", "tao_bang_tinh": "OFFICE_SUITE_MASTER",
         }
         async def run_one(tc):
             try:
@@ -590,7 +600,7 @@ class FastPipeline:
                 # Ánh xạ alias nếu tool_name không phải skill thật
                 normalized = tool_name.lower().replace("-", "_").replace(" ", "_")
                 if normalized in _skill_aliases:
-                    engine.publish_mission_log("ZENITH", f"🔄 [SKILL-ALIAS]: '{tool_name}' → '{_skill_aliases[normalized]}'", task_id, trace_id=trace_id)
+                    engine.publish_mission_log("ZENITH", f"[SKILL-ALIAS] '{tool_name}' → '{_skill_aliases[normalized]}'", task_id, trace_id=trace_id)
                     tool_name = _skill_aliases[normalized]
                 try:
                     args = json.loads(raw_args) if isinstance(raw_args, str) else raw_args
@@ -612,10 +622,10 @@ class FastPipeline:
                     if requires_approval:
                         create_approval_interrupt(task_id, skill_id, args, risk_reason)
                         engine.publish_mission_log(
-                            "WARN", f"🛑 [HUMAN-APPROVAL INTERCEPTED]: {skill_id} bị đánh chặn — {risk_reason}",
+                            "WARN", f"[HUMAN-APPROVAL INTERCEPTED] {skill_id} bị đánh chặn — {risk_reason}",
                             task_id, trace_id=trace_id
                         )
-                        return f"⚠️ [APPROVAL-REQUIRED]: Thao tác {skill_id} bị đánh chặn bởi Human Approval Gate vì rủi ro: {risk_reason}. Cần Master phê duyệt."
+                        return f"[APPROVAL-REQUIRED] Thao tác {skill_id} bị đánh chặn bởi Human Approval Gate vì rủi ro: {risk_reason}. Cần Master phê duyệt."
                 except Exception as gate_err:
                     logger.debug("Human approval gate check error: %s", gate_err)
 
@@ -651,9 +661,13 @@ class FastPipeline:
                     "SYSTEM", f"Đã nhận dữ liệu từ `{skill_id}` ({len(output_str)} ký tự)",
                     task_id, trace_id=trace_id
                 )
+                # [NEED-INFO-PROTOCOL]: Kỹ năng báo thiếu thông tin -> chuyển thành câu hỏi cho Master
+                if isinstance(res, dict) and res.get("status") == "need_info":
+                    question = res.get("question") or "Thiếu thông tin để hoàn tất."
+                    return f"[CẦN-BỔ-SUNG-THÔNG-TIN] {question} — Hãy hỏi lại Master những mục này, KHÔNG tự bịa nội dung."
                 return res
             except Exception as e:
-                logger.error(f"Execution Error: {e}")
+                logger.error("[FAST-PIPELINE] Execution Error: %s", e)
                 return f"Error executing tool: {e}"
 
         results = await asyncio.gather(*[run_one(tc) for tc in tool_calls])
@@ -700,7 +714,7 @@ class FastPipeline:
             "- SEARCH_WEB_GLOBAL: Tìm kiếm thông tin trực tuyến thời gian thực.",
             "- duyet_browse_zenith: Duyệt chi tiết một liên kết/URL.",
             "- search_memory: Tra cứu dữ liệu nội bộ (jkai_external). Chỉ tìm trong JKAI, không gọi web.",
-            "- OFFICE_SUITE_MASTER: Tạo và chỉnh sửa file Excel, Word, PowerPoint thực tế (dùng openpyxl).",
+            "- OFFICE_SUITE_MASTER: Tạo và chỉnh sửa file Word (docx), Excel (xlsx kèm biểu đồ), PDF thực tế bằng Python. Gọi với action + nội dung chi tiết. Nếu thiếu thông tin cần thiết (tiêu đề, nội dung, dữ liệu), skill sẽ hỏi lại thay vì bịa.",
             "- skill_quanlyvanphong: Xuất báo cáo Excel, quản lý văn phòng.",
         ]
         if goal and "<ZENITH_SKILL_ACTIVATED>" in goal:

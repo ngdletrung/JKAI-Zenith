@@ -34,8 +34,25 @@ def set_active_contract(task_id: str, contract: Any) -> None:
 
 
 def get_active_contract(task_id: str) -> Optional[Any]:
-    """Retrieve the active TaskContract for the given task_id. Returns None if not set."""
+    """Retrieve the active TaskContract for the given task_id. Auto-initializes default authority if missing."""
     with _lock:
+        contract = _contract_store.get(task_id)
+        if not contract:
+            try:
+                from prompt_engine.task_contract import TaskContract, DecisionAuthority
+                contract = TaskContract(
+                    objective="Default Runtime Execution",
+                    decision_authority=DecisionAuthority(
+                        can_modify_files=True,
+                        can_delete_files=False,
+                        can_send_external_message=True,
+                        can_execute_shell=True
+                    )
+                )
+                _contract_store[task_id] = contract
+                logger.info(f"[CONTRACT-STORE] Auto-created default TaskContract for task_id={task_id}")
+            except Exception as e:
+                logger.warning(f"[CONTRACT-STORE] Auto-init default contract failed: {e}")
         return _contract_store.get(task_id)
 
 
