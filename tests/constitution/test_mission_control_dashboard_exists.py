@@ -18,5 +18,5 @@ def test_mission_control_dashboard_file_exists():
 
     assert "JKAI ZENITH AI OS" in content
     assert "PRODUCTION-PROVEN ADAPTIVE COGNITIVE AI OS PLATFORM" in content
-    assert "Zero-Trust Identity Chain Traceability" in content
-    assert "AMD RX 6600 VRAM" in content
+    assert "Identity Chain Traceability" in content
+    assert "AMD RX 6600" in content

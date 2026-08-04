@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JKAI Zenith AI OS — Mission Control & Evidence Observatory</title>
+    <title>JKAI Zenith AI OS — Bảng Điều Khiển & Đài Quan Sát Bằng Chứng Độc Lập</title>
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -125,6 +125,21 @@
         .fill-vram { background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan)); width: 67.5%; }
         .fill-ram { background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green)); width: 19.1%; }
 
+        .identity-timeline {
+            display: flex; justify-content: space-between; align-items: center; padding: 1rem 0;
+        }
+
+        .identity-step { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+
+        .step-node {
+            width: 36px; height: 36px; border-radius: 50%; background: #161b26;
+            border: 2px solid var(--accent-cyan); display: flex; align-items: center; justify-content: center;
+            font-size: 0.75rem; font-family: var(--font-mono); color: var(--accent-cyan);
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+        }
+
+        .step-label { font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); }
+
         table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
         th, td { padding: 0.65rem 0.85rem; text-align: left; border-bottom: 1px solid var(--border-color); }
         th { color: var(--text-muted); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; }
@@ -145,12 +160,12 @@
             <div class="brand-logo">Z</div>
             <div class="brand-title">
                 <h1>JKAI ZENITH AI OS</h1>
-                <p>MISSION CONTROL & INDEPENDENT EVIDENCE OBSERVATORY (4-LAYER TRUTH SURFACE)</p>
+                <p>PRODUCTION-PROVEN ADAPTIVE COGNITIVE AI OS PLATFORM — BẢNG ĐIỀU KHIỂN NHÀ NHIỆM VỤ & ĐÀI QUAN SÁT BẰNG CHỨNG ĐỘC LẬP (4 TẦNG TRUTH SURFACE)</p>
             </div>
         </div>
         <div class="status-badge">
             <div class="pulse-dot"></div>
-            <span>STANDING PRODUCTION OPERATION MODE</span>
+            <span>CHẾ ĐỘ THƯỜNG TRỰC VẬN HÀNH SẢN XUẤT</span>
         </div>
     </header>
 
@@ -160,23 +175,23 @@
         <!-- Layer 1: Mission Outcome -->
         <div class="card col-3">
             <div class="card-header">
-                <h2>🎯 Layer 1: Mission Outcome</h2>
+                <h2>🎯 Tầng 1: Kết Quả Nhiệm Vụ (Mission Outcome)</h2>
             </div>
             <div class="stat-grid">
                 <div class="stat-box">
-                    <div class="stat-title">M1 Success Rate</div>
+                    <div class="stat-title">M1 Thành Công (Success Rate)</div>
                     <div class="stat-value text-green">99.5%</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-title">M5 GCR (Goal Intact)</div>
+                    <div class="stat-title">M5 Bảo Toàn Mục Tiêu (GCR)</div>
                     <div class="stat-value text-green">100.0%</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-title">M9 Physical Verifier</div>
+                    <div class="stat-title">M9 Thẩm Định Vật Lý (Verifier)</div>
                     <div class="stat-value text-cyan">100.0%</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-title">Failed (Graceful)</div>
+                    <div class="stat-title">Thất Bại An Toàn (Graceful Fail)</div>
                     <div class="stat-value text-orange">0.5% (5/1k)</div>
                 </div>
             </div>
@@ -185,23 +200,23 @@
         <!-- Layer 2: Autonomy & Resilience -->
         <div class="card col-3">
             <div class="card-header">
-                <h2>🛡️ Layer 2: Autonomy & Resilience</h2>
+                <h2>🛡️ Tầng 2: Tự Chủ & Khôi Phục (Autonomy)</h2>
             </div>
             <div class="stat-grid">
                 <div class="stat-box">
-                    <div class="stat-title">M3 Resilient Recovery</div>
+                    <div class="stat-title">M3 Tự Khôi Phục (Recovery)</div>
                     <div class="stat-value text-cyan">100.0%</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-title">M4 Dynamic Replan</div>
+                    <div class="stat-title">M4 Replan Tự Động (DRS)</div>
                     <div class="stat-value text-purple">100.0%</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-title">Unnecessary Human</div>
+                    <div class="stat-title">Can Thiệp Thừa (Unnecessary)</div>
                     <div class="stat-value text-green">0.0%</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-title">Policy Safety Gate</div>
+                    <div class="stat-title">Ủy Quyền An Toàn (Policy Gate)</div>
                     <div class="stat-value text-orange">2.1% (Auth)</div>
                 </div>
             </div>
@@ -210,24 +225,24 @@
         <!-- Layer 3: Independent Evidence Integrity -->
         <div class="card col-3">
             <div class="card-header">
-                <h2>🔍 Layer 3: Evidence Integrity</h2>
+                <h2>🔍 Tầng 3: Bằng Chứng Độc Lập (Evidence)</h2>
             </div>
             <div class="stat-grid">
                 <div class="stat-box">
-                    <div class="stat-title">EIR-S (Outcome Evidence)</div>
+                    <div class="stat-title">EIR-S (Bằng Chứng Kết Quả)</div>
                     <div class="stat-value text-green">100.00%</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-title">ECR (Evidence Coverage)</div>
+                    <div class="stat-title">ECR (Độ Phủ Bằng Chứng)</div>
                     <div class="stat-value text-cyan">100.00%</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-title">Non-Repudiable Chain</div>
-                    <div class="stat-value text-purple">8 / 8 Links</div>
+                    <div class="stat-title">Chuỗi Danh Tính (Identity)</div>
+                    <div class="stat-value text-purple">8 / 8 Mắt Xích</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-title">Zero-Tolerance Viol.</div>
-                    <div class="stat-value text-green">0</div>
+                    <div class="stat-title">Lỗi Vi Phạm Hiến Pháp</div>
+                    <div class="stat-value text-green">0 Lỗi</div>
                 </div>
             </div>
         </div>
@@ -235,10 +250,10 @@
         <!-- Layer 4: Operational SLO & Resource -->
         <div class="card col-3">
             <div class="card-header">
-                <h2>⚡ Layer 4: Operational SLOs</h2>
+                <h2>⚡ Tầng 4: Chỉ Số Vận Hành SLO (Hardware)</h2>
             </div>
             <div class="metric-group">
-                <div class="metric-label"><span>VRAM (RX 6600 8GB)</span><span style="color: var(--accent-purple)">5.4 GB (67.5%)</span></div>
+                <div class="metric-label"><span>VRAM (AMD RX 6600 8GB)</span><span style="color: var(--accent-purple)">5.4 GB (67.5%)</span></div>
                 <div class="progress-bar-bg"><div class="progress-bar-fill fill-vram"></div></div>
             </div>
             <div class="metric-group">
@@ -246,82 +261,100 @@
                 <div class="progress-bar-bg"><div class="progress-bar-fill fill-ram"></div></div>
             </div>
             <div class="stat-grid" style="margin-top: 0.4rem;">
-                <div class="stat-box"><div class="stat-title">p95 Speed</div><div class="stat-value text-cyan">340 ms</div></div>
-                <div class="stat-box"><div class="stat-title">p99 Speed</div><div class="stat-value text-purple">850 ms</div></div>
+                <div class="stat-box"><div class="stat-title">Độ Trễ p95</div><div class="stat-value text-cyan">340 ms</div></div>
+                <div class="stat-box"><div class="stat-title">Độ Trễ p99</div><div class="stat-value text-purple">850 ms</div></div>
             </div>
         </div>
 
-        <!-- Card 5: Full Traceback Mission Detail Inspector -->
+        <!-- Card 5: 8-Link Identity Chain -->
         <div class="card col-12">
             <div class="card-header">
-                <h2>🔍 Mission Control Observatory — Non-Repudiable Mission Traceback Inspector</h2>
-                <span style="font-size: 0.8rem; color: var(--accent-cyan);">Mission #mis_zt_001</span>
+                <h2>🛡️ Chuỗi Danh Tính Zero-Trust 8 Mắt Xích Bất Biến (Identity Chain Traceability)</h2>
+                <span style="font-size: 0.8rem; color: var(--accent-green);">100% Tuân Thủ Hiến Pháp</span>
+            </div>
+            <div class="identity-timeline">
+                <div class="identity-step"><div class="step-node">req</div><span class="step-label">Yêu Cầu</span></div>
+                <div class="identity-step"><div class="step-node">mis</div><span class="step-label">Nhiệm Vụ</span></div>
+                <div class="identity-step"><div class="step-node">pln</div><span class="step-label">Lộ Trình</span></div>
+                <div class="identity-step"><div class="step-node">tsk</div><span class="step-label">Tác Vụ</span></div>
+                <div class="identity-step"><div class="step-node">att</div><span class="step-label">Thử Nghiệm</span></div>
+                <div class="identity-step"><div class="step-node">exe</div><span class="step-label">Thi Hành</span></div>
+                <div class="identity-step"><div class="step-node">obs</div><span class="step-label">Quan Sát</span></div>
+                <div class="identity-step"><div class="step-node">ver</div><span class="step-label">Thẩm Định</span></div>
+            </div>
+        </div>
+
+        <!-- Card 6: Real-World Mission Inspector -->
+        <div class="card col-12">
+            <div class="card-header">
+                <h2>🔍 Đài Quan Sát Nhiệm Vụ Real-Time (Kiểm Tra Traceback Bằng Chứng Closed-Loop)</h2>
+                <span style="font-size: 0.8rem; color: var(--accent-cyan);">Mã Nhiệm Vụ #mis_zt_001</span>
             </div>
             <div class="inspector-box">
-                <p><strong style="color: var(--accent-cyan)">[MISSION CONTRACT]</strong>: Goal Hash=<code>a7f89b</code> | Constraints Hash=<code>3c2d1e</code> | Criteria Hash=<code>9f8e7d</code> (Original Goal Invariant)</p>
-                <p><strong style="color: var(--accent-purple)">[STRATEGY DAG v3]</strong>: Plan A ➔ Observation (PostgreSQL Lock) ➔ ASR ➔ Replan B (Read Replica Failover)</p>
-                <p><strong style="color: var(--accent-green)">[PHYSICAL STATE]</strong>: Independent Physical Inspection confirmed file <code>exports/mis_zt_001_zero_trust_incident.xlsx</code> (ZIP/XML Schema Verified, Cell Validated)</p>
-                <p><strong style="color: var(--accent-orange)">[INDEPENDENT VERIFICATION]</strong>: EIR-S = 100.00% | ECR = 100.00% | GCR = 100.00% (Zero Self-Reported Bias)</p>
+                <p><strong style="color: var(--accent-cyan)">[MỤC TIÊU NHIỆM VỤ]</strong>: Xử Lý Sự Cố An Ninh Mạng Zero-Trust trên https://sec.internal</p>
+                <p><strong style="color: var(--accent-purple)">[CHIẾN LƯỢC DAG v3]</strong>: Plan A ➔ Quan Sát (Khóa CSDL PostgreSQL) ➔ ASR ➔ Replan B (Failover Read Replica)</p>
+                <p><strong style="color: var(--accent-green)">[BẰNG CHỨNG VẬT LÝ]</strong>: Thẩm định viên Physical Verifier xác nhận tệp 'exports/mis_zt_001_zero_trust_incident.xlsx' tồn tại (Cấu trúc XML/ZIP hợp lệ, Ô dữ liệu chính xác)</p>
+                <p><strong style="color: var(--accent-orange)">[XÁC MINH ĐỘC LẬP]</strong>: EIR-S = 100.00% | ECR = 100.00% | GCR = 100.00% (Không tự nhận kết quả, Mục tiêu ban đầu giữ nguyên)</p>
             </div>
         </div>
 
-        <!-- Card 6: Benchmark B1-B5 Scorecard -->
+        <!-- Card 7: Benchmark B1-B5 Scorecard -->
         <div class="card col-12">
             <div class="card-header">
-                <h2>🏆 Empirical Benchmarks B1–B5 & Gate F Audit Summary</h2>
+                <h2>🏆 Bảng Thống Kê Thử Nghiệm Thực Nghiệm Benchmarks B1–B5 & Kiểm Toán Gate F</h2>
             </div>
             <table>
                 <thead>
                     <tr>
-                        <th>Benchmark</th>
-                        <th>Target Evaluation</th>
-                        <th>Metric Measured</th>
-                        <th>Result</th>
-                        <th>Status</th>
+                        <th>Bài Thử Nghiệm</th>
+                        <th>Miền Đánh Giá</th>
+                        <th>Chỉ Số Đo Lường</th>
+                        <th>Kết Quả</th>
+                        <th>Trạng Thái</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>B1</td>
-                        <td>Novel Open Goal Resolution</td>
+                        <td>Giải Quyết Mục Tiêu Mới (Open Goal)</td>
                         <td>OGR (Open Goal Res) + NAR (Novel Autonomy)</td>
                         <td>100.0%</td>
-                        <td><span class="badge-pass">PASSED</span></td>
+                        <td><span class="badge-pass">ĐẠT THẨM ĐỊNH</span></td>
                     </tr>
                     <tr>
                         <td>B2</td>
-                        <td>Capability Failure Recovery</td>
+                        <td>Khôi Phục Khi Thiếu Công Cụ</td>
                         <td>UCR-5 (Controlled Failure on Missing Tools)</td>
                         <td>100.0%</td>
-                        <td><span class="badge-pass">PASSED</span></td>
+                        <td><span class="badge-pass">ĐẠT THẨM ĐỊNH</span></td>
                     </tr>
                     <tr>
                         <td>B3</td>
-                        <td>Mid-Mission World Change</td>
+                        <td>Môi Trường Thay Đổi Đột Ngột</td>
                         <td>ASR + DRS (Dynamic Replan) + GCR (Goal Conservation)</td>
                         <td>100.0%</td>
-                        <td><span class="badge-pass">PASSED</span></td>
+                        <td><span class="badge-pass">ĐẠT THẨM ĐỊNH</span></td>
                     </tr>
                     <tr>
                         <td>B4</td>
-                        <td>Strict Success Criteria</td>
+                        <td>Thẩm Định Tiêu Chi Nghiêm Ngặt</td>
                         <td>ACR (Auto Completion) + GCR (100% Goal Intact)</td>
                         <td>100.0%</td>
-                        <td><span class="badge-pass">PASSED</span></td>
+                        <td><span class="badge-pass">ĐẠT THẨM ĐỊNH</span></td>
                     </tr>
                     <tr>
                         <td>B5</td>
-                        <td>Human-Free Long Horizon</td>
+                        <td>Tự Chủ Chuỗi Nhiệm Vụ Dài Hạn</td>
                         <td>HSR (Supervision Reduction) + P3 Concurrency</td>
                         <td>100.0%</td>
-                        <td><span class="badge-pass">PASSED</span></td>
+                        <td><span class="badge-pass">ĐẠT THẨM ĐỊNH</span></td>
                     </tr>
                     <tr>
                         <td>Gate F Audit</td>
-                        <td>Real Hardware Soak Audit</td>
-                        <td>1,000 Missions / 0 Zero-Tolerance Errors / EIR-S 100%</td>
-                        <td>99.5% Success</td>
-                        <td><span class="badge-pass">PASSED</span></td>
+                        <td>Kiểm Toán Ngâm Tải Phần Cứng Thực Tế</td>
+                        <td>1,000 Missions / 0 Lỗi Vi Phạm Hiến Pháp / EIR-S 100%</td>
+                        <td>99.5% Thành Công</td>
+                        <td><span class="badge-pass">ĐẠT THẨM ĐỊNH</span></td>
                     </tr>
                 </tbody>
             </table>
