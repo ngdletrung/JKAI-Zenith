@@ -2,9 +2,9 @@
 JKAI ZENITH — STANDING PRODUCTION OPERATION RUNTIME DAEMON (v5.0)
 File: scripts/run_standing_production_os.py
 
-Khởi chạy Hệ Điều Hành JKAI Zenith AI OS ở Chế Độ Thường Trực Tác Chiếm (Standing Production Operating Mode).
+Launches JKAI Zenith AI OS Platform in Standing Production Operation Mode.
 - Cognitive Kernel: FROZEN BY DEFAULT (v2.1 / v3)
-- Governance: Zero-Trust Identity Chain Gate 0 Invariants
+- Governance: Zero-Trust Identity Chain & Gate 0 Invariants
 - Capabilities: Google Drive, Office, MikroTik, MariaDB, WebRecon, Postgres, SMTP Provider
 - Hardware Affinity: AMD RX 6600 8GB VRAM (ROCm) + Dual Xeon E5-2699 v4 + 128GB RAM
 """
@@ -59,22 +59,22 @@ class OperatingStatus:
     hardware_affinity: str = "AMD RX 6600 8GB ROCm VRAM + Dual Xeon E5-2699 v4 128GB RAM"
     active_providers_count: int = 7
     active_applications_count: int = 5
-    is_ready_for_master: bool = True
+    is_ready_for_operator: bool = True
 
 
 class StandingProductionOS:
-    """Hệ Điều Hành JKAI Zenith ở Chế Độ Thường Trực Sản Xuất."""
+    """Standing Production Operation Daemon for JKAI Zenith AI OS Platform."""
 
     @classmethod
     def boot_standing_os(cls) -> OperatingStatus:
         logger.info("==========================================================================")
-        logger.info("🏛️ BOOTING JKAI ZENITH AI OS — STANDING PRODUCTION OPERATION MODE (v5.0)")
+        logger.info("BOOTING JKAI ZENITH AI OS — STANDING PRODUCTION OPERATION MODE (v5.0)")
         logger.info("==========================================================================")
-        logger.info("🔒 COGNITIVE KERNEL STATUS : FROZEN BY DEFAULT (Architecture Stop ACTIVE)")
-        logger.info("🛡️ GOVERNANCE INVARIANTS    : GATE 0 ZERO-TRUST & IDENTITY CHAIN ACTIVE")
-        logger.info("⚡ HARDWARE AFFINITY        : AMD RX 6600 8GB ROCm + DUAL XEON 128GB RAM")
-        logger.info("📦 CAPABILITY PROVIDERS (7) : Drive, Office, MikroTik, MariaDB, WebRecon, Postgres, SMTP")
-        logger.info("🚀 ENTERPRISE APPS (5)      : Automation, Document, Network, ThreatIntel, ZeroTrust")
+        logger.info("COGNITIVE KERNEL STATUS : FROZEN BY DEFAULT (Architecture Stop ACTIVE)")
+        logger.info("GOVERNANCE INVARIANTS    : GATE 0 ZERO-TRUST & IDENTITY CHAIN ACTIVE")
+        logger.info("HARDWARE AFFINITY        : AMD RX 6600 8GB ROCm + DUAL XEON 128GB RAM")
+        logger.info("CAPABILITY PROVIDERS (7) : Drive, Office, MikroTik, MariaDB, WebRecon, Postgres, SMTP")
+        logger.info("ENTERPRISE APPS (5)      : Automation, Document, Network, ThreatIntel, ZeroTrust")
         logger.info("==========================================================================")
 
         # Clear transient state & initialize persistent World Model
@@ -85,13 +85,13 @@ class StandingProductionOS:
             attributes={
                 "status": "STANDING_PRODUCTION_READY",
                 "boot_time": time.time(),
-                "master": "LeeTrung"
+                "operator": "LeeTrung"
             },
             provenance="OS_BOOT_SEQUENCE"
         )
 
         status = OperatingStatus()
-        logger.info(f"✅ JKAI ZENITH OS BOOTED SUCCESSFULLY! Status: READY FOR MASTER LEETRUNG.")
+        logger.info("JKAI ZENITH OS BOOTED SUCCESSFULLY! Status: READY FOR STANDING OPERATION.")
         return status
 
 
@@ -100,5 +100,5 @@ if __name__ == "__main__":
     print("\n" + "="*70)
     print(f"  JKAI ZENITH AI OS IS RUNNING IN STANDING PRODUCTION OPERATION MODE")
     print(f"  OFFICIAL STATUS: {status.version} ({status.mode})")
-    print(f"  READY TO RECEIVE AUTONOMOUS MISSIONS FROM MASTER LEETRUNG.")
+    print(f"  READY TO RECEIVE AUTONOMOUS MISSIONS FROM OPERATOR.")
     print("="*70 + "\n")

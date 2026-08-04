@@ -20,4 +20,4 @@ def test_standing_production_os_boot_sequence():
     assert status.architecture_stop is True
     assert status.active_providers_count == 7
     assert status.active_applications_count == 5
-    assert status.is_ready_for_master is True
+    assert status.is_ready_for_operator is True
