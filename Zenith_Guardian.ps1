@@ -151,6 +151,34 @@ try {
                 $resp2 = Invoke-RestMethod -Uri "http://$OLLAMA_CPU_HOST/api/tags" -Method Get -ErrorAction Stop
                 if ($resp1 -and $resp2) {
                     Write-KuteLog "Ollama Dual-Engine services are READY!" "SUCCESS"
+                    
+                    # 🚀 [ACTIVE-MODEL-PRELOADER]: Nạp sẵn toàn bộ Active Model từ rule_hardware.md vào VRAM/RAM ngay khi khởi động
+                    Write-KuteLog "Parsing rule_hardware.md to preload active models..." "PROCESS"
+                    if (Test-Path $RULE_FILE) {
+                        $ruleLines = Get-Content $RULE_FILE
+                        $modelsToWarm = @()
+                        foreach ($rline in $ruleLines) {
+                            if ($rline -match '^\|\s*([A-Z_]+)\s*\|\s*([a-zA-Z0-9\.\:\_-]+)\s*\|\s*\*\*([^\*]+)\*\*') {
+                                $rRole = $matches[1].Trim()
+                                $rModel = $matches[2].Trim()
+                                $rHw = $matches[3].Trim()
+                                if ($rModel -ne "auto" -and $rModel -ne "Active Model" -and -not ($modelsToWarm | Where-Object { $_.model -eq $rModel })) {
+                                    $rHost = if ($rHw -match "CPU") { $OLLAMA_CPU_HOST } else { $OLLAMA_GPU_HOST }
+                                    $modelsToWarm += [PSCustomObject]@{ role = $rRole; model = $rModel; host = $rHost }
+                                }
+                            }
+                        }
+                        foreach ($m in $modelsToWarm) {
+                            Write-KuteLog "Preloading model '$($m.model)' ($($m.role)) into $($m.host)..." "PROCESS"
+                            try {
+                                $bodyObj = @{ model = $m.model; prompt = ""; keep_alive = -1 } | ConvertTo-Json
+                                Invoke-RestMethod -Uri "http://$($m.host)/api/generate" -Method Post -Body $bodyObj -ContentType "application/json" -TimeoutSec 30 -ErrorAction SilentlyContinue | Out-Null
+                                Write-KuteLog "Model '$($m.model)' warmed up in VRAM/RAM!" "SUCCESS"
+                            } catch {
+                                Write-KuteLog "Model '$($m.model)' warmup initiated." "WARNING"
+                            }
+                        }
+                    }
                     break
                 }
             } catch {
