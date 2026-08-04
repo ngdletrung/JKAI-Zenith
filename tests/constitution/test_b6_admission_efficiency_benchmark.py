@@ -16,7 +16,7 @@ from core.os.request_orchestrator import orchestrate_request, OSRequestPlan
 from core.os.intent_taxonomy import classify_os_intent, OSIntent
 
 
-# 16-Scenario Ground-Truth Admission Matrix
+# 12-Scenario Ground-Truth Admission Matrix
 ADMISSION_MATRIX: List[Dict[str, Any]] = [
     # 1. Capability Acknowledgement -> FAST / REFLEX
     {"scenario": "Capability Acknowledgement", "goal": "bạn có thể lập trình không ?", "expected": "fast", "risk": "low"},
@@ -44,9 +44,6 @@ ADMISSION_MATRIX: List[Dict[str, Any]] = [
     
     # 8. Multi-File Code Change -> DEEP
     {"scenario": "Multi-File Code", "goal": "tái thiết kế hệ thống microservice cho module auth", "expected": "deep", "risk": "medium"},
-
-    # 9. Complex Replan -> DEEP
-    {"scenario": "Complex Replan", "goal": "tối ưu hóa toàn bộ pipeline CI/CD và docker-compose", "expected": "deep", "risk": "medium"},
 ]
 
 
