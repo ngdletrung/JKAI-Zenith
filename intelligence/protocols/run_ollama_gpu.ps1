@@ -4,6 +4,7 @@ param([string]$LogPath)
 $env:OLLAMA_HOST             = "127.0.0.1:11434"
 $env:GGML_VK_VISIBLE_DEVICES = "0"
 $env:OLLAMA_NO_GPU           = ""
+$env:OLLAMA_KEEP_ALIVE        = "-1"
 
 $Host.UI.RawUI.WindowTitle = "[OLLAMA-GPU :11434]"
 

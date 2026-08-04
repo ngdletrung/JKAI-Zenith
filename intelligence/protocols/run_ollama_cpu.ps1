@@ -5,6 +5,7 @@ $env:OLLAMA_HOST             = "127.0.0.1:11435"
 $env:OLLAMA_NO_GPU           = "1"
 $env:GGML_VK_VISIBLE_DEVICES = ""
 $env:OLLAMA_LLM_LIBRARY      = "cpu"
+$env:OLLAMA_KEEP_ALIVE        = "-1"
 
 $Host.UI.RawUI.WindowTitle = "[OLLAMA-CPU :11435]"
 
