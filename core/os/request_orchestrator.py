@@ -112,6 +112,16 @@ async def orchestrate_request(
     except Exception:
         pass
 
+    # ── Multi-Dimensional Risk & Side-Effects Override ──
+    import re
+    if re.search(r"\b(xóa|drop|rm\s+-rf|truncate|systemctl\s+stop|flush\s+iptables|delete\s+database|format\s+disk)\b", g, re.I):
+        plan.pipeline = "deep"
+        plan.is_deep = True
+        plan.is_fast = False
+        plan.execution_mode = "deep"
+        _log(plan, "ZENITH", "🛡️ [RISK-OVERRIDE]: Thao tác nguy cơ cao được phát hiện. Tự động ghi đè bắt buộc sang DEEP Pipeline + Policy Safety Gate.")
+        return plan
+
     # ── Fast Path Bypass: Chỉ bypass với whitelist + kiểm tra history ──
     g_clean = g.lower().strip()
     has_history = history and len(history) > 1
