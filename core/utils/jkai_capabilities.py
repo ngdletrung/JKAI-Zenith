@@ -12,8 +12,10 @@ _CAPABILITIES_RE = re.compile(
     r"(?:liệt kê|liet ke|list|kể|ke)\s+(?:ra\s+)?(?:các\s+)?(?:tính năng|tinh nang|khả năng|kha nang|chức năng|chuc nang)"
     r"|(?:tính năng|tinh nang|features?|khả năng|kha nang).{0,40}(?:của bạn|cuaban|jkai|chính mình|chinh minh|ban|bạn có|ban co|mình)"
     r"|(?:bạn là gì|ban la gi|bạn làm được (?:những )?gì|ban lam duoc (?:nhung )?gi)"
+    r"|(?:bạn\s+(?:có\s+thể|có\s+khả\s+năng|có\s+biết)\s+(?:lập\ trình|code|viet\ code|viết\ code).{0,30}(?:không|đuoc\ khong|được\ không)?)"
     r"|(?:giới thiệu|gioi thieu).{0,30}(?:jkai|bản thân|ban than|hệ thống|he thong)"
-    r"|what (?:are your|can you) (?:features|do)"
+    r"|what (?:are your|can you) (?:features|do|code|program)"
+    r"|can you (?:code|program)"
     r")",
     re.IGNORECASE | re.DOTALL,
 )

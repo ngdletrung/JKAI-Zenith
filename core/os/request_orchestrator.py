@@ -24,7 +24,11 @@ from core.utils.engine import engine
 logger = logging.getLogger("jkai.os.orchestrator")
 
 # Module-level constants — không recreate mỗi lần gọi
-_BYPASS_WHITELIST: frozenset = frozenset(["xin chào", "chào", "hello", "hi", "ok", "yes", "2+2", "tạm biệt", "bye", "cảm ơn", "thanks"])
+_BYPASS_WHITELIST: frozenset = frozenset([
+    "xin chào", "chào", "hello", "hi", "ok", "yes", "2+2", "tạm biệt", "bye", "cảm ơn", "thanks",
+    "bạn có thể lập trình không", "bạn có thể lập trình không ?", "bạn có biết lập trình không",
+    "bạn có biết lập trình không ?", "can you code", "can you program"
+])
 
 
 @dataclass
