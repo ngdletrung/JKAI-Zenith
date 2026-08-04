@@ -31,10 +31,18 @@ class RecoveryDecision:
     next_step: Optional[str] = None
     reason: str = ""
     attempt_number: int = 1
+    action: str = "REPLAN"
+    retry_attempt: int = 2
 
 
 class RecoveryEngine:
     """Bộ Phục Hồi Thích Nghi (Adaptive Recovery Engine)."""
+
+    def determine_recovery(self, contract: Any, eval_res: Any, current_attempt: int = 1, max_attempts: int = 3) -> RecoveryDecision:
+        succeeded = getattr(eval_res, "mission_succeeded", False) or getattr(eval_res, "task_succeeded", False)
+        if succeeded:
+            return RecoveryDecision(outcome="SUCCESS", next_step="DELIVER", reason="Evaluation succeeded", attempt_number=current_attempt, action="COMPLETE", retry_attempt=current_attempt)
+        return RecoveryDecision(outcome="RETRY", next_step="RETRY_ATTEMPT", reason="Recovery triggered", attempt_number=current_attempt + 1, action="REPLAN", retry_attempt=current_attempt + 1)
 
     @classmethod
     def process_recovery(

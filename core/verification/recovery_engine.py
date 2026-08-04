@@ -33,7 +33,8 @@ class RecoveryDecision:
 class RecoveryEngine:
     """Bộ Phục Hồi Tác Chiến Thích Ứng (Adaptive Recovery Engine)."""
 
-    def determine_recovery(self, contract: Any, eval_res: Any, current_attempt: int = 1, max_attempts: int = 3) -> RecoveryDecision:
+    @classmethod
+    def determine_recovery(cls, contract: Any, eval_res: Any, current_attempt: int = 1, max_attempts: int = 3) -> RecoveryDecision:
         return RecoveryDecision(outcome="RETRY", next_step="RETRY_ATTEMPT", reason="Recovery triggered", attempt_number=current_attempt + 1)
 
     @classmethod
