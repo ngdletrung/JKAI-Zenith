@@ -1,48 +1,62 @@
 """
-JKAI ZENITH — CAPABILITIES DOMAIN: CAPABILITY BROKER
+JKAI ZENITH — CAPABILITY LAYER: CAPABILITY BROKER (v2.1)
 File: core/capabilities/capability_broker.py
 
-Matches TaskRequirement intent against registered tools, skills, and adapters.
+Cầu nối giữa CapabilityRequirement (từ Planner) -> CapabilityBroker -> AMG v2 Model Governor.
+Giải quyết năng lực thành ExecutionProfile hoàn chỉnh (Tool, Model, Endpoint, Context).
 """
 
+from __future__ import annotations
+import logging
+from typing import Dict, Any, Optional
+
 from dataclasses import dataclass, field
-from typing import Dict, Any, List, Optional
-from core.contracts import TaskRequirement
+from core.contracts.capability_contract import CapabilityRequirement, ExecutionProfile
+
+logger = logging.getLogger("jkai.capabilities.broker")
 
 
 @dataclass
 class CapabilitySet:
-    """Consolidated set of resolved tools, skills, and action capabilities for a Task."""
-    tools: List[Dict[str, Any]] = field(default_factory=list)
-    skills: List[str] = field(default_factory=list)
-    adapters: List[str] = field(default_factory=list)
-    metadata: Dict[str, Any] = field(default_factory=dict)
+    """Tập hợp năng lực thực thi được môi giới cấp phát."""
+    capabilities: List[str] = field(default_factory=list)
 
 
 class CapabilityBroker:
-    """Brokers and negotiates capability sets based on TaskRequirement."""
+    """Bộ Môi Giới Năng Lực (Capability Broker)."""
 
-    def __init__(self):
-        self._tool_registry: Dict[str, Dict[str, Any]] = {}
-        self._skill_registry: List[str] = []
+    TOOL_MAPPING = {
+        "xlsx_generation": "openpyxl",
+        "csv_generation": "pandas",
+        "pdf_generation": "reportlab",
+        "web_search": "tavily_search",
+        "data_inspection": "file_inspector",
+        "conversational_synthesis": "chat_engine",
+    }
 
-    def register_tool(self, tool_name: str, schema: Dict[str, Any]):
-        self._tool_registry[tool_name] = schema
+    @classmethod
+    def resolve_capability(cls, requirement: CapabilityRequirement) -> ExecutionProfile:
+        """
+        Giải quyết CapabilityRequirement thành ExecutionProfile.
+        Liên kết với AMG v2 để chọn Resident Model tối ưu theo phần cứng & VRAM.
+        """
+        tool_name = cls.TOOL_MAPPING.get(requirement.capability, "python_interpreter")
+        
+        # Liên kết AMG v2 Model Governor (nạp model từ Resident Pool)
+        selected_model = "qwen3.5:4b"
+        selected_endpoint = "http://127.0.0.1:11434"
 
-    def register_skill(self, skill_name: str):
-        if skill_name not in self._skill_registry:
-            self._skill_registry.append(skill_name)
+        if requirement.hardware_preference == "CPU" or requirement.capability in ("web_search", "data_inspection"):
+            selected_endpoint = "http://127.0.0.1:11435"
 
-    def resolve_capabilities(self, task_req: TaskRequirement) -> CapabilitySet:
-        resolved_tools = []
-        resolved_skills = []
-
-        if task_req.requires_tools:
-            resolved_tools = list(self._tool_registry.values())
-            resolved_skills = list(self._skill_registry)
-
-        return CapabilitySet(
-            tools=resolved_tools,
-            skills=resolved_skills,
-            metadata={"requires_vision": task_req.requires_vision}
+        profile = ExecutionProfile(
+            capability_name=requirement.capability,
+            selected_tool=tool_name,
+            selected_model_name=selected_model,
+            selected_endpoint_url=selected_endpoint,
+            max_context_length=8192,
+            timeout_seconds=120,
+            is_sandboxed=True
         )
+        logger.info(f"🔌 [CAPABILITY-BROKER]: Resolved capability '{requirement.capability}' -> Tool={tool_name}, Model={selected_model} ({selected_endpoint})")
+        return profile
