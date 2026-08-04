@@ -171,8 +171,14 @@ try {
                         foreach ($m in $modelsToWarm) {
                             Write-KuteLog "Preloading model '$($m.model)' ($($m.role)) into $($m.host)..." "PROCESS"
                             try {
-                                $bodyObj = @{ model = $m.model; prompt = ""; keep_alive = -1 } | ConvertTo-Json
-                                Invoke-RestMethod -Uri "http://$($m.host)/api/generate" -Method Post -Body $bodyObj -ContentType "application/json" -TimeoutSec 30 -ErrorAction SilentlyContinue | Out-Null
+                                if ($m.model -match "embed") {
+                                    $bodyObj = @{ model = $m.model; prompt = "warmup"; keep_alive = -1 } | ConvertTo-Json
+                                    $endpointUrl = "http://$($m.host)/api/embeddings"
+                                } else {
+                                    $bodyObj = @{ model = $m.model; prompt = ""; keep_alive = -1; stream = $false } | ConvertTo-Json
+                                    $endpointUrl = "http://$($m.host)/api/generate"
+                                }
+                                Invoke-RestMethod -Uri $endpointUrl -Method Post -Body $bodyObj -ContentType "application/json" -TimeoutSec 60 -ErrorAction SilentlyContinue | Out-Null
                                 Write-KuteLog "Model '$($m.model)' warmed up in VRAM/RAM!" "SUCCESS"
                             } catch {
                                 Write-KuteLog "Model '$($m.model)' warmup initiated." "WARNING"
