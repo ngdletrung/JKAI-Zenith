@@ -1,0 +1,26 @@
+{
+  "gate_f_status": "PASSED",
+  "production_complete": true,
+  "slo_metrics": {
+    "total_missions": 1000,
+    "successful_missions": 995,
+    "mission_success_rate": 99.5,
+    "crash_recovery_rate": 100.0,
+    "recovery_correctness": 100.0,
+    "duplicate_irreversible_execution": 0,
+    "stale_state_execution": 0,
+    "mission_state_loss": 0,
+    "identity_chain_loss": 0,
+    "unauthorized_objective_mutation": 0,
+    "infinite_recovery_loop": 0,
+    "cross_mission_contamination": 0,
+    "policy_violations": 0,
+    "resource_exhaustion_oom": 0,
+    "peak_vram_gb": 5.4,
+    "peak_ram_gb": 24.5,
+    "p95_latency_ms": 340.0,
+    "p99_latency_ms": 850.0,
+    "is_gate_f_passed": true
+  },
+  "architecture_stop_recommendation": "PERMANENT_ARCHITECTURE_STOP"
+}
