@@ -25,6 +25,9 @@ class CapabilitySet:
 class CapabilityBroker:
     """Bộ Môi Giới Năng Lực (Capability Broker)."""
 
+    def register_tool(self, tool_name: str, tool_def: Any = None):
+        self.TOOL_MAPPING[tool_name] = tool_name
+
     TOOL_MAPPING = {
         "xlsx_generation": "openpyxl",
         "csv_generation": "pandas",
