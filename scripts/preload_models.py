@@ -31,7 +31,7 @@ def preload_active_models():
     for role, model_raw, hw_raw in matches:
         model = model_raw.strip()
         hw = hw_raw.strip()
-        if model in ("auto", "Active Model", "sdxl-turbo-rocm", "faster-whisper"):
+        if model in ("auto", "Active Model") or "SDXL" in model or "whisper" in model:
             continue
         host = "http://127.0.0.1:11435" if "CPU" in hw else "http://127.0.0.1:11434"
         if model not in model_map:
