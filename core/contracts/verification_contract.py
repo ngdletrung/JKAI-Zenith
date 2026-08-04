@@ -76,7 +76,7 @@ class VerificationResult:
 @dataclass(frozen=True)
 class ExperienceRecord:
     """
-    Hồ sơ trải nghiệm đúc kết cho Engram v2.
+    Hồ sơ trải nghiệm đúc kết cho Engram v2 (Causal Experience & Semantic Transfer).
     Lưu giữ cả trải nghiệm thành công lẫn bài học thất bại (Negative Memory qua từng Attempt).
     """
     identity: IdentityChain = field(default_factory=IdentityChain)
@@ -88,6 +88,8 @@ class ExperienceRecord:
     outcome: str = "SUCCESS"                    # "SUCCESS", "FAILED"
     failure_classification: FailureClassification = FailureClassification.NONE
     failure_cause: Optional[str] = None
+    causal_explanation: Optional[str] = None    # Causal Reason: WHY it failed
+    context_conditions: Dict[str, Any] = field(default_factory=dict) # WHEN & THEN conditions
     recovery_action: Optional[str] = None
     negative_lessons: List[str] = field(default_factory=list)
     confidence_rating: float = 0.90
