@@ -13,6 +13,10 @@ _BUILD_RE = re.compile(
     r"\b(tạo|tao|build|implement|scaffold|viết api|viet api|deploy|docker compose)\b",
     re.I,
 )
+_FILE_BUILD_RE = re.compile(
+    r"\b(tạo|tao|xuất|xuat|viết|viet|export|build|generate)\b.*?\b(file|tệp|tep|bảng|bang|excel|\.xlsx|\.csv|\.pdf|\.docx|báo cáo|bao cao)\b",
+    re.I,
+)
 _CHAT_RE = re.compile(
     r"^(ok\b|okey\b|oke\b|xin chào|chào|hello|hi\b|cảm ơn|cam on|thanks|thank you|thời tiết|thoi tiet)\b",
     re.I,
@@ -96,7 +100,7 @@ def classify_os_intent(goal: str, kwargs: dict | None = None) -> OSIntent:
             return OSIntent.AUDIT
     except Exception:
         pass
-    if _BUILD_RE.search(g):
+    if _FILE_BUILD_RE.search(g) or _BUILD_RE.search(g):
         return OSIntent.BUILD
     if _GIT_URL.search(g) or re.search(r"\b(tìm kiếm|tim kiem|search|research|tin tức)\b", g, re.I):
         return OSIntent.RESEARCH

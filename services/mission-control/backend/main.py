@@ -45,6 +45,14 @@ MISSIONS_DIR = os.path.join(os.path.dirname(__file__), 'missions')
 if not os.path.exists(MISSIONS_DIR):
     os.makedirs(MISSIONS_DIR)
 
+EXPORTS_DIR = os.path.join(os.path.dirname(__file__), 'exports')
+if not os.path.exists(EXPORTS_DIR):
+    os.makedirs(EXPORTS_DIR)
+
+@app.route('/exports/<path:filename>')
+def serve_export_file(filename):
+    return send_from_directory(EXPORTS_DIR, filename, as_attachment=True)
+
 # ====================== BACKGROUND: Artifact Watcher (WATCHDOG/POLLING) ======================
 try:
     from watchdog.observers import Observer

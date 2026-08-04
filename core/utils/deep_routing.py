@@ -130,6 +130,13 @@ def goal_should_force_deep(goal: str, history: Optional[List[Any]] = None) -> bo
     if _ERROR_VI_RE.search(g) and _CODE_CONTEXT_RE.search(g):
         return True
 
+    _FILE_BUILD_RE = re.compile(
+        r"\b(tạo|tao|xuất|xuat|viết|viet|export|build|generate)\b.*?\b(file|tệp|tep|bảng|bang|excel|\.xlsx|\.csv|\.pdf|\.docx|báo cáo|bao cao)\b",
+        re.IGNORECASE,
+    )
+    if _FILE_BUILD_RE.search(g):
+        return True
+
     # Knowledge queries (definition, explanation, comparison) → DEEP for search
     if _KNOWLEDGE_QUERY_RE.search(g):
         return True
