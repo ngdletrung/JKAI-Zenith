@@ -44,9 +44,8 @@ CPU_OMP_NUM_THREADS=20
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | RECEPTIONIST | qwen3.5:4b | **GPU/VRAM** | 4096 | 0.20 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general,reasoning,tool_use | medium |
 | PLANNER | qwen3.5:4b | **GPU/VRAM** | 8192 | 0.05 | 100 | 20 | 0.90 | 1.05 | **-1** | FAST_RESPONSE | reasoning,planning | high |
-
 | CRITIC | qwen3.5:4b | **GPU/VRAM** | 4096 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | reasoning | high |
-| SUMMARIZER | llama3.2:3b | **GPU/VRAM** | 4096 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general | medium |
+| SUMMARIZER | llama3.2:3b | **CPU/RAM** | 4096 | 0.10 | 0 | 20 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED | general | medium |
 | EXECUTOR | qwen2.5-coder:3b | **GPU/VRAM** | 8192 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
 | EXECUTOR_ALPHA | qwen2.5-coder:3b | **GPU/VRAM** | 8192 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
 | EXECUTOR_BETA | qwen2.5-coder:3b | **GPU/VRAM** | 8192 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
