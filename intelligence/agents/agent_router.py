@@ -40,14 +40,16 @@ class AgentRouter:
             match = re.match(r"^---\s*\n(.*?)\n---\s*\n(.*)$", content, re.DOTALL)
             if not match:
                 # Fallback: Extract basic metadata from Markdown headings if YAML frontmatter missing
-                name = file_path.stem.replace("agent_", "")
+                from core.utils.engine import engine
+                def_cfg = engine.get_role_config("EXECUTOR") or engine.get_role_config("RECEPTIONIST")
+                def_model = def_cfg.get("model") if isinstance(def_cfg, dict) else getattr(def_cfg, "model", "auto")
                 return {
                     "name": name,
                     "file_path": str(file_path),
                     "description": f"Agent auto-derived from {file_path.name}",
                     "capabilities": [name],
                     "tools": [],
-                    "model_preference": "qwen3.5:4b",
+                    "model_preference": def_model,
                     "system_prompt": content.strip()
                 }
 
@@ -62,13 +64,16 @@ class AgentRouter:
             return metadata
         except Exception as e:
             logger.warning(f"[AGENT-ROUTER] Failed to parse frontmatter from {file_path.name}: {e}")
+            from core.utils.engine import engine
+            def_cfg = engine.get_role_config("EXECUTOR") or engine.get_role_config("RECEPTIONIST")
+            def_model = def_cfg.get("model") if isinstance(def_cfg, dict) else getattr(def_cfg, "model", "auto")
             return {
                 "name": file_path.stem.replace("agent_", ""),
                 "file_path": str(file_path),
                 "description": file_path.stem,
                 "capabilities": [],
                 "tools": [],
-                "model_preference": "qwen3.5:4b",
+                "model_preference": def_model,
                 "system_prompt": ""
             }
 

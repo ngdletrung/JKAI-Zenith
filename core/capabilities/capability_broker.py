@@ -49,8 +49,10 @@ class CapabilityBroker:
         """
         tool_name = cls.TOOL_MAPPING.get(requirement.capability, "python_interpreter")
         
-        # Liên kết AMG v2 Model Governor (nạp model từ Resident Pool)
-        selected_model = "qwen3.5:4b"
+        # Liên kết AMG v2 Model Governor (nạp model từ Resident Pool & rule_hardware.md)
+        from core.utils.engine import engine
+        role_cfg = engine.get_role_config("EXECUTOR") or engine.get_role_config("RECEPTIONIST")
+        selected_model = role_cfg.get("model") if isinstance(role_cfg, dict) else getattr(role_cfg, "model", "qwen3.5:4b")
         selected_endpoint = "http://127.0.0.1:11434"
 
         if requirement.hardware_preference == "CPU" or requirement.capability in ("web_search", "data_inspection"):
