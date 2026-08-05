@@ -9,13 +9,14 @@ from core.utils.engine import engine
 
 # ⚙️ [ZENITH-SYSTEM-CORE]: Hệ vận động cốt lõi của JKAI.
 
-async def list_dir(path: str = ".", task_id: str = "sys"):
+async def list_dir(path: str = ".", directory_path: str = ".", task_id: str = "sys", **kwargs):
     """📂 [SCOUTING]: Liệt kê danh sách tệp tin và thư mục."""
+    target_path = path if path != "." else (directory_path or ".")
     try:
-        items = os.listdir(path)
+        items = os.listdir(target_path)
         result = []
         for item in items:
-            full_path = os.path.join(path, item)
+            full_path = os.path.join(target_path, item)
             is_dir = os.path.isdir(full_path)
             size = os.path.getsize(full_path) if not is_dir else 0
             result.append({
@@ -23,91 +24,98 @@ async def list_dir(path: str = ".", task_id: str = "sys"):
                 "type": "directory" if is_dir else "file",
                 "size": size
             })
-        return {"status": "success", "path": os.path.abspath(path), "items": result}
+        return {"status": "success", "path": os.path.abspath(target_path), "items": result}
     except Exception as e:
         return {"status": "error", "msg": str(e)}
 
-async def view_file(path: str, start_line: int = 1, end_line: int = 500, task_id: str = "sys"):
+async def view_file(path: str = "", file_path: str = "", AbsolutePath: str = "", start_line: int = 1, end_line: int = 500, task_id: str = "sys", **kwargs):
     """👁️ [VISION]: Đọc nội dung tệp tin thấu thị."""
+    target_path = path or file_path or AbsolutePath or ""
     try:
-        if not os.path.exists(path):
-            return {"status": "error", "msg": f"File '{path}' không tồn tại."}
+        if not os.path.exists(target_path):
+            return {"status": "error", "msg": f"File '{target_path}' không tồn tại."}
         
-        with open(path, "r", encoding="utf-8", errors="ignore") as f:
+        with open(target_path, "r", encoding="utf-8", errors="ignore") as f:
             lines = f.readlines()
             
         content = "".join(lines[start_line-1:end_line])
         return {
             "status": "success",
-            "path": os.path.abspath(path),
+            "path": os.path.abspath(target_path),
             "total_lines": len(lines),
             "content": content
         }
     except Exception as e:
         return {"status": "error", "msg": str(e)}
 
-async def write_to_file(path: str, content: str, overwrite: bool = False, task_id: str = "sys"):
+async def write_to_file(path: str = "", file_path: str = "", TargetFile: str = "", content: str = "", CodeContent: str = "", overwrite: bool = False, task_id: str = "sys", **kwargs):
     """✍️ [CREATION]: Kiến tạo tệp tin mới."""
+    target_path = path or file_path or TargetFile or ""
+    target_content = content or CodeContent or ""
     try:
-        if os.path.exists(path) and not overwrite:
-            return {"status": "error", "msg": f"File '{path}' đã tồn tại. Dùng overwrite=True để ghi đè."}
+        if os.path.exists(target_path) and not overwrite:
+            return {"status": "error", "msg": f"File '{target_path}' đã tồn tại. Dùng overwrite=True để ghi đè."}
         
-        os.makedirs(os.path.dirname(path), exist_ok=True)
+        os.makedirs(os.path.dirname(target_path), exist_ok=True)
         
         # 🛡️ [SECURITY-AUDIT]: Thẩm định an ninh trước khi ghi file
-        report = auditor.audit_diff(content)
+        report = auditor.audit_diff(target_content)
         if report.factors:
             log_msg = auditor.format_report_for_log(report)
             tag = "RISK" if report.is_dangerous else "AUDIT"
-            engine.publish_mission_log(tag, f"Thẩm định tệp `{path}`:\n{log_msg}", task_id)
+            engine.publish_mission_log(tag, f"Thẩm định tệp `{target_path}`:\n{log_msg}", task_id)
 
-        with open(path, "w", encoding="utf-8") as f:
-            f.write(content)
-        return {"status": "success", "msg": f"Đã kiến tạo tệp `{path}` thành công."}
+        with open(target_path, "w", encoding="utf-8") as f:
+            f.write(target_content)
+        return {"status": "success", "msg": f"Đã kiến tạo tệp `{target_path}` thành công."}
     except Exception as e:
         return {"status": "error", "msg": str(e)}
 
-async def replace_file_content(path: str, target: str, replacement: str, task_id: str = "sys"):
+async def replace_file_content(path: str = "", file_path: str = "", TargetFile: str = "", target: str = "", TargetContent: str = "", replacement: str = "", ReplacementContent: str = "", task_id: str = "sys", **kwargs):
     """🛠️ [SURGERY]: Phẫu thuật thay thế nội dung tệp tin."""
+    target_path = path or file_path or TargetFile or ""
+    tgt = target or TargetContent or ""
+    repl = replacement or ReplacementContent or ""
     try:
-        if not os.path.exists(path):
-            return {"status": "error", "msg": f"File '{path}' không tồn tại."}
+        if not os.path.exists(target_path):
+            return {"status": "error", "msg": f"File '{target_path}' không tồn tại."}
         
-        with open(path, "r", encoding="utf-8") as f:
-            content = f.read()
+        with open(target_path, "r", encoding="utf-8") as f:
+            file_content = f.read()
             
-        if target not in content:
-            return {"status": "error", "msg": f"Không tìm thấy đoạn hội thoại mục tiêu trong `{path}`."}
+        if tgt not in file_content:
+            return {"status": "error", "msg": f"Không tìm thấy đoạn hội thoại mục tiêu trong `{target_path}`."}
             
-        new_content = content.replace(target, replacement)
+        new_content = file_content.replace(tgt, repl)
         
         # 🛡️ [SECURITY-AUDIT]: Thẩm định an ninh phần thay thế
-        report = auditor.audit_diff(replacement)
+        report = auditor.audit_diff(repl)
         if report.factors:
             log_msg = auditor.format_report_for_log(report)
             tag = "RISK" if report.is_dangerous else "AUDIT"
-            engine.publish_mission_log(tag, f"Thẩm định phẫu thuật trên `{path}`:\n{log_msg}", task_id)
+            engine.publish_mission_log(tag, f"Thẩm định phẫu thuật trên `{target_path}`:\n{log_msg}", task_id)
 
-        with open(path, "w", encoding="utf-8") as f:
+        with open(target_path, "w", encoding="utf-8") as f:
             f.write(new_content)
             
-        return {"status": "success", "msg": f"Phẫu thuật thành công trên tệp `{path}`."}
+        return {"status": "success", "msg": f"Phẫu thuật thành công trên tệp `{target_path}`."}
     except Exception as e:
         return {"status": "error", "msg": str(e)}
 
-async def run_command(command: str, task_id: str = "sys"):
+async def run_command(command: str = "", CommandLine: str = "", task_id: str = "sys", **kwargs):
     """⚡ [EXECUTION]: Thực thi mật lệnh hệ thống."""
+    cmd = command or CommandLine or ""
     try:
         # 🛡️ [SECURITY-AUDIT]: Thẩm định lệnh shell
-        report = auditor.audit_diff(command)
+        report = auditor.audit_diff(cmd)
         if report.factors:
             log_msg = auditor.format_report_for_log(report)
             tag = "RISK" if report.is_dangerous else "AUDIT"
-            engine.publish_mission_log(tag, f"Thẩm định mật lệnh `{command}`:\n{log_msg}", task_id)
+            engine.publish_mission_log(tag, f"Thẩm định mật lệnh `{cmd}`:\n{log_msg}", task_id)
 
         # Chạy lệnh trong shell
         process = await asyncio.create_subprocess_shell(
-            command,
+            cmd,
             stdout=asyncio.subprocess.PIPE,
             stderr=asyncio.subprocess.PIPE
         )
