@@ -58,6 +58,21 @@ class OSRequestPlan:
 
 def _log(plan: OSRequestPlan, tag: str, msg: str) -> None:
     plan.log_messages.append((tag, msg))
+    # Structured Machine Telemetry Engine Log
+    try:
+        import json, datetime
+        telemetry_event = {
+            "timestamp": datetime.datetime.now(datetime.timezone.utc).astimezone().isoformat(),
+            "component": "ingress_orchestrator",
+            "event": f"orchestration.{tag.lower()}",
+            "goal": plan.goal,
+            "pipeline": plan.pipeline,
+            "os_intent": plan.os_intent,
+            "message": msg
+        }
+        logger.info(json.dumps(telemetry_event, ensure_ascii=False))
+    except Exception:
+        pass
 
 
 async def orchestrate_request(
@@ -112,14 +127,22 @@ async def orchestrate_request(
     except Exception:
         pass
 
-    # ── Multi-Dimensional Risk & Side-Effects Override ──
-    import re
-    if re.search(r"\b(xóa|drop|rm\s+-rf|truncate|systemctl\s+stop|flush\s+iptables|delete\s+database|format\s+disk)\b", g, re.I):
-        plan.pipeline = "deep"
-        plan.is_deep = True
-        plan.is_fast = False
-        plan.execution_mode = "deep"
-        _log(plan, "ZENITH", "🛡️ [RISK-OVERRIDE]: Thao tác nguy cơ cao được phát hiện. Tự động ghi đè bắt buộc sang DEEP Pipeline + Policy Safety Gate.")
+    # ── Task Profiler & Execution Governor ──
+    from core.os.cognition.task_profiler import profile_task
+    from core.os.cognition.execution_governor import govern_execution, ExecutionTopology
+
+    task_prof = profile_task(g, history, kwargs)
+    exec_policy = govern_execution(task_prof, requested_mode=kwargs.get("mode", "auto"))
+
+    _log(plan, "ZENITH", f"Task Profile: {task_prof.reason_codes} | Policy Topology: {exec_policy.topology.value} ({exec_policy.user_facing_mode})")
+
+    # REFLEX Topology Bypass (<1ms)
+    if exec_policy.topology == ExecutionTopology.REFLEX:
+        plan.pipeline = "fast"
+        plan.is_fast = True
+        plan.is_deep = False
+        plan.execution_mode = "fast"
+        _log(plan, "ZENITH", f"⚡ [REFLEX-BYPASS]: {exec_policy.reason}")
         return plan
 
     # ── Fast Path Bypass: Chỉ bypass với whitelist + kiểm tra history ──
