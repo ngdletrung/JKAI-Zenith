@@ -136,6 +136,18 @@ async def orchestrate_request(
 
     _log(plan, "ZENITH", f"Task Profile: {task_prof.reason_codes} | Policy Topology: {exec_policy.topology.value} ({exec_policy.user_facing_mode})")
 
+    # Force plan pipeline based on Execution Policy
+    if exec_policy.topology == ExecutionTopology.MULTI_AGENT:
+        plan.pipeline = "deep"
+        plan.is_deep = True
+        plan.is_fast = False
+        plan.execution_mode = "deep"
+    elif exec_policy.topology == ExecutionTopology.SINGLE_AGENT:
+        plan.pipeline = "fast"
+        plan.is_fast = True
+        plan.is_deep = False
+        plan.execution_mode = "fast"
+
     # REFLEX Topology Bypass (<1ms)
     if exec_policy.topology == ExecutionTopology.REFLEX:
         plan.pipeline = "fast"
@@ -487,11 +499,17 @@ async def orchestrate_request(
         trace_id = kwargs.get("trace_id") or task_id
         cached_manifest = engine.cache_get(task_id, "intent_manifest")
 
-        # ⚠️ Đồng bộ quyết định is_deep/is_fast/use_deep_full vào plan trước khi tạo MissionState
-        # Tránh ExecutionPlanner dùng default False/False và ra quyết định sai
-        plan.is_deep = is_deep
-        plan.is_fast = is_fast
-        plan.use_deep_full = is_deep
+        # ⚠️ Đồng bộ quyết định is_deep/is_fast/use_deep_full từ Execution Policy vào plan trước khi tạo MissionState
+        if exec_policy.topology == ExecutionTopology.MULTI_AGENT:
+            plan.is_deep = True
+            plan.is_fast = False
+            plan.use_deep_full = True
+            plan.pipeline = "deep"
+            plan.execution_mode = "deep"
+        else:
+            plan.is_deep = is_deep
+            plan.is_fast = is_fast
+            plan.use_deep_full = is_deep
 
         # Tạo MissionState ban đầu để nạp dữ liệu
         plan.mission_state = MissionState.from_os_plan(
@@ -546,9 +564,20 @@ async def orchestrate_request(
         plan.is_deep = exec_plan.selected_pipeline == "deep"
         plan.is_fast = exec_plan.selected_pipeline == "fast"
         plan.use_deep_full = plan.is_deep
+
+        # 🧠 [EXECUTION-GOVERNOR-OVERRIDE]: Mandated Multi-Agent Policy Enforcement
+        if exec_policy.topology == ExecutionTopology.MULTI_AGENT:
+            plan.pipeline = "deep"
+            plan.is_deep = True
+            plan.is_fast = False
+            plan.use_deep_full = True
+            plan.execution_mode = "deep"
+
         if plan.mission_state:
             plan.mission_state.use_deep_full = plan.use_deep_full
-        plan.execution_mode = exec_plan.selected_pipeline
+            plan.mission_state.pipeline = plan.pipeline
+            plan.mission_state.execution_mode = plan.execution_mode
+        plan.execution_mode = plan.pipeline
         
         # Override đặc biệt cho jkai_fast_fix
         if kw_patch.get("jkai_fast_fix"):

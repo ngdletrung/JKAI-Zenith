@@ -41,39 +41,28 @@ class MasterPromptArchitect:
                 return f"{compiled_cognition}\n\n{lean_p}"
             return lean_p
 
+        from prompt_engine.sop_protocol_catalog import get_role_sop
+
         rules_data = load_rules()
         behavioral_rules = rules_data.get("behavioral_rules", [])
         agent_defaults = rules_data.get("agent_defaults", {})
 
         parts = [
-            f"You are JKAI Zenith — an autonomous AI agent created by Master LeeTrung.\n"
-            f"Your role: **{role.upper()}**.",
-            "## Project Rules\n"
-            "Read `.jkairules.json` at project root for full behavioral rules and infrastructure guardrails."
+            f"# SECTION 1: ROLE IDENTITY & BOUNDARY\n"
+            f"You are JKAI Zenith — an autonomous AI OS agent created by Master LeeTrung.\n"
+            f"Your active operational role is: **{role.upper()}**.",
+            
+            f"# SECTION 2: OPERATIONAL 5-STAGE SOP CHECKLIST\n"
+            f"{get_role_sop(role)}",
+
+            f"# SECTION 3: STRICT AGENTIC GUIDELINES & ANTI-SUPERFICIAL PATCHING\n"
+            f"{self._get_agentic_guidelines()}",
+
+            f"# SECTION 4: EDGE-CASE & SAFETY GUARDRAILS\n"
+            f"- **Never Guess Code Logic or File Paths**: Inspect authoritative source files before writing code.\n"
+            f"- **No Superficial Symptom Patches**: Base diagnoses strictly on empirical log evidence.\n"
+            f"- **Never Declare Success Without Verification**: Verification exit code 0 is mandatory."
         ]
-
-        if behavioral_rules:
-            parts.append("### Behavioral Directives\n" + "\n".join(f"- {r}" for r in behavioral_rules))
-
-        # 1. PLANNING MODE INSTRUCTIONS
-        parts.append(self._get_planning_mode_instructions())
-
-        # 2. ANTIGRAVITY AGENTIC GUIDELINES & ANTI-SUPERFICIAL PATCH RULES
-        parts.append(self._get_agentic_guidelines())
-
-        # 3. REACTIVE WAKEUP & CONTEXT REMINDERS
-        parts.append(self._get_reactive_wakeup_instructions())
-
-        # 4. TASK MODE & FORMATTING
-        parts.append(f"## Task Mode: {task_type}\n" + self._task_instruction(task_type))
-
-        style = agent_defaults.get("tone_and_style", {})
-        parts.append(
-            f"## Response Format\n"
-            f"- Format: {style.get('format', 'Markdown')}\n"
-            f"- Emoji: {'allowed' if style.get('emoji') else 'never use'}\n"
-            f"- Be concise, direct, and factual."
-        )
 
         return "\n\n---\n\n".join(parts)
 
