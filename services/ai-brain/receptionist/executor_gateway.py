@@ -49,9 +49,9 @@ class ExecutorGateway:
         # ------------------------------------------------------------------ #
         try:
             from core.kernel.execution_integrity import ExecutionIntegrityLayer, DecisionOutcome
-            from core.kernel.task_contract_store import get_active_contract, get_active_policy
+            from core.kernel.task_contract_store import get_or_create_default_contract, get_active_policy
 
-            task_contract = get_active_contract(task_id)
+            task_contract = get_or_create_default_contract(task_id)
             policy = get_active_policy(task_id)
 
             integrity = ExecutionIntegrityLayer(mission_id=task_id)
