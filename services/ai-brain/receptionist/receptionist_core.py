@@ -463,13 +463,23 @@ class Receptionist:
                         if not f_name and "function" in potential_json:
                             f_name = potential_json["function"].get("name")
                         
-                        f_args = potential_json.get("arguments") or potential_json.get("args") or potential_json
+                        # Validate that f_name is a real string tool name, not None or 'null'
+                        if not f_name or str(f_name).lower() in ["null", "none", "false", "undefined", ""]:
+                            # Ignore null tool calls and continue prompting for valid tool execution
+                            self._log("GUARDRAIL", f"Ignored null tool action in turn {turn}. Prompting for real tool execution.", task_id, trace_id=trace_id)
+                            context.append({
+                                "role": "user",
+                                "content": "Chú ý: Bạn chưa chọn công cụ thực thi. Hãy gọi một công cụ hợp lệ như list_dir hoặc grep_search để tiếp tục công việc."
+                            })
+                            continue
+                        
+                        f_args = potential_json.get("arguments") or potential_json.get("args") or potential_json.get("params") or potential_json
                         if isinstance(f_args, str): 
                           try: f_args = json.loads(f_args)
                           except Exception: pass
 
                         real_skill_id = f_args.get("skill_id") if isinstance(f_args, dict) else None
-                        final_name = real_skill_id or f_name or "execute_skill"
+                        final_name = real_skill_id or f_name
 
                         fingerprint = f"{final_name}:{json.dumps(f_args, sort_keys=True)}"
                         call_fingerprints[fingerprint] = call_fingerprints.get(fingerprint, 0) + 1
