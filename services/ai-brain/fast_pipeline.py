@@ -96,7 +96,7 @@ class FastPipeline:
         if isinstance(context, dict):
             context = []
         history = history or []
-        max_turns = 3
+        max_turns = 10  # Master Specification: FAST is Single-Agent Autonomous Mode capable of multi-step & multi-file execution
 
         # [PILLAR 7.5: ULTRA-FAST MATH REFLEX (<1ms)]
         math_res = self._evaluate_simple_math(goal)
