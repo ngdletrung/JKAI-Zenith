@@ -130,20 +130,20 @@ class AdaptiveTaskSolverEngine:
                 timestamp=time.time()
             )
 
-        # Invariant 6: Specific Requirement Unsatisfied -> TARGETED_REPAIR
+        # Invariant 6: Corrupted Artifact or Specific Requirement Unsatisfied -> TARGETED_REPAIR
         failed_reqs = [k for k, v in last_truth.requirement_verdicts.items() if v == RequirementStatus.UNSATISFIED]
-        if failed_reqs:
+        if failed_reqs or last_truth.artifact_outcome == ArtifactOutcome.CORRUPTED or (last_truth.error_message and not last_truth.is_genuine_success):
             return StrategyAdaptation(
                 decision=StrategyDecision.TARGETED_REPAIR,
                 recommended_granularity=ActionGranularity.TARGETED_REPAIR,
-                rationale=f"Artifact created but failed requirements {failed_reqs}. Kicking off surgical repair.",
-                reason_codes=["REQUIREMENT_UNSATISFIED", "PARTIAL_ARTIFACT_DELIVERY"],
-                supporting_evidence=[f"Failed criteria: {failed_reqs}", f"Artifact: {last_truth.artifact_path}"],
+                rationale=f"Artifact created but failed requirements {failed_reqs}. Kicking off surgical repair." if failed_reqs else f"Artifact corrupted ({last_truth.error_message}). Kicking off surgical repair.",
+                reason_codes=["REQUIREMENT_UNSATISFIED", "UNSATISFIED_CRITERIA", "PARTIAL_ARTIFACT_DELIVERY"] if failed_reqs else ["ARTIFACT_CORRUPTED"],
+                supporting_evidence=[f"Failed criteria: {failed_reqs}", f"Artifact: {last_truth.artifact_path}", f"Error: {last_truth.error_message}"],
                 confidence=0.9,
-                expected_outcome=f"Surgically patch artifact {last_truth.artifact_path} to fulfill {failed_reqs}",
+                expected_outcome=f"Surgically patch artifact {last_truth.artifact_path} to fulfill requirements",
                 authority_scope="AUTONOMOUS",
                 next_action_target=last_truth.artifact_path,
-                replan_instructions=f"Targeted repair needed: Inject missing requirement {failed_reqs} into {last_truth.artifact_path}",
+                replan_instructions=f"Targeted repair needed: Inject missing requirement {failed_reqs} into {last_truth.artifact_path}" if failed_reqs else f"Targeted repair needed: Resolve {last_truth.error_message} for {last_truth.artifact_path}",
                 provenance_trace={
                     "mission_id": mission.mission_id,
                     "failed_requirements": failed_reqs,
