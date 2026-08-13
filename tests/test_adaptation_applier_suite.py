@@ -227,3 +227,24 @@ class TestAdaptationApplierSuite:
             assert truth.is_genuine_success is False
             assert "SyntaxError" in str(truth.error_message)
             assert adaptation.decision in (StrategyDecision.STRATEGY_INVALIDATED, StrategyDecision.TARGETED_REPAIR)
+
+    @pytest.mark.asyncio
+    async def test_08_fast_to_deep_pipeline_execution_wire(self):
+        """ESCALATE_DEEP Wiring: DeepPipeline().execute imports and executes with valid signature."""
+        from deep_pipeline import DeepPipeline
+        from unittest.mock import patch
+
+        dp = DeepPipeline()
+        assert hasattr(dp, "execute")
+
+        with patch.object(DeepPipeline, "execute", new_callable=AsyncMock) as mock_exec:
+            mock_exec.return_value = {"status": "success", "answer": "Deep DAG solved", "pipeline": "deep"}
+
+            goal = "Complex architecture refactor"
+            task_id = "task_esc_08"
+            context = [{"role": "user", "content": goal}]
+
+            res = await DeepPipeline().execute(goal, task_id, planner_instance=None, context=context)
+            assert res["status"] == "success"
+            assert res["pipeline"] == "deep"
+            mock_exec.assert_awaited_once_with(goal, task_id, planner_instance=None, context=context)

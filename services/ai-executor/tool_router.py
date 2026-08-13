@@ -25,6 +25,7 @@ class ToolRouter:
         self.skills_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "intelligence", "skills"))
         self._dynamic_tool_map = None  # 🧠 Bản đồ nơ-ron động
         self._plugin_map = {} # 🛡️ Z-SOS Plugin Map
+        self._execution_semaphore = asyncio.Semaphore(16) # ⚡ Tool Concurrency & Backpressure Guard
 
         # Pre-compile regex để tăng tốc độ truy quét cấu trúc file logic.py
         self._func_regex = re.compile(r'^\s*(?:async\s+)?def\s+([a-zA-Z0-9_]+)\s*\(', re.MULTILINE)
@@ -429,11 +430,14 @@ class ToolRouter:
                 valid_params = set(sig.parameters.keys())
                 kwargs = {k: v for k, v in kwargs.items() if k in valid_params}
 
-            # Thực thi dựa trên định dạng Async/Sync của Target Function (non-blocking)
-            if inspect.iscoroutinefunction(target_func):
-                return await target_func(**kwargs)
-            return await asyncio.to_thread(target_func, **kwargs)
+            # Thực thi có điều phối tài nguyên bằng Semaphore & Async/Sync Non-blocking
+            async with self._execution_semaphore:
+                if inspect.iscoroutinefunction(target_func):
+                    return await asyncio.wait_for(target_func(**kwargs), timeout=120.0)
+                return await asyncio.wait_for(asyncio.to_thread(target_func, **kwargs), timeout=120.0)
             
+        except asyncio.TimeoutError:
+            return {"status": "error", "msg": f"Tool execution timed out after 120s"}
         except Exception as e:
             import traceback
             print(f"[ROUTER-CRITICAL-ERROR] {traceback.format_exc()}")

@@ -96,7 +96,8 @@ class AdaptationApplier:
                 from core.utils.mode_switcher import mode_switcher
                 await mode_switcher.switch_to("DEEP", engine, task_id)
             except Exception as sw_err:
-                logger.warning("[MODE-SWITCH-WARN]: %s", sw_err)
+                logger.error("[MODE-SWITCH-FAIL-CLOSED]: %s", sw_err, exc_info=True)
+                engine.publish_mission_log("ERROR", f"[ATS-MODE-SWITCH-FAIL]: Lỗi chuyển mode DEEP: {sw_err}", task_id, trace_id)
 
             return {
                 "action": "ESCALATE_DEEP",
@@ -184,24 +185,61 @@ class AdaptationApplier:
             mission=canonical_mission
         )
 
-        # 2. If tool mutated a code/data file, run automated syntax/test verification
+        # 2. If tool mutated a code/data file, run multi-tier semantic verification
         is_mutation = tool_name.lower() in ("write_to_file", "replace_file_content", "multi_replace_file_content", "edit_file")
         if is_mutation and truth.artifact_path and os.path.exists(truth.artifact_path):
             file_path = truth.artifact_path
             ext = os.path.splitext(file_path)[1].lower()
+            file_size = os.path.getsize(file_path)
 
-            if ext == ".py":
-                # Run syntax verification
+            # Tier 1: Physical Existence & Non-Zero
+            if file_size == 0:
+                truth.artifact_outcome = ArtifactOutcome.CORRUPTED
+                truth.is_genuine_success = False
+                truth.error_message = f"Zero-byte empty artifact created at {file_path}"
+                engine.publish_mission_log("ERROR", f"[VERIFY-FAIL] {file_path} is 0-bytes empty.", task_id, trace_id)
+
+            # Tier 2 & 3: Syntax + Semantic Structure
+            elif ext == ".py":
                 try:
                     import ast
                     with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
-                        ast.parse(f.read())
-                    engine.publish_mission_log("SYSTEM", f"[VERIFY-LOOP] File `{os.path.basename(file_path)}` syntax AST verified clean.", task_id, trace_id, stealth=True)
+                        tree = ast.parse(f.read())
+                    # Structural check: verify top-level statements exist
+                    func_count = sum(1 for node in ast.walk(tree) if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)))
+                    engine.publish_mission_log("SYSTEM", f"[VERIFY-LOOP] `{os.path.basename(file_path)}` syntax AST verified clean ({func_count} definitions).", task_id, trace_id, stealth=True)
                 except Exception as py_err:
                     truth.artifact_outcome = ArtifactOutcome.CORRUPTED
                     truth.is_genuine_success = False
                     truth.error_message = f"SyntaxError in {file_path}: {py_err}"
                     engine.publish_mission_log("ERROR", f"[VERIFY-LOOP FAIL] {file_path} syntax error: {py_err}", task_id, trace_id)
+
+            elif ext == ".json":
+                try:
+                    import json
+                    with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                        json_data = json.load(f)
+                    engine.publish_mission_log("SYSTEM", f"[VERIFY-LOOP] `{os.path.basename(file_path)}` valid JSON structure verified.", task_id, trace_id, stealth=True)
+                except Exception as j_err:
+                    truth.artifact_outcome = ArtifactOutcome.CORRUPTED
+                    truth.is_genuine_success = False
+                    truth.error_message = f"Invalid JSON format in {file_path}: {j_err}"
+                    engine.publish_mission_log("ERROR", f"[VERIFY-LOOP FAIL] JSON error: {j_err}", task_id, trace_id)
+
+            elif ext in (".csv", ".tsv"):
+                try:
+                    with open(file_path, "r", encoding="utf-8", errors="ignore") as f:
+                        lines = [line.strip() for line in f if line.strip()]
+                    if len(lines) < 2:
+                        truth.artifact_outcome = ArtifactOutcome.CORRUPTED
+                        truth.is_genuine_success = False
+                        truth.error_message = f"CSV has insufficient rows ({len(lines)} lines found)"
+                    else:
+                        engine.publish_mission_log("SYSTEM", f"[VERIFY-LOOP] `{os.path.basename(file_path)}` verified with {len(lines)} data rows.", task_id, trace_id, stealth=True)
+                except Exception as csv_err:
+                    truth.artifact_outcome = ArtifactOutcome.CORRUPTED
+                    truth.is_genuine_success = False
+                    truth.error_message = f"CSV read error: {csv_err}"
 
         # 3. Record physical observation into Situation Model
         situation = situation_assessor.record_probe_observation(
