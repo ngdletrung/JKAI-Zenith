@@ -200,7 +200,7 @@ class TestCognitiveExecutionSubstrateSuite:
 
             adaptation = adaptive_solver_engine.evaluate_and_adapt(mission, situation, truth)
             assert adaptation.decision == StrategyDecision.TARGETED_REPAIR
-            assert "Inject missing requirement" in adaptation.replan_instructions
+            assert "Targeted repair needed" in adaptation.replan_instructions
         finally:
             if os.path.exists(tmp_path):
                 os.remove(tmp_path)

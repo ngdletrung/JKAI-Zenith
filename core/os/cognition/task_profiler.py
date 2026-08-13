@@ -26,6 +26,7 @@ class TaskProfile:
     verification_need: str = "LOW" # LOW, MEDIUM, HIGH, CRITICAL
     target_entity: str = "SYSTEM"  # AI_SELF, USER, SYSTEM (Self-Identity & Target Alignment)
     is_self_eval: bool = False     # AI self-evaluation & testing requested
+    evidence_policy: str = "OPTIONAL" # OPTIONAL, REQUIRED (EEC v1.0)
     reason_codes: List[str] = field(default_factory=list)
 
 
@@ -39,12 +40,13 @@ def profile_task(goal: str, history: Optional[List] = None, kwargs: Optional[Dic
 
     # 0. Self-Evaluation & AI Self-Testing (High Priority Target Identity Guard)
     self_eval_pattern = re.search(
-        r"\b(tự\s+(?:thực\s+hiện|kiểm\s+tra|làm|đánh\s+giá|test)|test\s+(?:bản\s+thân|chính\s+mình|năng\s+lực\s+của\s+bạn)|năng\s+lực\s+của\s+bạn|khả\s+năng\s+của\s+bạn|bài\s+test\s+của\s+bạn)\b",
+        r"\b(tự\s+(?:thực\s+hiện|kiểm\s+tra|làm|đánh\s+giá|test|chứng\s+minh)|chứng\s+minh\s+năng\s+lực|test\s+(?:bản\s+thân|chính\s+mình|năng\s+lực\s+của\s+bạn)|năng\s+lực\s+của\s+bạn|khả\s+năng\s+của\s+bạn|bài\s+test\s+của\s+bạn)\b",
         g, re.I
     )
     if self_eval_pattern:
         profile.target_entity = "AI_SELF"
         profile.is_self_eval = True
+        profile.evidence_policy = "REQUIRED"
         profile.complexity = 0.7
         profile.uncertainty = 0.3
         profile.verification_need = "HIGH"

@@ -547,7 +547,12 @@ class FastPipeline:
                         if directive["action"] == "ESCALATE_DEEP":
                             logger.info("[FAST->DEEP ESCALATION] Transitioning task %s to deep_pipeline.", task_id)
                             from deep_pipeline import DeepPipeline
-                            return await DeepPipeline().execute(goal, task_id, planner_instance=None, context=context)
+                            try:
+                                from planner import Planner
+                                planner = planner_instance or Planner()
+                            except Exception:
+                                planner = None
+                            return await DeepPipeline().execute(goal, task_id, planner_instance=planner, context=context)
 
                     except Exception as ats_err:
                         logger.error("[ATS-FAST-GOVERNOR-ERROR]: %s", ats_err, exc_info=True)
@@ -565,6 +570,36 @@ class FastPipeline:
         if not res_content:
             logger.warning("[FAST FALLBACK] res_content bị trống rỗng! Đang dùng fallback mặc định cho task %s.", task_id)
             res_content = f"Báo cáo Master! Hệ thống đã xử lý hoàn tất yêu cầu: **{goal}**. (Chuỗi văn bản suy luận từ mô hình trả về trống, các tác vụ công cụ ngầm đã thi hành trọn vẹn)."
+
+        # [EEC v1.0: EVIDENCE GATE AUDIT BEFORE COMPLETION]
+        try:
+            from core.os.cognition.evidence_execution_contract import (
+                EvidenceGateAuditor, EvidencePolicy, CapabilityDimension
+            )
+            from core.os.cognition.task_profiler import profile_task
+            prof = profile_task(goal)
+            policy = EvidencePolicy.REQUIRED if prof.is_self_eval else EvidencePolicy.OPTIONAL
+            
+            # Extract collected EPAs if any recorded during turns
+            epas = context.get("_epas", []) if isinstance(context, dict) else []
+            audit_res = EvidenceGateAuditor.audit_completion(
+                policy=policy,
+                epas=epas,
+                required_dimensions={CapabilityDimension.TOOL_FILE_ACTUATION, CapabilityDimension.REASONING_LOGIC} if prof.is_self_eval else None
+            )
+            
+            if audit_res["verdict"].value != "TERMINATE_WITH_PROOF" and policy == EvidencePolicy.REQUIRED:
+                engine.publish_mission_log(
+                    "WARN",
+                    f"[EVIDENCE-GATE-REJECT] {audit_res['reason']}",
+                    task_id, trace_id, stealth=True
+                )
+                if audit_res["verdict"].value == "VERIFICATION_BLOCKED":
+                    res_content += f"\n\n> ⚠️ **[EPISTEMIC HUMILITY]**: Hành động đã thực thi nhưng chưa có Verifier độc lập để chứng minh (Trạng thái: VERIFICATION_BLOCKED)."
+                elif audit_res["verdict"].value in ("RECOVERY", "LOW_CONFIDENCE_CONCLUSION"):
+                    res_content += f"\n\n> ⚠️ **[EVIDENCE-GATED CONCLUSION]**: Nhiệm vụ yêu cầu chứng minh thực địa nhưng chưa thu thập đủ bằng chứng vật lý độc lập ({audit_res['reason']})."
+        except Exception as eg_err:
+            logger.debug("[FAST-EVIDENCE-GATE] Skip audit: %s", eg_err)
 
         now = datetime.datetime.utcnow() + datetime.timedelta(hours=7)
         signature = f"\n\n---\nPhản hồi lúc {now.hour:02d}h{now.minute:02d}m ngày {now.day:02d}/{now.month:02d}/{now.year}"

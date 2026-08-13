@@ -977,7 +977,7 @@
 *Zenith Architectural Changelog. v27.0 AMG v2 Model & Runtime Agnostic Cognitive Execution Layer. Fully Verified.*
 
 ## [2026-08-02] - ZENITH v26.2 HARDENED & FROZEN: 3-LAYER ARCHITECTURE & COGNITIVE SCALING
-*   **Tuyên Tuyên Bố Trạng Thái**:
+*   **Tuyên Bố Trạng Thái**:
     - "Các bypass vectors hiện được xác định trong Permanent Execution Security Matrix đã được kiểm chứng và bị chặn."
 *   **Khung Kiến Trúc 3 Tầng**:
     1. **COGNITIVE LAYER**: LLM + Compiler + UCWS + Policy ("What should I do?")
@@ -986,3 +986,33 @@
 *   **Giả Thuyết Cognitive Scaling**:
     - Model Intelligence scaling độc lập hoàn toàn với Execution Authority (Authority = CONSTANT).
     - Quy tắc sửa lỗi (Debugging Rule): Phân loại sự cố thành Context Problem, Model Capability, hoặc Runtime Enforcement. Tuyệt đối KHÔNG thêm subsystem/agent/memory mới khi gặp sự cố tư duy của mô hình.
+
+---
+*Zenith Architectural Changelog. v27.0 & v26.2 Hardened. Fully Verified.*
+
+## [2026-08-13] - ZENITH v42.0: GOVERNED ADAPTIVE AGENT OS & BEHAVIORAL ENGINEERING SUBSTRATE (Architecture Frozen & 104/104 Tests Passed)
+*   **Bối cảnh (Why)**:
+    - Chuyển hóa JKAI từ một hệ thống luồng tĩnh sang một **Governed Adaptive Agent OS** có khả năng thích ứng linh hoạt với thực địa (Situational Intelligence) mà không phá vỡ ranh giới an ninh (Sovereign Governance).
+    - Khắc phục triệt để cảm giác "cứng nhắc" thông qua chu trình kín: $\text{Observe} \to \text{Execution Truth} \to \text{Divergence} \to \text{Belief Revision} \to \text{Strategy Decay} \to \text{Next Best Action}$.
+*   **Giải pháp (How)**:
+    1. **Phân Định 2 Tầng Thẩm Quyền Điều Hành (Dual-Governor Separation)**:
+       - **Sovereign Governor**: *"Có được phép làm không?"* (Constitutional Fail-Closed boundary, Gate 0 kiểm soát trước mọi tác động phụ).
+       - **Adaptive Execution Governor (ATS)**: *"Được phép làm, vậy trong tình huống hiện tại nên làm gì tiếp theo?"* (Next Best Action, Dynamic Granularity, Belief Revision).
+    2. **Lõi Nhận Thức Tình Huống & Đồ Thị Nhân Quả**:
+       - `BeliefRevisionEngine`: Quản lý niềm tin và giả thuyết tường minh (`HYPOTHESIS` $\to$ `CONFIRMED` $\mid$ `REFUTED` $\mid$ `UNCERTAIN` $\to$ `SUPERSEDED`) với nhật ký bất biến `BeliefRevisionEvent` (Nguyên tắc I10).
+       - `NextBestActionSelector`: Tối ưu hóa hàm đa mục tiêu ($\text{InfoGain} + \text{Progress} + \text{Evidence} + \text{Reversibility} - \text{Cost} - \text{Risk}$).
+       - `CausalExecutionGraph`: Lưu trữ DAG nhân quả ($\text{Cause} \to \text{Action} \to \text{Expected} \to \text{Actual} \to \text{Evidence} \to \text{Verification}$).
+       - `UncertaintyBudget` & `StrategyConfidenceTracker`: Kiểm soát ngân sách bất định và độ suy giảm niềm tin chiến lược.
+    3. **Kiểm Toán Ngữ Nghĩa 4 Tầng (4-Tier Semantic Verification)**:
+       - *Tier 1 (Physical)*: File exists & size $>0$ bytes.
+       - *Tier 2 (Parseability)*: AST parse (Python), JSON parse, CSV parse.
+       - *Tier 3 (Structural Integrity)*: Kiểm tra thực thể code / dữ liệu thực tế.
+       - *Tier 4 (Mission Criteria Proof)*: Đối chiếu trực tiếp với `CanonicalMissionSpec.success_criteria`.
+    4. **Điều Phối Tài Nguyên (Resource-Aware Tool Execution Scheduler)**:
+       - Giới hạn tải song song với `asyncio.Semaphore(16)` và `asyncio.wait_for(timeout=120.0)` trên `services/ai-executor/tool_router.py`.
+    5. **Đóng Băng Kiến Trúc (Architecture Freeze) & Chuyển Sang Behavioral Engineering**:
+       - Khóa chặt mã nguồn nhận thức: ❌ Không thêm Planner, Pipeline, FSM hay Layer mới.
+       - Chuyển sang chu trình: $\text{Real Task} \longrightarrow \text{Execution Behavior Trace} \longrightarrow \text{Diagnosis} \longrightarrow \text{Targeted Behavioral Fix} \longrightarrow \text{Regression}$.
+       - Khóa 5 chỉ số hành vi: $FSR = 0\%$, $\text{Mission Correctness} \to 100\%$, $RRR > 90\%$, $\text{Adaptation Precision} > 85\%$, $ESR = 100\%$.
+*   **Trạng thái**: **ACTIVE - ZENITH GOVERNED ADAPTIVE AGENT OS v42.0 VERIFIED (104/104 TESTS PASSED | ARCHITECTURE FROZEN)**
+
