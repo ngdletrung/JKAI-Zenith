@@ -546,8 +546,8 @@ class FastPipeline:
 
                         if directive["action"] == "ESCALATE_DEEP":
                             logger.info("[FAST->DEEP ESCALATION] Transitioning task %s to deep_pipeline.", task_id)
-                            from deep_pipeline import deep_pipeline
-                            return await deep_pipeline.run(goal, task_id, context=context)
+                            from deep_pipeline import DeepPipeline
+                            return await DeepPipeline().execute(goal, task_id, planner_instance=None, context=context)
 
                     except Exception as ats_err:
                         logger.error("[ATS-FAST-GOVERNOR-ERROR]: %s", ats_err, exc_info=True)
