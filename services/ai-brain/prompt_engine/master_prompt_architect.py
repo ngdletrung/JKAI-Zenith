@@ -61,7 +61,14 @@ class MasterPromptArchitect:
             f"# SECTION 4: EDGE-CASE & SAFETY GUARDRAILS\n"
             f"- **Never Guess Code Logic or File Paths**: Inspect authoritative source files before writing code.\n"
             f"- **No Superficial Symptom Patches**: Base diagnoses strictly on empirical log evidence.\n"
-            f"- **Never Declare Success Without Verification**: Verification exit code 0 is mandatory."
+            f"- **Never Declare Success Without Verification**: Verification exit code 0 is mandatory.",
+
+            f"# SECTION 5: PROJECT RULES & BEHAVIORAL DIRECTIVES\n"
+            f"### Task Mode: {task_type}\n"
+            f"### Project Rules (.jkairules.json)\n"
+            f"- Behavioral Directives:\n" + ("\n".join([f"  * {r}" for r in behavioral_rules]) if behavioral_rules else "  * Follow Master directives strictly.") + "\n"
+            f"### Response Format\n- Return clear, verifiable markdown or typed action.\n\n"
+            f"{self._get_planning_mode_instructions()}"
         ]
 
         return "\n\n---\n\n".join(parts)

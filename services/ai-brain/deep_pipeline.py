@@ -129,11 +129,10 @@ class DeepPipeline:
 
             judicial_review = final_result.get("judicial_review", {})
             verdict = str(judicial_review.get("verdict", "FAIL")).upper()
-            is_architectural = "step_01_neural_synthesis" in final_result.get("execution", {})
-            if any(w in verdict for w in ["SUCCESS", "PARTIAL", "PASS", "APPROVED", "VALID", "OK"]) or is_architectural:
+            if any(w in verdict for w in ["SUCCESS", "PARTIAL", "PASS", "APPROVED", "VALID", "OK"]):
                 engine.publish_mission_log(
                     "SYSTEM",
-                    f"[CRITIC-PASSED] Thẩm định thành công ({verdict}{' - Architectural Consensus' if is_architectural else ''}), duyệt báo cáo T5/T6.",
+                    f"[CRITIC-PASSED] Thẩm định thành công ({verdict}), duyệt báo cáo T5/T6.",
                     task_id,
                     trace_id
                 )
@@ -328,23 +327,23 @@ class DeepPipeline:
                         engine.publish_mission_log("STOP", "[STOP] Nhận lệnh dừng khẩn cấp từ Master. Đang ngắt quy trình.", task_id, trace_id)
                         raise MasterAbortException("Mission aborted by Master.")
 
-            # Tìm các bước sẵn sàng chạy
-            ready_steps = []
-            for s in steps:
-                s_id = s["id"]
-                if s_id in executed_step_ids:
-                    continue
-                if s_id in blocked_step_ids:
-                    # Bước chứa placeholder bị chặn: đánh dấu hoàn thành để DAG không bế tắc
-                    execution_results[s_id] = {
-                        "status": "blocked",
-                        "error": "REFLECTION-GUARD: bước chứa placeholder/stub bị từ chối thực thi",
-                    }
-                    executed_step_ids.add(s_id)
-                    continue
-                deps = s.get("depends_on") or []
-                if all(dep in executed_step_ids for dep in deps):
-                    ready_steps.append(s)
+                    # Tìm các bước sẵn sàng chạy
+                    ready_steps = []
+                    for s in steps:
+                        s_id = s["id"]
+                        if s_id in executed_step_ids:
+                            continue
+                        if s_id in blocked_step_ids:
+                            # Bước chứa placeholder bị chặn: đánh dấu hoàn thành để DAG không bế tắc
+                            execution_results[s_id] = {
+                                "status": "blocked",
+                                "error": "REFLECTION-GUARD: bước chứa placeholder/stub bị từ chối thực thi",
+                            }
+                            executed_step_ids.add(s_id)
+                            continue
+                        deps = s.get("depends_on") or []
+                        if all(dep in executed_step_ids for dep in deps):
+                            ready_steps.append(s)
 
                     if not ready_steps:
                         # Bế tắc logic hoặc tất cả đã xong
@@ -520,6 +519,36 @@ class DeepPipeline:
                         msg = str(s_res.get("msg", "")).lower() if isinstance(s_res, dict) else ""
                         tool_name = str(s_res.get("tool", "")).upper() if isinstance(s_res, dict) else ""
 
+                        # 🛡️ [ATS-EXECUTION-TRUTH & ADAPTIVE-SOLVER-INTEGRATION]
+                        try:
+                            from core.os.cognition.adaptive_solver.adaptation_applier import adaptation_applier
+                            from core.os.cognition.adaptive_solver.situation_model import situation_assessor
+                            from core.os.cognition.escl.canonical_mission import CanonicalMissionSpec
+                            from core.os.cognition.adaptive_solver.models import StrategyDecision
+
+                            canonical_mission = CanonicalMissionSpec.compile_from_text(goal, mission_id=task_id)
+                            if '_deep_ats_situation' not in locals():
+                                _deep_ats_situation = situation_assessor.initialize_situation(canonical_mission)
+
+                            truth, adaptation = await adaptation_applier.run_post_edit_verification_loop(
+                                tool_name=str(s_res.get("tool", "unknown")),
+                                tool_args=s_res.get("params", {}),
+                                raw_result=s_res,
+                                canonical_mission=canonical_mission,
+                                situation=_deep_ats_situation,
+                                task_id=task_id,
+                                gateway=None,
+                                engine=engine,
+                                trace_id=trace_id
+                            )
+
+                            if adaptation.decision in [StrategyDecision.TARGETED_REPAIR, StrategyDecision.STRATEGY_INVALIDATED, StrategyDecision.PIVOT_STRATEGY]:
+                                any_step_failed = True
+                                failed_step_info = {"id": s_id, "result": s_res, "reason": adaptation.rationale}
+                        except Exception as ats_deep_err:
+                            logger.error("[ATS-DEEP-INTEGRATION-ERROR]: %s", ats_deep_err, exc_info=True)
+                            engine.publish_mission_log("WARN", f"[ATS-WARN] Error in deep adaptive solver: {ats_deep_err}", task_id, trace_id)
+
                         # Check if failure/empty output is due to missing critical information (RAG / Filesystem / Database)
                         if status_val in ("fail", "error", "failed"):
                             any_step_failed = True
@@ -638,18 +667,16 @@ class DeepPipeline:
             logger.warning("[DEEP-PIPELINE] T4 error: %s", e)
             engine.publish_mission_log("WARN", f"[T4 FAULT] {e}.", task_id, trace_id)
 
-        # 🛡️ [ANTIGRAVITY SOVEREIGN REACT RESILIENCE]: Nếu chuỗi tool trả về trống hoặc tác vụ mang tính kiến trúc, 
-        # lập tức kích hoạt bộ Khung xương Tác Vụ Động (Dynamic Architectural Synthesis) thay vì Fail-Fast gục ngã.
+        # 🛡️ [FAIL-CLOSED EVIDENCE GUARD]: Nếu chuỗi tool không tạo ra bằng chứng thực thi hợp lệ,
+        # KHÔNG tiêm kết quả giả (Neural Architectural Synthesis) — giữ lại bằng chứng thực tế
+        # (kể cả cảnh điểm một phần) để T5 Critic đánh giá FAIL một cách thật sự thay vì PASS giả.
         if not execution_results or not self._has_valid_evidence(execution_results):
             engine.publish_mission_log(
-                "EXECUTOR", "[SOVEREIGN REACT ENGINE] Kích hoạt tổng hợp Kiến trúc & Nơ-ron (Neural Architectural Synthesis) cho mục tiêu phức tạp...", task_id, trace_id
+                "EXECUTOR",
+                "[FAIL-CLOSED EVIDENCE] Không có bằng chứng thực thi hợp lệ. KHÔNG chế tổng hợp kết quả giả — chuyển qua T5 Critic để đánh giá thực tế (FAIL).",
+                task_id,
+                trace_id
             )
-            execution_results = {
-                "step_01_neural_synthesis": {
-                    "status": "success",
-                    "output": f"[ANTIGRAVITY ARCHITECTURAL BLUEPRINT & VERIFICATION]: Đã thực thi thiết lập kịch bản, cấu trúc chuỗi vi mô và khung kiểm định chiến lược cho yêu cầu: {goal}\nChiến lược và Checklist đã được lưu vào bảng công việc task.md thành công."
-                }
-            }
 
         # 🧠 [MEMORY-CONSOLIDATION]: Distill verbose tool logs to prevent context window bloat
         try:

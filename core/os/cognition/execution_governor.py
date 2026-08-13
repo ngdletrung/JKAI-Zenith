@@ -31,7 +31,7 @@ class ExecutionPolicy:
     reason: str = ""
 
 
-def govern_execution(profile: TaskProfile, requested_mode: str = "auto") -> ExecutionPolicy:
+def govern_execution(profile: TaskProfile, requested_mode: str = "fast") -> ExecutionPolicy:
     """
     Decides ExecutionPolicy based on multi-dimensional TaskProfile signals.
     """
@@ -46,25 +46,29 @@ def govern_execution(profile: TaskProfile, requested_mode: str = "auto") -> Exec
             reason="High risk or system mutation requires Multi-Agent Governance and Policy Gate."
         )
 
-    # Honor explicit user overrides if specified
-    if requested_mode == "fast":
-        return ExecutionPolicy(
-            topology=ExecutionTopology.SINGLE_AGENT,
-            user_facing_mode="FAST",
-            requires_worktree=(profile.mutation_scope == "MULTI_FILE"),
-            reason="User explicitly requested FAST (Single-Agent Autonomous Mode)."
-        )
-    elif requested_mode == "deep":
+    # Master yêu cầu DEEP tường minh -> Multi-Agent Ensemble
+    if requested_mode in ("deep", "deliberative"):
         return ExecutionPolicy(
             topology=ExecutionTopology.MULTI_AGENT,
             user_facing_mode="DEEP",
             requires_policy_gate=(profile.risk > 0.3),
             requires_worktree=True,
             estimated_cognitive_budget=4.0,
-            reason="User explicitly requested DEEP (Multi-Agent Ensemble Mode)."
+            reason="Master explicitly requested DEEP (Multi-Agent Ensemble Mode)."
         )
 
-    # AUTO Mode Policy Selection:
+    # Architectural Audit / Multi-file action with low confidence -> MULTI_AGENT (DEEP)
+    if "MULTI_FILE_AUDIT_ACTION" in profile.reason_codes or (profile.mutation_scope == "MULTI_FILE" and profile.confidence_score < 0.8):
+        return ExecutionPolicy(
+            topology=ExecutionTopology.MULTI_AGENT,
+            user_facing_mode="DEEP",
+            requires_policy_gate=False,
+            requires_worktree=True,
+            estimated_cognitive_budget=3.5,
+            reason="Architectural Audit / Multi-file scope with confidence < 0.8 assigned to MULTI_AGENT (DEEP)."
+        )
+
+    # Reflex signals
     if "CAPABILITY_QUERY" in profile.reason_codes or "GREETING_SOCIAL" in profile.reason_codes:
         return ExecutionPolicy(
             topology=ExecutionTopology.REFLEX,
@@ -73,20 +77,26 @@ def govern_execution(profile: TaskProfile, requested_mode: str = "auto") -> Exec
             reason="Capability query or social greeting mapped to Zero-Cognition REFLEX."
         )
 
-    if profile.mutation_scope == "MULTI_FILE" or profile.complexity >= 0.7:
-        return ExecutionPolicy(
-            topology=ExecutionTopology.MULTI_AGENT,
-            user_facing_mode="DEEP",
-            requires_worktree=True,
-            estimated_cognitive_budget=3.5,
-            reason="Architectural multi-file complexity mapped to MULTI_AGENT (DEEP)."
-        )
-
-    # Default for all operational, single-file, read-only, and autonomous multi-step tasks -> SINGLE_AGENT (FAST)
     return ExecutionPolicy(
         topology=ExecutionTopology.SINGLE_AGENT,
         user_facing_mode="FAST",
         requires_worktree=(profile.mutation_scope != "NONE"),
         estimated_cognitive_budget=2.0,
-        reason="Operational task mapped to SINGLE_AGENT (FAST Mode: 1 Model handling trajectory)."
+        reason="Default: SINGLE_AGENT (FAST) — 1 autonomous model handles trajectory, multi-tool & multi-file via tool loop."
     )
+
+
+def escalate_policy(current_policy: ExecutionPolicy, reason: str = "") -> ExecutionPolicy:
+    """
+    Mid-Flight Topology Escalation Primitive:
+    Escalates an existing policy (e.g. FAST -> DEEP) during active execution.
+    """
+    return ExecutionPolicy(
+        topology=ExecutionTopology.MULTI_AGENT,
+        user_facing_mode="DEEP",
+        requires_policy_gate=current_policy.requires_policy_gate,
+        requires_worktree=True,
+        estimated_cognitive_budget=max(4.0, current_policy.estimated_cognitive_budget + 2.0),
+        reason=f"Mid-flight escalation triggered: {reason or 'Scope expansion detected'}"
+    )
+

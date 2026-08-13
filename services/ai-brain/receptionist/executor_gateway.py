@@ -3,6 +3,16 @@ import json
 from dataclasses import dataclass
 from core.utils.engine import engine
 
+_EVIDENCE_GUARD = None
+
+
+def _get_evidence_guard():
+    global _EVIDENCE_GUARD
+    if _EVIDENCE_GUARD is None:
+        from core.kernel.evidence_gate import EvidenceGuard
+        _EVIDENCE_GUARD = EvidenceGuard()
+    return _EVIDENCE_GUARD
+
 @dataclass(frozen=True)
 class ExecutionRequest:
     trace_id: str
@@ -49,9 +59,9 @@ class ExecutorGateway:
         # ------------------------------------------------------------------ #
         try:
             from core.kernel.execution_integrity import ExecutionIntegrityLayer, DecisionOutcome
-            from core.kernel.task_contract_store import get_or_create_default_contract, get_active_policy
+            from core.kernel.task_contract_store import get_active_contract, get_active_policy
 
-            task_contract = get_or_create_default_contract(task_id)
+            task_contract = get_active_contract(task_id)
             policy = get_active_policy(task_id)
 
             integrity = ExecutionIntegrityLayer(mission_id=task_id)
@@ -124,6 +134,25 @@ class ExecutorGateway:
         # ------------------------------------------------------------------ #
         # Authorized — proceed to executor                                     #
         # ------------------------------------------------------------------ #
+        # [P0-3]: Evidence Gate — chặn mutation target hallucinated trước khi dispatch
+        try:
+            from core.kernel.evidence_gate import guard_mutation as _guard_mutation
+            ev_decision = _guard_mutation(
+                request.tool_name, dict(request.tool_args or {}),
+                mission_id=task_id, guard=_get_evidence_guard(),
+            )
+            if not ev_decision.allowed:
+                self._log("INTEGRITY", f"[EVIDENCE-DENY] {ev_decision.path}: {ev_decision.reason}", task_id)
+                from core.kernel.execution_integrity import ExecutionResult, DecisionOutcome
+                return ExecutionResult(
+                    outcome=DecisionOutcome.DENY,
+                    tool_executed=False,
+                    reason=ev_decision.reason,
+                    action=request.tool_name,
+                )
+        except Exception:
+            pass
+
         self._log("EXECUTOR", f"Safe execution: {request.tool_name}(...) - TraceID: {request.trace_id}", task_id)
         is_success = False
         output = "No output."
@@ -166,20 +195,21 @@ class ExecutorGateway:
                             action=request.tool_name
                         )
 
-                    if data.get("status") == "error":
-                        is_success = False
-                        output = data.get("msg") or data.get("error") or data.get("output") or "Unknown executor error."
-                    else:
-                        output = data.get("output", "No output.")
-                        if isinstance(output, dict) and output.get("status") == "error":
-                            is_success = False
-                            output = output.get("msg") or output.get("error") or str(output)
-                        elif isinstance(output, str) and ("Thất bại sau" in output or "error" in output.lower()):
-                            is_success = False
-                        else:
-                            is_success = True
-
-                    self._log("EXECUTOR", f"Executor {name} success ({len(str(output))} chars)", task_id)
+                    # [P0-2]: Typed ToolOutcome — phân loại trung thực theo content,
+                    # log SUCCESS chỉ khi có bằng chứng (I3); UNKNOWN != SUCCESS (I2).
+                    from core.kernel.tool_outcome import from_executor_payload
+                    outcome = from_executor_payload(data, request.tool_name)
+                    self._log("EXECUTOR", outcome.to_log_line(), task_id)
+                    if not outcome.is_success:
+                        try:
+                            from core.kernel.recovery_state_machine import build_recovery_plan
+                            plan = build_recovery_plan(
+                                request.tool_name, outcome.reason, request.tool_args)
+                            self._log("EXECUTOR", f"[RECOVERY] {plan.to_log_line()}", task_id)
+                        except Exception:
+                            pass
+                    is_success = outcome.is_success
+                    output = data.get("output", "No output.")
                     return ExecutionResult(
                         outcome=DecisionOutcome.ALLOW,
                         tool_executed=is_success,

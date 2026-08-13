@@ -162,27 +162,33 @@ class ToolRouter:
                 print(f"[ROUTER-REDIS-WARN] Không thể kiểm tra stop_signal: {redis_err}")
 
         try:
-            # 🧪 [ADR-100]: Lazy-Load shared lookup
-            from core.utils.knowledge_manager import JKAIKnowledgeOrchestrator
-            orchestrator = JKAIKnowledgeOrchestrator()
-            all_skills = await orchestrator.get_all_skills_dict()
-            
-            tool_name_normalized = normalize_skill_name(str(tool_name)) if tool_name is not None else ""
-            
-            # 🚀 [DYNAMIC-CODE-INTERPRETER]: Cho phép thực thi trực tiếp mã Python động mà không bị chặn bởi registry
+            # 🚀 [DYNAMIC-CODE-INTERPRETER]: Cho phép thực thi trực tiếp mã Python động ngay lập tức không phụ thuộc DB
             dynamic_code_tools = ["python_execute", "run_python", "code_interpreter", "python_interpreter", "execute_python_script"]
             if tool_name and any(str(tool_name).lower() == ct for ct in dynamic_code_tools):
                 code = kwargs.get("code") or kwargs.get("script") or kwargs.get("python_code") or ""
                 if code:
                     import subprocess
                     print(f"[CODE-INTERPRETER] Thực thi mã Python động ({len(code)} chars)...")
-                    proc = subprocess.run([sys.executable, "-c", code], capture_output=True, text=True, timeout=60)
+                    proc = await asyncio.to_thread(
+                        subprocess.run,
+                        [sys.executable, "-c", code],
+                        capture_output=True,
+                        text=True,
+                        timeout=60
+                    )
                     return {
                         "status": "success" if proc.returncode == 0 else "error",
                         "stdout": proc.stdout,
                         "stderr": proc.stderr,
                         "exit_code": proc.returncode
                     }
+
+            # 🧪 [ADR-100]: Lazy-Load shared lookup
+            from core.utils.knowledge_manager import JKAIKnowledgeOrchestrator
+            orchestrator = JKAIKnowledgeOrchestrator()
+            all_skills = await orchestrator.get_all_skills_dict()
+            
+            tool_name_normalized = normalize_skill_name(str(tool_name)) if tool_name is not None else ""
 
             # 🛡️ [Z-SOS-RESOLVER]: Kiểm tra xem có phải Plugin chuẩn Z-SOS không
             if self._dynamic_tool_map is None:
@@ -389,11 +395,21 @@ class ToolRouter:
             if "profile" in kwargs and "profile" not in sig.parameters and not any(p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()):
                 kwargs.pop("profile", None)
 
+            # [P0-1-CANONICAL]: Canonical Tool Contract (single source of truth)
+            # Ánh xạ aliases (vd: `pattern` -> `query`) từ registry trước mọi auto-heal khác.
+            try:
+                from core.kernel.tool_contracts import canonicalize as _canonicalize
+                _, kwargs, _canon_issues = _canonicalize(resolved_tool_name, kwargs)
+                for _ci in _canon_issues:
+                    print(f"[ROUTER-CONTRACT] {resolved_tool_name}: {_ci}")
+            except Exception:
+                pass
+
             # 🧬 [AUTO-HEALING]: Tự động ánh xạ & tự chữa lành tham số thông minh
             required_params = [p.name for p in sig.parameters.values() if p.default == inspect.Parameter.empty and p.kind in (inspect.Parameter.POSITIONAL_OR_KEYWORD, inspect.Parameter.KEYWORD_ONLY)]
             
             if "query" in required_params and "query" not in kwargs:
-                for synonym in ["search_query", "q", "search", "topic", "text", "url_or_query"]:
+                for synonym in ["search_query", "q", "search", "topic", "text", "url_or_query", "pattern"]:
                     if synonym in kwargs:
                         kwargs["query"] = kwargs.pop(synonym)
                         print(f"[ROUTER-AUTO-HEAL] Tự động ánh xạ tham số '{synonym}' -> 'query'.")
@@ -413,10 +429,10 @@ class ToolRouter:
                 valid_params = set(sig.parameters.keys())
                 kwargs = {k: v for k, v in kwargs.items() if k in valid_params}
 
-            # Thực thi dựa trên định dạng Async/Sync của Target Function
-            if asyncio.iscoroutinefunction(target_func):
+            # Thực thi dựa trên định dạng Async/Sync của Target Function (non-blocking)
+            if inspect.iscoroutinefunction(target_func):
                 return await target_func(**kwargs)
-            return target_func(**kwargs)
+            return await asyncio.to_thread(target_func, **kwargs)
             
         except Exception as e:
             import traceback
@@ -465,9 +481,9 @@ class ToolRouter:
                 takes_single_dict = len(params) == 1 and params[0].kind in (inspect.Parameter.POSITIONAL_ONLY, inspect.Parameter.POSITIONAL_OR_KEYWORD) and (params[0].name in ("kwargs", "args", "payload", "data") or params[0].annotation is dict)
                 
                 if takes_single_dict:
-                    if asyncio.iscoroutinefunction(target_func):
+                    if inspect.iscoroutinefunction(target_func):
                         return await target_func(kwargs)
-                    return target_func(kwargs)
+                    return await asyncio.to_thread(target_func, kwargs)
                 else:
                     if not has_var_keyword:
                         valid_params = set(sig.parameters.keys())
@@ -487,9 +503,9 @@ class ToolRouter:
                         if len(other_keys) == 1:
                             cleaned_kwargs[required_params[0]] = kwargs[other_keys[0]]
 
-                    if asyncio.iscoroutinefunction(target_func):
+                    if inspect.iscoroutinefunction(target_func):
                         return await target_func(**cleaned_kwargs)
-                    return target_func(**cleaned_kwargs)
+                    return await asyncio.to_thread(target_func, **cleaned_kwargs)
             else:
                 # Fall through to standard dynamic resolution
                 return None

@@ -57,9 +57,33 @@ class FastPipeline:
                 matches = re.findall(r'(?:\d+[\s]*[\+\-\*\/]+[\s]*)+\d+', text)
                 if matches:
                     expr = max(matches, key=len).strip()
-                    # Đảm bảo biểu thức an toàn cho eval
+                    # Đảm bảo biểu thức an toàn cho AST parsing
                     if re.match(r'^[0-9\s\+\-\*\/\.\(\)]+$', expr):
-                        val = eval(expr, {"__builtins__": None}, {})
+                        import ast, operator
+                        node = ast.parse(expr, mode='eval')
+                        def _eval_ast(n):
+                            if isinstance(n, ast.Expression):
+                                return _eval_ast(n.body)
+                            elif isinstance(n, ast.Constant) and isinstance(n.value, (int, float)):
+                                return n.value
+                            elif isinstance(n, ast.BinOp):
+                                left = _eval_ast(n.left)
+                                right = _eval_ast(n.right)
+                                ops = {
+                                    ast.Add: operator.add,
+                                    ast.Sub: operator.sub,
+                                    ast.Mult: operator.mul,
+                                    ast.Div: operator.truediv,
+                                    ast.FloorDiv: operator.floordiv,
+                                    ast.Mod: operator.mod,
+                                    ast.Pow: operator.pow
+                                }
+                                op_fn = ops.get(type(n.op))
+                                if op_fn:
+                                    return op_fn(left, right)
+                            raise ValueError("Unsafe arithmetic AST node")
+                        
+                        val = _eval_ast(node)
                         if isinstance(val, (int, float)):
                             if isinstance(val, float) and val.is_integer():
                                 val = int(val)
@@ -455,19 +479,87 @@ class FastPipeline:
                             "pipeline": "fast"
                         }
                     
-                    # Cấu trúc messages chuẩn Ollama Tool Calling cho lượt ReAct tiếp theo
-                    asst_msg = {"role": "assistant", "content": res_content}
+                    # Cấu trúc messages cho lượt ReAct tiếp theo (tương thích cả Native Ollama Tooling và Text Action Protocol)
                     if isinstance(response, dict) and response.get("tool_calls"):
-                        asst_msg["tool_calls"] = response["tool_calls"]
-                    elif tool_calls:
-                        asst_msg["tool_calls"] = tool_calls
-                    
-                    tool_msg = {"role": "tool", "content": obs}
-                    if tool_calls and isinstance(tool_calls[0], dict):
-                        tool_msg["tool_call_id"] = tool_calls[0].get("id", "none")
-                    
-                    context = context + [asst_msg, tool_msg]
+                        asst_msg = {"role": "assistant", "content": res_content, "tool_calls": response["tool_calls"]}
+                        tool_msg = {"role": "tool", "content": obs, "tool_call_id": tool_calls[0].get("id", "call_1") if tool_calls else "call_1"}
+                        context = context + [asst_msg, tool_msg]
+                    else:
+                        tool_names = [str(tc.get("function", {}).get("name", "")) for tc in tool_calls if isinstance(tc, dict)]
+                        context.append({"role": "assistant", "content": str(res_content)})
+                        context.append({
+                            "role": "user",
+                            "content": (
+                                f"[OBSERVATION từ công cụ {tool_names}]:\n{obs}\n\n"
+                                f"Dựa trên kết quả ở trên, hãy tiếp tục thực thi bước tiếp theo (nếu cần gọi thêm công cụ) "
+                                f"hoặc trình bày câu trả lời và kết quả hoàn chỉnh, chuyên nghiệp cho Master."
+                            )
+                        })
+                    # 🛡️ [ATS-EXECUTIVE-GOVERNOR & VERIFICATION CLOSED-LOOP]
+                    try:
+                        from core.os.cognition.adaptive_solver.adaptation_applier import adaptation_applier
+                        from core.os.cognition.adaptive_solver.situation_model import situation_assessor
+                        from core.os.cognition.escl.canonical_mission import CanonicalMissionSpec
+
+                        canonical_mission = CanonicalMissionSpec.compile_from_text(goal, mission_id=task_id)
+                        if '_ats_situation' not in locals():
+                            _ats_situation = situation_assessor.initialize_situation(canonical_mission)
+
+                        first_tc = tool_calls[0] if tool_calls else {}
+                        fn_name = first_tc.get("function", {}).get("name", "unknown")
+                        raw_args = first_tc.get("function", {}).get("arguments", {})
+                        if isinstance(raw_args, str):
+                            try:
+                                import json
+                                raw_args = json.loads(raw_args)
+                            except Exception:
+                                raw_args = {}
+
+                        truth, adaptation = await adaptation_applier.run_post_edit_verification_loop(
+                            tool_name=fn_name,
+                            tool_args=raw_args,
+                            raw_result=obs,
+                            canonical_mission=canonical_mission,
+                            situation=_ats_situation,
+                            task_id=task_id,
+                            gateway=gateway,
+                            engine=engine,
+                            trace_id=trace_id
+                        )
+
+                        directive = await adaptation_applier.apply_adaptation(
+                            adaptation=adaptation,
+                            canonical_mission=canonical_mission,
+                            situation=_ats_situation,
+                            context=context,
+                            task_id=task_id,
+                            engine=engine,
+                            trace_id=trace_id,
+                            gateway=gateway
+                        )
+
+                        if directive["action"] == "SAFE_STOP":
+                            return directive["result"]
+
+                        if directive["action"] == "TERMINATE":
+                            return directive["result"]
+
+                        if directive["action"] == "ESCALATE_DEEP":
+                            logger.info("[FAST->DEEP ESCALATION] Transitioning task %s to deep_pipeline.", task_id)
+                            from deep_pipeline import deep_pipeline
+                            return await deep_pipeline.run(goal, task_id, context=context)
+
+                    except Exception as ats_err:
+                        logger.error("[ATS-FAST-GOVERNOR-ERROR]: %s", ats_err, exc_info=True)
+                        engine.publish_mission_log("WARN", f"[ATS-WARN] Error in adaptive solver: {ats_err}", task_id, trace_id)
+
+                    engine.publish_mission_log(
+                        "EXEC",
+                        f"[FAST-REACT] Lượt {turn + 1} hoàn tất: đã nạp observation vào ngữ cảnh cho lượt {turn + 2}.",
+                        task_id, trace_id, stealth=True
+                    )
                 else:
+                    # Model không gọi thêm tool mà đưa ra kết quả trực tiếp -> Hoàn tất ReAct loop!
                     break
 
         if not res_content:
