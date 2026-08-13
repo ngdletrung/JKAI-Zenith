@@ -93,7 +93,7 @@ class AdaptationApplier:
         if decision == StrategyDecision.DEEPEN_REASONING or adaptation.escalate_to_deep:
             engine.publish_mission_log("SYSTEM", f"[ATS-GOVERNOR ESCALATE]: Phát hiện độ phức tạp cao ({adaptation.rationale}). Chuyển giao sang DEEP Pipeline.", task_id, trace_id)
             try:
-                from services.ai_brain.mode_switcher import mode_switcher
+                from core.utils.mode_switcher import mode_switcher
                 await mode_switcher.switch_to("DEEP", engine, task_id)
             except Exception as sw_err:
                 logger.warning("[MODE-SWITCH-WARN]: %s", sw_err)

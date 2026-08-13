@@ -1,11 +1,13 @@
 """
 core/os/cognition/adaptive_solver/situation_model.py
-Rich Situation Model Assessor & Expected vs Actual Divergence Detector.
+Rich Situation Model Assessor & Ground Truth World State Engine.
 
 Enforces:
 - Mission Immutability Hash
 - Explicit Expected vs Actual tracking
-- Dynamic Strategy Invalidation on unexpected workspace findings
+- Dynamic Strategy Confidence Decay on anomalous discoveries
+- Uncertainty Budget computation
+- Integration with Belief Revision Engine
 """
 
 from __future__ import annotations
@@ -13,16 +15,19 @@ import hashlib
 import os
 import time
 from typing import Any, Dict, List, Optional, Tuple
+
 from core.os.cognition.adaptive_solver.models import (
     ActionGranularity,
     ExpectedVsActual,
     SituationModel,
+    StrategyConfidenceTracker,
+    UncertaintyBudget,
 )
 from core.os.cognition.escl.canonical_mission import CanonicalMissionSpec
 
 
 class SituationModelAssessor:
-    """Maintains and updates JKAI's real-time situational ground truth."""
+    """Maintains and updates JKAI's real-time situational ground truth world state."""
 
     def initialize_situation(
         self,
@@ -40,6 +45,26 @@ class SituationModelAssessor:
         req_repr = "".join([f"{sc.criterion_id}:{sc.description}" for sc in mission.success_criteria])
         mission_hash = hashlib.sha256(f"{mission.mission_id}:{mission.raw_goal}:{req_repr}".encode()).hexdigest()
 
+        # Initial assumptions
+        assumptions = []
+        if groups:
+            for g_name, g_files in groups.items():
+                assumptions.append({
+                    "assumption_id": f"ASM-{len(assumptions)+1:02d}",
+                    "statement": f"{len(g_files)} files in cluster '{g_name}' share homogenous structure",
+                    "status": "HYPOTHESIS",
+                    "confidence": 0.70
+                })
+
+        # Initial uncertainty budget
+        total_unknowns = len(files) if files else 1
+        critical_unknowns = 1 if len(anomalies) > 0 or not files else 0
+        uncertainty = UncertaintyBudget(
+            total_unknowns=total_unknowns,
+            critical_unknowns=critical_unknowns,
+            evidence_confidence=0.50 if not files else 0.70
+        )
+
         return SituationModel(
             mission_id=mission.mission_id,
             initial_hypothesis=f"Initial hypothesis for '{mission.raw_goal[:60]}...' across {len(files)} discovered files.",
@@ -49,6 +74,7 @@ class SituationModelAssessor:
             anomalous_items=anomalies,
             known_facts={},
             unknowns=[f"Verify schema consistency across {len(files)} files" if files else "Inspect target environment"],
+            assumptions=assumptions,
             expected_vs_actual=[
                 ExpectedVsActual(
                     expected_state=f"Expected {len(files)} files to match initial group distribution",
@@ -57,6 +83,8 @@ class SituationModelAssessor:
                 )
             ],
             current_granularity=initial_gran,
+            strategy_confidence=StrategyConfidenceTracker(initial_confidence=0.95, current_confidence=0.95),
+            uncertainty_budget=uncertainty,
             complexity_score=round(complexity, 2),
             risk_score=0.2 if len(files) > 5 else 0.05,
             confidence_score=0.5,
@@ -97,31 +125,37 @@ class SituationModelAssessor:
         expected_behavior: str,
         observed_behavior: str,
     ) -> SituationModel:
-        """Records probe result and explicitly detects divergence between Expected vs Actual."""
+        """Records probe result, applies confidence decay, and detects divergence between Expected vs Actual."""
         is_divergent = False
         div_reason = None
         obs_lower = observed_behavior.lower()
 
         # Check for divergence indicators (e.g. dependency error, incompatible schema)
-        if any(err in obs_lower for err in ["modulenotfound", "importerror", "syntaxerror", "schemamismatch", "incompatible"]):
+        if any(err in obs_lower for err in ["modulenotfound", "importerror", "syntaxerror", "schemamismatch", "incompatible", "corrupted"]):
             is_divergent = True
             div_reason = f"Observation '{observed_behavior[:100]}' contradicted expectation '{expected_behavior}'"
             situation.known_facts[f"divergence:{probe_target}"] = observed_behavior
             situation.complexity_score = min(1.0, situation.complexity_score + 0.3)
-            situation.confidence_score = max(0.1, situation.confidence_score - 0.2)
+            # Apply Strategy Confidence Decay
+            situation.strategy_confidence.record_anomaly(div_reason, penalty=0.35)
+            situation.uncertainty_budget.critical_unknowns += 1
+            situation.uncertainty_budget.evidence_confidence = max(0.1, situation.uncertainty_budget.evidence_confidence - 0.25)
+            situation.current_granularity = ActionGranularity.PRECISION
         else:
             situation.known_facts[f"verified:{probe_target}"] = True
-            situation.confidence_score = min(1.0, situation.confidence_score + 0.1)
+            situation.confidence_score = min(1.0, situation.confidence_score + 0.2)
+            situation.progress_percent = min(100.0, situation.progress_percent + 15.0)
+            situation.uncertainty_budget.evidence_confidence = min(1.0, situation.uncertainty_budget.evidence_confidence + 0.15)
+            if situation.uncertainty_budget.critical_unknowns > 0:
+                situation.uncertainty_budget.critical_unknowns -= 1
 
-        situation.expected_vs_actual.append(
-            ExpectedVsActual(
-                expected_state=expected_behavior,
-                observed_reality=observed_behavior,
-                is_divergent=is_divergent,
-                divergence_reason=div_reason
-            )
+        ev = ExpectedVsActual(
+            expected_state=expected_behavior,
+            observed_reality=observed_behavior,
+            is_divergent=is_divergent,
+            divergence_reason=div_reason
         )
-
+        situation.expected_vs_actual.append(ev)
         situation.updated_at = time.time()
         return situation
 
