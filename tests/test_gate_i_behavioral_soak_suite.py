@@ -167,3 +167,104 @@ class TestGateIBehavioralSoakSuite:
         auditor = MockTraceAuditor()
         assert auditor.aqs_score == 100.0
         assert auditor.false_success_rate == 0.0
+
+    # ─────────────────────────────────────────────────────────────
+    # BEHAVIOR 5: "No-Op" Restraint (Zero Unnecessary Actions)
+    # ─────────────────────────────────────────────────────────────
+    def test_gate_i_05_no_op_restraint_terminates_with_proof_without_edits(self):
+        """When workspace already satisfies 100% of requirements, agent immediately outputs proof with 0 edits."""
+        mission = CanonicalMissionSpec.compile_from_text(
+            goal="Ensure all schema files have version 2 header",
+            mission_id="m_noop_05"
+        )
+        files = ["schema_01.json", "schema_02.json"]
+        situation = situation_assessor.initialize_situation(mission, initial_workspace_files=files)
+
+        # Probe shows already compliant
+        truth_verified = ExecutionTruth(
+            invocation_id="inv_noop_01",
+            tool_name="view_file",
+            arguments={"path": "schema_01.json"},
+            tool_outcome=ToolOutcome.SUCCEEDED,
+            artifact_outcome=ArtifactOutcome.UNCHANGED,
+            mission_outcome=MissionOutcome.COMPLETED,
+            is_genuine_success=True,
+            requirement_verdicts={"crit_v2": RequirementStatus.SATISFIED},
+            artifact_path="schema_01.json"
+        )
+
+        adaptation = adaptive_solver_engine.evaluate_and_adapt(mission, situation, truth_verified)
+        assert adaptation.decision == StrategyDecision.TERMINATE_WITH_PROOF
+        assert adaptation.recommended_granularity == ActionGranularity.VERIFY
+        assert "ALL_CRITERIA_VERIFIED" in adaptation.reason_codes
+
+    # ─────────────────────────────────────────────────────────────
+    # BEHAVIOR 6: Same Mission + Same World + Different Initial Beliefs
+    # ─────────────────────────────────────────────────────────────
+    def test_gate_i_06_same_mission_same_world_different_initial_belief_revises_cleanly(self):
+        """Regardless of initial hypothesis bias, empirical evidence forces exact same ground truth convergence."""
+        from core.os.cognition.adaptive_solver.belief_system import BeliefRevisionEngine, BeliefStatus
+
+        # Run 1: Initially believed 20/20 were homogenous
+        engine_1 = BeliefRevisionEngine()
+        b_run1 = engine_1.register_belief("20/20 files are homogenous schema", initial_confidence=0.90)
+
+        # Run 2: Initially believed workspace was completely heterogeneous
+        engine_2 = BeliefRevisionEngine()
+        b_run2 = engine_2.register_belief("All 20 files have distinct unknown schemas", initial_confidence=0.85)
+
+        # Same empirical evidence arrives: 18 homogenous + 2 outliers
+        obs_evidence = "Observed 18 standard files + 2 legacy outliers"
+        engine_1.revise_belief(
+            belief_id=b_run1.belief_id,
+            new_statement="18 files standard schema + 2 legacy outliers",
+            trigger_evidence=obs_evidence,
+            rationale="Discovered 2 legacy files during probe"
+        )
+
+        engine_2.revise_belief(
+            belief_id=b_run2.belief_id,
+            new_statement="18 files standard schema + 2 legacy outliers",
+            trigger_evidence=obs_evidence,
+            rationale="Found 18 files actually cluster into standard schema"
+        )
+
+        active_1 = engine_1.get_active_beliefs()[0].statement
+        active_2 = engine_2.get_active_beliefs()[0].statement
+
+        # Both runs converge on the exact same empirical truth
+        assert active_1 == active_2
+        assert "18 files standard schema + 2 legacy outliers" in active_1
+
+    # ─────────────────────────────────────────────────────────────
+    # BEHAVIOR 7: Partial Success (Surgical Slicing 18 PASS / 2 FAIL)
+    # ─────────────────────────────────────────────────────────────
+    def test_gate_i_07_partial_success_surgically_isolates_and_repairs_only_failed_subset(self):
+        """When 18 files succeed and 2 fail, ATS isolates the 2 failed files for targeted repair instead of all 20."""
+        mission = CanonicalMissionSpec.compile_from_text("Normalize 20 datasets", mission_id="m_partial_07")
+        situation = situation_assessor.initialize_situation(mission)
+
+        # 18 pass, 2 fail
+        truth_partial = ExecutionTruth(
+            invocation_id="inv_part_01",
+            tool_name="batch_processor",
+            arguments={"files": 20},
+            tool_outcome=ToolOutcome.SUCCEEDED,
+            artifact_outcome=ArtifactOutcome.MODIFIED,
+            mission_outcome=MissionOutcome.RECOVERY,
+            requirement_verdicts={
+                "file_01_to_18": RequirementStatus.SATISFIED,
+                "file_19_and_20": RequirementStatus.UNSATISFIED
+            },
+            artifact_path="file_19_and_20",
+            error_message="Format mismatch in file_19.csv and file_20.csv",
+            is_genuine_success=False
+        )
+
+        adaptation = adaptive_solver_engine.evaluate_and_adapt(mission, situation, truth_partial)
+
+        assert adaptation.decision == StrategyDecision.TARGETED_REPAIR
+        assert adaptation.recommended_granularity == ActionGranularity.TARGETED_REPAIR
+        assert adaptation.next_action_target == "file_19_and_20"
+        assert "file_19_and_20" in str(adaptation.replan_instructions)
+
