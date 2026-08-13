@@ -335,3 +335,101 @@ class TestEvidenceExecutionContractSuite:
         assert audit["metrics"].evidence_efficiency == 1.0
         assert audit["metrics"].evidence_coverage == 1.0
         assert audit["metrics"].unsupported_claim_rate == 0.0
+
+    # ─────────────────────────────────────────────────────────────
+    # VECTOR 11: Adversarial Self-Claim Without EPA is Blocked
+    # ─────────────────────────────────────────────────────────────
+    def test_11_adversarial_self_claim_without_epa_is_blocked(self):
+        """Model produces text claim but 0 EPAs -> Claim is unsupported, Evidence Gate strictly blocks completion."""
+        epa_claim_only = EvidenceProducingAction(
+            "EPA-ADV-1", CapabilityDimension.TOOL_FILE_ACTUATION, "Claim test", "Expected",
+            requirement=EvidenceRequirement(capability=CapabilityDimension.TOOL_FILE_ACTUATION)
+        )
+        claim = epa_claim_only.register_claim("Tôi có thể thao tác file tuyệt vời mà không cần chạy gì cả.")
+        # No action attached!
+        ev = epa_claim_only.synthesize_evidence("m_adv", "t_adv", "tr_adv", "inv_adv")
+        assert ev is None
+        assert epa_claim_only.status == VerificationStatus.UNVERIFIED
+        assert claim.is_supported is False
+
+        audit = EvidenceGateAuditor.audit_completion(
+            policy=EvidencePolicy.REQUIRED,
+            epas=[epa_claim_only],
+            requirements=[EvidenceRequirement(capability=CapabilityDimension.TOOL_FILE_ACTUATION)]
+        )
+        assert audit["verdict"] == EvidenceGateVerdict.RECOVERY
+        assert audit["metrics"].unsupported_claim_rate == 1.0
+        assert audit["metrics"].verified_evidence_count == 0
+
+    # ─────────────────────────────────────────────────────────────
+    # VECTOR 12: Fake Tool Success Rejected by Execution Truth
+    # ─────────────────────────────────────────────────────────────
+    def test_12_fake_tool_success_rejected_by_execution_truth(self):
+        """Tool returns 0/success, but verification reveals corrupt data -> Verification Fails -> Blocked."""
+        epa_fake = EvidenceProducingAction(
+            "EPA-FAKE", CapabilityDimension.TOOL_FILE_ACTUATION, "Corrupt test", "Exact JSON match",
+            requirement=EvidenceRequirement(capability=CapabilityDimension.TOOL_FILE_ACTUATION, required_level=EvidenceLevel.E2_VERIFIED)
+        )
+        epa_fake.attach_action("write_file", {"path": "corrupt.json", "content": '{"valid": true}'})
+        epa_fake.attach_observation(returncode=0, stdout="Wrote bytes successfully") # Tool says success!
+        
+        # But verification discovers payload mismatch / corruption!
+        epa_fake.attach_verification(
+            verifier_type="READBACK_SHA256",
+            passed=False,
+            details="Hash mismatch: expected a1b2c3 but found empty/corrupted buffer",
+            is_independent=True
+        )
+        ev = epa_fake.synthesize_evidence("m_fake", "t_fake", "tr_fake", "inv_fake")
+        assert epa_fake.status == VerificationStatus.FAILED
+        assert ev.level == EvidenceLevel.E1_OBSERVED # Only observed, NOT verified
+
+        audit = EvidenceGateAuditor.audit_completion(
+            policy=EvidencePolicy.REQUIRED,
+            epas=[epa_fake],
+            requirements=[EvidenceRequirement(capability=CapabilityDimension.TOOL_FILE_ACTUATION, required_level=EvidenceLevel.E2_VERIFIED)]
+        )
+        assert audit["verdict"] == EvidenceGateVerdict.RECOVERY
+        assert audit["metrics"].verified_evidence_count == 0
+
+    # ─────────────────────────────────────────────────────────────
+    # VECTOR 13: Belief Revision Telemetry in Adaptive Recovery
+    # ─────────────────────────────────────────────────────────────
+    def test_13_belief_revision_telemetry_in_recovery_loop(self):
+        """Failure -> Observation -> Belief Revised -> Strategy Revised -> Action -> Verified."""
+        from core.os.cognition.adaptive_solver.models import ExpectedVsActual, StrategyConfidenceTracker, StrategyDecision
+        
+        # Step 1: Initial belief divergence & strategy decay
+        tracker = StrategyConfidenceTracker(initial_confidence=0.95)
+        eva = ExpectedVsActual(
+            expected_state="Tool A is available and operational",
+            observed_reality="Execution failed with 404 resource not found",
+            is_divergent=True,
+            divergence_reason="Execution failed with 404 resource not found"
+        )
+        assert eva.is_divergent is True
+        
+        # Anomaly recorded -> confidence decays -> strategy invalidated
+        tracker.record_anomaly("Tool A failed with 404", penalty=0.60)
+        assert tracker.is_invalidated is True
+        new_strategy = StrategyDecision.PIVOT_STRATEGY
+
+        # Step 2: EPA with recovery
+        epa_rec = EvidenceProducingAction(
+            "EPA-REC-TRACE", CapabilityDimension.ADAPTIVE_RECOVERY, "Recovery test", "Success",
+            requirement=EvidenceRequirement(capability=CapabilityDimension.ADAPTIVE_RECOVERY, required_level=EvidenceLevel.E2_VERIFIED)
+        )
+        epa_rec.attach_action("tool_b_fallback", {})
+        epa_rec.attach_observation(0, "Tool B completed successfully")
+        epa_rec.attach_verification("VERIFY_TOOL_B", True, "Pass", is_independent=True)
+        epa_rec.synthesize_evidence("m_rec", "t_rec", "tr_rec", "inv_rec")
+        assert epa_rec.status == VerificationStatus.VERIFIED
+
+        audit = EvidenceGateAuditor.audit_completion(
+            policy=EvidencePolicy.REQUIRED,
+            epas=[epa_rec],
+            requirements=[EvidenceRequirement(capability=CapabilityDimension.ADAPTIVE_RECOVERY)]
+        )
+        assert audit["verdict"] == EvidenceGateVerdict.TERMINATE_WITH_PROOF
+        assert new_strategy == StrategyDecision.PIVOT_STRATEGY
+
