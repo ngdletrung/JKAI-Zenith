@@ -330,14 +330,19 @@ class SkillDeckIndex:
             "<ZENITH_SKILL_DECK_RESOLVE>",
             "Master dùng số thứ tự Command Deck (MAP_SKILLS.md). Đã ánh xạ sang Registry ID thực thi:",
         ]
+        cognitive_protocols = {"HOI_DONG_CHUYEN_GIA", "IMPORT_SKILL", "EVOLVE_SYSTEM", "GLOBAL_SYSTEM_CONTEXT"}
         for e in entries:
             lines.append(f"- {e.display_id}: {e.title}")
             if e.registry_id:
-                lines.append(f"  → registry_id / tool / skill_id: `{e.registry_id}`")
+                if e.registry_id in cognitive_protocols:
+                    lines.append(f"  → Quy trình tư duy (Cognitive Protocol): `{e.registry_id}`")
+                    lines.append("    (LƯU Ý PLANNER: Đây là hướng dẫn tư duy đa chiều/phản biện, KHÔNG điền tên này vào field 'tool'. Hãy dùng tool thực thi như WRITE_TO_FILE, RUN_COMMAND, SEARCH_WEB_GLOBAL, CODE_EXECUTION).")
+                else:
+                    lines.append(f"  → registry_id / tool / skill_id: `{e.registry_id}`")
             else:
                 lines.append("  → ⚠️ Chưa khớp registry — dùng /search_skill hoặc cập nhật MAP_SKILLS.")
         lines.append(
-            "Khi gọi tool/plan: dùng registry_id ở trên, KHÔNG dùng số # trong field tool."
+            "Khi gọi tool/plan: chỉ dùng tên công cụ thực thi có sẵn (WRITE_TO_FILE, RUN_COMMAND, SEARCH_WEB_GLOBAL, CODE_EXECUTION...), KHÔNG dùng số #."
         )
         lines.append("</ZENITH_SKILL_DECK_RESOLVE>")
         return "\n".join(lines)

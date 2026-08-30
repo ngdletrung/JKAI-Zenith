@@ -21,9 +21,23 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from core.governor.hardware_monitor import HardwareMonitor
 
+# Doc .env neu chua set env vars
+if not os.getenv("REDIS_PASSWORD"):
+    env_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env")
+    if os.path.exists(env_path):
+        try:
+            with open(env_path, "r", encoding="utf-8") as ef:
+                for line in ef:
+                    line = line.strip()
+                    if line.startswith("REDIS_PASSWORD=") and not line.startswith("#"):
+                        os.environ["REDIS_PASSWORD"] = line.split("=", 1)[1].split("#")[0].strip()
+                        break
+        except Exception:
+            pass
+
 REDIS_HOST = os.getenv("REDIS_HOST", "localhost")
 REDIS_PORT = int(os.getenv("REDIS_PORT", 6379))
-REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", "")
+REDIS_PASSWORD = os.getenv("REDIS_PASSWORD", "Admin@123456")
 PUBLISH_INTERVAL = 0.5   # giay — near-realtime cho UI
 CACHE_TTL        = 5     # Redis key het han sau 5s neu publisher die
 

@@ -62,8 +62,8 @@ def test_lookup_or_explain_unknown_deck():
 
 def test_registry_deck_number_fallback():
     deck = _deck()
-    rid = deck.resolve_registry_by_deck("1002")
-    assert rid == "HOI_DONG_CHUYEN_GIA"
+    rid = deck.resolve_registry_by_deck("1023")
+    assert rid == "SKILL_EXECUTIVE_FORGE"
 
 
 def test_sync_dry_run():
