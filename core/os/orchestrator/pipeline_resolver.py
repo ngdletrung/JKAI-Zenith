@@ -24,7 +24,8 @@ class PipelineResolver:
         exec_policy: ExecutionPolicy,
         requested_mode: str,
         user_explicit_deep: bool,
-        has_deep_mandatory_skill: bool,
+        has_deep_mandatory_skill: bool = False,
+        has_deep_skill: bool = False,
         log_event: bool = True
     ) -> Tuple[str, bool, bool, bool]:
         """
@@ -32,6 +33,7 @@ class PipelineResolver:
         Trả về tuple: (pipeline, is_fast, is_deep, use_deep_full)
         """
         req_mode = (requested_mode or "auto").lower()
+        deep_skill_flag = has_deep_mandatory_skill or has_deep_skill
 
         # 🛡️ SAFETY GATE (Invariant 0 — Bất biến an toàn tối cao)
         is_high_risk = (
@@ -78,7 +80,7 @@ class PipelineResolver:
         # 2. Nhóm Tư Duy Chiến Lược Sâu (Deep Multi-Agent): Lập trình lớn, Kiến trúc, Phản biện đa chiều
         is_complex_intent = (
             user_explicit_deep
-            or (has_deep_mandatory_skill and req_mode != "fast")
+            or (deep_skill_flag and req_mode != "fast")
             or exec_policy.topology == ExecutionTopology.MULTI_AGENT
             or os_intent in ("build", "fix", "refactor", "code", "coding", "architecture")
             or any(t in ("CODING", "ARCHITECTURE", "MULTI_AGENT", "SYSTEM") for t in tags)
@@ -124,7 +126,8 @@ class PipelineResolver:
         exec_policy: ExecutionPolicy,
         requested_mode: str,
         user_explicit_deep: bool,
-        has_deep_mandatory_skill: bool,
+        has_deep_mandatory_skill: bool = False,
+        has_deep_skill: bool = False,
         log_event: bool = True
     ) -> None:
         """Áp dụng quyết định pipeline vào plan và mission_state."""
@@ -134,6 +137,7 @@ class PipelineResolver:
             requested_mode=requested_mode,
             user_explicit_deep=user_explicit_deep,
             has_deep_mandatory_skill=has_deep_mandatory_skill,
+            has_deep_skill=has_deep_skill,
             log_event=log_event
         )
         plan.pipeline = pipeline
