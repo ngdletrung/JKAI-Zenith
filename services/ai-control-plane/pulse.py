@@ -169,7 +169,7 @@ class ZenithPulse:
                 }
                 
                 log = json.dumps({"tag": "PULSE", "data": pulse_data, "ts": time.time()}, ensure_ascii=False)
-                redis_safe(lambda r: r.publish("monitor:pulse_channel", log))
+                redis_safe(lambda r: r.publish("monitor:service_pulse_channel", log))
                 redis_safe(lambda r: r.set("service_pulse_cache", json.dumps(pulse_data), ex=60))
 
                 try:
