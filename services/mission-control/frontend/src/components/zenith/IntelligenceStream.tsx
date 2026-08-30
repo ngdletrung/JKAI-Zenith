@@ -553,24 +553,14 @@ export const IntelligenceStream = memo(() => {
               />
 
               <div className="flex items-center gap-2 mb-1">
-                {/* 🧠 [SUPREME-TOGGLE]: Nút chuyển đổi 2 chế độ FAST/DEEP */}
-                <button
-                  onClick={() => {
-                    const modes: CognitiveMode[] = ['fast', 'deep'];
-                    const nextMode = modes[(modes.indexOf(cognitiveMode) + 1) % modes.length];
-                    setMode(nextMode);
-                  }}
-                  className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-lg border ${cognitiveMode === 'fast' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-emerald-500/20 shadow-[0_0_15px_rgba(52,211,153,0.2)]' :
-                      'bg-amber-500/20 text-amber-400 border-amber-500/40 shadow-amber-500/20 shadow-[0_0_15px_rgba(251,191,36,0.2)]'
-                    }`}
+                {/* 🧠 [AUTO-HYBRID-BADGE]: Hiển thị trạng thái thích ứng tự động AUTO */}
+                <div
+                  title="Chế độ Tự Động Thích Ứng (Auto Hybrid): Tự động phản xạ nhanh 0.3s cho câu hỏi đơn giản và kích hoạt Deep Reasoning cho bài toán lớn."
+                  className="px-3.5 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-lg border bg-cyan-500/20 text-cyan-400 border-cyan-500/40 shadow-cyan-500/10 flex items-center gap-1.5 select-none"
                 >
-                  <div className="flex items-center gap-2">
-                    <Zap className={`w-3.5 h-3.5 ${cognitiveMode === 'fast' ? 'text-emerald-400' :
-                        'text-amber-400'
-                      }`} />
-                    <span>{cognitiveMode}</span>
-                  </div>
-                </button>
+                  <Zap className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+                  <span>AUTO</span>
+                </div>
 
                 <button
                   onClick={() => setShowHistory(!showHistory)}

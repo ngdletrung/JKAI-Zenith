@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 
 export type AgentStatus = 'idle' | 'running' | 'paused' | 'error';
-export type CognitiveMode = 'fast' | 'deep';
+export type CognitiveMode = 'auto' | 'fast' | 'deep';
 export type RightTab = 'progress' | 'plan' | 'tasks' | 'walkthrough' | 'explorer' | 'changes' | 'logs' | 'terminal' | 'filelab' | 'connections';
 export type StreamView = 'chat' | 'process' | 'full';
 
@@ -356,7 +356,7 @@ export const useZenithStore = create<ZenithState>()(
         status: 'idle',
         isBooting: typeof window !== 'undefined' ? !sessionStorage.getItem('zenith_booted') : true,
         isPaused: false,
-        cognitiveMode: 'fast',
+        cognitiveMode: 'auto',
         attachedFiles: [],
         operationalLogs: [{
           id: 'zenith_welcome_msg',
