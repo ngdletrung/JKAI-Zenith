@@ -109,30 +109,31 @@ class ZenithPulse:
         return health
 
     async def get_hardware_stats(self):
-        """Thu thập telemetry phần cứng từ Host Bridge siêu tốc."""
+        """Thu thập telemetry phần cứng từ Redis cache do Host Windows Publisher cung cấp."""
         cpu = 0
         ram = 0
         gpu = 0
         vram_mb = 0
+
+        # Ưu tiên đọc từ Redis do Windows Host Hardware Publisher phát
         try:
-            import psutil
-            cpu = psutil.cpu_percent()
-            ram = psutil.virtual_memory().percent
+            from redis_client import get_redis
+            r = get_redis()
+            raw = r.get("hardware_pulse_cache")
+            if raw:
+                data = json.loads(raw)
+                cpu = int(round(float(data.get("cpu", 0))))
+                ram = int(round(float(data.get("ram", 0))))
+                gpu = int(round(float(data.get("gpu", 0))))
+                vram_mb = int(data.get("vram_mb", 0))
+                return {"cpu": cpu, "ram": ram, "gpu": gpu, "vram_mb": vram_mb, "ts": time.time()}
         except Exception:
             pass
 
         try:
-            res = await self.client.get(
-                f"{self.satellite_url}/telemetry",
-                headers={"X-AKAI-TOKEN": self.akai_token},
-                timeout=1.5
-            )
-            if res.status_code == 200:
-                data = res.json()
-                cpu = int(round(float(data.get("cpu", cpu))))
-                ram = int(round(float(data.get("ram", ram))))
-                gpu = int(round(float(data.get("gpu", gpu))))
-                vram_mb = int(data.get("vram_mb", 0))
+            import psutil
+            cpu = int(round(psutil.cpu_percent()))
+            ram = int(round(psutil.virtual_memory().percent))
         except Exception:
             pass
             
@@ -141,10 +142,12 @@ class ZenithPulse:
     async def run_forever(self):
         """Vòng lặp nhịp đập v32.0 - Giám sát chính xác tuyệt đối."""
         print("💓 [PULSE-v32.0] Quantum Pulse Service Online. Giám sát chính xác tài nguyên...")
-        await asyncio.sleep(2)
+        # ⏳ STARTUP GRACE PERIOD: Chờ 10s để các service container (AI-Brain, Redis, Executor) khởi động sẵn sàng
+        await asyncio.sleep(10)
         
-        cached_health = {"status": "OPTIMAL", "details": []}
-        last_health_check = 0.0
+        cached_health = await self.get_system_health()
+        self.last_status = cached_health.get("status", "OPTIMAL")
+        last_health_check = time.time()
         
         while True:
             try:
