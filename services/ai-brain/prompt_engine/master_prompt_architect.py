@@ -212,8 +212,9 @@ class MasterPromptArchitect:
             )
         if "CHAT" in task_tags or not instructions:
             instructions.append(
-                "Phản hồi trực diện, chuẩn mực và tôn trọng Master. Khi soạn thảo văn bản hành chính (đơn từ, tờ trình), "
-                "bám sát thể thức chuẩn công vụ Việt Nam theo tài liệu tham chiếu."
+                "Phản hồi lịch thiệp, thông minh, tự nhiên và tôn trọng Master bằng tiếng Việt chuẩn mực. "
+                "Khi Master chào hỏi hoặc hỏi thăm, trả lời súc tích, thân thiện và sẵn sàng hỗ trợ ngay. "
+                "Tuyệt đối không dịch máy móc (tránh các từ ngớ ngẩn như 'Tốt nghiệp...')."
             )
         return "\n".join([f"- {inst}" for inst in instructions])
 

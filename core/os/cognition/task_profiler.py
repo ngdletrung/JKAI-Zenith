@@ -91,7 +91,11 @@ def profile_task(goal: str, history: Optional[List] = None, kwargs: Optional[Dic
         profile.confidence_score = 1.0
         return profile
 
-    if re.search(r"^(xin chào|chào|hello|hi|cảm ơn|thanks|tạm biệt|bye)\b", g):
+    social_greeting_pattern = re.search(
+        r"\b(xin\s+chào|chào|hello|hi|cảm\s+ơn|thanks|tạm\s+biệt|bye|bạn\s+thế\s+nào|thế\s+nào|khỏe\s+không|bạn\s+khỏe|hôm\s+nay\s+thế\s+nào|cảm\s+thấy\s+thế\s+nào|how\s+are\s+you|bạn\s+là\s+ai|bạn\s+tên\s+gì)\b",
+        g, re.I
+    )
+    if social_greeting_pattern:
         profile.reason_codes.append("GREETING_SOCIAL")
         profile.verification_need = "LOW"
         profile.confidence_score = 1.0
