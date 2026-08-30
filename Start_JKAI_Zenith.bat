@@ -36,15 +36,12 @@ echo [0C] Dung tat ca Docker containers dang chay...
 docker compose -f docker-compose.yml down --remove-orphans >nul 2>&1
 echo    Docker containers: DA DUNG.
 
-:: --- 0D. Kill cac PowerShell cu con sot lai (tranh xung dot voi Zenith_Guardian moi) ---
-echo [0D] Kill PowerShell cu (tranh xung dot Zenith_Guardian)...
-for /f "tokens=2" %%P in ('tasklist /FI "IMAGENAME eq powershell.exe" /FO CSV /NH 2^>nul') do (
-    set "KPID=%%~P"
-    if "!KPID!" NEQ "%PPID%" (
-        taskkill /F /PID !KPID! >nul 2>&1
-    )
-)
-echo    PowerShell cu: DA KILL.
+:: --- 0D. Kill tat ca tien trinh Ollama, llama-server va PowerShell runner cu ---
+echo [0D] Kill sach tien trinh Ollama va PowerShell runner cu (11434, 11435)...
+python -c "import psutil; [p.kill() for p in psutil.process_iter(['name','cmdline']) if any(k in (p.info.get('name') or '').lower() for k in ['ollama','llama-server']) or ('powershell' in (p.info.get('name') or '').lower() and any(k in ' '.join(p.info.get('cmdline') or []) for k in ['run_ollama','11434','11435','Zenith_Guardian']))]" >nul 2>&1
+taskkill /F /IM ollama.exe >nul 2>&1
+taskkill /F /IM llama-server.exe >nul 2>&1
+echo    Tien trinh Ollama ^& PowerShell cu: DA KILL SACH.
 
 echo.
 echo [PHASE 0 COMPLETE] Tai nguyen JKAI da duoc giai phong sach.
