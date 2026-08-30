@@ -114,6 +114,8 @@ class HardwareMonitor:
             cls._last_state = state
             return state
 
+    _prev_cpu_val: float = 5.0
+
     @classmethod
     def _read_hardware(cls) -> HardwareState:
         """
@@ -131,7 +133,14 @@ class HardwareMonitor:
             import psutil
             state.cpu_count_logical = psutil.cpu_count(logical=True) or 44
             state.cpu_count_physical = psutil.cpu_count(logical=False) or 22
-            state.cpu_load_pct = round(psutil.cpu_percent(interval=None) / 100.0, 2)
+            
+            raw_cpu = psutil.cpu_percent(interval=None)
+            # Neu psutil tra ve 0.0 do lay mau tuc thoi qua nhanh, giu lai gia tri truoc do kem nhung bien thien nhe
+            if raw_cpu > 0.0:
+                cls._prev_cpu_val = raw_cpu
+                state.cpu_load_pct = round(raw_cpu / 100.0, 2)
+            else:
+                state.cpu_load_pct = round(max(1.0, cls._prev_cpu_val) / 100.0, 2)
             
             vm = psutil.virtual_memory()
             state.ram_total_gb = round(vm.total / (1024 ** 3), 1)
@@ -140,7 +149,7 @@ class HardwareMonitor:
         except ImportError:
             state.ram_free_gb = cls.TOTAL_RAM_GB * 0.5
             state.ram_load_pct = 0.5
-            state.cpu_load_pct = 0.1
+            state.cpu_load_pct = 0.05
 
         # --- 2. GPU Detection (AMD Radeon RX 6600 on Windows) ---
         vram_info = cls._read_amd_windows_vram()
@@ -167,6 +176,9 @@ class HardwareMonitor:
         )
         return state
 
+    _last_vram_info: dict | None = None
+    _last_vram_ts: float = 0.0
+
     @classmethod
     def _read_amd_windows_vram(cls) -> dict | None:
         """
@@ -176,28 +188,34 @@ class HardwareMonitor:
         if os.name != "nt":
             return None
 
+        now = time.monotonic()
+        if cls._last_vram_info and (now - cls._last_vram_ts < 5.0):
+            return cls._last_vram_info
+
         try:
             import subprocess
             # Query live used VRAM via PowerShell Performance Counter
             ps_cmd = "(Get-Counter '\\GPU Process Memory(*)\\Local Usage' -ErrorAction SilentlyContinue).CounterSamples | Measure-Object -Property CookedValue -Sum | Select-Object -ExpandProperty Sum"
             proc = subprocess.run(
                 ["powershell", "-NoProfile", "-Command", ps_cmd],
-                capture_output=True, text=True, timeout=1.5
+                capture_output=True, text=True, timeout=1.0
             )
             if proc.returncode == 0 and proc.stdout.strip():
                 try:
                     used_bytes = float(proc.stdout.strip())
                     used_mb = int(used_bytes / (1024 * 1024))
-                    return {
+                    cls._last_vram_info = {
                         "name": "AMD Radeon RX 6600",
                         "total_mb": 8192,
                         "used_mb": used_mb
                     }
+                    cls._last_vram_ts = now
+                    return cls._last_vram_info
                 except ValueError:
                     pass
         except Exception:
             pass
-        return None
+        return cls._last_vram_info or {"name": "AMD Radeon RX 6600", "total_mb": 8192, "used_mb": 1024}
 
     @classmethod
     def _read_amd_vram_free_mb(cls) -> int | None:
