@@ -102,7 +102,7 @@ const ResourceGauge = memo(({ label, value, percent, icon: Icon, colorClass, glo
             strokeDashoffset={strokeDashoffset}
             strokeLinecap="round"
             style={{
-              transition: 'stroke-dashoffset 650ms cubic-bezier(0.23, 1, 0.32, 1)',
+              transition: 'stroke-dashoffset 500ms linear',
             }}
             className="drop-shadow-[0_0_3px_rgba(255,255,255,0.15)] will-change-[stroke-dashoffset]"
           />
