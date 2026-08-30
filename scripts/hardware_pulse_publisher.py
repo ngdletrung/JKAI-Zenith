@@ -111,9 +111,12 @@ def try_read_gpu_util():
         return 0
 
 def main():
+    import psutil
     print("[HW-PULSE] JKAI Hardware Pulse Publisher ONLINE")
     print(f"[HW-PULSE] Redis: {REDIS_HOST}:{REDIS_PORT} | Interval: {PUBLISH_INTERVAL}s")
-    print("[HW-PULSE] host_bridge.py khong con can thiet.")
+
+    # Khoi tao lay mau CPU dau tien de psutil bat dau tinh delta
+    psutil.cpu_percent(interval=None)
 
     r = None
     consecutive_errors = 0
@@ -127,11 +130,39 @@ def main():
                 print("[HW-PULSE] Redis connected.")
                 consecutive_errors = 0
 
-            hw = HardwareMonitor.get_state()
-            pulse = build_pulse(hw)
+            # 1. Do truc tiep tu Host qua psutil (Dong bo 100% voi Task Manager cua Windows)
+            live_cpu = round(psutil.cpu_percent(interval=None), 1)
+            vm = psutil.virtual_memory()
+            live_ram = round(vm.percent, 1)
+            ram_total_gb = round(vm.total / (1024 ** 3), 1)
+            ram_free_gb = round(vm.available / (1024 ** 3), 1)
 
-            # GPU util qua PDH (nhe, ~50ms)
-            pulse["gpu"] = try_read_gpu_util()
+            # 2. Do GPU qua Win32 PDH
+            live_gpu = try_read_gpu_util()
+
+            # 3. Doc model matrix tu Ollama
+            gpu_mods, cpu_mods = get_loaded_models()
+
+            hw = HardwareMonitor.get_state()
+
+            pulse = {
+                "cpu":            live_cpu,
+                "ram":            live_ram,
+                "gpu":            live_gpu,
+                "vram_mb":        hw.vram_total_mb - hw.vram_free_mb,
+                "vram_total_mb":  hw.vram_total_mb,
+                "vram_free_mb":   hw.vram_free_mb,
+                "vram_budget_mb": hw.vram_safe_budget_mb,
+                "ai_threads":     hw.get_dynamic_ai_threads(22),
+                "cpu_threads":    psutil.cpu_count(logical=True) or 44,
+                "ram_total_gb":   ram_total_gb,
+                "ram_free_gb":    ram_free_gb,
+                "gpu_name":       hw.gpu_name,
+                "gpu_models":     gpu_mods,
+                "cpu_models":     cpu_mods,
+                "status":         "OPTIMAL",
+                "ts":             time.time(),
+            }
 
             payload = json.dumps(pulse)
             r.setex("hardware_pulse_cache", CACHE_TTL, payload)
