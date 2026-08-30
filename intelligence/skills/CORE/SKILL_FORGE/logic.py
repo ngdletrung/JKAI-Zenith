@@ -78,23 +78,50 @@ class SkillForge:
             data = json.loads(repair_json(raw_response))
             skill_id = data["skill_id"]
             domain = data["domain"]
-            
-            # 📁 Phase 2: Physical Sealing (Niêm phong Thực địa - 5 Files)
+            logic_code = data.get("logic_code", "")
+
+            # 🛡️ Phase 2: AST Security & Code Integrity Pre-Scanner
+            import ast
+            try:
+                parsed_ast = ast.parse(logic_code)
+            except SyntaxError as syn_err:
+                engine.publish_mission_log("ERROR", f"[FORGE-AST-FAIL]: Mã nguồn sinh ra bị lỗi cú pháp: {syn_err}", task_id, trace_id)
+                return {"status": "error", "msg": f"Mã nguồn sinh ra bị lỗi cú pháp: {syn_err}"}
+
+            # Kiểm tra các lệnh phá hoại nguy hiểm
+            forbidden_tokens = ["rmdir /s /q", "rm -rf /", "shutil.rmtree('/')", "eval(", "exec("]
+            if any(tok in logic_code for tok in forbidden_tokens):
+                engine.publish_mission_log("ERROR", f"[FORGE-SECURITY-BLOCK]: Phát hiện lệnh tiềm ẩn rủi ro trong code mới.", task_id, trace_id)
+                return {"status": "error", "msg": "Mã nguồn bị chặn bởi Cổng An Ninh Sovereign (phát hiện token nhạy cảm)."}
+
+            # 📁 Phase 3: Physical Sealing (Niêm phong Thực địa - 5 Files)
             target_dir = self.skills_dir / domain / skill_id
             target_dir.mkdir(parents=True, exist_ok=True)
             
-            (target_dir / "logic.py").write_text(data["logic_code"], encoding="utf-8")
+            (target_dir / "logic.py").write_text(logic_code, encoding="utf-8")
             (target_dir / "SKILL.md").write_text(data["skill_md"], encoding="utf-8")
             (target_dir / "dossier.md").write_text(data["dossier_md"], encoding="utf-8")
             (target_dir / "manifest.json").write_text(json.dumps(data["manifest_json_content"], indent=4, ensure_ascii=False), encoding="utf-8")
-            (target_dir / "__init__.py").write_text("# Zenith Skill Initialization\n", encoding="utf-8")
+            (target_dir / "__init__.py").write_text(f"# Package initialization for {skill_id}\nfrom .logic import *\n", encoding="utf-8")
             
             engine.publish_progress(70, f"Đã niêm phong bộ hồ sơ 5 file cho `{skill_id}` vào thực địa `{domain}`.", "forge", task_id, trace_id)
             
-            # 🗺️ Phase 3: Sovereign Integration (Nhất thể hóa Chủ quyền)
+            # 🗺️ Phase 4: Sovereign Integration & DecisionLedger Recording
             await self._sync_to_system(data, target_dir)
+
+            try:
+                from core.kernel.decision_ledger import decision_ledger
+                decision_ledger.record_decision(
+                    decision_type="SKILL_FORGED",
+                    task_id=task_id,
+                    input_summary=f"Forge skill: {description[:80]}",
+                    output_decision=skill_id,
+                    reason=f"Skill forged into domain {domain} with 5-file standard."
+                )
+            except Exception:
+                pass
             
-            engine.publish_mission_log("FORGE", f"[FORGE-SUCCESS]: Kỹ năng Elite `{skill_id}` đã sẵn sàng thực thi!", task_id, trace_id)
+            engine.publish_mission_log("FORGE", f"[FORGE-SUCCESS]: Kỹ năng Elite `{skill_id}` đã được thẩm định an toàn và sẵn sàng thực thi!", task_id, trace_id)
             return {"status": "success", "skill_id": skill_id, "path": str(target_dir)}
 
         except Exception as e:
@@ -148,8 +175,9 @@ class SkillForge:
             self.registry_path.write_text(json.dumps(reg, indent=4, ensure_ascii=False), encoding="utf-8")
 
         # 2. Cập nhật Bản đồ MAP_SKILLS.md (Chèn vào cuối phân khu tương ứng)
-        if self.map_skills_path.exists():
-            content = self.map_skills_path.read_text(encoding="utf-8")
+        map_file = getattr(self, "map_path", None) or getattr(self, "map_skills_path", None)
+        if map_file and map_file.exists():
+            content = map_file.read_text(encoding="utf-8")
             # Tìm vị trí phân khu
             section_markers = {
                 "CORE": "## MỤC I:", "DATA": "## MỤC II:", "DEV": "## MỤC III:",
@@ -185,7 +213,15 @@ class SkillForge:
             else:
                 lines.append(f"\n{marker}\n| STT | Tên Kỹ Năng | Keywords | ID | Loại |\n| :--- | :--- | :--- | :--- | :--- |\n{new_row}")
                     
-            self.map_skills_path.write_text("\n".join(lines), encoding="utf-8")
+            map_file.write_text("\n".join(lines), encoding="utf-8")
+
+        # 3. Kích hoạt nạp lại Dynamic Manifests ngay lập tức
+        try:
+            from core.kernel.semantic_skill_registry import semantic_skill_registry
+            semantic_skill_registry._load_core_manifests()
+            logger.info("[FORGE-SYNC] Đã kích hoạt nạp lại toàn bộ Manifests sau khi đúc kỹ năng mới.")
+        except Exception:
+            pass
 
 async def execute(params: dict, task_id: str = "system", trace_id: str = "system"):
     """Entry point cho Đặc vụ Dispatcher triệu hồi Lò đúc."""

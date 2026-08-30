@@ -222,7 +222,7 @@ class ForgeStage(PlanningStage):
             f"<antigravity_orientation>\n"
             f"CRITICAL INSTRUCTION 1: Ưu tiên tuyệt đối tốc độ phản xạ và sự rõ ràng kiến trúc! Mọi trường JSON (description, expert_mindset, verification) BẮT BUỘC súc tích dưới 25 từ.\n"
             f"CRITICAL INSTRUCTION 2: Sinh tối đa 3-5 bước milestone chiến lược trong checklist động (task.md), không lan man dư thừa.\n"
-            f"CRITICAL INSTRUCTION 3: CHỈ sử dụng các công cụ trong danh sách hợp lệ: BROWSER_CONTROL, OMNI_SEARCH_ENGINE, SEARCH_WEB_GLOBAL, CODE_EXECUTION, READ_FILE, REWRITE_FILE, VIEW_FILE, PYTHON_REPL, SYSTEM_CMD, FILESYSTEM, DOCKER, LLM_ANALYSIS, BASH, EXECUTE_COMMAND.\n"
+            f"CRITICAL INSTRUCTION 3: CHỈ sử dụng các công cụ trong danh sách hợp lệ: SEARCH_WEB_GLOBAL, OFFICE_SUITE_MASTER, WRITE_TO_FILE, VIEW_FILE, BROWSER_CONTROL, OMNI_SEARCH_ENGINE, CODE_EXECUTION, READ_FILE, REWRITE_FILE, PYTHON_REPL, SYSTEM_CMD, FILESYSTEM, DOCKER, LLM_ANALYSIS, BASH, EXECUTE_COMMAND.\n"
             f"</antigravity_orientation>"
         )
 
@@ -249,9 +249,14 @@ class ForgeStage(PlanningStage):
                     "content": "⚠️ [EMERGENCY-COMPACT]: Deep JSON decoding failure. Return ONLY a minified JSON containing keys: 'thought' (string) and 'steps' (a simple array of execution step objects)."
                 })
             
+            # Truy vấn thông tin cấu hình mô hình động thời gian thực từ Engine
+            role_cfg = engine.get_role_config(current_role)
+            dynamic_model_name = role_cfg.get("model", "qwen3.5:4b")
+            dynamic_hw = role_cfg.get("hardware", "GPU")
+            
             engine.publish_mission_log(
                 "INFO", 
-                f"🧠 [PLANNER-ATTEMPT-{attempt}]: Đang đúc kết chiến lược bằng vai trò `{current_role}`...", 
+                f"🧠 [PLANNER-ATTEMPT-{attempt}]: Đang đúc kết chiến lược bằng vai trò `{current_role}` (Mô hình: `{dynamic_model_name}` @ {dynamic_hw})...", 
                 task_id, 
                 trace_id
             )
@@ -438,9 +443,9 @@ class ForgeStage(PlanningStage):
                     from planner import PlanStep, HardwareTarget
                     blueprint.steps = [PlanStep(
                         id="auto_recovery_01",
-                        tool="OMNI_SEARCH_ENGINE",
+                        tool="SEARCH_WEB_GLOBAL",
                         args={"query": goal},
-                        description=f"Auto-recovery: omni search (Tavily/Cloud/Browse) for: {goal}",
+                        description=f"Auto-recovery: search web for: {goal}",
                         assigned_agent="agent_executor_beta.md",
                         hardware_target=HardwareTarget.BETA,
                         expert_mindset="Execute immediately using the best available search source.",

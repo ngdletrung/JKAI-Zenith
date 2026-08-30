@@ -3,561 +3,618 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JKAI Zenith AI OS — Dynamic Mission Control & Evidence Observatory</title>
-    <!-- Google Fonts -->
+    <title>JKAI ZENITH — Live Resource Governor & Mission Observatory</title>
+    <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <style>
         :root {
-            --bg-primary: #0a0c10;
-            --bg-card: rgba(18, 22, 31, 0.75);
-            --bg-card-hover: rgba(26, 32, 46, 0.85);
-            --border-color: rgba(255, 255, 255, 0.08);
-            --border-highlight: rgba(0, 240, 255, 0.3);
-            --accent-cyan: #00f0ff;
-            --accent-purple: #7000ff;
-            --accent-green: #00ff87;
-            --accent-orange: #ff9900;
-            --text-main: #f0f4fc;
-            --text-muted: #8a99ad;
-            --font-main: 'Outfit', sans-serif;
+            --bg-base: #07090e;
+            --bg-surface: rgba(14, 18, 27, 0.85);
+            --bg-card: rgba(20, 26, 38, 0.7);
+            --bg-card-hover: rgba(28, 36, 52, 0.85);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-glow: rgba(0, 240, 255, 0.25);
+            
+            --cyan: #00f0ff;
+            --purple: #a855f7;
+            --emerald: #10b981;
+            --amber: #f59e0b;
+            --rose: #f43f5e;
+            --blue: #3b82f6;
+
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --font-sans: 'Outfit', sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
 
         body {
-            background-color: var(--bg-primary);
+            background-color: var(--bg-base);
             background-image: 
-                radial-gradient(circle at 10% 10%, rgba(112, 0, 255, 0.12) 0%, transparent 40%),
-                radial-gradient(circle at 90% 90%, rgba(0, 240, 255, 0.1) 0%, transparent 40%);
+                radial-gradient(circle at 15% 15%, rgba(168, 85, 247, 0.08) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(0, 240, 255, 0.08) 0%, transparent 45%);
             color: var(--text-main);
-            font-family: var(--font-main);
+            font-family: var(--font-sans);
             min-height: 100vh;
-            padding: 2rem;
+            padding: 1.5rem;
             line-height: 1.5;
         }
 
+        /* HEADER */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 1.5rem 2rem;
-            background: var(--bg-card);
-            backdrop-filter: blur(16px);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            margin-bottom: 2rem;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+            padding: 1.25rem 1.75rem;
+            background: var(--bg-surface);
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
         }
 
         .brand { display: flex; align-items: center; gap: 1rem; }
         .brand-logo {
-            width: 48px; height: 48px;
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
+            width: 44px; height: 44px;
+            background: linear-gradient(135deg, var(--cyan), var(--purple));
             border-radius: 12px; display: flex; align-items: center; justify-content: center;
-            font-weight: 800; font-size: 1.4rem; color: #fff; box-shadow: 0 0 20px rgba(0, 240, 255, 0.4);
+            font-weight: 800; font-size: 1.3rem; color: #fff;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.35);
         }
-
         .brand-title h1 {
-            font-size: 1.5rem; font-weight: 700; letter-spacing: -0.5px;
-            background: linear-gradient(90deg, #fff, var(--text-muted));
+            font-size: 1.35rem; font-weight: 700; letter-spacing: -0.5px;
+            background: linear-gradient(90deg, #fff, #94a3b8);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-
         .brand-title p { font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); }
 
-        .header-controls { display: flex; align-items: center; gap: 1.5rem; }
-
-        .lang-switcher {
-            display: flex; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color);
-            padding: 4px; border-radius: 30px; gap: 4px;
+        .header-status { display: flex; align-items: center; gap: 1.25rem; }
+        .live-badge {
+            display: flex; align-items: center; gap: 0.6rem;
+            background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3);
+            padding: 0.45rem 1rem; border-radius: 30px; font-size: 0.8rem; font-weight: 600; color: var(--emerald);
+            font-family: var(--font-mono);
         }
-
-        .lang-btn {
-            background: transparent; border: none; color: var(--text-muted);
-            padding: 0.4rem 0.9rem; border-radius: 20px; font-weight: 600; font-size: 0.8rem;
-            cursor: pointer; transition: all 0.2s ease; font-family: var(--font-mono);
+        .live-dot {
+            width: 8px; height: 8px; background-color: var(--emerald);
+            border-radius: 50%; box-shadow: 0 0 10px var(--emerald); animation: pulse 1.8s infinite;
         }
+        @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.4; transform: scale(0.85); } }
 
-        .lang-btn.active {
-            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-purple));
-            color: #fff; box-shadow: 0 0 12px rgba(0, 240, 255, 0.4);
+        /* GRID LAYOUT */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 1.25rem;
         }
-
-        .status-badge {
-            display: flex; align-items: center; gap: 0.75rem;
-            background: rgba(0, 255, 135, 0.1); border: 1px solid rgba(0, 255, 135, 0.3);
-            padding: 0.6rem 1.2rem; border-radius: 30px; font-size: 0.85rem; font-weight: 600; color: var(--accent-green);
-        }
-
-        .pulse-dot {
-            width: 10px; height: 10px; background-color: var(--accent-green);
-            border-radius: 50%; box-shadow: 0 0 12px var(--accent-green); animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 135, 0.7); }
-            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 255, 135, 0); }
-            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 135, 0); }
-        }
-
-        .dashboard-grid { display: grid; grid-template-columns: repeat(12, 1fr); gap: 1.5rem; }
 
         .card {
-            background: var(--bg-card); backdrop-filter: blur(12px);
-            border: 1px solid var(--border-color); border-radius: 20px; padding: 1.5rem;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: var(--bg-surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 1.25rem;
+            backdrop-filter: blur(16px);
+            transition: all 0.25s ease;
+            position: relative;
+            overflow: hidden;
         }
-
-        .card:hover { border-color: var(--border-highlight); transform: translateY(-2px); box-shadow: 0 12px 40px rgba(0, 240, 255, 0.1); }
-
-        .card-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 1.2rem; padding-bottom: 0.8rem; border-bottom: 1px solid var(--border-color);
+        .card:hover {
+            border-color: var(--border-glow);
+            box-shadow: 0 8px 24px rgba(0, 240, 255, 0.08);
         }
-
-        .card-header h2 { font-size: 1.05rem; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 0.6rem; }
 
         .col-3 { grid-column: span 3; }
         .col-4 { grid-column: span 4; }
         .col-6 { grid-column: span 6; }
+        .col-8 { grid-column: span 8; }
         .col-12 { grid-column: span 12; }
 
-        .stat-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
-        .stat-box { background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); padding: 0.8rem; border-radius: 12px; }
-        .stat-title { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.2rem; }
-        .stat-value { font-size: 1.2rem; font-weight: 700; font-family: var(--font-mono); }
-
-        .text-green { color: var(--accent-green); }
-        .text-cyan { color: var(--accent-cyan); }
-        .text-purple { color: var(--accent-purple); }
-        .text-orange { color: var(--accent-orange); }
-
-        .metric-group { margin-bottom: 0.8rem; }
-        .metric-label { display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); margin-bottom: 0.3rem; }
-        .progress-bar-bg { height: 8px; background: rgba(255, 255, 255, 0.05); border-radius: 4px; overflow: hidden; }
-        .progress-bar-fill { height: 100%; border-radius: 4px; }
-        .fill-vram { background: linear-gradient(90deg, var(--accent-purple), var(--accent-cyan)); width: 67.5%; }
-        .fill-ram { background: linear-gradient(90deg, var(--accent-cyan), var(--accent-green)); width: 19.1%; }
-
-        .identity-timeline { display: flex; justify-content: space-between; align-items: center; padding: 1rem 0; }
-        .identity-step { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
-
-        .step-node {
-            width: 36px; height: 36px; border-radius: 50%; background: #161b26;
-            border: 2px solid var(--accent-cyan); display: flex; align-items: center; justify-content: center;
-            font-size: 0.75rem; font-family: var(--font-mono); color: var(--accent-cyan);
-            box-shadow: 0 0 10px rgba(0, 240, 255, 0.2);
+        @media (max-width: 1200px) {
+            .col-3, .col-4 { grid-column: span 6; }
+            .col-8 { grid-column: span 12; }
+        }
+        @media (max-width: 768px) {
+            .col-3, .col-4, .col-6, .col-8, .col-12 { grid-column: span 12; }
         }
 
-        .step-label { font-size: 0.75rem; color: var(--text-muted); font-family: var(--font-mono); text-align: center; }
-
-        table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
-        th, td { padding: 0.65rem 0.85rem; text-align: left; border-bottom: 1px solid var(--border-color); }
-        th { color: var(--text-muted); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; }
-        td { font-family: var(--font-mono); }
-        .badge-pass { background: rgba(0, 255, 135, 0.15); color: var(--accent-green); padding: 0.2rem 0.5rem; border-radius: 6px; font-size: 0.7rem; }
-
-        .inspector-box {
-            background: #0d1117; border: 1px solid var(--border-color); border-radius: 12px;
-            padding: 1rem; font-family: var(--font-mono); font-size: 0.8rem; color: #c9d1d9; margin-top: 0.8rem; line-height: 1.6;
+        .card-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 1rem; padding-bottom: 0.6rem; border-bottom: 1px solid rgba(255,255,255,0.05);
         }
+        .card-title {
+            font-size: 0.95rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;
+            color: var(--text-main);
+        }
+        .card-tag {
+            font-size: 0.7rem; font-family: var(--font-mono); padding: 0.2rem 0.5rem;
+            border-radius: 6px; background: rgba(255,255,255,0.06); color: var(--text-muted);
+        }
+
+        /* METRIC BIG STAT */
+        .stat-main {
+            display: flex; align-items: baseline; gap: 0.5rem; margin-bottom: 0.5rem;
+        }
+        .stat-val { font-size: 2rem; font-weight: 700; font-family: var(--font-mono); }
+        .stat-sub { font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); }
+
+        /* PROGRESS BARS */
+        .meter-group { margin-top: 0.8rem; }
+        .meter-label {
+            display: flex; justify-content: space-between; font-size: 0.75rem;
+            font-family: var(--font-mono); color: var(--text-muted); margin-bottom: 0.3rem;
+        }
+        .meter-track {
+            height: 8px; background: rgba(255,255,255,0.06); border-radius: 6px; overflow: hidden;
+        }
+        .meter-fill { height: 100%; border-radius: 6px; transition: width 0.4s ease; }
+
+        .fill-cyan { background: linear-gradient(90deg, #00b4d8, var(--cyan)); }
+        .fill-purple { background: linear-gradient(90deg, #7928ca, var(--purple)); }
+        .fill-emerald { background: linear-gradient(90deg, #059669, var(--emerald)); }
+        .fill-amber { background: linear-gradient(90deg, #d97706, var(--amber)); }
+
+        /* MODEL PILLS */
+        .pill-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.6rem; }
+        .pill {
+            font-size: 0.72rem; font-family: var(--font-mono); padding: 0.3rem 0.65rem;
+            border-radius: 8px; display: inline-flex; align-items: center; gap: 0.4rem;
+        }
+        .pill-gpu { background: rgba(168, 85, 247, 0.12); border: 1px solid rgba(168, 85, 247, 0.3); color: #c084fc; }
+        .pill-cpu { background: rgba(0, 240, 255, 0.12); border: 1px solid rgba(0, 240, 255, 0.3); color: #67e8f9; }
+        .pill-docker-run { background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); color: #6ee7b7; }
+        .pill-docker-sleep { background: rgba(148, 163, 184, 0.08); border: 1px dashed rgba(148, 163, 184, 0.25); color: #94a3b8; }
+
+        /* CHART CONTAINER */
+        .chart-box {
+            position: relative; height: 170px; width: 100%; margin-top: 0.5rem;
+        }
+
+        /* TABLE & LOGS */
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; font-family: var(--font-mono); }
+        th { text-align: left; padding: 0.6rem 0.8rem; color: var(--text-muted); font-size: 0.7rem; border-bottom: 1px solid var(--border); }
+        td { padding: 0.6rem 0.8rem; border-bottom: 1px solid rgba(255,255,255,0.03); }
+        .status-tag {
+            padding: 0.2rem 0.5rem; border-radius: 6px; font-size: 0.7rem; font-weight: 600;
+        }
+        .tag-ok { background: rgba(16, 185, 129, 0.15); color: var(--emerald); }
+        .tag-fail { background: rgba(244, 63, 94, 0.15); color: var(--rose); }
+        .tag-run { background: rgba(0, 240, 255, 0.15); color: var(--cyan); }
+
+        .terminal-box {
+            background: #030712; border: 1px solid var(--border); border-radius: 12px;
+            padding: 0.9rem; font-family: var(--font-mono); font-size: 0.75rem; color: #cbd5e1;
+            height: 180px; overflow-y: auto; line-height: 1.6;
+        }
+        .log-line { display: flex; gap: 0.6rem; margin-bottom: 0.25rem; }
+        .log-tag { color: var(--cyan); font-weight: 600; }
+        .log-msg { color: #e2e8f0; }
+
+        /* SCROLLBAR */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 3px; }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
+    <!-- HEADER -->
     <header>
         <div class="brand">
             <div class="brand-logo">Z</div>
             <div class="brand-title">
-                <h1>JKAI ZENITH AI OS</h1>
-                <p id="sub-title">PRODUCTION-PROVEN ADAPTIVE COGNITIVE AI OS PLATFORM — BẢNG ĐIỀU KHIỂN & ĐÀI QUAN SÁT BẰNG CHỨNG ĐỘC LẬP</p>
+                <h1>JKAI ZENITH — UNIFIED RESOURCE GOVERNOR</h1>
+                <p>AUTONOMOUS MODEL GATEWAY & REAL-TIME HARDWARE TELEMETRY OBSERVATORY</p>
             </div>
         </div>
-        <div class="header-controls">
-            <div class="lang-switcher">
-                <button id="btn-vi" class="lang-btn active" onclick="setLang('vi')">🇻🇳 VN</button>
-                <button id="btn-en" class="lang-btn" onclick="setLang('en')">🇬🇧 EN</button>
-            </div>
-            <div class="status-badge">
-                <div class="pulse-dot"></div>
-                <span id="status-text">CHẾ ĐỘ THƯỜNG TRỰC VẬN HÀNH SẢN XUẤT</span>
+        <div class="header-status">
+            <div class="live-badge">
+                <div class="live-dot"></div>
+                <span id="sse-status">URG LIVE SYNC (0.5s)</span>
             </div>
         </div>
     </header>
 
-    <!-- Main 4-Layer Truth Surface Grid -->
-    <div class="dashboard-grid">
+    <!-- MAIN GRID -->
+    <div class="grid">
 
-        <!-- Layer 1: Mission Outcome -->
-        <div class="card col-3">
+        <!-- 1. GPU RX 6600 CARD -->
+        <div class="card col-4">
             <div class="card-header">
-                <h2 id="l1-title">🎯 Tầng 1: Kết Quả Nhiệm Vụ</h2>
+                <span class="card-title">🎮 GPU AMD Radeon RX 6600</span>
+                <span class="card-tag" id="gpu-port-tag">Port 11434 • Vulkan Native</span>
             </div>
-            <div class="stat-grid">
-                <div class="stat-box">
-                    <div class="stat-title" id="m1-title">M1 Thành Công</div>
-                    <div class="stat-value text-green">99.5%</div>
+            <div class="stat-main">
+                <span class="stat-val" style="color: var(--purple)" id="vram-used-text">—</span>
+                <span class="stat-sub" id="vram-total-text">/ 8.0 GB (VRAM)</span>
+            </div>
+            <div class="meter-group">
+                <div class="meter-label">
+                    <span>Mức Tận Dụng VRAM</span>
+                    <span id="vram-pct-text">0%</span>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-title" id="m5-title">M5 Bảo Toàn Mục Tiêu</div>
-                    <div class="stat-value text-green">100.0%</div>
+                <div class="meter-track">
+                    <div class="meter-fill fill-purple" id="vram-bar" style="width: 0%"></div>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-title" id="m9-title">M9 Thẩm Định Vật Lý</div>
-                    <div class="stat-value text-cyan">100.0%</div>
+            </div>
+            <div class="meter-group">
+                <div class="meter-label">
+                    <span>GPU Utilization (3D Core)</span>
+                    <span id="gpu-core-pct">0%</span>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-title" id="fail-title">Thất Bại An Toàn</div>
-                    <div class="stat-value text-orange">0.5% (5/1k)</div>
+                <div class="meter-track">
+                    <div class="meter-fill fill-cyan" id="gpu-core-bar" style="width: 0%"></div>
+                </div>
+            </div>
+            <div style="margin-top: 0.9rem;">
+                <span style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono)">MÔ HÌNH GPU THƯỜNG TRÚ (Active):</span>
+                <div class="pill-list" id="gpu-models-list">
+                    <span class="pill pill-gpu">⚡ qwen3.5:4b (Receptionist/Critic)</span>
+                    <span class="pill pill-gpu">⚡ qwen2.5-coder:3b (Executor)</span>
                 </div>
             </div>
         </div>
 
-        <!-- Layer 2: Autonomy & Resilience -->
-        <div class="card col-3">
+        <!-- 2. CPU XEON E5-2699 v4 CARD -->
+        <div class="card col-4">
             <div class="card-header">
-                <h2 id="l2-title">🛡️ Tầng 2: Tự Chủ & Khôi Phục</h2>
+                <span class="card-title">🧠 CPU Intel Xeon E5-2699 v4</span>
+                <span class="card-tag">Port 11435 • 44 Threads</span>
             </div>
-            <div class="stat-grid">
-                <div class="stat-box">
-                    <div class="stat-title" id="m3-title">M3 Tự Khôi Phục</div>
-                    <div class="stat-value text-cyan">100.0%</div>
+            <div class="stat-main">
+                <span class="stat-val" style="color: var(--cyan)" id="cpu-load-text">—</span>
+                <span class="stat-sub" id="cpu-headroom-text">Tải Host (Chống nghẽn < 90%)</span>
+            </div>
+            <div class="meter-group">
+                <div class="meter-label">
+                    <span>Tải CPU Toàn Hệ Thống</span>
+                    <span id="cpu-pct-text">0%</span>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-title" id="m4-title">M4 Replan Tự Động</div>
-                    <div class="stat-value text-purple">100.0%</div>
+                <div class="meter-track">
+                    <div class="meter-fill fill-cyan" id="cpu-bar" style="width: 0%"></div>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-title" id="m2-title">Can Thiệp Thừa</div>
-                    <div class="stat-value text-green">0.0%</div>
+            </div>
+            <div class="meter-group">
+                <div class="meter-label">
+                    <span>URG AI Co Giãn Động (Exact Math)</span>
+                    <span id="ai-threads-detail">22 / 22 Cores Vật Lý</span>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-title" id="policy-title">Ủy Quyền An Toàn</div>
-                    <div class="stat-value text-orange">2.1% (Auth)</div>
+                <div class="meter-track">
+                    <div class="meter-fill fill-emerald" id="ai-threads-bar" style="width: 100%"></div>
+                </div>
+            </div>
+            <div style="margin-top: 0.9rem;">
+                <span style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono)">MÔ HÌNH CPU THƯỜNG TRÚ (Active):</span>
+                <div class="pill-list" id="cpu-models-list">
+                    <span class="pill pill-cpu">🧠 gemma4:12b-it-qat (Planner/Deep)</span>
+                    <span class="pill pill-cpu">🔍 nomic-embed-text (RAG Embedder)</span>
                 </div>
             </div>
         </div>
 
-        <!-- Layer 3: Independent Evidence Integrity -->
-        <div class="card col-3">
+        <!-- 3. RAM & DOCKER TOPOLOGY CARD -->
+        <div class="card col-4">
             <div class="card-header">
-                <h2 id="l3-title">🔍 Tầng 3: Bằng Chứng Độc Lập</h2>
+                <span class="card-title">🗄️ RAM DDR4 & Docker Profile</span>
+                <span class="card-tag">64GB System • URG Idler</span>
             </div>
-            <div class="stat-grid">
-                <div class="stat-box">
-                    <div class="stat-title" id="eirs-title">EIR-S Bằng Chứng Outcome</div>
-                    <div class="stat-value text-green">100.00%</div>
+            <div class="stat-main">
+                <span class="stat-val" style="color: var(--emerald)" id="ram-free-text">—</span>
+                <span class="stat-sub" id="ram-total-text">GB Trống / 64GB Tổng</span>
+            </div>
+            <div class="meter-group">
+                <div class="meter-label">
+                    <span>RAM Đang Sử Dụng</span>
+                    <span id="ram-pct-text">0%</span>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-title" id="ecr-title">ECR Độ Phủ Bằng Chứng</div>
-                    <div class="stat-value text-cyan">100.00%</div>
+                <div class="meter-track">
+                    <div class="meter-fill fill-emerald" id="ram-bar" style="width: 0%"></div>
                 </div>
-                <div class="stat-box">
-                    <div class="stat-title" id="chain-title">Chuỗi Danh Tính</div>
-                    <div class="stat-value text-purple">8 / 8 Mắt Xích</div>
-                </div>
-                <div class="stat-box">
-                    <div class="stat-title" id="viol-title">Lỗi Vi Phạm Hiến Pháp</div>
-                    <div class="stat-value text-green">0 Lỗi</div>
+            </div>
+            <div style="margin-top: 0.9rem;">
+                <span style="font-size: 0.72rem; color: var(--text-muted); font-family: var(--font-mono)">DOCKER PROFILES (Wake-on-Demand):</span>
+                <div class="pill-list">
+                    <span class="pill pill-docker-run">🟢 Core: postgres, redis-ai, qdrant, ai-brain</span>
+                    <span class="pill pill-docker-sleep">💤 Tools: ai-browser (Auto-Sleep 15m)</span>
+                    <span class="pill pill-docker-sleep">💤 Automation: n8n, redis-queue</span>
                 </div>
             </div>
         </div>
 
-        <!-- Layer 4: Operational SLO & Resource -->
-        <div class="card col-3">
+        <!-- 4. REAL-TIME TELEMETRY GRAPH -->
+        <div class="card col-8">
             <div class="card-header">
-                <h2 id="l4-title">⚡ Tầng 4: Chỉ Số Vận Hành SLO</h2>
+                <span class="card-title">📈 Đồ Thị Tài Nguyên Thời Gian Thực (Live Rolling Graph)</span>
+                <span class="card-tag">Cập nhật 1.5s/lần</span>
             </div>
-            <div class="metric-group">
-                <div class="metric-label"><span>VRAM (AMD RX 6600 8GB)</span><span style="color: var(--accent-purple)">5.4 GB (67.5%)</span></div>
-                <div class="progress-bar-bg"><div class="progress-bar-fill fill-vram"></div></div>
-            </div>
-            <div class="metric-group">
-                <div class="metric-label"><span>RAM (Dual Xeon 128GB)</span><span style="color: var(--accent-cyan)">24.5 GB (19.1%)</span></div>
-                <div class="progress-bar-bg"><div class="progress-bar-fill fill-ram"></div></div>
-            </div>
-            <div class="stat-grid" style="margin-top: 0.4rem;">
-                <div class="stat-box"><div class="stat-title" id="p95-title">Độ Trễ p95</div><div class="stat-value text-cyan">340 ms</div></div>
-                <div class="stat-box"><div class="stat-title" id="p99-title">Độ Trễ p99</div><div class="stat-value text-purple">850 ms</div></div>
+            <div class="chart-box">
+                <canvas id="telemetryChart"></canvas>
             </div>
         </div>
 
-        <!-- Card 5: 8-Link Identity Chain -->
-        <div class="card col-12">
+        <!-- 5. MISSION SUCCESS & ACCURACY METRICS -->
+        <div class="card col-4">
             <div class="card-header">
-                <h2 id="identity-header">🛡️ Chuỗi Danh Tính Zero-Trust 8 Mắt Xích Bất Biến</h2>
-                <span style="font-size: 0.8rem; color: var(--accent-green);" id="compliance-text">100% Tuân Thủ Hiến Pháp</span>
+                <span class="card-title">🎯 Tỷ Lệ Nhiệm Vụ & Hiệu Năng</span>
+                <span class="card-tag" id="mission-total-tag">0 Nhiệm Vụ</span>
             </div>
-            <div class="identity-timeline">
-                <div class="identity-step"><div class="step-node">req</div><span class="step-label" id="step-req">Yêu Cầu</span></div>
-                <div class="identity-step"><div class="step-node">mis</div><span class="step-label" id="step-mis">Nhiệm Vụ</span></div>
-                <div class="identity-step"><div class="step-node">pln</div><span class="step-label" id="step-pln">Lộ Trình</span></div>
-                <div class="identity-step"><div class="step-node">tsk</div><span class="step-label" id="step-tsk">Tác Vụ</span></div>
-                <div class="identity-step"><div class="step-node">att</div><span class="step-label" id="step-att">Thử Nghiệm</span></div>
-                <div class="identity-step"><div class="step-node">exe</div><span class="step-label" id="step-exe">Thi Hành</span></div>
-                <div class="identity-step"><div class="step-node">obs</div><span class="step-label" id="step-obs">Quan Sát</span></div>
-                <div class="identity-step"><div class="step-node">ver</div><span class="step-label" id="step-ver">Thẩm Định</span></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; margin-top: 0.4rem;">
+                <div style="background: rgba(16,185,129,0.08); border: 1px solid rgba(16,185,129,0.2); border-radius: 12px; padding: 0.75rem; text-align: center;">
+                    <div style="font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono)">THÀNH CÔNG</div>
+                    <div style="font-size: 1.6rem; font-weight: 700; color: var(--emerald); font-family: var(--font-mono);" id="stat-success-rate">—%</div>
+                    <div style="font-size: 0.7rem; color: var(--emerald); font-family: var(--font-mono);" id="stat-completed-count">0 tasks</div>
+                </div>
+                <div style="background: rgba(244,63,94,0.08); border: 1px solid rgba(244,63,94,0.2); border-radius: 12px; padding: 0.75rem; text-align: center;">
+                    <div style="font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono)">THẤT BẠI AN TOÀN</div>
+                    <div style="font-size: 1.6rem; font-weight: 700; color: var(--rose); font-family: var(--font-mono);" id="stat-fail-rate">—%</div>
+                    <div style="font-size: 0.7rem; color: var(--rose); font-family: var(--font-mono);" id="stat-failed-count">0 tasks</div>
+                </div>
+            </div>
+            <div style="margin-top: 0.9rem;">
+                <div class="meter-label">
+                    <span>Độ Phủ Bằng Chứng Thực Thi (ECR Gate)</span>
+                    <span style="color: var(--cyan)" id="ecr-pct">100%</span>
+                </div>
+                <div class="meter-track">
+                    <div class="meter-fill fill-cyan" style="width: 100%"></div>
+                </div>
             </div>
         </div>
 
-        <!-- Card 6: Real-World Mission Inspector -->
-        <div class="card col-12">
+        <!-- 6. LIVE MISSION INSPECTOR & THOUGHT TRACE -->
+        <div class="card col-6">
             <div class="card-header">
-                <h2 id="inspector-header">🔍 Đài Quan Sát Nhiệm Vụ Real-Time (Traceback Closed-Loop)</h2>
-                <span style="font-size: 0.8rem; color: var(--accent-cyan);" id="active-mission-tag">Mission #ZENITH_0408-1956_a116c5</span>
+                <span class="card-title">🔍 Sứ Mệnh Đang Hoạt Động (Live Mission Inspector)</span>
+                <span class="card-tag" id="current-mid-tag">Chưa có nhiệm vụ</span>
             </div>
-            <div class="inspector-box" id="inspector-content">
-                <p><strong style="color: var(--accent-cyan)">[MỤC TIÊU / GOAL]</strong>: bạn có thể lập trình không ? (Kiểm tra khả năng lập trình của JKAI Zenith v5.0 Elite Agent)</p>
-                <p><strong style="color: var(--accent-purple)">[CHIẾN LƯỢC / STRATEGY DAG v3]</strong>: DEEP Pipeline ➔ S1_RECON (Quét 30 files & nạp 2 kỹ năng) ➔ S2_FORGE (Lập kế hoạch & đúc kết chiến lược) ➔ S3_EXECUTE (DAG Parallel Executor T4)</p>
-                <p><strong style="color: var(--accent-green)">[BẰNG CHỨNG VẬT LÝ / PHYSICAL STATE]</strong>: Thẩm định viên Physical Verifier xác nhận 30 files workspace hợp lệ (S3_EXECUTE active)</p>
-                <p><strong style="color: var(--accent-orange)">[XÁC MINH ĐỘC LẬP / INDEPENDENT VERIFICATION]</strong>: EIR-S = 100.00% | ECR = 100.00% | GCR = 100.00% (Zero Self-Reported Bias)</p>
+            <div id="inspector-content" style="font-size: 0.82rem; font-family: var(--font-mono); color: #cbd5e1; min-height: 180px;">
+                <div style="color: var(--text-muted); padding: 1rem 0;">Đang lắng nghe nhiệm vụ từ AI OS EventBus...</div>
             </div>
         </div>
 
-        <!-- Card 7: Benchmark B1-B5 Scorecard -->
-        <div class="card col-12">
+        <!-- 7. RECENT LOGS TERMINAL -->
+        <div class="card col-6">
             <div class="card-header">
-                <h2 id="scorecard-header">🏆 Bảng Thống Kê Benchmarks B1–B5 & Kiểm Toán Gate F</h2>
+                <span class="card-title">📟 Nhật Ký Tư Duy Thần Kinh (Neural Log Stream)</span>
+                <span class="card-tag">Realtime Redis Event</span>
             </div>
-            <table>
-                <thead>
-                    <tr>
-                        <th id="th-bmark">Bài Thử Nghiệm</th>
-                        <th id="th-target">Miền Đánh Giá</th>
-                        <th id="th-metric">Chỉ Số Đo Lường</th>
-                        <th id="th-result">Kết Quả</th>
-                        <th id="th-status">Trạng Thái</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>B1</td>
-                        <td id="b1-desc">Giải Quyết Mục Tiêu Mới (Novel Open Goal)</td>
-                        <td>OGR (Open Goal Res) + NAR (Novel Autonomy)</td>
-                        <td>100.0%</td>
-                        <td><span class="badge-pass">PASSED / ĐẠT</span></td>
-                    </tr>
-                    <tr>
-                        <td>B2</td>
-                        <td id="b2-desc">Khôi Phục Khi Thiếu Công Cụ (Capability Failure)</td>
-                        <td>UCR-5 (Controlled Failure on Missing Tools)</td>
-                        <td>100.0%</td>
-                        <td><span class="badge-pass">PASSED / ĐẠT</span></td>
-                    </tr>
-                    <tr>
-                        <td>B3</td>
-                        <td id="b3-desc">Môi Trường Thay Đổi Đột Ngột (Mid-Mission Change)</td>
-                        <td>ASR + DRS (Dynamic Replan) + GCR (Goal Conservation)</td>
-                        <td>100.0%</td>
-                        <td><span class="badge-pass">PASSED / ĐẠT</span></td>
-                    </tr>
-                    <tr>
-                        <td>B4</td>
-                        <td id="b4-desc">Thẩm Định Tiêu Chí Nghiêm Ngặt (Strict Criteria)</td>
-                        <td>ACR (Auto Completion) + GCR (100% Goal Intact)</td>
-                        <td>100.0%</td>
-                        <td><span class="badge-pass">PASSED / ĐẠT</span></td>
-                    </tr>
-                    <tr>
-                        <td>B5</td>
-                        <td id="b5-desc">Tự Chủ Chuỗi Nhiệm Vụ Dài Hạn (Long Horizon)</td>
-                        <td>HSR (Supervision Reduction) + P3 Concurrency</td>
-                        <td>100.0%</td>
-                        <td><span class="badge-pass">PASSED / ĐẠT</span></td>
-                    </tr>
-                    <tr>
-                        <td>B6</td>
-                        <td id="b6-desc">Tự Chủ Phân Luồng Bộ Máy (Admission Efficiency)</td>
-                        <td>OER (Under &lt; 0.5% / Over &lt; 1.0% / Correct &gt; 98.5%)</td>
-                        <td>100.0% Accuracy</td>
-                        <td><span class="badge-pass">PASSED / ĐẠT</span></td>
-                    </tr>
-                    <tr>
-                        <td>Gate F Audit</td>
-                        <td id="gf-desc">Kiểm Toán Ngâm Tải Phần Cứng Thực Tế (Real Hardware Soak)</td>
-                        <td>1,000 Missions / 0 Lỗi Vi Phạm Hiến Pháp / EIR-S 100%</td>
-                        <td>99.5% Success</td>
-                        <td><span class="badge-pass">PASSED / ĐẠT</span></td>
-                    </tr>
-                </tbody>
-            </table>
+            <div class="terminal-box" id="logs-box">
+                <div class="log-line"><span class="log-tag">[SYSTEM]</span><span class="log-msg">JKAI Zenith Live Observatory Ready.</span></div>
+            </div>
         </div>
 
     </div>
 
-    <!-- Client-Side Interactive Language Switcher Script -->
+    <!-- JAVASCRIPT ENGINE -->
     <script>
-        let currentLang = 'vi';
+        // --- 1. SETUP CHART.JS REAL-TIME GRAPH ---
+        const maxPoints = 25;
+        const labels = Array.from({length: maxPoints}, (_, i) => '');
+        const cpuData = Array(maxPoints).fill(0);
+        const vramData = Array(maxPoints).fill(0);
+        const ramData = Array(maxPoints).fill(0);
 
-        const i18n = {
-            vi: {
-                subtitle: "PRODUCTION-PROVEN ADAPTIVE COGNITIVE AI OS PLATFORM — BẢNG ĐIỀU KHIỂN & ĐÀI QUAN SÁT BẰNG CHỨNG ĐỘC LẬP",
-                status: "CHẾ ĐỘ THƯỜNG TRỰC VẬN HÀNH SẢN XUẤT",
-                l1Title: "🎯 Tầng 1: Kết Quả Nhiệm Vụ",
-                m1Title: "M1 Thành Công",
-                m5Title: "M5 Bảo Toàn Mục Tiêu",
-                m9Title: "M9 Thẩm Định Vật Lý",
-                failTitle: "Thất Bại An Toàn",
-                l2Title: "🛡️ Tầng 2: Tự Chủ & Khôi Phục",
-                m3Title: "M3 Tự Khôi Phục",
-                m4Title: "M4 Replan Tự Động",
-                m2Title: "Can Thiệp Thừa",
-                policyTitle: "Ủy Quyền An Toàn",
-                l3Title: "🔍 Tầng 3: Bằng Chứng Độc Lập",
-                eirsTitle: "EIR-S Bằng Chứng Outcome",
-                ecrTitle: "ECR Độ Phủ Bằng Chứng",
-                chainTitle: "Chuỗi Danh Tính",
-                violTitle: "Lỗi Vi Phạm Hiến Pháp",
-                l4Title: "⚡ Tầng 4: Chỉ Số Vận Hành SLO",
-                p95Title: "Độ Trễ p95",
-                p99Title: "Độ Trễ p99",
-                identityHeader: "🛡️ Chuỗi Danh Tính Zero-Trust 8 Mắt Xích Bất Biến",
-                complianceText: "100% Tuân Thủ Hiến Pháp",
-                stepReq: "Yêu Cầu", stepMis: "Nhiệm Vụ", stepPln: "Lộ Trình", stepTsk: "Tác Vụ",
-                stepAtt: "Thử Nghiệm", stepExe: "Thi Hành", stepObs: "Quan Sát", stepVer: "Thẩm Định",
-                inspectorHeader: "🔍 Đài Quan Sát Nhiệm Vụ Real-Time (Traceback Closed-Loop)",
-                scorecardHeader: "🏆 Bảng Thống Kê Benchmarks B1–B5 & Kiểm Toán Gate F",
-                thBmark: "Bài Thử Nghiệm", thTarget: "Miền Đánh Giá", thMetric: "Chỉ Số Đo Lường", thResult: "Kết Quả", thStatus: "Trạng Thái",
-                b1Desc: "Giải Quyết Mục Tiêu Mới (Novel Open Goal)",
-                b2Desc: "Khôi Phục Khi Thiếu Công Cụ (Capability Failure)",
-                b3Desc: "Môi Trường Thay Đổi Đột Ngột (Mid-Mission Change)",
-                b4Desc: "Thẩm Định Tiêu Chí Nghiêm Ngặt (Strict Criteria)",
-                b5Desc: "Tự Chủ Chuỗi Nhiệm Vụ Dài Hạn (Long Horizon)",
-                gfDesc: "Kiểm Toán Ngâm Tải Phần Cứng Thực Tế (Real Hardware Soak)",
-                inspectorText: `
-                    <p><strong style="color: var(--accent-cyan)">[MỤC TIÊU]</strong>: bạn có thể lập trình không ? (Kiểm tra khả năng lập trình của JKAI Zenith v5.0 Elite Agent)</p>
-                    <p><strong style="color: var(--accent-purple)">[CHIẾN LƯỢC]</strong>: DEEP Pipeline ➔ S1_RECON (Quét 30 files & nạp 2 kỹ năng) ➔ S2_FORGE (Lập kế hoạch & đúc kết chiến lược) ➔ S3_EXECUTE (DAG Parallel Executor T4)</p>
-                    <p><strong style="color: var(--accent-green)">[BẰNG CHỨNG VẬT LÝ]</strong>: Physical Verifier xác nhận 30 files workspace hợp lệ (S3_EXECUTE active)</p>
-                    <p><strong style="color: var(--accent-orange)">[XÁC MINH ĐỘC LẬP]</strong>: EIR-S = 100.00% | ECR = 100.00% | GCR = 100.00% (Zero Self-Reported Bias)</p>
-                `
+        const ctx = document.getElementById('telemetryChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: labels,
+                datasets: [
+                    {
+                        label: 'CPU Host (%)',
+                        data: cpuData,
+                        borderColor: '#00f0ff',
+                        backgroundColor: 'rgba(0, 240, 255, 0.05)',
+                        borderWidth: 2,
+                        tension: 0.35,
+                        fill: true,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'VRAM RX 6600 (%)',
+                        data: vramData,
+                        borderColor: '#a855f7',
+                        backgroundColor: 'rgba(168, 85, 247, 0.05)',
+                        borderWidth: 2,
+                        tension: 0.35,
+                        fill: true,
+                        pointRadius: 0
+                    },
+                    {
+                        label: 'RAM DDR4 (%)',
+                        data: ramData,
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.05)',
+                        borderWidth: 2,
+                        tension: 0.35,
+                        fill: true,
+                        pointRadius: 0
+                    }
+                ]
             },
-            en: {
-                subtitle: "PRODUCTION-PROVEN ADAPTIVE COGNITIVE AI OS PLATFORM — MISSION CONTROL & EVIDENCE OBSERVATORY",
-                status: "STANDING PRODUCTION OPERATION MODE",
-                l1Title: "🎯 Layer 1: Mission Outcome",
-                m1Title: "M1 Success Rate",
-                m5Title: "M5 Goal Conservation",
-                m9Title: "M9 Physical Verifier",
-                failTitle: "Graceful Failures",
-                l2Title: "🛡️ Layer 2: Autonomy & Resilience",
-                m3Title: "M3 Resilient Recovery",
-                m4Title: "M4 Dynamic Replan",
-                m2Title: "Unnecessary Human",
-                policyTitle: "Safety Policy Gate",
-                l3Title: "🔍 Layer 3: Evidence Integrity",
-                eirsTitle: "EIR-S Outcome Evidence",
-                ecrTitle: "ECR Evidence Coverage",
-                chainTitle: "Identity Chain",
-                violTitle: "Zero-Tolerance Violations",
-                l4Title: "⚡ Layer 4: Operational SLOs",
-                p95Title: "Latency p95",
-                p99Title: "Latency p99",
-                identityHeader: "🛡️ Zero-Trust Identity Chain Traceability",
-                complianceText: "100% Invariant Compliance",
-                stepReq: "Request", stepMis: "Mission", stepPln: "Plan", stepTsk: "Task",
-                stepAtt: "Attempt", stepExe: "Execute", stepObs: "Observe", stepVer: "Verify",
-                inspectorHeader: "🔍 Real-World Mission Detail Inspector (Closed-Loop Trace)",
-                scorecardHeader: "🏆 Empirical Benchmarks B1–B5 & Gate F Audit Summary",
-                thBmark: "Benchmark", thTarget: "Evaluation Target", thMetric: "Metric Measured", thResult: "Result", thStatus: "Status",
-                b1Desc: "Novel Open Goal Resolution",
-                b2Desc: "Capability Failure Recovery",
-                b3Desc: "Mid-Mission World Change Replan",
-                b4Desc: "Strict Criteria Verification",
-                b5Desc: "Human-Free Long Horizon Autonomy",
-                gfDesc: "Real Hardware Soak Audit (1,000 Missions)",
-                inspectorText: `
-                    <p><strong style="color: var(--accent-cyan)">[MISSION GOAL]</strong>: Can you program? (Verify JKAI Zenith v5.0 Elite Agent Programming Capability)</p>
-                    <p><strong style="color: var(--accent-purple)">[STRATEGY DAG v3]</strong>: DEEP Pipeline ➔ S1_RECON (Scan 30 files & inject 2 skills) ➔ S2_FORGE (Plan & Synthesize) ➔ S3_EXECUTE (DAG Parallel Executor T4)</p>
-                    <p><strong style="color: var(--accent-green)">[PHYSICAL STATE]</strong>: Physical Verifier confirmed 30 workspace files valid (S3_EXECUTE active)</p>
-                    <p><strong style="color: var(--accent-orange)">[INDEPENDENT VERIFICATION]</strong>: EIR-S = 100.00% | ECR = 100.00% | GCR = 100.00% (Zero Self-Reported Bias)</p>
-                `
-            }
-        };
-
-        function setLang(lang) {
-            currentLang = lang;
-            localStorage.setItem('jkai_dashboard_lang', lang);
-            document.getElementById('btn-vi').classList.toggle('active', lang === 'vi');
-            document.getElementById('btn-en').classList.toggle('active', lang === 'en');
-            
-            const t = i18n[lang];
-            document.getElementById('sub-title').textContent = t.subtitle;
-            document.getElementById('status-text').textContent = t.status;
-            document.getElementById('l1-title').textContent = t.l1Title;
-            document.getElementById('m1-title').textContent = t.m1Title;
-            document.getElementById('m5-title').textContent = t.m5Title;
-            document.getElementById('m9-title').textContent = t.m9Title;
-            document.getElementById('fail-title').textContent = t.failTitle;
-            
-            document.getElementById('l2-title').textContent = t.l2Title;
-            document.getElementById('m3-title').textContent = t.m3Title;
-            document.getElementById('m4-title').textContent = t.m4Title;
-            document.getElementById('m2-title').textContent = t.m2Title;
-            document.getElementById('policy-title').textContent = t.policyTitle;
-            
-            document.getElementById('l3-title').textContent = t.l3Title;
-            document.getElementById('eirs-title').textContent = t.eirsTitle;
-            document.getElementById('ecr-title').textContent = t.ecrTitle;
-            document.getElementById('chain-title').textContent = t.chainTitle;
-            document.getElementById('viol-title').textContent = t.violTitle;
-            
-            document.getElementById('l4-title').textContent = t.l4Title;
-            document.getElementById('p95-title').textContent = t.p95Title;
-            document.getElementById('p99-title').textContent = t.p99Title;
-            
-            document.getElementById('identity-header').textContent = t.identityHeader;
-            document.getElementById('compliance-text').textContent = t.complianceText;
-            document.getElementById('step-req').textContent = t.stepReq;
-            document.getElementById('step-mis').textContent = t.stepMis;
-            document.getElementById('step-pln').textContent = t.stepPln;
-            document.getElementById('step-tsk').textContent = t.stepTsk;
-            document.getElementById('step-att').textContent = t.stepAtt;
-            document.getElementById('step-exe').textContent = t.stepExe;
-            document.getElementById('step-obs').textContent = t.stepObs;
-            document.getElementById('step-ver').textContent = t.stepVer;
-            
-            document.getElementById('inspector-header').textContent = t.inspectorHeader;
-            document.getElementById('inspector-content').innerHTML = t.inspectorText;
-            
-            document.getElementById('scorecard-header').textContent = t.scorecardHeader;
-            document.getElementById('th-bmark').textContent = t.thBmark;
-            document.getElementById('th-target').textContent = t.thTarget;
-            document.getElementById('th-metric').textContent = t.thMetric;
-            document.getElementById('th-result').textContent = t.thResult;
-            document.getElementById('th-status').textContent = t.thStatus;
-            
-            document.getElementById('b1-desc').textContent = t.b1Desc;
-            document.getElementById('b2-desc').textContent = t.b2Desc;
-            document.getElementById('b3-desc').textContent = t.b3Desc;
-            document.getElementById('b4-desc').textContent = t.b4Desc;
-            document.getElementById('b5-desc').textContent = t.b5Desc;
-            document.getElementById('gf-desc').textContent = t.gfDesc;
-        }
-
-        // Real-time API Mission Poller
-        async function fetchRealtimeMissions() {
-            try {
-                const res = await fetch('http://localhost:9998/api/missions');
-                if (res.ok) {
-                    const missions = await res.json();
-                    if (missions && missions.length > 0) {
-                        const latest = missions[0];
-                        document.getElementById('active-mission-tag').textContent = `Mission #${latest.id}`;
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: false,
+                scales: {
+                    x: { display: false },
+                    y: {
+                        min: 0,
+                        max: 100,
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: {
+                            color: '#64748b',
+                            font: { family: "'JetBrains Mono', monospace", size: 10 },
+                            callback: v => v + '%'
+                        }
+                    }
+                },
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        align: 'end',
+                        labels: {
+                            color: '#94a3b8',
+                            boxWidth: 12,
+                            font: { family: "'Outfit', sans-serif", size: 11 }
+                        }
                     }
                 }
-            } catch (e) {
-                // Silently fallback if server port 9998 offline
+            }
+        });
+
+        // --- 2. UPDATE UI FROM SNAPSHOT ---
+        function updateUI(data) {
+            if (!data) return;
+            const hw = data.hardware || {};
+            const metrics = data.metrics || {};
+
+            // 1. GPU AMD RX 6600
+            const vramMbUsed = hw.vram_mb || 0;
+            const vramMbTot = hw.vram_total_mb || 8192;
+            const vramPct = Math.round((vramMbUsed / vramMbTot) * 100);
+            const gpuCorePct = hw.gpu_percent != null ? hw.gpu_percent : 0;
+
+            document.getElementById('vram-used-text').textContent = (vramMbUsed / 1024).toFixed(2) + ' GB';
+            document.getElementById('vram-total-text').textContent = `/ ${(vramMbTot / 1024).toFixed(1)} GB (${hw.gpu_name || 'AMD RX 6600'})`;
+            document.getElementById('vram-pct-text').textContent = vramPct + '%';
+            document.getElementById('vram-bar').style.width = vramPct + '%';
+            document.getElementById('gpu-core-pct').textContent = gpuCorePct + '%';
+            document.getElementById('gpu-core-bar').style.width = gpuCorePct + '%';
+
+            // GPU Models
+            if (hw.gpu_models && Array.isArray(hw.gpu_models) && hw.gpu_models.length > 0) {
+                document.getElementById('gpu-models-list').innerHTML = hw.gpu_models.map(m =>
+                    `<span class="pill pill-gpu">⚡ ${m} (Port 11434)</span>`
+                ).join('');
+            }
+
+            // 2. CPU Xeon E5-2699 v4
+            const cpuPct = hw.cpu_percent != null ? hw.cpu_percent : 0;
+            const aiThreads = hw.ai_threads || 22;
+            document.getElementById('cpu-load-text').textContent = cpuPct + '%';
+            document.getElementById('cpu-pct-text').textContent = cpuPct + '%';
+            document.getElementById('cpu-bar').style.width = cpuPct + '%';
+            document.getElementById('ai-threads-detail').textContent = `${aiThreads} / ${hw.cpu_threads || 44} Threads`;
+            document.getElementById('ai-threads-bar').style.width = Math.min(100, Math.round((aiThreads / 22) * 100)) + '%';
+
+            // CPU Models
+            if (hw.cpu_models && Array.isArray(hw.cpu_models) && hw.cpu_models.length > 0) {
+                document.getElementById('cpu-models-list').innerHTML = hw.cpu_models.map(m =>
+                    `<span class="pill pill-cpu">🧠 ${m} (Port 11435)</span>`
+                ).join('');
+            }
+
+            // 3. RAM
+            const ramPct = hw.ram_percent != null ? hw.ram_percent : 0;
+            const ramFreeGb = hw.ram_free_gb != null ? hw.ram_free_gb.toFixed(1) : '—';
+            const ramTotGb = hw.ram_total_gb != null ? hw.ram_total_gb.toFixed(0) : '64';
+            document.getElementById('ram-free-text').textContent = ramFreeGb;
+            document.getElementById('ram-total-text').textContent = `GB Trống / ${ramTotGb}GB Tổng`;
+            document.getElementById('ram-pct-text').textContent = ramPct + '%';
+            document.getElementById('ram-bar').style.width = ramPct + '%';
+
+            // 4. Update Rolling Chart
+            cpuData.shift(); cpuData.push(cpuPct);
+            vramData.shift(); vramData.push(vramPct);
+            ramData.shift(); ramData.push(ramPct);
+            chart.update();
+
+            // 5. Missions Metrics
+            const total = metrics.total || 0;
+            const completed = metrics.completed || 0;
+            const failed = metrics.failed || 0;
+            const successRate = metrics.success_rate != null ? metrics.success_rate : 100.0;
+            const failRate = total > 0 ? ((failed / total) * 100).toFixed(1) : '0.0';
+
+            document.getElementById('mission-total-tag').textContent = `${total} Tổng Nhiệm Vụ`;
+            document.getElementById('stat-success-rate').textContent = (total > 0 ? successRate.toFixed(1) : '100') + '%';
+            document.getElementById('stat-completed-count').textContent = `${completed} thành công`;
+            document.getElementById('stat-fail-rate').textContent = failRate + '%';
+            document.getElementById('stat-failed-count').textContent = `${failed} từ chối/lỗi`;
+
+            // 6. Mission Inspector
+            const latest = data.latest;
+            if (latest) {
+                document.getElementById('current-mid-tag').textContent = `Mission #${latest.id || 'Active'}`;
+                const statusTag = latest.status === 'completed' || latest.status === 'success' 
+                    ? '<span class="status-tag tag-ok">THÀNH CÔNG</span>'
+                    : latest.status === 'failed' || latest.status === 'error'
+                    ? '<span class="status-tag tag-fail">THẤT BẠI</span>'
+                    : '<span class="status-tag tag-run">ĐANG CHẠY</span>';
+
+                document.getElementById('inspector-content').innerHTML = `
+                    <div style="margin-bottom: 0.6rem;">${statusTag} <span style="color: var(--text-muted); font-size: 0.75rem;">${new Date((latest.ts||Date.now()/1000)*1000).toLocaleTimeString()}</span></div>
+                    <div style="color: var(--cyan); margin-bottom: 0.4rem;">🎯 Mục tiêu: ${escapeHtml(latest.title || latest.goal || '—')}</div>
+                    <div style="color: var(--text-muted); font-size: 0.75rem;">Preview: ${escapeHtml(latest.preview || 'Chưa có kết xuất')}</div>
+                `;
+            }
+
+            // 7. Logs Stream
+            if (data.latest_logs && Array.isArray(data.latest_logs) && data.latest_logs.length > 0) {
+                const logsHtml = data.latest_logs.map(l => `
+                    <div class="log-line">
+                        <span class="log-tag">[${escapeHtml(l.tag || 'AI')}]</span>
+                        <span class="log-msg">${escapeHtml(l.msg || '')}</span>
+                    </div>
+                `).join('');
+                document.getElementById('logs-box').innerHTML = logsHtml;
             }
         }
 
-        // Initialize language and start real-time poller
-        const savedLang = localStorage.getItem('jkai_dashboard_lang') || 'vi';
-        setLang(savedLang);
-        setInterval(fetchRealtimeMissions, 3000);
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+
+        // --- 3. SSE CONNECTION (0.5s - 1.5s Near-Realtime) ---
+        function connectSSE() {
+            try {
+                const es = new EventSource('/api/stream');
+                es.addEventListener('snapshot', (ev) => {
+                    try {
+                        const snap = JSON.parse(ev.data);
+                        updateUI(snap);
+                    } catch (err) {}
+                });
+                es.onmessage = (ev) => {
+                    try {
+                        const snap = JSON.parse(ev.data);
+                        updateUI(snap);
+                    } catch (err) {}
+                };
+                es.onerror = () => {
+                    es.close();
+                    document.getElementById('sse-status').textContent = 'RECONNECTING...';
+                    setTimeout(connectSSE, 3000);
+                };
+                es.onopen = () => {
+                    document.getElementById('sse-status').textContent = 'URG LIVE SYNC (0.5s)';
+                };
+            } catch (e) {
+                setTimeout(connectSSE, 3000);
+            }
+        }
+
+        // Fallback fetch initial data
+        async function fetchInitial() {
+            try {
+                const res = await fetch('/api/metrics');
+                if (res.ok) {
+                    const snap = await res.json();
+                    updateUI(snap);
+                }
+            } catch (e) {}
+        }
+
+        fetchInitial();
+        connectSSE();
     </script>
 </body>
 </html>

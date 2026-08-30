@@ -372,12 +372,10 @@ class SemanticSkillMatcher:
         except Exception:
             return goal
         injection = (
-            "\n\n<ZENITH_SKILL_ACTIVATED>\n"
-            f"Skill: {match.display_id} {match.title}"
-            f" (domain={match.domain}, score={match.score:.2f})\n"
-            "Ap dung chinh xac giao thuc sau - KHONG bo qua buoc nao:\n\n"
-            f"{dossier}\n"
-            "</ZENITH_SKILL_ACTIVATED>\n"
+            f"\n\n<ZENITH_SKILL_ACTIVATED>\n"
+            f"Skill: {match.display_id} {match.title} (domain={match.domain}, score={match.score:.2f}, tool_id={match.skill_id})\n"
+            f"Ưu tiên sử dụng công cụ '{match.skill_id}' cho mục tiêu này.\n"
+            f"</ZENITH_SKILL_ACTIVATED>\n"
         )
         return goal + injection
 

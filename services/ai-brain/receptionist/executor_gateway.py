@@ -1,7 +1,10 @@
 import asyncio
 import json
+import logging
 from dataclasses import dataclass
 from core.utils.engine import engine
+
+logger = logging.getLogger("JKAI.ExecutorGateway")
 
 _EVIDENCE_GUARD = None
 
@@ -35,14 +38,20 @@ class ExecutorGateway:
 
     def _log(self, tag, msg, task_id="manual", stealth=False):
         try:
-            enhanced_msg = f"[ZENITH]: {msg}" if tag == "ZENITH" else msg
-            engine.publish_mission_log(tag, enhanced_msg, task_id, stealth=stealth)
+            engine.publish_mission_log(tag, msg, task_id, stealth=stealth)
         except Exception: pass
 
     async def _post_to_executor(self, url: str, payload: dict, timeout: int) -> dict:
         """Helper: POST to executor and return JSON response."""
         resp = await self.http_client.post(url, json=payload, timeout=timeout)
-        return resp.json()
+        if hasattr(resp, "json"):
+            res = resp.json()
+            if hasattr(res, "__await__"):
+                return await res
+            return res
+        elif isinstance(resp, dict):
+            return resp
+        return {}
 
     async def execute_tool(self, request: ExecutionRequest, task_id: str) -> str:
         """
@@ -59,10 +68,11 @@ class ExecutorGateway:
         # ------------------------------------------------------------------ #
         try:
             from core.kernel.execution_integrity import ExecutionIntegrityLayer, DecisionOutcome
-            from core.kernel.task_contract_store import get_active_contract, get_active_policy
+            from core.kernel.task_contract_store import get_active_contract, get_active_policy, get_policy_snapshot, get_or_create_policy_snapshot
 
             task_contract = get_active_contract(task_id)
             policy = get_active_policy(task_id)
+            snapshot = get_policy_snapshot(task_id)
 
             integrity = ExecutionIntegrityLayer(mission_id=task_id)
             decision = integrity.authorize(
@@ -70,6 +80,7 @@ class ExecutorGateway:
                 arguments=dict(request.tool_args or {}),
                 task_contract=task_contract,
                 policy=policy,
+                snapshot=snapshot,
             )
 
             if decision.outcome == DecisionOutcome.DENY:
@@ -134,24 +145,47 @@ class ExecutorGateway:
         # ------------------------------------------------------------------ #
         # Authorized — proceed to executor                                     #
         # ------------------------------------------------------------------ #
-        # [P0-3]: Evidence Gate — chặn mutation target hallucinated trước khi dispatch
+        # [P0-3 / P0-4]: Evidence Gate — chặn mutation target hallucinated trước khi dispatch
         try:
             from core.kernel.evidence_gate import guard_mutation as _guard_mutation
-            ev_decision = _guard_mutation(
-                request.tool_name, dict(request.tool_args or {}),
-                mission_id=task_id, guard=_get_evidence_guard(),
-            )
-            if not ev_decision.allowed:
-                self._log("INTEGRITY", f"[EVIDENCE-DENY] {ev_decision.path}: {ev_decision.reason}", task_id)
-                from core.kernel.execution_integrity import ExecutionResult, DecisionOutcome
+            guard_inst = _get_evidence_guard()
+            if guard_inst:
+                ev_decision = _guard_mutation(
+                    request.tool_name, dict(request.tool_args or {}),
+                    mission_id=task_id, guard=guard_inst,
+                )
+                if not ev_decision.allowed:
+                    self._log("INTEGRITY", f"[EVIDENCE-DENY] {ev_decision.path}: {ev_decision.reason}", task_id)
+                    from core.kernel.execution_integrity import ExecutionResult, DecisionOutcome
+                    return ExecutionResult(
+                        outcome=DecisionOutcome.DENY,
+                        tool_executed=False,
+                        reason=ev_decision.reason,
+                        action=request.tool_name,
+                    )
+        except ImportError:
+            # Evidence gate module not active - handled by ExecutionIntegrityLayer
+            pass
+        except Exception as eg_err:
+            # STRICT FAIL-CLOSED: if Evidence Gate fails for mutation tools, HARD DENY
+            from core.kernel.execution_integrity import ExecutionIntegrityLayer, ExecutionResult, DecisionOutcome
+            eil = ExecutionIntegrityLayer(mission_id=task_id)
+            if not eil._is_observation_tool(request.tool_name):
+                self._log("INTEGRITY", f"[EVIDENCE-GATE-ERROR] Evidence gate evaluation failed: {eg_err}", task_id)
+                logger.error("[FAIL-CLOSED] Evidence Gate error on mutation tool '%s': %s", request.tool_name, eg_err)
                 return ExecutionResult(
                     outcome=DecisionOutcome.DENY,
                     tool_executed=False,
-                    reason=ev_decision.reason,
+                    reason=f"FAIL-CLOSED: Evidence Gate evaluation encountered an error ({eg_err}). Mutation blocked.",
                     action=request.tool_name,
                 )
-        except Exception:
-            pass
+
+        # [WAKE-ON-DEMAND]: Tự động đánh thức container công cụ nếu đang ở trạng thái ngủ (Auto-Sleep)
+        try:
+            from core.kernel.container_idler import container_idler
+            await container_idler.ensure_tool_container_ready(request.tool_name)
+        except Exception as idler_err:
+            logger.debug("[IDLER-WAKE-NOTICE] %s", idler_err)
 
         self._log("EXECUTOR", f"Safe execution: {request.tool_name}(...) - TraceID: {request.trace_id}", task_id)
         is_success = False
@@ -175,7 +209,8 @@ class ExecutorGateway:
                 "args": request.tool_args,
                 "task_id": task_id,
                 "trace_id": request.trace_id,
-                "token": request.capability_token
+                "token": request.capability_token,
+                "grant": decision.grant if hasattr(decision, 'grant') else None
             }
 
             # Retry: primary executor -> fallback executor-2

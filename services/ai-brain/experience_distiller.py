@@ -117,27 +117,33 @@ class ExperienceDistiller:
             logger.warning("[DISTILLER] No relevant logs found for distillation.")
             return
 
-        # 2. Xây dựng Prompt phân tích Đa tầng thưa Master
+        # 2. Xây dựng Prompt phân tích Kỹ thuật Thực dụng (Deterministic Recipe Extractor)
         log_text = "\n".join(relevant_logs[::-1])
         prompt = f"""
-        BẠN LÀ EXECUTOR - CHUYÊN GIA ĐÚC RÚT TRI THỨC JKAI ZENITH.
-        Nhiệm vụ: Phân tích nhật ký của Task '{goal}' và chắt lọc tinh hoa vào 12 TRỤ CỘT TRI THỨC (ZENITH_12_PILLAR_PROTOCOL).
+        BẠN LÀ BỘ ĐÚC KẾT TRI THỨC KỸ THUẬT THỰC DỤNG (TECHNICAL RECIPE DISTILLER) CỦA JKAI OS.
+        Mục tiêu: Phân tích log thực thi của Task '{goal}' và chỉ trích xuất CÔNG THỨC KỸ THUẬT THỰC TẾ (Code, File, Lệnh, Lỗi).
         
-        DANH MỤC 12 TRỤ CỘT:
-        1. SKILLS (Bộ Tứ Elite) | 2. AGENTS (Persona) | 3. RULES (SOP) | 4. KNOWLEDGE (⭐ Rating)
-        5. PROMPTS (Templates) | 6. COMMANDS (Snippets) | 7. TOOLS (API) | 8. PROTOCOLS (Security)
-        9. TRAINING (Data) | 10. VAULT (Context) | 11. ARCHIVE (Freeze) | 12. OBSIDIAN (Links)
+        QUY TẮC BẮT BUỘC:
+        1. KHÔNG viết các câu khuyên chung chung, sáo rỗng (như 'cần theo dõi', 'tìm hiểu thêm', 'xây dựng kế hoạch').
+        2. KHÔNG bịa ra các phiên bản công nghệ tương lai (không có Python 4, PyPy 9).
+        3. CHỈ trích xuất nếu có:
+           - Tên file/module cụ thể bị ảnh hưởng.
+           - Lỗi exception hoặc hành động tool cụ thể đã thực hiện.
+           - Cách khắc phục (lệnh shell, hàm code, cấu hình) đã chạy thành công.
+        4. Nếu task chỉ là chào hỏi hoặc không có bài học kỹ thuật cụ thể -> TRẢ VỀ {{"action_type": "none", "is_actionable": false}}
         
-        NHẬT KÝ THỰC THI:
+        NHẬT KÝ THỰC THI THỰC TẾ:
         {log_text}
         
-        TRẢ VỀ JSON CHUẨN:
+        TRẢ VỀ JSON CHUẨN KỸ THUẬT:
         {{
-            "action_type": "tên_pillar_thấp_phân",
-            "lessons_learned": ["..."],
-            "master_preferences": ["..."],
-            "technical_patterns": ["..."],
-            "suggested_rules": ["..."],
+            "action_type": "knowledge" | "rules" | "commands" | "protocols",
+            "is_actionable": true,
+            "target_component": "tên_file_hoặc_service",
+            "trigger_error_or_goal": "mô tả lỗi hoặc mục tiêu kỹ thuật cụ thể",
+            "technical_solution": "lệnh shell hoặc đoạn code/cấu hình cụ thể đã giải quyết vấn đề",
+            "lessons_learned": ["Bài học kỹ thuật ngắn gọn, cụ thể (tối đa 1-2 câu)"],
+            "suggested_rules": ["Quy tắc kỹ thuật có thể kiểm tra được bằng code/linter (nếu có)"],
             "rating": 1-5
         }}
         """
@@ -160,23 +166,64 @@ class ExperienceDistiller:
         )
 
         if isinstance(distilled_data, dict):
-            # 📋 [PLAN BOARD v2.0]: Lưu đề xuất vào Tab Kế Hoạch thay vì block HITL thưa Master
+            # Bỏ qua nếu mô hình xác định task không có bài học kỹ thuật thực dụng
+            if distilled_data.get("is_actionable") is False or distilled_data.get("action_type") in ["none", "null"]:
+                logger.info("[DISTILLER] Task không chứa bài học kỹ thuật cụ thể, bỏ qua.")
+                return
+
             from core.utils.sovereign_guard import SovereignGuard
             guard = SovereignGuard("OMNI-EVOLVE Distiller")
             
             pillar = distilled_data.get("action_type", "knowledge").lower()
             if pillar not in self.pillars: pillar = "knowledge"
             
-            lessons = distilled_data.get("lessons_learned", [])
-            summary = lessons[0][:120] if lessons else "Kết tinh tri thức từ kinh nghiệm thực chiến"
+            lessons = [l for l in distilled_data.get("lessons_learned", []) if isinstance(l, str) and len(l.strip()) > 10]
+            rules = [r for r in distilled_data.get("suggested_rules", []) if isinstance(r, str) and len(r.strip()) > 10]
+            solution = distilled_data.get("technical_solution", "")
+            target_comp = distilled_data.get("target_component", "")
+
+            # 🛡️ 1. LỌC BỎ ẢO GIÁC & CÂU SÁO RỖNG (HALLUCINATION & PLATITUDE FILTER)
+            banned_patterns = [
+                r"(?i)\bpython\s*4\b", r"(?i)\bpypy\s*9\b",
+                r"(?i)xây dựng kế hoạch.*hiệu quả",
+                r"(?i)tìm hiểu thêm về.*vấn đề",
+                r"(?i)theo dõi và xử lý.*vấn đề",
+            ]
             
+            def is_valid_content(text: str) -> bool:
+                for pat in banned_patterns:
+                    if re.search(pat, text):
+                        return False
+                return True
+
+            lessons = [l for l in lessons if is_valid_content(l)]
+            rules = [r for r in rules if is_valid_content(r)]
+
+            if not lessons and not rules and not solution:
+                logger.warning("[DISTILLER] Bỏ qua đề xuất do nội dung rỗng, sáo rỗng hoặc chứa ảo giác.")
+                return
+
+            summary = lessons[0][:120] if lessons else (rules[0][:120] if rules else f"Công thức kỹ thuật: {target_comp or pillar}")
+            
+            # 🛡️ 2. CHỐNG TRÙNG LẶP (DEDUPLICATION HASH CHECK)
+            content_fingerprint = hashlib.sha256(f"{summary}::{solution}::{'; '.join(rules)}".encode("utf-8")).hexdigest()[:16]
+            is_dup = redis_safe(lambda r: r.sismember("zenith:distilled_fingerprints", content_fingerprint), False)
+            if is_dup:
+                logger.info("[DISTILLER] Đề xuất trùng lặp (hash=%s), bỏ qua không gửi lên Plan Board.", content_fingerprint)
+                return
+
+            redis_safe(lambda r: (
+                r.sadd("zenith:distilled_fingerprints", content_fingerprint),
+                r.expire("zenith:distilled_fingerprints", 86400) # Khóa trùng lặp trong 24h
+            ))
+
             description_parts = []
+            if target_comp:
+                description_parts.append(f"🎯 **Thành phần:** `{target_comp}`")
+            if solution:
+                description_parts.append(f"🛠️ **Công thức giải pháp:**\n```\n{solution[:500]}\n```")
             if lessons:
-                description_parts.append("**📚 Bài học:** " + "; ".join(lessons[:3]))
-            prefs = distilled_data.get("master_preferences", [])
-            if prefs:
-                description_parts.append("**💎 Profile Master:** " + "; ".join(prefs[:2]))
-            rules = distilled_data.get("suggested_rules", [])
+                description_parts.append("**📚 Bài học kỹ thuật:** " + "; ".join(lessons[:2]))
             if rules:
                 description_parts.append("**⚖️ Quy tắc đề xuất:** " + "; ".join(rules[:2]))
             
@@ -186,16 +233,16 @@ class ExperienceDistiller:
                 title=f"[OMNI-EVOLVE] Kết tinh tri thức Trụ cột: {pillar.upper()}",
                 description="\n\n".join(description_parts) or summary,
                 proposal_type="KNOWLEDGE_DISTILL",
-                is_red_zone=False,  # Chỉ đồng hóa tri thức, không can thiệp hệ thống
+                is_red_zone=False,
                 execute_goal=f"Đồng hóa tri thức mới vào Trụ cột {pillar}: {summary}",
                 metadata={
                     "pillar": pillar,
                     "rating": distilled_data.get("rating", 3),
-                    "distilled_data": distilled_data
+                    "distilled_data": distilled_data,
+                    "fingerprint": content_fingerprint
                 }
             )
             
-            # 🚀 [SELF-EVOLUTION-TRIGGER]: Nếu phát hiện lỗi hệ thống, đề xuất Tự phẫu thuật thưa Master
             if distilled_data.get("rating", 0) <= 2 or "error" in goal.lower() or "failure" in goal.lower():
                 await self.propose_self_patch(task_id, goal, relevant_logs)
 

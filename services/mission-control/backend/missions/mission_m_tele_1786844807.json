@@ -1,0 +1,42 @@
+{
+  "id": "m_tele_1786844807",
+  "title": "hãy tạo cho tôi 1 file excel để tổng hợp báo cáo trực quan theo dõi ti",
+  "goal": "hãy tạo cho tôi 1 file excel để tổng hợp báo cáo trực quan theo dõi tiến độ công việc của mỗi người trong 1 phòng gom 10 người.",
+  "status": "failed",
+  "ts": 1786844844.7406135,
+  "logs": [
+    {
+      "tag": "MASTER_TELE",
+      "msg": "hãy tạo cho tôi 1 file excel để tổng hợp báo cáo trực quan theo dõi tiến độ công việc của mỗi người trong 1 phòng gom 10 người.",
+      "ts": 1786844807.7202444,
+      "source": "SYSTEM",
+      "task_id": "tele_1786844807"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `tele_1786844807` initialized | Trace: `gen_1786844807`. Runtime ready.",
+      "ts": 1786844807.723277,
+      "source": "SYSTEM",
+      "task_id": "tele_1786844807"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist\"}",
+      "ts": 1786844844.7040164,
+      "source": "SYSTEM",
+      "task_id": "tele_1786844807"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+      "ts": 1786844844.708705,
+      "source": "SYSTEM",
+      "task_id": "tele_1786844807"
+    }
+  ],
+  "artifacts": {
+    "plan": "hãy tạo cho tôi 1 file excel để tổng hợp báo cáo trực quan theo dõi tiến độ công việc của mỗi người trong 1 phòng gom 10 người.",
+    "walkthrough": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

@@ -7,6 +7,7 @@ services:
   postgres:
     image: postgres:15-alpine
     container_name: postgres
+    profiles: ["core", "full"]
     restart: unless-stopped
     env_file: .env
     environment:
@@ -53,6 +54,7 @@ services:
   redis-queue-v2:
     image: redis:7-alpine
     container_name: redis-queue
+    profiles: ["automation", "full"]
     restart: unless-stopped
     command: ["redis-server", "--appendonly", "yes", "--maxmemory-policy", "allkeys-lru", "--requirepass", "${REDIS_PASSWORD}"]
     volumes:
@@ -71,6 +73,7 @@ services:
   redis-ai:
     image: redis:7-alpine
     container_name: redis-ai
+    profiles: ["core", "full"]
     restart: unless-stopped
     command: ["redis-server", "--appendonly", "yes", "--maxmemory", "2gb", "--maxmemory-policy", "allkeys-lru", "--requirepass", "${REDIS_PASSWORD}"]
     volumes:
@@ -93,6 +96,7 @@ services:
   qdrant:
     image: qdrant/qdrant:latest
     container_name: qdrant
+    profiles: ["core", "full"]
     restart: unless-stopped
     ports:
       - "6333:6333"
@@ -109,6 +113,7 @@ services:
   rag-service:
     build: ./rag
     container_name: rag-service
+    profiles: ["secondary", "full"]
     restart: unless-stopped
     depends_on:
       qdrant:
@@ -138,6 +143,7 @@ services:
   ai-telegram:
     build: ./services/ai-telegram
     container_name: ai-telegram
+    profiles: ["tools", "full"]
     restart: unless-stopped
     env_file: .env
     depends_on:
@@ -158,6 +164,7 @@ services:
   n8n-main:
     image: n8nio/n8n:${N8N_VERSION:-latest}
     container_name: n8n-main
+    profiles: ["automation", "full"]
     restart: unless-stopped
     ports:
       - "5678:5678"
@@ -222,6 +229,7 @@ services:
   n8n-worker:
     image: n8nio/n8n:${N8N_VERSION:-latest}
     container_name: n8n-worker
+    profiles: ["automation", "full"]
     restart: unless-stopped
     command: ["worker"]
     environment:
@@ -273,6 +281,7 @@ services:
   ai-control-plane:
     build: ./services/ai-control-plane
     container_name: ai-control-plane
+    profiles: ["secondary", "full"]
     restart: unless-stopped
     command: uvicorn main:app --host 0.0.0.0 --port 8000
     env_file: .env
@@ -313,6 +322,7 @@ services:
   ai-worker:
     build: ./services/ai-control-plane
     container_name: ai-worker
+    profiles: ["secondary", "full"]
     restart: unless-stopped
     command: python worker.py
     env_file: .env
@@ -351,6 +361,7 @@ services:
   ai-brain:
     build: ./services/ai-brain
     container_name: ai-brain
+    profiles: ["core", "full"]
     restart: unless-stopped
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --workers 2
     env_file: .env
@@ -396,6 +407,7 @@ services:
   ai-executor-1:
     build: ./services/ai-executor
     container_name: ai-executor-1
+    profiles: ["core", "full"]
     restart: unless-stopped
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --workers 2
     env_file: .env
@@ -433,6 +445,7 @@ services:
   ai-executor-2:
     build: ./services/ai-executor
     container_name: ai-executor-2
+    profiles: ["secondary", "full"]
     restart: unless-stopped
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --workers 2
     env_file: .env
@@ -472,6 +485,7 @@ services:
   zenith-file-warden:
     build: ./services/zenith-file-warden
     container_name: jkai-file-warden
+    profiles: ["tools", "full"]
     restart: always
     ports:
       - "8005:8005"
@@ -490,6 +504,7 @@ services:
   ai-browser:
     build: ./services/ai-browser
     container_name: ai-browser
+    profiles: ["tools", "full"]
     restart: unless-stopped
     env_file: .env
     ports:
@@ -516,6 +531,7 @@ services:
   mission-control:
     build: ./services/mission-control
     container_name: mission-control
+    profiles: ["core", "full"]
     restart: unless-stopped
     env_file: .env
     ports:
@@ -578,6 +594,7 @@ services:
   backup-scheduler:
     build: ./services/ai-executor
     container_name: backup-scheduler
+    profiles: ["secondary", "full"]
     restart: unless-stopped
     command: python /app/backup_scheduler_main.py
     env_file: .env

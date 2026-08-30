@@ -13,8 +13,7 @@ class AuthInterceptor:
 
     def _log(self, tag, msg, task_id="manual", stealth=False):
         try:
-            enhanced_msg = f"🫡 [ZENITH]: {msg}" if tag == "ZENITH" else msg
-            engine.publish_mission_log(tag, enhanced_msg, task_id, stealth=stealth)
+            engine.publish_mission_log(tag, msg, task_id, stealth=stealth)
         except Exception: pass
 
     def _clean_vn_accents(self, s: str) -> str:

@@ -64,8 +64,9 @@ class CognitiveVerifier:
                 else:
                     logs.append(f"✅ Physical file '{target_path}' verified ({size} bytes).")
 
-                # 3. Thẩm định định dạng file
-                if deliv.format == "xlsx":
+                # 3. Thẩm định định dạng file đa năng (xlsx, docx, pdf, json, csv)
+                fmt = (deliv.format or "").lower()
+                if fmt in ("xlsx", "excel") or target_path.endswith(".xlsx"):
                     try:
                         import openpyxl
                         wb = openpyxl.load_workbook(target_path, read_only=True)
@@ -74,6 +75,57 @@ class CognitiveVerifier:
                     except Exception as e:
                         missing.append(f"EXCEL_CORRUPTED: {e}")
                         logs.append(f"❌ Excel integrity check failed: {e}")
+                        fail_cls = FailureClassification.VERIFICATION_FAILURE
+                        rec_rec = RecoveryStrategy.DIAGNOSE_AND_REPAIR
+
+                elif fmt in ("docx", "word") or target_path.endswith(".docx"):
+                    try:
+                        import docx
+                        doc = docx.Document(target_path)
+                        p_count = len(doc.paragraphs)
+                        logs.append(f"✅ Word document integrity verified: {p_count} paragraphs found.")
+                    except Exception as e:
+                        missing.append(f"DOCX_CORRUPTED: {e}")
+                        logs.append(f"❌ Word document integrity check failed: {e}")
+                        fail_cls = FailureClassification.VERIFICATION_FAILURE
+                        rec_rec = RecoveryStrategy.DIAGNOSE_AND_REPAIR
+
+                elif fmt == "pdf" or target_path.endswith(".pdf"):
+                    try:
+                        with open(target_path, "rb") as pf:
+                            head = pf.read(10)
+                            if b"%PDF-" not in head:
+                                raise ValueError("Missing %PDF- magic bytes header")
+                        logs.append("✅ PDF binary header integrity verified.")
+                    except Exception as e:
+                        missing.append(f"PDF_CORRUPTED: {e}")
+                        logs.append(f"❌ PDF integrity check failed: {e}")
+                        fail_cls = FailureClassification.VERIFICATION_FAILURE
+                        rec_rec = RecoveryStrategy.DIAGNOSE_AND_REPAIR
+
+                elif fmt == "json" or target_path.endswith(".json"):
+                    try:
+                        import json
+                        with open(target_path, "r", encoding="utf-8") as jf:
+                            json.load(jf)
+                        logs.append("✅ JSON syntax integrity verified.")
+                    except Exception as e:
+                        missing.append(f"JSON_CORRUPTED: {e}")
+                        logs.append(f"❌ JSON syntax check failed: {e}")
+                        fail_cls = FailureClassification.VERIFICATION_FAILURE
+                        rec_rec = RecoveryStrategy.DIAGNOSE_AND_REPAIR
+
+                elif fmt == "csv" or target_path.endswith(".csv"):
+                    try:
+                        import csv
+                        with open(target_path, "r", encoding="utf-8") as cf:
+                            reader = list(csv.reader(cf))
+                            if not reader:
+                                raise ValueError("Empty CSV rows")
+                        logs.append(f"✅ CSV structure verified: {len(reader)} rows.")
+                    except Exception as e:
+                        missing.append(f"CSV_CORRUPTED: {e}")
+                        logs.append(f"❌ CSV check failed: {e}")
                         fail_cls = FailureClassification.VERIFICATION_FAILURE
                         rec_rec = RecoveryStrategy.DIAGNOSE_AND_REPAIR
 

@@ -384,6 +384,24 @@ class Executor:
                 engine.set_insight(task_id, f"res_{tool_name}", content)
             
             path_arg = args.get("path") or args.get("TargetFile") or args.get("file_path") or args.get("target") or ""
+            if isinstance(result, dict):
+                res_path = result.get("file_path") or result.get("path") or result.get("output_path") or result.get("filepath")
+                if res_path and not path_arg:
+                    path_arg = str(res_path)
+
+            # 📁 [ARTIFACT-GATE]: Nếu là công cụ tạo tệp tin, xác thực vật lý trên đĩa
+            if path_arg and any(kw in tool_name.lower() for kw in ("write", "create", "file", "office", "excel", "word", "pdf", "patch")):
+                try:
+                    from core.kernel.artifact_gate import verify_artifact_on_disk
+                    art_res = verify_artifact_on_disk(str(path_arg))
+                    if art_res.get("verified"):
+                        if isinstance(result, dict):
+                            result["artifact_info"] = art_res
+                    else:
+                        self._log("WARN", f"[ARTIFACT-GATE] ⚠️ Không tìm thấy tệp hoặc tệp rỗng: {path_arg} ({art_res.get('reason')})", task_id)
+                except Exception:
+                    pass
+
             action = self._classify_action(tool_name, lang, past_tense=True)
             if path_arg:
                 self._log("EXECUTOR", f"[{action}] `{path_arg}`", task_id)
@@ -428,15 +446,19 @@ class Executor:
             if parallel_batch:
                 self._log("SYSTEM", f"[SWARM] Kích hoạt {len(parallel_batch)} tác vụ thực thi song song.", task_id)
                 for s in parallel_batch:
+                    tool_name = s.get("tool") or s.get("action") or s.get("skill") or s.get("skill_id") or s.get("name") or "SEARCH_WEB_GLOBAL"
+                    step_args = s.get("args") or s.get("arguments") or s.get("params") or {}
                     tasks.append(self.call_tool(
-                        s["tool"], s.get("args", {}), task_id, trace_id,
+                        tool_name, step_args, task_id, trace_id,
                         expert_mindset=s.get("expert_mindset"),
                         assigned_agent=s.get("assigned_agent"),
                         policy_override=s.get("policy")
                     ))
             elif sequential_step:
+                tool_name = sequential_step.get("tool") or sequential_step.get("action") or sequential_step.get("skill") or sequential_step.get("skill_id") or sequential_step.get("name") or "SEARCH_WEB_GLOBAL"
+                step_args = sequential_step.get("args") or sequential_step.get("arguments") or sequential_step.get("params") or {}
                 tasks.append(self.call_tool(
-                    sequential_step["tool"], sequential_step.get("args", {}), task_id, trace_id,
+                    tool_name, step_args, task_id, trace_id,
                     expert_mindset=sequential_step.get("expert_mindset"),
                     assigned_agent=sequential_step.get("assigned_agent"),
                     policy_override=sequential_step.get("policy")

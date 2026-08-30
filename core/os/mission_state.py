@@ -26,8 +26,8 @@ class MissionState:
     task_id: str = ""
 
     os_intent: str = "general"
-    pipeline: str = "auto"
-    execution_mode: str = "auto"
+    pipeline: str = "fast"
+    execution_mode: str = "fast"
     routing_manifest: Optional[Any] = None
 
     constraints: List[str] = field(default_factory=list)

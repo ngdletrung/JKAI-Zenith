@@ -1,32 +1,18 @@
+# -*- coding: utf-8 -*-
 """
-🏛️ ADAPTIVE MODEL GOVERNOR (AMG) v2 — RESOURCE GOVERNOR
-File: core/governor/resource_governor.py
-
-Purpose:
-    Computes precise GPU layer allocation and backend routing based on
-    actual hardware state and model memory profile.
-
-    VRAM Budget Stack (Lock-in Point #1):
-        VRAM_FREE
-        - RUNTIME_RESERVE      (Vulkan/ROCm driver overhead)
-        - KV_CACHE             (proportional to context length)
-        - COMPUTE_BUFFERS      (intermediate activation buffers)
-        - SAFETY_MARGIN        (fragmentation + misc)
-        ─────────────────
-        = USABLE_VRAM
-        ÷ per_layer_mb
-        = safe_gpu_layers
-
-    Backend vs Memory Layout (Lock-in Point #5):
-        backend       = COMPUTE path (GPU | HYBRID | CPU)
-        memory_layout = where weights live (VRAM_ONLY | VRAM_RAM_SPLIT | RAM_ONLY)
-        These are SEPARATE concerns — a HYBRID backend = VRAM_RAM_SPLIT memory.
+╔══════════════════════════════════════════════════════════════════╗
+║   JKAI ZENITH — ADAPTIVE MODEL GOVERNOR: RESOURCE GOVERNOR v2.0  ║
+║   Tự Động Tính Toán Ngân Sách GPU/RAM Thích Ứng (Zero-Config)   ║
+╚══════════════════════════════════════════════════════════════════╝
+*Kiến Trúc Sư Trưởng Chủ Động Tối Ưu Hóa Phân Bổ Tài Nguyên Đa Mục Tiêu. 🏛️⚡🧠*
 """
 
 from __future__ import annotations
+import time
+import math
 import logging
-from dataclasses import dataclass
-from typing import Tuple
+from dataclasses import dataclass, field
+from typing import Tuple, List, Optional, Dict, Any
 
 from core.governor.model_capabilities import (
     ModelCapabilityProfile, ModelMemoryProfile,
@@ -36,25 +22,15 @@ from core.governor.hardware_monitor import HardwareState
 logger = logging.getLogger("AMG_ResourceGovernor")
 
 
-# ---------------------------------------------------------------------------
-# VRAM overhead constants (AMD RX 6600 / Vulkan tuned)
-# ---------------------------------------------------------------------------
-RUNTIME_RESERVE_MB: int   = 512   # Vulkan driver + display compositor overhead
-COMPUTE_BUFFERS_MB: int   = 256   # Intermediate activation buffers per inference
-SAFETY_MARGIN_MB: int     = 256   # Fragmentation + misc allocator waste
-# KV cache is dynamic — calculated per call based on context_len
-
-
 @dataclass
 class BackendAllocation:
     """
-    Fully computed hardware allocation for a model execution.
-    Produced by ResourceGovernor, consumed by PortfolioGovernor + ExecutionPolicy.
+    Phân bổ phần cứng hoàn chỉnh cho quá trình thực thi mô hình.
     """
     # Compute backend
     backend: str             # "GPU" | "HYBRID" | "CPU"
 
-    # Memory layout (separate concept from compute backend)
+    # Memory layout
     memory_layout: str       # "VRAM_ONLY" | "VRAM_RAM_SPLIT" | "RAM_ONLY"
 
     # Layer allocation
@@ -66,9 +42,10 @@ class BackendAllocation:
     ram_resident_mb: float   # Weights on RAM
     kv_cache_mb: float       # KV cache on GPU
 
-    # Whether allocation is viable given current hardware
+    # Trạng thái khả thi
     is_viable: bool
-    reason: str              # Human-readable explanation
+    reason: str              # Giải thích lý do
+    recommendations: List[str] = field(default_factory=list)
 
     def log_summary(self) -> str:
         return (
@@ -83,10 +60,8 @@ class BackendAllocation:
 
 class ResourceGovernor:
     """
-    Hardware-aware backend and layer allocation calculator.
-
-    Takes a ModelCapabilityProfile + HardwareState and computes the
-    optimal BackendAllocation. Does NOT touch model names or families.
+    🏛️ Bộ Điều Phối Tài Nguyên Tự Động Thích Ứng (Zero-Config Adaptive Resource Governor):
+    Tự động suy luận ngân sách VRAM theo tỷ lệ % phần cứng thực tế, hỗ trợ đa mục tiêu (latency, balanced, memory_efficient).
     """
 
     @classmethod
@@ -96,60 +71,65 @@ class ResourceGovernor:
         hw: HardwareState,
         context_len: int = 4096,
         requested_hardware: str = "auto",
+        objective: str = "latency",  # "latency" | "balanced" | "memory_efficient"
     ) -> BackendAllocation:
         """
-        Compute optimal backend allocation.
-
-        Args:
-            capability:         Model capability profile (with memory profile)
-            hw:                 Current hardware state (real VRAM/RAM readings)
-            context_len:        Requested context length (affects KV cache)
-            requested_hardware: "auto" | "gpu" | "cpu" | "hybrid"
-                                If "cpu" → force CPU regardless of VRAM
-
-        Returns:
-            BackendAllocation with backend, memory_layout, layer counts, estimates.
+        Tính toán phân bổ phần cứng tối ưu theo mục tiêu và tải thực tế.
         """
+        t0 = time.perf_counter()
         mem = capability.memory
         if mem is None:
-            # Minimal profile — use safe defaults
             return cls._safe_default(capability.model_name)
 
         req_hw = requested_hardware.upper().strip()
 
-        # Force CPU if explicitly requested (e.g. EXECUTOR role in rule_hardware.md)
+        # 1. Ép CPU nếu được chỉ định
         if "CPU" in req_hw and "GPU" not in req_hw and req_hw != "AUTO":
-            return cls._cpu_allocation(mem)
+            alloc = cls._cpu_allocation(mem)
+            cls._record_metric(alloc, (time.perf_counter() - t0) * 1000)
+            return alloc
 
-        # Calculate VRAM budget stack
+        # 2. Tự động tính dynamic buffers theo tỷ lệ VRAM thực tế (Zero-Config)
+        compute_buffers_mb = max(256, int(hw.vram_total_mb * 0.03))  # 3% VRAM
+        safety_margin_mb = max(256, int(hw.vram_total_mb * 0.03))    # 3% VRAM
+
+        # 3. Tính toán VRAM budget
         kv_cache_mb = mem.kv_cache_for_context(context_len)
-        usable_vram_mb = cls._compute_usable_vram(hw.vram_safe_budget_mb, kv_cache_mb)
+        usable_vram_mb = max(0.0, hw.vram_safe_budget_mb - kv_cache_mb - compute_buffers_mb - safety_margin_mb)
+
+        # 4. Điều chỉnh theo chiến lược mục tiêu (Objective Scaling)
+        if objective == "memory_efficient":
+            usable_vram_mb *= 0.40  # Giữ lại 60% VRAM dự phòng
+        elif objective == "balanced":
+            usable_vram_mb *= 0.70  # Giữ lại 30% VRAM dự phòng
+
+        # 5. Điều chỉnh theo tải thực tế GPU (gpu_load_pct)
+        if hw.gpu_load_pct >= 0.85:
+            usable_vram_mb *= 0.50  # Hạ tải GPU khi đang bận
+            logger.info(f"[RESOURCE-GOV]: GPU load high ({hw.gpu_load_pct*100:.0f}%). Throttling VRAM allocation.")
 
         total_weight_mb = mem.weight_file_size_gb * 1024.0
-        per_layer_mb    = total_weight_mb / max(mem.num_layers, 1)
+        per_layer_mb = total_weight_mb / max(mem.num_layers, 1)
 
-        # RAM viability check
+        # Kiểm tra tính khả thi của RAM
         ram_needed_gb = total_weight_mb / 1024.0
         ram_viable = hw.ram_safe_budget_gb >= ram_needed_gb
 
-        # Determine how many layers fit in usable VRAM
+        # Tính toán số layers offload an toàn
         if usable_vram_mb <= 0 or per_layer_mb <= 0:
             safe_gpu_layers = 0
         else:
-            import math
             safe_gpu_layers = min(mem.num_layers, math.floor(usable_vram_mb / per_layer_mb))
 
         gpu_resident_mb = safe_gpu_layers * per_layer_mb
         ram_resident_mb = max(0.0, total_weight_mb - gpu_resident_mb)
 
-        # Update memory profile estimates in-place (for observability)
         mem.estimated_gpu_resident_mb = round(gpu_resident_mb, 0)
         mem.estimated_ram_resident_mb = round(ram_resident_mb, 0)
 
-        # --- Backend decision ---
+        # --- Quyết định Phân bổ Backend ---
         if safe_gpu_layers >= mem.num_layers:
-            # Entire model fits in VRAM
-            return BackendAllocation(
+            alloc = BackendAllocation(
                 backend="GPU",
                 memory_layout="VRAM_ONLY",
                 num_gpu_layers=mem.num_layers,
@@ -160,10 +140,8 @@ class ResourceGovernor:
                 is_viable=True,
                 reason="Model fits entirely in VRAM budget",
             )
-
         elif safe_gpu_layers > 0 and ram_viable:
-            # Partial VRAM + RAM split
-            return BackendAllocation(
+            alloc = BackendAllocation(
                 backend="HYBRID",
                 memory_layout="VRAM_RAM_SPLIT",
                 num_gpu_layers=safe_gpu_layers,
@@ -172,32 +150,27 @@ class ResourceGovernor:
                 ram_resident_mb=ram_resident_mb,
                 kv_cache_mb=kv_cache_mb,
                 is_viable=True,
-                reason=(
-                    f"{safe_gpu_layers}/{mem.num_layers} layers in VRAM, "
-                    f"remainder in {hw.ram_free_gb:.0f}GB free RAM"
-                ),
+                reason=f"{safe_gpu_layers}/{mem.num_layers} layers in VRAM, remainder in {hw.ram_free_gb:.0f}GB free RAM",
             )
-
         elif ram_viable:
-            # Not enough VRAM for even partial offload → pure CPU/RAM
-            return BackendAllocation(
+            alloc = BackendAllocation(
                 backend="CPU",
                 memory_layout="RAM_ONLY",
                 num_gpu_layers=0,
                 num_cpu_layers=mem.num_layers,
                 gpu_resident_mb=0.0,
                 ram_resident_mb=total_weight_mb,
-                kv_cache_mb=0.0,  # KV cache stays in RAM too
+                kv_cache_mb=0.0,
                 is_viable=True,
-                reason=(
-                    f"Insufficient VRAM ({hw.vram_free_mb}MB free). "
-                    f"Routing to {hw.ram_free_gb:.0f}GB RAM."
-                ),
+                reason=f"Insufficient VRAM ({hw.vram_free_mb}MB free). Routing to {hw.ram_free_gb:.0f}GB RAM.",
             )
-
         else:
-            # Neither VRAM nor RAM can hold model — not viable
-            return BackendAllocation(
+            recs = [
+                f"Giảm context_len xuống < {context_len // 2} tokens.",
+                f"Nâng cấp thêm RAM vật lý (hiện có {hw.ram_free_gb:.1f}GB / cần {ram_needed_gb:.1f}GB).",
+                "Chuyển sang mô hình có số lượng tham số nhỏ hơn qua ModelFallback."
+            ]
+            alloc = BackendAllocation(
                 backend="CPU",
                 memory_layout="RAM_ONLY",
                 num_gpu_layers=0,
@@ -206,37 +179,12 @@ class ResourceGovernor:
                 ram_resident_mb=total_weight_mb,
                 kv_cache_mb=0.0,
                 is_viable=False,
-                reason=(
-                    f"Model requires ~{ram_needed_gb:.1f}GB RAM, "
-                    f"only {hw.ram_safe_budget_gb:.1f}GB available. "
-                    "Routing anyway — may cause OOM."
-                ),
+                reason=f"Model requires ~{ram_needed_gb:.1f}GB RAM, only {hw.ram_safe_budget_gb:.1f}GB available.",
+                recommendations=recs
             )
 
-    @classmethod
-    def _compute_usable_vram(cls, vram_budget_mb: int, kv_cache_mb: float) -> float:
-        """
-        VRAM budget stack:
-            VRAM_SAFE_BUDGET (from HardwareMonitor — already minus driver reserve)
-            - KV_CACHE
-            - COMPUTE_BUFFERS
-            - SAFETY_MARGIN
-            = USABLE_VRAM for model weights
-        """
-        usable = (
-            vram_budget_mb
-            - kv_cache_mb
-            - COMPUTE_BUFFERS_MB
-            - SAFETY_MARGIN_MB
-        )
-        logger.debug(
-            f"[VRAM-BUDGET] Budget={vram_budget_mb}MB "
-            f"- KV={kv_cache_mb:.0f}MB "
-            f"- Compute={COMPUTE_BUFFERS_MB}MB "
-            f"- Safety={SAFETY_MARGIN_MB}MB "
-            f"= Usable={usable:.0f}MB"
-        )
-        return max(0.0, usable)
+        cls._record_metric(alloc, (time.perf_counter() - t0) * 1000)
+        return alloc
 
     @classmethod
     def _cpu_allocation(cls, mem: ModelMemoryProfile) -> BackendAllocation:
@@ -254,7 +202,6 @@ class ResourceGovernor:
 
     @classmethod
     def _safe_default(cls, model_name: str) -> BackendAllocation:
-        """Conservative default when memory profile is unavailable."""
         logger.warning(f"[RESOURCE-GOV] No memory profile for '{model_name}' — using safe default")
         return BackendAllocation(
             backend="CPU",
@@ -267,3 +214,24 @@ class ResourceGovernor:
             is_viable=True,
             reason="No memory profile — conservative CPU fallback",
         )
+
+    @classmethod
+    def _record_metric(cls, alloc: BackendAllocation, duration_ms: float) -> None:
+        try:
+            from core.telemetry.observability_engine import observability_engine
+            observability_engine.record_span(
+                name="amg_resource_allocation",
+                category="AMG",
+                duration_ms=duration_ms,
+                metadata={
+                    "backend": alloc.backend,
+                    "memory_layout": alloc.memory_layout,
+                    "viable": alloc.is_viable,
+                    "gpu_layers": alloc.num_gpu_layers
+                }
+            )
+        except Exception:
+            pass
+
+
+resource_governor = ResourceGovernor()

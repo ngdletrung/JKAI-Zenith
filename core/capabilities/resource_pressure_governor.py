@@ -2,7 +2,7 @@
 JKAI ZENITH — PRODUCTION HARDENING P4: RESOURCE PRESSURE GOVERNOR (v2.1)
 File: core/capabilities/resource_pressure_governor.py
 
-Thử thách áp lực VRAM 8GB (RX 6600), RAM 128GB (Xeon E5-2699 v4) dưới điều kiện model switching liên tục.
+Thử thách áp lực VRAM 8GB (RX 6600), RAM 64GB (Xeon E5-2699 v4) dưới điều kiện model switching liên tục.
 Điều tiết vram peak và ram peak đảm bảo không out-of-memory.
 """
 
@@ -16,7 +16,7 @@ logger = logging.getLogger("jkai.capabilities.governor")
 @dataclass(frozen=True)
 class HardwarePressureMetrics:
     vram_peak_gb: float = 5.4                   # Peak VRAM usage (Target < 7.2GB / 8.0GB)
-    ram_peak_gb: float = 24.5                   # Peak RAM usage (Target < 100GB / 128GB)
+    ram_peak_gb: float = 24.5                   # Peak RAM usage (Target < 52GB / 64GB)
     cpu_utilization_pct: float = 35.0           # Xeon E5-2699 v4 CPU load
     is_safe: bool = True
 

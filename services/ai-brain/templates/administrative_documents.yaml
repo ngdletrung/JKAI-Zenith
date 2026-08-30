@@ -1,0 +1,34 @@
+# 📜 [DANH MỤC BIỂU MẪU & QUY CHUẨN VĂN BẢN HÀNH CHÍNH VIỆT NAM]
+# File: services/ai-brain/templates/administrative_documents.yaml
+
+standards:
+  decree: "Nghị định 30/2020/NĐ-CP về công tác văn thư"
+  required_elements:
+    - "Quốc hiệu và Tiêu ngữ"
+    - "Tên cơ quan, tổ chức ban hành văn bản"
+    - "Số, ký hiệu của văn bản"
+    - "Địa danh và thời gian ban hành văn bản"
+    - "Tên loại và trích yếu nội dung văn bản"
+    - "Nội dung văn bản"
+    - "Chức vụ, họ tên và chữ ký của người có thẩm quyền"
+    - "Dấu, chữ ký số của cơ quan, tổ chức"
+    - "Nơi nhận"
+
+templates:
+  don_xin_di_hoc:
+    title: "ĐƠN XIN CỬ ĐI ĐÀO TẠO, BỒI DƯỠNG NÂNG CAO TRÌNH ĐỘ CHUYÊN MÔN"
+    recipient: "Ban Giám hiệu, Phòng Tổ chức - Cán bộ, Lãnh đạo Khoa/Đơn vị công tác"
+    structure:
+      - "Thông tin cán bộ làm đơn (Họ tên, Chức danh, Đơn vị công tác, Thâm niên công tác)"
+      - "Thông tin khóa đào tạo (Tên chuyên ngành, Cơ sở đào tạo, Thời gian, Hình thức, Kinh phí)"
+      - "Lý do và mục tiêu nâng cao trình độ chuyên môn phục vụ đơn vị"
+      - "Cam kết hoàn thành tốt nhiệm vụ và phục vụ lâu dài sau tốt nghiệp"
+      - "Ý kiến xác nhận của Lãnh đạo trực tiếp và Chữ ký người làm đơn"
+
+  to_trinh:
+    title: "TỜ TRÌNH VỀ VIỆC PHÊ DUYỆT ĐỀ ÁN / KẾ HOẠCH CÔNG TÁC"
+    structure:
+      - "Sự cần thiết và căn cứ pháp lý ban hành"
+      - "Mục tiêu và nội dung kế hoạch chi tiết"
+      - "Dự toán kinh phí và nguồn lực triển khai"
+      - "Đề xuất kiến nghị cấp có thẩm quyền phê duyệt"

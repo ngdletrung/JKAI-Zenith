@@ -11,8 +11,7 @@ class MemoryGateway:
 
     def _log(self, tag, msg, task_id="manual", stealth=False):
         try:
-            enhanced_msg = f"🫡 [ZENITH]: {msg}" if tag == "ZENITH" else msg
-            engine.publish_mission_log(tag, enhanced_msg, task_id, stealth=stealth)
+            engine.publish_mission_log(tag, msg, task_id, stealth=stealth)
         except Exception: pass
 
     def get_session_id(self, task_id: str) -> str:

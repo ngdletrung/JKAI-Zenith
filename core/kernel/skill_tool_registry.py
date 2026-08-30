@@ -143,6 +143,18 @@ class SkillToolRegistry:
             if not isinstance(skill_info, dict):
                 continue
 
+            # [P0-1-SSOT]: Canonical contract overrides runtime inspection
+            # (schema bao gồm aliases, nguồn duy nhất = tool_contracts registry)
+            try:
+                from core.kernel.tool_contracts import schema_for as _canon_schema_for
+                canon_spec = _canon_schema_for(skill_id)
+                if canon_spec:
+                    tools.append(canon_spec)
+                    skill_id_enum.append(skill_id)
+                    continue
+            except Exception:
+                pass
+
             skill_dir = self._resolve_skill_dir(skill_id, skill_info)
             description = skill_info.get("description") or skill_info.get("name_vn", skill_id)
 

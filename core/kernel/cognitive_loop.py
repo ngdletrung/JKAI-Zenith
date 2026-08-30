@@ -1,5 +1,8 @@
-# 🧬 JKAI Zenith: COGNITIVE AUTONOMOUS LOOP (The "Skeleton")
-# Inspired by OpenHands & ReAct Architecture | Sovereign Implementation
+# 🧬 JKAI Zenith: COGNITIVE AUTONOMOUS LOOP (Legacy / Standalone Testing Harness)
+# ⚠️ [ARCHITECTURAL STATUS]: DEPRECATED / TEST-ONLY
+# Production cognitive orchestration is handled exclusively by FastPipeline (FAST)
+# and DeepPipeline / PlanningPipeline (DEEP). This class is retained solely for
+# historical component benchmarks and standalone continuity test suites.
 
 import asyncio
 import json
@@ -14,9 +17,8 @@ logger = logging.getLogger("CognitiveLoop")
 
 class CognitiveLoop:
     """
-    🏗️ COGNITIVE LOOP (Khung xương Trí tuệ)
-    Điều phối chu trình: SUY NGHĨ -> HÀNH ĐỘNG -> QUAN SÁT -> PHẢN BIỆN.
-    Giúp các model nhỏ (0.6B) hoạt động thông minh bằng cách chia nhỏ vấn đề.
+    🏗️ COGNITIVE LOOP (Legacy Standalone Test Harness)
+    [NOTE]: Deprecated for production. Active pipelines use FastPipeline / DeepPipeline.
     """
 
     def __init__(self, task_id: str, goal: str):
@@ -147,15 +149,13 @@ class CognitiveLoop:
         return {"thought": str(response), "tool": None}
 
     async def _execute_tool(self, tool_name: str, params: Any) -> str:
-        """Thực thi công cụ thông qua Executor Gateway."""
+        """
+        [DEPRECATED / LEGACY-DEAD-CODE]
+        Hàm giả lập thực thi cũ cho CognitiveLoop.
+        Toàn bộ pipeline Zenith thật sử dụng ExecutorGateway / ToolRouter.
+        """
         try:
-            # Giả lập thực thi (Cần kết nối với executor_gateway thực tế trong Zenith)
-            # Ở đây ta sẽ dùng engine.call_skill làm proxy hoặc gọi trực tiếp nếu có token
-            from receptionist.executor_gateway import ExecutionRequest
-            # Lưu ý: Cần CapabilityToken, trong Loop này ta giả định đã có quyền hạn tối cao
-            # hoặc sẽ được Receptionist cấp phát.
-            
-            # TODO: Tích hợp sâu với ExecutorGateway của Zenith
+            logger.warning("[COGNITIVE-LOOP-LEGACY] Gọi _execute_tool trên module đã deprecated: %s", tool_name)
             result = engine.call_skill(tool_name, params, self.task_id)
             return str(result.get("output", "Không có đầu ra."))
         except Exception as e:

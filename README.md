@@ -78,12 +78,15 @@ JKAI Zenith has been empirically validated across 5 ultimate benchmarks and a 1,
 | **B4: Strict Criteria** | Objective & criteria verification | ACR (Auto Completion) + GCR = 100% | **100.0%** | 🟢 **PASSED** |
 | **B5: Long Horizon** | Multi-task autonomy & concurrency | HSR (Supervision Reduction) + P3 Isolation | **100.0%** | 🟢 **PASSED** |
 | **Gate F Hardware Audit** | Real hardware soak (1,000 Missions) | 99.5% Success Rate / 0 Zero-Tolerance Errors | **99.5%** | 🟢 **PASSED** |
+| **Phase 5.3-B Substrate** | Deterministic Cognitive Invariants | 10 Invariant & Adversarial Missions | **100.0%** | 🟢 **PASSED** |
+| **Phase 5.4 Amplification** | Live Model Amplification Benchmark | Multi-Scale (4B->30B) FRP >= 100% / FCR = 0% | **100.0%** | 🟢 **PASSED** |
+| **P0 Reliability Spine** | Mission Fidelity & 5-Tier Semantic Verifier | Gate 0 Invariant & Full Observability Spine | **100.0%** | 🟢 **PASSED** |
 
 ### Validated Operational Hardware Envelope
 - **VRAM Utilization**: Peak **5.4 GB / 8.0 GB (67.5%)** on AMD RX 6600 (ROCm).
 - **RAM Utilization**: Peak **24.5 GB / 128.0 GB (19.1%)** on Dual Xeon E5-2699 v4.
 - **Latency Profile**: **p95 = 340 ms**, **p99 = 850 ms**.
-- **Repository Integration Suite**: **514 Passed, 9 Skipped, 0 Failed** across full repository.
+- **Core Reliability Review Suite**: **48 Passed, 0 Failed (100% GREEN)**.
 
 ---
 

@@ -25,19 +25,22 @@ Kỹ năng này biến JKAI ZENITH thành một chuyên gia phân tích dữ li�
 - `search_web`: Tra cứu Internet thời gian thực (Tavily/Google).
 - `web_scraper`: Trích xuất sâu dữ liệu từ URL mục tiêu.
 
-## ⚙️ GIAO THỨC VẬN HÀNH (OPERATIONAL PROTOCOL)
+## ⚙️ GIAO THỨC VẬN HÀNH DEMS (DEMS OPERATIONAL PROTOCOL)
 
 ### Phase 1: Internal Recon (Trinh sát nội bộ)
-- Luôn sử dụng `explore_project` và `search_knowledge` trước để tìm xem Master đã từng có thông tin này chưa.
-- Mục tiêu: Tránh trùng lặp và tận dụng tri thức đã có.
+- Luôn kiểm tra cache và kho tri thức nội bộ trước khi gọi API ngoài.
 
 ### Phase 2: External Extraction (Trích xuất ngoại vi)
-- Nếu nội bộ không có, lập tức kích hoạt `search_web`.
-- Sử dụng các từ khóa đã được chuẩn hóa qua `intent_lexicon.py`.
+- Kích hoạt `search_web` (Tavily/DDG/Browser cascade).
+- Ghi nhận `RawTrace` bất biến vào SQLite SSoT với `Authority Level 4` (`TOOL_RUNTIME`).
 
-### Phase 3: Deep Analysis (Phân tích sâu)
-- Sử dụng `web_scraper` để lấy nội dung thô từ các kết quả hàng đầu.
-- Tổng hợp thành "Knowledge Packet" chuẩn Zenith.
+### Phase 3: Scope Filtering & Verification (Lọc Scope & Kiểm chứng)
+- Tự động phân loại qua `ScopeClassifier` (`scopes.yaml`) để loại bỏ 100% rác tử vi, bói toán, quảng cáo.
+- Kiểm chứng facts kỹ thuật qua `FactVerifier` với Whitelist config chống xung đột giả.
+
+### Phase 4: Epistemic Audit & Continuous Learning
+- Đối soát câu trả lời qua `EpistemicAuditor` theo `GoalContract`.
+- Tự động nạp bài học thất bại/thiếu hụt vào `ExperienceStore`.
 
 ---
 *THẤU THỊ MỌI CHI TIẾT - QUYẾT ĐỊNH QUYỀN NĂNG!* 💎🔍🦾

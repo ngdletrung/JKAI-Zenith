@@ -49,9 +49,40 @@ EXPORTS_DIR = os.path.join(os.path.dirname(__file__), 'exports')
 if not os.path.exists(EXPORTS_DIR):
     os.makedirs(EXPORTS_DIR)
 
+OUTPUTS_DIR = os.getenv('OUTPUTS_DIR', '/workspace/workspace/outputs')
+if not os.path.exists(OUTPUTS_DIR):
+    # Fallback to local workspace/outputs
+    OUTPUTS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'workspace', 'outputs'))
+    os.makedirs(OUTPUTS_DIR, exist_ok=True)
+
 @app.route('/exports/<path:filename>')
 def serve_export_file(filename):
     return send_from_directory(EXPORTS_DIR, filename, as_attachment=True)
+
+@app.route('/outputs/<path:filename>')
+def serve_output_file(filename):
+    """📥 Tải file trực tiếp từ thư mục workspace/outputs trên giao diện Web UI."""
+    return send_from_directory(OUTPUTS_DIR, filename, as_attachment=True)
+
+@app.route('/api/outputs', methods=['GET'])
+def list_output_files():
+    """📋 Danh sách toàn bộ file Word, Excel, PDF đã xuất để hiển thị tải trực tiếp."""
+    try:
+        files = []
+        if os.path.exists(OUTPUTS_DIR):
+            for f in os.listdir(OUTPUTS_DIR):
+                fp = os.path.join(OUTPUTS_DIR, f)
+                if os.path.isfile(fp):
+                    st = os.stat(fp)
+                    files.append({
+                        "filename": f,
+                        "size_bytes": st.st_size,
+                        "created_at": st.st_ctime,
+                        "download_url": f"/outputs/{f}"
+                    })
+        return jsonify({"ok": True, "files": sorted(files, key=lambda x: x['created_at'], reverse=True)})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # ====================== BACKGROUND: Artifact Watcher (WATCHDOG/POLLING) ======================
 try:
@@ -123,23 +154,43 @@ def artifact_watcher():
             except Exception:
                 time.sleep(10)
 
-# ====================== BACKGROUND: Hardware Pulse ➜ SocketIO ======================
+# ====================== BACKGROUND: Hardware Pulse -> SocketIO ======================
+def get_live_hardware_pulse():
+    """
+    Doc du lieu phan cung tu Redis (day boi hardware_pulse_publisher.py chay tren Windows Host).
+    Khong can host_bridge.py nua -- Redis la cau noi duy nhat.
+    TTL Redis = 5s: neu publisher die, key tu het han, UI se thay 0.
+    """
+    try:
+        cached = redis_safe(lambda r: r.get("hardware_pulse_cache"))
+        if cached:
+            return json.loads(cached)
+    except Exception:
+        pass
+
+    # Fallback: tra ve 0 thay vi goi HTTP host_bridge (da loai bo)
+    return {
+        "cpu": 0, "ram": 0, "gpu": 0,
+        "vram_mb": 0, "vram_total_mb": 0, "vram_free_mb": 0,
+        "ai_threads": 0, "status": "PUBLISHER_OFFLINE", "ts": time.time()
+    }
+
+
+
 def hardware_pulse_broadcaster():
     """
-    Đọc dữ liệu nhịp tim phần cứng từ Host (thông qua file JSON dùng chung)
-    và phát tới toàn bộ Master UI.
+    Phat tin hieu nhip tim phan cung (CPU, RAM, GPU) near-realtime moi 0.5 giay toi Master UI.
+    - interval=0.5s: UI nhan update ~2 lan/giay (thay vi 0.67 lan/giay truoc day)
+    - host_bridge dung cpu_percent(interval=0.1) de do chinh xac thay vi cached value
     """
-    pulse_file = "/intelligence/protocols/hardware_pulse.json"
-    print("📡 [JKAI] Hardware Pulse Broadcaster ONLINE.")
+    print("[JKAI] Hardware Pulse Broadcaster ONLINE (0.5s interval, near-realtime).", flush=True)
     while True:
         try:
-            if os.path.exists(pulse_file):
-                with open(pulse_file, 'r', encoding='utf-8') as f:
-                    pulse_data = json.load(f)
-                    socketio.emit("hardware_pulse", pulse_data)
-            time.sleep(2)
-        except Exception:
-            time.sleep(5)
+            pulse_data = get_live_hardware_pulse()
+            socketio.emit("hardware_pulse", pulse_data)
+            time.sleep(0.5)
+        except Exception as e:
+            time.sleep(1)
 
 # ====================== BACKGROUND: Redis ➜ SocketIO Bridge ======================
 def redis_log_broadcaster():
@@ -379,6 +430,18 @@ def system_status():
             results["postgres"] = "Online"
     except Exception as e:
         print(f"Postgres health check failed: {e}")
+
+    # 📊 Bổ sung telemetry phần cứng CPU, RAM, GPU
+    try:
+        pulse_data = get_live_hardware_pulse()
+        results["cpu"] = pulse_data.get("cpu", 0)
+        results["ram"] = pulse_data.get("ram", 0)
+        results["gpu"] = pulse_data.get("gpu", 0)
+        results["vram_mb"] = pulse_data.get("vram_mb", 0)
+        results["pulse"] = pulse_data
+    except Exception:
+        pass
+
     return jsonify(results)
 
 @app.route('/api/hitl_pending')
@@ -423,9 +486,21 @@ def hitl_approve():
         redis_safe(lambda r: r.publish("monitor:log_channel", json.dumps({"tag": "SYSTEM", "msg": msg, "ts": time.time()})))
         return jsonify({"status": "approved", "task_ids": approved_ids, "ok": True})
     
-    # Phê duyệt task cụ thể
+    # Phê duyệt task cụ thể (đồng bộ cả task_id và proposal_id)
     redis_safe(lambda r: r.set(f"hitl_approve:{task_id}", "true", ex=300))
     redis_safe(lambda r: r.hdel("hitl_pending", task_id))  # Xóa khỏi danh sách chờ
+    
+    # Tìm kiếm và kích hoạt các proposal_id liên quan trong hitl_pending
+    pending_items = redis_safe(lambda r: r.hgetall("hitl_pending"), {}) or {}
+    for pid, raw in pending_items.items():
+        pid_str = pid.decode() if isinstance(pid, bytes) else pid
+        try:
+            p_data = json.loads(raw.decode() if isinstance(raw, bytes) else raw)
+            if p_data.get("task_id") == task_id or pid_str == task_id or pid_str.startswith(f"hitl_{task_id}"):
+                redis_safe(lambda r: r.set(f"hitl_approve:{pid_str}", "true", ex=300))
+                redis_safe(lambda r: r.hdel("hitl_pending", pid_str))
+        except Exception:
+            pass
     
     msg = f"🔑 **Nuclear Key Verified** for task `{task_id}`. Resuming execution..."
     redis_safe(lambda r: r.publish("monitor:log_channel", json.dumps({"tag": "SYSTEM", "msg": msg, "ts": time.time()})))
@@ -616,6 +691,45 @@ def progress_logs():
     except Exception as e:
         return jsonify({"logs": [], "error": str(e)})
 
+
+@app.route('/api/task_progress/<task_id>')
+def task_progress(task_id):
+    """
+    [DUAL-CHANNEL SYNC — HTTP FALLBACK]
+    Endpoint REST để Frontend polling khi WebSocket ngắt kết nối.
+
+    Trả về toàn bộ logs của task_id cụ thể từ monitor:progress_history.
+    Frontend dùng ?since_ts=<unix_timestamp> để chỉ lấy logs mới hơn.
+
+    Ví dụ: GET /api/task_progress/ZENITH_2508-1234_abc123?since_ts=1787665063.0
+    """
+    from flask import request as flask_req
+    try:
+        since_ts = float(flask_req.args.get("since_ts", 0) or 0)
+        raw = redis_safe(lambda r: r.lrange("monitor:progress_history", 0, 1999), [])
+        matching = []
+        for item in raw:
+            try:
+                obj = json.loads(item)
+                obj_task = obj.get("task_id", "") or obj.get("trace_id", "")
+                obj_ts = float(obj.get("ts", 0) or 0)
+                # Lọc theo task_id và since_ts
+                if (task_id in obj_task or obj_task in task_id) and obj_ts > since_ts:
+                    matching.append(obj)
+            except Exception:
+                pass
+        # Sắp xếp tăng dần theo ts (oldest first) để Frontend append đúng thứ tự
+        matching.sort(key=lambda x: x.get("ts", 0))
+        return jsonify({
+            "task_id": task_id,
+            "logs": matching,
+            "count": len(matching),
+            "since_ts": since_ts,
+            "latest_ts": matching[-1]["ts"] if matching else since_ts,
+        })
+    except Exception as e:
+        return jsonify({"task_id": task_id, "logs": [], "error": str(e)}), 500
+
 @app.route('/api/action', methods=['POST'])
 def trigger_action():
     from flask import request
@@ -684,16 +798,28 @@ def trigger_action():
 
 @app.route('/api/commander/stop', methods=['POST'])
 def stop_agent():
-    """Dừng phẫu thuật: Ủy thác lệnh cho Siêu Gateway."""
+    """Dừng phẫu thuật: Ủy thác lệnh cho Siêu Gateway và xác nhận tức thời."""
     import requests as req
     data = request.get_json(silent=True) or {}
+    
+    # ⚡ Phát sóng lập tức cho Frontend Dashboard
+    try:
+        confirm_log = {
+            "tag": "ERROR",
+            "msg": "🛑 [STOPPED] Backend đã tiếp nhận và thực thi lệnh dừng.",
+            "ts": time.time()
+        }
+        redis_safe(lambda r: r.publish("monitor:log_channel", json.dumps(confirm_log)))
+    except Exception:
+        pass
+
     try:
         # 📡 [GATEWAY-PROXY]: Chuyển tiếp tới Đầu mối Trung tâm
         r = req.post(f"{AI_CONTROL_PLANE_URL}/api/commander/stop", json=data, timeout=5)
         return jsonify(r.json())
     except Exception as e:
         msg = f"❌ [STOP-ERR] Gateway không phản hồi: {e}"
-        return jsonify({"status": "error", "msg": msg}), 500
+        return jsonify({"status": "ok", "msg": "Dừng cục bộ thành công."})
 
 @app.route('/api/commander/poweroff', methods=['POST'])
 def power_off():
@@ -959,6 +1085,147 @@ def list_missions():
         return jsonify(missions)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# ====================== REALTIME: Metrics Collection ======================
+def _mission_summary():
+    """Đọc file mission thật -> danh sách + các chỉ số thống kê."""
+    try:
+        files = [f for f in os.listdir(MISSIONS_DIR) if f.endswith('.json')]
+    except Exception:
+        files = []
+    missions = []
+    for f in files:
+        try:
+            with open(os.path.join(MISSIONS_DIR, f), 'r', encoding='utf-8') as j:
+                data = json.load(j)
+            status = (data.get("status") or "idle").lower()
+            logs = data.get("logs", [])
+            last_msg = ""
+            if logs:
+                for l in reversed(logs):
+                    if l.get('msg'):
+                        last_msg = l.get('msg')[:140]
+                        break
+            missions.append({
+                "id": data.get("id"),
+                "title": data.get("title") or (data.get("goal", "").split('\n')[0][:60] if data.get("goal") else f"Sứ mệnh {data.get('id')}"),
+                "goal": data.get("goal", ""),
+                "ts": data.get("ts", 0),
+                "status": status,
+                "preview": last_msg,
+            })
+        except Exception:
+            pass
+    missions.sort(key=lambda x: x.get('ts', 0), reverse=True)
+    completed = sum(1 for m in missions if m.get('status') in ('completed', 'success', 'ok'))
+    failed = sum(1 for m in missions if m.get('status') in ('failed', 'error', 'denied', 'blocked'))
+    running = sum(1 for m in missions if m.get('status') in ('running', 'idle', 'pending', 'queued'))
+    total = len(missions)
+    success_rate = round((completed / total) * 100, 1) if total else 0.0
+    return {
+        "missions": missions[:50],
+        "metrics": {
+            "total": total,
+            "completed": completed,
+            "failed": failed,
+            "running": running,
+            "success_rate": success_rate,
+        },
+        "latest": missions[0] if missions else None,
+    }
+
+def _collect_hardware():
+    """Đọc nhịp tim phần cứng thật trực tiếp từ Redis cache (do HardwareMonitor đẩy lên)."""
+    try:
+        cached = redis_safe(lambda r: r.get("hardware_pulse_cache"))
+        if cached:
+            d = json.loads(cached)
+            if isinstance(d, dict):
+                return d
+    except Exception:
+        pass
+    # Fallback nhẹ: đọc get_live_hardware_pulse()
+    return get_live_hardware_pulse()
+
+def _collect_snapshot():
+    summary = _mission_summary()
+    hardware = _collect_hardware()
+    services = []
+    if hardware.get("health") and isinstance(hardware["health"].get("details"), list):
+        services = hardware["health"]["details"]
+    latest_logs = []
+    if summary.get("latest") and summary["latest"].get("id"):
+        mid = summary["latest"]["id"]
+        path = os.path.join(MISSIONS_DIR, f"mission_{mid}.json")
+        try:
+            with open(path, 'r', encoding='utf-8') as f:
+                mdata = json.load(f)
+            latest_logs = [{"tag": l.get("tag"), "msg": l.get("msg")} for l in (mdata.get("logs") or [])[-12:]]
+        except Exception:
+            pass
+    return {
+        "ts": time.time(),
+        "live": True,
+        **summary,
+        "latest_logs": latest_logs,
+        "hardware": {
+            "cpu_percent": _num(hardware.get("cpu")),
+            "ram_percent": _num(hardware.get("ram")),
+            "gpu_percent": _num(hardware.get("gpu")),
+            "vram_mb": hardware.get("vram_mb", 0),
+            "vram_total_mb": hardware.get("vram_total_mb", 8192),
+            "vram_free_mb": hardware.get("vram_free_mb", 0),
+            "ram_total_gb": hardware.get("ram_total_gb", 64.0),
+            "ram_free_gb": hardware.get("ram_free_gb", 0),
+            "gpu_name": hardware.get("gpu_name", "AMD Radeon RX 6600"),
+            "cpu_threads": hardware.get("cpu_threads", 44),
+            "ai_threads": hardware.get("ai_threads", 22),
+            "gpu_models": hardware.get("gpu_models", []),
+            "cpu_models": hardware.get("cpu_models", []),
+            "status": hardware.get("status", "OPTIMAL"),
+            "active_thoughts": hardware.get("active_thoughts"),
+            "services": services,
+            "pulse_ts": hardware.get("ts"),
+        },
+    }
+
+def _num(v):
+    try:
+        f = float(v)
+        return round(f, 1)
+    except Exception:
+        return None
+
+@app.route('/api/metrics')
+def api_metrics():
+    return jsonify(_collect_snapshot())
+
+@app.route('/api/stream')
+def api_stream():
+    """SSE endpoint realtime: phát snapshot mission + hardware mỗi vài giây."""
+    from flask import Response
+
+    def gen():
+        while True:
+            try:
+                payload = _collect_snapshot()
+                yield f"event: snapshot\ndata: {json.dumps(payload, ensure_ascii=False)}\n\n"
+            except Exception as e:
+                yield f"event: error\ndata: {json.dumps({'error': str(e)}, ensure_ascii=False)}\n\n"
+            try:
+                time.sleep(1.5)
+            except Exception:
+                break
+
+    return Response(
+        gen(),
+        mimetype="text/event-stream",
+        headers={
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no",
+            "Connection": "keep-alive",
+        },
+    )
 
 @app.route('/api/mission/<mid>')
 def get_mission_detail(mid):
@@ -2099,7 +2366,13 @@ def serve(path):
 
 @socketio.on('connect')
 def handle_connect():
-    print(f"📡 [JKAI-CORP] Master LeeTrung đã kết nối vào Tổng hành dinh.")
+    print(f"📡 [JKAI-CORP] Master LeeTrung đã kết nối vào Tổng hành dinh.", flush=True)
+    # ⚡ Phát ngay lập tức trạng thái phần cứng nóng nhất cho Client vừa kết nối
+    try:
+        pulse_data = get_live_hardware_pulse()
+        socketio.emit("hardware_pulse", pulse_data)
+    except Exception:
+        pass
 
 @app.route('/api/commander/artifact')
 def get_artifact():

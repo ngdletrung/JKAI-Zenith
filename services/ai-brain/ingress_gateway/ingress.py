@@ -104,15 +104,9 @@ class IngressGateway:
         logger.info("[INGRESS]: task_id=%s | trace_id=%s | mode=%s | goal_len=%d",
                     task_id, trace_id, mode, len(goal))
 
-        # 4. CHAY PIPELINE CU (Legacy) — nang fast -> deep khi Master bao loi
-        effective_mode = mode
-        try:
-            from core.utils.deep_routing import effective_ingress_mode
-            effective_mode = effective_ingress_mode(goal, mode, history)
-            if effective_mode == "deep" and mode != "deep":
-                logger.info("[INGRESS]: Auto-upgrade to DEEP mode for error/debug goal. task_id=%s", task_id)
-        except Exception as route_err:
-            logger.warning("[INGRESS-WARN]: deep routing error: %s | task_id=%s", route_err, task_id)
+        # 4. CHAY PIPELINE CU (Legacy) — KHÔNG tự nâng cấp mode nữa.
+        # v43.1: Chỉ có FAST và DEEP do Master chọn. Nếu Master không chọn deep → chạy fast.
+        effective_mode = mode if mode in ("deep", "deliberative") else "fast"
 
         legacy_result = await self.legacy.handle_task(
             goal, task_id,

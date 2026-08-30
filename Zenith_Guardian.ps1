@@ -196,22 +196,29 @@ try {
             Write-KuteLog "Docker Engine is running." "SUCCESS"
         }
 
-        Write-KuteLog "Starting container ecosystem (docker compose up -d)..." "PROCESS"
-        docker compose -f docker-compose.yml up -d --remove-orphans
+        Write-KuteLog "Starting Core Container Ecosystem (docker compose --profile core up -d)..." "PROCESS"
+        docker compose -f docker-compose.yml --profile core up -d --remove-orphans
     } else {
         Write-KuteLog "Docker CLI not found on system!" "WARNING"
     }
 
-    # --- 3. HOST BRIDGE TELEMETRY ---
-    $HostBridgePath = "D:\Docker\JKAI\scripts\host_bridge.py"
-    if (Test-Path $HostBridgePath) {
+    # --- 3. HARDWARE PULSE PUBLISHER (thay the host_bridge.py) ---
+    # Doc CPU/RAM/GPU AMD bang HardwareMonitor, day vao Redis moi 0.5s.
+    # mission-control Docker doc tu Redis -- khong can HTTP port 9997 nua.
+    $PulsePublisherPath = "D:\Docker\JKAI\scripts\hardware_pulse_publisher.py"
+    if (Test-Path $PulsePublisherPath) {
         try {
+            # Kill cu neu con ton tai
+            Get-CimInstance Win32_Process -Filter "Name = 'python.exe'" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -match "hardware_pulse_publisher\.py" } | ForEach-Object {
+                Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue
+            }
+            # Kill host_bridge.py cu neu con chay
             Get-CimInstance Win32_Process -Filter "Name = 'python.exe'" -ErrorAction SilentlyContinue | Where-Object { $_.CommandLine -match "host_bridge\.py" } | ForEach-Object {
                 Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue
             }
         } catch {}
-        Start-Process python -ArgumentList "`"$HostBridgePath`"" -WindowStyle Hidden -ErrorAction SilentlyContinue
-        Write-KuteLog "Host Bridge Telemetry online on port 9997." "SUCCESS"
+        Start-Process python -ArgumentList "`"$PulsePublisherPath`"" -WindowStyle Hidden -ErrorAction SilentlyContinue
+        Write-KuteLog "Hardware Pulse Publisher ONLINE (Redis push, no HTTP port needed)." "SUCCESS"
     }
 
     Write-KuteLog "Infrastructure READY. Handing off to AMG v2 Decision Engine..." "SUCCESS"

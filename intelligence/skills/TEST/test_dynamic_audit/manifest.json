@@ -1,0 +1,23 @@
+{
+  "id": "test_dynamic_audit",
+  "name": "Test Dynamic Audit",
+  "version": "2.0.0",
+  "description": "Chuyên trách tác vụ test_dynamic_audit chuẩn Elite.",
+  "triggers": [
+    "test_dynamic_audit",
+    "test dynamic audit"
+  ],
+  "schema": {
+    "input": {
+      "type": "object",
+      "properties": {
+        "query": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "query"
+      ]
+    }
+  }
+}

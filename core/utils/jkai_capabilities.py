@@ -39,20 +39,24 @@ def _normalize(text: str) -> str:
 def goal_is_capabilities_inquiry(goal: str) -> bool:
     if not goal or goal.strip().startswith("/"):
         return False
+    # Loại bỏ phần context skill tự động inject nếu có
+    clean_g = re.sub(r"<ZENITH_SKILL_ACTIVATED>[\s\S]*", "", goal).strip()
+    if not clean_g:
+        return False
     # Chào hỏi + hỏi danh tính → trả lời xã giao, không phải danh mục năng lực
-    if _IDENTITY_GREETING_RE.search(goal):
+    if _IDENTITY_GREETING_RE.search(clean_g):
         return False
     # Loại trừ goal có ý định DÙNG skill (không phải hỏi về tính năng)
-    if _SKILL_USE_RE.search(goal):
+    if _SKILL_USE_RE.search(clean_g):
         return False
-    if not bool(_CAPABILITIES_RE.search(goal)):
+    
+    # 🔒 [ACTION GUARD]: Nếu câu lệnh chứa hành động tạo/sửa/viết/chạy thì tuyệt đối KHÔNG phải là hỏi tính năng
+    norm = _normalize(clean_g).lower().strip()
+    if re.search(r"\b(tao|create|viet|write|lam|make|build|export|sua|fix|chay|run|test|kiem tra|danh gia)\b", norm):
         return False
-    # Loại trừ các goal bắt đầu bằng động từ tạo/viết để tránh false positive
-    writing_starters = ["viet", "write", "tao", "create", "code", "script"]
-    norm = _normalize(goal).lower().strip()
-    for ws in writing_starters:
-        if norm.startswith(ws):
-            return False
+
+    if not bool(_CAPABILITIES_RE.search(clean_g)):
+        return False
     return True
 
 

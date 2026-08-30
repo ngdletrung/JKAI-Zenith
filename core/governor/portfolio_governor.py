@@ -74,6 +74,7 @@ class PortfolioGovernor:
         context_len: int = 4096,
         requested_hardware: str = "auto",
         hw: Optional[HardwareState] = None,
+        task_complexity: float = 0.5,
     ) -> ExecutionProfile:
         """
         Resolve the best ExecutionProfile for the given role + constraints.
@@ -88,6 +89,8 @@ class PortfolioGovernor:
             context_len:    Context window size
             requested_hardware: "auto" | "gpu" | "cpu" | "hybrid"
             hw:             HardwareState (auto-read if None)
+            task_complexity: Task complexity 0.0–1.0 from TaskProfiler (North Star v3.0).
+                             0.0 = trivial; 1.0 = expert multi-step. Used in 5D vector scoring.
 
         Returns:
             ExecutionProfile with attached GovernorDecision for observability.
@@ -99,12 +102,12 @@ class PortfolioGovernor:
         if requested_model.strip().lower() != "auto":
             return self._resolve_explicit(
                 role_upper, requested_model, quality_lower, context_len,
-                requested_hardware, hw
+                requested_hardware, hw, task_complexity=task_complexity,
             )
         else:
             return self._resolve_auto(
                 role_upper, capability_requirements or [], quality_lower,
-                context_len, requested_hardware, hw
+                context_len, requested_hardware, hw, task_complexity=task_complexity,
             )
 
     # ------------------------------------------------------------------
@@ -114,6 +117,7 @@ class PortfolioGovernor:
     def _resolve_explicit(
         self, role: str, model_name: str, quality: str,
         context_len: int, requested_hardware: str, hw: HardwareState,
+        task_complexity: float = 0.5,
     ) -> ExecutionProfile:
         """User specified a concrete model name → validate + compute profile."""
         profile = self._registry.get(model_name)
@@ -124,10 +128,11 @@ class PortfolioGovernor:
                 "Attempting fallback to best-fit for role."
             )
             return self._resolve_auto(role, [], quality, context_len, requested_hardware, hw,
-                                      original_requested=model_name)
+                                      original_requested=model_name, task_complexity=task_complexity)
 
         alloc = ResourceGovernor.allocate(profile, hw, context_len, requested_hardware)
-        score = ModelScorer.score(profile, role, quality, hw, context_len, requested_hardware)
+        score = ModelScorer.score(profile, role, quality, hw, context_len, requested_hardware,
+                                  task_complexity=task_complexity)
 
         decision = GovernorDecision(
             role=role,
@@ -163,6 +168,7 @@ class PortfolioGovernor:
         requested_hardware: str,
         hw: HardwareState,
         original_requested: str = "auto",
+        task_complexity: float = 0.5,
     ) -> ExecutionProfile:
         """
         Auto-select best model from registry for given role + requirements.
@@ -201,7 +207,8 @@ class PortfolioGovernor:
                     continue
 
             score = ModelScorer.score(
-                candidate, role, quality, hw, context_len, requested_hardware
+                candidate, role, quality, hw, context_len, requested_hardware,
+                task_complexity=task_complexity,
             )
             scored.append(score)
 
@@ -233,7 +240,8 @@ class PortfolioGovernor:
                 for i, score in enumerate(scored):
                     new_score = ModelScorer.score(
                         self._registry.get(score.model_name),
-                        role, attempt_quality, hw, context_len, requested_hardware
+                        role, attempt_quality, hw, context_len, requested_hardware,
+                        task_complexity=task_complexity,
                     )
                     scored[i] = new_score
                 scored.sort(key=lambda s: s.final_score, reverse=True)

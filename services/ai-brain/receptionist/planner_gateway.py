@@ -10,8 +10,7 @@ class PlannerGateway:
 
     def _log(self, tag, msg, task_id="manual", stealth=False):
         try:
-            enhanced_msg = f"🫡 [ZENITH]: {msg}" if tag == "ZENITH" else msg
-            engine.publish_mission_log(tag, enhanced_msg, task_id, stealth=stealth)
+            engine.publish_mission_log(tag, msg, task_id, stealth=stealth)
         except Exception: pass
 
     async def request_plan(self, goal: str, images: list, history: list, task_id: str, cap_token: dict) -> dict:

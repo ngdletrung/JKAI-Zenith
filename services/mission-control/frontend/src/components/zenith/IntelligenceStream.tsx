@@ -167,14 +167,17 @@ export const IntelligenceStream = memo(() => {
     }
   };
 
-  const handleNewMission = async () => {
-    await ZenithService.stopAgent();
+  const handleNewMission = async (silent: boolean = false) => {
+    // Chỉ xóa cờ stop_signal để chuẩn bị cho mission mới, không gọi stopAgent gây spam log dừng
     await ZenithService.sendSystemCmd('clear_stop');
     reset();
     clearTrace();
     setGoal('');
     wasAtBottom.current = true;
-    toast.success('Neural environment reset complete.', { id: 'ZENITH_PULSE' });
+    if (!silent) {
+      toast.dismiss();
+      toast.success('Neural environment reset complete.', { id: 'ZENITH_PULSE' });
+    }
   };
 
   const handleLoadMission = async (id: string) => {
@@ -247,10 +250,10 @@ export const IntelligenceStream = memo(() => {
           console.log(`📡 [AUTO-INIT]: Restored active mission: ${activeMissionId}`);
         } catch (e) {
           console.warn('📡 [AUTO-INIT]: Failed to restore active mission, starting new...', e);
-          handleNewMission();
+          handleNewMission(true);
         }
       } else {
-        handleNewMission();
+        handleNewMission(true);
       }
     };
     initOrRestore();
@@ -550,21 +553,19 @@ export const IntelligenceStream = memo(() => {
               />
 
               <div className="flex items-center gap-2 mb-1">
-                {/* 🧠 [SUPREME-TOGGLE]: Nút chuyển đổi chế độ nhất thể với sắc màu rực rỡ  */}
+                {/* 🧠 [SUPREME-TOGGLE]: Nút chuyển đổi 2 chế độ FAST/DEEP */}
                 <button
                   onClick={() => {
-                    const modes: CognitiveMode[] = ['auto', 'fast', 'deep'];
+                    const modes: CognitiveMode[] = ['fast', 'deep'];
                     const nextMode = modes[(modes.indexOf(cognitiveMode) + 1) % modes.length];
                     setMode(nextMode);
                   }}
-                  className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-lg border ${cognitiveMode === 'auto' ? 'bg-cyan-500/20 text-cyan-400 border-cyan-500/40 shadow-cyan-500/20 shadow-[0_0_15px_rgba(34,211,238,0.2)]' :
-                    cognitiveMode === 'fast' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-emerald-500/20 shadow-[0_0_15px_rgba(52,211,153,0.2)]' :
+                  className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] transition-all duration-500 shadow-lg border ${cognitiveMode === 'fast' ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/40 shadow-emerald-500/20 shadow-[0_0_15px_rgba(52,211,153,0.2)]' :
                       'bg-amber-500/20 text-amber-400 border-amber-500/40 shadow-amber-500/20 shadow-[0_0_15px_rgba(251,191,36,0.2)]'
                     }`}
                 >
                   <div className="flex items-center gap-2">
-                    <Zap className={`w-3.5 h-3.5 ${cognitiveMode === 'auto' ? 'text-cyan-400' :
-                      cognitiveMode === 'fast' ? 'text-emerald-400' :
+                    <Zap className={`w-3.5 h-3.5 ${cognitiveMode === 'fast' ? 'text-emerald-400' :
                         'text-amber-400'
                       }`} />
                     <span>{cognitiveMode}</span>

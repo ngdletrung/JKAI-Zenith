@@ -170,6 +170,21 @@ export const MarkdownRenderer = memo(({ content }: { content: string }) => {
           }
           return <blockquote className="border-l-4 border-white/10 pl-4 my-4 italic text-white/40">{children}</blockquote>;
         },
+        a: ({ href, children }) => {
+          const isDownload = href?.startsWith('/outputs/') || href?.startsWith('/exports/') || href?.endsWith('.xlsx') || href?.endsWith('.docx') || href?.endsWith('.pdf');
+          return (
+            <a 
+              href={href} 
+              download={isDownload}
+              target={isDownload ? '_blank' : '_self'}
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-1 my-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 font-semibold text-[12px] border border-emerald-500/20 transition-all cursor-pointer shadow-sm hover:shadow-emerald-500/10"
+            >
+              {children}
+              <ExternalLink className="w-3 h-3 ml-0.5" />
+            </a>
+          );
+        },
         table: ({ children }) => <div className="overflow-x-auto my-6 border border-white/10 rounded-2xl shadow-2xl"><table className="min-w-full w-max text-left border-collapse">{children}</table></div>,
         th: ({ children }) => <th className="px-5 py-3 border-b border-white/10 bg-white/[0.03] font-black text-cyan-400/80 uppercase tracking-widest text-[10px]">{children}</th>,
         td: ({ children }) => <td className="px-5 py-3 border-b border-white/[0.01] text-white/60 text-sm">{children}</td>,

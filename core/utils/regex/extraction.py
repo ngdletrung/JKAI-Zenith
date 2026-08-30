@@ -49,7 +49,8 @@ ISBN = re.compile(
 )
 PY_FILE = re.compile(r"\b((?:[\w\-]+/)*[\w\-]+\.py)\b", re.IGNORECASE)
 IMAGE_HINT = re.compile(
-    r"\b(hình|hinh|ảnh|anh|image|vision|screenshot|ocr)\b", re.IGNORECASE
+    r"(?<!tình\s)(?<!tinh\s)(?<!mô\s)(?<!mo\s)(?<!hình\s)(?<!hinh\s)\b(hình\s*ảnh|hinh\s*anh|bức\s*ảnh|buc\s*anh|tấm\s*hình|tam\s*hinh|ảnh\s*chụp|anh\s*chup|xem\s*ảnh|xem\s*hình|xem\s*hinh|xem\s*anh|hình\s*này|hinh\s*nay|ảnh\s*này|anh\s*nay|image|vision|screenshot|ocr)\b",
+    re.IGNORECASE,
 )
 HASHTAG = re.compile(r"(?<!\w)#([A-Za-z][A-Za-z0-9_]*)")
 WIKI_LINK = re.compile(r"\[\[([^\]|#]+)(?:[|#][^\]]*)?\]\]")

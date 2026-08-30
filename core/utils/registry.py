@@ -10,15 +10,15 @@ class NeuralRegistry:
         # Thiết lập các Fallback mặc định cho môi trường Docker Desktop (host.docker.internal)
         # Các biến môi trường sẽ được ưu tiên nếu có.
         self._services = {
-            "executor": os.getenv("EXECUTOR_URL", "http://host.docker.internal:8002"),
-            "executor_2": os.getenv("EXECUTOR_2_URL", "http://host.docker.internal:8003"),
-            "brain": os.getenv("AI_BRAIN_URL", "http://host.docker.internal:8001"),
-            "control_plane": os.getenv("AI_CONTROL_PLANE_URL", "http://host.docker.internal:7000"),
-            "ollama_gpu": os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434"),
-            "ollama_cpu": os.getenv("OLLAMA_CPU_HOST", "http://host.docker.internal:11435"),
-            "qdrant": os.getenv("QDRANT_URL", "http://qdrant:6333"),
-            "rag": os.getenv("RAG_API_URL", "http://rag-service:8000"),
-            "n8n": os.getenv("N8N_HOST", "http://n8n-main:5678"),
+            "executor": os.getenv("EXECUTOR_URL", "http://127.0.0.1:8002"),
+            "executor_2": os.getenv("EXECUTOR_2_URL", "http://127.0.0.1:8003"),
+            "brain": os.getenv("AI_BRAIN_URL", "http://127.0.0.1:8001"),
+            "control_plane": os.getenv("AI_CONTROL_PLANE_URL", "http://127.0.0.1:7000"),
+            "ollama_gpu": os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434"),
+            "ollama_cpu": os.getenv("OLLAMA_CPU_HOST", "http://127.0.0.1:11435"),
+            "qdrant": os.getenv("QDRANT_URL", "http://127.0.0.1:6333"),
+            "rag": os.getenv("RAG_API_URL", "http://127.0.0.1:8000"),
+            "n8n": os.getenv("N8N_HOST", "http://127.0.0.1:5678"),
         }
 
     def get_service_url(self, service_name: str) -> str:

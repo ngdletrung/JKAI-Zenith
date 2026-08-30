@@ -59,6 +59,26 @@ ROLE_SOP_CATALOG: Dict[str, Dict[str, Any]] = {
             "4. Sign non-repudiable evidence record with SHA-256 hash."
         ],
         "output_format": "Verified Evidence Artifact (EIR-S = 100%)"
+    },
+    "CRITIC": {
+        "title": "Adversarial Quality Control & Risk Audit SOP",
+        "steps": [
+            "1. Scrutinize execution plan against Anti-Rationalization rules and unproven assumptions.",
+            "2. Audit edge cases, security permissions, and potential side-effects.",
+            "3. Reject plans that skip test execution or lack verifiable criteria.",
+            "4. Issue constructive counter-arguments and clear approval verdicts."
+        ],
+        "output_format": "Structured Critique JSON (`approved`, `feedback`, `thought`)"
+    },
+    "SUMMARIZER": {
+        "title": "Executive Debrief & Synthesis SOP",
+        "steps": [
+            "1. Distill raw execution logs, tool observations, and evidence artifacts.",
+            "2. Eliminate technical noise, orphan tokens, and debug chatter.",
+            "3. Structure key findings, metrics, and actionable conclusions clearly.",
+            "4. Present polished executive briefing respectful of Master LeeTrung."
+        ],
+        "output_format": "Executive Briefing Markdown"
     }
 }
 

@@ -1,9 +1,16 @@
 """
-JKAI ZENITH AI OS — TASK PROFILER
+JKAI ZENITH AI OS — TASK PROFILER (v2.0)
 File: core/os/cognition/task_profiler.py
 
-Computes multi-dimensional TaskProfile signals from input goal, history, and context.
+Computes multi-dimensional TaskProfile from input goal, history, and context.
 Separates Task Complexity from Execution Topology.
+
+v2.0: Extended with EEC v2.0 fields so EvidenceGateAuditor does not need
+to re-derive mission intent from scratch (avoids architectural duplication).
+  - evidence_policy: EvidencePolicy enum (not just str)
+  - evidence_requirements: List[EvidenceRequirement] from PropositionRegistry
+  - capability_dimensions: List[CapabilityDimension] relevant to this task
+  - completion_policy: str (STRICT | LENIENT | ABSTAIN_ON_INSUFFICIENT)
 """
 
 from __future__ import annotations
@@ -14,7 +21,7 @@ from typing import Dict, Any, List, Set, Optional
 
 @dataclass
 class TaskProfile:
-    """Multi-dimensional profile of a user request."""
+    """Multi-dimensional profile of a user request (v2.0)."""
     complexity: float = 0.0        # Estimated cognitive demand (0.0 to 1.0)
     risk: float = 0.0              # Safety and system risk (0.0 to 1.0)
     uncertainty: float = 0.0       # Ambiguity and knowledge gap (0.0 to 1.0)
@@ -26,8 +33,16 @@ class TaskProfile:
     verification_need: str = "LOW" # LOW, MEDIUM, HIGH, CRITICAL
     target_entity: str = "SYSTEM"  # AI_SELF, USER, SYSTEM (Self-Identity & Target Alignment)
     is_self_eval: bool = False     # AI self-evaluation & testing requested
-    evidence_policy: str = "OPTIONAL" # OPTIONAL, REQUIRED (EEC v1.0)
+    evidence_policy: str = "OPTIONAL" # OPTIONAL, REQUIRED, REQUIRED_INDEPENDENT, REQUIRED_MULTI_SOURCE
     reason_codes: List[str] = field(default_factory=list)
+
+    # ── EEC v2.0 fields (prevent EvidenceGateAuditor from re-deriving intent) ──
+    # List of EvidenceRequirement objects for this task (from PropositionRegistry)
+    evidence_requirements: List[Any] = field(default_factory=list)
+    # Which CapabilityDimensions are relevant
+    capability_dimensions: List[Any] = field(default_factory=list)
+    # Completion policy: STRICT (any fail=blocked), LENIENT (low_confidence OK), ABSTAIN_ON_INSUFFICIENT
+    completion_policy: str = "STRICT"
 
 
 def profile_task(goal: str, history: Optional[List] = None, kwargs: Optional[Dict[str, Any]] = None) -> TaskProfile:
@@ -51,7 +66,22 @@ def profile_task(goal: str, history: Optional[List] = None, kwargs: Optional[Dic
         profile.uncertainty = 0.3
         profile.verification_need = "HIGH"
         profile.confidence_score = 0.8
+        profile.completion_policy = "STRICT"
         profile.reason_codes.append("SELF_EVALUATION_ACTION_ENFORCED")
+        # Populate EEC v2.0 fields from PropositionRegistry
+        try:
+            from core.os.cognition.proposition_registry import PropositionRegistry
+            from core.os.cognition.evidence_execution_contract import CapabilityDimension
+            profile.capability_dimensions = [
+                CapabilityDimension.SELF_EVALUATION,
+                CapabilityDimension.TOOL_FILE_ACTUATION,
+                CapabilityDimension.REASONING_LOGIC,
+            ]
+            profile.evidence_requirements = PropositionRegistry.to_requirements(
+                CapabilityDimension.SELF_EVALUATION
+            )
+        except ImportError:
+            pass  # Graceful degradation if EEC not installed
 
     # 1. Check Capability Acknowledgement / Greeting / Math (REFLEX signals)
     from core.utils.jkai_capabilities import goal_is_capabilities_inquiry
@@ -96,11 +126,13 @@ def profile_task(goal: str, history: Optional[List] = None, kwargs: Optional[Dic
             profile.reason_codes.append("MULTI_FILE_AUDIT_ACTION")
         else:
             profile.reason_codes.append("DEBUG_ANALYSIS_ACTION")
+        profile.evidence_policy = "REQUIRED"
     elif re.search(r"\b(sửa|fix|update|tạo|create|viết|write)\b", g):
         profile.complexity = 0.4
         profile.mutation_scope = "SINGLE_FILE"
         profile.verification_need = "MEDIUM"
         profile.confidence_score = 0.85
+        profile.evidence_policy = "REQUIRED"
         profile.reason_codes.append("SINGLE_FILE_ACTION")
     elif re.search(r"\b(xem|đọc|read|check|kiểm\ tra|quét|scan)\b", g):
         profile.complexity = 0.2
@@ -119,6 +151,7 @@ def profile_task(goal: str, history: Optional[List] = None, kwargs: Optional[Dic
             profile.complexity = max(profile.complexity, 0.7)
             profile.mutation_scope = "MULTI_FILE"
             profile.verification_need = "HIGH"
+            profile.evidence_policy = "REQUIRED"
             profile.reason_codes.append("UPGRADED_MULTI_FILE_SCOPE")
 
     return profile

@@ -431,7 +431,7 @@ class Planner:
             logger.debug(f"[VECTOR-RECON]: Qdrant miss ({e}), falling back to summary.")
             
         # [TOP-K INJECTION]: Đảm bảo các tool cốt lõi luôn có mặt (Universal Core Tools)
-        UNIVERSAL_CORE_TOOLS = ["SEARCH_WEB_GLOBAL", "SYSTEM_CORE_EXECUTOR", "SKILL_ZENITH_OFFICE_MASTER"]
+        UNIVERSAL_CORE_TOOLS = ["SEARCH_WEB_GLOBAL", "SYSTEM_CORE_EXECUTOR", "OFFICE_SUITE_MASTER", "SKILL_ZENITH_OFFICE_MASTER", "OFFICE_AUTOMATOR"]
         core_ids = set()
         skills_dict = await self.orchestrator.get_all_skills_dict()
         for t in UNIVERSAL_CORE_TOOLS:
@@ -617,7 +617,7 @@ Do NOT exceed this budget unless there is a hard technical dependency.
 If you find yourself exceeding it, revisit optimization_review and consolidate.
 </PLANNING_BUDGET>
 <ACTIVE_SKILLS_INSTRUCTIONS>
- [SKILL-AS-SYSTEM-PROMPT]: Chỉ nạp nơ-ron liên quan thưa Master.
+<!-- [SKILL-AS-SYSTEM-PROMPT]: Danh mục kỹ năng nghiệp vụ liên quan -->
 {active_skills_dna}
 </ACTIVE_SKILLS_INSTRUCTIONS>
 {reasoning_block}

@@ -1,26 +1,30 @@
 {
-    "cpu": 54,
-    "ram": 45,
-    "gpu": 3,
+    "cpu": 13,
+    "ram": 49,
+    "gpu": 16,
+    "vram_mb": 0,
     "status": "OPTIMAL",
     "health": {
         "status": "OPTIMAL",
+        "core_services": {
+            "📡 AI-Control-Plane": "Online ✅",
+            "🧠 AI-Brain": "Online ✅"
+        },
+        "aux_services": {
+            "🦾 AI-Executor": "Online ✅",
+            "🔍 Qdrant DB": "Online ✅",
+            "📚 RAG-Service": "Online ✅",
+            "🔗 N8N-Main": "Online ✅"
+        },
         "details": [
-            "📡 AI-Control-Plane: `Online` ✅",
-            "🧠 AI-Brain: `Online` ✅",
-            "🦾 AI-Executor-Alpha: `Online` ✅",
-            "🦾 AI-Executor-Beta: `Online` ✅",
-            "🏢 Mission-Control: `Online` ✅",
-            "🛡️ File-Warden: `Online` ✅",
-            "🔗 N8N-Main: `Online` ✅",
-            "📚 RAG-Service: `Online` ✅",
-            "🔍 Qdrant DB: `Online` ✅",
-            "👁️ AI-Browser: `Online` ✅",
-            "👷 AI-Worker: `Running` ✅",
-            "👷 N8N-Worker: `Running` ✅",
-            "📡 Redis AI: `Online` ✅"
+            "📡 AI-Control-Plane: `Online ✅`",
+            "🧠 AI-Brain: `Online ✅`",
+            "🦾 AI-Executor: `Online ✅`",
+            "🔍 Qdrant DB: `Online ✅`",
+            "📚 RAG-Service: `Online ✅`",
+            "🔗 N8N-Main: `Online ✅`",
+            "📡 Redis AI: `Online ✅`"
         ]
     },
     "active_thoughts": "IDLE",
-    "ts": 1785846791.8421335
-}
+    "ts": 1788060006.2959852

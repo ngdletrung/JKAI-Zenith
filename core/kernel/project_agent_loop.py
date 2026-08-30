@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 from core.utils.engine import engine
+from core.kernel.action_validator import validate_action, ActionDecision
 
 logger = logging.getLogger("jkai.project_agent")
 
@@ -255,20 +256,85 @@ class ProjectAgentLoop:
                     except Exception as verify_err:
                         self._log(f"⚠️ Kiểm thử xác minh lỗi hệ thống: {verify_err}", task_id)
 
+                try:
+                    from core.os.cognition.completion_authority import gate_mediated_completion
+                    from core.os.cognition.evidence_execution_contract import CompletionState
+                    verdict, warn = gate_mediated_completion(
+                        goal=goal,
+                        context={"_touched_files": list(self.touched_files)},
+                        caller="PROJECT-AGENT-LOOP",
+                        mission_id=task_id,
+                    )
+                    if verdict.verdict not in (CompletionState.VERIFIED, CompletionState.LOW_CONFIDENCE) and self.touched_files:
+                        self._log(f"🔴 [COMPLETION-GATE-BLOCKED]: Chưa đủ bằng chứng ({'; '.join(verdict.gate_fail_reasons)})", task_id)
+                        messages.append({
+                            "role": "user",
+                            "content": f"[OBSERVATION]\n🔴 [SUBSTRATE-GATE-BLOCKED]: Yêu cầu nghiệm thu bị Substrate từ chối do chưa có bằng chứng xác minh ({'; '.join(verdict.gate_fail_reasons)}). Hãy thực thi công cụ kiểm chứng trước khi kết luận."
+                        })
+                        continue
+                except Exception as ca_err:
+                    self._log(f"⚠️ [COMPLETION-AUTHORITY]: {ca_err}", task_id)
+
                 self._log("✅ Hoàn tất", task_id)
                 return self._finalize(str(final), task_id)
 
             if not tool:
                 if thought and len(thought) > 80 and step > 1:
+                    try:
+                        from core.os.cognition.completion_authority import gate_mediated_completion
+                        from core.os.cognition.evidence_execution_contract import CompletionState
+                        verdict, warn = gate_mediated_completion(
+                            goal=goal,
+                            context={"_touched_files": list(self.touched_files)},
+                            caller="PROJECT-AGENT-LOOP",
+                            mission_id=task_id,
+                        )
+                    except Exception:
+                        pass
                     return self._finalize(thought, task_id)
                 messages.append(
                     {"role": "user", "content": "Chọn tool (ví dụ: 'list_dir') hoặc trả final_answer JSON. Hãy thực thi công cụ thay vì chỉ trả về văn bản tự do."}
                 )
                 continue
 
+            # [P1-1]: Action Validator — chặn unknown/malformed tại boundary trước khi dispatch
+            known_tools = set(TOOLS_FIX if self.mode == "fix" else TOOLS_AUDIT)
+            verdict = validate_action(tool, params, known_tools=known_tools)
+            if verdict.decision in (ActionDecision.UNKNOWN_TOOL, ActionDecision.SCHEMA_INVALID):
+                self._log(f"🚧 [ACTION-VALIDATOR] {verdict.tool}: {verdict.reason}", task_id)
+                messages.append({"role": "assistant", "content": json.dumps(data, ensure_ascii=False)})
+                messages.append({
+                    "role": "user",
+                    "content": f"[OBSERVATION]\n🚧 Action không hợp lệ: {verdict.reason}\n"
+                               f"Các tool hợp lệ: {', '.join(sorted(known_tools))}\n"
+                               "Hãy phát hành lại JSON với tool hợp lệ và params đúng dạng object.",
+                })
+                continue
+            tool = verdict.normalized_tool or str(tool)
+
             messages.append({"role": "assistant", "content": json.dumps(data, ensure_ascii=False)})
             obs = await self._tool(str(tool), params, task_id, trace_id)
             last_obs = obs
+
+            # [P2-1]: Progress Budget — phát hiện lặp cùng action / không tiến triển
+            try:
+                from core.kernel.progress_budget import ProgressBudget, ProgressSignal
+                if getattr(self, "_budget", None) is None:
+                    self._budget = ProgressBudget(max_steps=self.max_steps)
+                low_obs = obs.lower()
+                outcome_ok = "success" in low_obs or "thành công" in low_obs or "exit 0" in low_obs
+                p_signal = self._budget.register_action(str(tool), params, outcome_ok=outcome_ok)
+                if p_signal in (ProgressSignal.LOOP_DETECTED, ProgressSignal.NO_PROGRESS):
+                    self._log(f"🚧 [PROGRESS-BUDGET] {p_signal.value}: '{tool}' lặp/không tiến triển. Đổi chiến lược.", task_id)
+                    messages.append({
+                        "role": "user",
+                        "content": "[OBSERVATION]\n🚧 Agent đang lặp lại cùng hành động hoặc không tiến triển "
+                                   "(LOOP_DETECTED/NO_PROGRESS). Hãy ĐỔI chiến lược: đọc file khác, đổi từ khóa grep, "
+                                   "hoặc chạy lệnh kiểm tra khác. Không retry cùng tham số.",
+                    })
+            except Exception:
+                pass
+
             if "Neural Circuit Breaker" in obs or "repeating excessively" in obs:
                 return self._finalize(
                     "Agent dừng vì lặp tool `list_dir` (thư mục workspace không hợp lệ hoặc trống).\n"

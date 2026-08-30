@@ -1,26 +1,445 @@
 {
-  "test-model:7b": {
-    "model_name": "test-model:7b",
+  "oamazonasgabriel/lfm2.5-2.6b:q4_k_m-8gbgpu": {
+    "model_name": "oamazonasgabriel/lfm2.5-2.6b:q4_k_m-8gbgpu",
+    "architecture": "lfm2",
+    "family": "lfm2",
+    "context_length_max": 128000,
+    "model_classes": [
+      "GENERAL",
+      "TOOL_USE",
+      "REASONING"
+    ],
+    "has_vision": false,
+    "has_tool_calling": true,
+    "is_embedding_only": false,
+    "assessment_confidence": 0.9,
+    "last_inspected_at": 1788059724.8122733,
+    "ollama_digest": "",
+    "memory": {
+      "weight_file_size_gb": 1.56,
+      "quantization": "Q4_K_M",
+      "bytes_per_param": 0.5,
+      "total_parameters_b": 2.7,
+      "active_parameters_b": 2.7,
+      "num_layers": 30,
+      "is_moe": false,
+      "kv_cache_mb_per_1k_ctx": 256.0,
+      "detection_method": "api_show"
+    }
+  },
+  "hf.co/unsloth/qwen3-30b-a3b-instruct-2507-gguf:ud-q4_k_xl": {
+    "model_name": "hf.co/unsloth/qwen3-30b-a3b-instruct-2507-gguf:ud-q4_k_xl",
+    "architecture": "qwen3moe",
+    "family": "qwen3moe",
+    "context_length_max": 262144,
+    "model_classes": [
+      "GENERAL",
+      "TOOL_USE",
+      "REASONING"
+    ],
+    "has_vision": false,
+    "has_tool_calling": true,
+    "is_embedding_only": false,
+    "assessment_confidence": 0.9,
+    "last_inspected_at": 1788059725.5080247,
+    "ollama_digest": "",
+    "memory": {
+      "weight_file_size_gb": 16.48,
+      "quantization": "Q4_K_M",
+      "bytes_per_param": 0.5,
+      "total_parameters_b": 30.53,
+      "active_parameters_b": 30.53,
+      "num_layers": 48,
+      "is_moe": false,
+      "kv_cache_mb_per_1k_ctx": 256.0,
+      "detection_method": "api_show"
+    }
+  },
+  "hf.co/bartowski/google_gemma-4-e2b-it-gguf:q4_k_m": {
+    "model_name": "hf.co/bartowski/google_gemma-4-e2b-it-gguf:q4_k_m",
+    "architecture": "gemma4",
+    "family": "gemma4",
+    "context_length_max": 131072,
+    "model_classes": [
+      "VISION",
+      "TOOL_USE",
+      "GENERAL"
+    ],
+    "has_vision": true,
+    "has_tool_calling": true,
+    "is_embedding_only": false,
+    "assessment_confidence": 0.9,
+    "last_inspected_at": 1788059727.0897956,
+    "ollama_digest": "",
+    "memory": {
+      "weight_file_size_gb": 4.14,
+      "quantization": "Q4_K_M",
+      "bytes_per_param": 0.5,
+      "total_parameters_b": 4.65,
+      "active_parameters_b": 4.65,
+      "num_layers": 35,
+      "is_moe": false,
+      "kv_cache_mb_per_1k_ctx": 256.0,
+      "detection_method": "api_show"
+    }
+  },
+  "qwen3.6:35b-a3b": {
+    "model_name": "qwen3.6:35b-a3b",
+    "architecture": "qwen35moe",
+    "family": "qwen35moe",
+    "context_length_max": 262144,
+    "model_classes": [
+      "VISION",
+      "TOOL_USE",
+      "GENERAL",
+      "REASONING"
+    ],
+    "has_vision": true,
+    "has_tool_calling": true,
+    "is_embedding_only": false,
+    "assessment_confidence": 0.9,
+    "last_inspected_at": 1788059728.4597964,
+    "ollama_digest": "",
+    "memory": {
+      "weight_file_size_gb": 22.29,
+      "quantization": "Q4_K_M",
+      "bytes_per_param": 0.5,
+      "total_parameters_b": 35.95,
+      "active_parameters_b": 35.95,
+      "num_layers": 40,
+      "is_moe": false,
+      "kv_cache_mb_per_1k_ctx": 256.0,
+      "detection_method": "api_show"
+    }
+  },
+  "gemma4:12b-it-qat": {
+    "model_name": "gemma4:12b-it-qat",
+    "architecture": "gemma4",
+    "family": "gemma4",
+    "context_length_max": 262144,
+    "model_classes": [
+      "VISION",
+      "TOOL_USE",
+      "GENERAL",
+      "REASONING"
+    ],
+    "has_vision": true,
+    "has_tool_calling": true,
+    "is_embedding_only": false,
+    "assessment_confidence": 0.9,
+    "last_inspected_at": 1788059730.1267374,
+    "ollama_digest": "",
+    "memory": {
+      "weight_file_size_gb": 6.66,
+      "quantization": "Q4_0",
+      "bytes_per_param": 0.5,
+      "total_parameters_b": 11.91,
+      "active_parameters_b": 11.91,
+      "num_layers": 48,
+      "is_moe": false,
+      "kv_cache_mb_per_1k_ctx": 256.0,
+      "detection_method": "api_show"
+    }
+  },
+  "qwen3:0.6b": {
+    "model_name": "qwen3:0.6b",
+    "architecture": "qwen3",
+    "family": "qwen3",
+    "context_length_max": 40960,
+    "model_classes": [
+      "GENERAL",
+      "TOOL_USE",
+      "REASONING"
+    ],
+    "has_vision": false,
+    "has_tool_calling": true,
+    "is_embedding_only": false,
+    "assessment_confidence": 0.9,
+    "last_inspected_at": 1788059730.6960554,
+    "ollama_digest": "",
+    "memory": {
+      "weight_file_size_gb": 0.49,
+      "quantization": "Q4_K_M",
+      "bytes_per_param": 0.5,
+      "total_parameters_b": 0.75,
+      "active_parameters_b": 0.75,
+      "num_layers": 28,
+      "is_moe": false,
+      "kv_cache_mb_per_1k_ctx": 256.0,
+      "detection_method": "api_show"
+    }
+  },
+  "qwen3.5:4b": {
+    "model_name": "qwen3.5:4b",
+    "architecture": "qwen35",
+    "family": "qwen35",
+    "context_length_max": 262144,
+    "model_classes": [
+      "VISION",
+      "TOOL_USE",
+      "GENERAL",
+      "REASONING"
+    ],
+    "has_vision": true,
+    "has_tool_calling": true,
+    "is_embedding_only": false,
+    "assessment_confidence": 0.9,
+    "last_inspected_at": 1788059732.0239081,
+    "ollama_digest": "",
+    "memory": {
+      "weight_file_size_gb": 3.16,
+      "quantization": "Q4_K_M",
+      "bytes_per_param": 0.5,
+      "total_parameters_b": 4.66,
+      "active_parameters_b": 4.66,
+      "num_layers": 32,
+      "is_moe": false,
+      "kv_cache_mb_per_1k_ctx": 256.0,
+      "detection_method": "api_show"
+    }
+  },
+  "llama3.2:3b": {
+    "model_name": "llama3.2:3b",
     "architecture": "llama",
     "family": "llama",
-    "context_length_max": 8192,
+    "context_length_max": 131072,
+    "model_classes": [
+      "GENERAL",
+      "TOOL_USE"
+    ],
+    "has_vision": false,
+    "has_tool_calling": true,
+    "is_embedding_only": false,
+    "assessment_confidence": 0.9,
+    "last_inspected_at": 1788059732.814871,
+    "ollama_digest": "",
+    "memory": {
+      "weight_file_size_gb": 1.88,
+      "quantization": "Q4_K_M",
+      "bytes_per_param": 0.5,
+      "total_parameters_b": 3.21,
+      "active_parameters_b": 3.21,
+      "num_layers": 28,
+      "is_moe": false,
+      "kv_cache_mb_per_1k_ctx": 256.0,
+      "detection_method": "api_show"
+    }
+  },
+  "qwen2.5-coder:3b": {
+    "model_name": "qwen2.5-coder:3b",
+    "architecture": "qwen2",
+    "family": "qwen2",
+    "context_length_max": 32768,
     "model_classes": [
       "TOOL_USE",
+      "CODING",
       "GENERAL"
     ],
     "has_vision": false,
     "has_tool_calling": true,
     "is_embedding_only": false,
-    "assessment_confidence": 0.7,
-    "last_inspected_at": 1785846754.6432173,
-    "ollama_digest": "abc123",
+    "assessment_confidence": 0.9,
+    "last_inspected_at": 1788059733.4474692,
+    "ollama_digest": "",
     "memory": {
-      "weight_file_size_gb": 4.5,
+      "weight_file_size_gb": 1.8,
       "quantization": "Q4_K_M",
       "bytes_per_param": 0.5,
-      "total_parameters_b": 7.0,
-      "active_parameters_b": 7.0,
+      "total_parameters_b": 3.09,
+      "active_parameters_b": 3.09,
+      "num_layers": 36,
+      "is_moe": false,
+      "kv_cache_mb_per_1k_ctx": 256.0,
+      "detection_method": "api_show"
+    }
+  },
+  "qwen3.5:latest": {
+    "model_name": "qwen3.5:latest",
+    "architecture": "qwen35",
+    "family": "qwen35",
+    "context_length_max": 262144,
+    "model_classes": [
+      "VISION",
+      "TOOL_USE",
+      "GENERAL",
+      "REASONING"
+    ],
+    "has_vision": true,
+    "has_tool_calling": true,
+    "is_embedding_only": false,
+    "assessment_confidence": 0.9,
+    "last_inspected_at": 1788059734.7217321,
+    "ollama_digest": "",
+    "memory": {
+      "weight_file_size_gb": 6.14,
+      "quantization": "Q4_K_M",
+      "bytes_per_param": 0.5,
+      "total_parameters_b": 9.65,
+      "active_parameters_b": 9.65,
       "num_layers": 32,
+      "is_moe": false,
+      "kv_cache_mb_per_1k_ctx": 256.0,
+      "detection_method": "api_show"
+    }
+  },
+  "phi4-mini:latest": {
+    "model_name": "phi4-mini:latest",
+    "architecture": "phi3",
+    "family": "phi3",
+    "context_length_max": 131072,
+    "model_classes": [
+      "TOOL_USE",
+      "CODING",
+      "GENERAL"
+    ],
+    "has_vision": false,
+    "has_tool_calling": true,
+    "is_embedding_only": false,
+    "assessment_confidence": 0.9,
+    "last_inspected_at": 1788059735.5723307,
+    "ollama_digest": "",
+    "memory": {
+      "weight_file_size_gb": 2.32,
+      "quantization": "Q4_K_M",
+      "bytes_per_param": 0.5,
+      "total_parameters_b": 3.84,
+      "active_parameters_b": 3.84,
+      "num_layers": 32,
+      "is_moe": false,
+      "kv_cache_mb_per_1k_ctx": 256.0,
+      "detection_method": "api_show"
+    }
+  },
+  "qwen2.5-coder:14b": {
+    "model_name": "qwen2.5-coder:14b",
+    "architecture": "qwen2",
+    "family": "qwen2",
+    "context_length_max": 32768,
+    "model_classes": [
+      "TOOL_USE",
+      "CODING",
+      "GENERAL"
+    ],
+    "has_vision": false,
+    "has_tool_calling": true,
+    "is_embedding_only": false,
+    "assessment_confidence": 0.9,
+    "last_inspected_at": 1788059736.1417809,
+    "ollama_digest": "",
+    "memory": {
+      "weight_file_size_gb": 8.37,
+      "quantization": "Q4_K_M",
+      "bytes_per_param": 0.5,
+      "total_parameters_b": 14.77,
+      "active_parameters_b": 14.77,
+      "num_layers": 48,
+      "is_moe": false,
+      "kv_cache_mb_per_1k_ctx": 256.0,
+      "detection_method": "api_show"
+    }
+  },
+  "moondream:latest": {
+    "model_name": "moondream:latest",
+    "architecture": "phi2",
+    "family": "phi2",
+    "context_length_max": 2048,
+    "model_classes": [
+      "VISION",
+      "GENERAL"
+    ],
+    "has_vision": true,
+    "has_tool_calling": false,
+    "is_embedding_only": false,
+    "assessment_confidence": 0.9,
+    "last_inspected_at": 1788059736.3513215,
+    "ollama_digest": "",
+    "memory": {
+      "weight_file_size_gb": 1.62,
+      "quantization": "Q4_0",
+      "bytes_per_param": 0.5,
+      "total_parameters_b": 1.42,
+      "active_parameters_b": 1.42,
+      "num_layers": 24,
+      "is_moe": false,
+      "kv_cache_mb_per_1k_ctx": 256.0,
+      "detection_method": "api_show"
+    }
+  },
+  "nomic-embed-text:latest": {
+    "model_name": "nomic-embed-text:latest",
+    "architecture": "nomic-bert",
+    "family": "nomic-bert",
+    "context_length_max": 2048,
+    "model_classes": [
+      "EMBEDDING"
+    ],
+    "has_vision": false,
+    "has_tool_calling": false,
+    "is_embedding_only": true,
+    "assessment_confidence": 0.9,
+    "last_inspected_at": 1788059736.465991,
+    "ollama_digest": "",
+    "memory": {
+      "weight_file_size_gb": 0.26,
+      "quantization": "F16",
+      "bytes_per_param": 0.5,
+      "total_parameters_b": 0.14,
+      "active_parameters_b": 0.14,
+      "num_layers": 12,
+      "is_moe": false,
+      "kv_cache_mb_per_1k_ctx": 256.0,
+      "detection_method": "api_show"
+    }
+  },
+  "all-minilm:latest": {
+    "model_name": "all-minilm:latest",
+    "architecture": "bert",
+    "family": "bert",
+    "context_length_max": 512,
+    "model_classes": [
+      "EMBEDDING"
+    ],
+    "has_vision": false,
+    "has_tool_calling": false,
+    "is_embedding_only": true,
+    "assessment_confidence": 0.9,
+    "last_inspected_at": 1788059736.56239,
+    "ollama_digest": "",
+    "memory": {
+      "weight_file_size_gb": 0.04,
+      "quantization": "F16",
+      "bytes_per_param": 0.5,
+      "total_parameters_b": 0.02,
+      "active_parameters_b": 0.02,
+      "num_layers": 6,
+      "is_moe": false,
+      "kv_cache_mb_per_1k_ctx": 256.0,
+      "detection_method": "api_show"
+    }
+  },
+  "deepseek-r1:latest": {
+    "model_name": "deepseek-r1:latest",
+    "architecture": "qwen3",
+    "family": "qwen3",
+    "context_length_max": 131072,
+    "model_classes": [
+      "GENERAL",
+      "TOOL_USE",
+      "REASONING"
+    ],
+    "has_vision": false,
+    "has_tool_calling": true,
+    "is_embedding_only": false,
+    "assessment_confidence": 0.9,
+    "last_inspected_at": 1788059737.0988836,
+    "ollama_digest": "",
+    "memory": {
+      "weight_file_size_gb": 4.87,
+      "quantization": "Q4_K_M",
+      "bytes_per_param": 0.5,
+      "total_parameters_b": 8.19,
+      "active_parameters_b": 8.19,
+      "num_layers": 36,
       "is_moe": false,
       "kv_cache_mb_per_1k_ctx": 256.0,
       "detection_method": "api_show"

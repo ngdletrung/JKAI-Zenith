@@ -115,6 +115,31 @@ async def call_single_tool(payload: dict):
     args = payload.get("args", {})
     task_id = payload.get("task_id", "unknown")
     trace_id = payload.get("trace_id", "system")
+    grant = payload.get("grant")
+
+    # 🛡️ [FAIL-CLOSED-EXECUTION-GRANT] (JKAI-BND-001): Xác thực ExecutionGrant ký bởi AuthorityGateway
+    try:
+        from core.kernel.policy_snapshot import verify_execution_grant
+        is_valid, reason = verify_execution_grant(grant, expected_tool=name, actual_args=args)
+        if not is_valid:
+            import logging
+            logging.getLogger('EXECUTOR').warning(
+                f"❌ [GRANT-DENIED] Từ chối thực thi tool '{name}' (Task: {task_id}): {reason}"
+            )
+            return {
+                "status": "error",
+                "msg": f"FAIL-CLOSED: Execution rejected by Executor Boundary. {reason}",
+                "denied": True
+            }
+    except Exception as g_err:
+        import logging
+        logging.getLogger('EXECUTOR').error(f"❌ [GRANT-VERIFY-ERROR] Lỗi kiểm tra grant: {g_err}")
+        return {
+            "status": "error",
+            "msg": f"FAIL-CLOSED: Grant verification error ({g_err}).",
+            "denied": True
+        }
+
     return await executor.call_tool(name, args, task_id, trace_id=trace_id)
 
 @app.post("/invalidate_cache")

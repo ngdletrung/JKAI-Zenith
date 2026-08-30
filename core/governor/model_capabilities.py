@@ -15,6 +15,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Dict, Any, Optional, Set, List
 from enum import Enum, auto
+import math
 
 
 # ---------------------------------------------------------------------------
@@ -68,6 +69,197 @@ class ModelPool(Enum):
 
 
 # ---------------------------------------------------------------------------
+# 1b. CapabilityScore — Evidence-Governed Capability Measurement (North Star v3.0)
+# ---------------------------------------------------------------------------
+
+from datetime import datetime
+
+_UNKNOWN_SENTINEL = object()  # Sentinel to distinguish "not yet measured" from 0.0
+
+
+@dataclass
+class CapabilityScore:
+    """
+    A single dimension of a model's measured capability.
+
+    Constitutional Principle (North Star v3.0):
+        If not yet measured → value = None, confidence = 0.0, source = "UNKNOWN".
+        We NEVER infer capability from parameter count or model name.
+        This aligns with EEC-8: Epistemic Humility.
+
+    Examples:
+        # Benchmarked model:
+        coding_strength = CapabilityScore(
+            value=0.81, confidence=0.92,
+            source="benchmark:P53-CODE-v1",
+            measured_at=datetime.utcnow(),
+            benchmark_version="P53-CODE-v1",
+        )
+
+        # Not yet benchmarked:
+        reasoning_strength = CapabilityScore.unknown()
+    """
+    value: Optional[float]           # None = UNKNOWN (not yet measured)
+    confidence: float                 # 0.0 = no evidence, 1.0 = high confidence
+    source: str                       # "UNKNOWN" | "benchmark:P53-CODE-v1" | "declared"
+    measured_at: Optional[datetime]   # None = never measured
+    benchmark_version: str            # "" if UNKNOWN
+
+    @classmethod
+    def unknown(cls) -> "CapabilityScore":
+        """Create an UNKNOWN capability score — not yet measured."""
+        return cls(
+            value=None,
+            confidence=0.0,
+            source="UNKNOWN",
+            measured_at=None,
+            benchmark_version="",
+        )
+
+    @classmethod
+    def declared(cls, value: float, source: str = "declared") -> "CapabilityScore":
+        """
+        Create a capability score from declared/intrinsic metadata (e.g., context window).
+        confidence = 0.70 (declared but not empirically measured).
+        """
+        return cls(
+            value=value,
+            confidence=0.70,
+            source=source,
+            measured_at=None,
+            benchmark_version="",
+        )
+
+    @classmethod
+    def benchmarked(cls, value: float, confidence: float,
+                    benchmark_id: str, measured_at: Optional[datetime] = None) -> "CapabilityScore":
+        """Create a capability score from an empirical benchmark run."""
+        return cls(
+            value=value,
+            confidence=confidence,
+            source=f"benchmark:{benchmark_id}",
+            measured_at=measured_at or datetime.utcnow(),
+            benchmark_version=benchmark_id,
+        )
+
+    @property
+    def is_known(self) -> bool:
+        """True if we have at least some measured evidence."""
+        return self.value is not None and self.confidence > 0.0
+
+    @property
+    def effective_value(self) -> float:
+        """
+        Return value for scoring, applying confidence weight.
+        Returns 0.5 (neutral) if UNKNOWN — does not penalise or reward.
+        Caller should check is_known to decide if this is real evidence.
+        """
+        if self.value is None:
+            return 0.5  # Neutral — no evidence either way
+        return self.value * self.confidence + 0.5 * (1.0 - self.confidence)
+
+    def __repr__(self) -> str:
+        if self.value is None:
+            return "CapabilityScore(UNKNOWN)"
+        return f"CapabilityScore(v={self.value:.3f}, conf={self.confidence:.2f}, src={self.source!r})"
+
+
+@dataclass
+class QuantitativeCapabilityProfile:
+    """
+    5-dimensional evidence-governed capability profile for a model.
+    All scores are CapabilityScore instances (value + confidence + provenance).
+
+    Constitutional Principle (North Star v3.0):
+        NO dimension is inferred from parameter count or model family name.
+        All scores start as UNKNOWN and are populated by:
+          1. Empirical benchmark runs (Phase 5.4)
+          2. Explicit operator declarations
+          3. External measurement imports
+
+    Operational fields (vram_cost_gb, latency_ms_per_token) are measured or
+    declared from hardware profiling — NOT estimated from param count.
+    """
+    # Measured capability dimensions (all start as UNKNOWN)
+    reasoning_strength: CapabilityScore = field(
+        default_factory=CapabilityScore.unknown)
+    coding_strength: CapabilityScore = field(
+        default_factory=CapabilityScore.unknown)
+    tool_use_strength: CapabilityScore = field(
+        default_factory=CapabilityScore.unknown)
+    instruction_following: CapabilityScore = field(
+        default_factory=CapabilityScore.unknown)
+    reliability: CapabilityScore = field(
+        default_factory=CapabilityScore.unknown)
+
+    # Operational cost (declared or measured from hardware profiling)
+    vram_cost_gb: float = 0.0                  # 0.0 = not yet profiled
+    latency_ms_per_token: float = 0.0          # 0.0 = not yet profiled
+    throughput_tokens_per_sec: float = 0.0     # 0.0 = not yet profiled
+    context_window_tokens: int = 8192          # from model metadata
+
+    @property
+    def any_dimension_unknown(self) -> bool:
+        dims = [self.reasoning_strength, self.coding_strength,
+                self.tool_use_strength, self.instruction_following, self.reliability]
+        return any(not d.is_known for d in dims)
+
+    def task_complexity_match(
+        self,
+        task_complexity: float,
+        task_weights: Optional[Dict[str, float]] = None,
+    ) -> float:
+        """
+        Compute how well this capability profile matches required task complexity.
+        task_complexity in [0.0, 1.0]: 0 = trivial, 1 = expert-level multi-step.
+
+        Uses task_weights to weight dimensions per-mission type.
+        When a dimension is UNKNOWN, it contributes a neutral score (0.5) so
+        UNKNOWN models are neither rewarded nor penalised on that dimension.
+
+        Args:
+            task_complexity: 0.0–1.0 required difficulty.
+            task_weights:    Dict of dimension → weight, e.g.
+                             {"reasoning": 0.35, "coding": 0.30, "tool_use": 0.15,
+                              "reliability": 0.10, "instruction_following": 0.10}
+                             Defaults to equal weights if not provided.
+
+        Returns:
+            0.0–1.0 match score (higher = better fit for this task complexity).
+        """
+        weights = task_weights or {
+            "reasoning": 0.25, "coding": 0.25, "tool_use": 0.20,
+            "instruction_following": 0.15, "reliability": 0.15,
+        }
+
+        dims = {
+            "reasoning":             self.reasoning_strength,
+            "coding":                self.coding_strength,
+            "tool_use":              self.tool_use_strength,
+            "instruction_following": self.instruction_following,
+            "reliability":           self.reliability,
+        }
+
+        total_weight = sum(weights.values()) or 1.0
+        weighted_fit = 0.0
+
+        for dim_name, score in dims.items():
+            w = weights.get(dim_name, 0.0)
+            effective = score.effective_value  # 0.5 if UNKNOWN
+            # Required level scales with task_complexity
+            required = task_complexity
+            shortfall = max(0.0, required - effective)
+            fit = (1.0 - shortfall) * w
+            weighted_fit += fit
+
+        return round(max(0.0, min(1.0, weighted_fit / total_weight)), 4)
+
+
+# Backward-compat alias (deprecated — use QuantitativeCapabilityProfile directly)
+QuantitativeCapabilityVector = QuantitativeCapabilityProfile
+
+
+# ---------------------------------------------------------------------------
 # 2. Capability Evidence (confidence-scored, multi-source)
 # ---------------------------------------------------------------------------
 
@@ -114,7 +306,7 @@ class ModelMemoryProfile:
         weight_file_size_gb      = 17.0     ← ALL weights need storage
         estimated_full_weight_mb = 17408    ← if entire model on GPU
         estimated_gpu_resident_mb ≈ 5500    ← after 32-layer offload to GPU
-        estimated_ram_resident_mb ≈ 11900   ← remaining in 128GB RAM
+        estimated_ram_resident_mb ≈ 11900   ← remaining in 64GB RAM
     """
     # Physical footprint
     weight_file_size_gb: float              # Actual file/download size (source of truth)
@@ -187,6 +379,14 @@ class ModelCapabilityProfile:
     # HIGH (> 0.80): full /api/show metadata with confident capability evidence
     assessment_confidence: float = 0.0
 
+    # ── North Star v3.0: Quantitative Capability Profile (evidence-governed) ─
+    # Populated by ModelInspector from empirical benchmark data.
+    # NEVER auto-estimated from parameter count — starts as UNKNOWN.
+    # Use quant_vector property to access (logs warning if UNKNOWN).
+    _quant_vector: Optional[QuantitativeCapabilityProfile] = field(
+        default=None, repr=False, compare=False
+    )
+
     @property
     def is_unknown(self) -> bool:
         """True when we have very little confidence in the capability classification."""
@@ -214,6 +414,36 @@ class ModelCapabilityProfile:
         """Shortcut to file size."""
         return self.memory.weight_file_size_gb if self.memory else 2.5
 
+    @property
+    def quant_vector(self) -> QuantitativeCapabilityProfile:
+        """
+        Return the QuantitativeCapabilityProfile (evidence-governed capability scores).
+
+        Constitutional Principle: NEVER fall back to param-count estimation.
+        If _quant_vector is None, return a profile with all dimensions UNKNOWN.
+        This ensures epistemic humility: we do not pretend to know what we haven't measured.
+        """
+        if self._quant_vector is not None:
+            return self._quant_vector
+        # Return UNKNOWN profile (not estimated from params)
+        import logging
+        logging.getLogger("jkai.governor.model_capabilities").warning(
+            "[AMG] quant_vector requested for '%s' but no benchmark data available. "
+            "All capability scores = UNKNOWN. Run Phase 5.4 benchmark to populate.",
+            self.model_name,
+        )
+        unknown = QuantitativeCapabilityProfile(
+            context_window_tokens=self.context_length_max,
+        )
+        return unknown
+
+    @property
+    def context_window_tokens(self) -> int:
+        """Usable context window — from quant_vector (which may override context_length_max)."""
+        if self._quant_vector is not None:
+            return self._quant_vector.context_window_tokens
+        return self.context_length_max
+
     def has_any_class(self, *classes: ModelClass) -> bool:
         return bool(self.model_classes.intersection(classes))
 
@@ -221,7 +451,8 @@ class ModelCapabilityProfile:
         classes = ", ".join(c.name for c in self.model_classes)
         size = f"{self.estimated_size_gb:.1f}GB"
         active = f"{self.parameters_active_b:.1f}B active"
-        return f"ModelCapabilityProfile({self.model_name!r} | {active} | {size} | [{classes}])"
+        ctx = f"{self.context_window_tokens // 1024}k ctx"
+        return f"ModelCapabilityProfile({self.model_name!r} | {active} | {size} | {ctx} | [{classes}])"
 
 
 # ---------------------------------------------------------------------------

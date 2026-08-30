@@ -35,14 +35,6 @@ export const CommandPalette = memo(({ isOpen, onClose }: { isOpen: boolean; onCl
   const items: CommandItem[] = [
     // 🧠 Modes
     {
-      id: 'mode-auto',
-      category: 'MODE',
-      label: 'Chế độ AUTO (Nhất thể)',
-      sublabel: 'Tự động phân bổ tư duy & thực thi theo nhiệm vụ',
-      icon: <Zap className="w-4 h-4 text-cyan-400" />,
-      action: () => { setMode('auto'); playSound('click'); onClose(); }
-    },
-    {
       id: 'mode-fast',
       category: 'MODE',
       label: 'Chế độ FAST (Phản xạ)',

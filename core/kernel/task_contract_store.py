@@ -1,26 +1,52 @@
+# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # [ZENITH FILE DIRECTIVE]
 # - File: core/kernel/task_contract_store.py
-# - Role: Session-Level TaskContract & Policy Store
+# - Role: Session-Level TaskContract & PolicySnapshot Store
 # - Ownership: Master LeeTrung
-# - Status: Active | Version: SDS v26.2
-#
-# [WORKING PRINCIPLES]:
-# 1. Lightweight in-memory store keyed by task_id.
-# 2. Thread-safe via threading.Lock.
-# 3. executor_gateway reads contract here before authorizing any tool call.
-# 4. mission_runtime writes contract here when task is initialized.
+# - Status: Active | Version: SDS v26.3 (Immutable Policy Snapshot)
 # -----------------------------------------------------------------------------
 
 import logging
 import threading
 from typing import Dict, Optional, Any
+from core.kernel.policy_snapshot import PolicySnapshot, create_policy_snapshot
 
 logger = logging.getLogger("JKAI.TaskContractStore")
 
 _lock = threading.RLock()
-_contract_store: Dict[str, Any] = {}   # task_id → TaskContract
-_policy_store: Dict[str, Any] = {}     # task_id → CognitivePolicy
+_contract_store: Dict[str, Any] = {}          # task_id → TaskContract
+_policy_store: Dict[str, Any] = {}            # task_id → CognitivePolicy
+_snapshot_store: Dict[str, PolicySnapshot] = {} # task_id → PolicySnapshot
+
+
+# --------------------------------------------------------------------------- #
+# Policy Snapshot Store (P0 Immutable Governance)                             #
+# --------------------------------------------------------------------------- #
+
+def set_policy_snapshot(task_id: str, snapshot: PolicySnapshot) -> None:
+    """Register an immutable PolicySnapshot for the given task_id."""
+    with _lock:
+        _snapshot_store[task_id] = snapshot
+    logger.debug(f"[SNAPSHOT-STORE] Registered PolicySnapshot id={snapshot.snapshot_id} for task_id={task_id}")
+
+
+def get_policy_snapshot(task_id: str) -> Optional[PolicySnapshot]:
+    """Retrieve the PolicySnapshot for the given task_id."""
+    with _lock:
+        return _snapshot_store.get(task_id)
+
+
+def get_or_create_policy_snapshot(task_id: str) -> PolicySnapshot:
+    """Retrieve active PolicySnapshot or auto-create a default snapshot if missing."""
+    with _lock:
+        snap = _snapshot_store.get(task_id)
+        if not snap:
+            snap = create_policy_snapshot(mission_id=task_id)
+            _snapshot_store[task_id] = snap
+            logger.info(f"[SNAPSHOT-STORE] Auto-initialized default PolicySnapshot id={snap.snapshot_id} for task_id={task_id}")
+        return snap
+
 
 # --------------------------------------------------------------------------- #
 # Contract Store                                                               #
@@ -52,7 +78,7 @@ def get_or_create_default_contract(task_id: str) -> Any:
                         can_modify_files=True,
                         can_delete_files=False,
                         can_send_external_message=True,
-                        can_execute_shell=True
+                        can_execute_shell=False
                     )
                 )
                 _contract_store[task_id] = contract
@@ -98,9 +124,11 @@ def clear_policy(task_id: str) -> None:
 # --------------------------------------------------------------------------- #
 
 def clear_task(task_id: str) -> None:
-    """Remove both contract and policy for the given task_id."""
-    clear_contract(task_id)
-    clear_policy(task_id)
+    """Remove contract, snapshot, and policy for the given task_id."""
+    with _lock:
+        clear_contract(task_id)
+        clear_policy(task_id)
+        _snapshot_store.pop(task_id, None)
 
 
 def list_active_tasks() -> list:

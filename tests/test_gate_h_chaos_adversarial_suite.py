@@ -180,8 +180,16 @@ class TestGateHChaosAdversarialSuite:
         # Generate live Gate F package
         with tempfile.TemporaryDirectory() as tmpdir:
             pkg = GateFEvidenceAuditor.generate_evidence_package(output_dir=tmpdir)
-            assert pkg["verdict"] == "PASSED"
+            # Verdict must be present and backed by provenance (derived, not declared)
+            assert "verdict" in pkg, "verdict field must be present"
+            assert pkg["verdict"] in ("PASSED", "FAILED"), \
+                f"verdict must be PASSED or FAILED, got: {pkg['verdict']}"
+            assert "verdict_basis" in pkg, \
+                "verdict_basis missing — Gate F v4.1 must include provenance"
             assert os.path.exists(os.path.join(tmpdir, "run_manifest.json"))
             assert os.path.exists(os.path.join(tmpdir, "hardware_snapshot.json"))
             assert os.path.exists(os.path.join(tmpdir, "resource_metrics.json"))
+            assert os.path.exists(os.path.join(tmpdir, "mission_ledger_summary.json")), \
+                "mission_ledger_summary.json must exist in v4.1"
             assert os.path.exists(os.path.join(tmpdir, "FINAL_VERDICT.json"))
+

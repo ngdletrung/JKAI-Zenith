@@ -1,0 +1,18 @@
+# 📐 [SYSTEM INVARIANT & CONSTRAINT RULES CONFIGURATION]
+# File: core/kernel/constraints_rules.yaml
+
+rules:
+  - id: "RULE_PORT_UNIQUENESS"
+    description: "Đảm bảo không trùng lặp cổng mạng vật lý giữa các dịch vụ"
+    enabled: true
+    severity: "CRITICAL"
+
+  - id: "RULE_CORE_INTEGRITY"
+    description: "Đảm bảo tính toàn vẹn tuyệt đối của các tệp tin mã nguồn hạt nhân"
+    enabled: true
+    severity: "CRITICAL"
+
+  - id: "RULE_ESSENTIAL_SERVICES"
+    description: "Đảm bảo các dịch vụ thiết yếu (redis-ai, qdrant, postgres-db) luôn trong trạng thái HEALTHY"
+    enabled: true
+    severity: "CRITICAL"

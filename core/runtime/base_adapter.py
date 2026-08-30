@@ -100,6 +100,18 @@ class RuntimeAdapter(ABC):
         ...
 
     @abstractmethod
+    async def generate_stream_full(
+        self,
+        payload: Dict[str, Any],
+        timeout: Optional[float] = None,
+    ) -> AsyncIterator[Dict[str, Any]]:
+        """
+        Full-featured streaming generation for cognitive orchestrators.
+        Yields parsed runtime chunks (dict) supporting tool calls, thought stream, and usage.
+        """
+        ...
+
+    @abstractmethod
     async def list_models(self) -> List[str]:
         """
         Returns list of available model names on this runtime.

@@ -102,7 +102,7 @@ def classify_os_intent(goal: str, kwargs: dict | None = None) -> OSIntent:
         pass
     if _FILE_BUILD_RE.search(g) or _BUILD_RE.search(g):
         return OSIntent.BUILD
-    if _GIT_URL.search(g) or re.search(r"\b(tìm kiếm|tim kiem|search|research|tin tức)\b", g, re.I):
+    if re.search(r"^(?:/research|/nghiencuu|/study|/hoc)\b", g, re.I) or _GIT_URL.search(g) or re.search(r"\b(tìm kiếm|tim kiem|search|research|tin tức)\b", g, re.I):
         return OSIntent.RESEARCH
     if re.search(r"\b(docker|deploy|chạy lệnh|chay lenh)\b", g, re.I):
         return OSIntent.OPERATE
@@ -136,3 +136,16 @@ def default_pipeline_for_intent(intent: OSIntent, tags: Set[str]) -> str:
     if intent == OSIntent.OPERATE:
         return "deep"
     return "auto"
+
+
+_SELF_IDENTITY_RE = re.compile(
+    r"\b(bạn|jkai|zenith|hệ thống|bạn là ai|bạn có|bạn khác gì|khác gì chatgpt|khác gì gemini)\b",
+    re.I,
+)
+
+
+def is_self_identity_query(goal: str) -> bool:
+    """Detects whether a user query is addressing JKAI's self-identity or capabilities."""
+    g = (goal or "").strip()
+    return bool(_SELF_IDENTITY_RE.search(g))
+

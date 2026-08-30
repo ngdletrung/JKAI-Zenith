@@ -254,8 +254,12 @@ class ToolRouter:
                 all_skills = all_skills_full.get("skills", {})
                 skill_info = all_skills.get(resolved_tool_name) or all_skills.get(resolved_tool_name.upper())
                 # 🛡️ [SYSTEMIC-REBUILD]: Tái cấu trúc bản đồ nơ-ron động ngay lập tức để cập nhật các hàm mới
-                self._build_dynamic_tool_map(all_skills)
-                
+            if not skill_info and str(resolved_tool_name or "").upper() in ("OMNI_SEARCH_ENGINE", "WEB_SEARCH", "SEARCH_WEB"):
+                resolved_tool_name = "SEARCH_WEB_GLOBAL"
+                skill_info = all_skills.get("SEARCH_WEB_GLOBAL")
+                if skill_info:
+                    print(f"[ROUTER-SEARCH-ALIAS] '{tool_name}' → 'SEARCH_WEB_GLOBAL'")
+
             if not skill_info:
                 clean_num = str(resolved_tool_name or "").strip().lstrip("#")
                 if clean_num.isdigit():

@@ -1,15 +1,14 @@
-import re, json, asyncio, uuid, logging
+import re, json, asyncio, uuid, logging, os
+from pathlib import Path
 from core.utils.engine import engine
 from core.utils.intent_cortex import IntentCortex
 from core.kernel.compaction import compaction_engine
 from core.homunculus.manager import HomunculusManager
 from core.utils.cognitive_memory import cognitive_memory
 from core.utils.zenith_observer import ZenithObserver
-from core.utils.engine import engine
+from core.utils.skill_selector import normalize_skill_name
 from prompt_engine.injectors import behavior_injector
 from context import mission_context as ctx_mgr, entity_resolver as ent_resolver, working_memory as wm_mgr, fact_extractor as fact_ext
-import os
-from pathlib import Path
 
 logger = logging.getLogger("BRAIN")
 
@@ -32,7 +31,7 @@ class Receptionist:
         # 1. PIPELINE CACHE CHECK
         from core.utils.engine import engine
         engine.init_request_cache(task_id)
-        mode = kwargs.get("mode", "auto")
+        mode = kwargs.get("mode", "fast")
         from core.utils.pipeline_cache import pipeline_cache
         cached = await pipeline_cache.get(goal, mode)
         if cached:
@@ -54,7 +53,11 @@ class Receptionist:
             parts = clean_goal.split()
             cmd = parts[0]
             args = " ".join(parts[1:])
-            return await self.container.command_router.process_command(cmd, args, task_id)
+            # Các lệnh nhận thức & nghiên cứu (/research, /nghiencuu, /learn) được chuyển thẳng vào AI OS Kernel
+            if cmd not in ["/research", "/nghiencuu", "/study", "/hoc", "/learn"]:
+                cmd_res = await self.container.command_router.process_command(cmd, args, task_id)
+                if cmd_res is not None:
+                    return cmd_res
 
         # [AI-OS]: mot kernel dieu phoi cho moi loai yeu cau
         from core.os.request_orchestrator import orchestrate_request
@@ -67,8 +70,13 @@ class Receptionist:
             container=self.container,
             **kwargs,
         )
-        for tag, msg in os_plan.log_messages:
-            self._log(tag, msg, task_id, trace_id=kwargs.get("trace_id"))
+        for item in os_plan.log_messages:
+            if len(item) == 3:
+                tag, msg, stealth = item
+            else:
+                tag, msg = item
+                stealth = False
+            self._log(tag, msg, task_id, stealth=stealth, trace_id=kwargs.get("trace_id"))
         if os_plan.early_response:
             return os_plan.early_response
 
@@ -137,8 +145,15 @@ class Receptionist:
         is_fast = ms.is_fast if ms else os_plan.is_fast
         use_full = ms.use_deep_full if ms else os_plan.use_deep_full
 
-        # 🛡️ [STATE-PIPELINE-ACTUATOR]: Kích hoạt StatePipeline (StepRunner) khi có execution_plan để thực thi Tool thực tế
-        if ms and ms.execution_plan:
+        # 🛡️ [STATE-PIPELINE-ACTUATOR]: StatePipeline (StepRunner: S1_RECON -> S2_FORGE -> S3_VERIFY)
+        # CHỈ kích hoạt cho DEEP khi thực sự có phạm vi chỉnh sửa mã nguồn dự án (workspace_target hoặc intent build/fix/refactor).
+        # Với các câu hỏi lý thuyết, đàm thoại, phân tích hoặc tác vụ văn phòng, hệ thống chạy trực tiếp FastPipeline/DeepReasoning.
+        has_code_scope = bool(
+            getattr(ms, "workspace_target", None)
+            or (getattr(os_plan, "kwargs_patch", {}).get("jkai_workspace_target") if os_plan else None)
+            or (getattr(os_plan, "os_intent", "") in ("build", "fix", "refactor") if os_plan else False)
+        )
+        if is_deep and ms and ms.execution_plan and has_code_scope:
             try:
                 from state_pipeline import StatePipeline
                 sp = StatePipeline()
@@ -321,9 +336,19 @@ class Receptionist:
             if manifest is not None:
                 is_realtime_need = manifest.is_realtime_need if hasattr(manifest, "is_realtime_need") else False
             else:
-                # Nếu không có manifest trong cache, ta dùng regex nhẹ để check thay vì gọi LLM lần 2
-                _realtime_re = re.compile(r"\b(thời tiết|weather|tin tức|news|giá vàng|tỷ giá|chứng khoán|hôm nay|bây giờ|bao nhiêu|mấy|số lượng|dân số|diện tích|khoảng cách|ai là|năm bao nhiêu|thứ mấy)\b", re.I)
-                is_realtime_need = bool(_realtime_re.search(step_goal))
+                # 🛡️ [SOCIAL-QUERY-GUARD]: Loại trừ câu hỏi xã giao/cảm xúc trước
+                _SOCIAL_PATTERNS = (
+                    "bạn thấy", "bạn cảm thấy", "bạn khỏe", "thấy thế nào", "cảm thấy thế nào",
+                    "hôm nay thế nào", "hôm nay bạn", "bạn hôm nay", "chào buổi", "sáng hôm nay",
+                    "tối hôm nay", "chiều hôm nay", "trưa hôm nay", "bạn có ổn",
+                    "how are you", "how do you feel", "what do you think",
+                )
+                _step_lower = step_goal.lower()
+                if any(sp in _step_lower for sp in _SOCIAL_PATTERNS):
+                    is_realtime_need = False
+                else:
+                    _realtime_re = re.compile(r"\b(thời tiết|weather|tin tức|news|giá vàng|tỷ giá|chứng khoán|bây giờ|dân số|diện tích|khoảng cách|năm bao nhiêu|thứ mấy)\b", re.I)
+                    is_realtime_need = bool(_realtime_re.search(step_goal))
         except Exception as e:
             logger.error("IntentCortex bypass error: %s", e)
 
@@ -340,7 +365,7 @@ class Receptionist:
             tool_calls = [{
                 "function": {
                     "name": "SEARCH_WEB_GLOBAL",
-                    "arguments": json.dumps({"extracted_params": step_goal, "skill_id": "SEARCH_WEB_GLOBAL"})
+                    "arguments": json.dumps({"query": step_goal})
                 }
             }]
             obs = await self._run_skills_in_parallel(tool_calls, task_id, **kwargs)
@@ -373,7 +398,7 @@ class Receptionist:
             context = await compaction_engine.condense(context, task_id)
 
             # Neu dang can force_synthesis hoac dung model VISION, xoa sach tools de tranh loi thieu Master
-            tools = [] if (force_synthesis or role_to_use == "VISION") else self._get_tool_spec(goal=goal, intent=intent, skill=skill)
+            tools = [] if (force_synthesis or role_to_use == "VISION") else self._get_tool_spec(goal=goal, intent=kwargs.get("intent", ""), skill=kwargs.get("skill", ""))
 
             if force_synthesis or role_to_use == "VISION":
                 if role_to_use == "VISION":
@@ -737,19 +762,34 @@ class Receptionist:
             if match:
                 skills_summary += f"\n- {match.group(1)}: {match.group(2).split(chr(10))[0]} (Kich hoat)"
 
+        import datetime, pytz
+        try:
+            tz = pytz.timezone(os.getenv("GENERIC_TIMEZONE", "Asia/Bangkok"))
+            now_dt = datetime.datetime.now(tz)
+        except Exception:
+            now_dt = datetime.datetime.now()
+
+        weekdays_vi = ["Chủ Nhật", "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy"]
+        weekday_str = weekdays_vi[int(now_dt.strftime("%w"))]
+        location_str = os.getenv("GENERIC_LOCATION", "Việt Nam (Múi giờ Đông Dương UTC+7)")
+        time_anchor = f"{now_dt.strftime('%H:%M:%S')} {weekday_str}, ngày {now_dt.strftime('%d/%m/%Y')} (Năm {now_dt.year}) tại {location_str}"
+
         main_p = (
             "<behavioral_core>\n"
             "- Master: LeeTrung, chủ nhân duy nhất của JKAI Zenith.\n"
-            "- Tuyệt đối trung thành, chính xác, minh bạch.\n"
-            "- Gọi Master là 'Master' hoặc 'Ngài'.\n"
-            "- Không dùng emoji.\n"
-            "- Phản hồi bằng tiếng Việt.\n"
+            "- Vai trò: Ban Trợ Lý Cấp Cao & Tiếp Nhận Chỉ Thị của JKAI Zenith.\n"
+            "- Hệ thống: JKAI Zenith AI OS (SDS v47.0).\n"
+            f"- Neo không-thời gian thực tế: {time_anchor}.\n"
+            "- Tuyệt đối trung thành, chính xác, minh bạch, chuyên nghiệp.\n"
+            "- Gọi Master là 'Master' hoặc 'Thưa Master'.\n"
+            "- Khi Master hỏi về ngày giờ, thứ trong tuần, sự kiện, giá cả, tỷ giá, tin tức: BẮT BUỘC trả lời chính xác theo neo thời gian thực tế hoặc sử dụng công cụ tìm kiếm (Action: SEARCH_WEB_GLOBAL) để tra cứu, KHÔNG BAO GIỜ tự suy đoán hoặc trả lời rằng mình không có đồng hồ / không có dữ liệu thời gian thực.\n"
+            "- Phản hồi bằng tiếng Việt trang trọng, rõ ràng, giàu thông tin.\n"
             "</behavioral_core>\n\n"
             "<available_tools>\n"
             f"{skills_summary}\n"
             "</available_tools>\n\n"
             "<constraints>\n"
-            "GIAO THÚC SUY LUẬN & THỰC THI (MANDATORY):\n"
+            "GIAO THỨC SUY LUẬN & THỰC THI (MANDATORY):\n"
             "1. Phân tích Observation để trích xuất thông tin trả lời trực tiếp cho Master.\n"
             "2. Nếu tìm kiếm thất bại, THAY ĐỔI TỪ KHÓA (ví dụ: dùng tiếng Anh) và tìm lại. KHÔNG BỎ CUỘC.\n"
             "3. KHÔNG lặp lại cùng Action với cùng tham số nếu kết quả trống hoặc lỗi.\n"
@@ -782,7 +822,7 @@ class Receptionist:
         except Exception: pass
         return ""
 
-    def _get_tool_spec(self, goal: str = "", intent: str = "", skill: str = ""):
+    def _get_tool_spec(self, goal: str = "", intent: str = "", skill: str = "", task_id: str = ""):
         base_tools = [
             {"type": "function", "function": {"name": "execute_skill", "description": "Thực thi kỹ năng tự động hóa JKAI.", "parameters": {"type": "object", "properties": {"skill_id": {"type": "string"}, "extracted_params": {"type": "string"}}, "required": ["skill_id", "extracted_params"]}}},
             {"type": "function", "function": {"name": "search_memory", "description": "Tra cứu tri thức quá khứ hoặc dữ liệu nội bộ JKAI.", "parameters": {"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]}}},
@@ -792,29 +832,55 @@ class Receptionist:
             {"type": "function", "function": {"name": "replace_file_content", "description": "Sửa nội dung file.", "parameters": {"type": "object", "properties": {"path": {"type": "string"}, "content": {"type": "string"}}, "required": ["path", "content"]}}},
             {"type": "function", "function": {"name": "run_command", "description": "Chạy lệnh terminal.", "parameters": {"type": "object", "properties": {"command": {"type": "string"}}, "required": ["command"]}}}
         ]
-        if goal or skill or intent:
+        from core.utils.tool_masker import mask_tools
+        selected_tools, telemetry = mask_tools(goal=goal, intent=intent, skill=skill, all_tools=base_tools)
+        
+        # Publish Capability Discovery telemetry record
+        if task_id:
             try:
-                from core.utils.tool_masker import mask_tools
-                return mask_tools(goal=goal, intent=intent, skill=skill, all_tools=base_tools)
+                engine.publish_mission_log(
+                    "CAPABILITY",
+                    f"[CAPABILITY_DISCOVERY_RESULT]: status={telemetry.get('routing_status')} "
+                    f"required={telemetry.get('required_capabilities')} "
+                    f"selected={telemetry.get('selected_tools')}",
+                    task_id=task_id,
+                    stealth=True
+                )
             except Exception:
                 pass
-        return base_tools[:2]
+                
+        return selected_tools
 
     def _log(self, tag, msg, task_id, stealth=False, trace_id=None):
         try:
-            # Dinh tuyen log ZENITH sang SYSTEM de Frontend hien thi dong bo la Ban Hanh Chinh
             real_tag = "SYSTEM" if tag == "ZENITH" else tag
-            engine.publish_mission_log(real_tag, f"[ZENITH]: {msg}", task_id, trace_id=trace_id, stealth=stealth)
+            engine.publish_mission_log(real_tag, msg, task_id, trace_id=trace_id, stealth=stealth)
         except Exception: pass
 
     async def _synthesize_final_answer(self, goal, results, task_id):
-        is_simple = len(goal) < 80 and not any(kw in goal.lower() for kw in ["code", "script", "phan tich", "thiet ke", "so sanh", "giai thich"])
-        if is_simple:
+        # Semantic check: Distinguish simple social from real external dependency
+        from core.utils.tool_masker import discover_capabilities, CapabilityType
+        required_caps = discover_capabilities(goal=goal)
+        has_external_dependency = any(
+            cap in required_caps for cap in (
+                CapabilityType.REALTIME_WEB,
+                CapabilityType.READ_FILESYSTEM,
+                CapabilityType.MUTATE_FILESYSTEM,
+                CapabilityType.SYSTEM_EXECUTION
+            )
+        )
+        
+        if not results and has_external_dependency:
+            # External dependency required but no tool executed -> Strict Observation prompt
+            sys_prompt = self._get_supreme_prompt(goal=goal, task_id=task_id)
+            prompt = f"Yêu cầu của Master có yếu tố thực tế: {goal}. Trả lời rõ ràng, chính xác dựa trên thông tin đã biết hoặc hướng dẫn thực thi."
+        elif not has_external_dependency and len(goal) < 80:
             prompt = f"Tra loi cau hoi cua Master mot cach ngan gon, chinh xac: {goal}"
             sys_prompt = "Ban la JKAI Zenith, tro ly AI cua Master. Tra loi truc tiep, ngan gon, chinh xac."
         else:
             prompt = f"Dua tren cac ket qua thuc thi: {results}, hay tra loi yeu cau goc cua Master: {goal}"
             sys_prompt = self._get_supreme_prompt(goal=goal, task_id=task_id)
+
         res = await engine.call_chat(
             messages=[
                 {"role": "system", "content": sys_prompt},

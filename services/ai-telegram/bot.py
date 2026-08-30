@@ -71,7 +71,7 @@ def wait_for_internet(timeout=60):
 def safe_edit_message_text(chat_id, message_id, text, p_id=None, last_edit_map=None, **kwargs):
     """
     🛡️ [TELE-RATE-LIMIT-GUARD]: Thao tác sửa tin nhắn Telegram an toàn tuyệt đối.
-    Tránh lỗi 429 Too Many Requests bằng cách tự động phân tích Retry-After và áp đặt Cooldown.
+    Tránh lỗi 429 Too Many Requests và tự động fallback sang text thuần nếu lỗi định dạng HTML.
     """
     try:
         res = bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text, **kwargs)
@@ -83,6 +83,14 @@ def safe_edit_message_text(chat_id, message_id, text, p_id=None, last_edit_map=N
         if "message is not modified" in err_str:
             return None
             
+        if "can't parse entities" in err_str or "unmatched" in err_str:
+            clean_plain_text = re.sub(r'<[^>]+>', '', text)
+            kwargs_plain = {k: v for k, v in kwargs.items() if k != "parse_mode"}
+            try:
+                return bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=clean_plain_text, **kwargs_plain)
+            except Exception:
+                return None
+
         if "too many requests" in err_str or "429" in err_str:
             import re
             m = re.search(r'retry after (\d+)', err_str)
@@ -99,18 +107,27 @@ def safe_edit_message_text(chat_id, message_id, text, p_id=None, last_edit_map=N
         return None
 
 def safe_send_message(chat_id, text, **kwargs):
-    """🚀 [RESILIENT-SENDER]: Giao thức gửi tin nhắn bền bỉ với cơ chế Tái thử."""
+    """🚀 [RESILIENT-SENDER]: Giao thức gửi tin nhắn bền bỉ với cơ chế HTML Fallback tức thì."""
     import random
-    time.sleep(random.uniform(0.2, 0.6))
-    max_retries = 10
+    time.sleep(random.uniform(0.1, 0.3))
+    max_retries = 3
     for i in range(max_retries):
         try:
             return bot.send_message(chat_id, text, **kwargs)
         except Exception as e:
+            err_str = str(e).lower()
+            if "can't parse entities" in err_str or "unmatched" in err_str:
+                clean_plain_text = re.sub(r'<[^>]+>', '', text)
+                kwargs_plain = {k: v for k, v in kwargs.items() if k != "parse_mode"}
+                try:
+                    return bot.send_message(chat_id, clean_plain_text, **kwargs_plain)
+                except Exception as plain_err:
+                    print(f"❌ [TELE-PLAIN-FALLBACK-ERR]: {plain_err}")
+                    return None
             if i == max_retries - 1: 
-                print(f"❌ [TELE-CRITICAL]: Mất kết nối vĩnh viễn: {e}")
-                raise e
-            wait = min((i + 1) * 3, 30) + random.uniform(1.0, 3.0)
+                print(f"❌ [TELE-FAIL]: Gửi tin nhắn thất bại: {e}")
+                return None
+            wait = min((i + 1) * 2, 8) + random.uniform(0.5, 1.5)
             print(f"⚠️ [TELE-RETRY]: Mất kết nối hoặc bị giới hạn. Đang thử lại sau {wait:.2f}s... (Lần {i+1})")
             time.sleep(wait)
 
@@ -335,7 +352,7 @@ def log_listener():
                         while clean_msg != prev_msg:
                             prev_msg = clean_msg
                             clean_msg = re.sub(r'^([^\[a-zA-Z0-9]*?)\[[A-Z0-9_\s-]+\]:?\s*', r'\1', clean_msg)
-                        clean_msg = clean_msg.strip()
+                        clean_msg = re.sub(r'^[:\s\-]+', '', clean_msg).strip()
                         if not clean_msg: continue
                         
                         if data.get("stealth", False) and not is_pin: continue
@@ -490,6 +507,46 @@ def cmd_help(message):
                 safe_send_message(MASTER_ID, f"⚠️ <b>LỖI HỆ THỐNG:</b> Không thể kết nối Trung tâm <i>(Mã lỗi: {res.status_code})</i>.", parse_mode="HTML")
     except Exception as e:
         safe_send_message(MASTER_ID, f"❌ <b>LỖI KẾT NỐI:</b> {str(e)}", parse_mode="HTML")
+
+@bot.message_handler(commands=['status', 'stat'])
+def cmd_status(message):
+    """📊 [INSTANT-STATUS]: Phản hồi tức thời tình trạng toàn hệ thống."""
+    if message.from_user.id != MASTER_ID: return
+    try:
+        task_id = f"tele_status_{int(time.time())}"
+        payload = {"task_id": task_id, "goal": "/status", "mode": "fast", "source": "TELEGRAM_DIRECT", "ts": time.time()}
+        with httpx.Client(timeout=10.0) as client:
+            res = client.post(f"{CONTROL_PLANE_URL}/execute", json=payload)
+            if res.status_code != 200:
+                safe_send_message(MASTER_ID, f"⚠️ <b>LỖI:</b> Không thể truy vấn trạng thái (HTTP {res.status_code})", parse_mode="HTML")
+            # Kết quả trạng thái đã được pubsub tự động phát sóng lên Telegram qua monitor:log_channel
+    except Exception as e:
+        safe_send_message(MASTER_ID, f"❌ <b>LỖI TRUY VẤN:</b> {str(e)}", parse_mode="HTML")
+
+@bot.message_handler(commands=['audit'])
+def cmd_audit(message):
+    """📜 [AUDIT-INTEGRITY]: Kiểm toán chuỗi băm bất biến tức thời."""
+    if message.from_user.id != MASTER_ID: return
+    try:
+        with httpx.Client(timeout=10.0) as client:
+            res = client.get(f"{CONTROL_PLANE_URL}/api/v1/audit/integrity")
+            if res.status_code == 200:
+                data = res.json()
+                is_valid = data.get("is_valid", False)
+                total = data.get("total_entries", 0)
+                status_icon = "🟢 HỢP LỆ (100% TOÀN VẸN)" if is_valid else "🔴 PHÁT HIỆN BIẾN ĐỘNG"
+                msg = (
+                    f"📜 <b>[KIỂM TOÁN SỔ CÁI BẤT BIẾN — DECISION LEDGER]</b>\n\n"
+                    f"• <b>Trạng thái:</b> <code>{status_icon}</code>\n"
+                    f"• <b>Tổng số block quyết định:</b> <code>{total} entries</code>\n"
+                    f"• <b>Mã hóa chuỗi băm:</b> <code>SHA-256 Hash-Chain</code>\n\n"
+                    f"💎 <i>Mọi quyết định nhận thức đều được bảo vệ toàn vẹn tuyệt đối thưa Master.</i>"
+                )
+                safe_send_message(MASTER_ID, msg, parse_mode="HTML")
+            else:
+                safe_send_message(MASTER_ID, f"⚠️ Không thể kết nối endpoint audit ({res.status_code})", parse_mode="HTML")
+    except Exception as e:
+        safe_send_message(MASTER_ID, f"❌ <b>LỖI AUDIT:</b> {str(e)}", parse_mode="HTML")
 
 @bot.message_handler(commands=['cancel', 'stop'])
 def cmd_stop(message):

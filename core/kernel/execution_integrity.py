@@ -1,25 +1,28 @@
+# -*- coding: utf-8 -*-
 # -----------------------------------------------------------------------------
 # [ZENITH FILE DIRECTIVE]
 # - File: core/kernel/execution_integrity.py
 # - Role: Execution Integrity Layer — Security Boundary & Hard Authority Gateway
 # - Ownership: Master LeeTrung
-# - Status: Active | Version: SDS v26.2 (Execution Integrity & Grounded Cognition)
+# - Status: Active | Version: SDS v26.3 (Immutable Policy Snapshot & HMAC Grants)
 #
 # [WORKING PRINCIPLES]:
 # 1. Structural authority is not execution authority (Prompt instructions != Hard boundary).
 # 2. 3-State Decision: ALLOW, DENY, REQUIRE_APPROVAL.
 # 3. Fail-Closed Invariant: Malformed, missing, or unknown authority -> DENY or REQUIRE_APPROVAL.
-# 4. No side effect may occur outside an authorized execution path.
-#    (Constitutional Principle 4 — covers Tool, File, Network, Subprocess, External Message)
+# 4. No side effect may occur outside an authorized execution path (JKAI-BND-001).
 # -----------------------------------------------------------------------------
 
+from __future__ import annotations
+
 import logging
+import uuid
 from enum import Enum
 from typing import Dict, Any, Optional, List
 from pydantic import BaseModel
 
 from core.utils.human_approval_gate import eval_tool_risk, create_approval_interrupt
-import uuid
+from core.kernel.policy_snapshot import PolicySnapshot, ExecutionGrant, issue_execution_grant
 
 logger = logging.getLogger("JKAI.ExecutionIntegrity")
 
@@ -38,6 +41,7 @@ class ExecutionDecision(BaseModel):
     target: Optional[str] = None
     requires_human_gate: bool = False
     interrupt_id: Optional[str] = None
+    grant: Optional[Dict[str, Any]] = None   # Serialized ExecutionGrant if ALLOW
 
 
 class ExecutionResult(BaseModel):
@@ -71,20 +75,30 @@ class ExecutionResult(BaseModel):
 
 class ExecutionIntegrityLayer:
     """
-    Execution Integrity Layer (v26.2)
+    Execution Integrity Layer (v26.3)
     Acts as the hard security boundary between LLM Intent/Tool Proposal and Tool Execution.
-    Enforces TaskContract, DecisionAuthority, CognitivePolicy, and Risk Gates.
+    Enforces PolicySnapshot, TaskContract, DecisionAuthority, and Risk Gates.
 
-    Constitutional Principle 4: No side effect may occur outside an authorized execution path.
+    Constitutional Invariant (JKAI-BND-001):
+    No execution-capable operation may reach an execution substrate without a valid ExecutionGrant.
     """
 
     DESTRUCTIVE_KEYWORDS = ["delete", "rm", "xoa", "unlink", "drop", "truncate", "remove"]
     EXTERNAL_COMM_KEYWORDS = ["email", "send_message", "webhook", "publish", "post_to", "send_external"]
     MODIFY_KEYWORDS = ["write", "replace", "modify", "update", "edit", "append"]
-    # Arbitrary code execution is DENIED completely in v26.2.
-    # python_execute is a meta-capability (file/network/subprocess/env) — not a single action.
-    # Default-deny; a proper sandboxed execution environment is a future phase.
     PYTHON_EXECUTE_KEYWORDS = ["python_execute", "exec_code", "run_code", "execute_code", "run_python"]
+
+    # Observation tools: FAIL-OPEN (Safe to allow read-only)
+    # Mutation/Execution tools: FAIL-CLOSED (Require explicit PolicySnapshot/TaskContract)
+    OBSERVATION_TOOL_PREFIXES = [
+        "search_web", "search_web_global", "read_url", "fetch_url", "view_file",
+        "search_memory", "execute_skill", "search", "read", "fetch", "lookup",
+    ]
+
+    def _is_observation_tool(self, action: str) -> bool:
+        """Returns True if this tool is an observation/read-only tool (Fail-Open eligible)."""
+        act = action.lower().strip()
+        return any(act.startswith(prefix) or act == prefix for prefix in self.OBSERVATION_TOOL_PREFIXES)
 
     def __init__(self, mission_id: str):
         self.mission_id = mission_id
@@ -95,30 +109,48 @@ class ExecutionIntegrityLayer:
         arguments: Optional[Dict[str, Any]] = None,
         task_contract: Optional[Any] = None,
         policy: Optional[Any] = None,
+        snapshot: Optional[PolicySnapshot] = None,
         world_state: Optional[Any] = None
     ) -> ExecutionDecision:
         """
-        Evaluates a proposed tool action against TaskContract authority and risk policy.
-        Returns ExecutionDecision (ALLOW, DENY, REQUIRE_APPROVAL).
-        FAILS CLOSED if contract or authority is missing/invalid.
+        Evaluates a proposed tool action against PolicySnapshot, TaskContract, and Risk Policy.
+        Returns ExecutionDecision (ALLOW with ExecutionGrant, DENY, REQUIRE_APPROVAL).
+        FAILS CLOSED if contract or authority is missing/invalid for mutation tools.
         """
         args = arguments or {}
         act_lower = action.lower()
         args_str = str(args).lower()
 
         # ---------------------------------------------------------------------
-        # FAIL-CLOSED INVARIANT CHECK: Missing Contract or Authority
+        # 1. DUAL SECURITY POLICY & CONTRACT ADMISSION
         # ---------------------------------------------------------------------
-        if not task_contract:
-            logger.warning(f"Fail-closed triggered for action={action}: TaskContract missing.")
+        effective_snapshot = snapshot
+        if not effective_snapshot and policy and isinstance(policy, PolicySnapshot):
+            effective_snapshot = policy
+
+        if not task_contract and not effective_snapshot:
+            logger.warning(f"Fail-closed triggered for action={action}: PolicySnapshot/TaskContract missing.")
             return ExecutionDecision(
                 outcome=DecisionOutcome.DENY,
-                reason="FAIL-CLOSED: TaskContract is missing or unverified.",
+                reason="FAIL-CLOSED: PolicySnapshot/TaskContract is missing or unverified.",
                 action=action
             )
 
-        authority = getattr(task_contract, "decision_authority", None)
-        if not authority:
+        authority = getattr(task_contract, "decision_authority", None) if task_contract else None
+        if not authority and not effective_snapshot:
+            if self._is_observation_tool(action):
+                grant = issue_execution_grant(
+                    mission_id=self.mission_id,
+                    snapshot_id="default_obs",
+                    tool_name=action,
+                    tool_args=args
+                )
+                return ExecutionDecision(
+                    outcome=DecisionOutcome.ALLOW,
+                    reason="FAIL-OPEN: Observation tool allowed without DecisionAuthority (Dual Security Policy).",
+                    action=action,
+                    grant=grant.to_dict()
+                )
             logger.warning(f"Fail-closed triggered for action={action}: DecisionAuthority missing.")
             return ExecutionDecision(
                 outcome=DecisionOutcome.DENY,
@@ -126,59 +158,62 @@ class ExecutionIntegrityLayer:
                 action=action
             )
 
+        can_delete = getattr(effective_snapshot, "can_delete_files", getattr(authority, "can_delete_files", False))
+        can_send = getattr(effective_snapshot, "can_send_external_message", getattr(authority, "can_send_external_message", False))
+        can_modify = getattr(effective_snapshot, "can_modify_files", getattr(authority, "can_modify_files", True))
+        can_shell = getattr(effective_snapshot, "can_execute_shell", getattr(authority, "can_execute_shell", False))
+
         # ---------------------------------------------------------------------
-        # HARD AUTHORITY BOUNDARY CHECKS
+        # 2. HARD AUTHORITY BOUNDARY CHECKS
         # ---------------------------------------------------------------------
-        # 1. Deletion Check
-        is_delete_req = any(k in act_lower or k in args_str for k in self.DESTRUCTIVE_KEYWORDS)
-        if is_delete_req:
-            can_delete = getattr(authority, "can_delete_files", False)
-            if not can_delete:
+        # Nếu là công cụ quan sát/đọc (Observation / Search / Read), không chặn bởi từ khóa tìm kiếm
+        if not self._is_observation_tool(action):
+            # A. Deletion Check
+            is_delete_req = any(k in act_lower for k in self.DESTRUCTIVE_KEYWORDS) or any(k in args_str for k in ["delete_file", "remove_file", "rmdir", "unlink"])
+            if is_delete_req and not can_delete:
                 logger.info(f"Execution HARD DENIED for action={action}: can_delete_files=False.")
                 return ExecutionDecision(
                     outcome=DecisionOutcome.DENY,
-                    reason="HARD BOUNDARY DENIAL: DecisionAuthority forbids file deletion (can_delete_files=False).",
+                    reason="HARD BOUNDARY DENIAL: PolicySnapshot forbids file deletion (can_delete_files=False).",
                     action=action
                 )
 
-        # 2. External Communication Check
-        is_comm_req = any(k in act_lower or k in args_str for k in self.EXTERNAL_COMM_KEYWORDS)
-        if is_comm_req:
-            can_send = getattr(authority, "can_send_external_message", False)
-            if not can_send:
+            # B. External Communication Check
+            is_comm_req = any(k in act_lower for k in self.EXTERNAL_COMM_KEYWORDS)
+            if is_comm_req and not can_send:
                 logger.info(f"Execution HARD DENIED for action={action}: can_send_external_message=False.")
                 return ExecutionDecision(
                     outcome=DecisionOutcome.DENY,
-                    reason="HARD BOUNDARY DENIAL: DecisionAuthority forbids external communication (can_send_external_message=False).",
+                    reason="HARD BOUNDARY DENIAL: PolicySnapshot forbids external communication (can_send_external_message=False).",
                     action=action
                 )
 
-        # 3. Modification Check
+        # C. Modification Check
         is_modify_req = any(k in act_lower for k in self.MODIFY_KEYWORDS)
-        if is_modify_req:
-            can_mod = getattr(authority, "can_modify_files", True)
-            if not can_mod:
-                logger.info(f"Execution HARD DENIED for action={action}: can_modify_files=False.")
-                return ExecutionDecision(
-                    outcome=DecisionOutcome.DENY,
-                    reason="HARD BOUNDARY DENIAL: DecisionAuthority forbids file modification (can_modify_files=False).",
-                    action=action
-                )
-
-        # 4. Arbitrary Python / Code Execution Check (v26.2 Default-Deny)
-        is_python_req = any(k in act_lower for k in self.PYTHON_EXECUTE_KEYWORDS)
-        if is_python_req:
-            logger.info(f"Execution HARD DENIED for action={action}: Arbitrary Python execution is disabled in v26.2.")
+        if is_modify_req and not can_modify:
+            logger.info(f"Execution HARD DENIED for action={action}: can_modify_files=False.")
             return ExecutionDecision(
                 outcome=DecisionOutcome.DENY,
-                reason="HARD BOUNDARY DENIAL: Arbitrary Python code execution is disabled in v26.2 (Default-Deny meta-capability).",
+                reason="HARD BOUNDARY DENIAL: PolicySnapshot forbids file modification (can_modify_files=False).",
+                action=action
+            )
+
+        # D. Arbitrary Python / Code Execution Check
+        is_python_req = any(k in act_lower for k in self.PYTHON_EXECUTE_KEYWORDS)
+        if is_python_req and not can_shell:
+            logger.info(f"Execution HARD DENIED for action={action}: can_execute_shell=False.")
+            return ExecutionDecision(
+                outcome=DecisionOutcome.DENY,
+                reason="HARD BOUNDARY DENIAL: Arbitrary execution is disabled under current PolicySnapshot.",
                 action=action
             )
 
         # ---------------------------------------------------------------------
-        # FORBIDDEN ACTIONS CHECK (Contract Level)
+        # 3. FORBIDDEN ACTIONS CHECK
         # ---------------------------------------------------------------------
-        forbidden = getattr(task_contract, "forbidden_actions", [])
+        forbidden = list(getattr(effective_snapshot, "forbidden_actions", []) or [])
+        if task_contract:
+            forbidden.extend(getattr(task_contract, "forbidden_actions", []) or [])
         for forb in forbidden:
             if forb.lower() in act_lower or forb.lower() in args_str:
                 return ExecutionDecision(
@@ -188,13 +223,12 @@ class ExecutionIntegrityLayer:
                 )
 
         # ---------------------------------------------------------------------
-        # RISK ASSESSMENT & HUMAN APPROVAL GATE INTERRUPT
+        # 4. RISK ASSESSMENT & HUMAN APPROVAL GATE INTERRUPT
         # ---------------------------------------------------------------------
         target_path = args.get("file_path", args.get("TargetFile", args.get("path", "")))
         requires_approval, gate_reason = eval_tool_risk(action, args)
 
         if requires_approval:
-            # Escalates to Human Approval Gate (HITL)
             interrupt_id = str(uuid.uuid4())
             interrupt = create_approval_interrupt(
                 task_id=self.mission_id,
@@ -214,10 +248,19 @@ class ExecutionIntegrityLayer:
             )
 
         # ---------------------------------------------------------------------
-        # ALLOW EXECUTION
+        # 5. ALLOW EXECUTION & ISSUE SIGNED EXECUTION GRANT
         # ---------------------------------------------------------------------
+        snap_id = getattr(effective_snapshot, "snapshot_id", "snap_default")
+        grant = issue_execution_grant(
+            mission_id=self.mission_id,
+            snapshot_id=snap_id,
+            tool_name=action,
+            tool_args=args,
+            ttl_seconds=300.0
+        )
         return ExecutionDecision(
             outcome=DecisionOutcome.ALLOW,
-            reason="Execution authorized by Execution Integrity Layer.",
-            action=action
+            reason="Execution authorized by Execution Integrity Layer with signed grant.",
+            action=action,
+            grant=grant.to_dict()
         )

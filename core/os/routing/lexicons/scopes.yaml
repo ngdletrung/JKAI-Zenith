@@ -1,0 +1,126 @@
+# 🏛️ JKAI DEMS — DYNAMIC SCOPE LEXICON (scopes.yaml)
+# Cho phép Master và Hệ thống mở rộng / cập nhật từ vựng phân loại Scope mà không cần sửa code.
+
+scopes:
+  POLITICS:
+    description: "Chính trị, Ngoại giao, Chiến sự & Địa chính trị Quốc tế"
+    applicability_to_world_news: 0.95
+    keywords:
+      - "tổng thống"
+      - "thủ tướng"
+      - "chính phủ"
+      - "chiến sự"
+      - "quân sự"
+      - "tập kích"
+      - "ngoại giao"
+      - "liên hợp quốc"
+      - "quốc tế"
+      - "chiến tranh"
+      - "quân đội"
+      - "xung đột"
+      - "thỏa thuận"
+      - "tấn công"
+      - "phòng thủ"
+      - "hòa đàm"
+      - "hội nghị thượng đỉnh"
+      - "nga"
+      - "ukraine"
+      - "mỹ"
+      - "trung quốc"
+      - "châu âu"
+      - "israel"
+      - "iran"
+      - "palestine"
+      - "nato"
+      - "bộ quốc phòng"
+      - "bộ ngoại giao"
+      - "lãnh đạo"
+      - "đại sứ"
+
+  ECONOMY:
+    description: "Kinh tế, Tài chính, Thị trường, Vĩ mô & Tiền tệ"
+    applicability_to_world_news: 0.70
+    keywords:
+      - "giá vàng"
+      - "vàng sjc"
+      - "chứng khoán"
+      - "cổ phiếu"
+      - "usd"
+      - "vnd"
+      - "tỷ giá"
+      - "lãi suất"
+      - "fed"
+      - "lạm phát"
+      - "gdp"
+      - "doanh nghiệp"
+      - "ngân hàng"
+      - "thị trường"
+      - "dầu mỏ"
+      - "bất động sản"
+      - "xuất khẩu"
+      - "nhập khẩu"
+      - "ngân sách"
+      - "fdi"
+      - "thương mại"
+
+  TECHNOLOGY:
+    description: "Công nghệ, Phần mềm, AI, Phần cứng & Nghiên cứu"
+    applicability_to_world_news: 0.50
+    keywords:
+      - "python"
+      - "docker"
+      - "kubernetes"
+      - "api"
+      - "database"
+      - "ai"
+      - "machine learning"
+      - "gpu"
+      - "cpu"
+      - "ram"
+      - "server"
+      - "bug"
+      - "refactor"
+      - "git"
+      - "linux"
+      - "windows"
+      - "chip bán dẫn"
+      - "vi xử lý"
+      - "công nghệ mới"
+
+  HEALTH_SCIENCE:
+    description: "Y tế, Sức khỏe, Y học & Khoa học Tự nhiên"
+    applicability_to_world_news: 0.60
+    keywords:
+      - "y tế"
+      - "bệnh viện"
+      - "vắc xin"
+      - "dịch bệnh"
+      - "who"
+      - "thuốc"
+      - "điều trị"
+      - "khoa học"
+      - "vũ trụ"
+      - "nasa"
+      - "thiên văn"
+      - "môi trường"
+      - "biến đổi khí hậu"
+
+  HOROSCOPE_NOISE:
+    description: "Tử vi, Bói toán, Cung hoàng đạo & Rác giải trí"
+    applicability_to_world_news: 0.01
+    is_noise: true
+    keywords:
+      - "tử vi"
+      - "con giáp"
+      - "cung hoàng đạo"
+      - "chiêm tinh"
+      - "bói toán"
+      - "lịch vạn niên"
+      - "ngày hoàng đạo"
+      - "giờ hoàng đạo"
+      - "phong thủy"
+      - "vận xui"
+      - "tài lộc hôm nay của 12"
+      - "quảng cáo"
+      - "xem thêm"
+      - "tin giật gân"

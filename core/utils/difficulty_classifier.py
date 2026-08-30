@@ -64,9 +64,10 @@ _TOOL_SIGNALS = [
     r"\btim kiem\b", r"\bsearch\b", r"\bgoogle\b",
     r"\bdoc\b", r"\bmo\b", r"\bchay\b", r"\brun\b",
     r"\bcheck\b", r"\bxem\b", r"\blist\b",
-    r"\btai\b", r"\bdownload\b", r"\bgui\b",
-    r"\btao\b", r"\bxoa\b", r"\bdelete\b",
+    r"\btai\b", r"\bdownload\b", r"\bgui\b", r"\bgoi\b",
+    r"\btao\b", r"\bxoa\b", r"\bdelete\b", r"\bxuat\b", r"\bluu\b",
     r"\bweb\b", r"\burl\b", r"\blink\b",
+    r"\bfile\b", r"\bword\b", r"\bdocx\b", r"\bexcel\b", r"\bxlsx\b", r"\bpdf\b",
 ]
 
 

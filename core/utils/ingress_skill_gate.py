@@ -58,8 +58,13 @@ def enrich_goal_with_deck(goal: str) -> Tuple[str, List[str], Optional[str]]:
         deck = SkillDeckIndex.get()
         refs = deck.parse_refs(goal)
         if not refs:
+            # Nếu là câu yêu cầu coding/math/chat thông thường, không cố gắng SSM auto-inject dossier
+            low_g = goal.lower()
+            if any(k in low_g for k in ["viết hàm", "viet ham", "tính", "tinh", "hôm nay", "soạn", "tạo file"]):
+                return goal, [], None
+
             try:
-                ssm = try_semantic_skill_match(goal, threshold=0.70)
+                ssm = try_semantic_skill_match(goal, threshold=0.88)
                 if ssm and ssm.get("status") == "success":
                     enriched = ssm.get("enriched_goal")
                     matched_refs = deck.parse_refs(enriched)
@@ -123,6 +128,11 @@ def try_semantic_skill_match(
     if any(k in goal_low for k in ["tính", "*", "+", "-", "/", "bằng mấy", "trình độ", "cấu hình", "bạn là ai", "chế độ fast", "active 3b", "vram", "rx 6600", "xeon", "bạn có thể", "mô hình"]):
         logger.debug("[INGRESS-SSM] Sovereign Reflex Bypass: skipping skill dossier injection.")
         return None
+
+    # 🏢 [OFFICE-PRECISION-ROUTING]: Nếu là yêu cầu tạo file Office (excel, word, pdf), ưu tiên OFFICE_SUITE_MASTER
+    if any(k in goal_low for k in ["excel", "xlsx", "word", "docx", "pdf", "bảng tính", "biểu đồ", "văn bản"]):
+        # Chặn tiêm các skill hội đồng/tư vấn chung
+        threshold = 0.85
 
     # Neu Master da chi dinh #NNNN tuong minh, tin tuong explicit ref
     if skip_if_has_deck_ref:

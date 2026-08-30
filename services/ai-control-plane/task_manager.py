@@ -552,9 +552,9 @@ class TaskManager:
             )
             
             if manifest.get("status") == "error" or "error" in manifest:
-                err_msg = manifest.get("error", "Lỗi nơ-ron không xác định.")
+                err_msg = manifest.get("error", "Lỗi xử lý không xác định.")
                 self._log("ERROR", f"[RECEPTIONIST-FAILED]: {err_msg} | manifest={json.dumps(manifest, ensure_ascii=False)[:500]}", tid, trid)
-                err_answer = f"[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: {err_msg})"
+                err_answer = f"[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: {err_msg})"
                 self._log("JKAI", err_answer, tid, trid)
                 try:
                     sc = get_session_context(get_redis)
@@ -575,10 +575,12 @@ class TaskManager:
                 except Exception:
                     pass
                 try:
-                    core._state = replace(
-                        core._state,
-                        goal=(core.state.goal or "") + f"\n\n[KẾT QUẢ]\n{ans_str[:8000]}",
-                    )
+                    # [P1-3]: I4 — original_goal immutable. Kết quả vào ExecutionState,
+                    # KHÔNG nối [KẾT QUẢ] vào goal (state contamination).
+                    from core.kernel.mission_state_separation import get_mission_state_store
+                    store = get_mission_state_store()
+                    store.ensure_mission(mission_mid or tid, goal)
+                    store.record_result(mission_mid or tid, ans_str)
                 except Exception:
                     pass
                 status = "completed"
@@ -705,9 +707,34 @@ class TaskManager:
 
         self._log("JKAI", final_ans, tid, trid)
         
-        # 🏢 [CORPORATE-GOVERNANCE]: Nghiệm thu kết quả
+        # 🏢 [CORPORATE-GOVERNANCE]: Nghiệm thu kết quả — EEC v2.0 gate-mediated
         core.transition(TaskState.COMMITTING, actor="OFFICE_ORCHESTRATOR", reason="Bàn giao báo cáo nghiệm thu kết quả lên phòng tổng hợp.")
         core.transition(TaskState.COMMITTED, actor="OFFICE_ORCHESTRATOR", reason="Báo cáo chính thức phê duyệt và lưu trữ vào biên niên sử doanh nghiệp.")
+        # [P2: COMPLETION AUTHORITY GATE — STRICT FAIL-CLOSED]
+        fast_context = manifest.get("context", {}) if isinstance(manifest, dict) else {}
+        _verdict = fast_context.get("_completion_verdict") if isinstance(fast_context, dict) else None
+        try:
+            from core.os.cognition.completion_authority import CompletionAuthority, CompletionWithoutProofError, VerdictBindingError
+            _prof = _pt(goal)
+            _prof_pol = getattr(_prof, "evidence_policy", None)
+            if isinstance(_prof_pol, str):
+                try:
+                    _policy = EvidencePolicy(_prof_pol)
+                except Exception:
+                    _policy = EvidencePolicy.REQUIRED if _prof.is_self_eval else EvidencePolicy.OPTIONAL
+            else:
+                _policy = _prof_pol or (EvidencePolicy.REQUIRED if _prof.is_self_eval else EvidencePolicy.OPTIONAL)
+
+            if _verdict is not None or _policy != EvidencePolicy.OPTIONAL:
+                if _verdict is None:
+                    # Mission with no verdict collected -> evaluate gate
+                    from core.os.cognition.completion_authority import gate_mediated_completion
+                    _verdict, _ = gate_mediated_completion(goal=goal, context=fast_context, policy=_policy, caller="FAST-PIPELINE", mission_id=tid)
+                CompletionAuthority.authorize(_verdict, _policy, context="FAST-PIPELINE", target_mission_id=tid)
+        except (CompletionWithoutProofError, VerdictBindingError) as _ca_err:
+            logger.error("[COMPLETION-AUTHORITY-FAIL-CLOSED] Strict Fail-Closed blocked transition: %s", _ca_err)
+            if _policy == EvidencePolicy.REQUIRED:
+                raise  # P2: STRICT FAIL-CLOSED — Block transition entirely
         core.transition(TaskState.COMPLETED, actor="OFFICE_ORCHESTRATOR", reason="Sứ mệnh hoàn thành xuất sắc nhiệm vụ phản xạ chớp nhoáng.", payload={"answer": final_ans})
 
         self._fire_and_forget(self._record_civilization_wisdom(core))
@@ -865,10 +892,34 @@ class TaskManager:
                 self._fire_and_forget(self.router.route_to_distill({"goal": goal, "task_id": tid}))
                 self._fire_and_forget(self.router.route_to_distill_judicial({"task_id": tid, "judicial_review": jr}))
 
-            final_ans = res.get("summary", "")
             async with w_lock:
                 core.transition(TaskState.COMMITTING, actor="CORPORATE_BOARD", reason="Chuyển giao toàn bộ tri thức đúc kết và bài học kinh nghiệm về Ban Nhân sự tập đoàn.")
                 core.transition(TaskState.COMMITTED, actor="CORPORATE_BOARD", reason="Cơ sở tri thức nòng cốt của tập đoàn chính thức cập nhật kinh nghiệm chiến dịch mới.")
+                try:
+                    # [P2/P5.3: COMPLETION AUTHORITY GATE — DEEP PATH FAIL-CLOSED WITH REAL EETS (G3 FIX)]
+                    from core.os.cognition.completion_authority import gate_mediated_completion, CompletionAuthority, CompletionWithoutProofError, VerdictBindingError
+                    from core.os.cognition.evidence_execution_contract import EvidencePolicy
+                    from core.os.cognition.task_profiler import profile_task as _pt
+                    _prof = _pt(goal)
+                    _prof_pol = getattr(_prof, "evidence_policy", None)
+                    if isinstance(_prof_pol, str):
+                        try:
+                            _policy = EvidencePolicy(_prof_pol)
+                        except Exception:
+                            _policy = EvidencePolicy.REQUIRED if _prof.is_self_eval else EvidencePolicy.OPTIONAL
+                    else:
+                        _policy = _prof_pol or (EvidencePolicy.REQUIRED if _prof.is_self_eval else EvidencePolicy.OPTIONAL)
+
+                    _deep_eets = [r["_eet"] for r in all_results if isinstance(r, dict) and "_eet" in r]
+                    _deep_ctx = {"_eets": _deep_eets}
+                    _deep_verdict, _ = gate_mediated_completion(
+                        goal=goal, context=_deep_ctx, policy=_policy, caller="DEEP-PIPELINE", mission_id=tid
+                    )
+                    CompletionAuthority.authorize(_deep_verdict, _policy, context="DEEP-PIPELINE", target_mission_id=tid)
+                except (CompletionWithoutProofError, VerdictBindingError) as _ca_err:
+                    logger.error("[COMPLETION-AUTHORITY-DEEP-FAIL-CLOSED] Strict Fail-Closed blocked transition: %s", _ca_err)
+                    if _policy == EvidencePolicy.REQUIRED:
+                        raise  # P2: STRICT FAIL-CLOSED — Block transition entirely
                 core.transition(TaskState.COMPLETED, actor="CORPORATE_BOARD", reason="Đại chiến dịch hoàn thành xuất sắc sứ mệnh tầm vĩ mô.", payload={"answer": final_ans})
                 
             self._log("JKAI", final_ans, tid, trid)
@@ -1061,6 +1112,50 @@ class TaskManager:
             del active_paths[sid]
 
         ok = isinstance(res, dict) and res.get("status") != "error"
+        # ── [P5.3 G3 FIX: DEEP PIPELINE EET SYNTHESIS] ──────────────────────────
+        try:
+            from core.os.cognition.evidence_execution_contract import EvidenceExecutionTrace, CapabilityDimension
+            from core.os.cognition.auto_verifier import auto_verify
+
+            obs_str = res.get("output") or res.get("answer") or res.get("msg") or str(res)
+            if isinstance(obs_str, dict):
+                obs_str = json.dumps(obs_str, ensure_ascii=False)
+            else:
+                obs_str = str(obs_str)
+
+            eet = EvidenceExecutionTrace(
+                eet_id=f"DEEP-{sid}",
+                capability_under_test=CapabilityDimension.TOOL_FILE_ACTUATION,
+                test_proposition=f"Execution of step {sid} with tool {tool}",
+                expected_observation=step.get("description", tool or "action"),
+            )
+            eet.attach_action(
+                tool_name=tool or "unknown",
+                input_args=args if isinstance(args, dict) else {},
+                mission_id=tid,
+                task_id=tid,
+            )
+            eet.attach_observation(returncode=0 if ok else 1, stdout=obs_str, output_bytes=len(obs_str.encode("utf-8")))
+
+            av_res = auto_verify(tool_name=tool or "unknown", tool_args=args if isinstance(args, dict) else {}, obs=obs_str)
+            if av_res.skip_verification:
+                eet.attach_verification(verifier_type=av_res.verifier_type, passed=True, details=av_res.details, is_independent=False)
+            else:
+                eet.attach_verification(
+                    verifier_type=av_res.verifier_type,
+                    passed=av_res.passed if av_res.passed is not None else False,
+                    details=av_res.details,
+                    is_independent=(getattr(av_res.independence_class, "value", "") == "STRONG"),
+                )
+
+            eet.synthesize_evidence(mission_id=tid, task_id=tid, trace_id=trid, invocation_id=f"DEEP-{sid}")
+
+            if isinstance(res, dict):
+                res["_eet"] = eet
+        except Exception as _deep_eet_err:
+            logger.debug("[DEEP-EET-SYNTHESIS] Skip EET for step %s: %s", sid, _deep_eet_err)
+        # ──────────────────────────────────────────────────────────────────────
+
         async with w_lock:
             if ok:
                 breaker.record_success()

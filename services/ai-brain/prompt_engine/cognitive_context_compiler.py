@@ -68,7 +68,7 @@ class CognitiveContextCompiler:
         # 1. Identity Section
         identity_sec = (
             "<identity source=\"system_kernel\">\n"
-            "  runtime = JKAI Zenith OS v43.0\n"
+            "  runtime = JKAI Zenith OS v47.0\n"
             f"  role = {role.upper()}\n"
             f"  cognitive_mode = {cognitive_mode.upper()}\n"
             "</identity>"

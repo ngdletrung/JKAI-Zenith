@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist, devtools } from 'zustand/middleware';
 
 export type AgentStatus = 'idle' | 'running' | 'paused' | 'error';
-export type CognitiveMode = 'auto' | 'fast' | 'deep';
+export type CognitiveMode = 'fast' | 'deep';
 export type RightTab = 'progress' | 'plan' | 'tasks' | 'walkthrough' | 'explorer' | 'changes' | 'logs' | 'terminal' | 'filelab' | 'connections';
 export type StreamView = 'chat' | 'process' | 'full';
 
@@ -449,7 +449,10 @@ export const useZenithStore = create<ZenithState>()(
         setStopping: (isStopping) => set(s => ({ ...s, isStopping })),
         setBooting: (isBooting) => set(s => ({ ...s, isBooting })),
         setPaused: (isPaused) => set(s => ({ ...s, isPaused })),
-        setMode: (cognitiveMode) => set(s => ({ ...s, cognitiveMode })),
+        setMode: (cognitiveMode) => {
+          const sanitized: CognitiveMode = (cognitiveMode === 'deep' ? 'deep' : 'fast');
+          set(s => ({ ...s, cognitiveMode: sanitized }));
+        },
         setFiles: (attachedFiles) => set(s => ({ ...s, attachedFiles })),
         addLog: (log, target = 'operational') => set((s) => {
           if (!log.msg || log.msg.trim() === '') return s;
@@ -959,12 +962,21 @@ export const useZenithStore = create<ZenithState>()(
         
         setBackgroundProposals: (proposals) => set(s => {
           const uniqueMap = new Map();
-          (proposals || []).forEach(p => { if (p && p.id) uniqueMap.set(p.id, p); });
+          const seenFp = new Set();
+          (proposals || []).forEach(p => {
+            if (!p || !p.id) return;
+            const fp = `${p.task_id}|${p.proposal_type}|${p.title}`;
+            if (seenFp.has(fp)) return;
+            seenFp.add(fp);
+            uniqueMap.set(p.id, p);
+          });
           return { ...s, backgroundProposals: Array.from(uniqueMap.values()) };
         }),
         addBackgroundProposal: (proposal) => set(s => {
           if (!proposal || !proposal.id) return s;
           if (s.backgroundProposals.some(p => p.id === proposal.id)) return s;
+          const fp = `${proposal.task_id}|${proposal.proposal_type}|${proposal.title}`;
+          if (s.backgroundProposals.some(p => `${p.task_id}|${p.proposal_type}|${p.title}` === fp)) return s;
           return { ...s, backgroundProposals: [proposal, ...s.backgroundProposals] };
         }),
         removeBackgroundProposal: (id) => set(s => ({ 

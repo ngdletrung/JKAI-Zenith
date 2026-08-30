@@ -18,10 +18,12 @@ from __future__ import annotations
 
 import argparse
 import logging
+import pathlib
+import re
 import sys
 import time
 from dataclasses import dataclass, field
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Set
 
 from core.governor.hardware_monitor import HardwareMonitor, HardwareState
 from core.governor.model_capabilities import ExecutionProfile, ModelClass
@@ -135,6 +137,16 @@ class AMGBootstrap:
         if not snap.any_alive:
             raise RuntimeError("No Ollama endpoints available. Ensure Zenith_Guardian has started services.")
 
+        # Phase 0: Stale Model Purge (BEFORE portfolio build)
+        # Unload any resident model that is NOT in the allowed list from rule_hardware.md.
+        # This prevents stale models (e.g. old 30B from a previous config) from occupying
+        # RAM/VRAM alongside the new model matrix.
+        if not request.dry_run:
+            logger.info("[AMG-BOOT] Phase 0: Purging stale resident models...")
+            self._purge_stale_residents()
+        else:
+            logger.info("[AMG-BOOT] Phase 0: [DRY-RUN] Skipping stale model purge.")
+
         # Read Hardware
         hw_state = HardwareMonitor.get_state()
 
@@ -189,6 +201,131 @@ class AMGBootstrap:
             report.print_report()
 
         return report
+
+    # ------------------------------------------------------------------
+    # Phase 0 helpers: Stale Model Purge
+    # ------------------------------------------------------------------
+
+    @staticmethod
+    def _read_allowed_models_from_hardware_config() -> Set[str]:
+        """
+        Dynamically reads the Active Role Mapping table in rule_hardware.md and
+        returns the set of model names that have KEEP_ALIVE != 0 (i.e. they should
+        be permanently resident).
+
+        Only parses markdown table rows — never hardcodes model names.
+        Returns lowercase canonical names to enable case-insensitive matching.
+        """
+        hw_path = pathlib.Path(__file__).resolve().parents[2] / "intelligence" / "rule_hardware.md"
+        allowed: Set[str] = set()
+        if not hw_path.exists():
+            logger.warning(f"[AMG-BOOT/Phase0] rule_hardware.md not found at {hw_path}; skipping purge.")
+            return allowed
+
+        in_role_table = False
+        # Table header pattern: looks for "Role" column + "Active Model" column
+        header_re = re.compile(r"\|\s*Role\s*\|.*Active Model", re.IGNORECASE)
+        # Table row: | ROLE | model_name | ... | KEEP_ALIVE_VALUE | ... |
+        # Capture group 1 = model name, group 2 = keep_alive value (last occurrence near end)
+        row_re = re.compile(r"^\|\s*\*{0,2}[\w_]+\*{0,2}\s*\|\s*([^\|]+?)\s*\|(?:[^\|]*\|)*?\s*\*{0,2}(-?\d+)\*{0,2}\s*\|")
+
+        with hw_path.open(encoding="utf-8") as f:
+            for line in f:
+                line = line.rstrip()
+                if not in_role_table:
+                    if header_re.search(line):
+                        in_role_table = True
+                    continue
+
+                # Stop when we exit the table (blank line or non-table line)
+                if not line.startswith("|"):
+                    in_role_table = False
+                    continue
+
+                # Skip separator rows like |---|---|
+                if re.match(r"^\|\s*[-: ]+\|", line):
+                    continue
+
+                m = row_re.match(line)
+                if m:
+                    model_raw = m.group(1).strip().strip("*")
+                    keep_alive_raw = m.group(2).strip().strip("*")
+                    # keep_alive == 0 means "load on demand / don't keep"; skip these
+                    try:
+                        ka = int(keep_alive_raw)
+                    except ValueError:
+                        ka = -1  # assume persistent if unparseable
+
+                    # Skip placeholder / non-Ollama model names (no colon = likely external service)
+                    if model_raw.lower() in ("", "auto") or ka == 0:
+                        continue
+
+                    allowed.add(model_raw)
+                    logger.debug(f"[AMG-BOOT/Phase0] Allowed model from config: {model_raw!r} (keep_alive={ka})")
+
+        logger.info(f"[AMG-BOOT/Phase0] Allowed resident models ({len(allowed)}): {sorted(allowed)}")
+        return allowed
+
+    def _purge_stale_residents(self) -> None:
+        """
+        Queries /api/ps on both GPU and CPU hosts, then unloads any resident model
+        whose name does NOT appear in the allowed list from rule_hardware.md.
+
+        Uses ModelLifecycleManager.unload(ResidentModel) — never raw HTTP strings.
+        """
+        allowed = self._read_allowed_models_from_hardware_config()
+        if not allowed:
+            logger.info("[AMG-BOOT/Phase0] No allowed model list available; skipping purge.")
+            return
+
+        hosts_to_check = [
+            (self.gpu_host, "GPU"),
+            (self.cpu_host, "CPU"),
+        ]
+
+        total_purged = 0
+        for host, label in hosts_to_check:
+            residents = self.discovery.get_resident_models(host)
+            if not residents:
+                logger.info(f"[AMG-BOOT/Phase0] {label} ({host}): no resident models, nothing to purge.")
+                continue
+
+            for resident in residents:
+                resident_name = resident.name
+                # Check if this resident is in the allowed set (case-insensitive, also check base name)
+                is_allowed = (
+                    resident_name in allowed
+                    or resident_name.lower() in {a.lower() for a in allowed}
+                    or any(
+                        resident_name.lower().startswith(a.lower().split(":")[0])
+                        and ":"  in a
+                        and resident_name.split(":")[-1] == a.split(":")[-1]
+                        for a in allowed
+                    )
+                )
+                if is_allowed:
+                    logger.info(f"[AMG-BOOT/Phase0] ✓ KEEP  {resident_name!r} on {label} — in allowed list.")
+                    continue
+
+                # Stale model: unload it
+                size_gb = round((resident.size_vram_mb + resident.size_ram_mb) / 1024, 2)
+                logger.warning(
+                    f"[AMG-BOOT/Phase0] 🗑️  PURGE {resident_name!r} on {label} "
+                    f"(~{size_gb:.1f}GB) — NOT in allowed config."
+                )
+                result = self.lifecycle.unload(resident, host=host)
+                if result.success:
+                    logger.info(
+                        f"[AMG-BOOT/Phase0] ✅ Purged {resident_name!r} "
+                        f"({result.elapsed_ms:.0f}ms, freed ~{size_gb:.1f}GB)"
+                    )
+                    total_purged += 1
+                else:
+                    logger.error(
+                        f"[AMG-BOOT/Phase0] ❌ Failed to purge {resident_name!r}: {result.error}"
+                    )
+
+        logger.info(f"[AMG-BOOT/Phase0] Purge complete. {total_purged} stale model(s) unloaded.")
 
     @classmethod
     def _make_decisions(

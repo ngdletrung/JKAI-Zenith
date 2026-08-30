@@ -941,19 +941,21 @@ class JKAIIntelligenceEngine:
         Tích hợp [DYNAMIC KEEP-ALIVE] & [COGNITIVE PROFILE].
         Hỗ trợ [NATIVE TOOL CALLING] (Function Calling).
         """
-        # [MICROSERVICE-ROUTING]: Central multi-tier routing protocol
-        # [SELF-AWARENESS]: Direct cognitive bypass for core brain services (Giữ toàn bộ vai trò Tư duy/Kế hoạch/Pháo đài xử lý tại chỗ trong ai-brain)
-        if self.is_brain_service and role not in ['EXECUTOR', 'EXECUTOR_ALPHA', 'EXECUTOR_BETA']:
-            services = []
+        # [MICROSERVICE-ROUTING]: Định tuyến chuẩn xác theo vai trò (Role-Based Microservice Synapse)
+        # Chỉ chuyển hướng sang EXECUTOR container khi role thực sự là EXECUTOR hoặc CODE_EXECUTOR
+        # Tất cả các role Tư duy / Lễ tân / Kế hoạch / Phân tích (RECEPTIONIST, PLANNER, SUMMARIZER, CRITIC, VISION...)
+        # nếu đang ở ai-brain HOẶC target là brain, PHẢI xử lý trực tiếp tại chỗ (Local Execution)
+        _is_executor_role = role in ['EXECUTOR', 'EXECUTOR_ALPHA', 'EXECUTOR_BETA']
+        if self.is_brain_service:
+            services = [(self.executor_url, "EXECUTOR")] if _is_executor_role else []
+        elif _is_executor_role:
+            services = [(self.executor_url, "EXECUTOR")]
         else:
-            services = [
-                (self.executor_url, "EXECUTOR"),
-                (self.planner_url, "PLANNER"),
-                (self.brain_url, "BRAIN")
-            ]
-        
+            # Nếu đang ở service khác (ví dụ control-plane) và cần gọi não bộ
+            services = [(self.brain_url, "BRAIN")]
+
         for service_url, service_name in services:
-            # If current service, stop redirecting and process locally
+            # If current service or loopback to brain when we are brain, stop redirecting and process locally
             if service_url == self.current_service_url or (self.is_brain_service and service_name == "BRAIN"):
                 break 
                 
@@ -1046,7 +1048,9 @@ class JKAIIntelligenceEngine:
                     if vector:
                         memories = await qdrant_client.search_similar(vector, limit=3)
                         if memories:
-                            mem_text = "\n".join([f"- {m.get('payload', {}).get('text', '')}" for m in memories])
+                            mem_text = "\n".join([f"- {m.get('payload', {}).get('text', '')}" for m in memories if m.get('payload', {}).get('text')])
+                            if len(mem_text) > 1500:
+                                mem_text = mem_text[:1500] + "\n... [Đã tóm lược ký ức]"
                             memory_context = mem_text
                             self._publish_thought(role, "[OMNIPRESENT]: Đã nạp di sản tri thức từ Qdrant .", task_id)
             except Exception: pass
@@ -1076,6 +1080,8 @@ class JKAIIntelligenceEngine:
                 pass
         elif memory_context:
             # Still inject memory without overwriting the caller's custom system prompt
+            if len(memory_context) > 1500:
+                memory_context = memory_context[:1500] + "\n... [Đã tóm lược ký ức]"
             mem_block = f"\n\n<memory>\n{memory_context}\n</memory>"
             if messages and messages[0].get("role") == "system":
                 messages[0]["content"] += mem_block
@@ -1137,33 +1143,10 @@ class JKAIIntelligenceEngine:
                     except Exception as fb_err:
                         break
 
-            # Estimate context length to auto-route long context queries to Gemini
-            # Vietnamese + code tokenizes denser than English (~3 chars/token, not 4)
+            # [COGNITIVE-CONTEXT-SOVEREIGNTY]: Context is compiled into clean Evidence Packs by Context Compiler (P0-9).
+            # No automatic forced cloud switching based on context length. Model selection belongs exclusively to Governor.
             total_chars = sum(len(m.get('content', '')) for m in messages)
             estimated_tokens = total_chars // 3
-
-            configs = self.load_software_rules()
-            gemini_key = configs.get('gemini', {}).get('api_key')
-
-            # [COST-GOVERNOR]: Route to Gemini only when context truly exceeds local capacity (>8000 tokens)
-            if estimated_tokens > 8000 and gemini_key and not any(final_model.lower().startswith(p) for p in ['gemini-', 'gpt-', 'claude-']):
-                if attempt > 0 and forced_cloud:
-                    self.publish_mission_log("ERROR", f"Ngữ cảnh quá lớn ({estimated_tokens} tokens) nhưng Cloud API đã thất bại. Hủy bỏ để bảo vệ hệ thống.", task_id)
-                    return "Error: Context too large and Cloud Fallback API failed. Task aborted."
-                
-                if ledger.cloud_calls_made >= budget.max_cloud_calls:
-                    self.publish_mission_log("WARN", f"[COST-GOVERNOR] Đã đạt giới hạn cloud calls ({budget.max_cloud_calls}). Giữ local.", task_id)
-                elif ledger.estimated_cost_usd >= budget.max_cloud_cost_usd:
-                    self.publish_mission_log("WARN", f"[COST-GOVERNOR] Đã vượt ngân sách cloud (${budget.max_cloud_cost_usd}). Giữ local.", task_id)
-                else:
-                    self.publish_mission_log("INFO", f"Ngữ cảnh lớn ({estimated_tokens} tokens). Chuyển hướng sang Gemini.")
-                    # Sửa lại model name cho đúng chuẩn API Google
-                    final_model = "models/gemini-3.5-flash"
-                    forced_cloud = True
-                    ledger.cloud_calls_made += 1
-                    ledger.estimated_cost_usd += 0.01
-                    if ledger.cloud_calls_made >= budget.max_cloud_calls or ledger.estimated_cost_usd >= budget.max_cloud_cost_usd:
-                        ledger.exceeded = True
                 
             # Determine if it is a cloud model
             cloud_provider = None
@@ -1191,6 +1174,8 @@ class JKAIIntelligenceEngine:
                 is_cloud = True
 
             if is_cloud:
+                software_rules = self.load_software_rules()
+                configs = software_rules.get("configs", {}) if isinstance(software_rules, dict) else {}
                 prov_cfg = configs.get(cloud_provider, {})
                 prov_key = prov_cfg.get('api_key')
                 prov_url = prov_cfg.get('base_url')
@@ -1242,8 +1227,16 @@ class JKAIIntelligenceEngine:
                 if 'use_mmap' not in final_options:
                     final_options['use_mmap'] = True
                 
-                # [NCNN-ESSENCE 3]: Force CPU thread limit directly in request options because Ollama ignores OLLAMA_NUM_THREAD environment variable.
-                final_options['num_thread'] = 10
+                # [EXACT-MATH-CPU-ALLOCATOR]: Tính chính xác số luồng AI theo công thức toán học:
+                # available = cpu_count_logical * (1 - cpu_load) - 4  (chừa 4 threads cho OS/Docker)
+                # Trần = Physical Cores (22 của Xeon E5-2699 v4) để tránh HyperThread cache contention.
+                base_th = int(final_options.get('num_thread') or role_cfg.get('num_thread') or 22)
+                try:
+                    from core.governor.hardware_monitor import HardwareMonitor
+                    hw_s = HardwareMonitor.get_state()
+                    final_options['num_thread'] = hw_s.get_dynamic_ai_threads(base_threads=base_th)
+                except Exception:
+                    final_options['num_thread'] = min(base_th, 22)
                 
             final_keep_alive = keep_alive or role_cfg.get('keep_alive', '5m')
             
@@ -1469,7 +1462,10 @@ class JKAIIntelligenceEngine:
                             req_headers = headers
                             req_payload = cloud_payload
                         else:
-                            req_url = f'{target_ollama_host}/api/chat'
+                            # 🏛️ [RUNTIME-ADAPTER-RESOLUTION]: Resolve target host via cached runtime adapter
+                            adapter = getattr(self, "runtime_adapters", {}).get("gpu" if is_gpu else "cpu")
+                            adapter_host = getattr(adapter, "_host", None) or getattr(adapter, "host", None) or target_ollama_host
+                            req_url = f'{adapter_host}/api/chat'
                             req_headers = None
                             req_payload = payload
                             
@@ -1492,193 +1488,179 @@ class JKAIIntelligenceEngine:
                                 custom_timeout = httpx.Timeout(600.0, connect=15.0, read=180.0)
 
                             
-                        async with client.stream('POST', req_url, headers=req_headers, json=req_payload, timeout=custom_timeout) as resp:
-                            if resp.status_code != 200:
-                                logger.error("[API-ERR] %s for %s", resp.status_code, final_model)
-                                err_body = await resp.aread() if hasattr(resp, 'aread') else b''
-                                err_text = err_body.decode('utf-8', errors='replace')[:300] if err_body else ''
-                                err_msg = f"Error: [API-ERR] Server/API trả về mã {resp.status_code}. {err_text}"
-                                
-                                # Detect tool support error to trigger manual react
-                                if ("support tools" in err_text.lower() or "too many tools" in err_text.lower()) and tools:
-                                    use_manual_react = True
-                                    # [RECOVERY-LOG]: Thông báo cho Master biết bối cảnh lỗi và cơ chế tự sửa
-                                    self._publish_thought(role, f"⚠️ Model không hỗ trợ Tools API ({resp.status_code}). Đang kích hoạt Giao thức ReAct Thủ công để tự phục hồi...", task_id)
-                                    # [SELF-HEALING]: Chuyển sang attempt tiếp theo ngay lập tức với use_manual_react=True
-                                    continue
-                                elif "not support image" in err_text.lower() or "does not support image" in err_text.lower() or "image input" in err_text.lower():
-                                    # 🖼️ [VISION-FALLBACK]: Model không hỗ trợ ảnh — bỏ ảnh và thử lại
-                                    if attempt < max_attempts - 1:
-                                        _fallback_msg = f"⚠️ Model '{final_model}' không hỗ trợ đọc ảnh. JKAI sẽ bỏ qua ảnh và xử lý nội dung text."
-                                        self._publish_thought(role, _fallback_msg, task_id)
-                                        images = None
-                                        for msg in messages:
-                                            msg.pop('images', None)
-                                        continue
-                                    else:
-                                        return f"❌ Model '{final_model}' không hỗ trợ đọc ảnh. Vui lòng dùng vision model (moondream, llava...) hoặc gửi yêu cầu không kèm ảnh."
-                                else:
-                                    self._publish_thought(role, err_msg, task_id)
+                        import uuid
+                        stream_id = f"stream_{uuid.uuid4().hex[:8]}"
 
-                                if attempt == max_attempts - 1:
-                                    return err_msg
-                                else:
-                                    raise httpx.HTTPStatusError(err_msg, request=resp.request, response=resp)
+                        async def _iter_stream_lines():
+                            if not is_cloud and adapter and hasattr(adapter, "generate_stream_full"):
+                                read_to = custom_timeout.read if hasattr(custom_timeout, 'read') else 180.0
+                                async for chunk_dict in adapter.generate_stream_full(req_payload, timeout=read_to):
+                                    yield chunk_dict
+                            else:
+                                async with client.stream('POST', req_url, headers=req_headers, json=req_payload, timeout=custom_timeout) as resp:
+                                    if resp.status_code != 200:
+                                        logger.error("[API-ERR] %s for %s", resp.status_code, final_model)
+                                        err_body = await resp.aread() if hasattr(resp, 'aread') else b''
+                                        err_text = err_body.decode('utf-8', errors='replace')[:300] if err_body else ''
+                                        err_msg = f"Error: [API-ERR] Server/API trả về mã {resp.status_code}. {err_text}"
+                                        raise httpx.HTTPStatusError(err_msg, request=resp.request, response=resp)
+                                    async for l in resp.aiter_lines():
+                                        yield l
 
-                            import uuid
-                            stream_id = f"stream_{uuid.uuid4().hex[:8]}"
-                            
-                            async for line in resp.aiter_lines():
-                                if not line: 
-                                    # Nhịp đập nơ-ron: Báo cáo nếu đang chờ quá lâu 
-                                    now = time.time()
-                                    if not first_token_received and now - waiting_start > 10.0:
-                                        self._publish_thought(role, "[STATUS]: Processing prompt context...", task_id)
-                                        waiting_start = now # Reset timer để không spam
-                                    continue
-                                
+                        async for line in _iter_stream_lines():
+                            if not line: 
+                                # Nhịp đập nơ-ron: Báo cáo nếu đang chờ quá lâu 
                                 now = time.time()
-                                if not first_token_received:
-                                    first_token_received = True
-                                    self._publish_thought(role, "[STATUS]: Streaming tokens initialized.", task_id)
-                                
-                                    last_signal_check = now
+                                if not first_token_received and now - waiting_start > 10.0:
+                                    self._publish_thought(role, "[STATUS]: Processing prompt context...", task_id)
+                                    waiting_start = now # Reset timer để không spam
+                                continue
+                            
+                            now = time.time()
+                            if not first_token_received:
+                                first_token_received = True
+                                self._publish_thought(role, "[STATUS]: Streaming tokens initialized.", task_id)
+                            
+                                last_signal_check = now
 
-                                # [SIGNAL-INTERRUPT]: Kiểm tra lệnh dừng khẩn cấp 
-                                if now - last_signal_check > 2.0:
-                                    last_signal_check = now
-                                    r = self._get_redis()
-                                    if r:
-                                        stop_sig = r.get("agent:stop_signal")
-                                        stop_sig_task = r.get(f"agent:stop_signal:{task_id}") if task_id else None
-                                        if stop_sig in [b'true', 'true'] or stop_sig_task in [b'true', 'true']:
-                                            self._publish_thought(role, "[SIGNAL]: Received termination signal. Stopping execution.", task_id)
-                                            raise MasterAbortException("Mission aborted by Master.")
+                            # [SIGNAL-INTERRUPT]: Kiểm tra lệnh dừng khẩn cấp 
+                            if now - last_signal_check > 2.0:
+                                last_signal_check = now
+                                r = self._get_redis()
+                                if r:
+                                    stop_sig = r.get("agent:stop_signal")
+                                    stop_sig_task = r.get(f"agent:stop_signal:{task_id}") if task_id else None
+                                    if stop_sig in [b'true', 'true'] or stop_sig_task in [b'true', 'true']:
+                                        self._publish_thought(role, "[SIGNAL]: Received termination signal. Stopping execution.", task_id)
+                                        raise MasterAbortException("Mission aborted by Master.")
 
-                                # [DEGENERATION CHECK]: Phát hiện vòng lặp vô tận 
-                                if len(full_content) > 1000 and len(set(full_content[-100:])) < 5:
-                                    self._publish_thought(role, "[WARNING]: Repetitive sequence detected. Stream terminated.", task_id)
-                                    break
+                            # [DEGENERATION CHECK]: Phát hiện vòng lặp vô tận 
+                            if len(full_content) > 1000 and len(set(full_content[-100:])) < 5:
+                                self._publish_thought(role, "[WARNING]: Repetitive sequence detected. Stream terminated.", task_id)
+                                break
 
-                                token = ""
-                                reasoning_token = ""
-                                
-                                if is_cloud:
-                                    if cloud_provider == 'anthropic':
-                                        if line.startswith("data: "):
-                                            line_data = line[6:].strip()
-                                            try:
-                                                chunk = json.loads(line_data)
-                                                if chunk.get('type') == 'content_block_delta':
-                                                    token = chunk.get('delta', {}).get('text', '')
-                                            except Exception: pass
-                                    else: # openai, gemini, deepseek
-                                        if line.startswith("data: "):
-                                            line_data = line[6:].strip()
-                                            if line_data == "[DONE]":
-                                                continue
-                                            try:
-                                                chunk = json.loads(line_data)
-                                                choices = chunk.get('choices', [])
-                                                if choices:
-                                                    delta = choices[0].get('delta', {})
-                                                    token = delta.get('content', '')
-                                                    reasoning_token = delta.get('reasoning_content', '')
-                                            except Exception: pass
+                            token = ""
+                            reasoning_token = ""
+                            
+                            if is_cloud:
+                                if cloud_provider == 'anthropic':
+                                    if line.startswith("data: "):
+                                        line_data = line[6:].strip()
+                                        try:
+                                            chunk = json.loads(line_data)
+                                            if chunk.get('type') == 'content_block_delta':
+                                                token = chunk.get('delta', {}).get('text', '')
+                                        except Exception: pass
+                                else: # openai, gemini, deepseek
+                                    if line.startswith("data: "):
+                                        line_data = line[6:].strip()
+                                        if line_data == "[DONE]":
+                                            continue
+                                        try:
+                                            chunk = json.loads(line_data)
+                                            choices = chunk.get('choices', [])
+                                            if choices:
+                                                delta = choices[0].get('delta', {})
+                                                token = delta.get('content', '')
+                                                reasoning_token = delta.get('reasoning_content', '')
+                                        except Exception: pass
+                            else:
+                                if isinstance(line, dict):
+                                    chunk = line
                                 else:
                                     try:
                                         chunk = json.loads(line)
                                     except Exception as je:
                                         logger.warning("[JSON-DECODE-WARN] Không thể giải mã dòng stream Ollama: '%s'. Lỗi: %s", line, je)
                                         continue
-                                    # 🖼️ [STREAM-VISION-CHECK]: Phát hiện lỗi ảnh trong stream
-                                    if 'error' in chunk:
-                                        err_stream = chunk['error']
-                                        if "not support image" in err_stream.lower() or "image input" in err_stream.lower():
-                                            _vis_stream_msg = f"Model '{final_model}' không hỗ trợ đọc ảnh. Vui lòng dùng vision model (moondream, llava...) hoặc gửi yêu cầu không kèm ảnh."
-                                            self._publish_thought(role, _vis_stream_msg, task_id)
-                                            return _vis_stream_msg
-                                        self._publish_thought(role, f"[STREAM-ERR] {err_stream}", task_id)
-                                        continue
-                                    if chunk.get('done') or 'error' in chunk:
-                                        logger.info("[OLLAMA CHUNK DONE/ERR] done_reason=%s | eval_count=%s | raw=%s", chunk.get('done_reason'), chunk.get('eval_count', 0), chunk)
-                                    msg_obj = chunk.get('message', {})
-                                    token = msg_obj.get('content', '')
-                                    reasoning_token = msg_obj.get('reasoning_content', '')
-                                    if 'tool_calls' in msg_obj and msg_obj['tool_calls']:
-                                        logger.info("[STREAM TOOL CALL FOUND] %s", msg_obj['tool_calls'])
-                                        # Ollama might send tool_calls in the chunk
-                                        for tc in msg_obj['tool_calls']:
-                                            if tc not in final_tool_calls:
-                                                final_tool_calls.append(tc)
+                                # 🖼️ [STREAM-VISION-CHECK]: Phát hiện lỗi ảnh trong stream
+                                if 'error' in chunk:
+                                    err_stream = chunk['error']
+                                    if "not support image" in err_stream.lower() or "image input" in err_stream.lower():
+                                        _vis_stream_msg = f"Model '{final_model}' không hỗ trợ đọc ảnh. Vui lòng dùng vision model (moondream, llava...) hoặc gửi yêu cầu không kèm ảnh."
+                                        self._publish_thought(role, _vis_stream_msg, task_id)
+                                        return _vis_stream_msg
+                                    self._publish_thought(role, f"[STREAM-ERR] {err_stream}", task_id)
+                                    continue
+                                if chunk.get('done') or 'error' in chunk:
+                                    logger.info("[OLLAMA CHUNK DONE/ERR] done_reason=%s | eval_count=%s | raw=%s", chunk.get('done_reason'), chunk.get('eval_count', 0), chunk)
+                                msg_obj = chunk.get('message', {})
+                                token = msg_obj.get('content', '')
+                                reasoning_token = msg_obj.get('reasoning_content', '')
+                                if 'tool_calls' in msg_obj and msg_obj['tool_calls']:
+                                    logger.info("[STREAM TOOL CALL FOUND] %s", msg_obj['tool_calls'])
+                                    # Ollama might send tool_calls in the chunk
+                                    for tc in msg_obj['tool_calls']:
+                                        if tc not in final_tool_calls:
+                                            final_tool_calls.append(tc)
+                            
+                            # [UNIFIED REASONING ENGINE]: Xử lý cả reasoning_content và <think> tag 
+                            if reasoning_token:
+                                if not think_stream_id:
+                                    think_stream_id = f"think_{uuid.uuid4().hex[:8]}"
+                                    self._publish_thought(role, "[HỆ THỐNG]: Đang khởi động luồng tư duy sâu...", task_id)
+                                    last_log_time = time.time()
+                                thinking_content += reasoning_token
+                            
+                            if token:
+                                # [CHUNK-AGNOSTIC DETECTION]: Phát hiện thẻ <think> bất kể bị chia nhỏ 
+                                temp_buffer = (full_content + thinking_content + token)[-20:]
                                 
-                                # [UNIFIED REASONING ENGINE]: Xử lý cả reasoning_content và <think> tag 
-                                if reasoning_token:
-                                    if not think_stream_id:
-                                        think_stream_id = f"think_{uuid.uuid4().hex[:8]}"
-                                        self._publish_thought(role, "[HỆ THỐNG]: Đang khởi động luồng tư duy sâu...", task_id)
-                                        last_log_time = time.time()
-                                    thinking_content += reasoning_token
+                                if not is_thinking and '<think>' in temp_buffer:
+                                    is_thinking = True
+                                    think_stream_id = f"think_{uuid.uuid4().hex[:8]}"
+                                    self._publish_thought(role, "[HỆ THỐNG]: Đang khởi động luồng tư duy sâu...", task_id)
                                 
-                                if token:
-                                    # [CHUNK-AGNOSTIC DETECTION]: Phát hiện thẻ <think> bất kể bị chia nhỏ 
-                                    temp_buffer = (full_content + thinking_content + token)[-20:]
-                                    
-                                    if not is_thinking and '<think>' in temp_buffer:
-                                        is_thinking = True
-                                        think_stream_id = f"think_{uuid.uuid4().hex[:8]}"
-                                        self._publish_thought(role, "[HỆ THỐNG]: Đang khởi động luồng tư duy sâu...", task_id)
-                                    
-                                    if is_thinking and '</think>' in temp_buffer:
-                                        is_thinking = False
-                                        # Phát sóng toàn bộ tư duy khi kết thúc
-                                        self._publish_thought(role, f"[LUỒNG TƯ DUY NỘI TÂM]:\n{thinking_content}", task_id, stream_id=think_stream_id)
-                                    
-                                    if is_thinking:
-                                        thinking_content += token
-                                    else:
-                                        full_content += token
+                                if is_thinking and '</think>' in temp_buffer:
+                                    is_thinking = False
+                                    # Phát sóng toàn bộ tư duy khi kết thúc
+                                    self._publish_thought(role, f"[LUỒNG TƯ DUY NỘI TÂM]:\n{thinking_content}", task_id, stream_id=think_stream_id)
+                                
+                                if is_thinking:
+                                    thinking_content += token
+                                else:
+                                    full_content += token
 
-                                # Cap nhat soan thao van ban moi 50ms de tao hieu ung nhay chu muot ma thua Master
-                                if now - last_log_time > 0.05:
-                                    if (is_thinking or reasoning_token) and len(thinking_content) > last_published_thinking_len:
-                                        thinking_delta = thinking_content[last_published_thinking_len:]
-                                        if thinking_delta:
-                                            if is_first_thinking_chunk:
-                                                msg = f"[LUỒNG TƯ DUY NỘI TÂM]:\n{thinking_delta}"
-                                            else:
-                                                msg = thinking_delta
-                                            
-                                            if not think_stream_id:
-                                                think_stream_id = f"think_{uuid.uuid4().hex[:8]}"
-                                            
-                                            self._publish_thought(
-                                                role, 
-                                                msg, 
-                                                task_id, 
-                                                stream_id=think_stream_id, 
-                                                is_delta=True, 
-                                                is_first_chunk=is_first_thinking_chunk
-                                            )
-                                            
-                                            last_published_thinking_len = len(thinking_content)
-                                            is_first_thinking_chunk = False
-                                            last_log_time = now
-                                    elif not is_thinking and len(full_content) > last_published_len:
-                                        content_delta = full_content[last_published_len:]
-                                        if content_delta:
-                                            self._publish_thought(
-                                                role, 
-                                                content_delta, 
-                                                task_id, 
-                                                stream_id=stream_id, 
-                                                is_delta=True, 
-                                                is_first_chunk=is_first_chunk
-                                            )
-                                            
-                                            last_published_len = len(full_content)
-                                            is_first_chunk = False
-                                            last_log_time = now
+                            # Cap nhat soan thao van ban moi 50ms de tao hieu ung nhay chu muot ma thua Master
+                            if now - last_log_time > 0.05:
+                                if (is_thinking or reasoning_token) and len(thinking_content) > last_published_thinking_len:
+                                    thinking_delta = thinking_content[last_published_thinking_len:]
+                                    if thinking_delta:
+                                        if is_first_thinking_chunk:
+                                            msg = f"[LUỒNG TƯ DUY NỘI TÂM]:\n{thinking_delta}"
+                                        else:
+                                            msg = thinking_delta
+                                        
+                                        if not think_stream_id:
+                                            think_stream_id = f"think_{uuid.uuid4().hex[:8]}"
+                                        
+                                        self._publish_thought(
+                                            role, 
+                                            msg, 
+                                            task_id, 
+                                            stream_id=think_stream_id, 
+                                            is_delta=True, 
+                                            is_first_chunk=is_first_thinking_chunk
+                                        )
+                                        
+                                        last_published_thinking_len = len(thinking_content)
+                                        is_first_thinking_chunk = False
+                                        last_log_time = now
+                                elif not is_thinking and len(full_content) > last_published_len:
+                                    content_delta = full_content[last_published_len:]
+                                    if content_delta:
+                                        self._publish_thought(
+                                            role, 
+                                            content_delta, 
+                                            task_id, 
+                                            stream_id=stream_id, 
+                                            is_delta=True, 
+                                            is_first_chunk=is_first_chunk
+                                        )
+                                        
+                                        last_published_len = len(full_content)
+                                        is_first_chunk = False
+                                        last_log_time = now
 
                             # Gui tin hieu hoan tat (final non-delta flush) de dong bo day du va luu vao lich su thưa Master
                             if thinking_content.strip():
@@ -1836,10 +1818,12 @@ class JKAIIntelligenceEngine:
 
     def call_skill(self, skill_id, params, task_id="system"):
         """
-        ⚡ [SUPREME CALL]: Giao thức Triệu hồi Kỹ năng chuẩn v30.2.
-        Tìm kiếm và thực thi logic của kỹ năng dựa trên #ID.
+        [DEPRECATED / LEGACY-DEAD-CODE] 
+        Hàm giả lập cũ từ v30.2. Toàn bộ pipeline hiện đại (FAST/DEEP) 
+        đã chuyển sang thực thi qua ExecutorGateway (POST /execute) và ToolRouter.
+        Hàm này chỉ giữ lại để tránh ImportError cho các test/đặc vụ cũ.
         """
-        self._publish_thought("SKILL_CALL", f"Executing skill `{skill_id}`...", task_id)
+        self._publish_thought("SKILL_CALL", f"[LEGACY-CALL] Executing skill `{skill_id}` (mock)...", task_id)
         
         # 1. Tìm đường dẫn kỹ năng từ Registry (Giả lập tìm kiếm)
         skill_name_map = {
@@ -1852,14 +1836,13 @@ class JKAIIntelligenceEngine:
         
         skill_folder = skill_name_map.get(skill_id)
         if not skill_folder:
-            # Fallback: Trình trinh sát nơ-ron tìm kiếm thực tế
             self._publish_thought("WARN", f"Không tìm thấy mapping cho `{skill_id}`, kích hoạt Trinh sát nơ-ron...", task_id)
             return {"status": "failed", "msg": "Skill ID not mapped"}
 
-        # 2. Thực thi logic (Giả lập - Trong bản n8n sẽ gọi qua Webhook)
+        # 2. Thực thi logic (Giả lập)
         return {
             "status": "success", 
-            "output": f"Dữ liệu từ {skill_id} ({skill_folder}) đã được xử lý chuẩn Sovereign.",
+            "output": f"Dữ liệu từ {skill_id} ({skill_folder}) đã được xử lý chuẩn Sovereign (Legacy Mock).",
             "skill": skill_folder
         }
 

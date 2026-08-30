@@ -1,14 +1,19 @@
-# [ZENITH FILE DIRECTIVE]
-# - File: services/ai-brain/context/entity_resolver.py
-# - Role: Entity and Anaphora Resolver bridged to Mission State v2
-# - Ownership: Mr LeeTrung
-# - Status: Active | Version: ZenithOS v2.0 (Integrated)
+# -*- coding: utf-8 -*-
+"""
+╔══════════════════════════════════════════════════════════════════╗
+║   JKAI ZENITH — ENTITY & TOPIC SHIFT RESOLVER v3.0               ║
+║   Đa Tầng Chủ Đề (Topic Stack), Khôi Phục Ngữ Cảnh & Đại Từ      ║
+╚══════════════════════════════════════════════════════════════════╝
+*Kiến Trúc Sư Trưởng Chủ Động Tối Ưu Hóa Ngữ Cảnh Đàm Thoại Đa Lượt. 🧠🧬✨*
+"""
 
 import re
-from typing import Optional
+import logging
+from typing import Optional, List, Dict, Tuple
 
-# Import Zenith OS v2 resolver
 from mission_state import EntityResolver as EntityResolverV2
+
+logger = logging.getLogger("JKAI.EntityResolver")
 
 _VIETNAMESE_STRIP = str.maketrans({
     'à': 'a', 'á': 'a', 'ạ': 'a', 'ả': 'a', 'ã': 'a',
@@ -62,39 +67,88 @@ _ANAPHORA_NODIA = [
 
 
 class EntityResolver:
+    """
+    🧠 Bộ Giải Quyết Thực Thể & Chuyển Đổi Chủ Đề (Topic Shift Resolver) v3.0
+    """
     def __init__(self):
         self.v2_resolver = EntityResolverV2()
+        self.topic_stack: List[str] = []
 
     @staticmethod
     def _strip_diacritics(text: str) -> str:
         return text.lower().translate(_VIETNAMESE_STRIP)
 
+    def push_topic(self, topic: str) -> None:
+        """Đẩy một chủ đề mới vào Topic Stack (tối đa 5 chủ đề)."""
+        clean_t = topic.strip()
+        if clean_t and clean_t not in self.topic_stack:
+            self.topic_stack.append(clean_t)
+            if len(self.topic_stack) > 5:
+                self.topic_stack.pop(0)
+
+    def detect_topic_resumption(self, query: str) -> Optional[str]:
+        """
+        Nhận diện khi Master muốn quay lại một chủ đề cũ trong Stack.
+        Ví dụ: "quay lại cái bảng lương lúc nãy", "tiếp tục file docx"
+        """
+        q_norm = self._strip_diacritics(query)
+        if any(w in q_norm for w in ["quay lai", "tiep tuc", "quay ve", "cai luc nay", "file vua roi", "chu de cu"]):
+            for top in reversed(self.topic_stack):
+                top_norm = self._strip_diacritics(top)
+                # Tìm xem có từ khóa nào của top nằm trong query không
+                top_words = [w for w in top_norm.split() if len(w) > 2]
+                if any(w in q_norm for w in top_words):
+                    return top
+            # Nếu không tìm thấy tên cụ thể, lấy chủ đề gần nhất trước đó
+            if len(self.topic_stack) >= 2:
+                return self.topic_stack[-2]
+        return None
+
     def resolve(self, query: str, last_subject: str = "", last_query: str = "") -> str:
-        # Utilize v2 Resolver with active entity stack pattern
-        if last_subject:
-            mock_stack = [{"entity": last_subject, "confidence": 0.9}]
+        # 0. DEMS Multi-Turn Coreference Resolution (EntityStack)
+        from core.os.cognition.entity_stack import get_entity_stack
+        stack = get_entity_stack()
+        coref_resolved = stack.resolve_coreference(query)
+        if coref_resolved != query:
+            logger.info(f"🧠 [DEMS-COREF]: Coreference resolved '{query}' -> '{coref_resolved}'")
+            return coref_resolved
+
+        # 1. Kiểm tra khôi phục chủ đề cũ (Topic Resumption)
+        resumed = self.detect_topic_resumption(query)
+        if resumed:
+            logger.info(f"🔄 [TOPIC-RESUME]: Khôi phục chủ đề '{resumed}' cho câu hỏi: '{query}'.")
+            return f"[{resumed}] {query}"
+
+        # 2. Utilize v2 Resolver with active entity stack pattern
+        effective_subject = last_subject or (self.topic_stack[-1] if self.topic_stack else "")
+        if effective_subject:
+            mock_stack = [{"entity": effective_subject, "confidence": 0.9}]
             resolved, conf = self.v2_resolver.resolve(query, mock_stack)
             if resolved and conf > 0.6:
                 return resolved
 
-        # Fallback to legacy regex heuristics if v2 didn't trigger
-        if not last_subject:
+        # 3. Fallback to legacy regex heuristics if v2 didn't trigger
+        if not effective_subject:
             return query
+
         query_lower = query.lower()
         needs_resolution = False
         for pattern, _ in _ANAPHORA_PATTERNS:
             if re.search(pattern, query_lower):
                 needs_resolution = True
                 break
+
         if not needs_resolution:
             query_nodia = self._strip_diacritics(query)
             for pattern, _ in _ANAPHORA_NODIA:
                 if re.search(pattern, query_nodia):
                     needs_resolution = True
                     break
+
         if not needs_resolution:
             return query
-        expanded = f"{last_subject} {query}"
+
+        expanded = f"{effective_subject} {query}"
         return expanded
 
     def extract_subject(self, query: str, answer: str = "") -> str:
@@ -107,17 +161,28 @@ class EntityResolver:
             r"chứng (khoán|khoan) (\w+)",
             r"l(ãi|ai) su(ất|at) (\w+)",
             r"cổ (phiếu|phieu) (\w+)",
+            r"b(ả|a|à|á|ạ)ng (lương|luong|tính|tinh|chấm công|cham cong)",
+            r"b(á|a|à|ạ|ả)o c(á|a|à|ạ|ả)o (doanh thu|tài chính|tiến độ)",
+            r"file (excel|word|pdf|docx|xlsx)"
         ]
         for p in patterns:
             m = re.search(p, q)
             if m:
-                return m.group(0)
+                subj = m.group(0)
+                self.push_topic(subj)
+                return subj
+
         if answer:
             a_lower = answer.lower()
-            nouns = re.findall(r"\b(giá|vàng|thế giới|chứng khoán|tỷ giá|lãi suất)\b", a_lower, re.IGNORECASE)
+            nouns = re.findall(r"\b(giá|vàng|thế giới|chứng khoán|tỷ giá|lãi suất|bảng lương|báo cáo)\b", a_lower, re.IGNORECASE)
             if nouns:
-                return " ".join(nouns[:3])
-        return q[:60]
+                subj = " ".join(nouns[:3])
+                self.push_topic(subj)
+                return subj
+
+        subj = q[:60]
+        self.push_topic(subj)
+        return subj
 
     def is_anaphora(self, query: str) -> bool:
         """Kiểm tra xem câu truy vấn có chứa đại từ thay thế (nó, cái đó, việc này...) hay không."""

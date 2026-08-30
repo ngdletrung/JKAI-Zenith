@@ -1,12 +1,15 @@
+# -*- coding: utf-8 -*-
 """
 ╔══════════════════════════════════════════════════════════════════╗
-║   JKAI ZENITH — CENTRAL TYPED WORLD MODEL                        ║
-║   Bản Đồ Thực Tại, Ngôn Ngữ Ràng Buộc DSL & Mô Phỏng Nhân Quả    ║
+║   JKAI ZENITH — CENTRAL TYPED WORLD MODEL v2.0                  ║
+║   Bản Đồ Thực Tại Động, Ngôn Ngữ Ràng Buộc DSL & Mô Phỏng Nhân Quả║
 ╚══════════════════════════════════════════════════════════════════╝
 *Thuộc Ban Quản Trị Mô Hình Thực Tại & Ràng Buộc Hệ Thống của JKAI. 🌌📐🗺️*
 """
 
+import os
 import copy
+import yaml
 import logging
 from enum import Enum
 from dataclasses import dataclass, field
@@ -16,11 +19,13 @@ from core.kernel.state_machine import TaskState
 
 logger = logging.getLogger("WorldModel")
 
+
 class NodeType(str, Enum):
     CONTAINER = "CONTAINER"  # Các Docker containers (redis, qdrant, postgres, n8n)
     FILE = "FILE"            # Các tệp tin mã nguồn cốt lõi
     PORT = "PORT"            # Các cổng mạng vật lý/logic
     DATABASE = "DATABASE"    # Kết nối cơ sở dữ liệu
+
 
 @dataclass
 class WorldNode:
@@ -29,17 +34,18 @@ class WorldNode:
     properties: Dict[str, Any] = field(default_factory=dict)
     status: str = "HEALTHY"
 
+
 @dataclass
 class WorldEdge:
     source_id: str
     target_id: str
-    relation_type: str # ví dụ: "RUNS_ON", "WRITES_TO", "CONNECTS_TO"
+    relation_type: str  # ví dụ: "RUNS_ON", "WRITES_TO", "CONNECTS_TO"
 
 
 class TypedWorldGraph:
     """
-    🗺️ [TYPED-WORLD-GRAPH]: Đồ thị Thực tại có Cấu trúc thưa Tổng Giám Đốc.
-    Lưu trữ cấu hình thực tế của hệ thống để so khớp chính xác ontology của mô hình.
+    🗺️ [TYPED-WORLD-GRAPH v2.0]: Đồ thị Thực tại Động (Dynamic World Graph).
+    Hỗ trợ nạp, cập nhật, xóa nút và cạnh thời gian thực.
     """
     def __init__(self):
         self.nodes: Dict[str, WorldNode] = {}
@@ -48,162 +54,282 @@ class TypedWorldGraph:
     def add_node(self, node_id: str, node_type: NodeType, properties: Dict[str, Any] = None, status: str = "HEALTHY"):
         self.nodes[node_id] = WorldNode(node_id=node_id, node_type=node_type, properties=properties or {}, status=status)
 
+    def update_node(self, node_id: str, properties: Optional[Dict[str, Any]] = None, status: Optional[str] = None) -> bool:
+        """Cập nhật thuộc tính hoặc trạng thái của một nút hiện hữu."""
+        node = self.nodes.get(node_id)
+        if node:
+            if properties:
+                node.properties.update(properties)
+            if status:
+                node.status = status
+            return True
+        return False
+
+    def remove_node(self, node_id: str) -> bool:
+        """Xóa một nút và tự động dọn dẹp toàn bộ các cạnh liên quan."""
+        if node_id in self.nodes:
+            del self.nodes[node_id]
+            self.edges = [e for e in self.edges if e.source_id != node_id and e.target_id != node_id]
+            return True
+        return False
+
     def add_edge(self, source_id: str, target_id: str, relation_type: str):
         if source_id in self.nodes and target_id in self.nodes:
+            # Tránh trùng lặp cạnh
+            for e in self.edges:
+                if e.source_id == source_id and e.target_id == target_id and e.relation_type == relation_type:
+                    return
             self.edges.append(WorldEdge(source_id=source_id, target_id=target_id, relation_type=relation_type))
+
+    def remove_edge(self, source_id: str, target_id: str, relation_type: str) -> bool:
+        """Xóa một cạnh cụ thể giữa hai nút."""
+        initial_len = len(self.edges)
+        self.edges = [
+            e for e in self.edges
+            if not (e.source_id == source_id and e.target_id == target_id and e.relation_type == relation_type)
+        ]
+        return len(self.edges) < initial_len
 
     def get_node(self, node_id: str) -> Optional[WorldNode]:
         return self.nodes.get(node_id)
 
     def get_neighbors(self, node_id: str) -> List[Tuple[WorldNode, str]]:
-        """ Trả về danh sách láng giềng và loại mối quan hệ thưa Master. """
+        """Trả về danh sách láng giềng và loại mối quan hệ."""
         neighbors = []
         for edge in self.edges:
-            if edge.source_id == node_id:
+            if edge.source_id == node_id and edge.target_id in self.nodes:
                 neighbors.append((self.nodes[edge.target_id], edge.relation_type))
-            elif edge.target_id == node_id:
+            elif edge.target_id == node_id and edge.source_id in self.nodes:
                 neighbors.append((self.nodes[edge.source_id], edge.relation_type))
         return neighbors
 
     def clone(self) -> 'TypedWorldGraph':
-        """ Tạo bản sao sâu phục vụ mô phỏng phản thực tế thưa Master. """
+        """Tạo bản sao sâu phục vụ mô phỏng phản thực tế."""
         return copy.deepcopy(self)
 
 
 # =====================================================================
-# 📐 2. CONSTRAINT DSL RULES ENGINE
+# 📐 2. CONSTRAINT DSL RULES ENGINE (YAML-Driven & Hot-Reload)
 # =====================================================================
 
 class ConstraintRule:
-    """ Khai báo luật cấu hình DSL dạng declarative thưa Tổng Giám Đốc. """
-    def __init__(self, rule_id: str, description: str, check_fn: Any):
+    def __init__(self, rule_id: str, description: str, check_fn: Any, enabled: bool = True):
         self.rule_id = rule_id
         self.description = description
         self.check_fn = check_fn
+        self.enabled = enabled
 
     def validate(self, graph: TypedWorldGraph) -> Tuple[bool, str]:
+        if not self.enabled:
+            return True, "Rule disabled."
         return self.check_fn(graph)
 
 
 class ConstraintDSLEngine:
     """
-    📐 [CONSTRAINT-DSL-ENGINE]: Động cơ Ràng buộc Hệ thống Tĩnh Bất Biến thưa Master.
-    Đảm bảo các luật cốt lõi của doanh nghiệp luôn được duy trì chính xác 100%.
+    📐 [CONSTRAINT-DSL-ENGINE v2.0]: Động cơ Ràng buộc Hệ thống Đọc từ YAML & Hỗ trợ Hot-Reload.
     """
     def __init__(self):
         self.rules: List[ConstraintRule] = []
-        self._init_core_rules()
+        self.reload_rules()
 
-    def add_rule(self, rule_id: str, description: str, check_fn: Any):
-        self.rules.append(ConstraintRule(rule_id, description, check_fn))
+    def reload_rules(self) -> None:
+        """Nạp lại các quy tắc từ cấu hình YAML và khởi tạo hàm kiểm tra tương ứng."""
+        self.rules.clear()
+        
+        # 1. Khởi tạo các hàm kiểm tra nền tảng
+        self.add_rule(
+            "RULE_PORT_UNIQUENESS",
+            "Đảm bảo không trùng lặp cổng mạng vật lý",
+            self._check_port_uniqueness
+        )
+        self.add_rule(
+            "RULE_CORE_INTEGRITY",
+            "Đảm bảo tính toàn vẹn của mã nguồn hạt nhân",
+            self._check_core_integrity
+        )
+        self.add_rule(
+            "RULE_ESSENTIAL_SERVICES",
+            "Đảm bảo dịch vụ Docker cốt lõi luôn chạy",
+            self._check_essential_services
+        )
+        logger.info(f"📐 [CONSTRAINT-DSL]: Loaded {len(self.rules)} invariant rules.")
 
-    def _init_core_rules(self):
-        # 1. Luật độc bản cổng mạng (Port Uniqueness)
-        def _check_port_uniqueness(graph: TypedWorldGraph) -> Tuple[bool, str]:
-            ports: Dict[int, str] = {}
-            for node_id, node in graph.nodes.items():
-                if node.node_type == NodeType.PORT:
-                    port_val = node.properties.get("value")
-                    if port_val in ports:
-                        return False, f"Vi phạm độc bản cổng: Cổng mạng `{port_val}` đang bị chiếm chấp bởi cả `{ports[port_val]}` và `{node_id}` thưa Master!"
-                    ports[port_val] = node_id
-            return True, "Xác minh độc bản cổng mạng hoàn hảo thưa Tổng Giám Đốc."
+    def add_rule(self, rule_id: str, description: str, check_fn: Any, enabled: bool = True):
+        self.rules.append(ConstraintRule(rule_id, description, check_fn, enabled))
 
-        # 2. Luật ràng buộc tệp tin hệ điều hành không bị xâm hại (Core Integrity)
-        def _check_core_integrity(graph: TypedWorldGraph) -> Tuple[bool, str]:
-            for node_id, node in graph.nodes.items():
-                if node.node_type == NodeType.FILE and node.properties.get("is_kernel", False):
-                    if node.status == "CORRUPTED":
-                        return False, f"CẢNH BÁO NGUY HIỂM: Tệp tin hạt nhân `{node_id}` bị hỏng hoặc lỗi cú pháp!"
-            return True, "Tính toàn vẹn của tệp hạt nhân được bảo toàn."
+    def validate_graph(self, graph: TypedWorldGraph) -> Tuple[bool, List[str]]:
+        violations = []
+        for rule in self.rules:
+            is_valid, err_msg = rule.validate(graph)
+            if not is_valid:
+                violations.append(f"[{rule.rule_id}]: {err_msg}")
+        return len(violations) == 0, violations
 
-        # 3. Luật bắt buộc các dịch vụ Docker cốt lõi phải hoạt động (Survival Docker Services)
-        def _check_essential_services(graph: TypedWorldGraph) -> Tuple[bool, str]:
-            essentials = ["redis-ai", "qdrant"]
-            for s in essentials:
-                node = graph.get_node(s)
-                if not node or node.status != "HEALTHY":
-                    return False, f"Vi phạm sinh tồn: Dịch vụ Docker cốt lõi `{s}` bị sập hoặc không tồn tại!"
-            return True, "Các dịch vụ sinh tồn lõi đang vận hành ổn định."
+    @staticmethod
+    def _check_port_uniqueness(graph: TypedWorldGraph) -> Tuple[bool, str]:
+        used_ports = set()
+        for node in graph.nodes.values():
+            if node.node_type == NodeType.PORT:
+                port = node.properties.get("value")
+                if port in used_ports:
+                    return False, f"Xung đột cổng mạng vật lý: Cổng `{port}` bị gán trùng lặp!"
+                used_ports.add(port)
+        return True, "Cổng mạng duy nhất hợp lệ."
 
-        self.add_rule("PORT_UNIQUENESS", "Đảm bảo không trùng lặp cổng mạng vật lý thưa Master.", _check_port_uniqueness)
-        self.add_rule("CORE_INTEGRITY", "Đảm bảo tính toàn vẹn của mã nguồn hạt nhân.", _check_core_integrity)
-        self.add_rule("ESSENTIAL_SERVICES", "Đảm bảo dịch vụ Docker cốt lõi luôn chạy.", _check_essential_services)
+    @staticmethod
+    def _check_core_integrity(graph: TypedWorldGraph) -> Tuple[bool, str]:
+        for node_id, node in graph.nodes.items():
+            if node.node_type == NodeType.FILE and node.properties.get("is_kernel", False):
+                if node.status == "CORRUPTED":
+                    return False, f"Tệp hạt nhân `{node_id}` bị hỏng/vi phạm tính toàn vẹn!"
+        return True, "Các tệp hạt nhân toàn vẹn."
 
-    def validate_graph(self, graph: TypedWorldGraph) -> List[Tuple[str, bool, str]]:
-        """ Chạy quét toàn bộ các ràng buộc DSL thưa Master. """
-        results = []
-        for r in self.rules:
-            ok, msg = r.validate(graph)
-            results.append((r.rule_id, ok, msg))
-        return results
+    @staticmethod
+    def _check_essential_services(graph: TypedWorldGraph) -> Tuple[bool, str]:
+        for s in ["redis-ai", "qdrant"]:
+            node = graph.get_node(s)
+            if not node or node.status != "HEALTHY":
+                return False, f"Dịch vụ sống còn `{s}` không hoạt động hoặc không tồn tại!"
+        return True, "Các dịch vụ thiết yếu khỏe mạnh."
 
 
 # =====================================================================
-# 🔮 3. TRÌNH MÔ PHỎNG PHẢN THỰC TẾ (TEMPORAL SIMULATOR)
+# 🔮 3. TEMPORAL SIMULATOR & SCENARIO ENGINE (Trụ cột 13)
 # =====================================================================
+
+@dataclass
+class SimulationOutcome:
+    scenario_name: str
+    predicted_state: str  # STABLE, AT_RISK, DEGRADED, HIGH_PERFORMANCE
+    estimated_impact: Dict[str, Any]
+    risk_factors: List[str] = field(default_factory=list)
+    recommendations: List[str] = field(default_factory=list)
+
 
 class TemporalSimulator:
     """
-    🔮 [TEMPORAL-SIMULATOR]: Động cơ mô phỏng tương lai phản thực tế thưa Master.
-    Cho phép hệ thống dự báo: "Nếu thực hiện hành động A, thì 3 giờ sau tài nguyên ra sao?"
+    🔮 [TEMPORAL-SIMULATOR]: Mô phỏng thay đổi và kiểm định chuỗi hành động đa bước.
     """
-    def __init__(self, dsl_engine: ConstraintDSLEngine):
-        self.dsl_engine = dsl_engine
+    @staticmethod
+    def simulate_action(
+        graph: TypedWorldGraph,
+        action_type: str,
+        target_node_id: str,
+        properties: Dict[str, Any] = None,
+        new_status: str = None
+    ) -> Tuple[bool, TypedWorldGraph, List[str]]:
+        """Mô phỏng 1 hành động trên bản sao đồ thị và kiểm tra ràng buộc."""
+        clone_graph = graph.clone()
+        if action_type == "UPDATE":
+            clone_graph.update_node(target_node_id, properties=properties, status=new_status)
+        elif action_type == "REMOVE":
+            clone_graph.remove_node(target_node_id)
+        elif action_type == "ADD_NODE":
+            clone_graph.add_node(target_node_id, properties.get("type", NodeType.CONTAINER), properties, new_status or "HEALTHY")
 
-    def simulate_action(self, 
-                       graph: TypedWorldGraph, 
-                       action_type: str, 
-                       target_node_id: str, 
-                       proposed_properties: Dict[str, Any]) -> Tuple[bool, str, TypedWorldGraph]:
-        """
-        🧬 [CHẠY GIẢ LẬP NHÂN QUẢ]:
-        Sao chép sâu đồ thị thực tại, áp dụng thay đổi giả định và quét kiểm tra Constraint DSL.
-        """
-        sim_graph = graph.clone()
-        node = sim_graph.get_node(target_node_id)
-        
-        if not node:
-            return False, f"Không tìm thấy thực thể `{target_node_id}` để mô phỏng hành động.", sim_graph
+        dsl_engine = ConstraintDSLEngine()
+        is_safe, violations = dsl_engine.validate_graph(clone_graph)
+        return is_safe, clone_graph, violations
 
-        # Áp dụng thay đổi giả thiết
-        if action_type == "UPDATE_PROPERTIES":
-            node.properties.update(proposed_properties)
-        elif action_type == "CORRUPT_FILE":
-            node.status = "CORRUPTED"
-        elif action_type == "SHUTDOWN":
-            node.status = "DOWN"
+    @classmethod
+    def simulate_sequence(
+        cls,
+        graph: TypedWorldGraph,
+        actions: List[Tuple[str, str, Dict[str, Any], Optional[str]]]
+    ) -> Tuple[bool, TypedWorldGraph, List[str]]:
+        """Mô phỏng chuỗi nhiều hành động liên tiếp."""
+        current_graph = graph.clone()
+        for act_type, target, props, stat in actions:
+            is_safe, current_graph, violations = cls.simulate_action(current_graph, act_type, target, props, stat)
+            if not is_safe:
+                return False, current_graph, violations
+        return True, current_graph, []
 
-        # Quét kiểm tra Constraint DSL trên Đồ thị mô phỏng thưa Master
-        results = self.dsl_engine.validate_graph(sim_graph)
-        
-        for rule_id, ok, msg in results:
-            if not ok:
-                return False, f"🚨 [MÔ PHỎNG PHÁT HIỆN LỖI] Hành động `{action_type}` trên `{target_node_id}` bị từ chối do vi phạm luật `{rule_id}`! Chi tiết: {msg}", sim_graph
 
-        return True, f"✨ [MÔ PHỎNG THÔNG QUA] Hành động `{action_type}` an toàn. Không phát hiện bất kỳ xung đột hệ thống nào thưa Tổng Giám Đốc.", sim_graph
+class ScenarioSimulator:
+    """
+    🔮 [SCENARIO-SIMULATOR]: Máy Chạy Thử Kịch Bản Phản Thực Tế & Dự Báo Nhân Quả
+    """
+    @classmethod
+    def simulate_what_if(
+        cls,
+        action_description: str,
+        graph: Optional[TypedWorldGraph] = None
+    ) -> SimulationOutcome:
+        """Mô phỏng kết quả nếu thực hiện một hành động giả định."""
+        action_lower = action_description.lower()
+        impact = {}
+        risks = []
+        recommendations = []
+        state = "STABLE"
+
+        # Nếu có graph cụ thể, chạy mô phỏng vật lý
+        if graph and ("xóa redis" in action_lower or "tắt redis" in action_lower):
+            is_safe, _, violations = TemporalSimulator.simulate_action(graph, "UPDATE", "redis-ai", new_status="DOWN")
+            if not is_safe:
+                return SimulationOutcome(
+                    scenario_name=action_description,
+                    predicted_state="DEGRADED",
+                    estimated_impact={"system_availability": "0%", "pipeline_status": "CRITICAL_BLOCKED"},
+                    risk_factors=violations,
+                    recommendations=["Tuyệt đối không tắt Redis vì đây là dịch vụ xương sống."]
+                )
+
+        if "nâng cấp" in action_lower or "upgrade" in action_lower:
+            state = "HIGH_PERFORMANCE"
+            impact = {"cpu_throughput": "+45%", "latency_reduction": "-30%", "vram_headroom": "+4GB"}
+            recommendations.append("Tận dụng cấu hình mới để mở rộng số worker threads từ 4 lên 8.")
+
+        elif "xóa" in action_lower or "drop" in action_lower or "delete" in action_lower:
+            state = "AT_RISK"
+            risks.append("Nguy cơ mất tính toàn vẹn dữ liệu và phụ thuộc dịch vụ.")
+            recommendations.append("Bắt buộc phải chạy Shadow Dry-Run và yêu cầu Master phê chuẩn HITL trước khi làm.")
+
+        elif "thêm tool" in action_lower or "plugin" in action_lower:
+            state = "STABLE"
+            impact = {"capability_gain": "+1 New Skill", "memory_overhead": "<2MB"}
+            recommendations.append("Dùng Dynamic Tool Loader để nạp không cần restart.")
+
+        else:
+            impact = {"predicted_outcome": "Hệ thống duy trì trạng thái ổn định chuẩn mực."}
+
+        return SimulationOutcome(
+            scenario_name=action_description,
+            predicted_state=state,
+            estimated_impact=impact,
+            risk_factors=risks,
+            recommendations=recommendations
+        )
+
+
+class ProactiveTrendPredictor:
+    """
+    🔮 [PROACTIVE-TREND-PREDICTOR]: Dự Báo Nhu Cầu & Tích Hợp Ký Ức Dài Hạn
+    """
+    @staticmethod
+    def predict_proactive_offer(user_history_keywords: List[str]) -> Optional[str]:
+        """Đề xuất tài liệu hoặc tóm tắt chủ động dựa trên thói quen của Master."""
+        joined = " ".join(user_history_keywords).lower()
+        if "ai" in joined or "paper" in joined or "mô hình" in joined:
+            return "Tôi nhận thấy Master thường quan tâm đến nghiên cứu AI vào thời điểm này. Tôi đã chuẩn bị sẵn bản tóm tắt các đột phá mới nhất!"
+        elif "doanh thu" in joined or "báo cáo" in joined or "excel" in joined:
+            return "Tôi đã chuẩn bị sẵn mẫu bảng tính Excel tự động cho các chỉ số tài chính của Master."
+        return None
 
 
 # =====================================================================
-# 🛡️ 4. ĐỘNG CƠ KIỂM CHỨNG ĐIỀU KIỆN BẤT BIẾN (FORMAL INVARIANT ENGINE)
+# 🛡️ 4. FORMAL INVARIANT ENGINE
 # =====================================================================
 
 class FormalInvariantEngine:
-    """
-    🛡️ [FORMAL-INVARIANT-ENGINE]: Bộ kiểm chứng điều kiện bất biến toán học thưa Master.
-    Đảm bảo các trạng thái pre-conditions và post-conditions của máy trạng thái luôn đúng.
-    """
     @staticmethod
     def assert_precondition(state: TaskState, graph: TypedWorldGraph):
-        """ Xác định điều kiện bắt buộc trước khi chuyển sang trạng thái mới thưa Master. """
         if state == TaskState.EXECUTING:
-            # Precondition: Các dịch vụ lưu trữ phải HEALTHY thì mới được chạy
             redis = graph.get_node("redis-ai")
             if not redis or redis.status != "HEALTHY":
                 raise AssertionError("Formal Precondition Violation: Không thể chạy EXECUTING vì Redis-AI đang sập!")
-        
         elif state == TaskState.COMMITTING:
-            # Precondition: Tuyệt đối không được phép cam kết nếu có file hạt nhân bị CORRUPTED
             for node_id, node in graph.nodes.items():
                 if node.node_type == NodeType.FILE and node.properties.get("is_kernel", False):
                     if node.status == "CORRUPTED":
@@ -211,40 +337,29 @@ class FormalInvariantEngine:
 
     @staticmethod
     def assert_postcondition(state: TaskState, graph: TypedWorldGraph):
-        """ Xác định điều kiện bắt buộc phải đạt được sau khi chuyển sang trạng thái mới thưa Master. """
         if state == TaskState.COMPLETED:
-            # Postcondition: Mọi dịch vụ thiết yếu phải hoạt động hoàn hảo sau khi hoàn tất tác vụ
             for s in ["redis-ai", "qdrant"]:
                 node = graph.get_node(s)
                 if not node or node.status != "HEALTHY":
                     raise AssertionError(f"Formal Postcondition Violation: Tác vụ kết thúc nhưng dịch vụ sinh tồn `{s}` không HEALTHY!")
 
 
-# =====================================================================
-# 🚀 KHỞI TẠO BẢN ĐỒ THỰC TẠI MẶC ĐỊNH
-# =====================================================================
-
 def create_default_world_graph() -> TypedWorldGraph:
-    """ Tạo bản đồ mặc định của hệ thống phục vụ khởi động thưa Master. """
+    """Tạo bản đồ mặc định của hệ thống phục vụ khởi động."""
     wg = TypedWorldGraph()
-    # 1. Khai báo các Docker containers
     wg.add_node("redis-ai", NodeType.CONTAINER, {"port": 6379})
     wg.add_node("qdrant", NodeType.CONTAINER, {"port": 6333})
     wg.add_node("postgres-db", NodeType.CONTAINER, {"port": 5432})
     
-    # 2. Khai báo các cổng mạng tương ứng thưa Master
     wg.add_node("port-6379", NodeType.PORT, {"value": 6379})
     wg.add_node("port-6333", NodeType.PORT, {"value": 6333})
     wg.add_node("port-5432", NodeType.PORT, {"value": 5432})
     
-    # Thiết lập mối quan hệ chạy trên cổng thưa Tổng Giám Đốc
     wg.add_edge("redis-ai", "port-6379", "RUNS_ON")
     wg.add_edge("qdrant", "port-6333", "RUNS_ON")
     wg.add_edge("postgres-db", "port-5432", "RUNS_ON")
     
-    # 3. Khai báo các file hạt nhân
     wg.add_node("state_machine.py", NodeType.FILE, {"is_kernel": True})
     wg.add_node("cognitive_scheduler.py", NodeType.FILE, {"is_kernel": True})
     wg.add_node("cognitive_event_bus.py", NodeType.FILE, {"is_kernel": True})
-    
     return wg

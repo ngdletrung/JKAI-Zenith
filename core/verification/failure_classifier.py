@@ -42,9 +42,9 @@ class FailureClassifier:
         for miss in missing_criteria:
             if "POLICY_VIOLATION" in miss or "SECURITY_DENIED" in miss:
                 return FailureClassification.POLICY_FAILURE, RecoveryStrategy.ABORT
-            if "EXCEL_CORRUPTED" in miss or "FILE_EMPTY_ZERO_BYTES" in miss:
+            if any(k in miss for k in ["EXCEL_CORRUPTED", "DOCX_CORRUPTED", "PDF_CORRUPTED", "JSON_CORRUPTED", "CSV_CORRUPTED", "FILE_EMPTY_ZERO_BYTES"]):
                 return FailureClassification.VERIFICATION_FAILURE, RecoveryStrategy.DIAGNOSE_AND_REPAIR
-            if "PHYSICAL_FILE_MISSING" in miss or "TOOL_EXCEPTION" in miss or "DRIVE_QUOTA_EXCEEDED" in miss:
+            if any(k in miss for k in ["PHYSICAL_FILE_MISSING", "TOOL_EXCEPTION", "DRIVE_QUOTA_EXCEEDED", "MODULE_NOT_FOUND", "DEPENDENCY_MISSING"]):
                 return FailureClassification.TOOL_FAILURE, RecoveryStrategy.SUBSTITUTE_CAPABILITY
             if "MODEL_HALLUCINATION" in miss or "INVALID_JSON_FORMAT" in miss:
                 return FailureClassification.MODEL_FAILURE, RecoveryStrategy.CHANGE_MODEL

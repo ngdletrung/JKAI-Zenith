@@ -1,6 +1,22 @@
+# -*- coding: utf-8 -*-
+"""
+╔══════════════════════════════════════════════════════════════════╗
+║   JKAI ZENITH — UNIFIED RETRIEVER v2.0 (L1/L2 HYBRID FUSION)     ║
+║   Động Cơ Truy Xuất Tri Thức Đa Tầng, Lọc Ngưỡng & Nén Facts    ║
+╚══════════════════════════════════════════════════════════════════╝
+*Kiến Trúc Sư Trưởng Chủ Động Tối Ưu Hóa Tốc Độ & Trí Thông Minh RAG. ⚡🧠📚*
+"""
+
+import os
 import time
+import json
+import hashlib
+import asyncio
+import logging
 from dataclasses import dataclass, field
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Any
+
+logger = logging.getLogger("JKAI.UnifiedRetriever")
 
 COLLECTION_KNOWLEDGE = "jkai_knowledge"
 COLLECTION_MEMORY = "jkai_memory"
@@ -13,9 +29,18 @@ class RetrievalResult:
     results: List[Dict]
     sources: List[str]
     elapsed: float
+    distilled_summary: Optional[str] = None
 
 
 class UnifiedRetriever:
+    """
+    📚 [UNIFIED-RETRIEVER v2.0]: Truy Xuất Tri Thức Siêu Tốc & Lọc Ngưỡng Thông Minh
+    Đặc tính nâng cấp:
+      1. L1 In-Memory Fast Cache: Phục hồi kết quả trong <0.1ms.
+      2. Relevance Score Gating: Lọc bỏ tài liệu điểm thấp (<0.35) chống loãng context.
+      3. Integrated Fact Distillation: Tự động cô đọng qua FactDistiller v2.0.
+      4. MMR-Lite Diversity: Triệt tiêu thiên vị file nguồn trùng lặp.
+    """
     _instance = None
 
     def __new__(cls):
@@ -28,6 +53,26 @@ class UnifiedRetriever:
         if self._initialized:
             return
         self._initialized = True
+        # L1 In-Memory Cache: Dict dạng {cache_key: (timestamp, data)}
+        self._l1_cache: Dict[str, tuple[float, Dict[str, Any]]] = {}
+        self._l1_ttl = 300.0  # 5 phút trong RAM
+        self._min_relevance_score = 0.35
+
+    def _get_l1_cache(self, key: str) -> Optional[Dict[str, Any]]:
+        if key in self._l1_cache:
+            ts, data = self._l1_cache[key]
+            if time.time() - ts <= self._l1_ttl:
+                return data
+            else:
+                del self._l1_cache[key]
+        return None
+
+    def _set_l1_cache(self, key: str, data: Dict[str, Any]):
+        # Giới hạn kích thước cache 500 phần tử
+        if len(self._l1_cache) > 500:
+            oldest_key = min(self._l1_cache.keys(), key=lambda k: self._l1_cache[k][0])
+            del self._l1_cache[oldest_key]
+        self._l1_cache[key] = (time.time(), data)
 
     async def search(
         self,
@@ -36,42 +81,50 @@ class UnifiedRetriever:
         sources: List[str] = None,
         include_external: bool = False,
         filter_dict: dict = None,
+        auto_distill: bool = True,
     ) -> RetrievalResult:
         from core.qdrant_client import qdrant_client
         from core.utils.embed import embed
         from core.utils.engine import engine
-        import hashlib
-        import json
 
         start = time.time()
+        params_str = f"{query}:{top_k}:{sources}:{include_external}:{filter_dict}"
+        cache_hash = hashlib.md5(params_str.encode()).hexdigest()
+        cache_key = f"brain_cache:retrieval:unified:{cache_hash}"
 
-        # ── 1. KIỂM TRA CACHE RETRIEVAL (REDIS) ──────────────────────────
+        # ── 1. L1 IN-MEMORY CACHE (<0.1ms) ──────────────────────────────
+        l1_hit = self._get_l1_cache(cache_hash)
+        if l1_hit:
+            return RetrievalResult(
+                results=l1_hit.get("results", []),
+                sources=l1_hit.get("sources", []),
+                elapsed=time.time() - start,
+                distilled_summary=l1_hit.get("distilled_summary")
+            )
+
+        # ── 2. L2 REDIS CACHE (<3ms) ────────────────────────────────────
         r = engine._get_redis()
-        cache_key = None
         if r:
             try:
-                # Tạo hash key dựa trên các tham số truy vấn
-                params_str = f"{query}:{top_k}:{sources}:{include_external}:{filter_dict}"
-                h = hashlib.md5(params_str.encode()).hexdigest()
-                cache_key = f"brain_cache:retrieval:unified:{h}"
                 cached = r.get(cache_key)
                 if cached:
                     data = json.loads(cached)
-                    engine.publish_mission_log("BRAIN", f"[CACHE-HIT]: Trả về kết quả tìm kiếm đã cache thưa Master: '{query[:30]}...'", stealth=True)
+                    self._set_l1_cache(cache_hash, data)
                     return RetrievalResult(
                         results=data.get("results", []),
                         sources=data.get("sources", []),
-                        elapsed=data.get("elapsed", 0.0)
+                        elapsed=time.time() - start,
+                        distilled_summary=data.get("distilled_summary")
                     )
             except Exception:
                 pass
 
-        # ── 2. TÍNH EMBEDDING VECTOR ─────────────────────────────────────
+        # ── 3. TÍNH EMBEDDING VECTOR ─────────────────────────────────────
         query_vector = await embed.get_embedding_async(query[:1000])
         if not query_vector:
             return RetrievalResult(results=[], sources=[], elapsed=time.time() - start)
 
-        # ── 3. LỰA CHỌN CÁC COLLECTIONS ĐỂ TRUY VẤN SONG SONG ───────────────
+        # ── 4. TRUY VẤN SONG SONG TẤT CẢ COLLECTIONS ──────────────────────
         target_collections = sources or [
             COLLECTION_KNOWLEDGE,
             COLLECTION_MEMORY,
@@ -80,10 +133,8 @@ class UnifiedRetriever:
         if include_external:
             target_collections.append(COLLECTION_EXTERNAL)
 
-        # 🚀 [PARALLEL-RETRIEVAL]: Truy vấn song song tất cả các collections bằng asyncio.gather
         async def _search_coll(coll: str) -> List[Dict]:
             try:
-                # Quét rộng gấp đôi giới hạn (top_k * 2) để chuẩn bị cho bước Dedup & MMR
                 results = await qdrant_client.search_similar(
                     query_vector, limit=top_k * 2, collection=coll, filter_dict=filter_dict
                 )
@@ -94,29 +145,51 @@ class UnifiedRetriever:
                 return []
 
         tasks = [_search_coll(c) for c in target_collections]
-        import asyncio as _asyncio
-        results_lists = await _asyncio.gather(*tasks)
+        results_lists = await asyncio.gather(*tasks)
 
         all_results = []
         for r_list in results_lists:
             all_results.extend(r_list)
 
-        # ── 4. KHỬ TRÙNG LẶP NỘI DUNG (DEDUP) ────────────────────────────
+        # ── 5. SPECULATIVE MULTI-INDEX FUSION (DENSE + BM25 QUA RRF) ───────
+        try:
+            from core.knowledge_sources.speculative_fusion import fusion_engine
+            bm25_results = fusion_engine.bm25_rank(query, all_results, top_k=top_k * 2)
+            fused_candidates = fusion_engine.reciprocal_rank_fusion(
+                dense_results=all_results,
+                sparse_results=bm25_results,
+                top_k=top_k * 2
+            )
+        except Exception:
+            fused_candidates = all_results
+
+        # ── 6. KHỬ TRÙNG LẶP & LỌC NGƯỠNG ĐIỂM LIÊN QUAN (RELEVANCE GATING) ───
         deduplicated = []
         seen_texts = set()
-        for res in sorted(all_results, key=lambda x: x.get("score", 0), reverse=True):
+        for res in sorted(fused_candidates, key=lambda x: x.get("score", 0), reverse=True):
+            score = res.get("score", 0.0)
+            # Lọc bỏ tài liệu rác có độ tương đồng quá thấp
+            if score < self._min_relevance_score and len(deduplicated) >= 2:
+                continue
+
             p = res.get("payload", {})
             text = (p.get("text") or p.get("content") or "").strip()
             if not text:
                 continue
-            # Chuẩn hóa khoảng trắng để so sánh chính xác
             norm_text = " ".join(text.split())
             if norm_text not in seen_texts:
                 seen_texts.add(norm_text)
                 deduplicated.append(res)
 
-        # ── 5. ĐA DẠNG HÓA NGUỒN TÀI LIỆU (MMR-LITE HEURISTIC) ─────────────
-        # Phạt các đoạn text tiếp theo đến từ cùng một file nguồn
+        # ── 7. TEMPORAL DECAY SCORING ──────────────────────────────────────
+        try:
+            from core.kernel.temporal_ranker import apply_temporal_decay
+            deduplicated = apply_temporal_decay(deduplicated)
+            deduplicated.sort(key=lambda x: x.get("score", 0), reverse=True)
+        except Exception:
+            pass
+
+        # ── 8. MMR-LITE DIVERSITY HEURISTIC ───────────────────────────────
         selected_results = []
         remaining_results = deduplicated
         
@@ -126,8 +199,6 @@ class UnifiedRetriever:
             
             for idx, cand in enumerate(remaining_results):
                 cand_score = cand.get("score", 0.0)
-                
-                # Check trùng file nguồn
                 cand_p = cand.get("payload", {})
                 cand_source = cand_p.get("rel_path") or cand_p.get("filename") or cand_p.get("path")
                 
@@ -137,7 +208,7 @@ class UnifiedRetriever:
                         sel_p = sel.get("payload", {})
                         sel_source = sel_p.get("rel_path") or sel_p.get("filename") or sel_p.get("path")
                         if sel_source == cand_source:
-                            penalty += 0.15  # Áp hình phạt 0.15 cho mỗi file nguồn trùng nhau
+                            penalty += 0.15
                 
                 final_score = cand_score - penalty
                 if final_score > best_score:
@@ -149,37 +220,53 @@ class UnifiedRetriever:
             else:
                 break
 
-        # ── 6. THIẾT LẬP KẾT QUẢ ĐẦU RA ──────────────────────────────────
-        import os as _os
+        # ── 9. FACT DISTILLATION CHO CONTEXT (TỰ ĐỘNG CHẮT LỌC SỐ LIỆU) ────
+        distilled_summary = None
+        if auto_distill and selected_results:
+            try:
+                from core.knowledge_sources.fact_distiller import fact_distiller
+                raw_texts = []
+                for item in selected_results:
+                    pl = item.get("payload", {})
+                    t = pl.get("text") or pl.get("content") or ""
+                    if t:
+                        raw_texts.append(t)
+                combined_raw = "\n".join(raw_texts)
+                distilled_summary = fact_distiller.distill_facts(combined_raw, query=query, max_facts=5)
+            except Exception:
+                pass
+
+        # ── 10. ĐÓNG GÓI KẾT QUẢ & LƯU L1 / L2 CACHE ────────────────────────
         seen_sources = set()
         for res in selected_results:
             p = res.get("payload", {})
             s = p.get("rel_path") or p.get("filename") or p.get("source") or p.get("_collection", "unknown")
-            seen_sources.add(_os.path.basename(str(s)))
+            seen_sources.add(os.path.basename(str(s)))
 
         elapsed_time = time.time() - start
-        ret_val = RetrievalResult(
-            results=selected_results,
-            sources=list(seen_sources),
-            elapsed=elapsed_time,
-        )
+        cache_data = {
+            "results": selected_results,
+            "sources": list(seen_sources),
+            "elapsed": elapsed_time,
+            "distilled_summary": distilled_summary
+        }
 
-        # ── 7. LƯU KẾT QUẢ VÀO REDIS CACHE (TTL 600 GIÂY) ───────────────────
-        if r and cache_key:
+        # Lưu L1 Cache (RAM)
+        self._set_l1_cache(cache_hash, cache_data)
+
+        # Lưu L2 Cache (Redis TTL 600s)
+        if r:
             try:
-                r.setex(
-                    cache_key,
-                    600,  # Cache TTL 10 phút để tránh trả về dữ liệu quá cũ
-                    json.dumps({
-                        "results": selected_results,
-                        "sources": list(seen_sources),
-                        "elapsed": elapsed_time
-                    })
-                )
+                r.setex(cache_key, 600, json.dumps(cache_data))
             except Exception:
                 pass
 
-        return ret_val
+        return RetrievalResult(
+            results=selected_results,
+            sources=list(seen_sources),
+            elapsed=elapsed_time,
+            distilled_summary=distilled_summary
+        )
 
 
 retriever = UnifiedRetriever()

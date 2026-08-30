@@ -8,7 +8,7 @@
 # 1. Inspects active VRAM/RAM residency via Ollama /api/ps before any memory transitions.
 # 2. If model is already loaded (e.g. Qwen3-30B booted via Start_JKAI_Zenith), runs instantly with zero delay.
 # 3. Maintains exclusive memory state between FAST (Qwen3-30B MoE) and DEEP (Multi-agent Swarm).
-# 4. Purges opposing mode models only upon explicit mode transitions to protect 8GB VRAM / 128GB RAM limits.
+# 4. Purges opposing mode models only upon explicit mode transitions to protect 8GB VRAM / 64GB RAM limits.
 # 5. No emojis are used in system tracking logs outside standard corporate telemetry.
 # -----------------------------------------------------------------------------
 
@@ -209,9 +209,9 @@ class ModeSwitcher:
         return False
 
     async def _evict_roles(self, roles: list, engine_inst, client, hosts: list):
-        """Sends keep_alive=0 to Ollama hosts for all models mapped to specified roles (disabled by default for 128GB resident RAM)."""
+        """Sends keep_alive=0 to Ollama hosts for all models mapped to specified roles (disabled by default for 64GB resident RAM)."""
         if os.getenv("ENABLE_MODEL_EVICTION", "false").lower() != "true":
-            logger.info("[MODE-SWITCHER] Skipping model eviction — Keeping models resident in 128GB System RAM for 0s cold-start latency.")
+            logger.info("[MODE-SWITCHER] Skipping model eviction — Keeping models resident in 64GB System RAM for 0s cold-start latency.")
             return
 
         unloaded_models = set()

@@ -1,0 +1,35 @@
+{
+  "id": "m_ZENITH_2908-1105_e2037d",
+  "title": "/status",
+  "goal": "/status",
+  "status": "completed",
+  "ts": 1787976310.513422,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "/status",
+      "ts": 1787976305.6690435,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2908-1105_e2037d"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_2908-1105_e2037d` initialized | Trace: `trace_e2037d`. Runtime ready.",
+      "ts": 1787976305.6720195,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2908-1105_e2037d"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "🚨 **[ZENITH ALERT — DEGRADED]**\n\n📊 **Tài nguyên:** CPU `3.9%` | RAM `6.0%` | GPU `1%`\n📅 **Thời gian:** _04:05:10 29/08/2026_\n\n🛠️ **Trạng thái dịch vụ:**\n- 📡 AI-Control-Plane: `Online ✅`\n- 🧠 AI-Brain: `Offline ❌`\n- 🦾 AI-Executor: `Online ✅`\n- 🔍 Qdrant DB: `Online ✅`\n- 📚 RAG-Service: `Online ✅`\n- 🔗 N8N-Main: `Online ✅`\n- 📡 Redis AI: `Online ✅`\n• 🦙 **Ollama Native:** `qwen3.5:4b, qwen2.5-coder:3b` (~5297MB VRAM)\n\n⚠️ *Master, phát hiện một số dịch vụ đang trong trạng thái suy giảm.*",
+      "ts": 1787976310.467849,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2908-1105_e2037d"
+    }
+  ],
+  "artifacts": {
+    "plan": "/status",
+    "walkthrough": "🚨 **[ZENITH ALERT — DEGRADED]**\n\n📊 **Tài nguyên:** CPU `3.9%` | RAM `6.0%` | GPU `1%`\n📅 **Thời gian:** _04:05:10 29/08/2026_\n\n🛠️ **Trạng thái dịch vụ:**\n- 📡 AI-Control-Plane: `Online ✅`\n- 🧠 AI-Brain: `Offline ❌`\n- 🦾 AI-Executor: `Online ✅`\n- 🔍 Qdrant DB: `Online ✅`\n- 📚 RAG-Service: `Online ✅`\n- 🔗 N8N-Main: `Online ✅`\n- 📡 Redis AI: `Online ✅`\n• 🦙 **Ollama Native:** `qwen3.5:4b, qwen2.5-coder:3b` (~5297MB VRAM)\n\n⚠️ *Master, phát hiện một số dịch vụ đang trong trạng thái suy giảm.*",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

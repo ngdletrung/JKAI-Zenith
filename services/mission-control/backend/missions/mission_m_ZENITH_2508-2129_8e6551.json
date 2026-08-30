@@ -1,0 +1,259 @@
+{
+  "id": "m_ZENITH_2508-2129_8e6551",
+  "title": "bạn thấy hôm nay thế nào ?",
+  "goal": "bạn thấy hôm nay thế nào ?",
+  "status": "failed",
+  "ts": 1787668229.2284951,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "bạn thấy hôm nay thế nào ?",
+      "ts": 1787668185.3996053,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_2508-2129_8e6551` initialized | Trace: `trace_8e6551`. Runtime ready.",
+      "ts": 1787668185.4023666,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=26 | preview='bạn thấy hôm nay thế nào ?' | hash=0923f7b108afdc35 | task_id=ZENITH_2508-2129_8e6551 | trace_id=trace_8e6551 | mission_id=default",
+      "ts": 1787668200.2773259,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: [] | Policy Topology: SINGLE_AGENT (FAST)",
+      "ts": 1787668200.280785,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "GOVERNOR: TaskProfile=[] | Topology=SINGLE_AGENT (FAST)",
+      "ts": 1787668200.2839544,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1787668200.2871532,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1787668200.29215,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ENGINE-READY]: FAST mode — qwen3.5:4b already resident in RAM/VRAM. Zero-latency start.",
+      "ts": 1787668200.6016953,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[FAST-PIPELINE] Khởi động RECEPTIONIST ReAct (10 turns).",
+      "ts": 1787668200.6045003,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "GOVERNOR",
+      "msg": "[I-CONTEXT-001 ENFORCED] Context Policy: ISOLATED. Toàn bộ lịch sử & bộ nhớ cũ bị chặn tuyệt đối.",
+      "ts": 1787668200.745232,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SECRETARY",
+      "msg": "Ban Thư Ký xác định đây là yêu cầu tra cứu dữ liệu thời gian thực — kích hoạt công cụ tra cứu.",
+      "ts": 1787668202.2039666,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Phát hiện truy vấn thời gian thực. Đang thực thi tìm kiếm trực tiếp.",
+      "ts": 1787668203.8723397,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[TOOL-VALIDATION-FAIL] SEARCH_WEB_GLOBAL: Thiếu tham số bắt buộc 'query' cho công cụ 'SEARCH_WEB_GLOBAL'.. Yêu cầu mô hình hiệu chỉnh...",
+      "ts": 1787668203.9230802,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=26 | preview='bạn thấy hôm nay thế nào ?' | hash=0923f7b108afdc35 | task_id=ZENITH_2508-2129_8e6551 | trace_id=trace_8e6551 | mission_id=default",
+      "ts": 1787668212.7613115,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: [] | Policy Topology: SINGLE_AGENT (FAST)",
+      "ts": 1787668212.7653303,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "GOVERNOR: TaskProfile=[] | Topology=SINGLE_AGENT (FAST)",
+      "ts": 1787668212.767814,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1787668212.770088,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1787668212.7744524,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[FAST-PIPELINE] Khởi động RECEPTIONIST ReAct (10 turns).",
+      "ts": 1787668212.7962508,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "GOVERNOR",
+      "msg": "[I-CONTEXT-001 ENFORCED] Context Policy: ISOLATED. Toàn bộ lịch sử & bộ nhớ cũ bị chặn tuyệt đối.",
+      "ts": 1787668212.8018146,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SECRETARY",
+      "msg": "Ban Thư Ký xác định đây là yêu cầu tra cứu dữ liệu thời gian thực — kích hoạt công cụ tra cứu.",
+      "ts": 1787668212.8833828,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Phát hiện truy vấn thời gian thực. Đang thực thi tìm kiếm trực tiếp.",
+      "ts": 1787668212.9531677,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[TOOL-VALIDATION-FAIL] SEARCH_WEB_GLOBAL: Thiếu tham số bắt buộc 'query' cho công cụ 'SEARCH_WEB_GLOBAL'.. Yêu cầu mô hình hiệu chỉnh...",
+      "ts": 1787668212.956022,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=26 | preview='bạn thấy hôm nay thế nào ?' | hash=0923f7b108afdc35 | task_id=ZENITH_2508-2129_8e6551 | trace_id=trace_8e6551 | mission_id=default",
+      "ts": 1787668222.8772776,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: [] | Policy Topology: SINGLE_AGENT (FAST)",
+      "ts": 1787668222.880904,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "GOVERNOR: TaskProfile=[] | Topology=SINGLE_AGENT (FAST)",
+      "ts": 1787668222.8837187,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1787668222.8863943,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1787668222.8910265,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[FAST-PIPELINE] Khởi động RECEPTIONIST ReAct (10 turns).",
+      "ts": 1787668222.9106848,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "GOVERNOR",
+      "msg": "[I-CONTEXT-001 ENFORCED] Context Policy: ISOLATED. Toàn bộ lịch sử & bộ nhớ cũ bị chặn tuyệt đối.",
+      "ts": 1787668222.9164686,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "SECRETARY",
+      "msg": "Ban Thư Ký xác định đây là yêu cầu tra cứu dữ liệu thời gian thực — kích hoạt công cụ tra cứu.",
+      "ts": 1787668222.9973264,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Phát hiện truy vấn thời gian thực. Đang thực thi tìm kiếm trực tiếp.",
+      "ts": 1787668223.0861642,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[TOOL-VALIDATION-FAIL] SEARCH_WEB_GLOBAL: Thiếu tham số bắt buộc 'query' cho công cụ 'SEARCH_WEB_GLOBAL'.. Yêu cầu mô hình hiệu chỉnh...",
+      "ts": 1787668223.089507,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist\"}",
+      "ts": 1787668229.1804266,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+      "ts": 1787668229.183664,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2129_8e6551"
+    }
+  ],
+  "artifacts": {
+    "plan": "bạn thấy hôm nay thế nào ?",
+    "walkthrough": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

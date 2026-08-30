@@ -1,0 +1,63 @@
+{
+  "id": "m_default_2608-2110_ce4db7",
+  "title": "Tính giúp tôi: (450 * 12) / 3 + 1500",
+  "goal": "Tính giúp tôi: (450 * 12) / 3 + 1500",
+  "status": "completed",
+  "ts": 1787753418.970378,
+  "logs": [
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=36 | preview='Tính giúp tôi: (450 * 12) / 3 + 1500' | hash=0f6a8f8d2fc6407b | task_id=default_2608-2110_ce4db7 | trace_id=trace_ce4db7 | mission_id=default",
+      "ts": 1787753418.413405,
+      "source": "SYSTEM",
+      "task_id": "default_2608-2110_ce4db7"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: [] | Policy Topology: SINGLE_AGENT (FAST)",
+      "ts": 1787753418.4166062,
+      "source": "SYSTEM",
+      "task_id": "default_2608-2110_ce4db7"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "GOVERNOR: TaskProfile=[] | Topology=SINGLE_AGENT (FAST)",
+      "ts": 1787753418.419442,
+      "source": "SYSTEM",
+      "task_id": "default_2608-2110_ce4db7"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1787753418.4218016,
+      "source": "SYSTEM",
+      "task_id": "default_2608-2110_ce4db7"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1787753418.4261255,
+      "source": "SYSTEM",
+      "task_id": "default_2608-2110_ce4db7"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[MATH-REFLEX (<1ms)] Kết quả phép tính `(450 * 12) / 3 + 1500` là: **3,300**",
+      "ts": 1787753418.8854697,
+      "source": "SYSTEM",
+      "task_id": "default_2608-2110_ce4db7"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Kết quả phép tính `(450 * 12) / 3 + 1500` là: **3,300**",
+      "ts": 1787753418.8970108,
+      "source": "SYSTEM",
+      "task_id": "default_2608-2110_ce4db7"
+    }
+  ],
+  "artifacts": {
+    "plan": "Tính giúp tôi: (450 * 12) / 3 + 1500",
+    "walkthrough": "Kết quả phép tính `(450 * 12) / 3 + 1500` là: **3,300**",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

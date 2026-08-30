@@ -49,6 +49,14 @@ roles:
     minimum_capability_score: 0.50
     latency_target: medium
 
+  CODE_EXECUTOR:
+    scoring_weights:
+      coding: 4.0
+      general: 1.0
+      tool_use: 3.0
+    minimum_capability_score: 0.50
+    latency_target: medium
+
   EXECUTOR_ALPHA:
     scoring_weights:
       coding: 4.0
@@ -100,3 +108,15 @@ roles:
       embedding: 5.0
     minimum_capability_score: 0.90
     latency_target: low
+
+  CODE_EXECUTOR:
+    # [MICRO-ROUTER v1.0]: Specialist role for coding, scripting, and office file generation
+    # AMG sẽ ưu tiên model CODING class (qwen2.5-coder) có latency thấp, không cần reasoning cao
+    # minimum_capability_score thấp (0.35) để đảm bảo fallback nếu coder không đạt ngưỡng
+    scoring_weights:
+      coding: 5.0       # Ưu tiên tối đa năng lực lập trình
+      tool_use: 2.0     # Cần gọi tool tốt cho Code-as-Action
+      general: 1.0      # Không cần nhiều general intelligence
+      reasoning: 0.5    # Reasoning thấp — coder nhỏ không mạnh về reasoning
+    minimum_capability_score: 0.35
+    latency_target: low  # Ưu tiên tốc độ — user chờ code sinh ra nhanh

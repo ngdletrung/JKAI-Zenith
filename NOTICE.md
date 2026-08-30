@@ -3,7 +3,7 @@
 - File: NOTICE.md
 - Role: Third-Party License Notices & Legal Compliance (Bilingual).
 - Ownership: Mr LeeTrung
-- Status: Active | Version: SDS v19.12
+- Status: Active | Version: SDS v20.0
 [WORKING PRINCIPLES]:
 1. [LEGAL-AWARENESS]: BẮT BUỘC tuân thủ các thông báo bản quyền này.
 2. [ATTRIBUTION]: Tuyệt đối không xóa bỏ thông tin tác giả của bên thứ ba.
@@ -87,7 +87,7 @@ This project incorporates components from several third-party projects. Full lic
 
 ---
 
-## 🤖 5. AUTONOMOUS ENGINEERING / KỸ THUẬT TỰ TRỊ
+## 🤖 2. AUTONOMOUS ENGINEERING & AGENTIC SYSTEMS / KỸ THUẬT TỰ TRỊ
 
 ### Claw Compactor (MIT License)
 - **Project**: [Claw Compactor](https://github.com/open-compress/claw-compactor)
@@ -119,25 +119,16 @@ This project incorporates components from several third-party projects. Full lic
 - **Notice**: Copyright (c) 2026 Addy Osmani. The architectural disciplines, workflows, and core principles of the 24 agent skills are assimilated from this project.
 - **Lưu ý**: Bản quyền thuộc về Addy Osmani. Các nguyên tắc kiến trúc, quy trình và kỹ năng chuyên môn của 24 kỹ năng đặc vụ được đồng hóa từ dự án này.
 
----
-
-## ⚖️ 4. ASSIMILATION & REFACTORING RULES / QUY TẮC ĐỒNG HÓA & TÁI CẤU TRÚC
-
-JKAI Zenith is an **Assimilated System**. This means we integrate the "essence" (patterns, logic, and architectural insights) of elite open-source projects.
-*JKAI Zenith là một **Hệ thống Đồng hóa**. Điều này có nghĩa là chúng tôi tích hợp "tinh hoa" (mẫu hình, logic và kiến thức kiến trúc) từ các dự án mã nguồn mở ưu tú.*
-
-- **Sovereign Integration**: All assimilated components are refactored to comply with the SDS v19.x protocol.
-  *(Tích hợp Chủ quyền: Tất cả các thành phần được đồng hóa đều được tái cấu trúc để tuân thủ giao thức SDS v19.x.)*
-- **Respect for Original Authors**: While we "assimilate" the logic, we preserve the legal attribution to the original creators in this file and [**CREDITS.md**](file:///d:/Docker/JKAI/CREDITS.md).
-  *(Tôn trọng Tác giả Gốc: Dù chúng tôi "đồng hóa" logic, chúng tôi vẫn bảo tồn việc ghi nhận bản quyền cho các tác giả gốc trong tệp này và [**CREDITS.md**](file:///d:/Docker/JKAI/CREDITS.md).)*
+### Zero-Mem: Zero-Token Memory Operations for LLM Agents (CC BY-NC-SA 4.0 / Research)
+- **Paper / Project**: [Zero-Mem (arXiv:2607.29377)](https://arxiv.org/abs/2607.29377) / [GitHub](https://github.com/TheMoon0815/Zero-mem)
+- **License**: [CC-BY-NC-SA-4.0.txt](file:///d:/Docker/JKAI/LICENSES/CC-BY-NC-SA-4.0.txt)
+- **Authors**: Yilin Xiao, Zhehan Zhu, Yujing Zhang, Jin Chen, Zijin Hong, Luyao Zhuang, Qinggang Zhang, Shengyuan Chen, Xiaocao Ouyang, Lingfei Ren, Xiao Huang (The Hong Kong Polytechnic University / Southwestern University of Finance and Economics / Jilin University).
+- **Notice**: The non-generative memory principles (Raw Interaction Traces as source of record, Dual-View entity-context graph and temporal hierarchy, and query-conditioned deterministic evidence calibration) are assimilated and refactored into the JKAI DEMS v1.0 (Deterministic Evidence & Memory Substrate).
+- **Lưu ý**: Các nguyên lý bộ nhớ phi tạo sinh (Vết tích tương tác thô Raw Traces làm nguồn sự thật, cấu trúc dữ liệu kép đồ thị thực thể và phân cấp thời gian, cùng cơ chế phân xử bằng chứng xác định) được đồng hóa và tái cấu trúc hoàn toàn vào hệ thống DEMS v1.0 của JKAI Zenith.
 
 ---
 
-> [!NOTE]
-> For more details on the full catalog of technologies used, please refer to the [**CREDITS.md**](file:///d:/Docker/JKAI/CREDITS.md) file.
-> *(Để biết thêm chi tiết về danh mục đầy đủ các công nghệ được sử dụng, vui lòng tham khảo tệp [**CREDITS.md**](file:///d:/Docker/JKAI/CREDITS.md).)*
-
-## 🧠 2. ARTIFICIAL INTELLIGENCE & DATA / TRÍ TUỆ NHÂN TẠO & DỮ LIỆU
+## 🧠 3. ARTIFICIAL INTELLIGENCE & DATA / TRÍ TUỆ NHÂN TẠO & DỮ LIỆU
 
 ### DeepSeek-V3 / R1 (MIT License)
 - **Project**: [DeepSeek](https://github.com/deepseek-ai/DeepSeek-V3)
@@ -151,16 +142,15 @@ JKAI Zenith is an **Assimilated System**. This means we integrate the "essence" 
 - **Notice**: Copyright (c) 2024 Qdrant Team.
 - **Lưu ý**: Bản quyền (c) 2024 Qdrant Team. Cấp phép theo Apache License 2.0.
 
----
-
 ### Crawl4AI (Apache License 2.0 with Required Attribution)
 - **Project**: [Crawl4AI](https://github.com/unclecode/crawl4ai)
 - **License**: [Apache-2.0.txt](file:///d:/Docker/JKAI/LICENSES/Apache-2.0.txt)
 - **Notice**: This product includes software developed by UncleCode (https://x.com/unclecode) as part of the Crawl4AI project (https://github.com/unclecode/crawl4ai). Copyright (c) 2024 UncleCode. Licensed under the Apache License 2.0.
 - **Lưu ý**: Sản phẩm này tích hợp phần mềm được phát triển bởi UncleCode (https://x.com/unclecode) như một phần của dự án Crawl4AI (https://github.com/unclecode/crawl4ai). Bản quyền thuộc về UncleCode. Cấp phép theo Apache License 2.0.
+
 ---
 
-## 🛠️ 3. CORE LIBRARIES & FRAMEWORKS / THƯ VIỆN & KHUNG PHÁT TRIỂN
+## 🛠️ 4. CORE LIBRARIES & FRAMEWORKS / THƯ VIỆN & KHUNG PHÁT TRIỂN
 
 ### Playwright (Apache License 2.0)
 - **Project**: [Playwright](https://github.com/microsoft/playwright)
@@ -176,20 +166,34 @@ JKAI Zenith is an **Assimilated System**. This means we integrate the "essence" 
 
 ---
 
-## ⚖️ 4. COMPLIANCE GUIDE / HƯỚNG DẪN TUÂN THỦ
+## ⚖️ 5. ASSIMILATION & REFACTORING RULES / QUY TẮC ĐỒNG HÓA & TÁI CẤU TRÚC
 
-To ensure professionalism and avoid legal risks, all project contributors MUST adhere to:
-*Để đảm bảo tính chuyên nghiệp và tránh rủi ro pháp lý, tất cả những người đóng góp cho dự án BẮT BUỘC phải tuân thủ:*
+JKAI Zenith is an **Assimilated System**. This means we integrate the "essence" (patterns, logic, and architectural insights) of elite open-source projects.
+*JKAI Zenith là một **Hệ thống Đồng hóa**. Điều này có nghĩa là chúng tôi tích hợp "tinh hoa" (mẫu hình, logic và kiến thức kiến trúc) từ các dự án mã nguồn mở ưu tú.*
 
-1. **Do not remove copyright notices**: Never delete headers from third-party source files.
-   *(Không xóa thông báo bản quyền: Tuyệt đối không xóa header của các file mã nguồn bên thứ ba.)*
-2. **Update LICENSES/**: When adding a new library, check the license type and add a copy to the `LICENSES/` directory.
-   *(Cập nhật thư mục LICENSES/: Khi thêm thư viện mới, hãy kiểm tra loại giấy phép và thêm bản sao vào thư mục LICENSES/.)*
-3. **Declare in NOTICE.md**: Every new core library must be transparently declared in this file.
-   *(Khai báo trong NOTICE.md: Mọi thư viện nòng cốt mới phải được khai báo minh bạch trong tệp này.)*
-4. **Respect commercial boundaries**: Do not use components (like n8n) to create directly competing products without original author's permission.
-   *(Tôn trọng ranh giới thương mại: Không sử dụng các thành phần (như n8n) để tạo ra sản phẩm cạnh tranh trực tiếp mà không có sự cho phép của tác giả gốc.)*
+- **Sovereign Integration**: All assimilated components are refactored to comply with the SDS v19.x protocol.
+  *(Tích hợp Chủ quyền: Tất cả các thành phần được đồng hóa đều được tái cấu trúc để tuân thủ giao thức SDS v19.x.)*
+- **Respect for Original Authors**: While we "assimilate" the logic, we preserve the legal attribution to the original creators in this file and [**CREDITS.md**](file:///d:/Docker/JKAI/CREDITS.md).
+  *(Tôn trọng Tác giả Gốc: Dù chúng tôi "đồng hóa" logic, chúng tôi vẫn bảo tồn việc ghi nhận bản quyền cho các tác giả gốc trong tệp này và [**CREDITS.md**](file:///d:/Docker/JKAI/CREDITS.md).)*
 
 ---
- ---
-*Verified for International & Local Open Source Compliance. v19.12*
+
+## ⚖️ 6. COMPLIANCE & USAGE GOVERNANCE / QUY TRÌNH & HƯỚNG DẪN TUÂN THỦ
+
+To ensure legal compliance and avoid licensing risks when using or assimilating third-party applications/libraries, all agents and contributors MUST follow this 4-step protocol:
+*Để đảm bảo tính chuyên nghiệp và loại trừ rủi ro pháp lý khi sử dụng hoặc đồng hóa ứng dụng/thư viện của bên thứ ba, tất cả đặc vụ và người tham gia phát triển BẮT BUỘC phải tuân thủ quy trình 4 bước:*
+
+1. **Protocol 1: License Verification & Compatibility Check (Kiểm tra tương thích Giấy phép)**
+   - Check the upstream repository's license (MIT, Apache-2.0, BSD, CC BY-NC-SA, GPL, etc.).
+   - Verify commercial vs. non-commercial boundaries (e.g. CC BY-NC-SA or Sustainable Use Licenses like n8n).
+2. **Protocol 2: License Storage in `LICENSES/` (Lưu trữ toàn văn giấy phép)**
+   - When introducing any new library or research paradigm, copy the full license text into the [`LICENSES/`](file:///d:/Docker/JKAI/LICENSES/) directory with standard naming (`<project>-<license>.txt`).
+3. **Protocol 3: Attribution Declaration in `NOTICE.md` & `CREDITS.md` (Khai báo minh bạch)**
+   - Explicitly declare the project name, official repository/paper link, license type, original authors, and exact assimilation scope in [`NOTICE.md`](file:///d:/Docker/JKAI/NOTICE.md).
+   - Never remove or strip original copyright notices and file directives.
+4. **Protocol 4: Sovereign Refactoring & Non-Tampering (Tái cấu trúc độc lập, không vá tạm)**
+   - Assimilate only the architectural essence into the JKAI Sovereign Substrate.
+   - Do not directly copy-paste code with proprietary dependencies without abstraction.
+
+---
+*Verified for International & Local Open Source Compliance. v20.0*

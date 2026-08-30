@@ -53,6 +53,10 @@ class CognitiveMemory:
             clean_query = query.strip()
             if len(clean_query) < 5: return None
             
+            # Với các câu hỏi thời gian thực (giá vàng, tin tức, hôm nay), bắt buộc bỏ qua cache để tra cứu dữ liệu mới
+            if self._is_time_sensitive(clean_query):
+                return None
+            
             # 1. Tra cứu Qdrant (Semantic Hit)
             query_emb = await embed.get_embedding_async(clean_query)
             if query_emb:
@@ -121,6 +125,15 @@ class CognitiveMemory:
     async def store_reflex(self, query: str, answer: str, session_id: str = None, metadata: dict = None):
         """Lưu trữ tri thức với nhãn Session để dễ dàng thanh tẩy thưa Master."""
         if not query or not answer: return
+        answer_str = str(answer).strip()
+        if answer_str in ["{}", "None", "null", ""] or len(answer_str) < 5:
+            return
+        # Không bao giờ cache câu trả lời lỗi hoặc thông báo từ chối
+        if any(err_kw in answer_str.lower() for err_kw in ["không có dữ liệu thời gian thực", "không thể kết nối", "lỗi nơ-ron", "timed out", "error:"]):
+            return
+        # Không lưu cache vĩnh viễn cho các câu hỏi nhạy cảm thời gian
+        if self._is_time_sensitive(query):
+            return
         
         metadata = metadata or {}
         if session_id: metadata["session_id"] = session_id

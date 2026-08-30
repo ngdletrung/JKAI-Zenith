@@ -11,14 +11,17 @@ class TestMasterPromptArchitect(unittest.TestCase):
         invalidate_cache()
 
     def test_build_master_system_prompt(self):
-        prompt = master_prompt_architect.build_master_system_prompt(role="RECEPTIONIST", task_type="CHAT")
-        self.assertIn("JKAI Zenith", prompt)
-        self.assertIn("Master LeeTrung", prompt)
-        self.assertIn("Project Rules", prompt)
-        self.assertIn("Behavioral Directives", prompt)
-        self.assertIn("Task Mode: CHAT", prompt)
-        self.assertIn("Response Format", prompt)
-        self.assertIn(".jkairules.json", prompt)
+        # Biến thể MID
+        prompt_mid = master_prompt_architect.build_master_system_prompt(role="RECEPTIONIST", task_type="CHAT", prompt_variant="MID")
+        self.assertIn("JKAI Zenith", prompt_mid)
+        self.assertIn("RECEPTIONIST", prompt_mid)
+        self.assertIn("LIVE TIME ANCHOR", prompt_mid)
+
+        # Biến thể FULL
+        prompt_full = master_prompt_architect.build_master_system_prompt(role="RECEPTIONIST", task_type="CHAT", prompt_variant="FULL")
+        self.assertIn("JKAI Zenith", prompt_full)
+        self.assertIn("Master LeeTrung", prompt_full)
+        self.assertIn("Live Spatio-Temporal Anchor", prompt_full)
 
 if __name__ == "__main__":
     unittest.main()

@@ -101,6 +101,23 @@ def extract_tool_calls_lexical(content: str, allowed: Optional[Set[str]] = None)
                     }
                 })
 
+    # ── Format 3: Markdown JSON Code Block Scanner (```json {"name": "...", "arguments": {...}} ```) ──
+    for m in re.finditer(r"```(?:json)?\s*\n(\{.*?\})\s*```", content, re.DOTALL | re.IGNORECASE):
+        raw_block = m.group(1).strip()
+        parsed = _repair_and_parse_json(raw_block)
+        if isinstance(parsed, dict):
+            # Nhận diện { "name": ..., "arguments" / "parameters": ... } hoặc { "action": ..., "args": ... }
+            t_name = parsed.get("name") or parsed.get("tool") or parsed.get("action")
+            t_args = parsed.get("arguments") or parsed.get("parameters") or parsed.get("args") or {}
+            if t_name and isinstance(t_name, str):
+                if allowed is None or t_name in allowed:
+                    calls.append({
+                        "function": {
+                            "name": t_name,
+                            "arguments": json.dumps(t_args if isinstance(t_args, dict) else {}, ensure_ascii=False)
+                        }
+                    })
+
     return calls
 
 

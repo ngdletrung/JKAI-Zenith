@@ -81,6 +81,7 @@ JKAI Zenith is built upon the integration of world-class open-source technologie
 | **ECC** | Affaan Mustafa | MIT | 63 Agents & 249 Skills Ecosystem / Hệ sinh thái 63 Đặc vụ |
 | **OpenCode** | anomalyco | MIT | CLI Agent & Reference Knowledge / Kiến thức tham khảo CLI Agent |
 | **Agent Skills** | Addy Osmani | MIT | 24 Skills & Workflows Architecture / Kiến trúc 24 kỹ năng và quy trình |
+| **Zero-Mem** | HKUST / PolyU / SWUFE / Jilin Univ | CC BY-NC-SA 4.0 | Zero-Token Memory Operations & DEMS / Quản trị bộ nhớ phi tạo sinh & DEMS |
 
 
 ---

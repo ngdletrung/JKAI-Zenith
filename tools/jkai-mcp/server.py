@@ -75,7 +75,7 @@ async def jkai_ping() -> str:
 @mcp.tool()
 async def jkai_chat(
     goal: str,
-    mode: str = "auto",
+    mode: str = "fast",
     mission_id: Optional[str] = None,
     parent_mission_id: Optional[str] = None,
     history_json: Optional[str] = None,
@@ -156,7 +156,7 @@ async def jkai_chat(
 @mcp.tool()
 async def jkai_submit_task(
     goal: str,
-    mode: str = "auto",
+    mode: str = "fast",
     mission_id: str = "vscode",
     source: str = "MCP",
 ) -> str:

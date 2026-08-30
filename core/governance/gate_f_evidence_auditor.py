@@ -1,11 +1,19 @@
 """
-JKAI ZENITH v4 — GATE F REAL HARDWARE EVIDENCE AUDITOR (v4.0)
+JKAI ZENITH v4 — GATE F REAL HARDWARE EVIDENCE AUDITOR (v4.1)
 File: core/governance/gate_f_evidence_auditor.py
 
 Multi-Vendor Hardware Telemetry & Gate F Evidence Auditor:
 - Multi-Vendor GPU Abstraction: AMD / ROCm, NVIDIA / CUDA, Intel OneAPI, Windows WMI/DirectX, CPU-Only
 - Real CPU, RAM, and OS telemetry via psutil & platform inspection
 - Dynamic measurement and provenance-rich reporting without hardcoded assumptions
+
+v4.1 — Mission Ledger Integration:
+- GateFElevanceMetrics are now DERIVED from real mission telemetry (MissionLedger)
+  instead of hard-coded default values.
+- GateFEvidenceAuditor.generate_evidence_package() now writes mission_ledger_summary.json
+  alongside run_manifest.json, hardware_snapshot.json, and FINAL_VERDICT.json.
+- If mission telemetry is unavailable (LEDGER_EMPTY), an explicit warning is emitted
+  and Gate F verdict defaults to FAILED (not PASSED).
 """
 
 from __future__ import annotations
@@ -48,11 +56,12 @@ class GPUHardwareProfile:
 
 @dataclass
 class GateFElevanceMetrics:
-    total_missions: int = 100
-    successful_missions: int = 100
-    mission_success_rate: float = 100.0
-    crash_recovery_rate: float = 100.0
-    recovery_correctness: float = 100.0
+    # ── Operational metrics (MUST be derived — never hard-coded) ──
+    total_missions: int = 0           # 0 = LEDGER_EMPTY — not 100
+    successful_missions: int = 0
+    mission_success_rate: float = 0.0 # 0.0 = unknown — not 100.0
+    crash_recovery_rate: float = 0.0
+    recovery_correctness: float = 0.0
     duplicate_irreversible_execution: int = 0
     stale_state_execution: int = 0
     mission_state_loss: int = 0
@@ -62,11 +71,15 @@ class GateFElevanceMetrics:
     cross_mission_contamination: int = 0
     policy_violations: int = 0
     resource_exhaustion_oom: int = 0
+    # ── Hardware telemetry (real-time probe) ──
     peak_vram_gb: float = 0.0
     peak_ram_gb: float = 0.0
     p95_latency_ms: float = 0.0
     p99_latency_ms: float = 0.0
-    is_gate_f_passed: bool = True
+    # ── Verdict (derived — never declared) ──
+    is_gate_f_passed: bool = False    # False = unknown — not True
+    ledger_status: str = "EMPTY"      # EMPTY | PARTIAL | FULL
+    ledger_source: str = ""           # path or "HARDCODED" (audit signal)
 
 
 class HardwareTelemetryEngine:
@@ -202,7 +215,16 @@ class HardwareTelemetryEngine:
 
 
 class GateFEvidenceAuditor:
-    """Real Hardware Telemetry & Gate F Evidence Auditor."""
+    """
+    Real Hardware Telemetry & Gate F Evidence Auditor (v4.1).
+
+    Operational metrics are DERIVED from real mission telemetry via MissionLedger.
+    Hardware metrics are PROBED at runtime via HardwareTelemetryEngine.
+    Gate F verdict is COMPUTED — never pre-declared.
+    """
+
+    # Default missions directory — relative to CWD when deployed inside JKAI
+    DEFAULT_MISSIONS_DIR: str = "services/mission-control/backend/missions"
 
     @classmethod
     def sample_real_hardware(cls) -> Dict[str, Any]:
@@ -210,36 +232,108 @@ class GateFEvidenceAuditor:
         return HardwareTelemetryEngine.probe_all_hardware()
 
     @classmethod
-    def generate_evidence_package(cls, output_dir: str = "gate_f_audit") -> Dict[str, Any]:
-        """Generates dynamic Gate F audit evidence package based on real physical telemetry."""
+    def generate_evidence_package(
+        cls,
+        output_dir: str = "gate_f_audit",
+        missions_dir: Optional[str] = None,
+    ) -> Dict[str, Any]:
+        """
+        Generates Gate F audit evidence package.
+
+        Sources:
+          1. Hardware metrics  — real-time probe via HardwareTelemetryEngine
+          2. Operational metrics — derived from mission telemetry via MissionLedger
+          3. Gate F verdict    — computed from derived metrics, not declared
+
+        Outputs:
+          run_manifest.json          — audit metadata
+          hardware_snapshot.json     — real hardware profile
+          resource_metrics.json      — combined hw + operational metrics
+          mission_ledger_summary.json — full ledger derivation record
+          FINAL_VERDICT.json         — gate verdict with provenance
+        """
         os.makedirs(output_dir, exist_ok=True)
+
+        # ── 1. Real hardware probe ─────────────────────────────────
         hw = cls.sample_real_hardware()
 
+        # ── 2. Derive operational metrics from mission telemetry ───
+        _missions_dir = missions_dir or cls.DEFAULT_MISSIONS_DIR
+        ledger_summary: Optional[Any] = None
+        operational_metrics: Dict[str, Any] = {}
+
+        try:
+            from core.governance.mission_ledger import MissionLedger
+            ledger = MissionLedger(missions_dir=_missions_dir)
+            ledger_summary = ledger.derive_metrics()
+            operational_metrics = ledger.as_gate_f_metrics_dict()
+            logger.info(
+                "MissionLedger derived: %d missions, %.1f%% success, Gate F=%s",
+                ledger_summary.total_missions,
+                ledger_summary.mission_success_rate,
+                "PASSED" if ledger_summary.is_gate_f_passed else "FAILED",
+            )
+        except Exception as e:
+            logger.warning("MissionLedger unavailable (%s) — Gate F metrics unverified", e)
+            operational_metrics = {
+                "total_missions": 0,
+                "successful_missions": 0,
+                "mission_success_rate": 0.0,
+                "is_gate_f_passed": False,
+                "ledger_status": "EMPTY",
+                "ledger_source": "LEDGER_UNAVAILABLE",
+            }
+
+        # ── 3. Construct metrics dataclass ─────────────────────────
         metrics = GateFElevanceMetrics(
+            total_missions=operational_metrics.get("total_missions", 0),
+            successful_missions=operational_metrics.get("successful_missions", 0),
+            mission_success_rate=operational_metrics.get("mission_success_rate", 0.0),
+            crash_recovery_rate=operational_metrics.get("crash_recovery_rate", 0.0),
+            recovery_correctness=operational_metrics.get("recovery_correctness", 0.0),
+            mission_state_loss=operational_metrics.get("mission_state_loss", 0),
+            identity_chain_loss=operational_metrics.get("identity_chain_loss", 0),
+            infinite_recovery_loop=operational_metrics.get("infinite_recovery_loop", 0),
+            cross_mission_contamination=operational_metrics.get("cross_mission_contamination", 0),
+            resource_exhaustion_oom=operational_metrics.get("resource_exhaustion_oom", 0),
             peak_ram_gb=hw["ram_used_gb"],
             peak_vram_gb=hw["gpu_used_vram_gb"],
-            p95_latency_ms=120.0,
-            p99_latency_ms=350.0,
-            is_gate_f_passed=True
+            p95_latency_ms=operational_metrics.get("p95_latency_ms", 0.0),
+            p99_latency_ms=operational_metrics.get("p99_latency_ms", 0.0),
+            is_gate_f_passed=operational_metrics.get("is_gate_f_passed", False),
+            ledger_status=operational_metrics.get("ledger_status", "EMPTY"),
+            ledger_source=_missions_dir,
         )
 
-        # 1. run_manifest.json
+        # ── 4. Write artifact files ────────────────────────────────
+
+        # run_manifest.json
         run_manifest = {
             "audit_title": "JKAI Zenith AI OS Gate F Real Hardware Audit",
+            "audit_version": "4.1",
             "timestamp": time.time(),
-            "target_hardware": f"{hw['gpu']} [{hw['gpu_vendor']}] + {hw['cpu']} + {hw['ram_installed_gb']}GB RAM",
+            "target_hardware": (
+                f"{hw['gpu']} [{hw['gpu_vendor']}] + "
+                f"{hw['cpu']} + {hw['ram_installed_gb']}GB RAM"
+            ),
             "llm_engine": "Ollama Local Substrate",
             "governance": "AMG v2 Resident Models",
-            "telemetry_source": hw.get("gpu_telemetry_source", "OS Probe")
+            "telemetry_source": hw.get("gpu_telemetry_source", "OS Probe"),
+            "operational_metrics_source": (
+                f"MissionLedger({_missions_dir}) — "
+                f"{metrics.total_missions} missions derived"
+                if metrics.total_missions > 0
+                else "LEDGER_EMPTY — no mission telemetry available"
+            ),
         }
         with open(os.path.join(output_dir, "run_manifest.json"), "w", encoding="utf-8") as f:
-            json.dump(run_manifest, f, indent=2)
+            json.dump(run_manifest, f, indent=2, ensure_ascii=False)
 
-        # 2. hardware_snapshot.json
+        # hardware_snapshot.json
         with open(os.path.join(output_dir, "hardware_snapshot.json"), "w", encoding="utf-8") as f:
-            json.dump(hw, f, indent=2)
+            json.dump(hw, f, indent=2, ensure_ascii=False)
 
-        # 3. resource_metrics.json
+        # resource_metrics.json
         resource_metrics = {
             "peak_vram_gb": metrics.peak_vram_gb,
             "peak_ram_gb": metrics.peak_ram_gb,
@@ -248,18 +342,31 @@ class GateFEvidenceAuditor:
             "p95_latency_ms": metrics.p95_latency_ms,
             "p99_latency_ms": metrics.p99_latency_ms,
             "gpu_vendor": hw["gpu_vendor"],
-            "oom_count": 0
+            "oom_count": metrics.resource_exhaustion_oom,
         }
         with open(os.path.join(output_dir, "resource_metrics.json"), "w", encoding="utf-8") as f:
-            json.dump(resource_metrics, f, indent=2)
+            json.dump(resource_metrics, f, indent=2, ensure_ascii=False)
 
-        # 4. FINAL_VERDICT.json
+        # mission_ledger_summary.json  ← NEW: full provenance of derived metrics
+        if ledger_summary is not None:
+            try:
+                from dataclasses import asdict as _asdict
+                ledger_dict = _asdict(ledger_summary)
+            except Exception:
+                ledger_dict = {"error": "ledger_summary not serialisable"}
+        else:
+            ledger_dict = {"ledger_status": "EMPTY", "reason": "MissionLedger failed to initialise"}
+        with open(os.path.join(output_dir, "mission_ledger_summary.json"), "w", encoding="utf-8") as f:
+            json.dump(ledger_dict, f, indent=2, ensure_ascii=False)
+
+        # FINAL_VERDICT.json
         verdict = {
             "verdict": "PASSED" if metrics.is_gate_f_passed else "FAILED",
+            "verdict_basis": "derived_from_mission_ledger" if metrics.total_missions > 0 else "LEDGER_EMPTY_DEFAULT_FAIL",
             "metrics": asdict(metrics),
-            "generated_at": time.time()
+            "generated_at": time.time(),
         }
         with open(os.path.join(output_dir, "FINAL_VERDICT.json"), "w", encoding="utf-8") as f:
-            json.dump(verdict, f, indent=2)
+            json.dump(verdict, f, indent=2, ensure_ascii=False)
 
         return verdict

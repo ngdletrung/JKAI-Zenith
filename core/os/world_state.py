@@ -74,22 +74,22 @@ class CircuitBreaker:
 
 class WorldStateMonitor:
     _circuit_breaker = CircuitBreaker()
+    _cached_health: Optional[Dict[str, str]] = None
+    _last_health_check: float = 0.0
 
     @staticmethod
-    async def _check_with_retry(name: str, url: str, expected_status: int = 200, max_retries: int = 2) -> bool:
-        """Health check với retry + circuit breaker."""
+    async def _check_with_retry(name: str, url: str, expected_status: int = 200, max_retries: int = 1) -> bool:
+        """Health check với short timeout + circuit breaker."""
         for attempt in range(max_retries):
             if not WorldStateMonitor._circuit_breaker.allow_request(name):
                 return False
             try:
-                async with httpx.AsyncClient(timeout=1.5) as client:
+                async with httpx.AsyncClient(timeout=0.3) as client:
                     res = await client.get(url)
                     if res.status_code == expected_status:
                         WorldStateMonitor._circuit_breaker.record_success(name)
                         return True
             except Exception:
-                if attempt < max_retries - 1:
-                    await asyncio.sleep(0.5 * (attempt + 1))
                 continue
         WorldStateMonitor._circuit_breaker.record_failure(name)
         return False
@@ -117,11 +117,11 @@ class WorldStateMonitor:
         except Exception:
             pass
 
-        # 2. Fallback: Truy vấn API trực tiếp từ Host Bridge (nếu cache bị quá hạn hoặc mất kết nối Redis)
+        # 2. Fallback: Truy vấn API trực tiếp từ Host Bridge
         if WorldStateMonitor._circuit_breaker.allow_request("host_bridge"):
             try:
                 token = os.getenv("AKAI_SECURE_TOKEN", "AKAI_DEVEL_SECRET_2025")
-                async with httpx.AsyncClient(timeout=2.0) as client:
+                async with httpx.AsyncClient(timeout=0.5) as client:
                     res = await client.get(
                         "http://host.docker.internal:9997/telemetry",
                         headers={"X-AKAI-TOKEN": token}
@@ -155,7 +155,7 @@ class WorldStateMonitor:
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE
             )
-            stdout, _ = await asyncio.wait_for(proc_branch.communicate(), timeout=2.0)
+            stdout, _ = await asyncio.wait_for(proc_branch.communicate(), timeout=0.5)
             if proc_branch.returncode == 0:
                 state.active_branch = stdout.decode().strip()
 
@@ -166,23 +166,22 @@ class WorldStateMonitor:
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE
             )
-            stdout, _ = await asyncio.wait_for(proc_status.communicate(), timeout=2.0)
+            stdout_st, _ = await asyncio.wait_for(proc_status.communicate(), timeout=0.5)
             if proc_status.returncode == 0:
-                lines = stdout.decode().strip().split("\n")
-                modified = []
-                for line in lines:
-                    if line.strip():
-                        filepath = line.strip().split(maxsplit=1)[-1]
-                        modified.append(filepath)
-                state.modified_files = modified
-                state.is_dirty = len(modified) > 0
+                lines = stdout_st.decode().splitlines()
+                state.modified_files = [line[3:].strip() for line in lines if len(line) > 3]
+                state.is_dirty = len(state.modified_files) > 0
         except Exception:
             pass
         return state
 
     @staticmethod
     async def check_infrastructure_health() -> Dict[str, str]:
-        """Kiểm tra sức khỏe hạ tầng (Redis, Qdrant, Ollama) một cách song song."""
+        """Kiểm tra sức khỏe hạ tầng (Redis, Qdrant, Ollama) với bộ đệm cache 3.0s."""
+        now = time.time()
+        if WorldStateMonitor._cached_health and (now - WorldStateMonitor._last_health_check < 3.0):
+            return WorldStateMonitor._cached_health
+
         health = {"redis": "offline", "qdrant": "offline", "ollama": "offline"}
 
         async def check_redis():
@@ -204,6 +203,8 @@ class WorldStateMonitor:
                 health["ollama"] = "online"
 
         await asyncio.gather(check_redis(), check_qdrant(), check_ollama())
+        WorldStateMonitor._cached_health = health
+        WorldStateMonitor._last_health_check = now
         return health
 
     @classmethod

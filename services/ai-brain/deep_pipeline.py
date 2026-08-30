@@ -51,7 +51,7 @@ class DeepPipeline:
         self,
         goal: str,
         task_id: str,
-        planner_instance: Any,
+        planner_instance: Any = None,
         context: Dict = None,
         history: List = None,
         images: List = None,
@@ -61,6 +61,13 @@ class DeepPipeline:
         """
         Thực thi toàn bộ luồng DEEP từ T2 đến T6 với vòng lặp Re-planner thưa Master.
         """
+        if planner_instance is None:
+            try:
+                from planner import Planner
+                planner_instance = Planner()
+            except Exception:
+                planner_instance = None
+
         max_attempts = 3
         replan_feedback = ""
         final_result = None
@@ -89,6 +96,22 @@ class DeepPipeline:
         except Exception as e_prune:
             logger.warning("[DEEP-PIPELINE] Memory pruning skipped: %s", e_prune)
 
+        # 🧠 [EXPERIENCE-STORE]: Truy vấn bài học kinh nghiệm từ quá khứ
+        past_lessons = []
+        try:
+            from core.memory.experience_store import ExperienceStore
+            import hashlib
+            task_sig = hashlib.md5(goal.strip().lower().encode()).hexdigest()
+            past_lessons = ExperienceStore.get_negative_lessons(task_sig)
+            if past_lessons:
+                engine.publish_mission_log(
+                    "PLANNER",
+                    f"[EXPERIENCE-STORE] Đã truy xuất {len(past_lessons)} bài học thất bại từ quá khứ để phòng ngừa.",
+                    task_id, trace_id, stealth=True
+                )
+        except Exception:
+            pass
+
         for attempt in range(max_attempts):
             if attempt > 0:
                 engine.publish_mission_log(
@@ -112,6 +135,10 @@ class DeepPipeline:
                     pass
 
             current_goal = goal
+            if past_lessons:
+                lesson_text = "\n".join([f"- {l}" for l in past_lessons[:3]])
+                current_goal += f"\n\n[BÀI HỌC KINH NGHIỆM TỪ QUÁ KHỨ]:\n{lesson_text}\n(Hãy lập kế hoạch tránh các sai lầm trên)."
+
             if replan_feedback:
                 current_goal += f"\n\n[REPLAN-FEEDBACK]: Báo cáo thực thi trước đó bị Critic từ chối vì: '{replan_feedback}'. Vui lòng điều chỉnh kế hoạch, sửa đổi các bước lỗi và khắc phục triệt để."
 
@@ -136,9 +163,39 @@ class DeepPipeline:
                     task_id,
                     trace_id
                 )
+                # Ghi nhận thành công vào ExperienceStore
+                try:
+                    from core.memory.experience_store import ExperienceStore
+                    from core.contracts.verification_contract import ExperienceRecord
+                    import hashlib
+                    task_sig = hashlib.md5(goal.strip().lower().encode()).hexdigest()
+                    ExperienceStore.add_record(ExperienceRecord(
+                        task_signature=task_sig,
+                        context_summary=goal[:200],
+                        strategy_used=f"DeepPipeline (attempt {attempt + 1})",
+                        outcome="SUCCESS"
+                    ))
+                except Exception:
+                    pass
                 break
             else:
                 replan_feedback = judicial_review.get("feedback", "Kết quả thực thi không có bằng chứng hợp lệ.")
+                # Ghi nhận thất bại vào ExperienceStore để tự học
+                try:
+                    from core.memory.experience_store import ExperienceStore
+                    from core.contracts.verification_contract import ExperienceRecord, FailureClassification
+                    import hashlib
+                    task_sig = hashlib.md5(goal.strip().lower().encode()).hexdigest()
+                    ExperienceStore.add_record(ExperienceRecord(
+                        task_signature=task_sig,
+                        context_summary=goal[:200],
+                        strategy_used=f"DeepPipeline Attempt {attempt + 1}",
+                        outcome="FAILED",
+                        failure_classification=FailureClassification.VERIFICATION_FAILURE,
+                        negative_lessons=[replan_feedback]
+                    ))
+                except Exception:
+                    pass
 
         return final_result
 
@@ -146,7 +203,7 @@ class DeepPipeline:
         self,
         goal: str,
         task_id: str,
-        planner_instance: Any,
+        planner_instance: Any = None,
         context: Dict = None,
         history: List = None,
         images: List = None,
@@ -155,6 +212,13 @@ class DeepPipeline:
         attempt: int = 0,
     ) -> Dict[str, Any]:
         from core.utils.engine import engine
+
+        if planner_instance is None:
+            try:
+                from planner import Planner
+                planner_instance = Planner()
+            except Exception:
+                planner_instance = None
 
         context = context or {}
         history = history or []
@@ -171,6 +235,36 @@ class DeepPipeline:
             "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
             task_id, trace_id, stealth=True
         )
+
+        # [P0-1 & P0-2]: Explicit PolicySnapshot & TaskContract population at Mission Admission
+        try:
+            from core.kernel.task_contract_store import set_active_contract, set_policy_snapshot
+            from core.kernel.policy_snapshot import create_policy_snapshot
+            from prompt_engine.task_contract import TaskContract, DecisionAuthority
+
+            deep_snap = create_policy_snapshot(
+                mission_id=task_id,
+                can_modify_files=True,
+                can_delete_files=False,
+                can_send_external_message=True,
+                can_execute_shell=True,
+                budget_max_turns=20
+            )
+            set_policy_snapshot(task_id, deep_snap)
+
+            deep_contract = TaskContract(
+                objective=goal,
+                decision_authority=DecisionAuthority(
+                    can_modify_files=True,
+                    can_delete_files=False,
+                    can_send_external_message=True,
+                    can_execute_shell=True
+                )
+            )
+            set_active_contract(task_id, deep_contract)
+            logger.debug("[DEEP-PIPELINE] Active PolicySnapshot (%s) & TaskContract registered for task_id=%s", deep_snap.snapshot_id, task_id)
+        except Exception as tc_err:
+            logger.warning("[DEEP-PIPELINE] PolicySnapshot registration error: %s", tc_err)
 
         # T1.5: Domain routing (Planner tự xử lý, bỏ MetaPlanner)
         domain = "CORE"
@@ -357,104 +451,39 @@ class DeepPipeline:
                         stealth=False
                     )
 
+                    from receptionist.executor_gateway import ExecutorGateway, ExecutionRequest
+                    gateway = ExecutorGateway(client)
+                    tool_semaphore = asyncio.Semaphore(5)
+
                     async def run_single_step(step: Dict[str, Any]) -> tuple[str, Dict[str, Any]]:
-                        # Import to establish technical reference references
-                        try:
-                            from core.utils.knowledge_manager import JKAIKnowledgeOrchestrator
-                            from intelligence.skills.CORE.SEQUENTIAL_FILE_READER.logic import SequentialReader
-                        except Exception:
-                            pass
+                        async with tool_semaphore:
+                            tool_name = step.get("tool") or step.get("action") or step.get("skill") or step.get("skill_id") or step.get("name") or "SEARCH_WEB_GLOBAL"
+                            step_args = step.get("args") or step.get("arguments") or step.get("params") or {}
+                            if not isinstance(step_args, dict):
+                                step_args = {"query": str(step_args)}
 
-                        # Intercept large file reads and redirect to sequential Map-Reduce reader
-                        tool_name = str(step.get("tool", "")).lower()
-                        if tool_name in ("read_file", "read_file_content"):
-                            args = step.get("args", {})
-                            path = args.get("path") or args.get("TargetFile") or args.get("file_path") or args.get("target")
-                            if path:
-                                import os
-                                workspace_root = os.getenv("WORKSPACE_ROOT", "d:\\Docker\\JKAI")
-                                abs_path = path if os.path.isabs(path) else os.path.join(workspace_root, path)
-                                if os.path.exists(abs_path) and os.path.isfile(abs_path):
-                                    file_size = os.path.getsize(abs_path)
-                                    # If file size is > 10KB (approx 2500 tokens), route to sequential Map-Reduce reader
-                                    if file_size > 10000:
-                                        engine.publish_mission_log(
-                                            "SYSTEM",
-                                            f"[LARGE-FILE-DETECTED] Phát hiện tệp tin lớn ({file_size} bytes). Tự động kích hoạt cơ chế đọc tuần tự Map-Reduce tại chỗ...",
-                                            task_id, trace_id
-                                        )
-                                        try:
-                                            reader = SequentialReader()
-                                            local_res = await reader.execute(
-                                                file_path=path,
-                                                query=goal,
-                                                task_id=task_id,
-                                                trace_id=trace_id
-                                            )
-                                            return step["id"], local_res
-                                        except Exception as reader_err:
-                                            return step["id"], {"status": "error", "msg": f"SequentialReader failed: {reader_err}"}
-
-                        exec_payload = {
-                            "goal": goal,
-                            "steps": [step],
-                            "task_id": task_id,
-                            "trace_id": trace_id,
-                            "history": history,
-                            "context": context,
-                        }
-                        
-                        def make_json_serializable(obj):
-                            if isinstance(obj, dict):
-                                return {k: make_json_serializable(v) for k, v in obj.items() if not k.startswith('_')}
-                            elif isinstance(obj, list):
-                                return [make_json_serializable(x) for x in obj]
-                            elif isinstance(obj, (str, int, float, bool, type(None))):
-                                return obj
-                            else:
-                                if hasattr(obj, '__dict__'):
-                                    try:
-                                        if hasattr(obj, 'dict') and callable(getattr(obj, 'dict')):
-                                            return make_json_serializable(obj.dict())
-                                        return make_json_serializable(vars(obj))
-                                    except Exception:
-                                        return str(obj)
-                                return str(obj)
-
-                        serializable_payload = make_json_serializable(exec_payload)
-                        max_attempts = 3
-                        base_delay = 2
-                        resp = None
-                        for attempt in range(max_attempts):
+                            req = ExecutionRequest(
+                                trace_id=trace_id,
+                                capability_token={},
+                                tool_name=tool_name,
+                                tool_args=step_args,
+                                timeout=exec_timeout
+                            )
                             try:
-                                resp = await client.post(f"{executor_url}/execute", json=serializable_payload, timeout=exec_timeout)
-                                if resp.status_code == 200:
-                                    break
-                                else:
-                                    engine.publish_mission_log(
-                                        "WARN", f"[T4] Executor trả về {resp.status_code} cho bước {step['id']} (Thử lại {attempt + 1}/{max_attempts}).", task_id, trace_id
-                                    )
-                                    if attempt < max_attempts - 1:
-                                        await asyncio.sleep(base_delay * (2 ** attempt))
-                            except Exception as e:
-                                engine.publish_mission_log(
-                                    "WARN", f"[T4 FAULT] Lỗi kết nối ở bước {step['id']}: {e} (Thử lại {attempt + 1}/{max_attempts}).", task_id, trace_id
-                                )
-                                if attempt < max_attempts - 1:
-                                    await asyncio.sleep(base_delay * (2 ** attempt))
-                                else:
-                                    return step["id"], {"status": "error", "msg": f"Connection error: {e}"}
-
-                        if resp and resp.status_code == 200:
-                            exec_data = resp.json()
-                            step_results = exec_data.get("results", {})
-                            res = step_results.get(step["id"])
-                            if not res:
-                                res = {"status": "error", "msg": "No result returned for step"}
-                            return step["id"], res
-                        else:
-                            status_code = resp.status_code if resp else "unknown"
-                            return step["id"], {"status": "error", "msg": f"Executor failed with code {status_code}"}
+                                exec_res = await gateway.execute_tool(req, task_id)
+                                is_success = getattr(exec_res, "tool_executed", True) if hasattr(exec_res, "tool_executed") else True
+                                out_val = getattr(exec_res, "result", str(exec_res)) if hasattr(exec_res, "result") else str(exec_res)
+                                outcome_str = getattr(exec_res, "outcome", "ALLOW")
+                                if str(outcome_str).upper() in ["DENY", "DECISIONOUTCOME.DENY"]:
+                                    is_success = False
+                                return step["id"], {
+                                    "status": "success" if is_success else "error",
+                                    "output": out_val or "Hoàn tất",
+                                    "result": out_val or "Hoàn tất"
+                                }
+                            except Exception as step_err:
+                                logger.error("[DEEP-PIPELINE] Lỗi thực thi step %s qua Gateway: %s", step.get("id"), step_err)
+                                return step["id"], {"status": "error", "msg": str(step_err)}
 
                     # Chạy đồng thời cụm step song song này
                     tasks = [run_single_step(s) for s in ready_steps]
@@ -466,7 +495,7 @@ class DeepPipeline:
                     if completed_ids: status_report.append("Hoàn tất: " + ", ".join(completed_ids))
                     if failed_ids: status_report.append("Cảnh báo: " + ", ".join(failed_ids))
                     if status_report:
-                        engine.publish_mission_log("EXECUTOR", f"[CÂY KẾ TẢI BƯỚC] {' | '.join(status_report)}", task_id, trace_id, stealth=False)
+                        engine.publish_mission_log("EXECUTOR", f"[TIẾN ĐỘ THỰC THI BƯỚC] {' | '.join(status_report)}", task_id, trace_id, stealth=False)
 
                     any_step_failed = False
                     failed_step_info = None
@@ -542,9 +571,12 @@ class DeepPipeline:
                                 trace_id=trace_id
                             )
 
-                            if adaptation.decision in [StrategyDecision.TARGETED_REPAIR, StrategyDecision.STRATEGY_INVALIDATED, StrategyDecision.PIVOT_STRATEGY]:
-                                any_step_failed = True
-                                failed_step_info = {"id": s_id, "result": s_res, "reason": adaptation.rationale}
+                            # Chỉ coi là thất bại nếu bản thân tool chạy lỗi hoặc tạo artifact hỏng (không ép intermediate step phải hoàn tất toàn bộ mission)
+                            from core.os.cognition.adaptive_solver.models import ToolOutcome, ArtifactOutcome
+                            if truth.tool_outcome != ToolOutcome.SUCCEEDED or truth.artifact_outcome == ArtifactOutcome.CORRUPTED:
+                                if adaptation.decision in [StrategyDecision.TARGETED_REPAIR, StrategyDecision.STRATEGY_INVALIDATED, StrategyDecision.PIVOT_STRATEGY]:
+                                    any_step_failed = True
+                                    failed_step_info = {"id": s_id, "result": s_res, "reason": adaptation.rationale}
                         except Exception as ats_deep_err:
                             logger.error("[ATS-DEEP-INTEGRATION-ERROR]: %s", ats_deep_err, exc_info=True)
                             engine.publish_mission_log("WARN", f"[ATS-WARN] Error in deep adaptive solver: {ats_deep_err}", task_id, trace_id)
@@ -641,10 +673,18 @@ class DeepPipeline:
 
                             if new_steps_list:
                                 already_run = [s for s in steps if s["id"] in executed_step_ids]
-                                steps = already_run + new_steps_list
+                                combined_steps = already_run + new_steps_list
+                                if len(combined_steps) > 15:
+                                    engine.publish_mission_log(
+                                        "WARN",
+                                        f"[RE-PLANNING] Kế hoạch vượt ngưỡng an toàn (>{15} bước). Đang cắt tỉa các bước dư thừa.",
+                                        task_id, trace_id
+                                    )
+                                    combined_steps = combined_steps[:15]
+                                steps = combined_steps
                                 engine.publish_mission_log(
                                     "PLANNER",
-                                    f"[RE-PLANNING] Đã cập nhật kế hoạch động. Nhận thêm {len(new_steps_list)} bước mới.",
+                                    f"[RE-PLANNING] Đã cập nhật kế hoạch động. Nhận thêm {len(new_steps_list)} bước mới (Tổng: {len(steps)} bước).",
                                     task_id, trace_id
                                 )
                             else:
@@ -696,9 +736,12 @@ class DeepPipeline:
         judicial_review = {}
 
         try:
+            critic_cfg = engine.get_role_config("CRITIC")
+            critic_model = critic_cfg.get("model", "qwen3.5:4b")
+            critic_hw = critic_cfg.get("hardware", "GPU")
             engine.publish_mission_log(
                 "CRITIC",
-                "[T5] Khởi động phiên Thẩm định Tư pháp...",
+                f"[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `{critic_model}` @ {critic_hw})...",
                 task_id,
                 trace_id
             )
@@ -734,7 +777,7 @@ class DeepPipeline:
                                 f"Bằng chứng thực thi thực tế: {self._compress_results(execution_results)}\n\n"
                                 "══════════════════════════════════════════\n"
                                 "NHIỆM VỤ: Thẩm định dựa trên bằng chứng thực tế.\n"
-                                "LƯU Ý QUAN TRỌNG: Nếu yêu cầu thuộc dạng phân tích, quy hoạch kiến trúc hoặc phác thảo lộ trình (hoặc chứa bản đồ kế hoạch), đó là BẰNG CHỨNG THỰC THI HỢP LỆ. Verdict PHẢI là SUCCESS hoặc PARTIAL.\n"
+                                "LƯU Ý QUAN TRỌNG: Nếu yêu cầu thuộc dạng phân tích, quy hoạch kiến trúc hoặc phác thảo lộ trình (hoặc chứa bản đồ kế hoạch), đó là BẰNG CHỨNG THỰC THI HỢP LỆ. Verdict PHẦI là SUCCESS hoặc PARTIAL.\n"
                                 'Trả về JSON: {"verdict":"SUCCESS|PARTIAL|FAIL","accuracy_score":0.8-1.0,"feedback":"reason"}'
                             )
                         }],
@@ -855,11 +898,35 @@ class DeepPipeline:
                     skip_build_final=True,
                 )
             
+            # 📁 [NATIVE-DELIVERY-RECEIPT]: Đính kèm biên lai bàn giao tệp tin nếu có artifact đã xác thực từ các bước DAG
+            _deep_receipts = []
+            try:
+                from core.kernel.artifact_gate import verify_artifact_on_disk, format_delivery_receipt
+                import re
+                _deep_paths = set()
+                for step_id, step_out in (execution_results or {}).items():
+                    step_str = json.dumps(step_out) if isinstance(step_out, (dict, list)) else str(step_out)
+                    _p_matches = re.findall(r'[a-zA-Z0-9_/\\:\.\-]+\.(?:xlsx|docx|pdf|py|json|csv|md|txt|html|sql|png|jpg)', step_str)
+                    for pm in _p_matches:
+                        _deep_paths.add(pm)
+                for dp in _deep_paths:
+                    art_info = verify_artifact_on_disk(dp)
+                    if art_info.get("verified"):
+                        _deep_receipts.append(format_delivery_receipt(art_info))
+            except Exception as d_rec_err:
+                logger.debug("[DEEP-RECEIPT-GEN] Skip: %s", d_rec_err)
+
+            receipts_block = "".join(_deep_receipts)
+
             signature = f"\n\n---\nTổng hợp lúc {formatted_time}\n\nBan Thư Ký JKAI Zenith"
             
             if isinstance(final_answer, dict) and "answer" in final_answer:
+                if receipts_block and receipts_block not in final_answer["answer"]:
+                    final_answer["answer"] += receipts_block
                 final_answer["answer"] += signature
             elif isinstance(final_answer, str):
+                if receipts_block and receipts_block not in final_answer:
+                    final_answer += receipts_block
                 final_answer += signature
                 
             engine.publish_mission_log(
@@ -1020,6 +1087,19 @@ class DeepPipeline:
             if isinstance(execution_results, dict)
             else execution_results
         )
+
+        # 🏛️ [EEC-GATE-CHECK]: Kiểm định bằng chứng chuẩn qua EvidenceGateAuditor
+        try:
+            from core.os.cognition.evidence_execution_contract import EvidenceGateAuditor, EvidencePolicy, CompletionState
+            eets = [r.get("_eet") for r in results if isinstance(r, dict) and r.get("_eet")]
+            if eets:
+                verdict = EvidenceGateAuditor.audit_completion(
+                    policy=EvidencePolicy.REQUIRED,
+                    eets=eets,
+                )
+                return verdict.verdict == CompletionState.VERIFIED
+        except Exception as eg_err:
+            logger.debug("[DEEP-EVIDENCE-GATE-CHECK]: %s", eg_err)
 
         for res in results:
 

@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from typing import Optional, List, Dict, Any
 import asyncio
 import os
 import json
@@ -237,7 +238,7 @@ async def submit_task(payload: dict):
 async def stop_gateway(payload: dict = None):
     """
     [SUPREME-STOP]: Centralized kill switch.
-    Purging all queues and terminating runtime.
+    Purging all queues, terminating runtime and broadcasting immediate confirmation.
     """
     task_id = (payload or {}).get("task_id")
     
@@ -254,6 +255,19 @@ async def stop_gateway(payload: dict = None):
         return msg
 
     msg = redis_safe(_purge, "Error connecting to Redis")
+    
+    # ⚡ Phát ngay lập tức thông điệp xác nhận dừng về Dashboard Frontend
+    try:
+        confirm_log = {
+            "tag": "ERROR",
+            "msg": f"🛑 [STOPPED] Backend xác nhận: {msg}",
+            "task_id": task_id or "global",
+            "ts": time.time()
+        }
+        redis_safe(lambda r: r.publish("monitor:log_channel", json.dumps(confirm_log)))
+    except Exception:
+        pass
+
     return {"status": "ok", "msg": msg}
 
 @app.post("/api/stream")
@@ -484,5 +498,77 @@ async def execute_task(payload: dict):
         # Gọi thẳng process_task của task_manager
         result = await task_manager.process_task(payload)
         return result or {"status": "completed", "msg": "Nhiệm vụ đã hoàn tất."}
+    except Exception as e:
+        return {"status": "error", "msg": str(e)}
+
+# ─────────────────────────────────────────────────────────────────────────────
+# 📜 AUDIT & COGNITIVE LEDGER REST API ENDPOINTS
+# ─────────────────────────────────────────────────────────────────────────────
+@app.get("/api/v1/audit/decisions")
+async def get_audit_decisions(task_id: Optional[str] = None, decision_type: Optional[str] = None, limit: int = 20):
+    """Truy vấn sổ cái quyết định bất biến (Immutable Decision Ledger)."""
+    try:
+        from core.kernel.decision_ledger import decision_ledger
+        entries = decision_ledger.query_decisions(task_id=task_id, decision_type=decision_type, limit=limit)
+        return {
+            "status": "success",
+            "count": len(entries),
+            "decisions": [
+                {
+                    "entry_id": e.entry_id,
+                    "type": e.decision_type,
+                    "task_id": e.task_id,
+                    "input": e.input_summary,
+                    "output": e.output_decision,
+                    "reason": e.reason,
+                    "prev_hash": e.prev_hash,
+                    "hash": e.entry_hash,
+                    "timestamp": e.timestamp
+                }
+                for e in entries
+            ]
+        }
+    except Exception as e:
+        return {"status": "error", "msg": str(e)}
+
+@app.get("/api/v1/audit/integrity")
+async def verify_ledger_integrity():
+    """Kiểm toán tính toàn vẹn của chuỗi băm quyết định."""
+    try:
+        from core.kernel.decision_ledger import decision_ledger
+        is_valid, bad_idx = decision_ledger.verify_integrity()
+        return {
+            "status": "success",
+            "is_valid": is_valid,
+            "corrupted_at_index": bad_idx,
+            "total_entries": len(decision_ledger.ledger)
+        }
+    except Exception as e:
+        return {"status": "error", "msg": str(e)}
+
+@app.get("/api/v1/audit/reflections")
+async def get_reflection_journal(limit: int = 20):
+    """Truy vấn nhật ký tự phản tư & đánh giá đa chiều chất lượng."""
+    try:
+        from core.kernel.self_reflection import self_reflection
+        reports = self_reflection.journal[-limit:]
+        return {
+            "status": "success",
+            "count": len(reports),
+            "reflections": [
+                {
+                    "task_id": r.task_id,
+                    "overall_quality": r.overall_quality,
+                    "accuracy": r.accuracy_score,
+                    "completeness": r.completeness_score,
+                    "clarity": r.clarity_score,
+                    "safety": r.safety_score,
+                    "lowest_dimension": r.lowest_dimension,
+                    "recommendation": r.recommendation,
+                    "timestamp": r.timestamp
+                }
+                for r in reports
+            ]
+        }
     except Exception as e:
         return {"status": "error", "msg": str(e)}

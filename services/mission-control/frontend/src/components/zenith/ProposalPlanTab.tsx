@@ -50,7 +50,14 @@ export const ProposalPlanTab = memo(() => {
   const uniqueProposals = React.useMemo(() => {
     if (!backgroundProposals) return [];
     const map = new Map<string, BackgroundProposal>();
-    backgroundProposals.forEach(p => { if (p && p.id) map.set(p.id, p); });
+    const seenFp = new Set<string>();
+    backgroundProposals.forEach(p => {
+      if (!p || !p.id) return;
+      const fp = `${p.task_id}|${p.proposal_type}|${p.title}`;
+      if (seenFp.has(fp)) return;
+      seenFp.add(fp);
+      map.set(p.id, p);
+    });
     return Array.from(map.values());
   }, [backgroundProposals]);
 

@@ -49,11 +49,28 @@ class SemanticCache:
         norm_text = self._normalize_prompt(text)
         return hashlib.sha256(norm_text.encode("utf-8")).hexdigest()
 
+    REALTIME_TRIGGERS = [
+        "hôm nay", "bây giờ", "hiện tại", "tin tức", "news", "thời tiết", "weather",
+        "giá vàng", "chứng khoán", "tỷ giá", "hot", "mới nhất", "vừa xong"
+    ]
+
+    def _is_realtime_query(self, query: str) -> bool:
+        q_lower = query.lower()
+        return any(trigger in q_lower for trigger in self.REALTIME_TRIGGERS)
+
     def set_cache(self, query: str, response_payload: Any, metadata: Optional[Dict[str, Any]] = None) -> bool:
         """
         Lưu kết quả phản hồi của tác vụ vào bộ đệm Redis và RAM dự phòng.
+        Không cache các câu hỏi thời gian thực hoặc payload rỗng/không hợp lệ.
         """
         try:
+            if self._is_realtime_query(query):
+                return False
+
+            # Không cache payload rỗng
+            if not response_payload:
+                return False
+
             cache_key = f"semantic_cache:{self._compute_hash(query)}"
             data_packet = {
                 "timestamp": time.time(),
@@ -81,8 +98,11 @@ class SemanticCache:
     def get_cache(self, query: str) -> Optional[Dict[str, Any]]:
         """
         Truy xuất lập tức (<50ms) kết quả lưu ký nếu tìm thấy ngữ nghĩa tương đương.
-        Trả về None nếu bộ đệm không có hoặc đã hết hạn TTL.
+        Trả về None nếu câu hỏi là thời gian thực hoặc bộ đệm không có.
         """
+        if self._is_realtime_query(query):
+            return None
+
         start_time = time.time()
         try:
             cache_key = f"semantic_cache:{self._compute_hash(query)}"

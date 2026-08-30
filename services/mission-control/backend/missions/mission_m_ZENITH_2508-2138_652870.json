@@ -1,0 +1,259 @@
+{
+  "id": "m_ZENITH_2508-2138_652870",
+  "title": "bạn thấy hôm nay thế nào ?",
+  "goal": "bạn thấy hôm nay thế nào ?",
+  "status": "failed",
+  "ts": 1787668774.25832,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "bạn thấy hôm nay thế nào ?",
+      "ts": 1787668734.3128626,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_2508-2138_652870` initialized | Trace: `trace_652870`. Runtime ready.",
+      "ts": 1787668734.3156352,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=26 | preview='bạn thấy hôm nay thế nào ?' | hash=0923f7b108afdc35 | task_id=ZENITH_2508-2138_652870 | trace_id=trace_652870 | mission_id=default",
+      "ts": 1787668748.6446197,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: [] | Policy Topology: SINGLE_AGENT (FAST)",
+      "ts": 1787668748.6492906,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "GOVERNOR: TaskProfile=[] | Topology=SINGLE_AGENT (FAST)",
+      "ts": 1787668748.6516345,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1787668748.6539872,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1787668748.6585371,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[ENGINE-READY]: FAST mode — qwen3.5:4b already resident in RAM/VRAM. Zero-latency start.",
+      "ts": 1787668748.8367388,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[FAST-PIPELINE] Khởi động RECEPTIONIST ReAct (10 turns).",
+      "ts": 1787668748.8390176,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "GOVERNOR",
+      "msg": "[I-CONTEXT-001 ENFORCED] Context Policy: ISOLATED. Toàn bộ lịch sử & bộ nhớ cũ bị chặn tuyệt đối.",
+      "ts": 1787668748.9087088,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[SOCIAL-GUARD] Câu hỏi xã giao/cảm xúc → bypass realtime detection, phản xạ trực tiếp.",
+      "ts": 1787668749.5115077,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[L0/L1 ZERO-RAG BYPASS] Yêu cầu L0/L1 độc lập → bỏ qua RAG, phản xạ trực tiếp.",
+      "ts": 1787668749.6334383,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[FAST REFLEX-GATE] Tác vụ hội thoại / suy luận nội tại → phản xạ trực tiếp.",
+      "ts": 1787668749.6591208,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=26 | preview='bạn thấy hôm nay thế nào ?' | hash=0923f7b108afdc35 | task_id=ZENITH_2508-2138_652870 | trace_id=trace_652870 | mission_id=default",
+      "ts": 1787668757.4051437,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: [] | Policy Topology: SINGLE_AGENT (FAST)",
+      "ts": 1787668757.408774,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "GOVERNOR: TaskProfile=[] | Topology=SINGLE_AGENT (FAST)",
+      "ts": 1787668757.4119294,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1787668757.4143822,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1787668757.4204745,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[FAST-PIPELINE] Khởi động RECEPTIONIST ReAct (10 turns).",
+      "ts": 1787668757.4420254,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "GOVERNOR",
+      "msg": "[I-CONTEXT-001 ENFORCED] Context Policy: ISOLATED. Toàn bộ lịch sử & bộ nhớ cũ bị chặn tuyệt đối.",
+      "ts": 1787668757.447541,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[SOCIAL-GUARD] Câu hỏi xã giao/cảm xúc → bypass realtime detection, phản xạ trực tiếp.",
+      "ts": 1787668757.45789,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[L0/L1 ZERO-RAG BYPASS] Yêu cầu L0/L1 độc lập → bỏ qua RAG, phản xạ trực tiếp.",
+      "ts": 1787668757.544673,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[FAST REFLEX-GATE] Tác vụ hội thoại / suy luận nội tại → phản xạ trực tiếp.",
+      "ts": 1787668757.6196907,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=26 | preview='bạn thấy hôm nay thế nào ?' | hash=0923f7b108afdc35 | task_id=ZENITH_2508-2138_652870 | trace_id=trace_652870 | mission_id=default",
+      "ts": 1787668767.9920955,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: [] | Policy Topology: SINGLE_AGENT (FAST)",
+      "ts": 1787668767.995335,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "GOVERNOR: TaskProfile=[] | Topology=SINGLE_AGENT (FAST)",
+      "ts": 1787668767.9985836,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1787668768.0014257,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1787668768.0056539,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[FAST-PIPELINE] Khởi động RECEPTIONIST ReAct (10 turns).",
+      "ts": 1787668768.0269475,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "GOVERNOR",
+      "msg": "[I-CONTEXT-001 ENFORCED] Context Policy: ISOLATED. Toàn bộ lịch sử & bộ nhớ cũ bị chặn tuyệt đối.",
+      "ts": 1787668768.0314198,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[SOCIAL-GUARD] Câu hỏi xã giao/cảm xúc → bypass realtime detection, phản xạ trực tiếp.",
+      "ts": 1787668768.039686,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[L0/L1 ZERO-RAG BYPASS] Yêu cầu L0/L1 độc lập → bỏ qua RAG, phản xạ trực tiếp.",
+      "ts": 1787668768.1172543,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[FAST REFLEX-GATE] Tác vụ hội thoại / suy luận nội tại → phản xạ trực tiếp.",
+      "ts": 1787668768.1912649,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist\"}",
+      "ts": 1787668774.21182,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+      "ts": 1787668774.214994,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2508-2138_652870"
+    }
+  ],
+  "artifacts": {
+    "plan": "bạn thấy hôm nay thế nào ?",
+    "walkthrough": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

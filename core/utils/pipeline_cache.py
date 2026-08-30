@@ -10,7 +10,7 @@ DEFAULT_TTL = 3600
 REALTIME_KEYWORDS = [
     "thời tiết", "weather", "tin tức", "news", "giá vàng", "tỷ giá",
     "chứng khoán", "hôm nay", "bây giờ", "hiện tại", "nhiệt độ",
-    "temperature", "stock", "price", "forex", "crypto"
+    "temperature", "stock", "price", "forex", "crypto", "hot", "mới nhất"
 ]
 
 try:
@@ -21,7 +21,7 @@ except ImportError:
     QueryType = None
 
 
-def _cache_key(goal: str, mode: str = "auto") -> str:
+def _cache_key(goal: str, mode: str = "fast") -> str:
     raw = f"{goal.strip().lower()}::mode={mode}"
     h = hashlib.sha256(raw.encode("utf-8")).hexdigest()[:16]
     return f"pipeline:cache:{h}"
@@ -86,7 +86,7 @@ class PipelineCache:
                 self._redis = False
         return self._redis if self._redis else None
 
-    async def get(self, goal: str, mode: str = "auto") -> Optional[Dict[str, Any]]:
+    async def get(self, goal: str, mode: str = "fast") -> Optional[Dict[str, Any]]:
         key = _cache_key(goal, mode)
         r = self._get_redis()
         if r:
@@ -126,7 +126,7 @@ class PipelineCache:
             except Exception:
                 pass
 
-    async def invalidate(self, goal: str, mode: str = "auto") -> None:
+    async def invalidate(self, goal: str, mode: str = "fast") -> None:
         key = _cache_key(goal, mode)
         self._local.pop(key, None)
         r = self._get_redis()

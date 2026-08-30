@@ -104,6 +104,7 @@ class Embedder:
             # ✂️ [NEURAL-CHUNKING]: Tự động chia nhỏ văn bản nếu quá dài (Tránh lỗi 500 Ollama)
             # Nomic-embed-text có giới hạn khoảng 2048 tokens, ta chọn 4000 chars (~1000 tokens) cho an toàn.
             MAX_CHARS = 4000
+            res_vec = None
             if len(text) > MAX_CHARS:
                 chunks = [text[i:i+MAX_CHARS] for i in range(0, len(text), MAX_CHARS)]
                 all_vectors = []
@@ -124,9 +125,18 @@ class Embedder:
                 for i in range(dim):
                     mean_vector[i] /= count
                 
-                return mean_vector
+                res_vec = mean_vector
             else:
-                return await self._call_ollama_embed(text, target_model, opts)
+                res_vec = await self._call_ollama_embed(text, target_model, opts)
+
+            if res_vec:
+                if len(self._embedding_cache) >= self._max_cache_size:
+                    # Xóa bớt 20% cache cũ khi đầy
+                    del_keys = list(self._embedding_cache.keys())[:int(self._max_cache_size * 0.2)]
+                    for k in del_keys:
+                        self._embedding_cache.pop(k, None)
+                self._embedding_cache[cache_key] = res_vec
+            return res_vec
 
     async def _call_ollama_embed(self, text: str, model: str, opts: dict) -> Optional[List[float]]:
         max_retries = 3

@@ -1,693 +1,4837 @@
 {
   "id": "m_man",
-  "title": "Đồng hóa tri thức mới vào Trụ cột rules: Cải tiến kỹ thuật tối ưu hóa ",
-  "goal": "Đồng hóa tri thức mới vào Trụ cột rules: Cải tiến kỹ thuật tối ưu hóa mã Python",
+  "title": "phân tích xu hướng giá vàng và các yếu tố ảnh hưởng chính",
+  "goal": "phân tích xu hướng giá vàng và các yếu tố ảnh hưởng chính",
   "status": "failed",
-  "ts": 1785760842.773041,
+  "ts": 1786805960.794614,
   "logs": [
     {
-      "tag": "SYSTEM",
-      "msg": "[ZENITH]: MISSION-CTX resume `m_man`",
-      "ts": 1785324807.8006809,
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=30 | preview='hãy viết cho tờ đơn xin đi học' | hash=3e9c65e0819697c8 | task_id=man | trace_id=gen_1786762992 | mission_id=m_man",
+      "ts": 1786763013.1520834,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "[ZENITH]: AI OS: intent=analyze pipeline=deep mode=deep tags=-",
-      "ts": 1785324807.8061578,
+      "msg": "Task Profile: ['SINGLE_FILE_ACTION'] | Policy Topology: SINGLE_AGENT (FAST)",
+      "ts": 1786763013.1554916,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "[ZENITH]: Khởi chạy lộ trình: DEEP_PIPELINE",
-      "ts": 1785324807.8111224,
+      "msg": "MISSION-CTX resume `m_man`",
+      "ts": 1786763013.1582928,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "[ZENITH]: DeepPipeline T2–T6 (full)",
-      "ts": 1785324807.8129666,
+      "msg": "GOVERNOR: TaskProfile=['MULTI_FILE_AUDIT_ACTION'] | Topology=MULTI_AGENT (DEEP)",
+      "ts": 1786763013.1605968,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "🔄 [ENGINE-SWITCH]: Chuyển sang quy trình DEEP — Giải phóng mô hình RECEPTIONIST (Qwen3-30B) khỏi RAM/VRAM và nạp cụm mô hình DEEP...",
-      "ts": 1785324807.8440995,
+      "msg": "AI OS: intent=analyze pipeline=deep mode=deep tags=-",
+      "ts": 1786763013.1630874,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "🧠 [DEEP-PIPELINE]: Khởi động luồng chiến lược 5 tầng (T2→T6).",
-      "ts": 1785324850.4321241,
+      "msg": "Khởi chạy lộ trình: STATE_PIPELINE (deep)",
+      "ts": 1786763013.1947901,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Bắt đầu chạy kế hoạch (deep) | Tổng: 4 bước",
+      "ts": 1786763013.1974623,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Bước 1/4: S1_RECON — Quét thư mục làm việc, định vị tệp tin và thu thập tri thức.",
+      "ts": 1786763013.204841,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "Định vị và phân tích cấu trúc workspace...",
+      "ts": 1786763013.2083354,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "Nạp 2 kỹ năng (skill_neural_audit, skill_quantrihethong) vào ngữ cảnh lập luận.",
+      "ts": 1786763026.673269,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "Tìm thấy 50 file liên quan.",
+      "ts": 1786763026.6766887,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Hoàn tất bước S1_RECON.",
+      "ts": 1786763026.680302,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Bước 2/4: S2_FORGE — Lập kế hoạch sửa đổi và tiến hành ghi code.",
+      "ts": 1786763026.6825917,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "Đang tiến hành chỉnh sửa mã nguồn...",
+      "ts": 1786763032.824363,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🔄 [ENGINE-SWITCH]: Chuyển sang quy trình DEEP — Đồng bộ chuyển đổi mô hình Lễ Tân (`qwen3.5:4b`) sang cụm mô hình DEEP...",
+      "ts": 1786763033.2847552,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1786763160.7314813,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
-      "ts": 1785324850.4381864,
+      "ts": 1786763160.8084939,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
-      "ts": 1785324850.4474444,
+      "ts": 1786763160.813484,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "BRAIN",
-      "msg": "📚 [KB-RETRIEVED]: 5 chunks (≥0.45), 5 high-quality (≥0.72). Sufficient=True",
-      "ts": 1785324850.7224162,
+      "msg": "5 chunks (≥0.45), 5 high-quality (≥0.72). Dữ kiện nội bộ đầy đủ, đáp ứng được yêu cầu",
+      "ts": 1786763165.8008976,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
-      "ts": 1785324850.7253528,
+      "ts": 1786763165.9146173,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "INFO",
       "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER`...",
-      "ts": 1785324850.9187741,
+      "ts": 1786763166.0931075,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "LATENCY",
-      "msg": "⏱️ [FORGE-ATTEMPT-1]: Model `PLANNER` response time: 42.14s.",
-      "ts": 1785324893.0640142,
+      "msg": "Model `PLANNER` response time: 107.92s.",
+      "ts": 1786763274.0150452,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
-      "ts": 1785324893.073385,
+      "ts": 1786763274.0673044,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "INFO",
+      "msg": "Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1786763274.0945787,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
-      "ts": 1785324893.0750585,
+      "ts": 1786763274.1103969,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PLANNER",
-      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_recovery_01 (OMNI_SEARCH_ENGINE)**: Auto-recovery: omni search (Tavily/Cloud/Browse) for: Đồng hóa tri thức mới vào Trụ cột knowledge: Tối ưu hóa Python không chỉ dừng lại ở thuật toán mà còn phụ thuộc mạnh mẽ vào kiến trúc phần cứng (RAM + SSD NVMe) để đ\n\n<MISSION_CONTEXT_PACK>\nteam_pattern: producer_reviewer\nplan_summary: Sứ mệnh hoàn tất thưa Master.\n\n---\n👉 Phản hồi lúc 13h38m ngày 27/06/2026\nprior_goal: test tele master tag\n</MISSION_CONTEXT_PACK>",
-      "ts": 1785324893.076639,
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_recovery_01 (OMNI_SEARCH_ENGINE)**: Auto-khôi phục: omni search (Tavily/Cloud/Browse) for: hãy viết cho tờ đơn xin đi học\n\n<MISSION_CONTEXT_PACK>\nteam_pattern: producer_reviewer\nplan_summary: Báo cáo Master! Quá trình StatePipeline cho nhiệm vụ **Đồng hóa tri thức mới vào Trụ cột knowledge: Cần cẩn thận khi sử dụng các công cụ và kỹ thuật mới, đặc biệt là trong lĩnh vực lập trình.\n\n<MISSION_CONTEXT_PACK>\nteam_pattern: producer_reviewer\nplan_summary:  Giao thức dừng đã được kích hoạt. Toàn bộ Đặc vụ đã dừng theo lệnh của Master.\nprior_goal: Đồng hóa tri thức mới vào Trụ cột knowledge: Công cụ tối ưu hóa mã Python thực tế\n</MISSION_CONTEXT_PACK>** đã thực thi qua 4 bước (S1_RECON, S2_FORGE, S3_VERIFY, S4_AUDIT). Các tác vụ công cụ ngầm và cấu trúc tệp tin đã được thẩm định hoàn tất.\nprior_goal: Đồng hóa tri thức mới vào Trụ cột knowledge: Cần cẩn thận khi sử dụng các công cụ và kỹ thuật mới, đặc biệt là trong lĩnh vực lập trình.\n</MISSION_CONTEXT_PACK>",
+      "ts": 1786763274.139104,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "EXECUTOR",
-      "msg": "⚙️ [T4]: Khởi động DAG Parallel Executor...",
-      "ts": 1785324893.0800428,
+      "msg": "Khởi động DAG Parallel Executor...",
+      "ts": 1786763274.1438005,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "EXECUTOR",
-      "msg": "🚀 **[TRIỂN KHAI BƯỚC]** Đang khởi chạy thực thi song song: `[/]` **auto_recovery_01**",
-      "ts": 1785324893.0833774,
+      "msg": "[TRIỂN KHAI BƯỚC] Đang khởi chạy thực thi song song: `[/]` **auto_recovery_01**",
+      "ts": 1786763274.1478283,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM:ALPHA",
-      "msg": "⚡ [SWARM-MODE]: Kích hoạt 1 nơ-ron thực thi song song.",
-      "ts": 1785324893.092182,
+      "msg": "Kích hoạt 1 tác vụ thực thi song song.",
+      "ts": 1786763274.2403214,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
-      "msg": "🔬 [T4: SURGERY] [OMNI_SEARCH_ENGINE] Đang kiểm tra an toàn & khóa tài nguyên...",
-      "ts": 1785324898.7098346,
+      "msg": "[KIỂM TRA] [OMNI_SEARCH_ENGINE] Đang kiểm tra an toàn & khóa tài nguyên...",
+      "ts": 1786763274.2620702,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
-      "msg": "⚖️ [T4: SURGERY] [OMNI_SEARCH_ENGINE] Đang áp dụng chính sách thực thi...",
-      "ts": 1785324898.7120655,
+      "msg": "[CHÍNH SÁCH] [OMNI_SEARCH_ENGINE] Đang áp dụng chính sách thực thi...",
+      "ts": 1786763274.2647316,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
-      "msg": "💉 [T4: SURGERY] [OMNI_SEARCH_ENGINE] Đang nạp DNA & nén bối cảnh...",
-      "ts": 1785324898.713176,
+      "msg": "[BỐI CẢNH] [OMNI_SEARCH_ENGINE] Đang nạp ngữ cảnh & nén thông tin...",
+      "ts": 1786763274.266457,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "EXECUTOR",
-      "msg": "*[đang tìm kiếm]* `OMNI_SEARCH_ENGINE`",
-      "ts": 1785324898.7209451,
+      "msg": "[đang tìm kiếm] `OMNI_SEARCH_ENGINE`",
+      "ts": 1786763274.284728,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
-      "msg": "⚔️ [T4: SURGERY] [OMNI_SEARCH_ENGINE] Bắt đầu thực thi ...",
-      "ts": 1785324898.7227175,
+      "msg": "[THỰC THI] [OMNI_SEARCH_ENGINE] Bắt đầu thực thi...",
+      "ts": 1786763274.2873497,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "CRITICAL:ALPHA",
-      "msg": "🛑 [STOP]: Bước `auto_recovery_01` thất bại: Thất bại sau 2 lần: Tool 'OMNI_SEARCH_ENGINE' (resolved as 'OMNI_SEARCH_ENGINE') not found in registry.. Ngắt chuỗi hành pháp.",
-      "ts": 1785324921.0732665,
+      "msg": "[DỪNG CHUỖI] Bước `auto_recovery_01` thất bại: Thất bại sau 2 lần: Tool 'OMNI_SEARCH_ENGINE' (resolved as 'OMNI_SEARCH_ENGINE') không tồn tại trong danh bạ hệ thống.. Đang ngắt lộ trình.",
+      "ts": 1786763291.8877072,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "EXECUTOR",
-      "msg": "⚡ **[CÂY KẾ TẢI BƯỚC]** Cảnh báo: `[!]` **auto_recovery_01**",
-      "ts": 1785324921.0776787,
+      "msg": "[CÂY KẾ TẢI BƯỚC] Cảnh báo: `[!]` **auto_recovery_01**",
+      "ts": 1786763291.8935761,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "ERROR",
-      "msg": "🚨 [FAIL-FAST]: Không tìm thấy tài liệu/tệp tin yêu cầu tại bước auto_recovery_01 (Thất bại sau 2 lần: Tool 'OMNI_SEARCH_ENGINE' (resolved as 'OMNI_SEARCH_ENGINE') not found in registry.). Dừng quy trình để tránh chạy sai lệch.",
-      "ts": 1785324921.0802982,
+      "msg": "Không tìm thấy tài liệu/tệp tin yêu cầu tại bước auto_recovery_01 (Thất bại sau 2 lần: Tool 'OMNI_SEARCH_ENGINE' (resolved as 'OMNI_SEARCH_ENGINE') không tồn tại trong danh bạ hệ thống.). Dừng quy trình để tránh chạy sai lệch.",
+      "ts": 1786763291.8967478,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "🔄 [REPLAN-ATTEMPT]: Critic không phê duyệt. Lập kế hoạch lại. Attempt 2/3",
-      "ts": 1785324921.0823824,
+      "msg": "Critic không phê duyệt. Lập kế hoạch lại. Attempt 2/3",
+      "ts": 1786763291.9011638,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "🧠 [DEEP-PIPELINE]: Khởi động luồng chiến lược 5 tầng (T2→T6).",
-      "ts": 1785324921.0862408,
+      "msg": "Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1786763291.9054902,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
-      "ts": 1785324921.0889175,
+      "ts": 1786763291.909621,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
-      "ts": 1785324921.0966935,
+      "ts": 1786763291.9200385,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "BRAIN",
-      "msg": "📚 [KB-RETRIEVED]: 3 chunks (≥0.45), 3 high-quality (≥0.72). Sufficient=True",
-      "ts": 1785324921.3459008,
+      "msg": "3 chunks (≥0.45), 3 high-quality (≥0.72). Dữ kiện nội bộ đầy đủ, đáp ứng được yêu cầu",
+      "ts": 1786763295.923985,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
-      "ts": 1785324921.437415,
+      "ts": 1786763295.9318838,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "INFO",
       "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER`...",
-      "ts": 1785324921.5967057,
+      "ts": 1786763296.0927756,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "Bước S2_FORGE vượt quá 300s.",
+      "ts": 1786763332.8080292,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "Thu nhận dữ liệu sự cố bước S2_FORGE vào Engram v2 để tiến hóa quy luật khắc phục.",
+      "ts": 1786763332.8411655,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "JKAI",
-      "msg": " Giao thức dừng đã được kích hoạt. Toàn bộ Đặc vụ đã dừng theo lệnh của Master.",
-      "ts": 1785324928.7466807,
+      "msg": "Chào bạn, tôi đã nhận được thông tin và sẵn sàng hỗ trợ soạn thảo **Đơn xin phép đi học** (hoặc đơn xin nghỉ vì lý do chính đáng) cho anh/chị em một cách chuyên nghiệp nhất.\n\nTuy nhiên, để đảm bảo tính pháp lý và đúng quy định của nhà trường, nội dung cần bao gồm các yếu tố bắt buộc theo tiêu chuẩn 'CRIT-001':\n*   **Thông tin cá nhân:** Họ tên đầy đủ, ngày tháng năm sinh (hoặc tuổi), lớp học/Số báo danh.\n*   **Lý do cụ thể và trung thực:** Không được viết chung chung (\"bệnh\" hay \"sự cố gia đình\"). Cần nêu rõ: Bệnh gì? Ở đâu? Sự cố gì xảy ra? Thời gian cần thiết bao nhiêu ngày/tiếng đồng hồ.\n*   **Cam kết trách nhiệm:** Cam kết sẽ học lại bài đã bỏ, hoàn thành tác vụ/phòng thủ khi về và chịu mọi hậu quả nếu không thực hiện đúng cam kết này.\n\nVì tôi là AI trợ lý (JKAI) và hệ thống chưa cung cấp sẵn các công cụ viết văn bản đặc thù cho trường hợp \"thiếu sót tiêu chuẩn\", nên để tạo ra một **Tờ trình/Đơn** hoàn chỉnh, có tính pháp lý cao nhất mà không vi phạm quy định về thông tin bảo mật cá nhân của bạn (không được tự phát sinh dữ liệu giả), tôi sẽ soạn thảo khung mẫu dựa trên các yêu cầu bắt buộc cốt lõi.\n\nDưới đây là bản dự thảo **ĐƠN XIN PHÉP ĐI HỌC/HƯỞNG HẠ** chuyên nghiệp, anh/chị hãy điền thông tin vào phần trong ngoặc vuông `[]`:\n\n---\n\n### ĐƠN XIN PHÉP ĐI HỌC (HOẶC BÀI TẬP)\n*(Tham khảo cho các trường hợp: Bệnh tật, Sự cố gia đình, Tham gia hoạt động giáo dục đặc biệt)*\n\n**Kính gửi:** Ban Giám Hiệu / Hội Đồng Học Tập  \nLớp [Tên lớp/Số báo danh] – Năm học 2026-2027  \n\nTôi tên là **[Họ và Tên đầy đủ]** (sinh ngày .../.../..., Số CMND: [...]), sinh viên/sinh năm [...] của khoa/viện [...] thuộc trường Đại Học/Công Nghệ [Tên Trường].\n\nLý do tôi xin phép được đi học/bài tập trong thời gian từ **ngày [...]/[/] đến ngày [...]/[ ]** với tổng số **[Số giờ/ngày]** là:  \n*   *(Vui lòng chọn và viết rõ chi tiết một trong các lý do sau):*\n    *   Do cần tham gia khám chữa bệnh tại [Tên cơ sở y tế], bác sĩ đã yêu cầu nghỉ học [Số ngày] để điều trị.\n    *   Do có sự cố bất khả kháng về gia đình (mất tích/tham quan) không thể giải quyết được, dẫn đến việc phải rời khỏi lớp ngay lập tức từ lúc ... giờ chiều/ngày ... tháng ... năm 2026.\n    *   *(Lý do khác: [...]*)\n\nTrong thời gian nghỉ học/bài tập này, tôi cam kết sẽ thực hiện các nội dung sau:  \n1. Tự động thu bài giảng của giáo viên và tự nghiên cứu lại kiến thức đã bỏ lỡ thông qua hệ thống [Tên nền tảng] hoặc tài liệu tham khảo chính chủ.\n2. Hoàn thành đầy đủ số lượng giờ học/tài liệu được yêu cầu trong thời gian nghỉ (tổng cộng [...] tiếng/giờ).\n3. Chịu mọi hậu quả pháp lý và kỷ luật nếu không hoàn thành các cam kết nêu trên trước khi quay trở lại lớp học.\n\nRất mong Ban Giám Hiệu xem xét, chấp thuận đơn xin phép này của tôi để đảm bảo quyền lợi hợp lý cho bản thân. Tôi đã có sự đồng ý từ cha/mẹ (hoặc người giám hộ) và giấy xác nhận bệnh/chứng cứ liên quan đính kèm theo đây [Nếu có].\n\nTrân trọng cảm ơn!  \n\n**Người viết**,  \n*Đã ký tên:* ..................................................  \n*(Họ và Tên, Ngày... tháng ... năm 2026)*  \n\n---\n\n### Hướng dẫn bổ sung:\nĐể hoàn thiện tài liệu này cho đúng tiêu chuẩn 'CRIT-001', anh/chị vui lòng cung cấp lại thông tin chi tiết sau đây (bạn có thể gửi trực tiếp để tôi tự động điền vào):  \n*   **Họ tên đầy đủ** của người xin phép.\n*   **Lý do cụ thể nhất:** Ví dụ: \"Bệnh viêm phổi\" hay \"Gia đình mất điện thoại cố định không liên lạc được\".\n*   **Thời gian chính xác:** Từ ngày ... đến ngày ..., bao nhiêu giờ/ngày?\n\nNếu bạn cung cấp thêm chi tiết này, tôi sẽ giúp anh/chị sửa lại nội dung trên để trở thành một văn bản hoàn chỉnh và có hiệu lực cao nhất cho trường hợp của mình.\n\n---\nPhản hồi lúc 10h09m ngày 15/08/2026",
+      "ts": 1786763361.3900542,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "[ZENITH]: MISSION-CTX resume `m_man`",
-      "ts": 1785592286.1412687,
+      "msg": "Tra ve ket qua da cache cho: giá vàng hôm nay thế nào ?",
+      "ts": 1786804821.6634164,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Chào bạn, theo dữ liệu cập nhật mới nhất đến từ ngày **15/08/2026**, tình hình giá vàng như sau:\n\n*   **Giá Vàng Thế Giới (XAU/USD):** Đạt mức **4.377,60 USD/oz** (+1,41% so với hôm qua).\n    *   Hôm qua đóng cửa ở 4.316,56 USD/oz.\n*   **Giá Vàng SJC tại Việt Nam:**\n    *   Bán ra: **143.300.000 VND/lượng**.\n    *   Mua vào: **140.300.000 VND/lượng**.\n*   **Quy đổi tham khảo:** Khoảng 139,0 triệu đồng mỗi lượng vàng.\n\nTóm lại, giá vàng hôm nay đang ở mức khá cao với sự tăng trưởng mạnh mẽ hơn 61 nghìn USD so với ngày trước đó do tỷ giáUSD/VND cũng đạt mốc 26.330 (theo bán ra Vietcombank).\n\n---\nPhản hồi lúc 21h39m ngày 15/08/2026",
+      "ts": 1786804821.6725712,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=2270 | preview='phân tích xu hướng giá vàng và các yếu tố ảnh hưởng chính\\n\\n<ZENITH_SKILL_ACTIVATED>\\nSkill: #1018 Zenith Graph Intelligence (domain=DATA_SCIENCE, score=1.01)\\nAp dung chinh xac giao thuc sau - KHONG bo ' | hash=1019da325f61cbdc | task_id=man | trace_id=gen_1786805044 | mission_id=m_man",
+      "ts": 1786805053.3801346,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "[ZENITH]: AI OS: intent=analyze pipeline=deep mode=deep tags=-",
-      "ts": 1785592286.1448643,
+      "msg": "Task Profile: ['DEBUG_ANALYSIS_ACTION'] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1786805053.3836641,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "[ZENITH]: Khởi chạy lộ trình: DEEP_PIPELINE",
-      "ts": 1785592286.1496377,
+      "msg": "Command Deck → ['SKILL_DATA_48_GRAPH']",
+      "ts": 1786805053.3869116,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "[ZENITH]: DeepPipeline T2–T6 (full)",
-      "ts": 1785592286.3126926,
+      "msg": "MISSION-CTX resume `m_man`",
+      "ts": 1786805053.3893595,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "🔄 [ENGINE-SWITCH]: Chuyển sang quy trình DEEP — Giải phóng mô hình RECEPTIONIST (Qwen3-30B) khỏi RAM/VRAM và nạp cụm mô hình DEEP...",
-      "ts": 1785592286.4310164,
+      "msg": "GOVERNOR: TaskProfile=['DEBUG_ANALYSIS_ACTION'] | Topology=MULTI_AGENT (DEEP)",
+      "ts": 1786805053.391911,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "🧠 [DEEP-PIPELINE]: Khởi động luồng chiến lược 5 tầng (T2→T6).",
-      "ts": 1785592347.1960773,
+      "msg": "AI OS: intent=audit pipeline=deep mode=deep tags=skill_deck",
+      "ts": 1786805053.394305,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "Anaphora resolved: 'phân tích xu hướng giá vàng và các yếu tố ảnh hưởng chính\n\n<ZENITH_SKILL_ACTIVATED>\nSkill: #1018 Zenith Graph Intelligence (domain=DATA_SCIENCE, score=1.01)\nAp dung chinh xac giao thuc sau - KHONG bo qua buoc nao:\n\n# DOSSIER: SKILL_DATA_48_GRAPH\n\n## 🌌 Overview\nĐây là \"Bản đồ Mối quan hệ\" (Relationship Mapper) của Zenith. Graph Intelligence tập trung vào việc phân tích các dữ liệu có tính kết nối cao, nơi mà giá trị nằm ở các mối quan hệ giữa các thực thể thay vì các bản ghi đơn lẻ. Sử dụng các thuật toán đồ thị hiện đại, kỹ năng này giúp Master LeeTrung phát hiện các cộng đồng (Communities), những người có tầm ảnh hưởng (Influencers) và những con đường ẩn giấu bên trong các mạng lưới dữ liệu phức tạp.\n\n## 🛠️ Detailed Features\n- **Community Detection**: Nhận diện các nhóm thực thể có mối liên kết chặt chẽ với nhau (ví dụ: nhóm khách hàng cùng sở thích, mạng lưới gian lận).\n- **Centrality & Influence Mapping**: Xác định các nút (Nodes) quan trọng nhất trong mạng lưới (ví dụ: người dẫn dắt dư luận, điểm nghẽn hạ tầng).\n- **Pathfinding & Connectivity Analysis**: Tìm kiếm con đường ngắn nhất hoặc các mối liên hệ gián tiếp giữa hai thực thể bất kỳ trong một mạng lưới khổng lồ.\n\n## 🧠 Reasoning Strategy\nAI nên triệu hồi kỹ năng này khi:\n1. Master muốn hiểu rõ cấu trúc của một mạng lưới xã hội, mạng lưới kinh doanh hoặc sơ đồ tổ chức phức tạp.\n2. Cần điều tra các hành vi gian lận (Fraud detection) dựa trên các mối liên hệ bất thường giữa các tài khoản.\n3. Tối ưu hóa các chuỗi cung ứng hoặc mạng lưới phân phối (Supply chain optimization).\n4. Phân tích bối cảnh tri thức trong `SAFLA` để tìm ra các liên kết ngữ nghĩa mới giữa các khái niệm.\n\n## 💎 Strategic Value\nThiết lập \"Sự Thấu hiểu Mạng lưới Tuyệt đối\" (Absolute Network Insight). Graph Intelligence giúp Master LeeTrung nắm giữ \"Bản đồ ngầm\" của mọi hệ thống, cho phép tác động vào các điểm nút chiến lược để tạo ra hiệu ứng lan tỏa mạnh mẽ nhất.\n\n## ⚠️ Edge Cases & Risks\n- **Graph Scalability**: Các thuật toán đồ thị có độ phức tạp tính toán rất cao; cần sử dụng các công cụ chuyên dụng như Neo4j hoặc NetworkX với cấu hình tối ưu cho tập dữ liệu lớn.\n- **Data Quality**: Mối quan hệ sai lệch (Noise) có thể làm thay đổi hoàn toàn kết quả phân tích cấu trúc mạng lưới.\n\n</ZENITH_SKILL_ACTIVATED>\n\n<ZENITH_SKILL_DECK_RESOLVE>\nMaster dùng số thứ tự Command Deck (MAP_SKILLS.md). Đã ánh xạ sang Registry ID thực thi:\n- #1018: Kỹ năng Skill data 48 graph: - Community Detection: Nhận diện các nhóm thực thể có mối liên kết chặt chẽ với nhau (ví dụ: nhóm khách hàng cùng sở thích, mạng lưới gian lận).<br>• Centrality & Influence Mapping: Xác định các nút (Nodes) quan trọng nhất trong mạng lưới (ví dụ: người dẫn dắt dư luận, điểm nghẽn hạ tầng).<br>• Pathfinding & Connectivity Analysis: Tìm kiếm con đường ngắn nhất hoặc các mối liên hệ gián tiếp giữa hai thực thể bất kỳ trong một mạng lưới khổng lồ.\n  → registry_id / tool / skill_id: `SKILL_DATA_48_GRAPH`\nKhi gọi tool/plan: dùng registry_id ở trên, KHÔNG dùng số # trong field tool.\n</ZENITH_SKILL_DECK_RESOLVE>\n\n<MISSION_CONTEXT_PACK>\nteam_pattern: producer_reviewer\nplan_summary: Chào bạn, theo dữ liệu cập nhật mới nhất đến từ ngày **15/08/2026**, tình hình giá vàng như sau:\n\n*   **Giá Vàng Thế Giới (XAU/USD):** Đạt mức **4.377,60 USD/oz** (+1,41% so với hôm qua).\n    *   Hôm qua đóng cửa ở 4.316,56 USD/oz.\n*   **Giá Vàng SJC tại Việt Nam:**\n    *   Bán ra: **143.300.000 VND/lượng**.\n    *   Mua vào: **140.300.000 VND/lượng**.\n*   **Quy đổi tham khảo:** Khoảng 139,0 triệu đồng mỗi lượng vàng.\n\nTóm lại, giá vàng hôm nay đang ở mức khá cao với sự tăng trưởng mạnh mẽ hơn 61 nghìn USD so với ngày trước đó do tỷ giáUSD/VND cũng đạt mốc 26.330 (theo bán ra Vietcombank).\n\n---\nPhản hồi lúc 21h39m ngày 15/08/2026\nprior_goal: giá vàng hôm nay thế nào ?\n</MISSION_CONTEXT_PACK>' → 'giá vàng'",
+      "ts": 1786805053.4015608,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: STATE_PIPELINE (deep)",
+      "ts": 1786805053.4456642,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Bắt đầu chạy kế hoạch (deep) | Tổng: 4 bước",
+      "ts": 1786805053.448544,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Bước 1/4: S1_RECON — Quét thư mục làm việc, định vị tệp tin và thu thập tri thức.",
+      "ts": 1786805053.4535525,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "Định vị và phân tích cấu trúc workspace...",
+      "ts": 1786805053.4567103,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "Nạp 2 kỹ năng (skill_data_48_graph, skill_data_44_predictive) vào ngữ cảnh lập luận.",
+      "ts": 1786805063.9829028,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "Tìm thấy 50 file liên quan.",
+      "ts": 1786805063.988066,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Hoàn tất bước S1_RECON.",
+      "ts": 1786805063.9921775,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Bước 2/4: S2_FORGE — Lập kế hoạch sửa đổi và tiến hành ghi code.",
+      "ts": 1786805063.9946892,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "Đang tiến hành chỉnh sửa mã nguồn...",
+      "ts": 1786805069.7138548,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [ENGINE-READY]: Chế độ DEEP — Cụm mô hình tư duy sâu đã có sẵn trên RAM/VRAM. Khởi chạy lập trình ngay!",
+      "ts": 1786805069.9860432,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1786805069.9887135,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
-      "ts": 1785592347.2030787,
+      "ts": 1786805069.9929295,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
-      "ts": 1785592347.2119358,
+      "ts": 1786805069.9978368,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "BRAIN",
-      "msg": "📚 [KB-RETRIEVED]: 5 chunks (≥0.45), 5 high-quality (≥0.72). Sufficient=True",
-      "ts": 1785592348.1967962,
+      "msg": "5 chunks (≥0.45), 5 high-quality (≥0.72). Dữ kiện nội bộ đầy đủ, đáp ứng được yêu cầu",
+      "ts": 1786805071.409274,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
-      "ts": 1785592348.245864,
+      "ts": 1786805071.5340598,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
-      "tag": "INFO",
-      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER`...",
-      "ts": 1785592348.467288,
-      "source": "SYSTEM",
-      "task_id": "man"
-    },
-    {
-      "tag": "LATENCY",
-      "msg": "⏱️ [FORGE-ATTEMPT-1]: Model `PLANNER` response time: 200.03s.",
-      "ts": 1785592548.5037334,
+      "tag": "FORGE",
+      "msg": "KB sufficient + task=LOOKUP. Skip LLM forge, answer from KB.",
+      "ts": 1786805071.9731772,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
-      "ts": 1785592548.5389655,
+      "ts": 1786805071.988165,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "INFO",
+      "msg": "Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1786805072.0113447,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
-      "ts": 1785592548.5400696,
+      "ts": 1786805072.02995,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PLANNER",
-      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (15 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **step_01 (READ_FILE)**: Đọc tài liệu nền tảng để xác định phạm vi đồng hóa tri thức mới.\n  • `[ ]` **step_02 (IMPORT_SKILL)**: Nạp trình điều khiển quản lý văn phòng vào bộ nhớ hoạt động.\n  • `[ ]` **step_03 (SEARCH_WEB_GLOBAL)**: Thu thập dữ liệu mới về tối ưu hóa Python dựa trên phần cứng.\n  • `[ ]` **step_04 (WRITE_FILE)**: Viết dữ liệu đã thu thập vào trụ cột knowledge.\n  • `[ ]` **step_05 (EXECUTE_COMMAND)**: Kiểm tra cú pháp và tính hợp lệ của file tri thức mới.\n  • `[ ]` **step_06 (VIEW_FILE)**: Xem lại nội dung đã đồng hóa để xác nhận tính chính xác.\n  • `[ ]` **step_07 (REWRITE_FILE)**: Cập nhật tài liệu nền tảng phản ánh tri thức mới.\n  • `[ ]` **step_08 (SYSTEM_CMD)**: Xác nhận tồn tại vật lý của file tri thức mới.\n  • `[ ]` **step_09 (COUNCIL_OF_MINDS_DEBATE)**: Phân tích logic về ưu tiên phần cứng trong tối ưu hóa.\n  • `[ ]` **step_10 (IMPORT_SKILL)**: Nạp kỹ năng phân tích chiến lược vào bộ nhớ.\n  • `[ ]` **step_11 (OMNI_EVOLUTION_FORGE)**: Tinh chế tri thức cũ với dữ liệu mới.\n  • `[ ]` **step_12 (REWRITE_FILE)**: Cập nhật lại file tri thức với nội dung đã tinh chế.\n  • `[ ]` **step_13 (EXECUTE_COMMAND)**: Tìm kiếm từ khóa quan trọng để xác nhận nội dung.\n  • `[ ]` **step_14 (VIEW_FILE)**: Xem xét cuối cùng trước khi hoàn tất.\n  • `[ ]` **step_15 (EXECUTE_COMMAND)**: Ghi nhật ký sự kiện hoàn tất nhiệm vụ.",
-      "ts": 1785592548.541499,
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **step_01 (SEARCH_WEB_GLOBAL)**: Search web for: phân tích xu hướng giá vàng và các yếu tố ảnh hưởng chính\n\n<ZENITH_SKILL_ACTIVATED>\nSkill: #1018 Zenith Graph Intelligen",
+      "ts": 1786805072.0579834,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "🔄 [CHECKPOINT]: Đã khôi phục 1 bước hoàn thành trước đó.",
-      "ts": 1785592548.5475614,
+      "msg": "Đã khôi phục 1 bước hoàn thành trước đó.",
+      "ts": 1786805072.0651023,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "EXECUTOR",
-      "msg": "⚙️ [T4]: Khởi động DAG Parallel Executor...",
-      "ts": 1785592548.5498185,
+      "msg": "Khởi động DAG Parallel Executor...",
+      "ts": 1786805072.066845,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
-      "tag": "STOP",
-      "msg": "🛑 [STOP]: Nhận lệnh Dừng khẩn cấp từ Master. Ngắt chuỗi hành pháp.",
-      "ts": 1785592767.7957695,
+      "tag": "EXECUTOR",
+      "msg": "Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1786805072.0770824,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
-      "tag": "JKAI",
-      "msg": " Giao thức dừng đã được kích hoạt. Toàn bộ Đặc vụ đã dừng theo lệnh của Master.",
-      "ts": 1785592767.8057265,
+      "tag": "EXECUTOR",
+      "msg": "Không có bằng chứng thực thi hợp lệ. KHÔNG chế tổng hợp kết quả giả — chuyển qua T5 Critic để đánh giá thực tế (FAIL).",
+      "ts": 1786805072.1180208,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Khởi động phiên Thẩm định Tư pháp...",
+      "ts": 1786805082.2019038,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Phán quyết — FAIL (Score: 0.00)",
+      "ts": 1786805082.2110274,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Ban Thư Ký đang soạn Báo cáo...",
+      "ts": 1786805082.213849,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Báo cáo đã soạn thảo hoàn tất.",
+      "ts": 1786805137.9694633,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "[ZENITH]: MISSION-CTX resume `m_man`",
-      "ts": 1785760523.8188477,
+      "msg": "Critic không phê duyệt. Lập kế hoạch lại. Attempt 2/3",
+      "ts": 1786805137.9766166,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
-      "ts": 1785760523.8226924,
-      "source": "SYSTEM",
-      "task_id": "man"
-    },
-    {
-      "tag": "SYSTEM",
-      "msg": "[ZENITH]: Khởi chạy lộ trình: DEEP_PIPELINE",
-      "ts": 1785760523.8272057,
-      "source": "SYSTEM",
-      "task_id": "man"
-    },
-    {
-      "tag": "SYSTEM",
-      "msg": "[ZENITH]: Đang phác thảo kế hoạch tác chiến...",
-      "ts": 1785760523.8290212,
+      "msg": "Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1786805141.4994013,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
-      "ts": 1785760523.9187915,
+      "ts": 1786805141.504512,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
-      "ts": 1785760523.928753,
+      "ts": 1786805141.5194457,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "BRAIN",
-      "msg": "📭 [KB-EMPTY]: Không tìm thấy tài liệu liên quan trong Qdrant.",
-      "ts": 1785760524.0134294,
+      "msg": "3 chunks (≥0.45), 3 high-quality (≥0.72). Dữ kiện nội bộ đầy đủ, đáp ứng được yêu cầu",
+      "ts": 1786805142.0522075,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
-      "ts": 1785760524.050304,
+      "ts": 1786805142.0583065,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "FORGE",
+      "msg": "KB sufficient + task=LOOKUP. Skip LLM forge, answer from KB.",
+      "ts": 1786805142.0600965,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1786805142.076587,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "INFO",
-      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER`...",
-      "ts": 1785760524.2787845,
+      "msg": "Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1786805142.077918,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
-      "tag": "LATENCY",
-      "msg": "⏱️ [FORGE-ATTEMPT-1]: Model `PLANNER` response time: 60.04s.",
-      "ts": 1785760584.3259954,
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1786805142.0914211,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
-      "tag": "INFO",
-      "msg": "🧠 [PLANNER-ATTEMPT-2]: Đang đúc kết chiến lược bằng vai trò `RESERVE_AGENT`...",
-      "ts": 1785760584.3295708,
-      "source": "SYSTEM",
-      "task_id": "man"
-    },
-    {
-      "tag": "LATENCY",
-      "msg": "⏱️ [FORGE-ATTEMPT-2]: Model `RESERVE_AGENT` response time: 0.05s.",
-      "ts": 1785760584.385707,
-      "source": "SYSTEM",
-      "task_id": "man"
-    },
-    {
-      "tag": "INFO",
-      "msg": "🧠 [PLANNER-ATTEMPT-3]: Đang đúc kết chiến lược bằng vai trò `RESERVE_AGENT`...",
-      "ts": 1785760584.3875008,
-      "source": "SYSTEM",
-      "task_id": "man"
-    },
-    {
-      "tag": "LATENCY",
-      "msg": "⏱️ [FORGE-ATTEMPT-3]: Model `RESERVE_AGENT` response time: 30.12s.",
-      "ts": 1785760614.5067549,
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **step_01 (SEARCH_WEB_GLOBAL)**: Search web for: phân tích xu hướng giá vàng và các yếu tố ảnh hưởng chính\n\n<ZENITH_SKILL_ACTIVATED>\nSkill: #1018 Zenith Graph Intelligen",
+      "ts": 1786805142.115633,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "[ZENITH]: MISSION-CTX resume `m_man`",
-      "ts": 1785760624.2072456,
+      "msg": "Đã khôi phục 1 bước hoàn thành trước đó.",
+      "ts": 1786805142.1200197,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Khởi động DAG Parallel Executor...",
+      "ts": 1786805142.1223881,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1786805142.1410832,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Không có bằng chứng thực thi hợp lệ. KHÔNG chế tổng hợp kết quả giả — chuyển qua T5 Critic để đánh giá thực tế (FAIL).",
+      "ts": 1786805142.1440873,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Khởi động phiên Thẩm định Tư pháp...",
+      "ts": 1786805155.758459,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Phán quyết — FAIL (Score: 0.00)",
+      "ts": 1786805155.769312,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Ban Thư Ký đang soạn Báo cáo...",
+      "ts": 1786805155.771542,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Báo cáo đã soạn thảo hoàn tất.",
+      "ts": 1786805237.7294993,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
-      "ts": 1785760624.2099082,
+      "msg": "Critic không phê duyệt. Lập kế hoạch lại. Attempt 3/3",
+      "ts": 1786805237.7348368,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "[ZENITH]: Khởi chạy lộ trình: DEEP_PIPELINE",
-      "ts": 1785760624.2136345,
-      "source": "SYSTEM",
-      "task_id": "man"
-    },
-    {
-      "tag": "SYSTEM",
-      "msg": "[ZENITH]: Đang phác thảo kế hoạch tác chiến...",
-      "ts": 1785760624.215488,
+      "msg": "Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1786805239.416027,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
-      "ts": 1785760624.2212565,
+      "ts": 1786805239.4208739,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
-      "ts": 1785760624.2388887,
+      "ts": 1786805239.440925,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "BRAIN",
-      "msg": "📭 [KB-EMPTY]: Không tìm thấy tài liệu liên quan trong Qdrant.",
-      "ts": 1785760624.2704413,
+      "msg": "2 chunks (≥0.45), 2 high-quality (≥0.72). Dữ kiện nội bộ đầy đủ, đáp ứng được yêu cầu",
+      "ts": 1786805239.8118975,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
-      "ts": 1785760624.28476,
+      "ts": 1786805239.9714816,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "FORGE",
+      "msg": "KB sufficient + task=LOOKUP. Skip LLM forge, answer from KB.",
+      "ts": 1786805239.9732528,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1786805239.9897082,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "INFO",
-      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER`...",
-      "ts": 1785760624.5431976,
+      "msg": "Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1786805239.9909348,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
-      "tag": "LATENCY",
-      "msg": "⏱️ [FORGE-ATTEMPT-1]: Model `PLANNER` response time: 80.12s.",
-      "ts": 1785760704.666511,
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1786805240.0065162,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
-      "tag": "INFO",
-      "msg": "🧠 [PLANNER-ATTEMPT-2]: Đang đúc kết chiến lược bằng vai trò `RESERVE_AGENT`...",
-      "ts": 1785760704.6697712,
-      "source": "SYSTEM",
-      "task_id": "man"
-    },
-    {
-      "tag": "LATENCY",
-      "msg": "⏱️ [FORGE-ATTEMPT-2]: Model `RESERVE_AGENT` response time: 0.05s.",
-      "ts": 1785760704.721194,
-      "source": "SYSTEM",
-      "task_id": "man"
-    },
-    {
-      "tag": "INFO",
-      "msg": "🧠 [PLANNER-ATTEMPT-3]: Đang đúc kết chiến lược bằng vai trò `RESERVE_AGENT`...",
-      "ts": 1785760704.723292,
-      "source": "SYSTEM",
-      "task_id": "man"
-    },
-    {
-      "tag": "LATENCY",
-      "msg": "⏱️ [FORGE-ATTEMPT-3]: Model `RESERVE_AGENT` response time: 30.1s.",
-      "ts": 1785760734.8273973,
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **step_01 (SEARCH_WEB_GLOBAL)**: Search web for: phân tích xu hướng giá vàng và các yếu tố ảnh hưởng chính\n\n<ZENITH_SKILL_ACTIVATED>\nSkill: #1018 Zenith Graph Intelligen",
+      "ts": 1786805240.03526,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "[ZENITH]: MISSION-CTX resume `m_man`",
-      "ts": 1785760746.2438896,
+      "msg": "Đã khôi phục 1 bước hoàn thành trước đó.",
+      "ts": 1786805240.0397353,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Khởi động DAG Parallel Executor...",
+      "ts": 1786805240.0425441,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1786805240.0556488,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Không có bằng chứng thực thi hợp lệ. KHÔNG chế tổng hợp kết quả giả — chuyển qua T5 Critic để đánh giá thực tế (FAIL).",
+      "ts": 1786805240.058226,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Khởi động phiên Thẩm định Tư pháp...",
+      "ts": 1786805258.5686154,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Phán quyết — FAIL (Score: 0.00)",
+      "ts": 1786805258.5769298,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Ban Thư Ký đang soạn Báo cáo...",
+      "ts": 1786805258.5793786,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Báo cáo đã soạn thảo hoàn tất.",
+      "ts": 1786805324.7585022,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "3 file đã được thay đổi.",
+      "ts": 1786805335.3885922,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Hoàn tất bước S2_FORGE.",
+      "ts": 1786805335.3965147,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Bước 3/4: S3_VERIFY — Chạy kiểm tra thử (Reflex test/lint/compile) để xác minh tính ổn định.",
+      "ts": 1786805335.399212,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "Kiem tra cu phap Python / JS / JSON...",
+      "ts": 1786805335.4025764,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "Sạch. Python: 0 loi | JS/TS: 0 loi | JSON: 0 loi (Tong 450 file quet)",
+      "ts": 1786805349.8843896,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "[ZENITH]: AI OS: intent=general pipeline=fast mode=fast tags=-",
-      "ts": 1785760746.2470398,
+      "msg": "Kiểm định Passed! Đã hợp nhất thành công mã nguồn từ vùng cách ly về nhánh chính.",
+      "ts": 1786805350.1317422,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Hoàn tất bước S3_VERIFY.",
+      "ts": 1786805374.4833329,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Bước 4/4: S4_AUDIT — Gửi phản hồi qua hội đồng chuyên gia thẩm định (Critic) để thẩm định chất lượng đầu ra.",
+      "ts": 1786805374.4874935,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "Gửi bản nháp qua hội đồng chuyên gia thẩm định...",
+      "ts": 1786805374.4927602,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "WARN",
+      "msg": "Critic không phản hồi trong 30s.",
+      "ts": 1786805404.4973211,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Hoàn tất bước S4_AUDIT.",
+      "ts": 1786805404.5029309,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=2270 | preview='phân tích xu hướng giá vàng và các yếu tố ảnh hưởng chính\\n\\n<ZENITH_SKILL_ACTIVATED>\\nSkill: #1018 Zenith Graph Intelligence (domain=DATA_SCIENCE, score=1.01)\\nAp dung chinh xac giao thuc sau - KHONG bo ' | hash=1019da325f61cbdc | task_id=man | trace_id=gen_1786805044 | mission_id=m_man",
+      "ts": 1786805652.7917452,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "[ZENITH]: Khởi chạy lộ trình: DEEP_PIPELINE",
-      "ts": 1785760746.2516131,
+      "msg": "Task Profile: ['DEBUG_ANALYSIS_ACTION'] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1786805652.7942884,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "SYSTEM",
-      "msg": "[ZENITH]: Đang phác thảo kế hoạch tác chiến...",
-      "ts": 1785760746.253334,
+      "msg": "Command Deck → ['SKILL_DATA_48_GRAPH']",
+      "ts": 1786805652.7963793,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "MISSION-CTX resume `m_man`",
+      "ts": 1786805652.7986147,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "GOVERNOR: TaskProfile=['DEBUG_ANALYSIS_ACTION'] | Topology=MULTI_AGENT (DEEP)",
+      "ts": 1786805652.8007388,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=audit pipeline=deep mode=deep tags=skill_deck",
+      "ts": 1786805652.802799,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: STATE_PIPELINE (deep)",
+      "ts": 1786805652.8063502,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Bắt đầu chạy kế hoạch (deep) | Tổng: 4 bước",
+      "ts": 1786805652.8087826,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Bước 1/4: S1_RECON — Quét thư mục làm việc, định vị tệp tin và thu thập tri thức.",
+      "ts": 1786805652.8109765,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "Định vị và phân tích cấu trúc workspace...",
+      "ts": 1786805652.8138268,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "Nạp 2 kỹ năng (skill_data_48_graph, skill_data_44_predictive) vào ngữ cảnh lập luận.",
+      "ts": 1786805664.1936963,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "Tìm thấy 50 file liên quan.",
+      "ts": 1786805664.1968653,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Hoàn tất bước S1_RECON.",
+      "ts": 1786805664.200399,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "ZENITH",
+      "msg": "Bước 2/4: S2_FORGE — Lập kế hoạch sửa đổi và tiến hành ghi code.",
+      "ts": 1786805664.203038,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "Đang tiến hành chỉnh sửa mã nguồn...",
+      "ts": 1786805670.818246,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Tạo vùng cách ly an toàn tại /workspace/.zenith/worktrees/wt_man cho đại lý con.",
+      "ts": 1786805802.6822433,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1786805802.714933,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
-      "ts": 1785760746.2582061,
+      "ts": 1786805802.720064,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
-      "ts": 1785760746.2757256,
+      "ts": 1786805802.7333784,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "BRAIN",
-      "msg": "📭 [KB-EMPTY]: Không tìm thấy tài liệu liên quan trong Qdrant.",
-      "ts": 1785760746.2992613,
+      "msg": "5 chunks (≥0.45), 5 high-quality (≥0.72). Dữ kiện nội bộ đầy đủ, đáp ứng được yêu cầu",
+      "ts": 1786805802.7884798,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "PROGRESS",
       "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
-      "ts": 1785760746.3093657,
+      "ts": 1786805803.0944693,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "FORGE",
+      "msg": "KB sufficient + task=LOOKUP. Skip LLM forge, answer from KB.",
+      "ts": 1786805803.0964224,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1786805803.112163,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "INFO",
-      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER`...",
-      "ts": 1785760746.5083518,
+      "msg": "Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1786805803.11318,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
-      "tag": "LATENCY",
-      "msg": "⏱️ [FORGE-ATTEMPT-1]: Model `PLANNER` response time: 60.05s.",
-      "ts": 1785760806.564476,
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1786805803.1274803,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **step_01 (SEARCH_WEB_GLOBAL)**: Search web for: phân tích xu hướng giá vàng và các yếu tố ảnh hưởng chính\n\n<ZENITH_SKILL_ACTIVATED>\nSkill: #1018 Zenith Graph Intelligen",
+      "ts": 1786805803.1536932,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Đã khôi phục 1 bước hoàn thành trước đó.",
+      "ts": 1786805803.1585236,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Khởi động DAG Parallel Executor...",
+      "ts": 1786805803.1620297,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1786805803.16492,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Không có bằng chứng thực thi hợp lệ. KHÔNG chế tổng hợp kết quả giả — chuyển qua T5 Critic để đánh giá thực tế (FAIL).",
+      "ts": 1786805803.1679673,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Khởi động phiên Thẩm định Tư pháp...",
+      "ts": 1786805809.907201,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Phán quyết — FAIL (Score: 0.00)",
+      "ts": 1786805809.9158654,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Ban Thư Ký đang soạn Báo cáo...",
+      "ts": 1786805809.9182718,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tìm thấy trong",
+      "ts": 1786805858.3420818,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " registry, nên",
+      "ts": 1786805858.405333,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " **không",
+      "ts": 1786805858.4672132,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " có dữ liệu",
+      "ts": 1786805858.533395,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thực tế nào",
+      "ts": 1786805858.5962474,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " được truy xuất**.",
+      "ts": 1786805858.680272,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Để tiến hành",
+      "ts": 1786805858.7438228,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " phân tích xu",
+      "ts": 1786805858.8057172,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hướng giá vàng",
+      "ts": 1786805858.8682325,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " và các yếu",
+      "ts": 1786805858.936327,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tố ảnh hưởng",
+      "ts": 1786805858.9994102,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " chính, cần",
+      "ts": 1786805859.0620344,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " đảm bảo rằng",
+      "ts": 1786805859.1242352,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tất cả các",
+      "ts": 1786805859.1877782,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " công cụ cần",
+      "ts": 1786805859.250598,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thiết (bao",
+      "ts": 1786805859.3165417,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " gồm cả công",
+      "ts": 1786805859.3795698,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cụ graph intelligence",
+      "ts": 1786805859.4416084,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ") đã được",
+      "ts": 1786805859.5045042,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " kích hoạt và",
+      "ts": 1786805859.5677073,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cấu hình đúng",
+      "ts": 1786805859.6301327,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cách trước khi tiếp",
+      "ts": 1786805859.7153664,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tục.\n\n**",
+      "ts": 1786805859.7781124,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Khuyến",
+      "ts": 1786805859.8404996,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nghị**: S",
+      "ts": 1786805859.9032865,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ử dụng `",
+      "ts": 1786805859.965973,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "SKILL_DATA",
+      "ts": 1786805860.0295107,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "_48_",
+      "ts": 1786805860.0931559,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "GRAPH",
+      "ts": 1786805860.1598735,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "` cho phân",
+      "ts": 1786805860.2218585,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tích mạng l",
+      "ts": 1786805860.2845125,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ưới giá vàng",
+      "ts": 1786805860.3481426,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nếu có nhu",
+      "ts": 1786805860.4110918,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cầu, nhưng",
+      "ts": 1786805860.4776096,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " trước tiên hãy",
+      "ts": 1786805860.5426047,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " xác minh trạng",
+      "ts": 1786805860.6045787,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thái registry.",
+      "ts": 1786805860.6716354,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Báo cáo đã soạn thảo hoàn tất.",
+      "ts": 1786805860.7043247,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Critic không phê duyệt. Lập kế hoạch lại. Attempt 2/3",
+      "ts": 1786805860.711238,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1786805864.105326,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1786805864.1124725,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1786805864.1337364,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "3 chunks (≥0.45), 3 high-quality (≥0.72). Dữ kiện nội bộ đầy đủ, đáp ứng được yêu cầu",
+      "ts": 1786805864.6410146,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1786805864.6460996,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "FORGE",
+      "msg": "KB sufficient + task=LOOKUP. Skip LLM forge, answer from KB.",
+      "ts": 1786805864.6476285,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1786805864.6627538,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "INFO",
-      "msg": "🧠 [PLANNER-ATTEMPT-2]: Đang đúc kết chiến lược bằng vai trò `RESERVE_AGENT`...",
-      "ts": 1785760806.566884,
+      "msg": "Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1786805864.6641073,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
-      "tag": "LATENCY",
-      "msg": "⏱️ [FORGE-ATTEMPT-2]: Model `RESERVE_AGENT` response time: 0.05s.",
-      "ts": 1785760806.6173952,
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1786805864.6766062,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **step_01 (SEARCH_WEB_GLOBAL)**: Search web for: phân tích xu hướng giá vàng và các yếu tố ảnh hưởng chính\n\n<ZENITH_SKILL_ACTIVATED>\nSkill: #1018 Zenith Graph Intelligen",
+      "ts": 1786805864.7023919,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Đã khôi phục 1 bước hoàn thành trước đó.",
+      "ts": 1786805864.7066457,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Khởi động DAG Parallel Executor...",
+      "ts": 1786805864.7089708,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1786805864.7277317,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Không có bằng chứng thực thi hợp lệ. KHÔNG chế tổng hợp kết quả giả — chuyển qua T5 Critic để đánh giá thực tế (FAIL).",
+      "ts": 1786805864.730755,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[INFO] [2026-08-15T14:57:56.478078] [SUMMARIZER] [Task: man] The",
+      "ts": 1786805876.4781713,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " system attempted to invoke",
+      "ts": 1786805876.5358012,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " the OMNI_S",
+      "ts": 1786805876.5977824,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "EARCH_ENG",
+      "ts": 1786805876.659824,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "INE tool twice during",
+      "ts": 1786805876.7192671,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " auto_recovery_",
+      "ts": 1786805876.778201,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "01 but failed because",
+      "ts": 1786805876.839789,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " the tool was not found",
+      "ts": 1786805876.914437,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " in the registry.",
+      "ts": 1786805876.975477,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " This indicates a missing",
+      "ts": 1786805877.0342486,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " or misconfigured",
+      "ts": 1786805877.0923257,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " search engine component that prevents",
+      "ts": 1786805877.166793,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " recovery operations from proceeding",
+      "ts": 1786805877.2258148,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Khởi động phiên Thẩm định Tư pháp...",
+      "ts": 1786805877.261039,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Phán quyết — FAIL (Score: 0.00)",
+      "ts": 1786805877.2734187,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Ban Thư Ký đang soạn Báo cáo...",
+      "ts": 1786805877.276073,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[INFO] [2026-08-15T14:58:36.673754] [SUMMARIZER] [Task: man] #",
+      "ts": 1786805916.6738412,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " BÁO",
+      "ts": 1786805916.7333293,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " CÁO",
+      "ts": 1786805916.792993,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " SỰ",
+      "ts": 1786805916.8530207,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " CỨ",
+      "ts": 1786805916.9131842,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "C THỰ",
+      "ts": 1786805916.9935484,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "C THI -",
+      "ts": 1786805917.0538337,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " KHUNG",
+      "ts": 1786805917.1166155,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " ANALY",
+      "ts": 1786805917.1775367,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "TICAL\n\n",
+      "ts": 1786805917.237772,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "## I.",
+      "ts": 1786805917.2987034,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " TIẾN",
+      "ts": 1786805917.3589897,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " ĐỘ TH",
+      "ts": 1786805917.4189196,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ỰC",
+      "ts": 1786805917.475967,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " THI (C",
+      "ts": 1786805917.5371358,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "URRENT ST",
+      "ts": 1786805917.6065347,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ATUS)\n\n|",
+      "ts": 1786805917.6680343,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Chỉ tiêu |",
+      "ts": 1786805917.7290483,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Giá trị",
+      "ts": 1786805917.7892277,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " |\n|----------|---------|\n",
+      "ts": 1786805917.8498695,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "| **ST",
+      "ts": 1786805917.9102986,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ATUS**",
+      "ts": 1786805917.9706488,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " | ❌ FAIL",
+      "ts": 1786805918.03113,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " |\n| **",
+      "ts": 1786805918.0919783,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Mô tả",
+      "ts": 1786805918.152114,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "** | Ex",
+      "ts": 1786805918.2135355,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ecutor đã sản",
+      "ts": 1786805918.2740295,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " xuất **kh",
+      "ts": 1786805918.3341854,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ông có bằng",
+      "ts": 1786805918.3947778,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " chứng hợp lệ",
+      "ts": 1786805918.4553509,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "** (no",
+      "ts": 1786805918.5183883,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " valid evidence).",
+      "ts": 1786805918.5815353,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Kết quả",
+      "ts": 1786805918.6434846,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thực thi trước",
+      "ts": 1786805918.705516,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " đó bị Critic",
+      "ts": 1786805918.7890997,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " từ chối vì",
+      "ts": 1786805918.869898,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thiếu căn cứ",
+      "ts": 1786805918.9313204,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " để đánh giá",
+      "ts": 1786805918.9933753,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ". |\n|",
+      "ts": 1786805919.0543156,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " **Lý",
+      "ts": 1786805919.114661,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " do thất b",
+      "ts": 1786805919.1756687,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ại** |",
+      "ts": 1786805919.2387335,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Thiếu dữ",
+      "ts": 1786805919.298895,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " liệu đầu vào",
+      "ts": 1786805919.3619058,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cụ thể về",
+      "ts": 1786805919.423799,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thị trường vàng",
+      "ts": 1786805919.4855602,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hoặc log thực",
+      "ts": 1786805919.5463634,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thi của Sw",
+      "ts": 1786805919.6071806,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "arm. Không",
+      "ts": 1786805919.6687586,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " có file kết quả",
+      "ts": 1786805919.7506795,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " chạy, không",
+      "ts": 1786805919.8112786,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " có dataset thị",
+      "ts": 1786805919.8724575,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " trường được cung",
+      "ts": 1786805919.9332805,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cấp. |\n",
+      "ts": 1786805919.9943755,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "| **H",
+      "ts": 1786805920.0580618,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ệ quả**",
+      "ts": 1786805920.1208036,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " | Báo",
+      "ts": 1786805920.1846979,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cáo không thể",
+      "ts": 1786805920.2469473,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " được hoàn thành",
+      "ts": 1786805920.308568,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " theo đúng cấu",
+      "ts": 1786805920.3712685,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " trúc 4",
+      "ts": 1786805920.4348185,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " phần do thiếu",
+      "ts": 1786805920.498355,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nền tảng",
+      "ts": 1786805920.5604503,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thực tế để",
+      "ts": 1786805920.6230073,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tổng hợp.",
+      "ts": 1786805920.6854742,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " |\n\n> **",
+      "ts": 1786805920.747043,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "⚠️ AL",
+      "ts": 1786805920.8109548,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ERT: K",
+      "ts": 1786805920.8729966,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ẾT TH",
+      "ts": 1786805920.9357197,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ÚC T",
+      "ts": 1786805920.9973943,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ỪNG",
+      "ts": 1786805921.0610778,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " QUY TR",
+      "ts": 1786805921.124102,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ÌNH",
+      "ts": 1786805921.1859915,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "**\n> -",
+      "ts": 1786805921.2480216,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Không có file",
+      "ts": 1786805921.3092544,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " log thực thi từ",
+      "ts": 1786805921.3936677,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Swarm\n",
+      "ts": 1786805921.4556475,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "> - Không",
+      "ts": 1786805921.5179958,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " có dataset giá",
+      "ts": 1786805921.5797877,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " vàng XAU",
+      "ts": 1786805921.642702,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "/USD hoặc",
+      "ts": 1786805921.7056296,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " dữ liệu thị",
+      "ts": 1786805921.766312,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " trường SJC",
+      "ts": 1786805921.829959,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\n> -",
+      "ts": 1786805921.8912244,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Mọi suy",
+      "ts": 1786805921.9544137,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " luận về xu",
+      "ts": 1786805922.016367,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hướng giá là",
+      "ts": 1786805922.0788789,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " **không",
+      "ts": 1786805922.141847,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " được chứng minh",
+      "ts": 1786805922.202755,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "** và vi phạm",
+      "ts": 1786805922.285427,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nguyên tắc Zero",
+      "ts": 1786805922.3470356,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "-Halluc",
+      "ts": 1786805922.4078624,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ination\n\n---\n\n",
+      "ts": 1786805922.4691753,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "## II.",
+      "ts": 1786805922.5307167,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " CÔNG VI",
+      "ts": 1786805922.5981896,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ỆC Đ",
+      "ts": 1786805922.662616,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Ã HOÀ",
+      "ts": 1786805922.7242699,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "N THÀ",
+      "ts": 1786805922.7852619,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "NH (DE",
+      "ts": 1786805922.851637,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "LIVERAB",
+      "ts": 1786805922.9139826,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "LES)\n\n|",
+      "ts": 1786805922.9773967,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " STT |",
+      "ts": 1786805923.0397663,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Nội dung công",
+      "ts": 1786805923.101502,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " việc | K",
+      "ts": 1786805923.164023,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ết quả thực",
+      "ts": 1786805923.2281406,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tế | Liên",
+      "ts": 1786805923.2901092,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " kết tệp",
+      "ts": 1786805923.3529334,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tin |\n|-----",
+      "ts": 1786805923.4146998,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "|--------------------|----------------",
+      "ts": 1786805923.4777486,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "-|----------------",
+      "ts": 1786805923.5384872,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "--|\n| ",
+      "ts": 1786805923.6022995,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "1 | Ph",
+      "ts": 1786805923.6672645,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ân tích cấu",
+      "ts": 1786805923.7291696,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " trúc mạng l",
+      "ts": 1786805923.7928596,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ưới (Graph",
+      "ts": 1786805923.8543365,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Intelligence) |",
+      "ts": 1786805923.9158945,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " **Không hoàn",
+      "ts": 1786805923.9773822,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thành** -",
+      "ts": 1786805924.0396845,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Dữ liệu",
+      "ts": 1786805924.1055052,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " đầu vào thiếu",
+      "ts": 1786805924.1683776,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " | N/A",
+      "ts": 1786805924.2313445,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " |\n| ",
+      "ts": 1786805924.2940645,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "2 | Đ",
+      "ts": 1786805924.3557217,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ánh giá xu",
+      "ts": 1786805924.4185565,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hướng giá vàng",
+      "ts": 1786805924.4813669,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " (XAU",
+      "ts": 1786805924.5452585,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "/USD)",
+      "ts": 1786805924.6065168,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " | **Không",
+      "ts": 1786805924.6723516,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " có dữ liệu",
+      "ts": 1786805924.7365396,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "** - Không",
+      "ts": 1786805924.8023853,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " có kết quả",
+      "ts": 1786805924.8678405,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thực thi từ",
+      "ts": 1786805924.930293,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Executor |",
+      "ts": 1786805924.992695,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " N/A |\n",
+      "ts": 1786805925.054945,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "| 3",
+      "ts": 1786805925.117009,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " | Phân",
+      "ts": 1786805925.1817555,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tích SJC",
+      "ts": 1786805925.2440321,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Việt Nam",
+      "ts": 1786805925.2994027,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " | **Không",
+      "ts": 1786805925.3613188,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " có dữ liệu",
+      "ts": 1786805925.46414,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "** - Không",
+      "ts": 1786805925.5267112,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " có kết quả",
+      "ts": 1786805925.5879579,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " mua/bán",
+      "ts": 1786805925.6512835,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " từ Swarm",
+      "ts": 1786805925.7120774,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " | N/A",
+      "ts": 1786805925.7725935,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " |\n\n> **",
+      "ts": 1786805925.834957,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "📋 T",
+      "ts": 1786805925.8968275,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ÓM T",
+      "ts": 1786805925.962959,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ẮN",
+      "ts": 1786805926.0258574,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ":** Tất cả",
+      "ts": 1786805926.1096392,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " các công việc",
+      "ts": 1786805926.1723719,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " trong khung",
+      "ts": 1786805926.2372582,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " 4 phần",
+      "ts": 1786805926.3005347,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " (TIẾ",
+      "ts": 1786805926.3644059,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "N ĐỘ",
+      "ts": 1786805926.4285522,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " THỰ",
+      "ts": 1786805926.4905434,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "C THI,",
+      "ts": 1786805926.5535986,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " CÔNG VI",
+      "ts": 1786805926.6165328,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ỆC Đ",
+      "ts": 1786805926.6792922,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Ã HOÀ",
+      "ts": 1786805926.7416487,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "N THÀ",
+      "ts": 1786805926.804288,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "NH, R",
+      "ts": 1786805926.8667114,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ỦI",
+      "ts": 1786805926.92867,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " RO, ĐỀ",
+      "ts": 1786805927.0126364,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " XUẤ",
+      "ts": 1786805927.0944455,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "T) đều",
+      "ts": 1786805927.1578465,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " **chưa",
+      "ts": 1786805927.2193627,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " được thực hiện",
+      "ts": 1786805927.281051,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "** do thiếu",
+      "ts": 1786805927.342945,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " bằng chứng gốc",
+      "ts": 1786805927.4058175,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ".\n\n---\n\n##",
+      "ts": 1786805927.4708664,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " III. R",
+      "ts": 1786805927.5332222,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Ủ",
+      "ts": 1786805927.586851,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "I RO &",
+      "ts": 1786805927.6497903,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " KHÓ",
+      "ts": 1786805927.715588,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " KHĂ",
+      "ts": 1786805927.780514,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "N (RIS",
+      "ts": 1786805927.8436096,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "K AUDIT",
+      "ts": 1786805927.9067056,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ")\n\n### ",
+      "ts": 1786805927.9720585,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "1. R",
+      "ts": 1786805928.0343943,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ủi ro",
+      "ts": 1786805928.0976913,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " chính: Thiếu",
+      "ts": 1786805928.1827378,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " dữ liệu nền",
+      "ts": 1786805928.245526,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tảng\n",
+      "ts": 1786805928.3119898,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "- **M",
+      "ts": 1786805928.3761399,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ất tính xác",
+      "ts": 1786805928.440623,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thực:** B",
+      "ts": 1786805928.5037906,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "áo cáo sẽ",
+      "ts": 1786805928.5671191,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " dựa trên giả",
+      "ts": 1786805928.630621,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " định hoặc suy",
+      "ts": 1786805928.6929376,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " luận không có",
+      "ts": 1786805928.7559323,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cơ sở,",
+      "ts": 1786805928.8212352,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " vi phạm nguyên",
+      "ts": 1786805928.8849843,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tắc *G",
+      "ts": 1786805928.9489536,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "round-Tr",
+      "ts": 1786805929.012338,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "uth Basing",
+      "ts": 1786805929.0746384,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "*.\n- **",
+      "ts": 1786805929.136729,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Lỗi hệ",
+      "ts": 1786805929.1990504,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thống:** Ex",
+      "ts": 1786805929.2629638,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ecutor không thể",
+      "ts": 1786805929.3250031,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tổng hợp thông",
+      "ts": 1786805929.3907857,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tin khi không",
+      "ts": 1786805929.4554498,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " có file log",
+      "ts": 1786805929.5195782,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "/thực",
+      "ts": 1786805929.5852466,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thi từ Sw",
+      "ts": 1786805929.6475418,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "arm.\n-",
+      "ts": 1786805929.712616,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " **Mất uy",
+      "ts": 1786805929.7969751,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tín:** M",
+      "ts": 1786805929.859208,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ức độ tin",
+      "ts": 1786805929.9213233,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cậy của",
+      "ts": 1786805929.9838326,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " báo cáo sẽ",
+      "ts": 1786805930.04674,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " giảm xuống dưới ",
+      "ts": 1786805930.1315992,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "5% do",
+      "ts": 1786805930.1949782,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thiếu bằng chứng",
+      "ts": 1786805930.257246,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ".\n\n### ",
+      "ts": 1786805930.3230157,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "2. R",
+      "ts": 1786805930.385038,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ủi ro",
+      "ts": 1786805930.4489307,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thứ cấp\n",
+      "ts": 1786805930.5142286,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "| Rủ",
+      "ts": 1786805930.5764012,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "i ro |",
+      "ts": 1786805930.6426947,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Mô tả",
+      "ts": 1786805930.7067626,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " | Mức",
+      "ts": 1786805930.7687452,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " độ |\n|--------",
+      "ts": 1786805930.831407,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "|-------|--------|\n",
+      "ts": 1786805930.8931699,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "| **Ph",
+      "ts": 1786805930.956287,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ân tích h",
+      "ts": 1786805931.0208037,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ư cấu**",
+      "ts": 1786805931.0835664,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " | Nếu tiếp",
+      "ts": 1786805931.1489177,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tục viết báo",
+      "ts": 1786805931.2136025,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cáo dựa trên",
+      "ts": 1786805931.278429,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " dữ liệu giả",
+      "ts": 1786805931.341932,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ", sẽ tạo",
+      "ts": 1786805931.406858,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " ra *hall",
+      "ts": 1786805931.470282,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ucination*",
+      "ts": 1786805931.5343642,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nghiêm trọng.",
+      "ts": 1786805931.5975194,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " | 🔴",
+      "ts": 1786805931.6635413,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Cao |\n|",
+      "ts": 1786805931.7258565,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " **Tỷ",
+      "ts": 1786805931.7909362,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " lệ rác",
+      "ts": 1786805931.8556132,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " text** |",
+      "ts": 1786805931.9199247,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Việc cố gắng",
+      "ts": 1786805931.986313,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tổng hợp từ",
+      "ts": 1786805932.0503945,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " không có dữ",
+      "ts": 1786805932.11488,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " liệu sẽ dẫn",
+      "ts": 1786805932.178994,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " đến văn bản",
+      "ts": 1786805932.2447622,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " rời r",
+      "ts": 1786805932.3076963,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ạc, thiếu",
+      "ts": 1786805932.372714,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cấu trúc.",
+      "ts": 1786805932.4376116,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " | 🟡",
+      "ts": 1786805932.523419,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Trung bình |\n",
+      "ts": 1786805932.5933778,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "| **Th",
+      "ts": 1786805932.6592598,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "iếu hướng",
+      "ts": 1786805932.7227068,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " dẫn** |",
+      "ts": 1786805932.7864645,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Không biết phải viết về",
+      "ts": 1786805932.891363,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " điều gì cụ",
+      "ts": 1786805932.9549727,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thể khi không",
+      "ts": 1786805933.017942,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " có input.",
+      "ts": 1786805933.0888135,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " | 🔴",
+      "ts": 1786805933.153523,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Cao |\n\n###",
+      "ts": 1786805933.2173376,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " 4.",
+      "ts": 1786805933.2793286,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Đánh giá",
+      "ts": 1786805933.3423967,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tổng quan\n",
+      "ts": 1786805933.4118264,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "- **Đ",
+      "ts": 1786805933.4753337,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "iểm ngh",
+      "ts": 1786805933.5389752,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ẽn:**",
+      "ts": 1786805933.6027353,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Dữ liệu",
+      "ts": 1786805933.6672478,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thị trường vàng",
+      "ts": 1786805933.7331882,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " và log thực",
+      "ts": 1786805933.7983055,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thi của Sw",
+      "ts": 1786805933.8632631,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "arm chưa được",
+      "ts": 1786805933.9271593,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cung cấp.\n",
+      "ts": 1786805933.9945676,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "- **Ph",
+      "ts": 1786805934.0601206,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ương án khắc",
+      "ts": 1786805934.1231747,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " phục cần thiết:**",
+      "ts": 1786805934.2106438,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Yêu cầu",
+      "ts": 1786805934.275078,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " người dùng cung",
+      "ts": 1786805934.339914,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cấp:\n ",
+      "ts": 1786805934.4036698,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " - File kết quả",
+      "ts": 1786805934.4934332,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " chạy từ Ex",
+      "ts": 1786805934.558909,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ecutor (log",
+      "ts": 1786805934.6241317,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " execution)\n ",
+      "ts": 1786805934.6905253,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " - Dataset giá",
+      "ts": 1786805934.7770898,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " XAU/",
+      "ts": 1786805934.8414888,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "USD (th",
+      "ts": 1786805934.9061146,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ị trường toàn",
+      "ts": 1786805934.9712772,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cầu)\n ",
+      "ts": 1786805935.0385497,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " - Báo",
+      "ts": 1786805935.1040363,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cáo thị trường",
+      "ts": 1786805935.1700165,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " SJC (",
+      "ts": 1786805935.2335107,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "mua/b",
+      "ts": 1786805935.2982512,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "án tại Việt Nam",
+      "ts": 1786805935.3841858,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ")\n\n---\n\n##",
+      "ts": 1786805935.4486208,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " IV. ĐỀ",
+      "ts": 1786805935.5351725,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " XUẤ",
+      "ts": 1786805935.6199512,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "T TIẾ",
+      "ts": 1786805935.6848953,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "P THEO",
+      "ts": 1786805935.7488618,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " (NEXT",
+      "ts": 1786805935.8128412,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " ACTIONS)\n\n",
+      "ts": 1786805935.8777032,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "### Hành",
+      "ts": 1786805935.944942,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " động khẩn",
+      "ts": 1786805936.0117047,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cấp\n1",
+      "ts": 1786805936.076987,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ". **D",
+      "ts": 1786805936.1404307,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ừng ngay**",
+      "ts": 1786805936.2040918,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " việc biên",
+      "ts": 1786805936.2677758,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " soạn báo",
+      "ts": 1786805936.330881,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cáo theo k",
+      "ts": 1786805936.3937948,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "hung 4",
+      "ts": 1786805936.4577732,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " phần cho đến",
+      "ts": 1786805936.5216916,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " khi có dữ",
+      "ts": 1786805936.5853193,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " liệu.\n2",
+      "ts": 1786805936.6496503,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ". **Y",
+      "ts": 1786805936.7153816,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "êu cầu cung",
+      "ts": 1786805936.781735,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cấp input:**\n",
+      "ts": 1786805936.8461046,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "   - Log",
+      "ts": 1786805936.9116967,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thực thi từ",
+      "ts": 1786805936.9796655,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Swarm (",
+      "ts": 1786805937.0452023,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "file `.log",
+      "ts": 1786805937.1115055,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "` hoặc kết quả",
+      "ts": 1786805937.1972337,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " JSON)\n  ",
+      "ts": 1786805937.2627037,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " - Bảng",
+      "ts": 1786805937.3274987,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " giá XAU",
+      "ts": 1786805937.3960757,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "/USD (",
+      "ts": 1786805937.460504,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "tháng/",
+      "ts": 1786805937.5245721,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "quý gần",
+      "ts": 1786805937.5951045,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nhất)\n  ",
+      "ts": 1786805937.6592033,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " - Số lượng",
+      "ts": 1786805937.7225835,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " vàng SJC",
+      "ts": 1786805937.786344,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " đã bán/m",
+      "ts": 1786805937.8518763,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ua tại Việt Nam",
+      "ts": 1786805937.9364607,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "\n\n### Qu",
+      "ts": 1786805938.0015528,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "y trình khắc",
+      "ts": 1786805938.066285,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " phục\n-",
+      "ts": 1786805938.1336706,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " **Bước ",
+      "ts": 1786805938.1988595,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "1:** Nh",
+      "ts": 1786805938.2635224,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ận dữ liệu",
+      "ts": 1786805938.3303957,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " đầu vào từ",
+      "ts": 1786805938.3955736,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " người dùng.\n",
+      "ts": 1786805938.4607475,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "- **Bước",
+      "ts": 1786805938.5270321,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " 2:**",
+      "ts": 1786805938.5949864,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Thực hiện",
+      "ts": 1786805938.6592715,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " lại quy trình",
+      "ts": 1786805938.7242768,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " 4 bước",
+      "ts": 1786805938.7892945,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " (Gather",
+      "ts": 1786805938.854156,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ing → Structuring",
+      "ts": 1786805938.9410546,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " → Fact-C",
+      "ts": 1786805939.0074286,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "hecking →",
+      "ts": 1786805939.0719452,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Review).\n-",
+      "ts": 1786805939.1363158,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " **Bước ",
+      "ts": 1786805939.202331,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "3:** Kiểm",
+      "ts": 1786805939.29038,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tra lại bằng",
+      "ts": 1786805939.3554194,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " *Fact-C",
+      "ts": 1786805939.420122,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "hecking*",
+      "ts": 1786805939.4847353,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " để đảm bảo",
+      "ts": 1786805939.5482771,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " không có emo",
+      "ts": 1786805939.615469,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ji, placeholder",
+      "ts": 1786805939.6807923,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hay thông tin",
+      "ts": 1786805939.7461545,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " sai thực tế",
+      "ts": 1786805939.811114,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ".\n- **",
+      "ts": 1786805939.8774352,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Bước 4",
+      "ts": 1786805939.9401486,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ":** Báo",
+      "ts": 1786805940.0041072,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cáo thành công",
+      "ts": 1786805940.0673318,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " theo cấu trúc",
+      "ts": 1786805940.1327991,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " chuẩn nếu dữ",
+      "ts": 1786805940.2010725,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " liệu đầy đủ",
+      "ts": 1786805940.2651265,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ".\n\n### K",
+      "ts": 1786805940.3307898,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ế hoạch dự",
+      "ts": 1786805940.3973048,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " phòng\nNếu",
+      "ts": 1786805940.4625866,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " dữ liệu thị",
+      "ts": 1786805940.5261667,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " trường vàng được",
+      "ts": 1786805940.5936341,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cung cấp sau",
+      "ts": 1786805940.6597464,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " khi báo cáo",
+      "ts": 1786805940.7253227,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thất bại:\n",
+      "ts": 1786805940.8129973,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "- Sẽ",
+      "ts": 1786805940.8778408,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tổng hợp lại với các",
+      "ts": 1786805940.9911265,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " kỹ năng",
+      "ts": 1786805941.041535,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " liên quan",
+      "ts": 1786805941.0939813,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " (Z",
+      "ts": 1786805941.1490626,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "enith",
+      "ts": 1786805941.2045074,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Graph Intelligence",
+      "ts": 1786805941.2581394,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ", Python",
+      "ts": 1786805941.3115034,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " optimization)",
+      "ts": 1786805941.3645072,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " để phân",
+      "ts": 1786805941.418601,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tích mối quan",
+      "ts": 1786805941.496427,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hệ giữa",
+      "ts": 1786805941.550577,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " các thực",
+      "ts": 1786805941.6043453,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " thể trong",
+      "ts": 1786805941.6574268,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " mạng l",
+      "ts": 1786805941.711479,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ưới giá",
+      "ts": 1786805941.7642028,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " trị.\n",
+      "ts": 1786805941.8163574,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "- T",
+      "ts": 1786805941.8685408,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ập trung",
+      "ts": 1786805941.9212072,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " vào **",
+      "ts": 1786805941.975939,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Centrality",
+      "ts": 1786805942.028982,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " & Influence",
+      "ts": 1786805942.0797417,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Mapping** trên",
+      "ts": 1786805942.1555347,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " mạng l",
+      "ts": 1786805942.205821,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ưới thị trường",
+      "ts": 1786805942.2783422,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " vàng toàn cầu",
+      "ts": 1786805942.349896,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ".\n\n---\n\n",
+      "ts": 1786805942.409048,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "> **⚠️",
+      "ts": 1786805942.5238657,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " LƯ",
+      "ts": 1786805942.5892544,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "U Ý",
+      "ts": 1786805942.6560838,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " QUAN TR",
+      "ts": 1786805942.7209501,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ỌNG",
+      "ts": 1786805942.7868547,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ":** Báo",
+      "ts": 1786805942.8512335,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cáo này được",
+      "ts": 1786805942.9160676,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tạo ra khi **",
+      "ts": 1786805943.0031865,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "JUDIC",
+      "ts": 1786805943.0674956,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "IAL_VERD",
+      "ts": 1786805943.1318357,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ICT = FAIL",
+      "ts": 1786805943.1976717,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "**. Không có",
+      "ts": 1786805943.2629054,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nội dung tổng",
+      "ts": 1786805943.3318515,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " hợp nào",
+      "ts": 1786805943.3852084,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " được đưa",
+      "ts": 1786805943.4397962,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " vào k",
+      "ts": 1786805943.4950995,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "hung ",
+      "ts": 1786805943.5506504,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "4 phần",
+      "ts": 1786805943.6093118,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " vì thiếu",
+      "ts": 1786805943.6668222,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " bằng chứng",
+      "ts": 1786805943.7212968,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": ". Việc",
+      "ts": 1786805943.776604,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " viết thêm",
+      "ts": 1786805943.8318481,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nội dung",
+      "ts": 1786805943.8871295,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " không dựa",
+      "ts": 1786805943.9415555,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " trên dữ",
+      "ts": 1786805943.9954104,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " liệu thực",
+      "ts": 1786805944.049208,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " tế sẽ",
+      "ts": 1786805944.1025536,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " vi phạm",
+      "ts": 1786805944.1569343,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " nguyên tắc",
+      "ts": 1786805944.2119904,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Zero-H",
+      "ts": 1786805944.26528,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "alluc",
+      "ts": 1786805944.317576,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "ination và",
+      "ts": 1786805944.3729656,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " gây hại cho",
+      "ts": 1786805944.4541674,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " độ tin",
+      "ts": 1786805944.5063994,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " cậy của",
+      "ts": 1786805944.5790453,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " JKAI",
+      "ts": 1786805944.6515245,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": " Zenith.",
+      "ts": 1786805944.719883,
+      "source": "SUMMARIZER",
+      "task_id": "man"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "Báo cáo đã soạn thảo hoàn tất.",
+      "ts": 1786805944.7489254,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Critic không phê duyệt. Lập kế hoạch lại. Attempt 3/3",
+      "ts": 1786805944.7569702,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1786805948.7135968,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1786805948.7169373,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1786805948.7259083,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "2 chunks (≥0.45), 2 high-quality (≥0.72). Dữ kiện nội bộ đầy đủ, đáp ứng được yêu cầu",
+      "ts": 1786805949.3386493,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1786805949.3466823,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "FORGE",
+      "msg": "KB sufficient + task=LOOKUP. Skip LLM forge, answer from KB.",
+      "ts": 1786805949.3480346,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1786805949.361394,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "INFO",
-      "msg": "🧠 [PLANNER-ATTEMPT-3]: Đang đúc kết chiến lược bằng vai trò `RESERVE_AGENT`...",
-      "ts": 1785760806.6205723,
+      "msg": "Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1786805949.3621833,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
-      "tag": "LATENCY",
-      "msg": "⏱️ [FORGE-ATTEMPT-3]: Model `RESERVE_AGENT` response time: 30.1s.",
-      "ts": 1785760836.7190206,
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1786805949.375826,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **step_01 (SEARCH_WEB_GLOBAL)**: Search web for: phân tích xu hướng giá vàng và các yếu tố ảnh hưởng chính\n\n<ZENITH_SKILL_ACTIVATED>\nSkill: #1018 Zenith Graph Intelligen",
+      "ts": 1786805949.3997645,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Đã khôi phục 1 bước hoàn thành trước đó.",
+      "ts": 1786805949.4039705,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Khởi động DAG Parallel Executor...",
+      "ts": 1786805949.4064257,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1786805949.4147952,
+      "source": "SYSTEM",
+      "task_id": "man"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Không có bằng chứng thực thi hợp lệ. KHÔNG chế tổng hợp kết quả giả — chuyển qua T5 Critic để đánh giá thực tế (FAIL).",
+      "ts": 1786805949.418088,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "ERROR",
-      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist\"}",
-      "ts": 1785760842.7327774,
+      "msg": "Receptionist error: All connection attempts failed | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All connection attempts failed\"}",
+      "ts": 1786805960.7632987,
       "source": "SYSTEM",
       "task_id": "man"
     },
     {
       "tag": "JKAI",
-      "msg": "[Sự cố Kết nối Nơ-ron]: Hệ thống Lễ Tân gặp lỗi khi tiếp nhận yêu cầu. Master vui lòng kiểm tra xem mô hình model hoặc dịch vụ Ollama có bị quá tải không và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
-      "ts": 1785760842.737317,
+      "msg": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+      "ts": 1786805960.7669702,
       "source": "SYSTEM",
       "task_id": "man"
     }
   ],
   "artifacts": {
-    "plan": "Đồng hóa tri thức mới vào Trụ cột rules: Cải tiến kỹ thuật tối ưu hóa mã Python",
-    "walkthrough": " Giao thức dừng đã được kích hoạt. Toàn bộ Đặc vụ đã dừng theo lệnh của Master.",
+    "plan": "phân tích xu hướng giá vàng và các yếu tố ảnh hưởng chính",
+    "walkthrough": "Chào bạn, tôi đã nhận được thông tin và sẵn sàng hỗ trợ soạn thảo **Đơn xin phép đi học** (hoặc đơn xin nghỉ vì lý do chính đáng) cho anh/chị em một cách chuyên nghiệp nhất.\n\nTuy nhiên, để đảm bảo tính pháp lý và đúng quy định của nhà trường, nội dung cần bao gồm các yếu tố bắt buộc theo tiêu chuẩn 'CRIT-001':\n*   **Thông tin cá nhân:** Họ tên đầy đủ, ngày tháng năm sinh (hoặc tuổi), lớp học/Số báo danh.\n*   **Lý do cụ thể và trung thực:** Không được viết chung chung (\"bệnh\" hay \"sự cố gia đình\"). Cần nêu rõ: Bệnh gì? Ở đâu? Sự cố gì xảy ra? Thời gian cần thiết bao nhiêu ngày/tiếng đồng hồ.\n*   **Cam kết trách nhiệm:** Cam kết sẽ học lại bài đã bỏ, hoàn thành tác vụ/phòng thủ khi về và chịu mọi hậu quả nếu không thực hiện đúng cam kết này.\n\nVì tôi là AI trợ lý (JKAI) và hệ thống chưa cung cấp sẵn các công cụ viết văn bản đặc thù cho trường hợp \"thiếu sót tiêu chuẩn\", nên để tạo ra một **Tờ trình/Đơn** hoàn chỉnh, có tính pháp lý cao nhất mà không vi phạm quy định về thông tin bảo mật cá nhân của bạn (không được tự phát sinh dữ liệu giả), tôi sẽ soạn thảo khung mẫu dựa trên các yêu cầu bắt buộc cốt lõi.\n\nDưới đây là bản dự thảo **ĐƠN XIN PHÉP ĐI HỌC/HƯỞNG HẠ** chuyên nghiệp, anh/chị hãy điền thông tin vào phần trong ngoặc vuông `[]`:\n\n---\n\n### ĐƠN XIN PHÉP ĐI HỌC (HOẶC BÀI TẬP)\n*(Tham khảo cho các trường hợp: Bệnh tật, Sự cố gia đình, Tham gia hoạt động giáo dục đặc biệt)*\n\n**Kính gửi:** Ban Giám Hiệu / Hội Đồng Học Tập  \nLớp [Tên lớp/Số báo danh] – Năm học 2026-2027  \n\nTôi tên là **[Họ và Tên đầy đủ]** (sinh ngày .../.../..., Số CMND: [...]), sinh viên/sinh năm [...] của khoa/viện [...] thuộc trường Đại Học/Công Nghệ [Tên Trường].\n\nLý do tôi xin phép được đi học/bài tập trong thời gian từ **ngày [...]/[/] đến ngày [...]/[ ]** với tổng số **[Số giờ/ngày]** là:  \n*   *(Vui lòng chọn và viết rõ chi tiết một trong các lý do sau):*\n    *   Do cần tham gia khám chữa bệnh tại [Tên cơ sở y tế], bác sĩ đã yêu cầu nghỉ học [Số ngày] để điều trị.\n    *   Do có sự cố bất khả kháng về gia đình (mất tích/tham quan) không thể giải quyết được, dẫn đến việc phải rời khỏi lớp ngay lập tức từ lúc ... giờ chiều/ngày ... tháng ... năm 2026.\n    *   *(Lý do khác: [...]*)\n\nTrong thời gian nghỉ học/bài tập này, tôi cam kết sẽ thực hiện các nội dung sau:  \n1. Tự động thu bài giảng của giáo viên và tự nghiên cứu lại kiến thức đã bỏ lỡ thông qua hệ thống [Tên nền tảng] hoặc tài liệu tham khảo chính chủ.\n2. Hoàn thành đầy đủ số lượng giờ học/tài liệu được yêu cầu trong thời gian nghỉ (tổng cộng [...] tiếng/giờ).\n3. Chịu mọi hậu quả pháp lý và kỷ luật nếu không hoàn thành các cam kết nêu trên trước khi quay trở lại lớp học.\n\nRất mong Ban Giám Hiệu xem xét, chấp thuận đơn xin phép này của tôi để đảm bảo quyền lợi hợp lý cho bản thân. Tôi đã có sự đồng ý từ cha/mẹ (hoặc người giám hộ) và giấy xác nhận bệnh/chứng cứ liên quan đính kèm theo đây [Nếu có].\n\nTrân trọng cảm ơn!  \n\n**Người viết**,  \n*Đã ký tên:* ..................................................  \n*(Họ và Tên, Ngày... tháng ... năm 2026)*  \n\n---\n\n### Hướng dẫn bổ sung:\nĐể hoàn thiện tài liệu này cho đúng tiêu chuẩn 'CRIT-001', anh/chị vui lòng cung cấp lại thông tin chi tiết sau đây (bạn có thể gửi trực tiếp để tôi tự động điền vào):  \n*   **Họ tên đầy đủ** của người xin phép.\n*   **Lý do cụ thể nhất:** Ví dụ: \"Bệnh viêm phổi\" hay \"Gia đình mất điện thoại cố định không liên lạc được\".\n*   **Thời gian chính xác:** Từ ngày ... đến ngày ..., bao nhiêu giờ/ngày?\n\nNếu bạn cung cấp thêm chi tiết này, tôi sẽ giúp anh/chị sửa lại nội dung trên để trở thành một văn bản hoàn chỉnh và có hiệu lực cao nhất cho trường hợp của mình.\n\n---\nPhản hồi lúc 10h09m ngày 15/08/2026",
     "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
   }
 }

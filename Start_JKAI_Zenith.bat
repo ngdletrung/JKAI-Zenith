@@ -1,12 +1,61 @@
 @echo off
+setlocal enabledelayedexpansion
 color 0A
 title [JKAI ZENITH - AMG BOOTSTRAP]
 echo ==============================================================================
-echo   JKAI ZENITH: STARTING INFRASTRUCTURE ^& AMG v2 DECISION ENGINE
+echo   JKAI ZENITH: PRE-FLIGHT CLEANUP ^& INFRASTRUCTURE BOOTSTRAP
 echo ==============================================================================
 cd /d "D:\Docker\JKAI"
 
-:: 1. Infrastructure Bootstrap (Ollama dual-engine & Docker)
+:: ============================================================================
+:: PHASE 0 — JKAI RESOURCE LIBERATION
+:: Unload Ollama models + kill Docker + kill PowerShell cu de khoi dong sach.
+:: ============================================================================
+echo.
+echo [PHASE 0] Dang giai phong tai nguyen JKAI cu...
+echo ------------------------------------------------------------------------------
+
+:: --- 0A. Unload Ollama models (VRAM/RAM) tren GPU instance (port 11434) ---
+echo [0A] Unloading Ollama models tu GPU instance (port 11434)...
+for /f "usebackq tokens=*" %%M in (`curl -s http://localhost:11434/api/ps 2^>nul ^| python -c "import sys,json; [print(m['name']) for m in json.load(sys.stdin).get('models',[])]" 2^>nul`) do (
+    echo    Unloading: %%M
+    curl -s -X POST http://localhost:11434/api/chat -H "Content-Type: application/json" -d "{\"model\":\"%%M\",\"keep_alive\":0,\"messages\":[]}" >nul 2>&1
+)
+
+:: --- 0B. Unload Ollama models (RAM) tren CPU instance (port 11435) ---
+echo [0B] Unloading Ollama models tu CPU instance (port 11435)...
+for /f "usebackq tokens=*" %%M in (`curl -s http://localhost:11435/api/ps 2^>nul ^| python -c "import sys,json; [print(m['name']) for m in json.load(sys.stdin).get('models',[])]" 2^>nul`) do (
+    echo    Unloading: %%M
+    curl -s -X POST http://localhost:11435/api/chat -H "Content-Type: application/json" -d "{\"model\":\"%%M\",\"keep_alive\":0,\"messages\":[]}" >nul 2>&1
+)
+timeout /t 2 /nobreak >nul
+echo    Ollama models: DONE.
+
+:: --- 0C. Dung Docker containers (giai phong RAM container) ---
+echo [0C] Dung tat ca Docker containers dang chay...
+docker compose -f docker-compose.yml down --remove-orphans >nul 2>&1
+echo    Docker containers: DA DUNG.
+
+:: --- 0D. Kill cac PowerShell cu con sot lai (tranh xung dot voi Zenith_Guardian moi) ---
+echo [0D] Kill PowerShell cu (tranh xung dot Zenith_Guardian)...
+for /f "tokens=2" %%P in ('tasklist /FI "IMAGENAME eq powershell.exe" /FO CSV /NH 2^>nul') do (
+    set "KPID=%%~P"
+    if "!KPID!" NEQ "%PPID%" (
+        taskkill /F /PID !KPID! >nul 2>&1
+    )
+)
+echo    PowerShell cu: DA KILL.
+
+echo.
+echo [PHASE 0 COMPLETE] Tai nguyen JKAI da duoc giai phong sach.
+echo ==============================================================================
+timeout /t 2 /nobreak >nul
+
+:: ============================================================================
+:: PHASE 1 — INFRASTRUCTURE BOOTSTRAP (Ollama dual-engine + Docker core profile)
+:: ============================================================================
+echo.
+echo [PHASE 1] Khoi dong Infrastructure (Ollama GPU+CPU + Docker --profile core)...
 powershell -ExecutionPolicy Bypass -File "D:\Docker\JKAI\Zenith_Guardian.ps1"
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Infrastructure bootstrap failed. Stopping.
@@ -14,8 +63,11 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b %ERRORLEVEL%
 )
 
-:: 2. AMG v2 Boot Orchestrator (Discovery, Decision, & Lifecycle)
-echo [INFO] Running AMG v2 Boot Orchestrator...
+:: ============================================================================
+:: PHASE 2 — AMG v2 BOOT ORCHESTRATOR
+:: ============================================================================
+echo.
+echo [PHASE 2] Khoi dong AMG v2 Boot Orchestrator...
 python -m core.runtime.amg_boot --mode FAST
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] AMG v2 Boot Orchestration failed. Stopping.
@@ -23,6 +75,8 @@ if %ERRORLEVEL% NEQ 0 (
     exit /b %ERRORLEVEL%
 )
 
+echo.
 echo ==============================================================================
-echo   JKAI ZENITH BOOT COMPLETE — ENGINE READY
+echo   JKAI ZENITH BOOT COMPLETE --- ENGINE READY
 echo ==============================================================================
+endlocal

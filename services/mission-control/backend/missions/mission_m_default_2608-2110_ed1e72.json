@@ -1,0 +1,3556 @@
+{
+  "id": "m_default_2608-2110_ed1e72",
+  "title": "Viết hàm Python tính số Fibonacci thứ n sử dụng lru_cache và có docstr",
+  "goal": "Viết hàm Python tính số Fibonacci thứ n sử dụng lru_cache và có docstring đầy đủ.",
+  "status": "completed",
+  "ts": 1787753515.5930305,
+  "logs": [
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=81 | preview='Viết hàm Python tính số Fibonacci thứ n sử dụng lru_cache và có docstring đầy đủ.' | hash=80d9491cc9dad34d | task_id=default_2608-2110_ed1e72 | trace_id=trace_ed1e72 | mission_id=default",
+      "ts": 1787753461.096489,
+      "source": "SYSTEM",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: ['SINGLE_FILE_ACTION'] | Policy Topology: SINGLE_AGENT (FAST)",
+      "ts": 1787753461.10025,
+      "source": "SYSTEM",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "GOVERNOR: TaskProfile=['SINGLE_FILE_ACTION'] | Topology=SINGLE_AGENT (FAST)",
+      "ts": 1787753461.1033318,
+      "source": "SYSTEM",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=general pipeline=fast mode=fast tags=-",
+      "ts": 1787753461.1059065,
+      "source": "SYSTEM",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1787753461.1107337,
+      "source": "SYSTEM",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " 1",
+      "ts": 1787753478.4319177,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ":",
+      "ts": 1787753478.4933977,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " Trả",
+      "ts": 1787753478.5546331,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " về",
+      "ts": 1787753478.6150012,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " 1",
+      "ts": 1787753478.7334933,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ".",
+      "ts": 1787753478.7927692,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n    \n    Tr",
+      "ts": 1787753479.0373,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "ở",
+      "ts": 1787753479.0993383,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " về",
+      "ts": 1787753479.1581004,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ":",
+      "ts": 1787753479.2195,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n        int",
+      "ts": 1787753479.4017856,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ":",
+      "ts": 1787753479.4615777,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " Giá",
+      "ts": 1787753479.5217896,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " trị",
+      "ts": 1787753479.57986,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " của",
+      "ts": 1787753479.6391582,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " số",
+      "ts": 1787753479.7014554,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " Fibonacci",
+      "ts": 1787753479.7637804,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " thứ",
+      "ts": 1787753479.8241765,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " n",
+      "ts": 1787753479.884134,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ".",
+      "ts": 1787753479.943296,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n\n    L",
+      "ts": 1787753480.123802,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "ỗi",
+      "ts": 1787753480.1840708,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ":",
+      "ts": 1787753480.2420628,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n        ValueError",
+      "ts": 1787753480.4265845,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ":",
+      "ts": 1787753480.485381,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " Được",
+      "ts": 1787753480.5461197,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " nâng",
+      "ts": 1787753480.6076903,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " lên",
+      "ts": 1787753480.6698055,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " nếu",
+      "ts": 1787753480.7309036,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " n",
+      "ts": 1787753480.7916822,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " là",
+      "ts": 1787753480.8541777,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " một",
+      "ts": 1787753480.9154646,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " số",
+      "ts": 1787753480.9775913,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " nguyên",
+      "ts": 1787753481.038636,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " âm",
+      "ts": 1787753481.1013262,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ".",
+      "ts": 1787753481.162421,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n\n    Ví",
+      "ts": 1787753481.345679,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " dụ",
+      "ts": 1787753481.4069438,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ":",
+      "ts": 1787753481.4664674,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n        >>>",
+      "ts": 1787753481.6442983,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " fibonacci",
+      "ts": 1787753481.7098815,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(",
+      "ts": 1787753481.7709353,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "0",
+      "ts": 1787753481.832991,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ")",
+      "ts": 1787753481.8949256,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n        0",
+      "ts": 1787753482.1430523,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n        >>>",
+      "ts": 1787753482.3279393,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " fibonacci",
+      "ts": 1787753482.3868005,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(",
+      "ts": 1787753482.445559,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "1",
+      "ts": 1787753482.5046127,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ")",
+      "ts": 1787753482.5632734,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n        1",
+      "ts": 1787753482.8025923,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n        >>>",
+      "ts": 1787753482.9826503,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " fibonacci",
+      "ts": 1787753483.043918,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(",
+      "ts": 1787753483.103929,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "5",
+      "ts": 1787753483.163382,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ")",
+      "ts": 1787753483.224287,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n        5",
+      "ts": 1787753483.4689963,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n        >>>",
+      "ts": 1787753483.6518228,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " fibonacci",
+      "ts": 1787753483.719326,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(",
+      "ts": 1787753483.780332,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "1",
+      "ts": 1787753483.8395317,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "0",
+      "ts": 1787753483.8998568,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ")",
+      "ts": 1787753483.9585037,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n        5",
+      "ts": 1787753484.1959631,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "5",
+      "ts": 1787753484.2548368,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n    \n    Lưu",
+      "ts": 1787753484.4369063,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " ý",
+      "ts": 1787753484.4948428,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " về",
+      "ts": 1787753484.5550823,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " hiệu",
+      "ts": 1787753484.6147783,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " suất",
+      "ts": 1787753484.6735811,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ":",
+      "ts": 1787753484.7322931,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n        Hàm",
+      "ts": 1787753484.9140544,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " này",
+      "ts": 1787753484.972589,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " sử",
+      "ts": 1787753485.0328245,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " dụng",
+      "ts": 1787753485.0977402,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " `",
+      "ts": 1787753485.1547062,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "l",
+      "ts": 1787753485.2147582,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "ru",
+      "ts": 1787753485.273977,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "_cache",
+      "ts": 1787753485.3332613,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "`",
+      "ts": 1787753485.3923337,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " để",
+      "ts": 1787753485.4549725,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " lưu",
+      "ts": 1787753485.5161533,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " trữ",
+      "ts": 1787753485.576508,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " kết",
+      "ts": 1787753485.6385343,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " quả",
+      "ts": 1787753485.6989903,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " đã",
+      "ts": 1787753485.7582204,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " tính",
+      "ts": 1787753485.8169894,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ",",
+      "ts": 1787753485.8757997,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " giúp",
+      "ts": 1787753485.9343762,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " tránh",
+      "ts": 1787753485.995836,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " việc",
+      "ts": 1787753486.057356,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " tính",
+      "ts": 1787753486.1186595,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " toán",
+      "ts": 1787753486.1780338,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " lại",
+      "ts": 1787753486.2391,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " \n        các",
+      "ts": 1787753486.4185436,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " giá",
+      "ts": 1787753486.4808397,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " trị",
+      "ts": 1787753486.5394888,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " giống",
+      "ts": 1787753486.5989587,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " nhau",
+      "ts": 1787753486.6601498,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " và",
+      "ts": 1787753486.7334356,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " tăng",
+      "ts": 1787753486.7928536,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " đáng",
+      "ts": 1787753486.8533406,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " kể",
+      "ts": 1787753486.915297,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " tốc",
+      "ts": 1787753486.9751492,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " độ",
+      "ts": 1787753487.0345907,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " thực",
+      "ts": 1787753487.0946956,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " thi",
+      "ts": 1787753487.1563337,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " so",
+      "ts": 1787753487.215993,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " với",
+      "ts": 1787753487.274997,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " phương",
+      "ts": 1787753487.3351629,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " pháp",
+      "ts": 1787753487.3948832,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " đệ",
+      "ts": 1787753487.4545195,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " quy",
+      "ts": 1787753487.5142581,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " thuần",
+      "ts": 1787753487.5737426,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " túy",
+      "ts": 1787753487.6336374,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ".",
+      "ts": 1787753487.6931224,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n    \n    Nguồn",
+      "ts": 1787753487.9337704,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " tham",
+      "ts": 1787753487.9934442,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " khảo",
+      "ts": 1787753488.0530105,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ":",
+      "ts": 1787753488.115577,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n        https",
+      "ts": 1787753488.2943747,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "://",
+      "ts": 1787753488.3536582,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "en",
+      "ts": 1787753488.413365,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ".wikipedia",
+      "ts": 1787753488.476185,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ".org",
+      "ts": 1787753488.5392902,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "/wiki",
+      "ts": 1787753488.6006525,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "/F",
+      "ts": 1787753488.6633873,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "ib",
+      "ts": 1787753488.72266,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "onacci",
+      "ts": 1787753488.7850196,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "_number",
+      "ts": 1787753488.8477542,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n    \"\"\"",
+      "ts": 1787753489.0330212,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n    if",
+      "ts": 1787753489.2196975,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " n",
+      "ts": 1787753489.28127,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " <",
+      "ts": 1787753489.4000616,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " 0",
+      "ts": 1787753489.4600103,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ":",
+      "ts": 1787753489.52169,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n        raise",
+      "ts": 1787753489.7084098,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " ValueError",
+      "ts": 1787753489.7679362,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(\"",
+      "ts": 1787753489.8289597,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "v",
+      "ts": 1787753489.8915575,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "ị",
+      "ts": 1787753489.9516118,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " trí",
+      "ts": 1787753490.011939,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " không",
+      "ts": 1787753490.0739052,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " hợp",
+      "ts": 1787753490.1362321,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " lệ",
+      "ts": 1787753490.1986048,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\")",
+      "ts": 1787753490.260671,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n    elif",
+      "ts": 1787753490.4405584,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " n",
+      "ts": 1787753490.4997668,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " ==",
+      "ts": 1787753490.560821,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " 0",
+      "ts": 1787753490.6836426,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ":",
+      "ts": 1787753490.7452533,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n        return",
+      "ts": 1787753490.927008,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " 0",
+      "ts": 1787753491.0493898,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n    elif",
+      "ts": 1787753491.2346535,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " n",
+      "ts": 1787753491.2964892,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " ==",
+      "ts": 1787753491.3584285,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " 1",
+      "ts": 1787753491.4785619,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ":",
+      "ts": 1787753491.537572,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n        return",
+      "ts": 1787753491.732702,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " 1",
+      "ts": 1787753491.8512897,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n    \n    #",
+      "ts": 1787753492.0291312,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " Trường",
+      "ts": 1787753492.0882328,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " hợp",
+      "ts": 1787753492.148088,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " khác",
+      "ts": 1787753492.2091858,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " sẽ",
+      "ts": 1787753492.2683108,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " được",
+      "ts": 1787753492.3275082,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " xử",
+      "ts": 1787753492.3866901,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " lý",
+      "ts": 1787753492.445049,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " bởi",
+      "ts": 1787753492.5068219,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " l",
+      "ts": 1787753492.5688875,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "ru",
+      "ts": 1787753492.626818,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "_cache",
+      "ts": 1787753492.6860058,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " tự",
+      "ts": 1787753492.7458851,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " động",
+      "ts": 1787753492.8060067,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " nhớ",
+      "ts": 1787753492.8646371,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " kết",
+      "ts": 1787753492.9266098,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " quả",
+      "ts": 1787753492.9860318,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " từ",
+      "ts": 1787753493.047409,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " các",
+      "ts": 1787753493.1095712,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " lần",
+      "ts": 1787753493.1708548,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " gọi",
+      "ts": 1787753493.2328649,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " trước",
+      "ts": 1787753493.2952282,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " đó",
+      "ts": 1787753493.3549314,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ".",
+      "ts": 1787753493.4164906,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n    return",
+      "ts": 1787753493.6014495,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " fibonacci",
+      "ts": 1787753493.6606543,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(n",
+      "ts": 1787753493.7204015,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " -",
+      "ts": 1787753493.7793849,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " 1",
+      "ts": 1787753493.9002,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ")",
+      "ts": 1787753493.9619746,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " +",
+      "ts": 1787753494.021814,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " fibonacci",
+      "ts": 1787753494.0826492,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(n",
+      "ts": 1787753494.142452,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " -",
+      "ts": 1787753494.203462,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " 2",
+      "ts": 1787753494.3269227,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ")",
+      "ts": 1787753494.3880625,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n\n#",
+      "ts": 1787753494.509392,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " ---",
+      "ts": 1787753494.572848,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " Ví",
+      "ts": 1787753494.633511,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " dụ",
+      "ts": 1787753494.6952538,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " sử",
+      "ts": 1787753494.7577581,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " dụng",
+      "ts": 1787753494.8195724,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " (",
+      "ts": 1787753494.8812816,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "không",
+      "ts": 1787753494.9432585,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " cần",
+      "ts": 1787753495.0052783,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " chạy",
+      "ts": 1787753495.0646996,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " để",
+      "ts": 1787753495.1269267,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " hiển",
+      "ts": 1787753495.1868274,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " thị",
+      "ts": 1787753495.245682,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " trong",
+      "ts": 1787753495.3076148,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " tài",
+      "ts": 1787753495.369728,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " liệu",
+      "ts": 1787753495.431248,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ")",
+      "ts": 1787753495.4903917,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " ---",
+      "ts": 1787753495.5508347,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\nif",
+      "ts": 1787753495.6746867,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " __",
+      "ts": 1787753495.7368128,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "name",
+      "ts": 1787753495.7963982,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "__",
+      "ts": 1787753495.856571,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " ==",
+      "ts": 1787753495.9160118,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " \"__",
+      "ts": 1787753495.9753385,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "main",
+      "ts": 1787753496.0353763,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "__",
+      "ts": 1787753496.0964885,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\":",
+      "ts": 1787753496.156065,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n    #",
+      "ts": 1787753496.3396096,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " Kiểm",
+      "ts": 1787753496.3987942,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " tra",
+      "ts": 1787753496.4586637,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " một",
+      "ts": 1787753496.5191693,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " vài",
+      "ts": 1787753496.5799153,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " trường",
+      "ts": 1787753496.6405184,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " hợp",
+      "ts": 1787753496.7026677,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " cơ",
+      "ts": 1787753496.7683482,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " bản",
+      "ts": 1787753496.831633,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n    print",
+      "ts": 1787753497.011814,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(f",
+      "ts": 1787753497.0713587,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\"F",
+      "ts": 1787753497.13196,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "ib",
+      "ts": 1787753497.1924617,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "onacci",
+      "ts": 1787753497.2542355,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(",
+      "ts": 1787753497.3159397,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "0",
+      "ts": 1787753497.3781803,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "):",
+      "ts": 1787753497.4383245,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " {",
+      "ts": 1787753497.498699,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "fib",
+      "ts": 1787753497.560175,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "onacci",
+      "ts": 1787753497.6198792,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(",
+      "ts": 1787753497.6790433,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "0",
+      "ts": 1787753497.7412188,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ")}",
+      "ts": 1787753497.803261,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\")",
+      "ts": 1787753497.8625293,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "      #",
+      "ts": 1787753497.9842107,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " Output",
+      "ts": 1787753498.0452266,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ":",
+      "ts": 1787753498.1045494,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " 0",
+      "ts": 1787753498.2260368,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n    print",
+      "ts": 1787753498.4065018,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(f",
+      "ts": 1787753498.4657109,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\"F",
+      "ts": 1787753498.525361,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "ib",
+      "ts": 1787753498.5857942,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "onacci",
+      "ts": 1787753498.6439652,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(",
+      "ts": 1787753498.7032282,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "1",
+      "ts": 1787753498.7629037,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "):",
+      "ts": 1787753498.8241808,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " {",
+      "ts": 1787753498.8834672,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "fib",
+      "ts": 1787753498.9446309,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "onacci",
+      "ts": 1787753499.004337,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(",
+      "ts": 1787753499.062789,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "1",
+      "ts": 1787753499.1223216,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ")}",
+      "ts": 1787753499.1833606,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\")",
+      "ts": 1787753499.2498548,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "      #",
+      "ts": 1787753499.3705316,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " Output",
+      "ts": 1787753499.4299362,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ":",
+      "ts": 1787753499.4907033,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " 1",
+      "ts": 1787753499.6158075,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n    print",
+      "ts": 1787753499.7941856,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(f",
+      "ts": 1787753499.8541057,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\"F",
+      "ts": 1787753499.9149396,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "ib",
+      "ts": 1787753499.9757857,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "onacci",
+      "ts": 1787753500.0358713,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(",
+      "ts": 1787753500.0980148,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "5",
+      "ts": 1787753500.1595216,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "):",
+      "ts": 1787753500.2224422,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " {",
+      "ts": 1787753500.2830794,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "fib",
+      "ts": 1787753500.343614,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "onacci",
+      "ts": 1787753500.4061737,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(",
+      "ts": 1787753500.4642127,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "5",
+      "ts": 1787753500.523994,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ")}",
+      "ts": 1787753500.5823128,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\")",
+      "ts": 1787753500.6448567,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "       #",
+      "ts": 1787753500.7641022,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " Output",
+      "ts": 1787753500.8247347,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ":",
+      "ts": 1787753500.8834379,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " 5",
+      "ts": 1787753501.0020132,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n    print",
+      "ts": 1787753501.1812253,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(f",
+      "ts": 1787753501.2399695,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\"F",
+      "ts": 1787753501.3007452,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "ib",
+      "ts": 1787753501.3594193,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "onacci",
+      "ts": 1787753501.421241,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(",
+      "ts": 1787753501.4803834,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "1",
+      "ts": 1787753501.5403001,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "0",
+      "ts": 1787753501.6006618,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "):",
+      "ts": 1787753501.6600769,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " {",
+      "ts": 1787753501.7280073,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "fib",
+      "ts": 1787753501.7869103,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "onacci",
+      "ts": 1787753501.848545,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(",
+      "ts": 1787753501.9079015,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "1",
+      "ts": 1787753501.966164,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "0",
+      "ts": 1787753502.0269313,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ")}",
+      "ts": 1787753502.0854404,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\")",
+      "ts": 1787753502.1460526,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "     #",
+      "ts": 1787753502.266708,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " Output",
+      "ts": 1787753502.3250265,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ":",
+      "ts": 1787753502.3828537,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " 5",
+      "ts": 1787753502.5020168,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "5",
+      "ts": 1787753502.5602956,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n    \n    #",
+      "ts": 1787753502.7425992,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " Kiểm",
+      "ts": 1787753502.8010616,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " tra",
+      "ts": 1787753502.8618615,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " lỗi",
+      "ts": 1787753502.9228532,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " với",
+      "ts": 1787753502.9843304,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " số",
+      "ts": 1787753503.0432577,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " âm",
+      "ts": 1787753503.104785,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n    try",
+      "ts": 1787753503.2904181,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ":",
+      "ts": 1787753503.3514273,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n        fibonacci",
+      "ts": 1787753503.5312445,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(-",
+      "ts": 1787753503.591017,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "1",
+      "ts": 1787753503.6501956,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ")",
+      "ts": 1787753503.7087858,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n    except",
+      "ts": 1787753503.8880231,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " ValueError",
+      "ts": 1787753503.9491158,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " as",
+      "ts": 1787753504.0082002,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " e",
+      "ts": 1787753504.0659103,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ":",
+      "ts": 1787753504.1260831,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n        print",
+      "ts": 1787753504.308424,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(f",
+      "ts": 1787753504.369983,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\"L",
+      "ts": 1787753504.43033,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "ỗi",
+      "ts": 1787753504.4904048,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " khi",
+      "ts": 1787753504.5499837,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " nhập",
+      "ts": 1787753504.6095028,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " -",
+      "ts": 1787753504.6704834,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "1",
+      "ts": 1787753504.731497,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ":",
+      "ts": 1787753504.7918208,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " {",
+      "ts": 1787753504.8516695,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "e",
+      "ts": 1787753504.911531,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "}\")",
+      "ts": 1787753504.9732127,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n```",
+      "ts": 1787753505.094931,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n\n###",
+      "ts": 1787753505.214477,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " Giải",
+      "ts": 1787753505.2746227,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " thích",
+      "ts": 1787753505.3339207,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " ngắn",
+      "ts": 1787753505.3926744,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " gọn",
+      "ts": 1787753505.454071,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " về",
+      "ts": 1787753505.5160189,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " `",
+      "ts": 1787753505.5774138,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "l",
+      "ts": 1787753505.6371439,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "ru",
+      "ts": 1787753505.6994402,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "_cache",
+      "ts": 1787753505.759,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "`:",
+      "ts": 1787753505.8206902,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n-",
+      "ts": 1787753505.9404132,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " **",
+      "ts": 1787753505.999583,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "Cơ",
+      "ts": 1787753506.0614123,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " chế",
+      "ts": 1787753506.1211095,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "**:",
+      "ts": 1787753506.1804209,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " `",
+      "ts": 1787753506.2416966,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "@",
+      "ts": 1787753506.3041954,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "l",
+      "ts": 1787753506.3672028,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "ru",
+      "ts": 1787753506.42839,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "_cache",
+      "ts": 1787753506.490175,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(max",
+      "ts": 1787753506.5512216,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "size",
+      "ts": 1787753506.6134396,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "=None",
+      "ts": 1787753506.6732152,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ")`",
+      "ts": 1787753506.751929,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " biến",
+      "ts": 1787753506.812472,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " hàm",
+      "ts": 1787753506.8709764,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " đệ",
+      "ts": 1787753506.9299552,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " quy",
+      "ts": 1787753506.9925828,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " thành",
+      "ts": 1787753507.054007,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " một",
+      "ts": 1787753507.1161287,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " hàm",
+      "ts": 1787753507.1765156,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " có",
+      "ts": 1787753507.2382152,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " bộ",
+      "ts": 1787753507.298645,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " nhớ",
+      "ts": 1787753507.3594353,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " đệm",
+      "ts": 1787753507.4203696,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " (",
+      "ts": 1787753507.4835472,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "c",
+      "ts": 1787753507.5446632,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "aching",
+      "ts": 1787753507.6057644,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ").",
+      "ts": 1787753507.667162,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " Khi",
+      "ts": 1787753507.7291334,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " hàm",
+      "ts": 1787753507.7895048,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " được",
+      "ts": 1787753507.8509252,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " gọi",
+      "ts": 1787753507.912931,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " với",
+      "ts": 1787753507.9749444,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " cùng",
+      "ts": 1787753508.035204,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " tham",
+      "ts": 1787753508.0965414,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " số",
+      "ts": 1787753508.1560342,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " `",
+      "ts": 1787753508.2160668,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "n",
+      "ts": 1787753508.276076,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "`,",
+      "ts": 1787753508.337601,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " Python",
+      "ts": 1787753508.400141,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " sẽ",
+      "ts": 1787753508.4624252,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " trả",
+      "ts": 1787753508.5247896,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " ngay",
+      "ts": 1787753508.5888858,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " kết",
+      "ts": 1787753508.648907,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " quả",
+      "ts": 1787753508.7116814,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " đã",
+      "ts": 1787753508.771619,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " lưu",
+      "ts": 1787753508.8319492,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " thay",
+      "ts": 1787753508.8921819,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " vì",
+      "ts": 1787753508.952518,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " tính",
+      "ts": 1787753509.0123842,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " toán",
+      "ts": 1787753509.0746634,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " lại",
+      "ts": 1787753509.1354396,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ".",
+      "ts": 1787753509.1976852,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n-",
+      "ts": 1787753509.320057,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " **",
+      "ts": 1787753509.3836954,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "L",
+      "ts": 1787753509.442979,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "ợi",
+      "ts": 1787753509.5056055,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " ích",
+      "ts": 1787753509.5685124,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "**:",
+      "ts": 1787753509.6304543,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " Với",
+      "ts": 1787753509.692895,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " dãy",
+      "ts": 1787753509.7547035,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " Fibonacci",
+      "ts": 1787753509.8171844,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ",",
+      "ts": 1787753509.879149,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " phương",
+      "ts": 1787753509.9420364,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " pháp",
+      "ts": 1787753510.0021007,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " đệ",
+      "ts": 1787753510.0646486,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " quy",
+      "ts": 1787753510.127079,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " thuần",
+      "ts": 1787753510.187152,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " túy",
+      "ts": 1787753510.2486346,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " có",
+      "ts": 1787753510.3141522,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " độ",
+      "ts": 1787753510.3771446,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " phức",
+      "ts": 1787753510.4369063,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " tạp",
+      "ts": 1787753510.4993997,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " thời",
+      "ts": 1787753510.5614712,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " gian",
+      "ts": 1787753510.6222656,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " là",
+      "ts": 1787753510.6822333,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " $",
+      "ts": 1787753510.7443633,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "O",
+      "ts": 1787753510.8073385,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(",
+      "ts": 1787753510.8710766,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "2",
+      "ts": 1787753510.9319413,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "^n",
+      "ts": 1787753510.993591,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ")$",
+      "ts": 1787753511.0554965,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ",",
+      "ts": 1787753511.115731,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " trong",
+      "ts": 1787753511.17608,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " khi",
+      "ts": 1787753511.2390556,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " sử",
+      "ts": 1787753511.3017986,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " dụng",
+      "ts": 1787753511.3650246,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " cache",
+      "ts": 1787753511.4264092,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " giảm",
+      "ts": 1787753511.4908772,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " xuống",
+      "ts": 1787753511.5533803,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " còn",
+      "ts": 1787753511.6163087,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " $",
+      "ts": 1787753511.6756241,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "O",
+      "ts": 1787753511.738868,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "(n",
+      "ts": 1787753511.8055432,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ")",
+      "ts": 1787753511.868779,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "$.",
+      "ts": 1787753511.93042,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "\n-",
+      "ts": 1787753512.0580711,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " **",
+      "ts": 1787753512.1220999,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "Đ",
+      "ts": 1787753512.182955,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "ộ",
+      "ts": 1787753512.2476664,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " sâu",
+      "ts": 1787753512.3124416,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " tối",
+      "ts": 1787753512.3781471,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " đa",
+      "ts": 1787753512.4378855,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "**:",
+      "ts": 1787753512.5020268,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " `",
+      "ts": 1787753512.5650265,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "max",
+      "ts": 1787753512.630698,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "size",
+      "ts": 1787753512.6888201,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "=None",
+      "ts": 1787753512.7505083,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "`",
+      "ts": 1787753512.810575,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " cho",
+      "ts": 1787753512.8719866,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " phép",
+      "ts": 1787753512.9323711,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " bộ",
+      "ts": 1787753512.9945557,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " nhớ",
+      "ts": 1787753513.0566206,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " đệm",
+      "ts": 1787753513.1168718,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " tăng",
+      "ts": 1787753513.1786375,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " trưởng",
+      "ts": 1787753513.2385297,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " vô",
+      "ts": 1787753513.2992587,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " hạn",
+      "ts": 1787753513.3590722,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " (",
+      "ts": 1787753513.420662,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "t",
+      "ts": 1787753513.4831846,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "ùy",
+      "ts": 1787753513.542949,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " thuộc",
+      "ts": 1787753513.6042347,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " vào",
+      "ts": 1787753513.6660802,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " dung",
+      "ts": 1787753513.7282794,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " lượng",
+      "ts": 1787753513.790544,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " RAM",
+      "ts": 1787753513.849946,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "),",
+      "ts": 1787753513.910901,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " phù",
+      "ts": 1787753513.9735026,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " hợp",
+      "ts": 1787753514.0359952,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " để",
+      "ts": 1787753514.0981662,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " tính",
+      "ts": 1787753514.160559,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " toán",
+      "ts": 1787753514.2235067,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " các",
+      "ts": 1787753514.2852461,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " giá",
+      "ts": 1787753514.347643,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " trị",
+      "ts": 1787753514.4112418,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " $",
+      "ts": 1787753514.4727643,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "n",
+      "ts": 1787753514.533286,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": "$",
+      "ts": 1787753514.5939443,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " lớn",
+      "ts": 1787753514.6532857,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " mà",
+      "ts": 1787753514.7127995,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " không",
+      "ts": 1787753514.775225,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " bị",
+      "ts": 1787753514.8373256,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " tràn",
+      "ts": 1787753514.9070046,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " bộ",
+      "ts": 1787753514.968732,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": " nhớ",
+      "ts": 1787753515.0303307,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "CODE_EXECUTOR",
+      "msg": ".",
+      "ts": 1787753515.0905645,
+      "source": "CODE_EXECUTOR",
+      "task_id": "default_2608-2110_ed1e72"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Dưới đây là hàm Python tính số Fibonacci thứ $n$ sử dụng `functools.lru_cache` với đầy đủ tài liệu (`docstring`) theo yêu cầu:\n\n```python\nfrom functools import lru_cache\n\n@lru_cache(maxsize=None)\ndef fibonacci(n: int) -> int:\n    \"\"\"\n    Tính giá trị của số Fibonacci thứ n.\n\n    Số Fibonacci là một dãy số tự nhiên trong đó mỗi số bằng tổng của hai số trước nó, bắt đầu từ 0 và 1.\n    \n    Tham số:\n        n (int): Vị trí của số cần tìm trong dãy Fibonacci (bắt đầu từ 0). \n                 - Nếu n < 0: Trả về lỗi ValueError.\n                 - Nếu n = 0: Trả về 0.\n                 - Nếu n = 1: Trả về 1.\n    \n    Trở về:\n        int: Giá trị của số Fibonacci thứ n.\n\n    Lỗi:\n        ValueError: Được nâng lên nếu n là một số nguyên âm.\n\n    Ví dụ:\n        >>> fibonacci(0)\n        0\n        >>> fibonacci(1)\n        1\n        >>> fibonacci(5)\n        5\n        >>> fibonacci(10)\n        55\n    \n    Lưu ý về hiệu suất:\n        Hàm này sử dụng `lru_cache` để lưu trữ kết quả đã tính, giúp tránh việc tính toán lại \n        các giá trị giống nhau và tăng đáng kể tốc độ thực thi so với phương pháp đệ quy thuần túy.\n    \n    Nguồn tham khảo:\n        https://en.wikipedia.org/wiki/Fibonacci_number\n    \"\"\"\n    if n < 0:\n        raise ValueError(\"vị trí không hợp lệ\")\n    elif n == 0:\n        return 0\n    elif n == 1:\n        return 1\n    \n    # Trường hợp khác sẽ được xử lý bởi lru_cache tự động nhớ kết quả từ các lần gọi trước đó.\n    return fibonacci(n - 1) + fibonacci(n - 2)\n\n# --- Ví dụ sử dụng (không cần chạy để hiển thị trong tài liệu) ---\nif __name__ == \"__main__\":\n    # Kiểm tra một vài trường hợp cơ bản\n    print(f\"Fibonacci(0): {fibonacci(0)}\")      # Output: 0\n    print(f\"Fibonacci(1): {fibonacci(1)}\")      # Output: 1\n    print(f\"Fibonacci(5): {fibonacci(5)}\")       # Output: 5\n    print(f\"Fibonacci(10): {fibonacci(10)}\")     # Output: 55\n    \n    # Kiểm tra lỗi với số âm\n    try:\n        fibonacci(-1)\n    except ValueError as e:\n        print(f\"Lỗi khi nhập -1: {e}\")\n```\n\n### Giải thích ngắn gọn về `lru_cache`:\n- **Cơ chế**: `@lru_cache(maxsize=None)` biến hàm đệ quy thành một hàm có bộ nhớ đệm (caching). Khi hàm được gọi với cùng tham số `n`, Python sẽ trả ngay kết quả đã lưu thay vì tính toán lại.\n- **Lợi ích**: Với dãy Fibonacci, phương pháp đệ quy thuần túy có độ phức tạp thời gian là $O(2^n)$, trong khi sử dụng cache giảm xuống còn $O(n)$.\n- **Độ sâu tối đa**: `maxsize=None` cho phép bộ nhớ đệm tăng trưởng vô hạn (tùy thuộc vào dung lượng RAM), phù hợp để tính toán các giá trị $n$ lớn mà không bị tràn bộ nhớ.",
+      "ts": 1787753515.5352342,
+      "source": "SYSTEM",
+      "task_id": "default_2608-2110_ed1e72"
+    }
+  ],
+  "artifacts": {
+    "plan": "Viết hàm Python tính số Fibonacci thứ n sử dụng lru_cache và có docstring đầy đủ.",
+    "walkthrough": "Dưới đây là hàm Python tính số Fibonacci thứ $n$ sử dụng `functools.lru_cache` với đầy đủ tài liệu (`docstring`) theo yêu cầu:\n\n```python\nfrom functools import lru_cache\n\n@lru_cache(maxsize=None)\ndef fibonacci(n: int) -> int:\n    \"\"\"\n    Tính giá trị của số Fibonacci thứ n.\n\n    Số Fibonacci là một dãy số tự nhiên trong đó mỗi số bằng tổng của hai số trước nó, bắt đầu từ 0 và 1.\n    \n    Tham số:\n        n (int): Vị trí của số cần tìm trong dãy Fibonacci (bắt đầu từ 0). \n                 - Nếu n < 0: Trả về lỗi ValueError.\n                 - Nếu n = 0: Trả về 0.\n                 - Nếu n = 1: Trả về 1.\n    \n    Trở về:\n        int: Giá trị của số Fibonacci thứ n.\n\n    Lỗi:\n        ValueError: Được nâng lên nếu n là một số nguyên âm.\n\n    Ví dụ:\n        >>> fibonacci(0)\n        0\n        >>> fibonacci(1)\n        1\n        >>> fibonacci(5)\n        5\n        >>> fibonacci(10)\n        55\n    \n    Lưu ý về hiệu suất:\n        Hàm này sử dụng `lru_cache` để lưu trữ kết quả đã tính, giúp tránh việc tính toán lại \n        các giá trị giống nhau và tăng đáng kể tốc độ thực thi so với phương pháp đệ quy thuần túy.\n    \n    Nguồn tham khảo:\n        https://en.wikipedia.org/wiki/Fibonacci_number\n    \"\"\"\n    if n < 0:\n        raise ValueError(\"vị trí không hợp lệ\")\n    elif n == 0:\n        return 0\n    elif n == 1:\n        return 1\n    \n    # Trường hợp khác sẽ được xử lý bởi lru_cache tự động nhớ kết quả từ các lần gọi trước đó.\n    return fibonacci(n - 1) + fibonacci(n - 2)\n\n# --- Ví dụ sử dụng (không cần chạy để hiển thị trong tài liệu) ---\nif __name__ == \"__main__\":\n    # Kiểm tra một vài trường hợp cơ bản\n    print(f\"Fibonacci(0): {fibonacci(0)}\")      # Output: 0\n    print(f\"Fibonacci(1): {fibonacci(1)}\")      # Output: 1\n    print(f\"Fibonacci(5): {fibonacci(5)}\")       # Output: 5\n    print(f\"Fibonacci(10): {fibonacci(10)}\")     # Output: 55\n    \n    # Kiểm tra lỗi với số âm\n    try:\n        fibonacci(-1)\n    except ValueError as e:\n        print(f\"Lỗi khi nhập -1: {e}\")\n```\n\n### Giải thích ngắn gọn về `lru_cache`:\n- **Cơ chế**: `@lru_cache(maxsize=None)` biến hàm đệ quy thành một hàm có bộ nhớ đệm (caching). Khi hàm được gọi với cùng tham số `n`, Python sẽ trả ngay kết quả đã lưu thay vì tính toán lại.\n- **Lợi ích**: Với dãy Fibonacci, phương pháp đệ quy thuần túy có độ phức tạp thời gian là $O(2^n)$, trong khi sử dụng cache giảm xuống còn $O(n)$.\n- **Độ sâu tối đa**: `maxsize=None` cho phép bộ nhớ đệm tăng trưởng vô hạn (tùy thuộc vào dung lượng RAM), phù hợp để tính toán các giá trị $n$ lớn mà không bị tràn bộ nhớ.",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

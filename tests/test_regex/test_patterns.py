@@ -115,6 +115,9 @@ def test_image_hint():
     assert bool(IMAGE_HINT.search("show me the image"))
     assert bool(IMAGE_HINT.search("xem hình này"))
     assert not IMAGE_HINT.search("hello world")
+    assert not IMAGE_HINT.search("tình hình thế giới hôm nay có gì hot")
+    assert not IMAGE_HINT.search("mô hình AI phân tích dữ liệu")
+    assert not IMAGE_HINT.search("ảnh hưởng của tỷ giá đến nền kinh tế")
 
 
 # ── Output / Validation ───────────────────────────────────────────────

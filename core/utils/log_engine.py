@@ -112,9 +112,14 @@ class LogEngine:
 
     def _publish_now_delta(self, r, role, thought, task_id, stream_id, is_first_chunk):
         try:
+            from core.utils.log_normalizer import format_thought
             iso_time = datetime.now().isoformat()
             level = self._detect_level(thought)
-            msg = f"{level} [{iso_time}] [{role}] [Task: {task_id}] {thought}" if is_first_chunk else thought
+            if is_first_chunk:
+                clean_thought = format_thought(role, thought)
+                msg = f"{level} [{iso_time}] [{role}] [Task: {task_id}] {clean_thought.strip()}"
+            else:
+                msg = thought
             tag = role.upper()
             payload = {
                 "tag": tag, "msg": msg, "ts": time.time(),
@@ -137,7 +142,12 @@ class LogEngine:
     def _enqueue_thought(self, r, role, thought, task_id, stream_id):
         iso_time = datetime.now().isoformat()
         level = self._detect_level(thought)
-        msg = f"{level} [{iso_time}] [{role}] [Task: {task_id}] {thought.strip()}"
+        try:
+            from core.utils.log_normalizer import format_thought
+            clean_thought = format_thought(role, thought)
+        except Exception:
+            clean_thought = str(thought)
+        msg = f"{level} [{iso_time}] [{role}] [Task: {task_id}] {clean_thought.strip()}"
         tag = role.upper()
         payload = {
             "tag": tag, "msg": msg, "ts": time.time(),
@@ -156,8 +166,15 @@ class LogEngine:
                             trace_id=None, stealth=False, redis_conn=None):
         if not msg:
             return
+        try:
+            from core.utils.log_normalizer import normalize_mission_log
+            clean_msg = normalize_mission_log(tag, msg)
+        except Exception:
+            clean_msg = str(msg)
+        if not clean_msg:
+            return
         data = {
-            "tag": tag, "msg": msg, "ts": time.time(),
+            "tag": tag, "msg": clean_msg, "ts": time.time(),
             "task_id": task_id, "trace_id": trace_id or task_id,
         }
         if stealth:

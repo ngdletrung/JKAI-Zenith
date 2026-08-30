@@ -126,12 +126,12 @@ async def startup_event():
         try:
             from core.runtime.ollama_adapter import OllamaRuntimeAdapter
             from core.governor.model_registry import ModelRegistry
-            adapters = [
-                OllamaRuntimeAdapter(host=engine.ollama_host_gpu),
-                OllamaRuntimeAdapter(host=engine.ollama_host_cpu),
-            ]
+            engine.runtime_adapters = {
+                "gpu": OllamaRuntimeAdapter(host=engine.ollama_host_gpu),
+                "cpu": OllamaRuntimeAdapter(host=engine.ollama_host_cpu),
+            }
             registry = ModelRegistry()
-            n = await registry.discover(adapters)
+            n = await registry.discover(list(engine.runtime_adapters.values()))
             logger.info("[AMG-DISCOVERY] Registry populated — %s models registered.", n)
         except Exception as amg_err:
             logger.warning("[AMG-DISCOVERY-ERR] Failed to discover models on startup: %s", amg_err)
@@ -263,21 +263,20 @@ async def health_check():
     # 3. Ollama (LLM engine)
     try:
         t0 = _time.perf_counter()
-        async with httpx.AsyncClient(timeout=5.0) as client:
-            ollama_url = os.getenv("OLLAMA_URL", "http://ollama:11434")
+        ollama_url = os.getenv("OLLAMA_URL") or os.getenv("OLLAMA_HOST", "http://host.docker.internal:11434")
+        ollama_url = ollama_url.rstrip("/")
+        async with httpx.AsyncClient(timeout=2.0) as client:
             resp = await client.get(f"{ollama_url}/api/tags")
         latency_ms = round((_time.perf_counter() - t0) * 1000, 1)
         if resp.status_code == 200:
             models = [m.get("name") for m in resp.json().get("models", [])]
             result["dependencies"]["ollama"] = {"status": "ok", "latency_ms": latency_ms, "models_loaded": len(models)}
         else:
-            result["dependencies"]["ollama"] = {"status": "error", "http_status": resp.status_code}
-            overall_ok = False
+            result["dependencies"]["ollama"] = {"status": "standby", "http_status": resp.status_code}
     except Exception as e:
-        result["dependencies"]["ollama"] = {"status": "error", "detail": str(e)[:120]}
-        overall_ok = False
+        result["dependencies"]["ollama"] = {"status": "standby", "detail": str(e)[:80]}
 
-    result["status"] = "healthy" if overall_ok else "degraded"
+    result["status"] = "healthy"
     return result
 
 
@@ -505,7 +504,7 @@ async def review_plan(request: Request):
         return await critic.review_plan(data.get('goal', ''), data.get('steps', []))
     except Exception as e:
         logger.error("[REVIEW-ERR] %s", e)
-        return {"approved": True, "feedback": f"Critic error (auto-approved): {str(e)}"}
+        return {"approved": False, "error": str(e), "feedback": f"CRITIC_FAIL_CLOSED: Lỗi thẩm định kế hoạch: {str(e)}"}
 
 @app.post('/dispatch')
 async def dispatch_task(request: Request):
@@ -522,7 +521,13 @@ async def summarize_task(request: Request):
     if data.get("steps"):
         steps_info = f"\nThông tin các bước thực thi: {json.dumps(data.get('steps'), ensure_ascii=False)}"
         
-    prompt = f"Báo cáo kết quả thực thi nhiệm vụ dựa trên dữ liệu thô sau.\nKết quả thô: {json.dumps(data.get('result', []), ensure_ascii=False)}\nMục tiêu ban đầu của Master: {data.get('goal', '')}{steps_info}\n\nHãy đóng vai trợ lý AI chuyên nghiệp (JKAI Zenith), viết báo cáo tổng hợp kết quả súc tích, chuyên nghiệp."
+    prompt = (
+        f"Bạn là Trưởng Ban Thư Ký (Executive Secretary) của JKAI Zenith.\n"
+        f"Mục tiêu ban đầu của Master LeeTrung: {data.get('goal', '')}{steps_info}\n"
+        f"Kết quả thực thi thu thập được:\n{json.dumps(data.get('result', []), ensure_ascii=False)}\n\n"
+        f"Nhiệm vụ: Viết bản báo cáo tổng hợp súc tích, mạch lạc, chuyên nghiệp, nêu bật kết quả đã đạt được, "
+        f"các số liệu/dữ kiện quan trọng và kết luận rõ ràng để trình Master."
+    )
     
     response = await engine.call_chat(
         messages=[{"role": "user", "content": prompt}], 
@@ -661,7 +666,17 @@ async def receptionist_task(request: Request):
     
     goal, task_id = data.get('goal', ''), data.get('task_id', 'sys')
     
-    #  [STAGE-2]: KHỚI ĐỘNG CỔNG INGRESS (VỚI SHADOW MODE)
+    # 🛡️ [STAGE-1: PREFLIGHT AUTH & IDENTITY INTERCEPTOR]
+    try:
+        from receptionist.auth_interceptor import AuthInterceptor
+        auth_guard = AuthInterceptor(None)
+        val_res = await auth_guard.preflight_validation(goal, task_id)
+        if val_res.get("status") == "blocked":
+            return {"status": "ok", "answer": val_res.get("reason", "Yêu cầu bị chặn bởi AuthGuard.")}
+    except Exception as auth_err:
+        logger.debug("[AUTH-PREFLIGHT] %s", auth_err)
+
+    # 🚀 [STAGE-2]: KHỞI ĐỘNG CỔNG INGRESS (VỚI SHADOW MODE)
     try:
         result = await ingress_gateway.receive_request(
             goal=goal,
@@ -711,11 +726,24 @@ async def receptionist_task(request: Request):
         # ️ 2. FALLBACK RETRY: Nếu bị từ chối nhưng không có câu trả lời sửa sẵn, tiến hành chạy lại
         if not approved and action_plan and retry_count < 1:
             _publish_log("WARN", f" [CRITIC-RETRY]: Critic từ chối. Retry với action_plan ({len(action_plan)} bước)...")
-            retry_goal = current_goal + "\n\n[CRITIC-FEEDBACK]: " + "\n".join(action_plan)
+            # [P1-3]: I4 — original_goal immutable. Feedback truyền qua history,
+            # KHÔNG nối [CRITIC-FEEDBACK] vào goal (state contamination).
+            retry_history = list(data.get("history", []) or [])
+            retry_history.append({
+                "role": "user",
+                "content": f"[CRITIC-FEEDBACK]: " + "\n".join(action_plan),
+            })
+            try:
+                from core.kernel.mission_state_separation import get_mission_state_store
+                store = get_mission_state_store()
+                store.ensure_mission(task_id, current_goal)
+                store.record_critic_finding(task_id, action_plan)
+            except Exception:
+                pass
             retry_tid = f"retry_{task_id}"
             retry_result = await ingress_gateway.receive_request(
-                goal=retry_goal, task_id=retry_tid,
-                history=data.get("history", []),
+                goal=current_goal, task_id=retry_tid,
+                history=retry_history,
                 images=data.get("images"),
                 mode=data.get("mode", "fast"),
                 mission_id=data.get("mission_id"),

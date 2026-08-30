@@ -135,6 +135,11 @@ def is_allowed_workspace_rel(rel: str) -> bool:
     norm = normalize_workspace_rel(rel)
     if not norm:
         return False
+    # Chặn chuỗi thuần số hoặc phân số / ngày tháng (VD: 2/9, 30/4, 2024/2025, 1, 2)
+    if re.match(r"^\d+(?:/\d+)*$", norm):
+        return False
+    if len(norm) <= 2:
+        return False
     if _URL_PATH_ARTIFACT_RE.match(norm):
         return False
     if norm in _ROOT_ONLY_BLOCK:
@@ -149,6 +154,14 @@ def is_allowed_workspace_rel(rel: str) -> bool:
     if _AI_MODEL_PATH_RE.search(rel):
         return False
     if _METRIC_UNIT_PATH_RE.search(rel):
+        return False
+    # Chặn các cặp từ nối bằng dấu gạch chéo thông dụng trong văn bản/prompt (VD: tool/plan, and/or, input/output, frontend/backend, client/server)
+    _COMMON_SLASH_PAIRS = frozenset({
+        "tool/plan", "plan/tool", "and/or", "input/output", "frontend/backend",
+        "client/server", "read/write", "import/export", "true/false", "yes/no",
+        "on/off", "pass/fail", "success/error", "req/res", "request/response"
+    })
+    if low in _COMMON_SLASH_PAIRS:
         return False
     return True
 
@@ -261,12 +274,14 @@ def detect_workspace_target(text: str) -> Optional[str]:
             else:
                 return rel
 
-    # Đoạn path có dấu / (ưu tiên dài nhất hợp lệ) — không lấy từ URL đã strip
+    # Đoạn path có dấu / (chỉ chấp nhận nếu THỰC SỰ TỒN TẠI trên đĩa cứng Workspace)
     candidates = []
     for m in _REL_PATH_RE.finditer(path_scan):
         rel = normalize_workspace_rel(m.group(1))
         if is_allowed_workspace_rel(rel) and "://" not in rel:
-            candidates.append(rel)
+            # Kiểm tra xem đường dẫn có thực sự tồn tại trên đĩa không trước khi coi là workspace
+            if workspace_scope_exists(rel):
+                candidates.append(rel)
     if candidates:
         return max(candidates, key=len)
 

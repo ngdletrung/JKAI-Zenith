@@ -102,6 +102,28 @@ class OllamaRuntimeAdapter(RuntimeAdapter):
                     except json.JSONDecodeError:
                         pass
 
+    async def generate_stream_full(
+        self,
+        payload: Dict[str, Any],
+        timeout: Optional[float] = None,
+    ) -> AsyncIterator[Dict[str, Any]]:
+        """
+        Full-featured stream generation for orchestrators supporting tools,
+        json format, keep_alive, think, and adaptive tiered timeout.
+        Yields parsed JSON chunks directly from the runtime stream.
+        """
+        client = self._get_client()
+        custom_timeout = httpx.Timeout(timeout or self._timeout, connect=15.0, read=timeout or self._timeout)
+        async with client.stream("POST", f"{self._host}/api/chat", json=payload, timeout=custom_timeout) as resp:
+            resp.raise_for_status()
+            async for line in resp.aiter_lines():
+                if line:
+                    import json
+                    try:
+                        yield json.loads(line)
+                    except json.JSONDecodeError:
+                        pass
+
     async def list_models(self) -> List[str]:
         try:
             client = self._get_client()

@@ -703,7 +703,14 @@ class FactVerifier:
         self.version_pattern = re.compile(r"\b([\w\-]{3,20})\s+(?:v\d+\.\d+(?:\.\d+)?|\bversion\s+\d+\.\d+)\b", re.IGNORECASE)
         self.cmd_pattern = re.compile(r"\b(?:npm run|python|pip install|docker run|docker-compose|git clone|npx|uv pip|uv run)\b", re.IGNORECASE)
         self.negation_pattern = re.compile(r"\b(?:not|never|deprecated|avoid|error|failed|blocked|issue|warning|mau thuan|loi|khong nen|bi chan)\b", re.IGNORECASE)
-        self.config_pattern = re.compile(r"\b([\w\_]{3,20})\s*[:=]\s*([\w\-]{1,15}|\d+)\b")
+        self.config_pattern = re.compile(r"\b([a-zA-Z_][a-zA-Z0-9_]{2,20})\s*[:=]\s*([a-zA-Z0-9_\.\-\/]{1,40})\b")
+        # Pattern nhận diện config kỹ thuật thật sự (ví dụ: port: 8080, db_host: localhost, timeout: 30)
+        # Loại bỏ các từ đơn lập, số năm, hoặc văn bản tự nhiên để chống False Conflict
+        self._tech_key_whitelist = {
+            "port", "host", "timeout", "retries", "max_connections", "database", "user",
+            "password", "ssl", "api_key", "endpoint", "version", "baudrate", "ip", "dns",
+            "proxy", "env", "node_env", "buffer_size", "chunk_size", "workers", "threads"
+        }
 
     def extract_technical_facts(self, text: str) -> Dict[str, Dict[str, str]]:
         facts = {
@@ -724,7 +731,7 @@ class FactVerifier:
         for match in self.config_pattern.finditer(text):
             key = match.group(1).lower()
             val = match.group(2).lower()
-            if key not in ["http", "https", "port", "version", "class", "def", "import", "const", "let", "var", "npm", "pip", "docker"]:
+            if key in self._tech_key_whitelist and not key.isdigit():
                 facts["configs"][key] = val
         return facts
 
@@ -1071,7 +1078,13 @@ async def SEARCH_WEB_GLOBAL(
                     clean_query = query[:390] if len(query) > 400 else query
                     resp = await client.post(
                         "https://api.tavily.com/search",
-                        json={"api_key": tavily_api_key, "query": clean_query, "search_depth": search_depth},
+                        json={
+                            "api_key": tavily_api_key,
+                            "query": clean_query,
+                            "search_depth": search_depth,
+                            "max_results": 10,
+                            "include_answer": True
+                        },
                     )
                     try:
                         resp.raise_for_status()
@@ -1091,7 +1104,8 @@ async def SEARCH_WEB_GLOBAL(
                     log_msg += f"{i}. {r.get('title', '')[:60]} ({r.get('url', '')})\n"
                 engine.publish_mission_log("WEB_DATA", log_msg, task_id, trace_id)
 
-                # Chay FactVerifier de kiem tra thong tin ky thuat
+                # Chay FactVerifier & ScopeClassifier de kiem tra thong tin va loc scope
+                from core.os.cognition.scope_classifier import scope_classifier
                 candidates = []
                 sources = []
                 combined_raw_parts = []
@@ -1099,6 +1113,11 @@ async def SEARCH_WEB_GLOBAL(
                     url = r.get("url", "https://tavily.com")
                     content = r.get("content", "")
                     api_date = r.get("published_date") or r.get("date")
+
+                    # DEMS Scope Assessment
+                    scope_info = scope_classifier.classify(content, url)
+                    if scope_info.is_noise:
+                        continue # Loai bo 100% ket qua tu vi / boi toan / rac quang cao
                     
                     extracted_date = extract_date_info(content, url, api_date)
                     date_prefix = f"[Ngày {extracted_date}] " if extracted_date else ""
@@ -1114,9 +1133,9 @@ async def SEARCH_WEB_GLOBAL(
                                 paragraphs_with_date.append(p_strip)
                     
                     processed_content = "\n".join(paragraphs_with_date)
-                    candidates.append({"url": url, "content": processed_content})
-                    sources.append({"title": r.get("title"), "url": url, "date": extracted_date})
-                    combined_raw_parts.append(f"Source: {r.get('title')}\nURL: {url}\nContent: {processed_content}")
+                    candidates.append({"url": url, "content": processed_content, "scope": scope_info.primary_scope})
+                    sources.append({"title": r.get("title"), "url": url, "date": extracted_date, "scope": scope_info.primary_scope})
+                    combined_raw_parts.append(f"Source: {r.get('title')} [Scope: {scope_info.primary_scope}]\nURL: {url}\nContent: {processed_content}")
                 
                 verifier = FactVerifier()
                 v_data = verifier.verify_and_detect_contradictions(candidates)
@@ -1130,7 +1149,34 @@ async def SEARCH_WEB_GLOBAL(
                 # Append citations va verification warnings
                 ranked_content = _append_citations_footer(ranked_content, sources)
                 ranked_content = _append_verification_footer(ranked_content, v_data)
+
+                # DEMS Integration: Lưu Raw Trace bất biến (Authority = 4 - TOOL_RUNTIME)
+                try:
+                    import uuid
+                    from core.storage.raw_trace_store import RawTraceStore
+                    rts = RawTraceStore()
+                    unique_trace = f"{trace_id}_{uuid.uuid4().hex[:6]}" if trace_id else f"tr_{uuid.uuid4().hex[:12]}"
+                    rts.append_trace(
+                        mission_id=task_id,
+                        episode_id=task_id,
+                        window_id="search_window",
+                        turn_id=trace_id or task_id,
+                        actor="SEARCH_WEB_GLOBAL",
+                        event_type="observation",
+                        payload={
+                            "query": query,
+                            "backend": "Tavily",
+                            "found_count": len(results),
+                            "sources": sources,
+                            "verified_facts": v_data
+                        },
+                        authority_level=4,
+                        trace_id=unique_trace
+                    )
+                except Exception as ex_trace:
+                    log.warning("Could not persist DEMS RawTrace: %s", ex_trace)
                 
+                data["status"] = "success"
                 data["results"] = [{
                     "title": "Zenith Ranked Segments",
                     "url": "https://tavily-ranked.internal",
@@ -1243,53 +1289,16 @@ async def SEARCH_WEB_GLOBAL(
             _cache.set(cache_key, browser_data, ttl=600)
             return browser_data
         else:
-            engine.publish_mission_log("WEB_WARN", f"BROWSER-EMPTY: Browser search returned empty results - cascading to Cloud LLM...", task_id, trace_id)
+            engine.publish_mission_log("WEB_WARN", f"BROWSER-EMPTY: Browser search returned empty results.", task_id, trace_id)
     except Exception as e:
-        engine.publish_mission_log("WEB_ERR", f"BROWSER-FAIL: {e} - cascading to Cloud LLM...", task_id, trace_id)
+        engine.publish_mission_log("WEB_ERR", f"BROWSER-FAIL: {e}", task_id, trace_id)
         log.error("Browser fallback failed: %s", e)
 
-    # Phase 4: Cloud LLM Search
-    engine.publish_mission_log("WEB_SEARCH", f"CLOUD-LLM: Cascading to Cloud LLM search for {query}", task_id, trace_id)
-    try:
-        prompt = (
-            f"Vui lòng tìm kiếm trên Internet thông tin mới nhất về: '{query}'. "
-            "Trả lời ngắn gọn, chi tiết và chứa các thông tin thời sự/thực tế."
-        )
-        answer = await engine.call_chat(
-            messages=[{"role": "user", "content": prompt}],
-            role="PLANNER",
-            task_id=f"cloud_search_{task_id}",
-            trace_id=trace_id
-        )
-        if isinstance(answer, dict) and "answer" in answer:
-            ans_text = answer["answer"]
-        else:
-            ans_text = str(answer)
-
-        if ans_text and ans_text.strip():
-            engine.publish_mission_log("WEB_DATA", f"CLOUD-LLM-FOUND: Successfully synthesized search content.", task_id, trace_id)
-            data = {
-                "status": "success",
-                "results": [{
-                    "title": "Cloud LLM Search Results",
-                    "url": "https://cloud-llm.internal",
-                    "content": ans_text
-                }],
-                "answer": ans_text
-            }
-            _cache.set(cache_key, data, ttl=600)
-            return data
-        else:
-            engine.publish_mission_log("WEB_WARN", f"CLOUD-LLM-EMPTY: Cloud LLM returned empty response", task_id, trace_id)
-    except Exception as e:
-        engine.publish_mission_log("WEB_ERR", f"CLOUD-LLM-FAIL: {e}", task_id, trace_id)
-        log.error("Cloud LLM fallback failed: %s", e)
-
-    # Fallback absolute: All sources failed
-    engine.publish_mission_log("WEB_ERR", "ALL-SOURCES-FAILED: Tavily, DuckDuckGo, Browser, Cloud LLM đều thất bại hoặc trả về rỗng.", task_id, trace_id)
+    # Fallback absolute: All real web search sources failed
+    engine.publish_mission_log("WEB_ERR", "ALL-SOURCES-FAILED: Cả Tavily, DuckDuckGo và Browser đều không thể kết nối hoặc trả về rỗng.", task_id, trace_id)
     return {
         "status": "error",
-        "msg": "All search sources (Tavily, DuckDuckGo, Browser, Cloud LLM) have failed or returned empty results."
+        "msg": "All web search sources (Tavily, DuckDuckGo, Browser) have failed or returned empty results."
     }
 
 async def _run_browser_search(query: str, task_id: str, trace_id: str, cache_key: str = None) -> dict:

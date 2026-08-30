@@ -136,7 +136,7 @@ def get_telemetry():
     """Truy vấn dữ liệu phần cứng trực tiếp bằng psutil và win32pdh siêu tốc (0ms)"""
     try:
         import psutil
-        cpu = psutil.cpu_percent(interval=None)
+        cpu = psutil.cpu_percent(interval=0.1)   # interval=0.1s: đo thực tế (interval=None = stale cached value)
         ram = psutil.virtual_memory().percent
 
         gpu_util = 0

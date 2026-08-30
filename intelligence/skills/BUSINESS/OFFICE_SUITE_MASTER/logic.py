@@ -78,8 +78,11 @@ class ZenithOfficeMaster:
         return candidates[-1]
 
     def _get_path(self, filename: str, ext: str) -> str:
-        clean_name = "".join([c if c.isalnum() or c in "._- " else "_" for c in str(filename)])
-        return os.path.join(self.output_dir, f"{clean_name}.{ext}")
+        clean_name = "".join([c if c.isalnum() or c in "._- " else "_" for c in str(filename)]).strip()
+        ext_clean = ext.lower().lstrip(".")
+        if clean_name.lower().endswith(f".{ext_clean}"):
+            return os.path.join(self.output_dir, clean_name)
+        return os.path.join(self.output_dir, f"{clean_name}.{ext_clean}")
 
     # ─────────────────────────────────────────────────────────────
     # WORD (python-docx)
@@ -529,23 +532,32 @@ class ZenithOfficeMaster:
             )
             return {"status": "success", "path": path, "format": "docx", "file": path}
 
-        elif action in ("write_excel", "create_excel", "xlsx"):
-            missing = _require(kwargs, "data")
-            if not missing and not kwargs.get("data") and not (kwargs.get("columns") and kwargs.get("rows")):
-                missing = "Thiếu dữ liệu bảng. Vui lòng cung cấp 'data' (danh sách dict) hoặc 'columns'+'rows'."
-            if missing:
-                return {"status": "need_info", "question": missing}
-            path = self.write_excel(
-                kwargs.get("data"),
-                sheet_name=kwargs.get("sheet_name", "Data"),
-                filename=kwargs.get("filename", "Data"),
-                columns=kwargs.get("columns"),
-                rows=kwargs.get("rows"),
-                formatted=kwargs.get("formatted", True),
-            )
+        elif action in ("write_excel", "create_excel", "xlsx", "excel") or (action == "create_file" and str(kwargs.get("format", "")).lower() in ("excel", "xlsx")):
+            # Nếu có data hoặc columns/rows rõ ràng -> chạy write_excel tiêu chuẩn
+            if kwargs.get("data") or (kwargs.get("columns") and kwargs.get("rows")):
+                path = self.write_excel(
+                    kwargs.get("data"),
+                    sheet_name=kwargs.get("sheet_name", "Data"),
+                    filename=kwargs.get("filename", kwargs.get("title", "Data")),
+                    columns=kwargs.get("columns"),
+                    rows=kwargs.get("rows"),
+                    formatted=kwargs.get("formatted", True),
+                )
+            else:
+                # Tự động điều phối qua SmartOfficeAdapter để sinh bảng biểu, KPI, công thức và biểu đồ hoàn chỉnh
+                from intelligence.skills.BUSINESS.OFFICE_SUITE_MASTER.smart_office_adapter import smart_office_adapter
+                path = smart_office_adapter.synthesize_excel(
+                    title=kwargs.get("title", "Bảng Quản Lý Công Việc & Tiến Độ"),
+                    filename=kwargs.get("filename", kwargs.get("title", "Quan_Ly_Tien_Do")),
+                    data=kwargs.get("data"),
+                    columns=kwargs.get("columns"),
+                    rows=kwargs.get("rows"),
+                    content_structure=kwargs.get("content_structure"),
+                    add_charts=True,
+                )
             return {"status": "success", "path": path, "format": "xlsx", "file": path}
 
-        elif action in ("write_pdf", "create_pdf", "pdf"):
+        elif action in ("write_pdf", "create_pdf", "pdf") or (action == "create_file" and str(kwargs.get("format", "")).lower() == "pdf"):
             missing = _require(kwargs, "content")
             if missing:
                 return {"status": "need_info", "question": missing}

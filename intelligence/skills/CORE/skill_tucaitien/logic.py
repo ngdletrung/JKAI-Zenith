@@ -22,7 +22,8 @@ if sys.platform == "win32":
         pass
 
 from core.utils.engine import engine
-from core.kernel.capability_broker import capability_broker, CapabilityType, sandbox_executor
+from core.kernel.capability_broker import capability_broker, CapabilityType
+from core.kernel.code_actuator import code_actuator as sandbox_executor
 from core.kernel.cognitive_scheduler import cognitive_transaction_manager
 
 logger = logging.getLogger("ZenithEvolutionEngine")
@@ -739,6 +740,9 @@ async def phau_thuat_logic(**kwargs):
 
 async def tu_nang_cap_ban_than(**kwargs):
     return await _instance.tu_nang_cap_ban_than(**kwargs)
+
+async def execute(**kwargs):
+    return await skill_tucaitien(**kwargs)
 
 async def SKILL_TUCAITIEN(**kwargs):
     return await skill_tucaitien(**kwargs)

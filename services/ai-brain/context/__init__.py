@@ -1,7 +1,7 @@
 from .mission_context import MissionContext, MissionContextManager
 from .entity_resolver import EntityResolver
 from .reference_resolver import ReferenceResolver
-from .working_memory import WorkingMemory, WorkingRecord
+from .working_memory import WorkingMemory, WorkingRecord, RecentOperationsStore, recent_operations_store
 from .fact_extractor import FactExtractor
 from .context_assembler import ContextAssembler
 from .context_prompt_builder import ContextPromptBuilder
@@ -13,3 +13,4 @@ working_memory = WorkingMemory()
 fact_extractor = FactExtractor()
 context_assembler = ContextAssembler()
 context_prompt_builder = ContextPromptBuilder()
+

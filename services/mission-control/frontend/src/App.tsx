@@ -7,7 +7,7 @@ import {
   History, Terminal, RefreshCcw, Radar, Cpu, 
   Database, ShieldCheck, Radio, Volume2, VolumeX, Search
 } from 'lucide-react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast, { Toaster, useToaster } from 'react-hot-toast';
 
 import { Zenith3DMission } from './components/Zenith3DMission';
 import { useTaskWebSocket } from './hooks/useTaskWebSocket';
@@ -643,7 +643,6 @@ function App() {
         gutter={8}
         toastOptions={{ 
           duration: 3000,
-          id: 'ZENITH_PULSE', // 🛡️ [SINGLE-TOAST]: Luôn ghi đè để chỉ hiện 1 bong bóng duy nhất
           style: { 
             background: 'rgba(6, 9, 15, 0.9)', 
             color: '#34d399', 
@@ -658,7 +657,11 @@ function App() {
             boxShadow: '0 4px 20px rgba(0,0,0,0.4)'
           } 
         }} 
-      />
+      >
+        {(t) => {
+          return null; // rendered by react-hot-toast default if children not supplied or custom
+        }}
+      </Toaster>
       
       {/* 🚀 [CSS-BOOT-SCREEN]: Opacity-based boot overlay to eliminate unmount GPU flash glitches */}
       <div 
