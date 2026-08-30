@@ -91,7 +91,7 @@ class HardwareMonitor:
 
     _lock = threading.Lock()
     _last_state: HardwareState = HardwareState(snapshot_ts=0.0)
-    CACHE_TTL_SEC = 3.0
+    CACHE_TTL_SEC = 0.5
 
     # Static hardware constants (updated dynamically from environment or sensors)
     TOTAL_VRAM_MB: int = int(os.getenv("TOTAL_VRAM_MB", "8192"))

@@ -135,6 +135,7 @@ def main():
 
             payload = json.dumps(pulse)
             r.setex("hardware_pulse_cache", CACHE_TTL, payload)
+            r.publish("monitor:pulse_channel", json.dumps({"tag": "PULSE", "data": pulse, "ts": pulse["ts"]}))
 
         except Exception as e:
             consecutive_errors += 1
