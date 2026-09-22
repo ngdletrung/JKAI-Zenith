@@ -136,12 +136,12 @@ class ExecutionIntegrityLayer:
             task_contract=task_contract,
             policy_advisory=effective_snapshot
         )
-        if fsm_verdict == AuthorityVerdict.DENY and "HARD BOUNDARY" in fsm_reason:
+        if fsm_verdict == AuthorityVerdict.DENY:
             log_structured_event(
                 message=fsm_reason,
                 tool_name=action,
                 authority_decision="DENY",
-                error_code="HARD_BOUNDARY_DENIAL",
+                error_code="FSM_AUTHORITY_DENY",
                 trace_id=self.fsm.trace_id,
                 extra={"target": str(args.get("file_path") or args.get("TargetFile") or "")}
             )

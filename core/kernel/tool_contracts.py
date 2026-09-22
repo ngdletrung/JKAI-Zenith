@@ -91,6 +91,16 @@ class ToolContractRegistry:
             return t_low
         return cls._aliases.get(t_low)
 
+    PARAMETER_ALIASES: Dict[str, List[str]] = {
+        "DirectoryPath": ["path", "dir", "directory", "dir_path", "folder", "target_dir", "targetdir"],
+        "AbsolutePath": ["path", "file_path", "filepath", "target_file", "targetfile", "file"],
+        "TargetFile": ["path", "file_path", "filepath", "target_path", "targetpath", "filename", "file"],
+        "CodeContent": ["content", "code", "text", "payload", "new_content", "newcontent"],
+        "CommandLine": ["command", "cmd", "script", "command_line"],
+        "SearchPath": ["path", "dir", "directory", "folder", "search_dir"],
+        "Query": ["pattern", "keyword", "term", "q", "search_query"],
+    }
+
     @classmethod
     def get_model(cls, tool_name: str) -> Optional[Type[BaseModel]]:
         canon = cls.get_canonical_name(tool_name)
@@ -99,8 +109,10 @@ class ToolContractRegistry:
     @classmethod
     def normalize_args(cls, model_cls: Type[BaseModel], raw_args: Dict[str, Any]) -> Dict[str, Any]:
         """
-        Normalizes snake_case, lowercase, or camelCase keys to model field names.
-        E.g., target_file -> TargetFile, commandline -> CommandLine
+        Normalizes snake_case, lowercase, camelCase keys or known parameter aliases
+        to model field names.
+        E.g., path -> DirectoryPath (for list_dir), path -> AbsolutePath (for view_file),
+              target_file -> TargetFile, commandline -> CommandLine
         """
         if not isinstance(raw_args, dict):
             return {}
@@ -115,6 +127,23 @@ class ToolContractRegistry:
                 normalized[field_map[k_key]] = v
             else:
                 normalized[k] = v
+
+        # Parameter Alias Resolution for missing required model fields
+        for target_field in fields.keys():
+            if target_field not in normalized and target_field in cls.PARAMETER_ALIASES:
+                aliases = cls.PARAMETER_ALIASES[target_field]
+                for alias in aliases:
+                    if alias in raw_args:
+                        normalized[target_field] = raw_args[alias]
+                        break
+                    alias_norm = alias.lower().replace("_", "")
+                    for rk, rv in raw_args.items():
+                        if rk.lower().replace("_", "") == alias_norm:
+                            normalized[target_field] = rv
+                            break
+                    if target_field in normalized:
+                        break
+
         return normalized
 
     @classmethod

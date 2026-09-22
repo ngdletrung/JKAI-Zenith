@@ -142,3 +142,39 @@ def test_07_execution_integrity_layer_uses_fsm_single_authority():
     )
     assert decision.outcome == DecisionOutcome.DENY
     assert "prohibited security pattern" in decision.reason
+
+
+def test_08_list_dir_parameter_alias_normalization():
+    """Verify that list_dir(path='.') is automatically mapped to DirectoryPath via Parameter Aliases."""
+    from core.kernel.action_validator import validate_action, ActionDecision
+    from core.kernel.tool_contracts import ToolContractRegistry, ListDirContract
+
+    # 1. Direct validation via ToolContractRegistry
+    is_valid, err, model = ToolContractRegistry.validate_tool_call("list_dir", {"path": "."})
+    assert is_valid is True
+    assert isinstance(model, ListDirContract)
+    assert model.DirectoryPath == "."
+
+    # 2. End-to-end validate_action check
+    verdict = validate_action("list_dir", {"path": "."}, check_firewall=False)
+    assert verdict.decision == ActionDecision.PERMIT
+    assert "Thiếu tham số bắt buộc" not in verdict.reason
+
+
+def test_09_view_and_write_file_parameter_aliases():
+    """Verify parameter aliases for view_file and write_to_file."""
+    from core.kernel.tool_contracts import ToolContractRegistry, ViewFileContract, WriteFileContract
+
+    # view_file with {"path": "main.py"}
+    is_valid, err, v_model = ToolContractRegistry.validate_tool_call("view_file", {"path": "main.py"})
+    assert is_valid is True
+    assert isinstance(v_model, ViewFileContract)
+    assert v_model.AbsolutePath == "main.py"
+
+    # write_to_file with {"path": "out.py", "code": "print('ok')"}
+    is_valid, err, w_model = ToolContractRegistry.validate_tool_call("write_to_file", {"path": "out.py", "code": "print('ok')"})
+    assert is_valid is True
+    assert isinstance(w_model, WriteFileContract)
+    assert w_model.TargetFile == "out.py"
+    assert w_model.CodeContent == "print('ok')"
+

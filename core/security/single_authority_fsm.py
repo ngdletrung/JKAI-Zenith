@@ -195,7 +195,7 @@ class SingleAuthorityFSM:
 
         if not is_obs and not task_contract and not policy_advisory:
             self.state = FSMState.DENIED
-            reason = "FAIL-CLOSED: TaskContract and PolicyAdvisory are missing for state mutation tool."
+            reason = "FAIL-CLOSED: PolicySnapshot/TaskContract is missing or unverified."
             record = self._create_record(
                 action=action, target=target, verdict=AuthorityVerdict.DENY,
                 reason=reason, risk_level="MEDIUM", rule_matched="MISSING_CONTRACT_FAIL_CLOSED",
