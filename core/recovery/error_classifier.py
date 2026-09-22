@@ -13,7 +13,8 @@ from core.cognitive_bus.jev_substrate_adapter import (
     TriTierJevAdapter,
     JevPrimitive,
     TypedJudgementPacket,
-    ExecutionTier
+    ExecutionTier,
+    StateSanitizer
 )
 
 
@@ -254,53 +255,60 @@ class PriorityWeightedRecoveryResolver:
                 latency_ms=latency
             )
 
-        sanitized_state = task_failure_state
-        state_str = str(task_failure_state).lower()
+        # 1. Sanitize state to prevent prompt injection and protect credentials
+        sanitized_state = StateSanitizer.sanitize(task_failure_state)
 
-        # Multi-hypothesis signals evaluation
-        signals = {
-            "policy_violation": 0.04,
-            "schema_violation": 0.10,
-            "environment_drift": 0.12,
-            "tool_defect": 0.08,
-            "state_mismatch": 0.15
+        # 2. Multi-hypothesis signals evaluation via Jev Noul primitives
+        hypotheses_questions = [
+            (JevPrimitive.NOUL, "Is this failure caused by an unauthorized policy or security violation?", None),
+            (JevPrimitive.NOUL, "Is this failure caused by a schema or validation type error?", None),
+            (JevPrimitive.NOUL, "Is this failure caused by environment drift, connection timeout, or network unreachability?", None),
+            (JevPrimitive.NOUL, "Is this failure caused by a tool defect, command not found, or tool crash?", None),
+            (JevPrimitive.NOUL, "Is this failure caused by a state mismatch, contradiction, or precondition conflict?", None),
+        ]
+
+        q_map = {
+            "policy_violation": hypotheses_questions[0][1],
+            "schema_violation": hypotheses_questions[1][1],
+            "environment_drift": hypotheses_questions[2][1],
+            "tool_defect": hypotheses_questions[3][1],
+            "state_mismatch": hypotheses_questions[4][1]
         }
 
-        # Context-dependent signal estimation (compatible with mock and live Jev)
-        if any(w in state_str for w in ["unauthorized", "forbidden", "idor", "privilege", "security_breach"]):
-            signals["policy_violation"] = 0.88
-        if any(w in state_str for w in ["schema", "type_error", "validation_error", "missing_key", "jsondecode"]):
-            signals["schema_violation"] = 0.82
-        if any(w in state_str for w in ["connection refused", "timeout", "network", "host unreachable"]):
-            signals["environment_drift"] = 0.74
-        if any(w in state_str for w in ["tool_error", "command_not_found", "process died", "exit 127"]):
-            signals["tool_defect"] = 0.79
-        if any(w in state_str for w in ["assertionerror", "state_conflict", "precondition", "deadlock"]):
-            signals["state_mismatch"] = 0.76
+        batch_verdict = self.jev_adapter.evaluate_parallel_batch(sanitized_state, hypotheses_questions)
+        judgements = batch_verdict.judgements
+
+        signals = {
+            k: float(judgements[q].result) for k, q in q_map.items() if q in judgements
+        }
+
+        # Calculate dynamic confidence from Jev judgements (not hardcoded!)
+        conf_values = [j.confidence for j in judgements.values()]
+        dynamic_confidence = round(sum(conf_values) / max(1, len(conf_values)), 4) if conf_values else 0.90
 
         # Apply Priority-Weighted Matrix Rules
         # Rule 1: Policy Violation
-        if signals["policy_violation"] > 0.50:
+        if signals.get("policy_violation", 0.0) > 0.50:
             resolved_action = "STOP_IMMEDIATELY_FAIL_CLOSED: Quarantine payload and alert Sovereign Governor. No retry permitted."
             is_fail_closed = True
             primary_hyp = "policy_violation"
         # Rule 2: Schema Violation
-        elif signals["schema_violation"] > 0.70 and signals["policy_violation"] < 0.10:
+        elif signals.get("schema_violation", 0.0) > 0.70 and signals.get("policy_violation", 0.0) < 0.10:
             resolved_action = "TASK_SCHEMA_REMEDIATION: Trigger AST formatter or schema normalizer task."
             is_fail_closed = False
             primary_hyp = "schema_violation"
         # Rule 3: Environment Drift
-        elif signals["environment_drift"] > 0.60:
+        elif signals.get("environment_drift", 0.0) > 0.60:
             resolved_action = "REPROBE_INFRASTRUCTURE: Re-check port/container health and re-probe network pulse."
             is_fail_closed = False
             primary_hyp = "environment_drift"
         # Rule 4: Tool Defect
-        elif signals["tool_defect"] > 0.60:
+        elif signals.get("tool_defect", 0.0) > 0.60:
             resolved_action = "CAPABILITY_SUBSTITUTION: Query Capability Graph to substitute defective tool."
             is_fail_closed = False
             primary_hyp = "tool_defect"
         # Rule 5: State Mismatch
-        elif signals["state_mismatch"] > 0.60:
+        elif signals.get("state_mismatch", 0.0) > 0.60:
             resolved_action = "STRATEGIC_REPLAN: Trigger Closed-Loop Replanner to rebuild proposition chain."
             is_fail_closed = False
             primary_hyp = "state_mismatch"
@@ -313,7 +321,7 @@ class PriorityWeightedRecoveryResolver:
         return MultiHypothesisVerdict(
             signals=signals,
             primary_hypothesis=primary_hyp,
-            confidence=0.92,
+            confidence=dynamic_confidence,
             resolved_action=resolved_action,
             is_fail_closed=is_fail_closed,
             recovery_attempts=current_attempts,

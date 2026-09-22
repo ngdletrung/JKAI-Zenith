@@ -414,17 +414,44 @@ class TriTierJevAdapter:
             # Check for adversarial attack markers
             is_malicious = any(kw in state_str for kw in [
                 "prompt_injection", "override", "rm -rf", "delete from", "drop table", 
-                "curl -x", "cat /etc/shadow", "eval(", "exec(", "grant_super_admin", "admin/roles"
+                "curl -x", "cat /etc/shadow", "eval(", "exec(", "grant_super_admin", "admin/roles",
+                "unauthorized", "forbidden", "idor", "privilege", "security_breach"
             ])
-            # If question asks about threats / harm / injection / corruption / breach / danger
-            risk_terms = ["injection", "destructive", "delete", "corrupt", "exfiltration", "breach", "danger", "override", "exceed", "violate", "unauthorized"]
-            is_risk_question = any(term in q_lower for term in risk_terms)
-            
-            if is_risk_question:
-                prob = 0.98 if is_malicious else 0.01
+            # Domain-specific failure diagnostic questions
+            if "failure caused by" in q_lower:
+                if "schema" in q_lower or "validation" in q_lower:
+                    matched = any(w in state_str for w in ["schema", "type_error", "validation_error", "missing_key", "jsondecode"])
+                    prob = 0.82 if matched else 0.08
+                    conf = 0.96
+                elif "environment" in q_lower or "drift" in q_lower:
+                    matched = any(w in state_str for w in ["connection refused", "timeout", "network", "host unreachable"])
+                    prob = 0.78 if matched else 0.10
+                    conf = 0.95
+                elif "tool defect" in q_lower or "tool crash" in q_lower:
+                    matched = any(w in state_str for w in ["tool_error", "command_not_found", "process died", "exit 127"])
+                    prob = 0.81 if matched else 0.06
+                    conf = 0.95
+                elif "state mismatch" in q_lower or "contradiction" in q_lower:
+                    matched = any(w in state_str for w in ["assertionerror", "state_conflict", "precondition", "deadlock"])
+                    prob = 0.77 if matched else 0.12
+                    conf = 0.95
+                else:
+                    prob = 0.98 if is_malicious else 0.01
+                    conf = 0.99
+            elif "artifact_exists" in q_lower or "artifact exists" in q_lower:
+                matched = "missing_artifact" not in state_str and any(w in state_str for w in ["artifact", "summary", ".json", "report", "completed"])
+                prob = 0.98 if matched else 0.10
+                conf = 0.99
             else:
-                prob = 0.02 if is_malicious else 0.98
-            conf = 0.99
+                # If question asks about threats / harm / injection / corruption / breach / danger
+                risk_terms = ["injection", "destructive", "delete", "corrupt", "exfiltration", "breach", "danger", "override", "exceed", "violate", "unauthorized"]
+                is_risk_question = any(term in q_lower for term in risk_terms)
+                if is_risk_question:
+                    prob = 0.98 if is_malicious else 0.01
+                else:
+                    prob = 0.02 if is_malicious else 0.98
+                conf = 0.99
+
             return TypedJudgementPacket(
                 primitive=JevPrimitive.NOUL,
                 question=question,

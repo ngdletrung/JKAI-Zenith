@@ -12,6 +12,7 @@ Tracks Expected Calibration Error (ECE) and enforces 3-Tier Drift Defense:
 - Rollback Trigger: false_positive_rate > baseline * 1.2 -> REVERT
 """
 
+import json
 from enum import Enum
 from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass, field
@@ -128,3 +129,24 @@ class CalibrationGuard:
             rollback_triggered=rollback_triggered,
             recommended_action=action
         )
+
+    def save_to_file(self, filepath: str):
+        """Persists calibration history and counters to a JSON file."""
+        data = {
+            "baseline_fpr": self.baseline_fpr,
+            "false_positives": self.false_positives,
+            "total_negatives": self.total_negatives,
+            "samples": self.samples
+        }
+        with open(filepath, "w", encoding="utf-8") as f:
+            json.dump(data, f, indent=2)
+
+    def load_from_file(self, filepath: str):
+        """Restores calibration history and counters from a JSON file."""
+        with open(filepath, "r", encoding="utf-8") as f:
+            data = json.load(f)
+        self.baseline_fpr = data.get("baseline_fpr", self.baseline_fpr)
+        self.false_positives = data.get("false_positives", 0)
+        self.total_negatives = data.get("total_negatives", 0)
+        self.samples = [(float(s[0]), int(s[1])) for s in data.get("samples", [])]
+

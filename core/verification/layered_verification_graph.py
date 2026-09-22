@@ -32,6 +32,7 @@ class LayeredVerificationResult:
     skipped_layers: List[VerificationLayer]
     total_latency_ms: float
     decision_evidence: List[Dict[str, Any]]
+    overall_confidence: float = 0.0
     evaluated_at: float = field(default_factory=time.time)
 
 
@@ -153,7 +154,10 @@ class LayeredVerificationGraph:
                     decision_evidence=decision_evidence
                 )
 
-        # All layers passed!
+        # All layers passed! Compute overall mean confidence
+        all_confs = [p.confidence for l_dict in layer_results.values() for p in l_dict.values()]
+        mean_conf = round(sum(all_confs) / max(1, len(all_confs)), 4) if all_confs else 1.0
+
         total_latency = (time.time() - t0) * 1000.0
         return LayeredVerificationResult(
             overall_passed=True,
@@ -162,5 +166,6 @@ class LayeredVerificationGraph:
             layer_results=layer_results,
             skipped_layers=[],
             total_latency_ms=total_latency,
-            decision_evidence=decision_evidence
+            decision_evidence=decision_evidence,
+            overall_confidence=mean_conf
         )

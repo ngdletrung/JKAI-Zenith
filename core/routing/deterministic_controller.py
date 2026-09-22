@@ -56,6 +56,7 @@ class DeterministicRoutingController:
     FAST_PATH_THRESHOLD: float = 0.80
     CIRCUIT_WINDOW: int = 20
     CIRCUIT_MIN_AVG_CONFIDENCE: float = 0.70
+    CIRCUIT_RECOVERY_AVG_CONFIDENCE: float = 0.80
 
     def __init__(self, adapter: Optional[TriTierJevAdapter] = None):
         self.adapter = adapter or TriTierJevAdapter(enable_mock=True)
@@ -72,13 +73,15 @@ class DeterministicRoutingController:
         if len(self.confidence_history) > self.CIRCUIT_WINDOW:
             self.confidence_history.pop(0)
 
-        # Check circuit breaker condition
+        # Check circuit breaker condition with Hysteresis (0.70 OPEN, 0.80 CLOSE)
         if len(self.confidence_history) >= 5:
             avg_conf = self.get_rolling_avg_confidence()
-            if avg_conf < self.CIRCUIT_MIN_AVG_CONFIDENCE:
-                self.is_circuit_disabled = True
+            if self.is_circuit_disabled:
+                if avg_conf >= self.CIRCUIT_RECOVERY_AVG_CONFIDENCE:
+                    self.is_circuit_disabled = False
             else:
-                self.is_circuit_disabled = False
+                if avg_conf < self.CIRCUIT_MIN_AVG_CONFIDENCE:
+                    self.is_circuit_disabled = True
 
     def reset_circuit(self):
         self.confidence_history.clear()
@@ -86,8 +89,8 @@ class DeterministicRoutingController:
 
     def route(self, task_context: Dict[str, Any], random_seed: Optional[int] = None) -> RouteDecision:
         t0 = time.time()
-        if random_seed is not None:
-            random.seed(random_seed)
+        # Seed parameter preserved for reproducible external simulator passes
+        _ = random_seed
 
         sanitized_context = StateSanitizer.sanitize(task_context)
 

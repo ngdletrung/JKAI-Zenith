@@ -242,3 +242,52 @@ def test_calibration_guard_rollback_trigger_on_high_fpr():
     report = guard.evaluate_health()
     assert report.rollback_triggered is True
     assert report.health == CalibrationHealth.SHUTDOWN_REVERT
+
+
+def test_deterministic_controller_circuit_breaker_recovery():
+    """Verify circuit re-closes when rolling confidence recovers above hysteresis threshold (0.80)."""
+    adapter = TriTierJevAdapter(enable_mock=True)
+    controller = DeterministicRoutingController(adapter=adapter)
+
+    # 1. Drive confidence down to trip circuit breaker (< 0.70)
+    for _ in range(10):
+        controller.record_confidence(0.50)
+    assert controller.is_circuit_disabled is True
+
+    # 2. Feed high-confidence calls until rolling average reaches >= 0.80
+    for _ in range(25):
+        controller.record_confidence(0.95)
+
+    assert controller.get_rolling_avg_confidence() >= 0.80
+    assert controller.is_circuit_disabled is False
+
+
+def test_layered_verification_computes_overall_confidence():
+    adapter = TriTierJevAdapter(enable_mock=True)
+    verifier = LayeredVerificationGraph(adapter=adapter)
+    state = {
+        "status": "COMPLETED",
+        "output_artifact": "d:\\reports\\valid.json",
+        "schema": "v2_valid"
+    }
+    result = verifier.verify_observation(state)
+    assert result.overall_passed is True
+    assert result.overall_confidence >= 0.85
+
+
+def test_calibration_guard_persistence(tmp_path):
+    save_file = str(tmp_path / "calibration_state.json")
+    g1 = CalibrationGuard(baseline_fpr=0.08)
+    for _ in range(20):
+        g1.record_outcome(0.90, 1)
+        g1.record_outcome(0.10, 0)
+    
+    g1.save_to_file(save_file)
+
+    g2 = CalibrationGuard(baseline_fpr=0.05)
+    g2.load_from_file(save_file)
+
+    assert g2.baseline_fpr == 0.08
+    assert len(g2.samples) == len(g1.samples)
+    assert g2.compute_ece() == g1.compute_ece()
+
