@@ -17,6 +17,7 @@ from core.utils.engine import engine
 from core.kernel.action_validator import validate_action, ActionDecision
 from core.kernel.model_output_parser import ModelOutputParser
 from core.kernel.context_manager import context_manager
+from core.kernel.durable_checkpoint import get_checkpoint_engine, StateEnvelope
 
 logger = logging.getLogger("jkai.project_agent")
 
@@ -198,13 +199,21 @@ class ProjectAgentLoop:
             pass
 
         self._log(f"🎯 Cursor Agent — `{self.scope_rel}` ({self.mode})", task_id)
-        messages: List[Dict[str, str]] = [
-            {"role": "system", "content": self._system_prompt(goal)},
-            {"role": "user", "content": "Bắt đầu: Hãy gọi ngay công cụ list_dir với tham số path='.' để quét thư mục gốc của dự án rồi tiếp tục."},
-        ]
+        checkpoint_engine = get_checkpoint_engine()
+        start_step = 1
+        latest_cp = checkpoint_engine.load_latest_checkpoint(task_id)
+        if latest_cp and latest_cp.status == "COMPLETED" and latest_cp.state.messages:
+            messages = latest_cp.state.messages
+            start_step = latest_cp.step_id + 1
+            self._log(f"🔄 [DURABLE-RECOVERY] Phục hồi từ Checkpoint Step {latest_cp.step_id} (bỏ qua các bước đã hoàn tất).", task_id)
+        else:
+            messages: List[Dict[str, str]] = [
+                {"role": "system", "content": self._system_prompt(goal)},
+                {"role": "user", "content": "Bắt đầu: Hãy gọi ngay công cụ list_dir với tham số path='.' để quét thư mục gốc của dự án rồi tiếp tục."},
+            ]
 
         last_obs = ""
-        for step in range(1, self.max_steps + 1):
+        for step in range(start_step, self.max_steps + 1):
             self._log(f"Bước {step}/{self.max_steps}", task_id)
             # C2: Cắt tỉa ngữ cảnh bảo vệ 85% budget token trước khi gọi LLM
             messages = context_manager.prune_messages(messages, session_id=task_id)
@@ -307,6 +316,19 @@ class ProjectAgentLoop:
                 continue
             tool = verdict.normalized_tool or str(tool)
 
+            # [DURABLE-CHECKPOINT] B2 & B3: Save PENDING before tool execution
+            ik = checkpoint_engine.compute_idempotency_key(task_id, step, str(tool), params)
+            if checkpoint_engine.is_step_completed(ik):
+                self._log(f"⏭️ [IDEMPOTENT-SKIP] Bỏ qua tool call trùng lặp: {tool}", task_id)
+                continue
+
+            envelope = StateEnvelope(
+                messages=messages,
+                next_step_id=step + 1,
+                metadata={"tool": str(tool)}
+            )
+            checkpoint_engine.save_checkpoint(task_id, step, "PENDING", envelope, ik)
+
             messages.append({"role": "assistant", "content": json.dumps(data, ensure_ascii=False)})
             obs = await self._tool(str(tool), params, task_id, trace_id)
             last_obs = obs
@@ -339,6 +361,11 @@ class ProjectAgentLoop:
                     task_id,
                 )
             messages.append({"role": "user", "content": f"[OBSERVATION]\n{obs}"})
+
+            # [DURABLE-CHECKPOINT] Save COMPLETED after tool execution and message update
+            envelope.messages = messages
+            envelope.next_step_id = step + 1
+            checkpoint_engine.save_checkpoint(task_id, step, "COMPLETED", envelope, ik)
 
             if self.mode == "fix" and tool == "run_command":
                 low = obs.lower()
