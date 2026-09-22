@@ -1,8 +1,11 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 """
+core/kernel/context_manager.py
 🧠 Token-Aware Context Manager & Sliding Window Pruner for JKAI Zenith.
 Ensures System Prompt + .jkairules.json stay strictly pinned at context top,
 while pruning and compressing middle execution logs to fit LLM context windows (num_ctx).
+Bịt kín lỗ hổng P0.1: Cô lập không gian Session/Mission, chống rò rỉ bộ nhớ mutable.
 """
 
 import os
@@ -17,11 +20,29 @@ class ContextManager:
     """
     Context Window Governor for Local LLMs (Ollama / Qwen / Llama).
     Prevents token budget overflow and context drift.
+    Includes Ephemeral Session Scope management for P0.1.
     """
     def __init__(self, max_token_budget: int = 8192, reserved_output_tokens: int = 1524):
         self.max_token_budget = int(os.getenv("JKAI_MAX_CONTEXT_TOKENS", max_token_budget))
         self.reserved_output_tokens = reserved_output_tokens
         self.effective_input_budget = self.max_token_budget - self.reserved_output_tokens
+        self._session_scopes: Dict[str, Dict[str, Any]] = {}
+
+    def get_session_scope(self, session_id: str) -> Dict[str, Any]:
+        """Truy xuất không gian dữ liệu cô lập của session/mission."""
+        if session_id not in self._session_scopes:
+            self._session_scopes[session_id] = {
+                "created_at": os.times().elapsed if hasattr(os, "times") else 0.0,
+                "token_usage": 0,
+                "metadata": {}
+            }
+        return self._session_scopes[session_id]
+
+    def clear_session_scope(self, session_id: str) -> None:
+        """P0.1 Ephemeral Scope: Tiêu hủy không gian ngữ cảnh khi session kết thúc."""
+        if session_id in self._session_scopes:
+            del self._session_scopes[session_id]
+            logger.info("🧹 [CONTEXT-MANAGER] Cleared session scope '%s'", session_id)
 
     @staticmethod
     def estimate_tokens(text: str) -> int:
@@ -30,7 +51,12 @@ class ContextManager:
             return 0
         return max(1, len(text) // 3)
 
-    def prune_messages(self, messages: List[Dict[str, str]], rules_json: Optional[str] = None) -> List[Dict[str, str]]:
+    def prune_messages(
+        self,
+        messages: List[Dict[str, str]],
+        rules_json: Optional[str] = None,
+        session_id: Optional[str] = None
+    ) -> List[Dict[str, str]]:
         """
         Prunes conversation messages while strictly preserving:
         1. System Prompt (Index 0)
@@ -52,7 +78,7 @@ class ContextManager:
         available_history_budget = self.effective_input_budget - pinned_tokens
 
         if available_history_budget <= 500:
-            logger.warning(f"⚠️ [CONTEXT-PRUNER] Token budget tight ({available_history_budget} tokens left for history). Aggressive pruning activated.")
+            logger.warning("⚠️ [CONTEXT-PRUNER] Token budget tight (%s tokens left for history). Aggressive pruning activated.", available_history_budget)
             # Keep only the last user turn if budget is extremely tight
             other_msgs = other_msgs[-2:] if len(other_msgs) >= 2 else other_msgs
 
@@ -75,7 +101,15 @@ class ContextManager:
                         pruned_history.insert(0, {"role": msg["role"], "content": truncated_content})
                         current_tokens += truncated_tokens
 
-        logger.info(f"✂️ [CONTEXT-PRUNER] Context pruned: {len(messages)} -> {len(system_msgs) + len(pruned_history)} messages | Est. Tokens: {pinned_tokens + current_tokens}/{self.max_token_budget}")
+        total_est = pinned_tokens + current_tokens
+        if session_id:
+            scope = self.get_session_scope(session_id)
+            scope["token_usage"] = total_est
+
+        logger.info(
+            "✂️ [CONTEXT-PRUNER] Context pruned: %s -> %s messages | Est. Tokens: %s/%s",
+            len(messages), len(system_msgs) + len(pruned_history), total_est, self.max_token_budget
+        )
         return system_msgs + pruned_history
 
 

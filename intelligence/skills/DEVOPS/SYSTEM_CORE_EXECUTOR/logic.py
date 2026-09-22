@@ -3,11 +3,27 @@ import subprocess
 import json
 import shutil
 import asyncio
+import ast
+import time
+from pathlib import Path
 from typing import Optional, List, Dict
 from core.utils.security_audit import auditor
 from core.utils.engine import engine
 
 # ⚙️ [ZENITH-SYSTEM-CORE]: Hệ vận động cốt lõi của JKAI.
+
+PROTECTED_PATTERNS = [".env", ".git", "credential", "secrets", ".key", ".pem", "id_rsa"]
+
+def _guard_path_internal(target_path: str) -> Optional[str]:
+    """Kiểm tra đường dẫn nhạy cảm hoặc nguy hiểm trước khi tác động."""
+    if not target_path:
+        return "Đường dẫn không được rỗng."
+    norm = target_path.replace("\\", "/").lower()
+    for pat in PROTECTED_PATTERNS:
+        if pat in norm:
+            return f"Truy cập tệp/thư mục '{target_path}' bị từ chối do chính sách bảo vệ an ninh ({pat})."
+    return None
+
 
 async def list_dir(path: str = ".", directory_path: str = ".", task_id: str = "sys", **kwargs):
     """📂 [SCOUTING]: Liệt kê danh sách tệp tin và thư mục."""
@@ -77,6 +93,10 @@ async def replace_file_content(path: str = "", file_path: str = "", TargetFile: 
     tgt = target or TargetContent or ""
     repl = replacement or ReplacementContent or ""
     try:
+        guard_err = _guard_path_internal(target_path)
+        if guard_err:
+            return {"status": "error", "msg": guard_err}
+
         if not os.path.exists(target_path):
             return {"status": "error", "msg": f"File '{target_path}' không tồn tại."}
         
@@ -88,6 +108,16 @@ async def replace_file_content(path: str = "", file_path: str = "", TargetFile: 
             
         new_content = file_content.replace(tgt, repl)
         
+        # 🔬 [AST-PRE-VALIDATION]: Chặn đứng lỗi cú pháp trước khi ghi file Python
+        if target_path.endswith(".py"):
+            try:
+                ast.parse(new_content)
+            except SyntaxError as syn_err:
+                return {
+                    "status": "error",
+                    "msg": f"AST Syntax Error: Mã thay thế gây lỗi cú pháp ({syn_err}). Thao tác ghi bị từ chối."
+                }
+
         # 🛡️ [SECURITY-AUDIT]: Thẩm định an ninh phần thay thế
         report = auditor.audit_diff(repl)
         if report.factors:
@@ -95,10 +125,40 @@ async def replace_file_content(path: str = "", file_path: str = "", TargetFile: 
             tag = "RISK" if report.is_dangerous else "AUDIT"
             engine.publish_mission_log(tag, f"Thẩm định phẫu thuật trên `{target_path}`:\n{log_msg}", task_id)
 
+        # 💾 [AUTO-BACKUP]: Sao lưu tệp tin trước khi ghi đè (C3)
+        try:
+            backup_path = f"{target_path}.bak.{int(time.time())}"
+            shutil.copy2(target_path, backup_path)
+        except Exception as b_err:
+            engine.publish_mission_log("WARN", f"Không thể tạo backup cho `{target_path}`: {b_err}", task_id)
+
         with open(target_path, "w", encoding="utf-8") as f:
             f.write(new_content)
             
         return {"status": "success", "msg": f"Phẫu thuật thành công trên tệp `{target_path}`."}
+    except Exception as e:
+        return {"status": "error", "msg": str(e)}
+
+async def delete_file(path: str = "", file_path: str = "", TargetFile: str = "", confirm: bool = False, task_id: str = "sys", **kwargs):
+    """🗑️ [REMOVAL]: Xóa tệp tin với kiểm soát an toàn tuyệt đối."""
+    target_path = path or file_path or TargetFile or ""
+    try:
+        if not confirm:
+            return {"status": "error", "msg": "Thao tác xóa tệp yêu cầu xác nhận bắt buộc: confirm=True."}
+        
+        guard_err = _guard_path_internal(target_path)
+        if guard_err:
+            return {"status": "error", "msg": guard_err}
+            
+        if not os.path.exists(target_path):
+            return {"status": "error", "msg": f"File '{target_path}' không tồn tại."}
+            
+        if os.path.isdir(target_path):
+            return {"status": "error", "msg": f"'{target_path}' là thư mục, không thể dùng delete_file."}
+            
+        os.remove(target_path)
+        engine.publish_mission_log("ACTION", f"Đã xóa tệp `{target_path}` thành công.", task_id)
+        return {"status": "success", "msg": f"Đã xóa tệp `{target_path}` thành công."}
     except Exception as e:
         return {"status": "error", "msg": str(e)}
 

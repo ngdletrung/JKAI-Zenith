@@ -181,3 +181,106 @@ class CognitiveVerifier:
         )
         logger.info(f"🧠 [ENGRAM-EXPERIENCE]: Logged record attempt={rec.identity.attempt_id}, outcome={rec.outcome}")
         return rec
+
+
+class CompletionAuthority:
+    """
+    P0.3: Supreme Completion Authority (Invariants Enforcement Gate).
+    The ONLY legal authority in JKAI Zenith that can grant COMPLETED status.
+    Enforces the 3-Condition AND Invariant:
+    Status = COMPLETED <=> (Artifact Exists) AND (Schema Valid) AND (State Changed)
+    """
+    @classmethod
+    def evaluate_completion(
+        cls,
+        mission_id: str,
+        receipts: List[Any],
+        target_path: Optional[str] = None,
+        expected_format: Optional[str] = None,
+        initial_checksum: Optional[str] = None,
+        verification_result: Optional[VerificationResult] = None
+    ) -> Any:
+        import hashlib
+        from core.contracts.execution_receipt import (
+            ExecutionReceipt,
+            ExecutionStatus,
+            CompletionCertificate,
+            CompletionStatus
+        )
+
+        reasons: List[str] = []
+
+        # 1. Execution Reality: all receipts must have exit_code == 0
+        if not receipts:
+            reasons.append("No execution receipts presented")
+        for r in receipts:
+            exit_code = getattr(r, "exit_code", 0)
+            task_id = getattr(r, "task_id", "unknown")
+            tool_name = getattr(r, "tool_name", "unknown")
+            if exit_code != 0:
+                reasons.append(f"Task '{task_id}' ({tool_name}) exited with non-zero code {exit_code}")
+
+        # 2. Condition 1: Artifact Exists & Size > 0
+        artifact_exists = False
+        current_checksum = ""
+        resolved_path = target_path
+
+        if not resolved_path:
+            for r in reversed(receipts):
+                p = getattr(r, "output_artifact_path", None)
+                if p:
+                    resolved_path = p
+                    break
+
+        if resolved_path and os.path.exists(resolved_path):
+            size = os.path.getsize(resolved_path)
+            if size > 0:
+                artifact_exists = True
+                try:
+                    with open(resolved_path, "rb") as f:
+                        current_checksum = hashlib.sha256(f.read()).hexdigest()
+                except Exception:
+                    pass
+            else:
+                reasons.append(f"Artifact at '{resolved_path}' is 0 bytes (empty file)")
+        else:
+            if target_path:
+                reasons.append(f"Artifact does not exist on disk: '{target_path}'")
+            else:
+                # Query/Read-only tasks without physical file output
+                if not reasons:
+                    artifact_exists = True
+
+        # 3. Condition 2: Schema / Integrity Valid
+        schema_valid = True
+        if verification_result is not None:
+            schema_valid = verification_result.passed
+            if not schema_valid:
+                reasons.extend(verification_result.missing_criteria)
+
+        # 4. Condition 3: State Changed / Checksum Mutation
+        state_changed = True
+        if initial_checksum and current_checksum:
+            if initial_checksum == current_checksum:
+                state_changed = False
+                reasons.append("State unchanged: artifact checksum identical to pre-state")
+
+        is_completed = (artifact_exists and schema_valid and state_changed and len(reasons) == 0)
+        status = CompletionStatus.COMPLETED if is_completed else CompletionStatus.FAILED_VERIFICATION
+
+        cert = CompletionCertificate(
+            mission_id=mission_id,
+            status=status,
+            artifact_exists=artifact_exists,
+            schema_valid=schema_valid,
+            state_changed=state_changed,
+            sha256_checksum=current_checksum,
+            evidence_count=len(receipts),
+            reasons=reasons
+        )
+        logger.info(
+            "🏛️ [COMPLETION-AUTHORITY]: Mission '%s' evaluated -> Status: %s (Artifact: %s, Schema: %s, StateChanged: %s)",
+            mission_id, status.value, artifact_exists, schema_valid, state_changed
+        )
+        return cert
+

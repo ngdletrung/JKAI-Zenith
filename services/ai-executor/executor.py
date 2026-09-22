@@ -88,8 +88,8 @@ class Executor:
         🚀 [DECENTRALIZED-PIPELINE]: Khởi tạo luồng thực thi phi tập trung.
         """
         from execution_pipeline import ExecutionPipeline, PreflightStage, PolicyResolutionStage, \
-                                     IntelligenceInjectionStage, ReflectionStage, \
-                                     SurgicalExecutionStage, HarvestStage
+                                     IntelligenceInjectionStage, SurgicalExecutionStage, \
+                                     HybridVerifierStage, HarvestStage
         
         start_time = time.time()
         
@@ -99,8 +99,8 @@ class Executor:
             PreflightStage(),
             PolicyResolutionStage(),
             IntelligenceInjectionStage(),
-            ReflectionStage(),
             SurgicalExecutionStage(),
+            HybridVerifierStage(),
             HarvestStage()
         ])
         
@@ -190,29 +190,6 @@ class Executor:
         args["expert_mindset"] = full_mindset
         return args
 
-    async def _should_run_critic(self, tool_name: str, policy: ExecutionPolicy) -> bool:
-        if policy.reasoning_depth == ReasoningDepth.CRITICAL: return True
-        if policy.reasoning_depth == ReasoningDepth.SHALLOW: return False
-        return policy.use_critic
-
-    async def _reflect_suitability(self, tool_name: str, args: dict, task_id: str, policy: ExecutionPolicy):
-        # 🛡️ [CORE-EXEMPTION]: Bỏ qua Guardrail + CRITIC LLM call cho skill hệ thống và office
-        exempt_tools = [
-            "skill_tucaitien", "skill_tusualoi", "skill_self_healing", "SKILL_TUCAITIEN", "SKILL_TUSUALOI",
-            "OFFICE_SUITE_MASTER", "skill_quanlyvanphong", "OFFICE_AUTOMATOR",
-            "read_file", "write_to_file", "search_memory", "SEARCH_WEB_GLOBAL",
-        ]
-        if any(t in tool_name for t in exempt_tools):
-            self._log("CRITIC", f"[TỰ ĐỘNG PHÊ DUYỆT] Kỹ năng `{tool_name}` thuộc nhóm tin cậy.", task_id)
-            return
-
-        check_prompt = f"Mục tiêu: {args.get('expert_mindset', 'N/A')}\nCông cụ: {tool_name}\n\nPhù hợp không thưa Đặc vụ? Trả về 'REJECT: lý do' hoặc 'APPROVE'."
-        current_role = os.getenv("EXECUTOR_ROLE", "ALPHA").upper()
-        critic_role = "CRITIC"
-        suitability = await engine.call_chat([{"role": "user", "content": check_prompt}], role=critic_role, task_id=task_id, skip_build_final=True)
-        self._log("CRITIC", f"[ĐÁNH GIÁ PHÙ HỢP] {suitability}", task_id)
-        if "REJECT" in suitability.upper():
-            raise GuardrailException(f"Executor REJECT: {suitability}")
 
     async def _execute_with_retry(self, tool_name: str, args: dict, task_id: str, policy: ExecutionPolicy) -> Any:
         # 🛡️ [HARDENED-LOOP-PROTECTION]: Băm JSON đã sắp xếp thưa Master

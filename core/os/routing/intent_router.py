@@ -63,6 +63,8 @@ class RouteDecision:
     need_operational_context: bool = False   # Kích hoạt RecentOperationsStore
     require_verification: bool = False       # Kích hoạt PreFlightVerificationGate
     is_meta_introspection: bool = False      # Kích hoạt SelfInspectionMode
+    scope: str = "QUERY_OR_GENERAL"          # P0.4: MULTI_RESOURCE | SINGLE_RESOURCE | QUERY_OR_GENERAL
+    target_files: List[str] = field(default_factory=list)
 
 
 class CentralIntentRouter:
@@ -216,7 +218,24 @@ class CentralIntentRouter:
     def route(self, goal: str, is_office_task: bool = False, history: list = None) -> RouteDecision:
         """
         Quyết định lộ trình xử lý kết hợp Compound Intent Parsing & Semantic Fallback.
+        P0.4: Tích hợp IngressEntityExtractor để khẳng định Scope (MULTI_RESOURCE / SINGLE_RESOURCE).
         """
+        decision = self._route_inner(goal, is_office_task=is_office_task, history=history)
+        if goal and goal.strip():
+            try:
+                from core.os.routing.entity_extractor import IngressEntityExtractor
+                extracted = IngressEntityExtractor.extract(goal.strip())
+                decision.scope = extracted.scope
+                decision.target_files = extracted.target_paths
+                if extracted.is_multi_resource:
+                    decision.is_compound = True
+                    if "MULTI_RESOURCE" not in decision.tags:
+                        decision.tags.append("MULTI_RESOURCE")
+            except Exception:
+                pass
+        return decision
+
+    def _route_inner(self, goal: str, is_office_task: bool = False, history: list = None) -> RouteDecision:
         if not goal or not goal.strip():
             return RouteDecision(
                 mode=IntentMode.GENERAL,

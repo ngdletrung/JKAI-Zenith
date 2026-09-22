@@ -264,11 +264,46 @@ class DAGScheduler:
             logger.error(f"Lỗi lập lịch Scheduler: {e}")
             success = False
 
-        # Ghi sự kiện hoàn thành/thất bại Mission
+        # ── P0.5: Graph Invariant Check & Orphan Detection ──
+        for nid, node in nodes.items():
+            if node.state in (MissionNodeState.PENDING, MissionNodeState.RUNNING):
+                node.state = MissionNodeState.ABORTED
+                node.error = node.error or "ORPHAN_TASK_DETECTED: Node did not reach terminal state before mission closure"
+                self.event_store.append_event(MissionEvent(
+                    mission_id=mission_id,
+                    event_type=EventType.NODE_FAILED,
+                    payload={"node_id": nid, "error": node.error}
+                ))
+
+        planned_count = len(nodes)
+        verified_count = sum(1 for n in nodes.values() if n.state == MissionNodeState.SUCCESS)
+        aborted_count = sum(1 for n in nodes.values() if n.state in (MissionNodeState.FAILED, MissionNodeState.ABORTED, MissionNodeState.CANCELLED))
+
+        # Invariant Equation: Planned == Verified + Aborted (No orphan tasks allowed)
+        if planned_count != (verified_count + aborted_count):
+            logger.error(
+                "❌ [GRAPH-INVARIANT-VIOLATION] Planned (%s) != Verified (%s) + Aborted (%s)",
+                planned_count, verified_count, aborted_count
+            )
+
+        if planned_count > 0 and verified_count < planned_count:
+            success = False
+            outcome_status = "PARTIAL_FAILURE" if verified_count > 0 else "FAILED"
+        else:
+            outcome_status = "COMPLETED" if success else "FAILED"
+
+        # Ghi sự kiện hoàn thành/thất bại Mission với kiểm toán P0.5
         self.event_store.append_event(MissionEvent(
             mission_id=mission_id,
-            event_type=EventType.MISSION_COMPLETED if success else EventType.MISSION_CANCELLED,
-            payload={"success": success}
+            event_type=EventType.MISSION_COMPLETED if (success and verified_count == planned_count) else EventType.MISSION_CANCELLED,
+            payload={
+                "success": success and (verified_count == planned_count),
+                "outcome_status": outcome_status,
+                "planned_tasks": planned_count,
+                "verified_tasks": verified_count,
+                "aborted_tasks": aborted_count
+            }
         ))
-        
-        return success
+
+        return success and (verified_count == planned_count)
+

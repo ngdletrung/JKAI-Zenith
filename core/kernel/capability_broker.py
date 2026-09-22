@@ -233,5 +233,20 @@ class CapabilityBroker:
                 return False
         return True
 
+    def validate_tool_call(
+        self,
+        tool_name: str,
+        args: Dict[str, Any],
+        strict: bool = False
+    ) -> Tuple[bool, Optional[Dict[str, Any]], Optional[Any]]:
+        """
+        P0.2: Fail-Closed Strict Tool Contract Enforcement.
+        If tool arguments violate the registered Pydantic contract, Broker rejects
+        execution immediately without sending commands down to infrastructure.
+        """
+        from core.kernel.tool_contracts import ToolContractRegistry
+        return ToolContractRegistry.validate_tool_call(tool_name, args, strict=strict)
+
 
 capability_broker = CapabilityBroker()
+

@@ -56,16 +56,28 @@ class IntelligenceInjectionStage(ExecutionStage):
         state["args"] = args
         return state
 
-class ReflectionStage(ExecutionStage):
-    """Phản biện tính phù hợp (Policy-Gated)."""
+from core.verification.hybrid_verifier import HybridVerifier
+from core.utils.cognitive_guardrails import GuardrailException
+
+class HybridVerifierStage(ExecutionStage):
+    """
+    🔬 [HYBRID-VERIFIER]: Bộ thẩm định lai ghép thay thế Ban Kiểm Soát LLM cũ.
+    - Code Path: Deterministic Gate (AST + Artifact + ExitCode), Zero LLM, Zero Extra Latency.
+    - Non-Code Path: Calibrated Confidence Gate.
+    """
     async def run(self, state: Dict[str, Any]) -> Dict[str, Any]:
-        executor = state["executor_instance"]
-        policy = state["policy"]
+        tool_name = state["tool_name"]
+        args = state["args"]
+        result = state.get("result")
+        task_id = state["task_id"]
+
+        is_valid, reason, score = HybridVerifier.verify(tool_name, args, result, task_id)
+        if not is_valid:
+            engine.publish_mission_log("VERIFIER:FAIL", f"🚨 [{tool_name}] Bị HybridVerifier từ chối: {reason}", task_id)
+            raise GuardrailException(f"HybridVerifier REJECT: {reason}")
         
-        if await executor._should_run_critic(state["tool_name"], policy):
-            await executor._reflect_suitability(
-                state["tool_name"], state["args"], state["task_id"], policy
-            )
+        engine.publish_mission_log("VERIFIER:PASS", f"✅ [{tool_name}] Thẩm định thành công ({reason}) [Score: {score:.2f}]", task_id)
+        state["verifier_verdict"] = {"valid": is_valid, "reason": reason, "score": score}
         return state
 
 class SurgicalExecutionStage(ExecutionStage):

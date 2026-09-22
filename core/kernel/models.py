@@ -14,6 +14,7 @@ class MissionNodeState(str, Enum):
     FAILED = "FAILED"
     PAUSED = "PAUSED"
     CANCELLED = "CANCELLED"
+    ABORTED = "ABORTED"
     TIMEOUT = "TIMEOUT"
     WAITING_USER = "WAITING_USER"
     WAITING_TOOL = "WAITING_TOOL"
