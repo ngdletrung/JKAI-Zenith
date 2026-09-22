@@ -203,6 +203,67 @@ class ExecutorGateway:
                     action=request.tool_name
                 )
 
+            # 🚀 [P0-2 LOCAL-FIRST DUAL-PATH TOOL EXECUTION]
+            # Primitive file & command operations run directly via SYSTEM_CORE_EXECUTOR
+            # Eliminates HTTP network hops, container DNS failures, and JSON empty body errors.
+            norm_name = request.tool_name.lower().strip()
+            LOCAL_PRIMITIVE_MAP = {
+                "write_to_file": "write_to_file",
+                "writefile": "write_to_file",
+                "write_file": "write_to_file",
+                "create_file": "write_to_file",
+                "view_file": "view_file",
+                "viewfile": "view_file",
+                "read_file": "view_file",
+                "replace_file_content": "replace_file_content",
+                "edit_file": "replace_file_content",
+                "replace_content": "replace_file_content",
+                "delete_file": "delete_file",
+                "remove_file": "delete_file",
+                "list_dir": "list_dir",
+                "listdir": "list_dir",
+                "ls": "list_dir",
+                "run_command": "run_command",
+                "execute_command": "run_command",
+                "cmd": "run_command",
+                "run_cmd": "run_command",
+                "execute_code": "run_command",
+            }
+
+            if norm_name in LOCAL_PRIMITIVE_MAP:
+                local_fn_name = LOCAL_PRIMITIVE_MAP[norm_name]
+                try:
+                    import intelligence.skills.DEVOPS.SYSTEM_CORE_EXECUTOR.logic as core_exec
+                    fn = getattr(core_exec, local_fn_name, None)
+                    if fn and callable(fn):
+                        self._log("EXECUTOR", f"⚡ [LOCAL-DIRECT-EXEC] Executing '{request.tool_name}' via sovereign local runtime.", task_id)
+                        kwargs = dict(request.tool_args or {})
+                        # Normalize key names
+                        if local_fn_name == "write_to_file":
+                            if "target_path" not in kwargs and "file_path" in kwargs:
+                                kwargs["target_path"] = kwargs["file_path"]
+                            if "target_content" not in kwargs and "content" in kwargs:
+                                kwargs["target_content"] = kwargs["content"]
+                        if local_fn_name == "run_command":
+                            if "command" not in kwargs and "code" in kwargs:
+                                kwargs["command"] = f"python -c {kwargs['code']!r}"
+                        
+                        local_res = await fn(task_id=task_id, **kwargs)
+                        is_ok = local_res.get("status") == "success"
+                        out_msg = local_res.get("msg") or local_res.get("content") or local_res.get("stdout") or json.dumps(local_res, ensure_ascii=False)
+                        if not is_ok and local_res.get("stderr"):
+                            out_msg = f"{out_msg}\nStderr: {local_res.get('stderr')}"
+
+                        self._log("EXECUTOR", f"[{request.tool_name}] {'✅ Local execution succeeded' if is_ok else '⚠️ Local execution returned error: ' + str(local_res.get('msg', ''))}", task_id)
+                        return ExecutionResult(
+                            outcome=DecisionOutcome.ALLOW,
+                            tool_executed=is_ok,
+                            result=out_msg,
+                            action=request.tool_name
+                        )
+                except Exception as local_err:
+                    self._log("WARN", f"[LOCAL-DIRECT-FAIL] Local execution of '{request.tool_name}' failed: {local_err}. Falling back to HTTP executor.", task_id)
+
             from core.utils.registry import registry
             payload = {
                 "name": request.tool_name,

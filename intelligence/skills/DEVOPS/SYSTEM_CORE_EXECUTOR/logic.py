@@ -64,22 +64,39 @@ async def view_file(path: str = "", file_path: str = "", AbsolutePath: str = "",
     except Exception as e:
         return {"status": "error", "msg": str(e)}
 
-async def write_to_file(path: str = "", file_path: str = "", TargetFile: str = "", content: str = "", CodeContent: str = "", overwrite: bool = False, task_id: str = "sys", **kwargs):
+async def write_to_file(path: str = "", file_path: str = "", TargetFile: str = "", target_path: str = "", content: str = "", CodeContent: str = "", target_content: str = "", overwrite: bool = True, task_id: str = "sys", **kwargs):
     """✍️ [CREATION]: Kiến tạo tệp tin mới."""
-    target_path = path or file_path or TargetFile or ""
-    target_content = content or CodeContent or ""
+    target_path = target_path or path or file_path or TargetFile or ""
+    target_content = target_content or content or CodeContent or ""
     try:
+        guard_err = _guard_path_internal(target_path)
+        if guard_err:
+            return {"status": "error", "msg": guard_err}
+
         if os.path.exists(target_path) and not overwrite:
             return {"status": "error", "msg": f"File '{target_path}' đã tồn tại. Dùng overwrite=True để ghi đè."}
         
-        os.makedirs(os.path.dirname(target_path), exist_ok=True)
+        dir_name = os.path.dirname(target_path)
+        if dir_name:
+            os.makedirs(dir_name, exist_ok=True)
         
+        # 🔬 [AST-PRE-VALIDATION]: Chặn đứng lỗi cú pháp trước khi ghi file Python
+        if target_path.endswith(".py") and target_content:
+            try:
+                ast.parse(target_content)
+            except SyntaxError as syn_err:
+                return {
+                    "status": "error",
+                    "msg": f"AST Syntax Error: Mã nguồn Python gây lỗi cú pháp ({syn_err}). Thao tác ghi bị từ chối."
+                }
+
         # 🛡️ [SECURITY-AUDIT]: Thẩm định an ninh trước khi ghi file
         report = auditor.audit_diff(target_content)
         if report.factors:
             log_msg = auditor.format_report_for_log(report)
             tag = "RISK" if report.is_dangerous else "AUDIT"
             engine.publish_mission_log(tag, f"Thẩm định tệp `{target_path}`:\n{log_msg}", task_id)
+
 
         with open(target_path, "w", encoding="utf-8") as f:
             f.write(target_content)

@@ -114,6 +114,20 @@ class DeepPipeline:
 
         for attempt in range(max_attempts):
             if attempt > 0:
+                # 🛑 [CIRCUIT-BREAKER-GATE]: Ngắt chuỗi lặp nếu mạch an toàn đã ngắt
+                try:
+                    from core.kernel.replan_circuit_breaker import replan_circuit_breaker
+                    tripped, decision = replan_circuit_breaker.is_tripped(task_id)
+                    if tripped:
+                        engine.publish_mission_log(
+                            "SYSTEM",
+                            f"🛑 [CIRCUIT-BREAKER-FAIL-FAST] {decision.reason}. Chặn đứng Replan Storm sau {decision.error_count} lần lỗi!",
+                            task_id, trace_id
+                        )
+                        break
+                except Exception:
+                    pass
+
                 engine.publish_mission_log(
                     "SYSTEM",
                     f"[REPLAN-ATTEMPT] Critic không phê duyệt. Lập kế hoạch lại. Attempt {attempt + 1}/{max_attempts}",
@@ -617,6 +631,23 @@ class DeepPipeline:
 
                     # Step-by-Step Critic & Self-Correction (Dynamic Re-planning)
                     if any_step_failed:
+                        # 🛑 [P0-1 CIRCUIT-BREAKER CHECK]: Phân loại và ghi nhận lỗi hạ tầng / logic
+                        try:
+                            from core.kernel.replan_circuit_breaker import replan_circuit_breaker
+                            failed_tool = failed_step_info.get("tool", "unknown")
+                            failed_err = str(failed_step_info.get("result", ""))
+                            sig = replan_circuit_breaker.classify(failed_err, tool=failed_tool)
+                            breaker_dec = replan_circuit_breaker.record(task_id, sig)
+                            if breaker_dec.action in ("FAIL_FAST", "ESCALATE"):
+                                engine.publish_mission_log(
+                                    "CRITIC",
+                                    f"🛑 [CIRCUIT-BREAKER-ACTIVATED] {breaker_dec.reason}. Ngắt chuỗi Dynamic Re-planning tức thì!",
+                                    task_id, trace_id
+                                )
+                                break
+                        except Exception:
+                            pass
+
                         engine.publish_mission_log(
                             "CRITIC",
                             f"[STEP CRITIC] Phát hiện lỗi tại bước {failed_step_info['id']}. Kích hoạt Dynamic Re-planning...",
