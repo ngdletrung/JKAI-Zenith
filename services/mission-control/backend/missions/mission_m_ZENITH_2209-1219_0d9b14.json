@@ -1,0 +1,3941 @@
+{
+  "id": "m_ZENITH_2209-1219_0d9b14",
+  "title": "xuất file python mà bạn vừa làm đó",
+  "goal": "xuất file python mà bạn vừa làm đó",
+  "status": "completed",
+  "ts": 1790055052.7096698,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "xuất file python mà bạn vừa làm đó",
+      "ts": 1790054363.3110843,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_2209-1219_0d9b14` initialized | Trace: `trace_0d9b14`. Runtime ready.",
+      "ts": 1790054363.3140962,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=34 | preview='xuất file python mà bạn vừa làm đó' | hash=13599c4da8662d0d | task_id=ZENITH_2209-1219_0d9b14 | trace_id=trace_0d9b14",
+      "ts": 1790054367.838106,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: [] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1790054367.840875,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [PIPELINE-RESOLVER]: Chế độ DEEP tự động kích hoạt (Reason: Master explicitly requested DEEP (Multi-Agent Ensemble Mode).).",
+      "ts": 1790054367.8437731,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=coding pipeline=deep mode=deep tags=CODING",
+      "ts": 1790054367.8463829,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1790054367.8509269,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "DeepPipeline T2–T6 (full)",
+      "ts": 1790054368.1264722,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [ENGINE-READY]: Chế độ DEEP — Cụm mô hình tư duy sâu đã có sẵn trên RAM/VRAM. Khởi chạy lập trình ngay!",
+      "ts": 1790054368.250322,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1790054368.2532103,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1790054368.2579215,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1790054368.2744927,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1790054368.3886878,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1790054368.4690921,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `gemma4:12b-it-qat` @ CPU/RAM)...",
+      "ts": 1790054369.0175118,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-2]: Đang đúc kết chiến lược bằng vai trò `RESERVE_AGENT` (Mô hình: `qwen2.5-coder:3b` @ GPU/VRAM)...",
+      "ts": 1790054609.0244284,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-2] Model `RESERVE_AGENT` response time: 34.46s.",
+      "ts": 1790054643.4919932,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1790054643.5429945,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1790054643.572996,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1790054643.5864847,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **step_01 (WRITE_TO_FILE)**: Tạo một file mới và ghi nội dung 'print('Hello, World!')' vào file.",
+      "ts": 1790054643.6137774,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1790054643.6190708,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TRIỂN KHAI BƯỚC] Đang khởi chạy thực thi song song: `[/]` **step_01**",
+      "ts": 1790054643.6318424,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'WRITE_TO_FILE' authorized by ExecutionIntegrityLayer.",
+      "ts": 1790054643.6956177,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: WRITE_TO_FILE(...) - TraceID: trace_0d9b14",
+      "ts": 1790054643.7209573,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Attempt 1/2 -> executor (http://ai-executor-1:8000)",
+      "ts": 1790054643.7232502,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "[KIỂM TRA] [WRITE_TO_FILE] Đang kiểm tra an toàn & khóa tài nguyên...",
+      "ts": 1790054643.7969267,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "[CHÍNH SÁCH] [WRITE_TO_FILE] Đang áp dụng chính sách thực thi...",
+      "ts": 1790054643.7998185,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "[BỐI CẢNH] [WRITE_TO_FILE] Đang nạp ngữ cảnh & nén thông tin...",
+      "ts": 1790054643.801281,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[đang tạo file] `path/to/new_file.py`",
+      "ts": 1790054643.802333,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "[THỰC THI] [WRITE_TO_FILE] Bắt đầu thực thi...",
+      "ts": 1790054643.8044546,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "[đã tạo file] `path/to/new_file.py`",
+      "ts": 1790054647.4717505,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[WRITE_TO_FILE] ✅ Execution succeeded.",
+      "ts": 1790054647.5061474,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TIẾN ĐỘ THỰC THI BƯỚC] Hoàn tất: `[x]` **step_01**",
+      "ts": 1790054647.5095644,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1790054647.8127708,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1790054678.287421,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — [CONTRADICTION] (Score: 0.00)",
+      "ts": 1790054747.0127554,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[T6] Ban Thư Ký đang soạn Báo cáo...",
+      "ts": 1790054747.0152562,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[T6] Báo cáo đã soạn thảo hoàn tất.",
+      "ts": 1790054814.8993688,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[REPLAN-ATTEMPT] Critic không phê duyệt. Lập kế hoạch lại. Attempt 2/3",
+      "ts": 1790054814.9103594,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1790054819.4232833,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1790054819.4284463,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1790054819.4379396,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1790054819.7755165,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1790054819.7811558,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `gemma4:12b-it-qat` @ CPU/RAM)...",
+      "ts": 1790054819.9263682,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 30.38s.",
+      "ts": 1790054850.3072767,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-2]: Đang đúc kết chiến lược bằng vai trò `RESERVE_AGENT` (Mô hình: `qwen2.5-coder:3b` @ GPU/VRAM)...",
+      "ts": 1790054850.3122509,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-2] Model `RESERVE_AGENT` response time: 67.14s.",
+      "ts": 1790054917.4540687,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-3]: Đang đúc kết chiến lược bằng vai trò `RESERVE_AGENT` (Mô hình: `qwen2.5-coder:3b` @ GPU/VRAM)...",
+      "ts": 1790054917.461719,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-3] Model `RESERVE_AGENT` response time: 24.97s.",
+      "ts": 1790054942.4323907,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1790054942.4620104,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1790054942.4634604,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1790054942.4769619,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **step_01 (WRITE_TO_FILE)**: Automatic recovery step",
+      "ts": 1790054942.5056207,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CHECKPOINT] Đã khôi phục 1 bước hoàn thành trước đó.",
+      "ts": 1790054942.5112257,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1790054942.515106,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1790054942.543853,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1790054961.7118156,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CACHE-HIT]: Tra ve ket qua da cache cho: xuất file python mà bạn vừa làm đó",
+      "ts": 1790054968.7414236,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cầu",
+      "ts": 1790055004.467629,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " '",
+      "ts": 1790055004.5377994,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "t",
+      "ts": 1790055004.605153,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ự",
+      "ts": 1790055004.6763635,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thân",
+      "ts": 1790055004.7449136,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hoàn",
+      "ts": 1790055004.8139946,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " chỉnh",
+      "ts": 1790055004.8831334,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "'",
+      "ts": 1790055004.952414,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".\"",
+      "ts": 1790055005.0213313,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n  ],",
+      "ts": 1790055005.2300146,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n  \"",
+      "ts": 1790055005.4395745,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "root",
+      "ts": 1790055005.5090823,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "_c",
+      "ts": 1790055005.5787082,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ause",
+      "ts": 1790055005.6482341,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\":",
+      "ts": 1790055005.7174602,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " \"",
+      "ts": 1790055005.7864094,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Pl",
+      "ts": 1790055005.8552747,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "anner",
+      "ts": 1790055005.9243276,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " đã",
+      "ts": 1790055005.9954882,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hiểu",
+      "ts": 1790055006.0662599,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " sai",
+      "ts": 1790055006.1348128,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " trọng",
+      "ts": 1790055006.204816,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tâm",
+      "ts": 1790055006.2749817,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nhiệm",
+      "ts": 1790055006.343937,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " vụ",
+      "ts": 1790055006.4132137,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ":",
+      "ts": 1790055006.482079,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tập",
+      "ts": 1790055006.5495763,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " trung",
+      "ts": 1790055006.6183689,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " vào",
+      "ts": 1790055006.687996,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " việc",
+      "ts": 1790055006.7571988,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tạo",
+      "ts": 1790055006.8243058,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ra",
+      "ts": 1790055006.893347,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " một",
+      "ts": 1790055006.9633064,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tệp",
+      "ts": 1790055007.031958,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tin",
+      "ts": 1790055007.1002388,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " có",
+      "ts": 1790055007.1718698,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tên",
+      "ts": 1790055007.2438629,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " đúng",
+      "ts": 1790055007.3121595,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " (`",
+      "ts": 1790055007.38363,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "new",
+      "ts": 1790055007.4555073,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "_file",
+      "ts": 1790055007.5256205,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".py",
+      "ts": 1790055007.59933,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "`)",
+      "ts": 1790055007.6740146,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thay",
+      "ts": 1790055007.7447817,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " vì",
+      "ts": 1790055007.8157609,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " đảm",
+      "ts": 1790055007.884993,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bảo",
+      "ts": 1790055007.9565132,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tệp",
+      "ts": 1790055008.0257251,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " đó",
+      "ts": 1790055008.0959375,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " chứa",
+      "ts": 1790055008.164233,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " mã",
+      "ts": 1790055008.233191,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nguồn",
+      "ts": 1790055008.3028204,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " chức",
+      "ts": 1790055008.3729966,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " năng",
+      "ts": 1790055008.444017,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thực",
+      "ts": 1790055008.527491,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " sự",
+      "ts": 1790055008.5966241,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".",
+      "ts": 1790055008.6656528,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Việc",
+      "ts": 1790055008.7367835,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " sử",
+      "ts": 1790055008.8068073,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " dụng",
+      "ts": 1790055008.8758256,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " `",
+      "ts": 1790055008.9459674,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "WRITE",
+      "ts": 1790055009.0138633,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "_TO",
+      "ts": 1790055009.0856824,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "_FILE",
+      "ts": 1790055009.1554651,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "`",
+      "ts": 1790055009.225056,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " với",
+      "ts": 1790055009.2936456,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nội",
+      "ts": 1790055009.3639767,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " dung",
+      "ts": 1790055009.4339838,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " không",
+      "ts": 1790055009.5034451,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " đầy",
+      "ts": 1790055009.5743546,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " đủ",
+      "ts": 1790055009.6447206,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " dẫn",
+      "ts": 1790055009.7128217,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " đến",
+      "ts": 1790055009.784519,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thất",
+      "ts": 1790055009.8521154,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bại",
+      "ts": 1790055009.921061,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " trong",
+      "ts": 1790055009.9925263,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " mục",
+      "ts": 1790055010.062097,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tiêu",
+      "ts": 1790055010.132904,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " '",
+      "ts": 1790055010.2018394,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "t",
+      "ts": 1790055010.2718515,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ự",
+      "ts": 1790055010.3412635,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thân",
+      "ts": 1790055010.4133735,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hoàn",
+      "ts": 1790055010.4850729,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " chỉnh",
+      "ts": 1790055010.5556362,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "'.",
+      "ts": 1790055010.6261363,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\",",
+      "ts": 1790055010.6963282,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n  \"",
+      "ts": 1790055010.9079163,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "recommend",
+      "ts": 1790055010.9784782,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ations",
+      "ts": 1790055011.0494928,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\":",
+      "ts": 1790055011.1198883,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " [",
+      "ts": 1790055011.1920483,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n    \"",
+      "ts": 1790055011.401664,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "S",
+      "ts": 1790055011.47354,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ửa",
+      "ts": 1790055011.5414083,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " đổi",
+      "ts": 1790055011.6120205,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bước",
+      "ts": 1790055011.6830072,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tạo",
+      "ts": 1790055011.7575865,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " file",
+      "ts": 1790055011.828162,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " để",
+      "ts": 1790055011.8968492,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nội",
+      "ts": 1790055011.9668593,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " dung",
+      "ts": 1790055012.0363646,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " (`",
+      "ts": 1790055012.1103773,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "content",
+      "ts": 1790055012.182157,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "`)",
+      "ts": 1790055012.250133,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " là",
+      "ts": 1790055012.3193505,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " một",
+      "ts": 1790055012.389458,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bản",
+      "ts": 1790055012.4608376,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " sao",
+      "ts": 1790055012.5309293,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " chính",
+      "ts": 1790055012.6019058,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " xác",
+      "ts": 1790055012.6713867,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1790055012.7397306,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " được",
+      "ts": 1790055012.8077374,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " biên",
+      "ts": 1790055012.8757918,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " dịch",
+      "ts": 1790055012.9453518,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thành",
+      "ts": 1790055013.0137024,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " công",
+      "ts": 1790055013.0836322,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " của",
+      "ts": 1790055013.1519763,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " toàn",
+      "ts": 1790055013.2242126,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bộ",
+      "ts": 1790055013.2937946,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " logic",
+      "ts": 1790055013.3625462,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Crit",
+      "ts": 1790055013.4313626,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ic",
+      "ts": 1790055013.5112855,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Auditor",
+      "ts": 1790055013.5802095,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " v",
+      "ts": 1790055013.6522815,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "5",
+      "ts": 1790055013.7209592,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".",
+      "ts": 1790055013.7944567,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "0",
+      "ts": 1790055013.863826,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " đã",
+      "ts": 1790055013.9349957,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thực",
+      "ts": 1790055014.004541,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hiện",
+      "ts": 1790055014.0749414,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " trước",
+      "ts": 1790055014.1464505,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " đó",
+      "ts": 1790055014.218097,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".\",",
+      "ts": 1790055014.2864118,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n    \"",
+      "ts": 1790055014.50096,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Đ",
+      "ts": 1790055014.5710192,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ảm",
+      "ts": 1790055014.6401026,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bảo",
+      "ts": 1790055014.709154,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " code",
+      "ts": 1790055014.7793186,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " trong",
+      "ts": 1790055014.848363,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " `",
+      "ts": 1790055014.9180849,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "new",
+      "ts": 1790055014.9885507,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "_file",
+      "ts": 1790055015.0615475,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".py",
+      "ts": 1790055015.1313918,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "`",
+      "ts": 1790055015.2017984,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bao",
+      "ts": 1790055015.2718964,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " gồm",
+      "ts": 1790055015.3469908,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ":",
+      "ts": 1790055015.419372,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Class",
+      "ts": 1790055015.4894452,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " `",
+      "ts": 1790055015.5623736,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "C",
+      "ts": 1790055015.634286,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ritic",
+      "ts": 1790055015.7050416,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Aud",
+      "ts": 1790055015.7764957,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "itor",
+      "ts": 1790055015.8481178,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "V",
+      "ts": 1790055015.917702,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "5",
+      "ts": 1790055015.989181,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "`,",
+      "ts": 1790055016.059857,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " phương",
+      "ts": 1790055016.134908,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thức",
+      "ts": 1790055016.2046902,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " khởi",
+      "ts": 1790055016.2749374,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tạo",
+      "ts": 1790055016.3432512,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " với",
+      "ts": 1790055016.4127638,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " log",
+      "ts": 1790055016.4844139,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1790055016.5547583,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hàm",
+      "ts": 1790055016.624395,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " phân",
+      "ts": 1790055016.6948693,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tích",
+      "ts": 1790055016.7640674,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " kế",
+      "ts": 1790055016.8340747,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hoạch",
+      "ts": 1790055016.903205,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " (`",
+      "ts": 1790055016.974053,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "analyze",
+      "ts": 1790055017.043902,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "_plan",
+      "ts": 1790055017.1170654,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "`)",
+      "ts": 1790055017.1880696,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " xử",
+      "ts": 1790055017.2579815,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " lý",
+      "ts": 1790055017.3275487,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " dữ",
+      "ts": 1790055017.3982835,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " liệu",
+      "ts": 1790055017.468527,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " đầu",
+      "ts": 1790055017.539569,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " vào",
+      "ts": 1790055017.6103718,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " và",
+      "ts": 1790055017.6802015,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " kiểm",
+      "ts": 1790055017.749478,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tra",
+      "ts": 1790055017.8192253,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cấu",
+      "ts": 1790055017.8887548,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " trúc",
+      "ts": 1790055017.9618378,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1790055018.0320568,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cũng",
+      "ts": 1790055018.1029415,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " như",
+      "ts": 1790055018.1723197,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " các",
+      "ts": 1790055018.2417212,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cơ",
+      "ts": 1790055018.3148458,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " chế",
+      "ts": 1790055018.3829186,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " an",
+      "ts": 1790055018.4528365,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " toàn",
+      "ts": 1790055018.5276346,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " (",
+      "ts": 1790055018.5985835,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ki",
+      "ts": 1790055018.6687043,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ểm",
+      "ts": 1790055018.7393188,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tra",
+      "ts": 1790055018.8094187,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " API",
+      "ts": 1790055018.8788486,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " keys",
+      "ts": 1790055018.9493296,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1790055019.0198662,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " đặc",
+      "ts": 1790055019.0898657,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " quyền",
+      "ts": 1790055019.1592736,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ").",
+      "ts": 1790055019.2300465,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\",",
+      "ts": 1790055019.2992404,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n    \"",
+      "ts": 1790055019.5104594,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Tr",
+      "ts": 1790055019.5801938,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ánh",
+      "ts": 1790055019.65035,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " sử",
+      "ts": 1790055019.720867,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " dụng",
+      "ts": 1790055019.7911394,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " placeholder",
+      "ts": 1790055019.8605525,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hoặc",
+      "ts": 1790055019.9322577,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " mã",
+      "ts": 1790055020.0027978,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " giả",
+      "ts": 1790055020.0711176,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".",
+      "ts": 1790055020.1424792,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Code",
+      "ts": 1790055020.2163548,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " phải",
+      "ts": 1790055020.2869782,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " có",
+      "ts": 1790055020.3590603,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thể",
+      "ts": 1790055020.4275897,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " chạy",
+      "ts": 1790055020.5006115,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " độc",
+      "ts": 1790055020.5704784,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " lập",
+      "ts": 1790055020.6406703,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " để",
+      "ts": 1790055020.7111666,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thực",
+      "ts": 1790055020.785688,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hiện",
+      "ts": 1790055020.8568919,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nhiệm",
+      "ts": 1790055020.9271784,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " vụ",
+      "ts": 1790055021.0018349,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thẩm",
+      "ts": 1790055021.072997,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " định",
+      "ts": 1790055021.1495967,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " mà",
+      "ts": 1790055021.2201848,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " không",
+      "ts": 1790055021.2892318,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cần",
+      "ts": 1790055021.359042,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " sự",
+      "ts": 1790055021.4306002,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " trợ",
+      "ts": 1790055021.500745,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " giúp",
+      "ts": 1790055021.570758,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bên",
+      "ts": 1790055021.6424665,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ngoài",
+      "ts": 1790055021.7122695,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".\",",
+      "ts": 1790055021.784107,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n    \"",
+      "ts": 1790055021.9927313,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Ki",
+      "ts": 1790055022.0673504,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ểm",
+      "ts": 1790055022.1395197,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tra",
+      "ts": 1790055022.2112393,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cú",
+      "ts": 1790055022.282922,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " pháp",
+      "ts": 1790055022.3542526,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Python",
+      "ts": 1790055022.4266675,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " trước",
+      "ts": 1790055022.4968054,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " khi",
+      "ts": 1790055022.5659082,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " viết",
+      "ts": 1790055022.6375952,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " vào",
+      "ts": 1790055022.7077355,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " file",
+      "ts": 1790055022.7766454,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bằng",
+      "ts": 1790055022.8462353,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cách",
+      "ts": 1790055022.9160101,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thử",
+      "ts": 1790055022.9880047,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " biên",
+      "ts": 1790055023.0575702,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " dịch",
+      "ts": 1790055023.127753,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " (",
+      "ts": 1790055023.2000554,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "compile",
+      "ts": 1790055023.2690256,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ")",
+      "ts": 1790055023.3427691,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nội",
+      "ts": 1790055023.4122338,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " dung",
+      "ts": 1790055023.4886434,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " trong",
+      "ts": 1790055023.5634162,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " môi",
+      "ts": 1790055023.633892,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " trường",
+      "ts": 1790055023.7044554,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ảo",
+      "ts": 1790055023.7749758,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hóa",
+      "ts": 1790055023.8452628,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nếu",
+      "ts": 1790055023.9163802,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " công",
+      "ts": 1790055023.9872117,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cụ",
+      "ts": 1790055024.0582418,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cho",
+      "ts": 1790055024.1301532,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " phép",
+      "ts": 1790055024.2005064,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".\"",
+      "ts": 1790055024.2698805,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n  ],",
+      "ts": 1790055024.4836292,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n  \"",
+      "ts": 1790055024.692372,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "needs",
+      "ts": 1790055024.7643328,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "_re",
+      "ts": 1790055024.8344913,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "plan",
+      "ts": 1790055024.9053333,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\":",
+      "ts": 1790055024.9759474,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " true",
+      "ts": 1790055025.0451798,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1790055025.1160583,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n  \"",
+      "ts": 1790055025.325864,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "feedback",
+      "ts": 1790055025.3961732,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\":",
+      "ts": 1790055025.469271,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " \"",
+      "ts": 1790055025.5379467,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "K",
+      "ts": 1790055025.6090188,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ế",
+      "ts": 1790055025.6795082,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hoạch",
+      "ts": 1790055025.750605,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hiện",
+      "ts": 1790055025.8197706,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tại",
+      "ts": 1790055025.8905356,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thất",
+      "ts": 1790055025.9608548,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bại",
+      "ts": 1790055026.0309367,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " vì",
+      "ts": 1790055026.1012137,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tạo",
+      "ts": 1790055026.170818,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " ra",
+      "ts": 1790055026.2474322,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " một",
+      "ts": 1790055026.3171391,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tệp",
+      "ts": 1790055026.388245,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tin",
+      "ts": 1790055026.4583342,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " r",
+      "ts": 1790055026.5318587,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ỗng",
+      "ts": 1790055026.601959,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hoặc",
+      "ts": 1790055026.6727538,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " lỗi",
+      "ts": 1790055026.743686,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " về",
+      "ts": 1790055026.8148458,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " mặt",
+      "ts": 1790055026.885383,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " chức",
+      "ts": 1790055026.9564075,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " năng",
+      "ts": 1790055027.029109,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".",
+      "ts": 1790055027.1018462,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Để",
+      "ts": 1790055027.177323,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " đạt",
+      "ts": 1790055027.247921,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " được",
+      "ts": 1790055027.3185625,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " SUCCESS",
+      "ts": 1790055027.390826,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1790055027.4612052,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bạn",
+      "ts": 1790055027.5332966,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " phải",
+      "ts": 1790055027.6040733,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " sửa",
+      "ts": 1790055027.6745684,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " kế",
+      "ts": 1790055027.7442214,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hoạch",
+      "ts": 1790055027.8150222,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " sao",
+      "ts": 1790055027.8888948,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cho",
+      "ts": 1790055027.9593203,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nội",
+      "ts": 1790055028.029861,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " dung",
+      "ts": 1790055028.1051803,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " của",
+      "ts": 1790055028.1765518,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " `",
+      "ts": 1790055028.2468104,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "new",
+      "ts": 1790055028.3167346,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "_file",
+      "ts": 1790055028.3919132,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".py",
+      "ts": 1790055028.4709086,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "`",
+      "ts": 1790055028.5413115,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " là",
+      "ts": 1790055028.6106832,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " một",
+      "ts": 1790055028.6805325,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " phiên",
+      "ts": 1790055028.7501397,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bản",
+      "ts": 1790055028.8212216,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thu",
+      "ts": 1790055028.891831,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nhỏ",
+      "ts": 1790055028.9605055,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1790055029.0326548,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tự",
+      "ts": 1790055029.102886,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thân",
+      "ts": 1790055029.1735504,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hoàn",
+      "ts": 1790055029.2446704,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " chỉnh",
+      "ts": 1790055029.314081,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " của",
+      "ts": 1790055029.3869193,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Crit",
+      "ts": 1790055029.4582727,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ic",
+      "ts": 1790055029.5303512,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Auditor",
+      "ts": 1790055029.6051824,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " v",
+      "ts": 1790055029.676934,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "5",
+      "ts": 1790055029.7480938,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".",
+      "ts": 1790055029.8206797,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "0",
+      "ts": 1790055029.8960066,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " đã",
+      "ts": 1790055029.967233,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thực",
+      "ts": 1790055030.039156,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hiện",
+      "ts": 1790055030.1104343,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nhiệm",
+      "ts": 1790055030.181998,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " vụ",
+      "ts": 1790055030.250845,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " trước",
+      "ts": 1790055030.3208961,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " đó",
+      "ts": 1790055030.3934274,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".\"",
+      "ts": 1790055030.4651873,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n}",
+      "ts": 1790055030.6091456,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — [CONTRADICTION] (Score: 0.00)",
+      "ts": 1790055030.6835902,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[T6] Ban Thư Ký đang soạn Báo cáo...",
+      "ts": 1790055030.687266,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[INFO] [2026-09-22T05:30:37.640196] [CRITIC] [Task: ZENITH_2209-1219_0d9b14] {",
+      "ts": 1790055037.6402073,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n  \"",
+      "ts": 1790055037.8344073,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "approved",
+      "ts": 1790055037.897907,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\":",
+      "ts": 1790055037.9634326,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " false",
+      "ts": 1790055038.0275457,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1790055038.092277,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n  \"",
+      "ts": 1790055038.2883663,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "correct",
+      "ts": 1790055038.352304,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ed",
+      "ts": 1790055038.417173,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "_answer",
+      "ts": 1790055038.4827974,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\":",
+      "ts": 1790055038.5534506,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " \"\",",
+      "ts": 1790055038.6179736,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n  \"",
+      "ts": 1790055038.811786,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "action",
+      "ts": 1790055038.8756926,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "_plan",
+      "ts": 1790055038.9386194,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\":",
+      "ts": 1790055039.0035138,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " [",
+      "ts": 1790055039.068955,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n    \"",
+      "ts": 1790055039.26103,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "X",
+      "ts": 1790055039.3263066,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "óa",
+      "ts": 1790055039.3889546,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " file",
+      "ts": 1790055039.454378,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " `",
+      "ts": 1790055039.5185425,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "new",
+      "ts": 1790055039.5832062,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "_file",
+      "ts": 1790055039.6488907,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".py",
+      "ts": 1790055039.7124047,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "`",
+      "ts": 1790055039.7799592,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hiện",
+      "ts": 1790055039.8445246,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tại",
+      "ts": 1790055039.9102106,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " để",
+      "ts": 1790055039.9760814,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " loại",
+      "ts": 1790055040.041628,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bỏ",
+      "ts": 1790055040.10778,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " dữ",
+      "ts": 1790055040.1724272,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " liệu",
+      "ts": 1790055040.2367272,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " lỗi",
+      "ts": 1790055040.3025506,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".\",",
+      "ts": 1790055040.369308,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n    \"",
+      "ts": 1790055040.562146,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Vi",
+      "ts": 1790055040.6292546,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ết",
+      "ts": 1790055040.694384,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " lại",
+      "ts": 1790055040.759114,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " toàn",
+      "ts": 1790055040.8251266,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bộ",
+      "ts": 1790055040.8902721,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " logic",
+      "ts": 1790055040.954775,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " code",
+      "ts": 1790055041.0201964,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " trong",
+      "ts": 1790055041.0858843,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " một",
+      "ts": 1790055041.1547804,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " phiên",
+      "ts": 1790055041.2211678,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bản",
+      "ts": 1790055041.2870407,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " mới",
+      "ts": 1790055041.3511312,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " (`",
+      "ts": 1790055041.416971,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "aud",
+      "ts": 1790055041.4815938,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "itor",
+      "ts": 1790055041.5473938,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "_v",
+      "ts": 1790055041.6124682,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "5",
+      "ts": 1790055041.678273,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "_min",
+      "ts": 1790055041.741822,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "imal",
+      "ts": 1790055041.806885,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".py",
+      "ts": 1790055041.8702955,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "`)",
+      "ts": 1790055041.9357502,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " với",
+      "ts": 1790055042.0004942,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " các",
+      "ts": 1790055042.0659058,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hàm",
+      "ts": 1790055042.1327147,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " mô",
+      "ts": 1790055042.1981497,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " phỏng",
+      "ts": 1790055042.2626915,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " quá",
+      "ts": 1790055042.3271582,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " trình",
+      "ts": 1790055042.3929036,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " phân",
+      "ts": 1790055042.4588084,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tích",
+      "ts": 1790055042.522918,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1790055042.587988,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " đánh",
+      "ts": 1790055042.6547685,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " giá",
+      "ts": 1790055042.7226634,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " kết",
+      "ts": 1790055042.7886772,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " quả",
+      "ts": 1790055042.8529372,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " và",
+      "ts": 1790055042.92409,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tự",
+      "ts": 1790055042.9928715,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " sinh",
+      "ts": 1790055043.0597663,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " báo",
+      "ts": 1790055043.125569,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cáo",
+      "ts": 1790055043.1973903,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " (",
+      "ts": 1790055043.2633183,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "t",
+      "ts": 1790055043.3297448,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ương",
+      "ts": 1790055043.3962028,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tự",
+      "ts": 1790055043.4610252,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Crit",
+      "ts": 1790055043.5341253,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ic",
+      "ts": 1790055043.6011176,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " Auditor",
+      "ts": 1790055043.6723642,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " v",
+      "ts": 1790055043.7403672,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "5",
+      "ts": 1790055043.8058376,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".",
+      "ts": 1790055043.8717952,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "0",
+      "ts": 1790055043.9367921,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ").",
+      "ts": 1790055044.0017126,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\",",
+      "ts": 1790055044.0691562,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n    \"",
+      "ts": 1790055044.262603,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Đ",
+      "ts": 1790055044.326972,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ảm",
+      "ts": 1790055044.390994,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bảo",
+      "ts": 1790055044.4563172,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nội",
+      "ts": 1790055044.520853,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " dung",
+      "ts": 1790055044.5874534,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " file",
+      "ts": 1790055044.6521292,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bao",
+      "ts": 1790055044.7173643,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " gồm",
+      "ts": 1790055044.7835853,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " cơ",
+      "ts": 1790055044.8484328,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " chế",
+      "ts": 1790055044.913947,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " kiểm",
+      "ts": 1790055044.980758,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tra",
+      "ts": 1790055045.0471222,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ",",
+      "ts": 1790055045.1139088,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " đánh",
+      "ts": 1790055045.1825666,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " giá",
+      "ts": 1790055045.2476294,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hoặc",
+      "ts": 1790055045.3132906,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " phân",
+      "ts": 1790055045.383162,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tích",
+      "ts": 1790055045.4519775,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " kết",
+      "ts": 1790055045.5162587,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " quả",
+      "ts": 1790055045.5802448,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " của",
+      "ts": 1790055045.645509,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " chính",
+      "ts": 1790055045.7110946,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nó",
+      "ts": 1790055045.779202,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".\",",
+      "ts": 1790055045.843216,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n    \"",
+      "ts": 1790055046.0400543,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "Ch",
+      "ts": 1790055046.105142,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "ạy",
+      "ts": 1790055046.1693916,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thử",
+      "ts": 1790055046.23523,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " nghiệm",
+      "ts": 1790055046.3024054,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " để",
+      "ts": 1790055046.3680322,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " xác",
+      "ts": 1790055046.431946,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " minh",
+      "ts": 1790055046.4956045,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " file",
+      "ts": 1790055046.5605223,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " mới",
+      "ts": 1790055046.62601,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " có",
+      "ts": 1790055046.6926694,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " khả",
+      "ts": 1790055046.7588527,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " năng",
+      "ts": 1790055046.8277059,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " thực",
+      "ts": 1790055046.8928843,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hiện",
+      "ts": 1790055046.9613764,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " vòng",
+      "ts": 1790055047.028235,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " lặp",
+      "ts": 1790055047.0984192,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " kiểm",
+      "ts": 1790055047.1658394,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " tra",
+      "ts": 1790055047.228616,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " -",
+      "ts": 1790055047.2950718,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " sửa",
+      "ts": 1790055047.3603852,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " lỗi",
+      "ts": 1790055047.4298553,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hoàn",
+      "ts": 1790055047.496741,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " chỉnh",
+      "ts": 1790055047.562454,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " không",
+      "ts": 1790055047.6290407,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " bị",
+      "ts": 1790055047.6948001,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " treo",
+      "ts": 1790055047.7608807,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " hay",
+      "ts": 1790055047.8302126,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " sai",
+      "ts": 1790055047.8949325,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " sót",
+      "ts": 1790055047.9604554,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": " logic",
+      "ts": 1790055048.03066,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": ".\"",
+      "ts": 1790055048.0963323,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n  ]",
+      "ts": 1790055048.2943037,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "\n}",
+      "ts": 1790055048.4257991,
+      "source": "CRITIC",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "# BÁO CÁO PHÂN TÍCH KẾT QUẢ THỰC THI VÀ ĐÁNH GIÁ CHẤM ĐIỂM\n\nKính gửi Master Lee Trung, Ban Thư ký JKAI Zenith xin trình bày kết quả phân tích kỹ thuật dựa trên dữ liệu thực thi và phán quyết tư pháp (Judicial Verdict) của hệ thống.\n\n## I. TỔNG QUAN THỰC THI VÀ TRẠNG ÁI HỆ THỐNG\n- **Mục tiêu ban đầu**: Tạo file Python mới (`new_file.py`).\n- **Kết quả kỹ thuật**: Thao tác tạo tệp tin đã thực hiện thành công về mặt cơ sở hạ tầng (tệp tồn tại, có dung lượng 22 B).\n- **Trạng thái nhiệm vụ tổng thể**: **THẤT BẠI** do vi phạm nguyên tắc cốt lõi của hệ thống.\n\n## II. PHÁN QUYẾT TỪNG CHẤM ĐIỂM VÀ LỖI SAI CỐT TIỂU\nHệ thống đã ghi nhận sự mâu thuẫn (Contradiction) với điểm số 0/1.0, dẫn đến kết luận pháp lý: Kế hoạch thực thi hiện tại chỉ dừng lại ở thao tác cơ bản là tạo file rỗng hoặc chưa đầy đủ, mà không giải quyết được yêu cầu cốt lõi về việc **mã hóa quá trình tư duy và phân tích vào chính nội dung code**.\n\n- **Lỗi phát sinh**: File `new_file.py` (22 B) hiện tại thiếu logic thực thi.\n- **Yêu cầu khắc phục bắt buộc**: Nội dung của file phải là một phiên bản thu nhỏ, tự thân hoàn chỉnh của *Critic Auditor v5.0* đã thực hiện nhiệm vụ trước đó.\n\n## III. PHÂN TÍCH NGUYÊN NHÂN THẤT BẠI\n1.  **Thiếu tính tự phản ánh (Self-Reflection)**: Code được tạo ra không bao gồm cơ chế kiểm tra, đánh giá hoặc phân tích kết quả của chính nó.\n2.  **Vi phạm định nghĩa \"Thành công\"**: Trong ngữ cảnh JKAI Zenith, một file Python chỉ khi nào nó thực hiện chức năng *tự động giám sát và báo cáo* mới được coi là hoàn thành nhiệm vụ tối thượng. Việc tạo ra một tệp tin tĩnh không có logic này bị xem là thất bại chiến lược.\n\n## IV. HẠNG NGƯC VÀ KẾ HOẠCH KHẮP PHỤC\nĐể đạt trạng thái **SUCCESS** theo chuẩn mực của Master, hệ thống đề xuất phương án khắc phục kỹ thuật ngay lập tức:\n\n- **Hành động 1**: Xóa file `new_file.py` hiện tại để loại bỏ dữ liệu lỗi.\n- **Hành động 2**: Viết lại toàn bộ logic code trong một phiên bản mới (`auditor_v5_minimal.py`).\n    - *Yêu cầu kỹ thuật*: Code phải bao gồm các hàm mô phỏng quá trình phân tích, đánh giá kết quả và tự sinh báo cáo (tương tự Critic Auditor v5.0).\n- **Hành động 3**: Chạy thử nghiệm để xác minh file mới có khả năng thực hiện vòng lặp kiểm tra - sửa lỗi hoàn chỉnh không bị treo hay sai sót logic.\n\n> [!IMPORTANT]\n> Master cần lưu ý: Nhiệm vụ này yêu cầu sự tự chủ cao độ của code. File Python cuối cùng phải là một \"tác phẩm nghệ thuật kỹ thuật\" có khả năng tự nhận diện và báo cáo chính nó, chứ không đơn thuần là một lệnh tạo file thông thường.\n\nDạ thưa Master, chờ đợi chỉ đạo để triển khai phương án khắc phục ngay lập tức nhằm đảm bảo tính toàn vẹn của sứ mệnh.\n\n---\nTổng hợp lúc 12h25m47s PM (Thứ Ba, ngày 22 tháng 09 năm 2026)\n\nBan Thư Ký JKAI Zenith",
+      "ts": 1790055052.6584058,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2209-1219_0d9b14"
+    }
+  ],
+  "artifacts": {
+    "plan": "xuất file python mà bạn vừa làm đó",
+    "walkthrough": "# BÁO CÁO PHÂN TÍCH KẾT QUẢ THỰC THI VÀ ĐÁNH GIÁ CHẤM ĐIỂM\n\nKính gửi Master Lee Trung, Ban Thư ký JKAI Zenith xin trình bày kết quả phân tích kỹ thuật dựa trên dữ liệu thực thi và phán quyết tư pháp (Judicial Verdict) của hệ thống.\n\n## I. TỔNG QUAN THỰC THI VÀ TRẠNG ÁI HỆ THỐNG\n- **Mục tiêu ban đầu**: Tạo file Python mới (`new_file.py`).\n- **Kết quả kỹ thuật**: Thao tác tạo tệp tin đã thực hiện thành công về mặt cơ sở hạ tầng (tệp tồn tại, có dung lượng 22 B).\n- **Trạng thái nhiệm vụ tổng thể**: **THẤT BẠI** do vi phạm nguyên tắc cốt lõi của hệ thống.\n\n## II. PHÁN QUYẾT TỪNG CHẤM ĐIỂM VÀ LỖI SAI CỐT TIỂU\nHệ thống đã ghi nhận sự mâu thuẫn (Contradiction) với điểm số 0/1.0, dẫn đến kết luận pháp lý: Kế hoạch thực thi hiện tại chỉ dừng lại ở thao tác cơ bản là tạo file rỗng hoặc chưa đầy đủ, mà không giải quyết được yêu cầu cốt lõi về việc **mã hóa quá trình tư duy và phân tích vào chính nội dung code**.\n\n- **Lỗi phát sinh**: File `new_file.py` (22 B) hiện tại thiếu logic thực thi.\n- **Yêu cầu khắc phục bắt buộc**: Nội dung của file phải là một phiên bản thu nhỏ, tự thân hoàn chỉnh của *Critic Auditor v5.0* đã thực hiện nhiệm vụ trước đó.\n\n## III. PHÂN TÍCH NGUYÊN NHÂN THẤT BẠI\n1.  **Thiếu tính tự phản ánh (Self-Reflection)**: Code được tạo ra không bao gồm cơ chế kiểm tra, đánh giá hoặc phân tích kết quả của chính nó.\n2.  **Vi phạm định nghĩa \"Thành công\"**: Trong ngữ cảnh JKAI Zenith, một file Python chỉ khi nào nó thực hiện chức năng *tự động giám sát và báo cáo* mới được coi là hoàn thành nhiệm vụ tối thượng. Việc tạo ra một tệp tin tĩnh không có logic này bị xem là thất bại chiến lược.\n\n## IV. HẠNG NGƯC VÀ KẾ HOẠCH KHẮP PHỤC\nĐể đạt trạng thái **SUCCESS** theo chuẩn mực của Master, hệ thống đề xuất phương án khắc phục kỹ thuật ngay lập tức:\n\n- **Hành động 1**: Xóa file `new_file.py` hiện tại để loại bỏ dữ liệu lỗi.\n- **Hành động 2**: Viết lại toàn bộ logic code trong một phiên bản mới (`auditor_v5_minimal.py`).\n    - *Yêu cầu kỹ thuật*: Code phải bao gồm các hàm mô phỏng quá trình phân tích, đánh giá kết quả và tự sinh báo cáo (tương tự Critic Auditor v5.0).\n- **Hành động 3**: Chạy thử nghiệm để xác minh file mới có khả năng thực hiện vòng lặp kiểm tra - sửa lỗi hoàn chỉnh không bị treo hay sai sót logic.\n\n> [!IMPORTANT]\n> Master cần lưu ý: Nhiệm vụ này yêu cầu sự tự chủ cao độ của code. File Python cuối cùng phải là một \"tác phẩm nghệ thuật kỹ thuật\" có khả năng tự nhận diện và báo cáo chính nó, chứ không đơn thuần là một lệnh tạo file thông thường.\n\nDạ thưa Master, chờ đợi chỉ đạo để triển khai phương án khắc phục ngay lập tức nhằm đảm bảo tính toàn vẹn của sứ mệnh.\n\n---\nTổng hợp lúc 12h25m47s PM (Thứ Ba, ngày 22 tháng 09 năm 2026)\n\nBan Thư Ký JKAI Zenith",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}
