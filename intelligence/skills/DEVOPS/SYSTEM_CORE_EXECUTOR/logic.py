@@ -25,9 +25,9 @@ def _guard_path_internal(target_path: str) -> Optional[str]:
     return None
 
 
-async def list_dir(path: str = ".", directory_path: str = ".", task_id: str = "sys", **kwargs):
+async def list_dir(path: str = "", directory_path: str = "", DirectoryPath: str = "", task_id: str = "sys", **kwargs):
     """📂 [SCOUTING]: Liệt kê danh sách tệp tin và thư mục."""
-    target_path = path if path != "." else (directory_path or ".")
+    target_path = DirectoryPath or directory_path or path or kwargs.get("DirectoryPath") or kwargs.get("path") or "."
     try:
         items = os.listdir(target_path)
         result = []
@@ -104,11 +104,11 @@ async def write_to_file(path: str = "", file_path: str = "", TargetFile: str = "
     except Exception as e:
         return {"status": "error", "msg": str(e)}
 
-async def replace_file_content(path: str = "", file_path: str = "", TargetFile: str = "", target: str = "", TargetContent: str = "", replacement: str = "", ReplacementContent: str = "", task_id: str = "sys", **kwargs):
+async def replace_file_content(path: str = "", target: str = "", replacement: str = "", file_path: str = "", TargetFile: str = "", TargetContent: str = "", ReplacementContent: str = "", task_id: str = "sys", **kwargs):
     """🛠️ [SURGERY]: Phẫu thuật thay thế nội dung tệp tin."""
-    target_path = path or file_path or TargetFile or ""
-    tgt = target or TargetContent or ""
-    repl = replacement or ReplacementContent or ""
+    target_path = path or file_path or TargetFile or kwargs.get("TargetFile") or ""
+    tgt = target or TargetContent or kwargs.get("TargetContent") or ""
+    repl = replacement or ReplacementContent or kwargs.get("ReplacementContent") or ""
     try:
         guard_err = _guard_path_internal(target_path)
         if guard_err:
