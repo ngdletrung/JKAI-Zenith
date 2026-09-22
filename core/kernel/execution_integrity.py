@@ -151,6 +151,25 @@ class ExecutionIntegrityLayer:
                 action=action
             )
 
+        if fsm_verdict == AuthorityVerdict.REQUIRE_APPROVAL:
+            target_path = args.get("file_path", args.get("TargetFile", args.get("path", "")))
+            interrupt_id = str(uuid.uuid4())
+            log_structured_event(
+                message=fsm_reason,
+                tool_name=action,
+                authority_decision="REQUIRE_APPROVAL",
+                trace_id=self.fsm.trace_id,
+                extra={"interrupt_id": interrupt_id, "target": str(target_path)}
+            )
+            return ExecutionDecision(
+                outcome=DecisionOutcome.REQUIRE_APPROVAL,
+                reason=fsm_reason,
+                action=action,
+                target=str(target_path),
+                requires_human_gate=True,
+                interrupt_id=interrupt_id
+            )
+
         # ---------------------------------------------------------------------
         # 1. DUAL SECURITY POLICY & CONTRACT ADMISSION
         # ---------------------------------------------------------------------
