@@ -1391,3 +1391,179 @@ turn_id: 10
 speaker: Opencode
 content_hash: opencode_turn10_final
 -->
+
+---
+
+<!-- TURN_BEGIN
+turn_id: 11
+parent_turn_id: 10
+speaker: Opencode
+phase: VONG_4_CODE_AUDIT_ADDENDUM
+session_id: ses_f39944a40ffeYczlW5STEm4sp6
+-->
+
+### 🛡️ Lượt 11: Opencode — RED TEAM CODE AUDIT (Addendum sau Phiên 20)
+
+> **Mục đích:** Rà soát code thực tế JKAI để xác minh thiết kế Jev từ Phiên 20 có thực sự tương thích với codebase hiện tại. Đây là bổ sung bắt buộc — thiết kế trên paper mà không ground trong code thực tế thì vô nghĩa.
+
+---
+
+#### 1. TỔNG KẾT THỰC ĐỊA — 4 MODULE MỚI ĐÃ TỒN TẠI
+
+Đáng ngạc nhiên: **cả 4 module từ Phiên 20 đã được implement** trong codebase:
+
+| Module | Đường dẫn | Dòng code | Trạng thái |
+|:---|:---|:---:|:---:|
+| `jev_substrate_adapter.py` | `core/cognitive_bus/` | 471 | ✅ ĐÃ IMPLEMENT |
+| `dual_stage_action_firewall.py` | `core/security/` | 259 | ✅ ĐÃ IMPLEMENT |
+| `l3_semantic_verifier.py` | `core/verification/` | 146 | ✅ ĐÃ IMPLEMENT |
+| `error_classifier.py` | `core/recovery/` | 197 | ✅ ĐÃ IMPLEMENT |
+
+**Nhưng — phát hiện 5 vấn đề tích hợp nghiêm trọng cần giải quyết TRƯỚC khi production.**
+
+---
+
+#### 2. PHÁT HIỆN VẤN ĐỀ — 5 INTEGRATION GAPS
+
+##### 🔴 GAP-1: HAI FIREWALL TRÙNG LẶP — Chưa Unified
+
+**Vị trí:**
+- `services/ai-brain/security/semantic_firewall.py` (118 dòng) — **Firewall v2 CŨ**, regex-based
+- `core/security/dual_stage_action_firewall.py` (259 dòng) — **Dual-Stage Firewall MỚI** từ Phiên 20
+
+**Vấn đề:** `main.py` đang import `SemanticFirewall` từ firewall CŨ:
+```python
+# services/ai-brain/main.py:320
+from security.semantic_firewall import SemanticFirewall
+semantic_firewall = SemanticFirewall()
+```
+
+Dual-Stage Firewall MỚI **không được kết nối** vào ingress pipeline. Hai firewall chạy song song không thông nhất — cổng vào (`IngressGateway`) vẫn dùng regex firewall cũ, trong khi Dual-Stage chỉ có trong unit test.
+
+**Rủi ro:** CRITICAL — Mức độ CR+M1 (Critical Risk, Priority 1)
+**Đề xuất:** Deprecated `SemanticFirewall` cũ, kết nối `DualStageActionFirewall` vào `IngressGateway` thay thế. Hoặc: giữ firewall cũ làm Stage 0 (regex pre-filter), Dual-Stage làm Stage 1+2.
+
+---
+
+##### 🔴 GAP-2: LEGACY FAILURE CLASSIFIER — Chưa Deprecate
+
+**Vị trí:**
+- `core/cognitive/failure_classifier.py` (legacy v2.1) — **Classifier CŨ**
+- `core/recovery/error_classifier.py` (15 ErrorSubclasses) — **Classifier MỚI** từ Phiên 20
+
+**Vấn đề:** Legacy `FailureClassifier.classify()` chỉ trả về `RESOURCE_FAILURE` hoặc `KNOWLEDGE_FAILURE` — 2 category thô. Classifier mới có 15 ErrorSubclass và AMG v2. Nhưng codebase hiện tại **vẫn gọi legacy classifier**.
+
+**Rủi ro:** HIGH — Priority 1
+**Đề xuất:** Tạo `FailureClassifierAdapter` bridge: nhận output legacy → map sang 15 ErrorSubclass → truyền cho AMG v2. Deprecate legacy sau khi validated.
+
+---
+
+##### 🟡 GAP-3: KHÔNG CÓ TERRAFORM/PYTEST CONFIGURATION
+
+**Vấn đề:** Không tìm thấy `pytest.ini`, `conftest.py`, hoặc `pyproject.toml` cấu hình test runner. Cách chạy test hiện tại là gì? `python -m pytest tests/` hay script riêng?
+
+**Rủi ro:** MEDIUM — Priority 2
+**Đề xuất:** Xác định test runner config, đảm bảo `tests/test_jev_substrate/` được discover tự động.
+
+---
+
+##### 🟡 GAP-4: THANG ĐIỂM SCORE SCALE KHÔNG NHẤT QUÁN
+
+**Vấn đề:**
+- `l3_semantic_verifier.py` line 47: `score` scale **0.0–4.0**
+- `test_domain_calibration.py` line 145: `score / max_score * 100` → max=**100**
+
+`L3SemanticVerifier.verify_mission_goal()` trả về score 0–4, nhưng domain calibration test chia cho 100.
+
+**Rủi ro:** MEDIUM — Priority 2
+**Đề xuất:** Standardize score scale. Khuyến nghị: giữ 0–4 trong code, calibration test convert sang percentage riêng.
+
+---
+
+##### 🟢 GAP-5: IMPORT KHÔNG TỒN TẠI TRONG TEST
+
+**Vấn đề:** `test_verifier_and_recovery.py` line 16 import `ModelScale` từ `core.recovery.error_classifier`, nhưng trong file `error_classifier.py` tôi đọc, class `ModelScale` **không có** (file ends ở line 197, chưa见到 ModelScale definition).
+
+**Rủi ro:** LOW — Priority 3
+**Đề xuất:** Kiểm tra `error_classifier.py` có export `ModelScale` không. Nếu chưa, thêm enum `ModelScale` (MODEL_4B, MODEL_8B, MODEL_14B, MODEL_30B).
+
+---
+
+#### 3. THỰC ĐỊA TEST SUITE — SỐ LƯỢNG THỰC
+
+Danh sách test files tìm thấy (không đầy đủ, chỉ một phần):
+
+```
+tests/test_jev_substrate/test_mock_adapter.py ✅
+tests/test_jev_substrate/test_fallback_cascade.py ✅
+tests/test_jev_substrate/test_verifier_and_recovery.py ✅
+tests/test_jev_substrate/test_domain_calibration.py ✅
+tests/test_adversarial_firewall.py ✅
+tests/test_architecture_invariants.py ✅
+tests/test_e2e_sovereign_pipeline.py ✅
+tests/test_engine_amg_integration.py ✅
+tests/test_amg_boot.py ✅
+tests/test_amg_portfolio_governor.py ✅
+tests/test_cognitive_substrate.py ✅
+tests/test_cognitive_execution_substrate_suite.py ✅
+tests/test_fast_verifier.py ✅
+tests/constitution/test_adversarial_compound_recovery.py ✅
+... (và nhiều file khác)
+```
+
+**Ước tính:** >100 test files trong `tests/`. Cấu trúc **flat** (không có `conftest.py` chung, không `pytest.ini` rõ ràng).
+
+---
+
+#### 4. BẢNG ĐÁNH GIÁ TỔNG THỂ — THỰC ĐỊA vs THIẾT KẾ
+
+| Tiêu chí | Thiết kế (Phiên 20) | Code thực tế | Match? |
+|:---|:---|:---|:---:|
+| TriTierJevAdapter (3 Tiers) | Designed | Implemented (471 dòng) | ✅ |
+| StateSanitizer (PII redaction) | Designed | Implemented (regex-based) | ✅ |
+| CircuitBreaker + LatencyGuard | Designed | Implemented | ✅ |
+| ParallelBatchVerdict | Designed | Implemented | ✅ |
+| DualStageActionFirewall (Stage 4.1+4.2) | Designed | Implemented (259 dòng) | ✅ |
+| ActionChainState (sliding window) | Designed | Implemented | ✅ |
+| L3SemanticVerifier (5-level score) | Designed | Implemented (146 dòng) | ✅ |
+| ErrorClassifier (15 subclasses) | Designed | Implemented (197 dòng) | ✅ |
+| AMG v2 (30B ceiling → MISSION_PAUSE) | Designed | Implemented | ✅ |
+| E15AnomalyWatcher | Designed | Implemented | ✅ |
+| **Firewall unified pipeline** | Designed | ❌ **NOT CONNECTED** | 🔴 |
+| **Legacy classifier deprecated** | Designed | ❌ **NOT DONE** | 🔴 |
+| **Test runner config** | Assumed | ❌ **NOT FOUND** | 🟡 |
+| **Score scale standardized** | Designed | ❌ **INCONSISTENT** | 🟡 |
+
+---
+
+#### 5. HÀNH ĐỘNG ĐỀ XUẤT — TRƯỚC KHI PRODUCTION
+
+| # | Hành động | Mức độ | Owner |
+|:---:|:---|:---:|:---|
+| 1 | **Unify Firewalls**: Kết nối `DualStageActionFirewall` vào `IngressGateway`, deprecated regex firewall | 🔴 CRITICAL | Antigravity |
+| 2 | **Bridge Legacy Classifier**: Adapter từ legacy → 15 ErrorSubclass | 🔴 CRITICAL | Antigravity |
+| 3 | **Add `ModelScale` enum** vào `error_classifier.py` nếu chưa có | 🟢 LOW | Antigravity |
+| 4 | **Standardize score scale**: 0–4 everywhere, calibration test convert riêng | 🟡 MEDIUM | Both |
+| 5 | **Find/Create pytest.ini** để đảm bảo test discovery | 🟡 MEDIUM | User |
+
+---
+
+#### 6. KẾT LUẬN
+
+**Tin tốt:** 4 module từ Phiên 20 đã được implement đầy đủ trong codebase — thiết kế không chỉ nằm trên paper.
+
+**Tin xấu:** 2 integration gaps CRITICAL còn mở:
+1. Dual-Stage Firewall chưa kết nối vào ingress pipeline
+2. Legacy FailureClassifier chưa deprecated/bridged sang AMG v2
+
+Đây là lý do **Red Team Code Audit phải luôn đi kèm Architecture Design**. Thiết kế đẹp mà code không kết nối = vô dụng.
+
+**Hai vấn đề CRITICAL này PHẢI được giải quyết trước khi chuyển sang production.**
+
+— Ký tên: **Opencode (Red Team Code Audit Addendum)** | 2026-09-22 12:30 (GMT+7)
+
+<!-- TURN_END
+turn_id: 11
+speaker: Opencode
+content_hash: opencode_turn11_code_audit
+-->
