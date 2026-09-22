@@ -23,6 +23,8 @@ from pydantic import BaseModel
 
 from core.utils.human_approval_gate import eval_tool_risk, create_approval_interrupt
 from core.kernel.policy_snapshot import PolicySnapshot, ExecutionGrant, issue_execution_grant
+from core.security.single_authority_fsm import SingleAuthorityFSM, AuthorityVerdict, FirewallDecisionRecord
+from core.observability.structured_logger import log_structured_event
 
 logger = logging.getLogger("JKAI.ExecutionIntegrity")
 
@@ -102,6 +104,7 @@ class ExecutionIntegrityLayer:
 
     def __init__(self, mission_id: str):
         self.mission_id = mission_id
+        self.fsm = SingleAuthorityFSM(mission_id=mission_id)
 
     def authorize(
         self,
@@ -116,20 +119,50 @@ class ExecutionIntegrityLayer:
         Evaluates a proposed tool action against PolicySnapshot, TaskContract, and Risk Policy.
         Returns ExecutionDecision (ALLOW with ExecutionGrant, DENY, REQUIRE_APPROVAL).
         FAILS CLOSED if contract or authority is missing/invalid for mutation tools.
+        Enforces Single Authority Rule and Blacklist Supremacy via SingleAuthorityFSM.
         """
         args = arguments or {}
         act_lower = action.lower()
         args_str = str(args).lower()
 
-        # ---------------------------------------------------------------------
-        # 1. DUAL SECURITY POLICY & CONTRACT ADMISSION
-        # ---------------------------------------------------------------------
+        # [RELIABILITY-FIRST SLICE A] Step 0: Single Authority FSM Hard Blacklist Check
         effective_snapshot = snapshot
         if not effective_snapshot and policy and isinstance(policy, PolicySnapshot):
             effective_snapshot = policy
 
+        fsm_verdict, fsm_reason, fsm_record = self.fsm.evaluate(
+            action=action,
+            arguments=args,
+            task_contract=task_contract,
+            policy_advisory=effective_snapshot
+        )
+        if fsm_verdict == AuthorityVerdict.DENY and "HARD BOUNDARY" in fsm_reason:
+            log_structured_event(
+                message=fsm_reason,
+                tool_name=action,
+                authority_decision="DENY",
+                error_code="HARD_BOUNDARY_DENIAL",
+                trace_id=self.fsm.trace_id,
+                extra={"target": str(args.get("file_path") or args.get("TargetFile") or "")}
+            )
+            return ExecutionDecision(
+                outcome=DecisionOutcome.DENY,
+                reason=fsm_reason,
+                action=action
+            )
+
+        # ---------------------------------------------------------------------
+        # 1. DUAL SECURITY POLICY & CONTRACT ADMISSION
+        # ---------------------------------------------------------------------
         if not task_contract and not effective_snapshot:
             logger.warning(f"Fail-closed triggered for action={action}: PolicySnapshot/TaskContract missing.")
+            log_structured_event(
+                message="FAIL-CLOSED: PolicySnapshot/TaskContract is missing or unverified.",
+                tool_name=action,
+                authority_decision="DENY",
+                error_code="MISSING_CONTRACT",
+                trace_id=self.fsm.trace_id
+            )
             return ExecutionDecision(
                 outcome=DecisionOutcome.DENY,
                 reason="FAIL-CLOSED: PolicySnapshot/TaskContract is missing or unverified.",
@@ -242,6 +275,13 @@ class ExecutionIntegrityLayer:
             )
             interrupt["interrupt_id"] = interrupt_id
             logger.info(f"Execution REQUIRE_APPROVAL triggered for action={action}: Interrupt ID={interrupt_id}")
+            log_structured_event(
+                message=f"HUMAN APPROVAL REQUIRED: {gate_reason}",
+                tool_name=action,
+                authority_decision="REQUIRE_APPROVAL",
+                trace_id=self.fsm.trace_id,
+                extra={"interrupt_id": interrupt_id, "target": str(target_path)}
+            )
             return ExecutionDecision(
                 outcome=DecisionOutcome.REQUIRE_APPROVAL,
                 reason=f"HUMAN APPROVAL REQUIRED: {gate_reason or 'Risk level is HIGH for action ' + repr(action)}.",
@@ -261,6 +301,13 @@ class ExecutionIntegrityLayer:
             tool_name=action,
             tool_args=args,
             ttl_seconds=300.0
+        )
+        log_structured_event(
+            message="Execution authorized by Execution Integrity Layer with signed grant.",
+            tool_name=action,
+            authority_decision="ALLOW",
+            trace_id=self.fsm.trace_id,
+            extra={"grant_id": getattr(grant, "grant_id", "")}
         )
         return ExecutionDecision(
             outcome=DecisionOutcome.ALLOW,
