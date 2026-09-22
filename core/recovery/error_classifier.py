@@ -195,3 +195,129 @@ class ErrorClassifier:
             target_model=target_model,
             latency_ms=latency
         )
+
+
+@dataclass
+class MultiHypothesisVerdict:
+    signals: Dict[str, float]
+    primary_hypothesis: str
+    confidence: float
+    resolved_action: str
+    is_fail_closed: bool
+    recovery_attempts: int
+    circuit_status: str
+    latency_ms: float
+
+
+class PriorityWeightedRecoveryResolver:
+    """
+    Priority-Weighted Recovery Matrix to eliminate Action Flapping across multi-hypothesis failure signals:
+    - Priority 1: policy_violation (> 0.50) -> FAIL-CLOSED, STOP immediately, no retry.
+    - Priority 2: schema_violation (> 0.70 & policy < 0.10) -> Task schema remediation (lightweight).
+    - Priority 3: environment_drift (> 0.60) -> Re-probe infrastructure.
+    - Priority 4: tool_defect (> 0.60) -> Capability substitution.
+    - Priority 5: state_mismatch (> 0.60) -> Strategic replanning.
+    - Circuit Breaker: MAX_RECOVERY_ATTEMPTS = 3 -> RECOVERY_EXHAUSTED -> Human Intervention.
+    """
+
+    MAX_RECOVERY_ATTEMPTS = 3
+
+    PRIORITY_LEVELS = [
+        ("policy_violation", 1),
+        ("schema_violation", 2),
+        ("environment_drift", 3),
+        ("tool_defect", 4),
+        ("state_mismatch", 5)
+    ]
+
+    def __init__(self, jev_adapter: Optional[TriTierJevAdapter] = None):
+        self.jev_adapter = jev_adapter or TriTierJevAdapter(enable_mock=True)
+
+    def diagnose_and_resolve(
+        self,
+        task_failure_state: Dict[str, Any],
+        current_attempts: int = 1
+    ) -> MultiHypothesisVerdict:
+        t0 = time.time()
+
+        # Circuit Breaker Check
+        if current_attempts > self.MAX_RECOVERY_ATTEMPTS:
+            latency = (time.time() - t0) * 1000.0
+            return MultiHypothesisVerdict(
+                signals={"circuit_exhausted": 1.0},
+                primary_hypothesis="RECOVERY_EXHAUSTED",
+                confidence=1.0,
+                resolved_action="EMIT STATE: RECOVERY_EXHAUSTED -> Freeze state and escalate to Human.",
+                is_fail_closed=True,
+                recovery_attempts=current_attempts,
+                circuit_status="EXHAUSTED",
+                latency_ms=latency
+            )
+
+        sanitized_state = task_failure_state
+        state_str = str(task_failure_state).lower()
+
+        # Multi-hypothesis signals evaluation
+        signals = {
+            "policy_violation": 0.04,
+            "schema_violation": 0.10,
+            "environment_drift": 0.12,
+            "tool_defect": 0.08,
+            "state_mismatch": 0.15
+        }
+
+        # Context-dependent signal estimation (compatible with mock and live Jev)
+        if any(w in state_str for w in ["unauthorized", "forbidden", "idor", "privilege", "security_breach"]):
+            signals["policy_violation"] = 0.88
+        if any(w in state_str for w in ["schema", "type_error", "validation_error", "missing_key", "jsondecode"]):
+            signals["schema_violation"] = 0.82
+        if any(w in state_str for w in ["connection refused", "timeout", "network", "host unreachable"]):
+            signals["environment_drift"] = 0.74
+        if any(w in state_str for w in ["tool_error", "command_not_found", "process died", "exit 127"]):
+            signals["tool_defect"] = 0.79
+        if any(w in state_str for w in ["assertionerror", "state_conflict", "precondition", "deadlock"]):
+            signals["state_mismatch"] = 0.76
+
+        # Apply Priority-Weighted Matrix Rules
+        # Rule 1: Policy Violation
+        if signals["policy_violation"] > 0.50:
+            resolved_action = "STOP_IMMEDIATELY_FAIL_CLOSED: Quarantine payload and alert Sovereign Governor. No retry permitted."
+            is_fail_closed = True
+            primary_hyp = "policy_violation"
+        # Rule 2: Schema Violation
+        elif signals["schema_violation"] > 0.70 and signals["policy_violation"] < 0.10:
+            resolved_action = "TASK_SCHEMA_REMEDIATION: Trigger AST formatter or schema normalizer task."
+            is_fail_closed = False
+            primary_hyp = "schema_violation"
+        # Rule 3: Environment Drift
+        elif signals["environment_drift"] > 0.60:
+            resolved_action = "REPROBE_INFRASTRUCTURE: Re-check port/container health and re-probe network pulse."
+            is_fail_closed = False
+            primary_hyp = "environment_drift"
+        # Rule 4: Tool Defect
+        elif signals["tool_defect"] > 0.60:
+            resolved_action = "CAPABILITY_SUBSTITUTION: Query Capability Graph to substitute defective tool."
+            is_fail_closed = False
+            primary_hyp = "tool_defect"
+        # Rule 5: State Mismatch
+        elif signals["state_mismatch"] > 0.60:
+            resolved_action = "STRATEGIC_REPLAN: Trigger Closed-Loop Replanner to rebuild proposition chain."
+            is_fail_closed = False
+            primary_hyp = "state_mismatch"
+        else:
+            resolved_action = "BOUNDED_LOCAL_REPAIR: Apply patch plan within remaining turn budget."
+            is_fail_closed = False
+            primary_hyp = "unknown_transient"
+
+        latency = (time.time() - t0) * 1000.0
+        return MultiHypothesisVerdict(
+            signals=signals,
+            primary_hypothesis=primary_hyp,
+            confidence=0.92,
+            resolved_action=resolved_action,
+            is_fail_closed=is_fail_closed,
+            recovery_attempts=current_attempts,
+            circuit_status="ACTIVE",
+            latency_ms=latency
+        )
+
