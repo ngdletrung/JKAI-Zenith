@@ -126,6 +126,13 @@ This project incorporates components from several third-party projects. Full lic
 - **Notice**: The non-generative memory principles (Raw Interaction Traces as source of record, Dual-View entity-context graph and temporal hierarchy, and query-conditioned deterministic evidence calibration) are assimilated and refactored into the JKAI DEMS v1.0 (Deterministic Evidence & Memory Substrate).
 - **Lưu ý**: Các nguyên lý bộ nhớ phi tạo sinh (Vết tích tương tác thô Raw Traces làm nguồn sự thật, cấu trúc dữ liệu kép đồ thị thực thể và phân cấp thời gian, cùng cơ chế phân xử bằng chứng xác định) được đồng hóa và tái cấu trúc hoàn toàn vào hệ thống DEMS v1.0 của JKAI Zenith.
 
+### TypeSafe Jev (System One AI Architecture / PJ Burnhill)
+- **Project / Gist**: [TypeSafe Jev Architecture](https://gist.github.com/pjburnhill/adf8d28efcad9df037bfdece178ef965)
+- **License**: [typesafe-jev-TERMS.txt](LICENSES/typesafe-jev-TERMS.txt)
+- **Authors**: PJ Burnhill / TypeSafe AI.
+- **Notice**: The System One typed probabilistic judgment paradigm (Noul, Choice, Score primitives) and fast semantic classification patterns are assimilated and clean-room implemented into the JKAI Cognitive Bus Adapter, Dual-Stage Action Firewall, L3 Semantic Verifier, and Recovery Classifier.
+- **Lưu ý**: Mô hình phán đoán xác suất kiểu hóa System One (các nguyên thủy Noul, Choice, Score) và mẫu hình phân loại ngữ nghĩa tốc độ cao được đồng hóa và triển khai dạng phòng sạch (clean-room) vào JKAI Cognitive Bus Adapter, Tường lửa Hành động 2 giai đoạn, Bộ kiểm định ngữ nghĩa L3 và Bộ phân loại phục hồi lỗi.
+
 ---
 
 ## 🧠 3. ARTIFICIAL INTELLIGENCE & DATA / TRÍ TUỆ NHÂN TẠO & DỮ LIỆU

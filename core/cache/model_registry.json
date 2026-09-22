@@ -5,9 +5,9 @@
     "family": "lfm2",
     "context_length_max": 128000,
     "model_classes": [
-      "GENERAL",
       "TOOL_USE",
-      "REASONING"
+      "REASONING",
+      "GENERAL"
     ],
     "has_vision": false,
     "has_tool_calling": true,
@@ -33,9 +33,9 @@
     "family": "qwen3moe",
     "context_length_max": 262144,
     "model_classes": [
-      "GENERAL",
       "TOOL_USE",
-      "REASONING"
+      "REASONING",
+      "GENERAL"
     ],
     "has_vision": false,
     "has_tool_calling": true,
@@ -91,8 +91,8 @@
     "model_classes": [
       "VISION",
       "TOOL_USE",
-      "GENERAL",
-      "REASONING"
+      "REASONING",
+      "GENERAL"
     ],
     "has_vision": true,
     "has_tool_calling": true,
@@ -120,8 +120,8 @@
     "model_classes": [
       "VISION",
       "TOOL_USE",
-      "GENERAL",
-      "REASONING"
+      "REASONING",
+      "GENERAL"
     ],
     "has_vision": true,
     "has_tool_calling": true,
@@ -147,9 +147,9 @@
     "family": "qwen3",
     "context_length_max": 40960,
     "model_classes": [
-      "GENERAL",
       "TOOL_USE",
-      "REASONING"
+      "REASONING",
+      "GENERAL"
     ],
     "has_vision": false,
     "has_tool_calling": true,
@@ -177,8 +177,8 @@
     "model_classes": [
       "VISION",
       "TOOL_USE",
-      "GENERAL",
-      "REASONING"
+      "REASONING",
+      "GENERAL"
     ],
     "has_vision": true,
     "has_tool_calling": true,
@@ -204,8 +204,8 @@
     "family": "llama",
     "context_length_max": 131072,
     "model_classes": [
-      "GENERAL",
-      "TOOL_USE"
+      "TOOL_USE",
+      "GENERAL"
     ],
     "has_vision": false,
     "has_tool_calling": true,
@@ -232,8 +232,8 @@
     "context_length_max": 32768,
     "model_classes": [
       "TOOL_USE",
-      "CODING",
-      "GENERAL"
+      "GENERAL",
+      "CODING"
     ],
     "has_vision": false,
     "has_tool_calling": true,
@@ -261,8 +261,8 @@
     "model_classes": [
       "VISION",
       "TOOL_USE",
-      "GENERAL",
-      "REASONING"
+      "REASONING",
+      "GENERAL"
     ],
     "has_vision": true,
     "has_tool_calling": true,
@@ -289,8 +289,8 @@
     "context_length_max": 131072,
     "model_classes": [
       "TOOL_USE",
-      "CODING",
-      "GENERAL"
+      "GENERAL",
+      "CODING"
     ],
     "has_vision": false,
     "has_tool_calling": true,
@@ -317,8 +317,8 @@
     "context_length_max": 32768,
     "model_classes": [
       "TOOL_USE",
-      "CODING",
-      "GENERAL"
+      "GENERAL",
+      "CODING"
     ],
     "has_vision": false,
     "has_tool_calling": true,
@@ -423,9 +423,9 @@
     "family": "qwen3",
     "context_length_max": 131072,
     "model_classes": [
-      "GENERAL",
+      "REASONING",
       "TOOL_USE",
-      "REASONING"
+      "GENERAL"
     ],
     "has_vision": false,
     "has_tool_calling": true,

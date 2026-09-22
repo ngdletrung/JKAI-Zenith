@@ -82,6 +82,7 @@ JKAI Zenith is built upon the integration of world-class open-source technologie
 | **OpenCode** | anomalyco | MIT | CLI Agent & Reference Knowledge / Kiến thức tham khảo CLI Agent |
 | **Agent Skills** | Addy Osmani | MIT | 24 Skills & Workflows Architecture / Kiến trúc 24 kỹ năng và quy trình |
 | **Zero-Mem** | HKUST / PolyU / SWUFE / Jilin Univ | CC BY-NC-SA 4.0 | Zero-Token Memory Operations & DEMS / Quản trị bộ nhớ phi tạo sinh & DEMS |
+| **TypeSafe Jev** | TypeSafe AI / PJ Burnhill | Proprietary Ref / Terms | Fast System One Semantic Judgment / Phán đoán ngữ nghĩa System One |
 
 
 ---

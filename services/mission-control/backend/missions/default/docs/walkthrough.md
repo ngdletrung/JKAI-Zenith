@@ -1,2 +1,1 @@
-# walkthrough.md
-Chưa có dữ liệu cho giai đoạn này.
+Xin chào! Là trợ lý ảo của hệ thống **JKAI Zenith OS v47.0**. Tôi hiện đang sẵn sàng hỗ trợ bạn ngay lập tức. Có điều gì tôi có thể giúp ích?

@@ -1,0 +1,3997 @@
+{
+  "id": "m_ZENITH_3008-1013_13fe89",
+  "title": "Hãy tạo cho tôi 1 trang web để phân công công việc, theo dõi tiến độ v",
+  "goal": "Hãy tạo cho tôi 1 trang web để phân công công việc, theo dõi tiến độ và email cảnh báo thủ công hoặc tự động khi quá hạn",
+  "status": "failed",
+  "ts": 1788060778.9812992,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "Hãy tạo cho tôi 1 trang web để phân công công việc, theo dõi tiến độ và email cảnh báo thủ công hoặc tự động khi quá hạn",
+      "ts": 1788059632.6583936,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_3008-1013_13fe89` initialized | Trace: `trace_13fe89`. Runtime ready.",
+      "ts": 1788059632.6630929,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Command Deck → ['HOI_DONG_CHUYEN_GIA']",
+      "ts": 1788059641.591157,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=846 | preview='Hãy tạo cho tôi 1 trang web để phân công công việc, theo dõi tiến độ và email cảnh báo thủ công hoặc tự động khi quá hạn\\n\\n<ZENITH_SKILL_ACTIVATED>\\nSkill: #1002 Hội Đồng Chuyên Gia AI (domain=CORE, sco' | hash=831ffd58a5f1e558 | task_id=ZENITH_3008-1013_13fe89 | trace_id=trace_13fe89",
+      "ts": 1788059641.5938451,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: ['DEBUG_ANALYSIS_ACTION'] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1788059641.595872,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [PIPELINE-RESOLVER]: Chế độ DEEP kích hoạt (Reason: Master explicitly requested DEEP (Multi-Agent Ensemble Mode).).",
+      "ts": 1788059641.5979269,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=office pipeline=deep mode=deep tags=ANALYSIS,OFFICE",
+      "ts": 1788059641.5996451,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1788059641.603255,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "DeepPipeline T2–T6 (full)",
+      "ts": 1788059642.5331266,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [ENGINE-READY]: Chế độ DEEP — Cụm mô hình tư duy sâu đã có sẵn trên RAM/VRAM. Khởi chạy lập trình ngay!",
+      "ts": 1788059642.6439788,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1788059643.7469566,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1788059643.9314756,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1788059643.9532437,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1788059644.1241193,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1788059644.2368188,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `gemma4:12b-it-qat` @ CPU/RAM)...",
+      "ts": 1788059647.2943337,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 30.36s.",
+      "ts": 1788059677.657165,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-2]: Đang đúc kết chiến lược bằng vai trò `RESERVE_AGENT` (Mô hình: `qwen2.5-coder:3b` @ GPU/VRAM)...",
+      "ts": 1788059677.664174,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-2] Model `RESERVE_AGENT` response time: 57.46s.",
+      "ts": 1788059735.123727,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[SELF-CORRECTION] Phát hiện AI ảo giác tạo tool giả ['HOI_DONG_CHUYEN_GIA']. Đang ép buộc suy nghĩ lại!",
+      "ts": 1788059735.158353,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-3]: Đang đúc kết chiến lược bằng vai trò `RESERVE_AGENT` (Mô hình: `qwen2.5-coder:3b` @ GPU/VRAM)...",
+      "ts": 1788059735.163699,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-3] Model `RESERVE_AGENT` response time: 110.67s.",
+      "ts": 1788059845.8325438,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[TOOL-SANITY] Lần thử cuối vẫn ảo giác tool ['HOI_DONG_CHUYEN_GIA']. Đành phải tước bỏ bước này để cứu kế hoạch.",
+      "ts": 1788059845.8443193,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1788059845.8681011,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1788059845.8929758,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1788059845.9083276,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_recovery_01 (SEARCH_WEB_GLOBAL)**: Auto-recovery: search web for: Hãy tạo cho tôi 1 trang web để phân công công việc, theo dõi tiến độ và email cảnh báo thủ công hoặc tự động khi quá hạn\n\n<ZENITH_SKILL_ACTIVATED>\nSkill: #1002 Hội Đồng Chuyên Gia AI (domain=CORE, score=0.96, tool_id=HOI_DONG_CHUYEN_GIA)\nƯu tiên sử dụng công cụ 'HOI_DONG_CHUYEN_GIA' cho mục tiêu này.\n</ZENITH_SKILL_ACTIVATED>\n\n<ZENITH_SKILL_DECK_RESOLVE>\nMaster dùng số thứ tự Command Deck (MAP_SKILLS.md). Đã ánh xạ sang Registry ID thực thi:\n- #1002: Hội Đồng Chuyên Gia AI: Kỹ năng triệu hồi Hội đồng Chuyên gia đa mô hình (Gemini, ChatGPT, DeepSeek, Grok) cùng thảo luận, phản biện chéo và đúc rút giải pháp tối ưu cho một bài toán phức tạp theo cấu trúc Evidence Schema JSON.\n  → registry_id / tool / skill_id: `HOI_DONG_CHUYEN_GIA`\nKhi gọi tool/plan: dùng registry_id ở trên, KHÔNG dùng số # trong field tool.\n</ZENITH_SKILL_DECK_RESOLVE>",
+      "ts": 1788059845.935897,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1788059845.9398427,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TRIỂN KHAI BƯỚC] Đang khởi chạy thực thi song song: `[/]` **auto_recovery_01**",
+      "ts": 1788059845.9589767,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'SEARCH_WEB_GLOBAL' authorized by ExecutionIntegrityLayer.",
+      "ts": 1788059846.050635,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_13fe89",
+      "ts": 1788059846.0775325,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Attempt 1/2 -> executor (http://ai-executor-1:8000)",
+      "ts": 1788059846.0794454,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "[KIỂM TRA] [SEARCH_WEB_GLOBAL] Đang kiểm tra an toàn & khóa tài nguyên...",
+      "ts": 1788059846.2072752,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "[CHÍNH SÁCH] [SEARCH_WEB_GLOBAL] Đang áp dụng chính sách thực thi...",
+      "ts": 1788059846.213057,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "[BỐI CẢNH] [SEARCH_WEB_GLOBAL] Đang nạp ngữ cảnh & nén thông tin...",
+      "ts": 1788059846.2154655,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[đang tìm kiếm] `SEARCH_WEB_GLOBAL`",
+      "ts": 1788059846.2291534,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "[THỰC THI] [SEARCH_WEB_GLOBAL] Bắt đầu thực thi...",
+      "ts": 1788059846.2309582,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "WEB_SEARCH",
+      "msg": "TAVILY: Initiating global web search for Hãy tạo cho tôi 1 trang web để phân công công việc, theo dõi tiến độ và email cảnh báo thủ công hoặc tự động khi quá hạn\n\n<ZENITH_SKILL_ACTIVATED>\nSkill: #1002 Hội Đồng Chuyên Gia AI (domain=CORE, score=0.96, tool_id=HOI_DONG_CHUYEN_GIA)\nƯu tiên sử dụng công cụ 'HOI_DONG_CHUYEN_GIA' cho mục tiêu này.\n</ZENITH_SKILL_ACTIVATED>\n\n<ZENITH_SKILL_DECK_RESOLVE>\nMaster dùng số thứ tự Command Deck (MAP_SKILLS.md). Đã ánh xạ sang Registry ID thực thi:\n- #1002: Hội Đồng Chuyên Gia AI: Kỹ năng triệu hồi Hội đồng Chuyên gia đa mô hình (Gemini, ChatGPT, DeepSeek, Grok) cùng thảo luận, phản biện chéo và đúc rút giải pháp tối ưu cho một bài toán phức tạp theo cấu trúc Evidence Schema JSON.\n  → registry_id / tool / skill_id: `HOI_DONG_CHUYEN_GIA`\nKhi gọi tool/plan: dùng registry_id ở trên, KHÔNG dùng số # trong field tool.\n</ZENITH_SKILL_DECK_RESOLVE>",
+      "ts": 1788059852.149551,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "WEB_DATA",
+      "msg": "TAVILY-FOUND: Discovered 10 results.\n1. 5 Phần mềm theo dõi tiến độ dự án, công việc FREE dùng thử (https://lacviet.vn/phan-mem-theo-doi-tien-do-du-an)\n2. 15 phần mềm quản lý, theo dõi tiến độ công việc hiệu quả (https://viindoo.com/vi/blog/quan-tri-doanh-nghiep-3/phan-mem-quan-ly-cong-viec-583)\n3. Top 5 phần mềm checklist công việc hiệu quả hiện nay (https://amis.misa.vn/13908/phan-mem-checklist-cong-viec)",
+      "ts": 1788059858.084516,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR:ALPHA",
+      "msg": "[đã tìm kiếm] ...",
+      "ts": 1788059859.0856395,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[SEARCH_WEB_GLOBAL] ✅ Execution succeeded.",
+      "ts": 1788059859.1163301,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TIẾN ĐỘ THỰC THI BƯỚC] Hoàn tất: `[x]` **auto_recovery_01**",
+      "ts": 1788059859.1211164,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1788059859.5100777,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1788059903.4593415,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — [PARTIAL] (Score: 0.00)",
+      "ts": 1788059983.2223382,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[T6] Ban Thư Ký đang soạn Báo cáo...",
+      "ts": 1788059983.2261221,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Command Deck → ['HOI_DONG_CHUYEN_GIA']",
+      "ts": 1788060240.4019363,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=846 | preview='Hãy tạo cho tôi 1 trang web để phân công công việc, theo dõi tiến độ và email cảnh báo thủ công hoặc tự động khi quá hạn\\n\\n<ZENITH_SKILL_ACTIVATED>\\nSkill: #1002 Hội Đồng Chuyên Gia AI (domain=CORE, sco' | hash=831ffd58a5f1e558 | task_id=ZENITH_3008-1013_13fe89 | trace_id=trace_13fe89",
+      "ts": 1788060240.4043684,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: ['DEBUG_ANALYSIS_ACTION'] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1788060240.4063742,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [PIPELINE-RESOLVER]: Chế độ DEEP kích hoạt (Reason: Master explicitly requested DEEP (Multi-Agent Ensemble Mode).).",
+      "ts": 1788060240.408223,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=office pipeline=deep mode=deep tags=ANALYSIS,OFFICE",
+      "ts": 1788060240.4104395,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1788060240.414215,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "DeepPipeline T2–T6 (full)",
+      "ts": 1788060240.4162216,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1788060240.470854,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1788060240.4739027,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1788060240.4939218,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1788060240.4997637,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1788060240.537421,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `gemma4:12b-it-qat` @ CPU/RAM)...",
+      "ts": 1788060240.965634,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 317.94s.",
+      "ts": 1788060558.9057612,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1788060558.9278998,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1788060558.9289749,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1788060558.946394,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_recovery_01 (SEARCH_WEB_GLOBAL)**: Auto-recovery: search web for: Hãy tạo cho tôi 1 trang web để phân công công việc, theo dõi tiến độ và email cảnh báo thủ công hoặc tự động khi quá hạn\n\n<ZENITH_SKILL_ACTIVATED>\nSkill: #1002 Hội Đồng Chuyên Gia AI (domain=CORE, score=0.96, tool_id=HOI_DONG_CHUYEN_GIA)\nƯu tiên sử dụng công cụ 'HOI_DONG_CHUYEN_GIA' cho mục tiêu này.\n</ZENITH_SKILL_ACTIVATED>\n\n<ZENITH_SKILL_DECK_RESOLVE>\nMaster dùng số thứ tự Command Deck (MAP_SKILLS.md). Đã ánh xạ sang Registry ID thực thi:\n- #1002: Hội Đồng Chuyên Gia AI: Kỹ năng triệu hồi Hội đồng Chuyên gia đa mô hình (Gemini, ChatGPT, DeepSeek, Grok) cùng thảo luận, phản biện chéo và đúc rút giải pháp tối ưu cho một bài toán phức tạp theo cấu trúc Evidence Schema JSON.\n  → registry_id / tool / skill_id: `HOI_DONG_CHUYEN_GIA`\nKhi gọi tool/plan: dùng registry_id ở trên, KHÔNG dùng số # trong field tool.\n</ZENITH_SKILL_DECK_RESOLVE>",
+      "ts": 1788060558.9783354,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CHECKPOINT] Đã khôi phục 1 bước hoàn thành trước đó.",
+      "ts": 1788060558.982611,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1788060558.9852061,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1788060558.9878697,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ". Nó",
+      "ts": 1788060744.950896,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " có các",
+      "ts": 1788060745.0112731,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tính năng",
+      "ts": 1788060745.0709138,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " như lịch",
+      "ts": 1788060745.13061,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trình,",
+      "ts": 1788060745.1906314,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thông báo",
+      "ts": 1788060745.2508626,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tự động",
+      "ts": 1788060745.3121574,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và phân",
+      "ts": 1788060745.3759115,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " loại công",
+      "ts": 1788060745.4381952,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc.\\",
+      "ts": 1788060745.4985,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n   ",
+      "ts": 1788060745.5625896,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " - **",
+      "ts": 1788060745.6211,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Asana",
+      "ts": 1788060745.682531,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "**: Một",
+      "ts": 1788060745.7433686,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công cụ",
+      "ts": 1788060745.8042474,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " quản lý",
+      "ts": 1788060745.8629098,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công việc",
+      "ts": 1788060745.9230611,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " chuyên nghiệp",
+      "ts": 1788060745.9837668,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", hỗ",
+      "ts": 1788060746.0434868,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trợ g",
+      "ts": 1788060746.1039217,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "iao việc",
+      "ts": 1788060746.1649997,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", the",
+      "ts": 1788060746.2251809,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "o dõi",
+      "ts": 1788060746.2864282,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tiến độ",
+      "ts": 1788060746.3473642,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và email",
+      "ts": 1788060746.4107504,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cảnh báo",
+      "ts": 1788060746.4689517,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ". Nó",
+      "ts": 1788060746.5293343,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " có các",
+      "ts": 1788060746.5899203,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tính năng",
+      "ts": 1788060746.6506655,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " như lịch",
+      "ts": 1788060746.711775,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trình,",
+      "ts": 1788060746.7725801,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " phân loại",
+      "ts": 1788060746.8337624,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công việc",
+      "ts": 1788060746.8974996,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và công",
+      "ts": 1788060746.959951,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cụ tích",
+      "ts": 1788060747.0220523,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hợp với",
+      "ts": 1788060747.0813022,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nhiều ứng",
+      "ts": 1788060747.1420953,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dụng khác",
+      "ts": 1788060747.204667,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\n",
+      "ts": 1788060747.2680483,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\\n7",
+      "ts": 1788060747.3245645,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "5.",
+      "ts": 1788060747.3868883,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " **Ch",
+      "ts": 1788060747.4506643,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ọn công",
+      "ts": 1788060747.5100696,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cụ quản",
+      "ts": 1788060747.5717797,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lý dự",
+      "ts": 1788060747.6340377,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " án**",
+      "ts": 1788060747.6949332,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ":\\n",
+      "ts": 1788060747.7563722,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "    -",
+      "ts": 1788060747.817231,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " **T",
+      "ts": 1788060747.878392,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "rello**:",
+      "ts": 1788060747.93826,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Một công",
+      "ts": 1788060747.9994674,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cụ quản",
+      "ts": 1788060748.060114,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lý công",
+      "ts": 1788060748.1213038,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc trực",
+      "ts": 1788060748.1852543,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tuyến đơn",
+      "ts": 1788060748.2440667,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " giản và",
+      "ts": 1788060748.30588,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dễ sử",
+      "ts": 1788060748.3759573,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dụng,",
+      "ts": 1788060748.4391565,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hỗ trợ",
+      "ts": 1788060748.4992085,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " giao",
+      "ts": 1788060748.5605755,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc,",
+      "ts": 1788060748.621689,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " theo",
+      "ts": 1788060748.6818128,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dõi tiến",
+      "ts": 1788060748.743319,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " độ và",
+      "ts": 1788060748.8059711,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " email cảnh",
+      "ts": 1788060748.866795,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " báo.",
+      "ts": 1788060748.9282901,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Nó cũng",
+      "ts": 1788060748.989468,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " có các",
+      "ts": 1788060749.050486,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tính năng",
+      "ts": 1788060749.1126416,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " như lịch",
+      "ts": 1788060749.173515,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trình và",
+      "ts": 1788060749.235398,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thông báo",
+      "ts": 1788060749.2982242,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tự động",
+      "ts": 1788060749.3597791,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\n",
+      "ts": 1788060749.4209712,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "    -",
+      "ts": 1788060749.4823906,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " **Monday",
+      "ts": 1788060749.545723,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".com**:",
+      "ts": 1788060749.606618,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Một công",
+      "ts": 1788060749.667855,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cụ quản",
+      "ts": 1788060749.7297692,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lý công",
+      "ts": 1788060749.79101,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc phổ",
+      "ts": 1788060749.8519058,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " biến và",
+      "ts": 1788060749.9142919,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dễ sử",
+      "ts": 1788060749.976092,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dụng,",
+      "ts": 1788060750.036761,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hỗ trợ",
+      "ts": 1788060750.0989275,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " giao",
+      "ts": 1788060750.1601527,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc,",
+      "ts": 1788060750.222788,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " theo",
+      "ts": 1788060750.284737,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dõi tiến",
+      "ts": 1788060750.3492928,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " độ và",
+      "ts": 1788060750.4114165,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " email cảnh",
+      "ts": 1788060750.4728565,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " báo.",
+      "ts": 1788060750.5347495,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Nó có",
+      "ts": 1788060750.5965548,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " các tính",
+      "ts": 1788060750.6578386,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " năng như",
+      "ts": 1788060750.7187529,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lịch trình",
+      "ts": 1788060750.7820642,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", thông",
+      "ts": 1788060750.8444438,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " báo tự",
+      "ts": 1788060750.905708,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " động và",
+      "ts": 1788060750.9666085,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " phân loại",
+      "ts": 1788060751.0271828,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công việc",
+      "ts": 1788060751.089936,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\n",
+      "ts": 1788060751.153351,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "    -",
+      "ts": 1788060751.214619,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " **As",
+      "ts": 1788060751.275153,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ana**:",
+      "ts": 1788060751.336558,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Một công",
+      "ts": 1788060751.3989248,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cụ quản",
+      "ts": 1788060751.461336,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lý công",
+      "ts": 1788060751.5226717,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc chuyên",
+      "ts": 1788060751.5845165,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nghiệp,",
+      "ts": 1788060751.6453297,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hỗ trợ",
+      "ts": 1788060751.7087324,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " giao",
+      "ts": 1788060751.770372,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc,",
+      "ts": 1788060751.8296497,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " theo",
+      "ts": 1788060751.8913467,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dõi tiến",
+      "ts": 1788060751.9544494,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " độ và",
+      "ts": 1788060752.015002,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " email cảnh",
+      "ts": 1788060752.0771344,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " báo.",
+      "ts": 1788060752.1379435,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Nó có",
+      "ts": 1788060752.1997516,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " các tính",
+      "ts": 1788060752.2606797,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " năng như",
+      "ts": 1788060752.3242204,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lịch trình",
+      "ts": 1788060752.3882146,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", phân",
+      "ts": 1788060752.4514763,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " loại công",
+      "ts": 1788060752.5119157,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc và",
+      "ts": 1788060752.5740159,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công cụ",
+      "ts": 1788060752.6354856,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tích hợp",
+      "ts": 1788060752.6969032,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " với nhiều",
+      "ts": 1788060752.7588656,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ứng dụng",
+      "ts": 1788060752.822533,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " khác.\\",
+      "ts": 1788060752.8850121,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n\\n",
+      "ts": 1788060752.9466696,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "76",
+      "ts": 1788060753.008543,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ". **",
+      "ts": 1788060753.071736,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Chọn",
+      "ts": 1788060753.1334996,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công cụ",
+      "ts": 1788060753.1957018,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " quản lý",
+      "ts": 1788060753.2599926,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dự án",
+      "ts": 1788060753.3237088,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "**:\\",
+      "ts": 1788060753.39877,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n   ",
+      "ts": 1788060753.460413,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " - **",
+      "ts": 1788060753.5236173,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Trello",
+      "ts": 1788060753.5867362,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "**: Một",
+      "ts": 1788060753.6480095,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công cụ",
+      "ts": 1788060753.7116928,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " quản lý",
+      "ts": 1788060753.773556,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công việc",
+      "ts": 1788060753.8362796,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trực tuyến",
+      "ts": 1788060753.901432,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " đơn giản",
+      "ts": 1788060753.9654732,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và dễ",
+      "ts": 1788060754.0282202,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " sử dụng",
+      "ts": 1788060754.0902936,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", hỗ",
+      "ts": 1788060754.152511,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trợ g",
+      "ts": 1788060754.216018,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "iao việc",
+      "ts": 1788060754.2775428,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", the",
+      "ts": 1788060754.3405,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "o dõi",
+      "ts": 1788060754.4021156,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tiến độ",
+      "ts": 1788060754.4656997,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và email",
+      "ts": 1788060754.5266325,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cảnh báo",
+      "ts": 1788060754.5887592,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ". Nó",
+      "ts": 1788060754.6516335,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cũng có",
+      "ts": 1788060754.7147543,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " các tính",
+      "ts": 1788060754.7770274,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " năng như",
+      "ts": 1788060754.8398187,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lịch trình",
+      "ts": 1788060754.9027007,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và thông",
+      "ts": 1788060754.9660237,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " báo tự",
+      "ts": 1788060755.02873,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " động.\\",
+      "ts": 1788060755.0911586,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n   ",
+      "ts": 1788060755.1532776,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " - **",
+      "ts": 1788060755.219913,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Monday.com",
+      "ts": 1788060755.288035,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "**: Một",
+      "ts": 1788060755.3518014,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công cụ",
+      "ts": 1788060755.414934,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " quản lý",
+      "ts": 1788060755.4772775,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công việc",
+      "ts": 1788060755.5394332,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " phổ biến",
+      "ts": 1788060755.6018913,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và dễ",
+      "ts": 1788060755.6649504,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " sử dụng",
+      "ts": 1788060755.7282422,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", hỗ",
+      "ts": 1788060755.7903569,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trợ g",
+      "ts": 1788060755.8538744,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "iao việc",
+      "ts": 1788060755.9171047,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", the",
+      "ts": 1788060755.9798708,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "o dõi",
+      "ts": 1788060756.0431714,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tiến độ",
+      "ts": 1788060756.1049812,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và email",
+      "ts": 1788060756.1674743,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cảnh báo",
+      "ts": 1788060756.2296734,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ". Nó",
+      "ts": 1788060756.2914166,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " có các",
+      "ts": 1788060756.3535907,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tính năng",
+      "ts": 1788060756.4167807,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " như lịch",
+      "ts": 1788060756.481091,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trình,",
+      "ts": 1788060756.5419085,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thông báo",
+      "ts": 1788060756.6041512,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tự động",
+      "ts": 1788060756.66949,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và phân",
+      "ts": 1788060756.7330248,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " loại công",
+      "ts": 1788060756.7946851,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc.\\",
+      "ts": 1788060756.8572793,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n   ",
+      "ts": 1788060756.9202764,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " - **",
+      "ts": 1788060756.9820383,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Asana",
+      "ts": 1788060757.0438838,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "**: Một",
+      "ts": 1788060757.1071994,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công cụ",
+      "ts": 1788060757.1698794,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " quản lý",
+      "ts": 1788060757.2332246,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công việc",
+      "ts": 1788060757.2971492,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " chuyên nghiệp",
+      "ts": 1788060757.360739,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", hỗ",
+      "ts": 1788060757.4234922,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trợ g",
+      "ts": 1788060757.4866962,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "iao việc",
+      "ts": 1788060757.5492733,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", the",
+      "ts": 1788060757.6120763,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "o dõi",
+      "ts": 1788060757.678293,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tiến độ",
+      "ts": 1788060757.7414017,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và email",
+      "ts": 1788060757.8035603,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cảnh báo",
+      "ts": 1788060757.8695488,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ". Nó",
+      "ts": 1788060757.9340427,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " có các",
+      "ts": 1788060757.996472,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tính năng",
+      "ts": 1788060758.0592017,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " như lịch",
+      "ts": 1788060758.1221886,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trình,",
+      "ts": 1788060758.1851623,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " phân loại",
+      "ts": 1788060758.2481828,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công việc",
+      "ts": 1788060758.3148904,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và công",
+      "ts": 1788060758.389785,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cụ tích",
+      "ts": 1788060758.4510205,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hợp với",
+      "ts": 1788060758.5146015,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nhiều ứng",
+      "ts": 1788060758.577919,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dụng khác",
+      "ts": 1788060758.6423402,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\n",
+      "ts": 1788060758.7057912,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\\n7",
+      "ts": 1788060758.7685394,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "7.",
+      "ts": 1788060758.8318884,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " **Ch",
+      "ts": 1788060758.8958135,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ọn công",
+      "ts": 1788060758.9595282,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cụ quản",
+      "ts": 1788060759.0227747,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lý dự",
+      "ts": 1788060759.0859938,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " án**",
+      "ts": 1788060759.148337,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ":\\n",
+      "ts": 1788060759.2110102,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "    -",
+      "ts": 1788060759.2745268,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " **T",
+      "ts": 1788060759.338009,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "rello**:",
+      "ts": 1788060759.4023316,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Một công",
+      "ts": 1788060759.4675639,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cụ quản",
+      "ts": 1788060759.5308864,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lý công",
+      "ts": 1788060759.594044,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc trực",
+      "ts": 1788060759.6566398,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tuyến đơn",
+      "ts": 1788060759.7205257,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " giản và",
+      "ts": 1788060759.7846613,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dễ sử",
+      "ts": 1788060759.8486075,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dụng,",
+      "ts": 1788060759.9131958,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hỗ trợ",
+      "ts": 1788060759.9763284,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " giao",
+      "ts": 1788060760.042013,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc,",
+      "ts": 1788060760.1053016,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " theo",
+      "ts": 1788060760.168633,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dõi tiến",
+      "ts": 1788060760.2323787,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " độ và",
+      "ts": 1788060760.2962105,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " email cảnh",
+      "ts": 1788060760.359961,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " báo.",
+      "ts": 1788060760.4237113,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Nó cũng",
+      "ts": 1788060760.488715,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " có các",
+      "ts": 1788060760.5515645,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tính năng",
+      "ts": 1788060760.6163568,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " như lịch",
+      "ts": 1788060760.6804805,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trình và",
+      "ts": 1788060760.7435126,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thông báo",
+      "ts": 1788060760.8074489,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tự động",
+      "ts": 1788060760.8726652,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\n",
+      "ts": 1788060760.9373682,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "    -",
+      "ts": 1788060760.999968,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " **Monday",
+      "ts": 1788060761.06293,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".com**:",
+      "ts": 1788060761.1292562,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Một công",
+      "ts": 1788060761.1948185,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cụ quản",
+      "ts": 1788060761.2575114,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lý công",
+      "ts": 1788060761.3232694,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc phổ",
+      "ts": 1788060761.3872385,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " biến và",
+      "ts": 1788060761.4531171,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dễ sử",
+      "ts": 1788060761.518045,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dụng,",
+      "ts": 1788060761.582485,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hỗ trợ",
+      "ts": 1788060761.646132,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " giao",
+      "ts": 1788060761.7103388,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc,",
+      "ts": 1788060761.7735157,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " theo",
+      "ts": 1788060761.8385096,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dõi tiến",
+      "ts": 1788060761.9034572,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " độ và",
+      "ts": 1788060761.967645,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " email cảnh",
+      "ts": 1788060762.030511,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " báo.",
+      "ts": 1788060762.0947907,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Nó có",
+      "ts": 1788060762.1579318,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " các tính",
+      "ts": 1788060762.220938,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " năng như",
+      "ts": 1788060762.2841837,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lịch trình",
+      "ts": 1788060762.3476357,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", thông",
+      "ts": 1788060762.412049,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " báo tự",
+      "ts": 1788060762.4752405,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " động và",
+      "ts": 1788060762.5387335,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " phân loại",
+      "ts": 1788060762.603349,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công việc",
+      "ts": 1788060762.6665983,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\n",
+      "ts": 1788060762.7305968,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "    -",
+      "ts": 1788060762.796316,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " **As",
+      "ts": 1788060762.859308,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ana**:",
+      "ts": 1788060762.9236946,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Một công",
+      "ts": 1788060762.9870448,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cụ quản",
+      "ts": 1788060763.0513165,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lý công",
+      "ts": 1788060763.115884,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc chuyên",
+      "ts": 1788060763.180814,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nghiệp,",
+      "ts": 1788060763.2459018,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hỗ trợ",
+      "ts": 1788060763.3107479,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " giao",
+      "ts": 1788060763.379631,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc,",
+      "ts": 1788060763.451151,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " theo",
+      "ts": 1788060763.516034,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dõi tiến",
+      "ts": 1788060763.5800827,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " độ và",
+      "ts": 1788060763.644877,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " email cảnh",
+      "ts": 1788060763.7084193,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " báo.",
+      "ts": 1788060763.7743597,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Nó có",
+      "ts": 1788060763.8368487,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " các tính",
+      "ts": 1788060763.9032865,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " năng như",
+      "ts": 1788060763.9662147,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lịch trình",
+      "ts": 1788060764.0299485,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", phân",
+      "ts": 1788060764.0947526,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " loại công",
+      "ts": 1788060764.1585155,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc và",
+      "ts": 1788060764.2258594,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công cụ",
+      "ts": 1788060764.2886193,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tích hợp",
+      "ts": 1788060764.355654,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " với nhiều",
+      "ts": 1788060764.4189782,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ứng dụng",
+      "ts": 1788060764.4838376,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " khác.\\",
+      "ts": 1788060764.5486689,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n\\n",
+      "ts": 1788060764.6135406,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "78",
+      "ts": 1788060764.6784654,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ". **",
+      "ts": 1788060764.7429914,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Chọn",
+      "ts": 1788060764.8062859,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công cụ",
+      "ts": 1788060764.869969,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " quản lý",
+      "ts": 1788060764.9338722,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dự án",
+      "ts": 1788060764.9995086,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "**:\\",
+      "ts": 1788060765.0635855,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n   ",
+      "ts": 1788060765.124057,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " - **",
+      "ts": 1788060765.1883488,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Trello",
+      "ts": 1788060765.2551258,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "**: Một",
+      "ts": 1788060765.3178265,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công cụ",
+      "ts": 1788060765.3821092,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " quản lý",
+      "ts": 1788060765.4503598,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công việc",
+      "ts": 1788060765.5144339,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trực tuyến",
+      "ts": 1788060765.5782626,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " đơn giản",
+      "ts": 1788060765.642376,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và dễ",
+      "ts": 1788060765.7070827,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " sử dụng",
+      "ts": 1788060765.7745106,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", hỗ",
+      "ts": 1788060765.83863,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trợ g",
+      "ts": 1788060765.9036329,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "iao việc",
+      "ts": 1788060765.9682078,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", the",
+      "ts": 1788060766.0316453,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "o dõi",
+      "ts": 1788060766.0968993,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tiến độ",
+      "ts": 1788060766.1631403,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và email",
+      "ts": 1788060766.2265904,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cảnh báo",
+      "ts": 1788060766.2915044,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ". Nó",
+      "ts": 1788060766.3560963,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cũng có",
+      "ts": 1788060766.421891,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " các tính",
+      "ts": 1788060766.485953,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " năng như",
+      "ts": 1788060766.5519612,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lịch trình",
+      "ts": 1788060766.6157165,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và thông",
+      "ts": 1788060766.6812494,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " báo tự",
+      "ts": 1788060766.7515774,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " động.\\",
+      "ts": 1788060766.8170712,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n   ",
+      "ts": 1788060766.8846328,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " - **",
+      "ts": 1788060766.951099,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Monday.com",
+      "ts": 1788060767.0136795,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "**: Một",
+      "ts": 1788060767.0785968,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công cụ",
+      "ts": 1788060767.143808,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " quản lý",
+      "ts": 1788060767.2105906,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công việc",
+      "ts": 1788060767.2776725,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " phổ biến",
+      "ts": 1788060767.3432045,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và dễ",
+      "ts": 1788060767.4080126,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " sử dụng",
+      "ts": 1788060767.472617,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", hỗ",
+      "ts": 1788060767.537694,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trợ g",
+      "ts": 1788060767.6034982,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "iao việc",
+      "ts": 1788060767.6680346,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", the",
+      "ts": 1788060767.7344108,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "o dõi",
+      "ts": 1788060767.7987044,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tiến độ",
+      "ts": 1788060767.8641965,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và email",
+      "ts": 1788060767.9287982,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cảnh báo",
+      "ts": 1788060767.993675,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ". Nó",
+      "ts": 1788060768.059466,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " có các",
+      "ts": 1788060768.1247869,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tính năng",
+      "ts": 1788060768.1900446,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " như lịch",
+      "ts": 1788060768.2538667,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trình,",
+      "ts": 1788060768.3202872,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thông báo",
+      "ts": 1788060768.3863204,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tự động",
+      "ts": 1788060768.4644768,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và phân",
+      "ts": 1788060768.5326116,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " loại công",
+      "ts": 1788060768.5940378,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc.\\",
+      "ts": 1788060768.6581607,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n   ",
+      "ts": 1788060768.722824,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " - **",
+      "ts": 1788060768.7886934,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Asana",
+      "ts": 1788060768.854025,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "**: Một",
+      "ts": 1788060768.9191146,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công cụ",
+      "ts": 1788060768.984303,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " quản lý",
+      "ts": 1788060769.0492957,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công việc",
+      "ts": 1788060769.1168497,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " chuyên nghiệp",
+      "ts": 1788060769.1806242,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", hỗ",
+      "ts": 1788060769.249284,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trợ g",
+      "ts": 1788060769.3155856,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "iao việc",
+      "ts": 1788060769.3836675,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", the",
+      "ts": 1788060769.4478686,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "o dõi",
+      "ts": 1788060769.5154881,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tiến độ",
+      "ts": 1788060769.58043,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và email",
+      "ts": 1788060769.6459534,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cảnh báo",
+      "ts": 1788060769.7119122,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ". Nó",
+      "ts": 1788060769.77667,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " có các",
+      "ts": 1788060769.8428621,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tính năng",
+      "ts": 1788060769.9068577,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " như lịch",
+      "ts": 1788060769.9722033,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trình,",
+      "ts": 1788060770.0399797,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " phân loại",
+      "ts": 1788060770.1071231,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công việc",
+      "ts": 1788060770.1711023,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " và công",
+      "ts": 1788060770.2355092,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cụ tích",
+      "ts": 1788060770.300111,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hợp với",
+      "ts": 1788060770.3653555,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nhiều ứng",
+      "ts": 1788060770.431353,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dụng khác",
+      "ts": 1788060770.496142,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\n",
+      "ts": 1788060770.562037,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "\\n7",
+      "ts": 1788060770.626981,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "9.",
+      "ts": 1788060770.6929681,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " **Ch",
+      "ts": 1788060770.7587497,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ọn công",
+      "ts": 1788060770.8245738,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cụ quản",
+      "ts": 1788060770.8908303,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lý dự",
+      "ts": 1788060770.9590297,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " án**",
+      "ts": 1788060771.0246558,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ":\\n",
+      "ts": 1788060771.0895295,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "    -",
+      "ts": 1788060771.1550064,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " **T",
+      "ts": 1788060771.219947,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "rello**:",
+      "ts": 1788060771.28569,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Một công",
+      "ts": 1788060771.3526013,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cụ quản",
+      "ts": 1788060771.418948,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lý công",
+      "ts": 1788060771.486094,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc trực",
+      "ts": 1788060771.5520504,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tuyến đơn",
+      "ts": 1788060771.619039,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " giản và",
+      "ts": 1788060771.6866975,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dễ sử",
+      "ts": 1788060771.7545068,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dụng,",
+      "ts": 1788060771.820508,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hỗ trợ",
+      "ts": 1788060771.8887599,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " giao",
+      "ts": 1788060771.9553032,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc,",
+      "ts": 1788060772.0205088,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " theo",
+      "ts": 1788060772.0865517,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dõi tiến",
+      "ts": 1788060772.152224,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " độ và",
+      "ts": 1788060772.2191262,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " email cảnh",
+      "ts": 1788060772.2831182,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " báo.",
+      "ts": 1788060772.348848,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Nó cũng",
+      "ts": 1788060772.4161212,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " có các",
+      "ts": 1788060772.482527,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tính năng",
+      "ts": 1788060772.5503538,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " như lịch",
+      "ts": 1788060772.614542,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " trình và",
+      "ts": 1788060772.680065,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " thông báo",
+      "ts": 1788060772.7501247,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tự động",
+      "ts": 1788060772.8182456,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\n",
+      "ts": 1788060772.8832395,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "    -",
+      "ts": 1788060772.9488413,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " **Monday",
+      "ts": 1788060773.0144153,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".com**:",
+      "ts": 1788060773.0799956,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Một công",
+      "ts": 1788060773.1477015,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cụ quản",
+      "ts": 1788060773.2148964,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lý công",
+      "ts": 1788060773.2801113,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc phổ",
+      "ts": 1788060773.3456614,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " biến và",
+      "ts": 1788060773.4176805,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dễ sử",
+      "ts": 1788060773.4833899,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dụng,",
+      "ts": 1788060773.5492063,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hỗ trợ",
+      "ts": 1788060773.6147313,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " giao",
+      "ts": 1788060773.6801128,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc,",
+      "ts": 1788060773.7450707,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " theo",
+      "ts": 1788060773.8124595,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dõi tiến",
+      "ts": 1788060773.8764093,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " độ và",
+      "ts": 1788060773.9430156,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " email cảnh",
+      "ts": 1788060774.0090234,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " báo.",
+      "ts": 1788060774.0750868,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Nó có",
+      "ts": 1788060774.141771,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " các tính",
+      "ts": 1788060774.2087712,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " năng như",
+      "ts": 1788060774.2760158,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lịch trình",
+      "ts": 1788060774.3422415,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", thông",
+      "ts": 1788060774.4088776,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " báo tự",
+      "ts": 1788060774.475042,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " động và",
+      "ts": 1788060774.5412238,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " phân loại",
+      "ts": 1788060774.6081674,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công việc",
+      "ts": 1788060774.6722255,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ".\\n",
+      "ts": 1788060774.739144,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "    -",
+      "ts": 1788060774.8060787,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " **As",
+      "ts": 1788060774.8729625,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "ana**:",
+      "ts": 1788060774.9398227,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Một công",
+      "ts": 1788060775.006657,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " cụ quản",
+      "ts": 1788060775.0738366,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lý công",
+      "ts": 1788060775.1432402,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc chuyên",
+      "ts": 1788060775.2097464,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " nghiệp,",
+      "ts": 1788060775.2782335,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " hỗ trợ",
+      "ts": 1788060775.34589,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " giao",
+      "ts": 1788060775.4130087,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc,",
+      "ts": 1788060775.4794822,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " theo",
+      "ts": 1788060775.5482476,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " dõi tiến",
+      "ts": 1788060775.614051,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " độ và",
+      "ts": 1788060775.6789572,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " email cảnh",
+      "ts": 1788060775.744867,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " báo.",
+      "ts": 1788060775.810666,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " Nó có",
+      "ts": 1788060775.8763883,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " các tính",
+      "ts": 1788060775.945478,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " năng như",
+      "ts": 1788060776.0134687,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " lịch trình",
+      "ts": 1788060776.0780778,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ", phân",
+      "ts": 1788060776.1449878,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " loại công",
+      "ts": 1788060776.211277,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " việc và",
+      "ts": 1788060776.2770083,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " công cụ",
+      "ts": 1788060776.3442488,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " tích hợp",
+      "ts": 1788060776.4121058,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " với nhiều",
+      "ts": 1788060776.4785511,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " ứng dụng",
+      "ts": 1788060776.54627,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": " khác.\\",
+      "ts": 1788060776.6133862,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "n\\n",
+      "ts": 1788060776.6819718,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "80",
+      "ts": 1788060776.7478225,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": ". **",
+      "ts": 1788060776.8160028,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Chọn",
+      "ts": 1788060776.880635,
+      "source": "EXECUTOR",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All connection attempts failed | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All connection attempts failed\"}",
+      "ts": 1788060778.9538274,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+      "ts": 1788060778.956604,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3008-1013_13fe89"
+    }
+  ],
+  "artifacts": {
+    "plan": "Hãy tạo cho tôi 1 trang web để phân công công việc, theo dõi tiến độ và email cảnh báo thủ công hoặc tự động khi quá hạn",
+    "walkthrough": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

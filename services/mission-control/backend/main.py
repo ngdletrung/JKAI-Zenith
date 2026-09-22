@@ -1154,15 +1154,31 @@ def _collect_snapshot():
     if hardware.get("health") and isinstance(hardware["health"].get("details"), list):
         services = hardware["health"]["details"]
     latest_logs = []
-    if summary.get("latest") and summary["latest"].get("id"):
-        mid = summary["latest"]["id"]
-        path = os.path.join(MISSIONS_DIR, f"mission_{mid}.json")
-        try:
-            with open(path, 'r', encoding='utf-8') as f:
-                mdata = json.load(f)
-            latest_logs = [{"tag": l.get("tag"), "msg": l.get("msg")} for l in (mdata.get("logs") or [])[-12:]]
-        except Exception:
-            pass
+    latest_obj = summary.get("latest")
+    if latest_obj and latest_obj.get("id"):
+        mid = latest_obj["id"]
+        # Tim path file mission phu hop
+        possible_paths = [
+            os.path.join(MISSIONS_DIR, f"mission_{mid}.json"),
+            os.path.join(MISSIONS_DIR, f"{mid}.json"),
+        ]
+        if not mid.startswith("mission_"):
+            possible_paths.insert(0, os.path.join(MISSIONS_DIR, f"mission_{mid}.json"))
+        else:
+            possible_paths.insert(0, os.path.join(MISSIONS_DIR, f"{mid}.json"))
+            
+        mdata = None
+        for p in possible_paths:
+            if os.path.exists(p):
+                try:
+                    with open(p, 'r', encoding='utf-8') as f:
+                        mdata = json.load(f)
+                    break
+                except Exception:
+                    pass
+        if mdata and isinstance(mdata, dict):
+            raw_logs = mdata.get("logs") or []
+            latest_logs = [{"tag": l.get("tag", "AI"), "msg": l.get("msg", "")} for l in raw_logs[-20:] if l.get("msg")]
     return {
         "ts": time.time(),
         "live": True,

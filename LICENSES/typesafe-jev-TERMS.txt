@@ -1,0 +1,30 @@
+TypeSafe Jev (System One AI) - Terms & Architecture Attribution
+Source: PJ Burnhill / TypeSafe AI
+Reference: https://gist.github.com/pjburnhill/adf8d28efcad9df037bfdece178ef965
+Status: Conceptual Architecture & Proprietary Cloud API Reference
+
+Description:
+TypeSafe Jev is an architectural paradigm and API designed by PJ Burnhill / TypeSafe AI 
+for fast, typed System One probabilistic classification and semantic judging 
+(using Noul [0, 1], Choice, and Score primitives).
+
+Usage & Assimilation in JKAI Zenith:
+1. Clean-Room Implementation:
+   JKAI Zenith does not bundle, copy, or redistribute any proprietary code, model weights, 
+   or binaries from TypeSafe AI. All interfaces, local emulators, validators, and firewalls 
+   in JKAI (core/cognitive_bus/jev_substrate_adapter.py, core/security/dual_stage_action_firewall.py, 
+   core/verification/l3_semantic_verifier.py, core/recovery/error_classifier.py) are 100% original, 
+   clean-room implementations developed independently.
+
+2. Sovereign Local Independence:
+   In accordance with the JKAI Sovereign Constitution (.keywork.md), JKAI Zenith operates 
+   with complete offline autonomy through a Tri-Tier fallback architecture (Tier 1 Cloud API -> 
+   Tier 2 Local Qwen3-1.7B Emulator -> Tier 3 Deterministic Rule Baseline).
+
+3. Data Governance:
+   All states passed to external APIs are scrubbed of PII, secrets, and sensitive tokens 
+   via StateSanitizer prior to transmission.
+
+4. Legal Attribution:
+   This file is maintained in compliance with the JKAI 4-step Third-Party License & Assimilation 
+   Governance (NOTICE.md §6) to preserve intellectual property credit to the original author.
