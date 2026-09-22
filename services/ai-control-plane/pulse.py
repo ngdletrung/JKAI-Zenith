@@ -61,10 +61,12 @@ class ZenithPulse:
         
         # 2. AUXILIARY SERVICES (Bổ trợ / Tùy chọn)
         aux_checks = {
-            "🦾 AI-Executor": "http://ai-executor-1:8000/health",
+            "🦾 AI-Executor 1": "http://ai-executor-1:8000/health",
+            "🦾 AI-Executor 2": "http://ai-executor-2:8000/health",
             "🔍 Qdrant DB": "http://qdrant:6333/healthz",
             "📚 RAG-Service": "http://rag-service:8000/health",
-            "🔗 N8N-Main": "http://n8n-main:5678/healthz"
+            "🔗 N8N-Main": "http://n8n-main:5678/healthz",
+            "🛡️ File-Warden": "http://jkai-file-warden:8005/health",
         }
 
         async def check_url(name, url, is_core=True):

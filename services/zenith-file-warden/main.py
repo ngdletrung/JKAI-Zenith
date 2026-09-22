@@ -6,8 +6,9 @@ import uvicorn
 app = FastAPI(title="Zenith File Warden")
 
 @app.get("/")
+@app.get("/health")
 def home():
-    return {"status": "online", "service": "Zenith File Warden", "master": "LeeTrung"}
+    return {"status": "UP", "service": "Zenith File Warden", "master": "LeeTrung"}
 
 @app.get("/search")
 def search_files(query: str, path: str = os.getenv("INTELLIGENCE_DIR", "/intelligence")):

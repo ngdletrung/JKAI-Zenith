@@ -175,7 +175,7 @@ class SingleAuthorityFSM:
 
         if act_lower in self.DESTRUCTIVE_ACTIONS and not can_delete:
             self.state = FSMState.DENIED
-            reason = "HARD BOUNDARY DENIAL: Policy strictly forbids file deletion (can_delete_files=False)."
+            reason = "[FAIL-CLOSED] HARD BOUNDARY DENIAL: Policy strictly forbids file deletion (can_delete_files=False)."
             record = self._create_record(
                 action=action, target=target, verdict=AuthorityVerdict.DENY,
                 reason=reason, risk_level="HIGH", rule_matched="FORBIDDEN_FILE_DELETION",

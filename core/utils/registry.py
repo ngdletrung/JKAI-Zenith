@@ -11,7 +11,8 @@ class NeuralRegistry:
         # Các biến môi trường sẽ được ưu tiên nếu có.
         self._services = {
             "executor": os.getenv("EXECUTOR_URL", "http://127.0.0.1:8002"),
-            "executor_2": os.getenv("EXECUTOR_2_URL", "http://127.0.0.1:8003"),
+            "executor_2": os.getenv("EXECUTOR_2_URL", "http://127.0.0.1:8007"),
+            "browser": os.getenv("BROWSER_URL", "http://127.0.0.1:8003"),
             "brain": os.getenv("AI_BRAIN_URL", "http://127.0.0.1:8001"),
             "control_plane": os.getenv("AI_CONTROL_PLANE_URL", "http://127.0.0.1:7000"),
             "ollama_gpu": os.getenv("OLLAMA_HOST", "http://127.0.0.1:11434"),

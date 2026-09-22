@@ -45,11 +45,19 @@ class TaskProfile:
     completion_policy: str = "STRICT"
 
 
+def strip_context_pack(text: str) -> str:
+    if not text:
+        return ""
+    # Strip <MISSION_CONTEXT_PACK> blocks to avoid prior mission pollution
+    return re.sub(r"<MISSION_CONTEXT_PACK>[\s\S]*?</MISSION_CONTEXT_PACK>", "", text, flags=re.DOTALL).strip()
+
+
 def profile_task(goal: str, history: Optional[List] = None, kwargs: Optional[Dict[str, Any]] = None) -> TaskProfile:
     """
     Computes a multi-dimensional TaskProfile from goal text and context signals.
     """
-    g = (goal or "").strip().lower()
+    active_goal = strip_context_pack(goal)
+    g = active_goal.lower()
     kw = kwargs or {}
     profile = TaskProfile()
 
@@ -85,21 +93,30 @@ def profile_task(goal: str, history: Optional[List] = None, kwargs: Optional[Dic
 
     # 1. Check Capability Acknowledgement / Greeting / Math (REFLEX signals)
     from core.utils.jkai_capabilities import goal_is_capabilities_inquiry
-    if goal_is_capabilities_inquiry(goal):
+    if goal_is_capabilities_inquiry(active_goal):
         profile.reason_codes.append("CAPABILITY_QUERY")
         profile.verification_need = "LOW"
         profile.confidence_score = 1.0
         return profile
 
-    social_greeting_pattern = re.search(
-        r"\b(xin\s+chào|chào|hello|hi|cảm\s+ơn|thanks|tạm\s+biệt|bye|bạn\s+thế\s+nào|thế\s+nào|khỏe\s+không|bạn\s+khỏe|hôm\s+nay\s+thế\s+nào|cảm\s+thấy\s+thế\s+nào|how\s+are\s+you|bạn\s+là\s+ai|bạn\s+tên\s+gì)\b",
-        g, re.I
+    # Only classify as GREETING_SOCIAL if there is NO operational action request
+    has_action_intent = any(
+        kw in g for kw in [
+            "tạo", "viết", "sửa", "xóa", "chạy", "kiểm tra", "tìm", "đọc",
+            "file", "tệp", "lệnh", "code", "script", "cài", "build", "test",
+            "audit", "patch", "fix", "git", "docker", "phân tích", "hãy", "giúp"
+        ]
     )
-    if social_greeting_pattern:
-        profile.reason_codes.append("GREETING_SOCIAL")
-        profile.verification_need = "LOW"
-        profile.confidence_score = 1.0
-        return profile
+    if not has_action_intent:
+        social_greeting_pattern = re.search(
+            r"\b(xin\s+chào|chào|hello|hi|cảm\s+ơn|thanks|tạm\s+biệt|bye|bạn\s+thế\s+nào|thế\s+nào|khỏe\s+không|bạn\s+khỏe|hôm\s+nay\s+thế\s+nào|cảm\s+thấy\s+thế\s+nào|how\s+are\s+you|bạn\s+là\s+ai|bạn\s+tên\s+gì)\b",
+            g, re.I
+        )
+        if social_greeting_pattern:
+            profile.reason_codes.append("GREETING_SOCIAL")
+            profile.verification_need = "LOW"
+            profile.confidence_score = 1.0
+            return profile
 
     # 2. Risk & Mutation Scope Analysis (Unicode Safe)
     high_risk_patterns = [
