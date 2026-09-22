@@ -81,10 +81,21 @@ class PipelineResolver:
         is_complex_intent = (
             user_explicit_deep
             or (deep_skill_flag and req_mode != "fast")
-            or exec_policy.topology == ExecutionTopology.MULTI_AGENT
+            or (exec_policy.topology == ExecutionTopology.MULTI_AGENT and req_mode != "fast")
             or os_intent in ("build", "fix", "refactor", "code", "coding", "architecture")
             or any(t in ("CODING", "ARCHITECTURE", "MULTI_AGENT", "SYSTEM") for t in tags)
         )
+
+        # 🛡️ MASTER FAST SOVEREIGNTY (Invariant 1 — Quyết định FAST của Master là tối thượng)
+        # Nếu Master chỉ định requested_mode="fast" và không có user_explicit_deep, giữ nguyên FAST
+        if req_mode == "fast" and not user_explicit_deep and not is_high_risk:
+            pipeline = "fast"
+            is_fast = True
+            is_deep = False
+            use_deep_full = False
+            if log_event:
+                log_telemetry(plan, "ZENITH", "⚡ [PIPELINE-RESOLVER]: Master Fast Sovereignty — giữ nguyên FAST theo yêu cầu.", stealth=True)
+            return pipeline, is_fast, is_deep, use_deep_full
 
         if is_complex_intent or is_high_risk:
             pipeline = "deep"
@@ -95,6 +106,7 @@ class PipelineResolver:
             if log_event:
                 log_telemetry(plan, "ZENITH", f"🧠 [PIPELINE-RESOLVER]: Chế độ DEEP tự động kích hoạt (Reason: {exec_policy.reason or os_intent}).")
             return pipeline, is_fast, is_deep, use_deep_full
+
 
         # 3. Mặc định chạy FAST Standard (Tiết kiệm tài nguyên và sub-second response)
         pipeline = "fast"

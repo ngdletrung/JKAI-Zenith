@@ -198,15 +198,19 @@ class ExecutionIntegrityLayer:
                 action=action
             )
 
+
         # D. Arbitrary Python / Code Execution Check
+        # 🔒 [INVARIANT C3 — ABSOLUTE DENY]: Arbitrary code execution is NEVER permitted
+        # regardless of PolicySnapshot or any authority level. This is a hard constitutional boundary.
         is_python_req = any(k in act_lower for k in self.PYTHON_EXECUTE_KEYWORDS)
-        if is_python_req and not can_shell:
-            logger.info(f"Execution HARD DENIED for action={action}: can_execute_shell=False.")
+        if is_python_req:
+            logger.info(f"Execution HARD DENIED for action={action}: Arbitrary code execution is an absolute boundary.")
             return ExecutionDecision(
                 outcome=DecisionOutcome.DENY,
-                reason="HARD BOUNDARY DENIAL: Arbitrary execution is disabled under current PolicySnapshot.",
+                reason="HARD BOUNDARY DENIAL: Arbitrary Python/code execution is unconditionally forbidden (Invariant C3).",
                 action=action
             )
+
 
         # ---------------------------------------------------------------------
         # 3. FORBIDDEN ACTIONS CHECK

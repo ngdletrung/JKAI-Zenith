@@ -118,7 +118,12 @@ class MasterPromptArchitect:
             parts.insert(0, "[SYSTEM ALERT]: Cognitive Substrate in Fallback Mode.")
 
         full_prompt = "\n\n---\n\n".join(parts)
+        # Prepend compiled_cognition to FULL variant (same as MID) to ensure
+        # FULL is always >= MID in size (Invariant: FULL > MID > LEAN)
+        if compiled_cognition:
+            full_prompt = f"{compiled_cognition}\n\n{full_prompt}"
         return self.truncate_to_limit(full_prompt, max_tokens=max_tokens_limit)
+
 
     def _build_mid_prompt(self, role: str, task_tags: List[str]) -> str:
         """

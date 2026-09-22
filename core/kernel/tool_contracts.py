@@ -186,7 +186,65 @@ ToolContractRegistry.register("write_to_file", WriteFileContract, ["write_code",
 ToolContractRegistry.register("replace_file_content", ReplaceFileContentContract, ["replace_content", "replace_file"])
 ToolContractRegistry.register("run_command", RunCommandContract, ["execute_command", "run_cmd", "cmd"])
 ToolContractRegistry.register("view_file", ViewFileContract, ["read_file", "read_code", "viewfile"])
-ToolContractRegistry.register("grep_search", GrepSearchContract, ["grep", "search_files"])
+ToolContractRegistry.register("grep_search", GrepSearchContract, ["grep", "search_files", "pattern"])
 ToolContractRegistry.register("list_dir", ListDirContract, ["listdir", "ls"])
 ToolContractRegistry.register("web_search", WebSearchContract, ["search_web", "tavily_search", "search_web_global"])
 ToolContractRegistry.register("python_execute", PythonExecuteContract, ["py_exec", "run_python"])
+
+
+# =========================================================================
+# 3. MODULE-LEVEL SHORTCUT FUNCTIONS
+# =========================================================================
+
+_FIELD_ALIASES: Dict[str, Dict[str, str]] = {
+    "grep_search": {
+        "pattern": "query",
+        "path": "SearchPath",
+        "search_path": "SearchPath",
+    },
+}
+
+
+def get_contract(tool_name: str) -> Optional[Type[BaseModel]]:
+    """Return the Pydantic contract model for a tool, or None if not registered."""
+    return ToolContractRegistry.get_model(tool_name)
+
+
+def canonicalize(
+    tool_name: str,
+    args: Dict[str, Any],
+) -> Tuple[str, Dict[str, Any], List[str]]:
+    """
+    Canonicalize tool arguments:
+    - Resolves field aliases (e.g., 'pattern' → 'query' for grep_search)
+    - Returns (canonical_name, canonical_kwargs, issues_list)
+    canonical_kwargs uses lowercase alias-resolved keys (before Pydantic capitalization).
+    issues_list is empty on success; contains warning strings on soft mismatches.
+    """
+    canon_name = ToolContractRegistry.get_canonical_name(tool_name) or tool_name.lower().strip()
+    alias_map = _FIELD_ALIASES.get(canon_name, {})
+
+    # Step 1: Apply field aliases (e.g., pattern → query). Keys stay lowercase.
+    canonical_kws: Dict[str, Any] = {}
+    issues: List[str] = []
+
+    for k, v in args.items():
+        mapped_key = alias_map.get(k.lower(), k)
+        canonical_kws[mapped_key] = v
+
+    # Step 2: Validate (collect issues) but DO NOT overwrite canonical_kws with
+    # normalize_args output — that would capitalize keys (Query, SearchPath, etc.)
+    # and break callers who expect lowercase keys like canonical_kws.get("query").
+    model_cls = ToolContractRegistry.get_model(canon_name)
+    if model_cls:
+        norm = ToolContractRegistry.normalize_args(model_cls, canonical_kws)
+        is_valid, err, _ = ToolContractRegistry.validate_tool_call(canon_name, norm)
+        if not is_valid and err:
+            for mf in err.get("missing_fields", []):
+                issues.append(f"Missing required field: '{mf}'")
+            for field, msg in err.get("type_mismatches", {}).items():
+                issues.append(f"Type mismatch on '{field}': {msg}")
+        # canonical_kws intentionally NOT replaced — preserve lowercase alias keys
+
+    return canon_name, canonical_kws, issues
+
