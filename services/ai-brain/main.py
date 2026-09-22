@@ -153,6 +153,11 @@ _evolve_lock = asyncio.Lock()
 
 async def _system_is_idle() -> bool:
     """Check system load before running heavy background tasks."""
+    # Kill-Switch: Cho phép Master tắt tức thì qua env OMNI_EVOLVE_ENABLED=false
+    omni_enabled = os.getenv("OMNI_EVOLVE_ENABLED", "false").strip().lower() in ("1", "true", "yes", "on")
+    if not omni_enabled:
+        return False
+
     try:
         import psutil
         cpu = psutil.cpu_percent(interval=0.5)
@@ -163,12 +168,13 @@ async def _system_is_idle() -> bool:
     except Exception:
         pass
     try:
-        active = redis_safe(lambda r: r.scard("active_tasks"), 0)
+        # FAIL-CLOSED: Nếu Redis không đọc được, default = 1 (coi như có task đang chạy, defer)
+        active = redis_safe(lambda r: r.scard("active_tasks"), 1)
         if active and int(active) > 0:
             logger.info("[EVOLVE] %s active tasks — deferring", active)
             return False
     except Exception:
-        pass
+        return False
     return True
 
 

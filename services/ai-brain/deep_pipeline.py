@@ -23,6 +23,7 @@ NGUYÊN TẮC VÀNG:
 import json
 import logging
 import asyncio
+import os
 import httpx
 from typing import Any, Dict, List, Optional
 from core.utils.engine import MasterAbortException, engine
@@ -48,6 +49,80 @@ class DeepPipeline:
             ReconStage(), ContextStage(), ForgeStage(), DAGOptimizerStage(), PolicyStage()
         ])
     async def execute(
+        self,
+        goal: str,
+        task_id: str,
+        planner_instance: Any = None,
+        context: Dict = None,
+        history: List = None,
+        images: List = None,
+        mode: str = "auto",
+        trace_id: str = "system",
+    ) -> Dict[str, Any]:
+        """
+        Thực thi toàn bộ luồng DEEP từ T2 đến T6 với Hard Mission Timeout (V4: 900s).
+        """
+        mission_timeout = int(os.getenv("MISSION_HARD_TIMEOUT_SECONDS", "900"))
+        try:
+            return await asyncio.wait_for(
+                self._execute_mission_loop(
+                    goal=goal,
+                    task_id=task_id,
+                    planner_instance=planner_instance,
+                    context=context,
+                    history=history,
+                    images=images,
+                    mode=mode,
+                    trace_id=trace_id,
+                ),
+                timeout=mission_timeout,
+            )
+        except asyncio.TimeoutError:
+            engine.publish_mission_log(
+                "ERROR",
+                f"🛑 [MISSION-TIMEOUT] Sứ mệnh {task_id} vượt quá giới hạn an toàn {mission_timeout}s (15 phút). "
+                f"Kích hoạt ngắt khẩn cấp và hủy toàn bộ tác vụ con thưa Master.",
+                task_id,
+                trace_id,
+            )
+            # 1. Bật tín hiệu dừng khẩn cấp cho task_id vào Redis
+            r_stop = engine._get_redis()
+            if r_stop:
+                try:
+                    r_stop.setex(f"agent:stop_signal:{task_id}", 300, "true")
+                except Exception:
+                    pass
+
+            # 2. Ghi nhận checkpoint FAILED vào SQLite WAL
+            try:
+                from core.kernel.durable_checkpoint import get_checkpoint_engine, StateEnvelope
+                cp_engine = get_checkpoint_engine()
+                ik = cp_engine.compute_idempotency_key(task_id, -1, "MISSION_HARD_TIMEOUT", {"timeout_seconds": mission_timeout})
+                cp_engine.save_checkpoint(
+                    mission_id=task_id,
+                    step_id=-1,
+                    status="FAILED",
+                    state=StateEnvelope(version="1.0", messages=[{"role": "system", "content": f"Hard timeout {mission_timeout}s exceeded"}], next_step_id=-1),
+                    idempotency_key=ik,
+                )
+            except Exception as cp_err:
+                logger.warning("[MISSION-TIMEOUT] Checkpoint save failed: %s", cp_err)
+
+            return {
+                "status": "FAILED",
+                "error": f"Mission exceeded hard timeout of {mission_timeout}s.",
+                "answer": f"Sứ mệnh đã bị ngắt bởi Hard Timeout ({mission_timeout}s) để bảo vệ tài nguyên hệ thống thưa Master.",
+                "task_id": task_id,
+                "execution": {},
+                "judicial_review": {
+                    "verdict": "FAIL",
+                    "passed": False,
+                    "feedback": f"Mission timed out after {mission_timeout}s",
+                },
+                "sensitive": False,
+            }
+
+    async def _execute_mission_loop(
         self,
         goal: str,
         task_id: str,
@@ -177,6 +252,14 @@ class DeepPipeline:
                     task_id,
                     trace_id
                 )
+                final_result["status"] = "SUCCESS"
+                # Invariant V6: Chỉ ghi nhận Cache khi Sứ mệnh thành công thực thụ
+                try:
+                    from core.utils.pipeline_cache import pipeline_cache
+                    asyncio.ensure_future(pipeline_cache.set(goal, mode, final_result))
+                except Exception as cache_err:
+                    logger.warning("[DEEP-PIPELINE] Cache set failed: %s", cache_err)
+
                 # Ghi nhận thành công vào ExperienceStore
                 try:
                     from core.memory.experience_store import ExperienceStore
@@ -998,7 +1081,9 @@ class DeepPipeline:
             f"Báo cáo Master! Chuỗi hành pháp chuyên sâu T2-T6 cho yêu cầu: **{goal}** "
             f"đã được điều phối thi hành trọn bích qua {len(steps)} bước chiến lược trong hệ sinh thái."
         )
+        is_real_answer = bool(final_answer and final_answer.strip() and final_answer != fallback_report)
         result = {
+            "status": "SUCCESS" if is_real_answer else "FAILED",
             "answer": final_answer or fallback_report,
             "task_id": task_id,
             "steps": steps,
@@ -1006,8 +1091,6 @@ class DeepPipeline:
             "judicial_review": judicial_review,
             "sensitive": False,
         }
-        from core.utils.pipeline_cache import pipeline_cache
-        asyncio.ensure_future(pipeline_cache.set(goal, mode, result))
         return result
 
     def _compress_results(self, results: Any) -> str:

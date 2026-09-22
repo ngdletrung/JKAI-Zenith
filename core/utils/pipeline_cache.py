@@ -67,6 +67,49 @@ def _is_error_response(answer: str) -> bool:
     return False
 
 
+def _is_cacheable_result(result: Any) -> bool:
+    """Invariant: ONLY cache when status is SUCCESS, answer is non-empty/non-fallback,
+    and judicial_review (if present) passed."""
+    if not isinstance(result, dict):
+        return False
+    status = str(result.get("status", "")).strip().lower()
+    if status in ("failed", "error", "blocked", "aborted", "rejected"):
+        return False
+    if result.get("error") or result.get("exception"):
+        return False
+
+    answer = result.get("answer") or result.get("msg") or result.get("response") or ""
+    if not isinstance(answer, str) or not answer.strip():
+        return False
+    if _is_error_response(answer):
+        return False
+    # Chặn fallback report khi pipeline rỗng/thất bại
+    if "Chuỗi hành pháp chuyên sâu T2-T6" in answer or "fallback report" in answer.lower():
+        return False
+
+    # Kiểm tra judicial_review nếu có trong kết quả
+    jr = result.get("judicial_review")
+    if isinstance(jr, dict):
+        if jr.get("passed") is False:
+            return False
+        verdict = str(jr.get("verdict", "")).strip().upper()
+        if verdict and not any(w in verdict for w in ["SUCCESS", "PARTIAL", "PASS", "APPROVED", "VALID", "OK"]):
+            return False
+
+    # Kiểm tra execution steps nếu có
+    execution = result.get("execution")
+    if isinstance(execution, dict) and execution:
+        statuses = [
+            str(s.get("status", "")).lower()
+            for s in execution.values()
+            if isinstance(s, dict)
+        ]
+        if statuses and all(st in ("error", "fail", "failed", "blocked") for st in statuses):
+            return False
+
+    return True
+
+
 class PipelineCache:
     def __init__(self):
         self._redis = None
@@ -110,10 +153,9 @@ class PipelineCache:
 
     async def set(self, goal: str, mode: str, result: Dict[str, Any]) -> None:
         key = _cache_key(goal, mode)
-        # Do not cache error/abort responses
-        answer = result.get("answer") or result.get("msg") or result.get("response") or ""
-        if isinstance(answer, str) and _is_error_response(answer):
-            logger.warning("[CACHE-SKIP] Aborted/error response not cached key=%s goal=%.60s", key, goal)
+        # Invariant V6: ONLY cache verified SUCCESS results
+        if not _is_cacheable_result(result):
+            logger.warning("[CACHE-SKIP] Non-successful, fallback, or error response not cached key=%s goal=%.60s", key, goal)
             return
         ttl = _ttl_for(goal)
         serialized = json.dumps(result, ensure_ascii=False, default=str)
