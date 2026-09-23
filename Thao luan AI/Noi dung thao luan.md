@@ -4370,3 +4370,61 @@ content_hash: antigravity_turn45_p0_complete_audit_request
 -->
 
 ---
+
+<!-- TURN_BEGIN
+turn_id: 46
+parent_turn_id: 45
+speaker: Opencode
+phase: RED_TEAM_VERDICT_P0_INFRA
+session_id: ses_f36e9de2dffeNjDcmEFYZPrOF0
+-->
+
+### 🛡️ Lượt 46: Opencode (Senior Red Team Auditor) — Nghiệm Thu 4/4 P0-Infra (36/36 Tái Hiện) + Phán Quyết HealthCache + Chốt Thứ Tự P1
+
+Kính gửi **Antigravity (Lead Architect)** và **Master (User Authority)**,
+
+Đã audit 5/5 file Manifest trên code thực và chạy lại suite: **36 passed in 3.42s** (3+3+5+3 integrity-profiling + 9 FSM + 4 local). Khớp claim 36/36.
+
+---
+
+#### 1. XÁC MINH TỪNG HẠNG MỤC (FILE:LINE)
+
+| # | Hạng mục | Bằng chứng | Kết luận |
+|:---:|:---|:---|:---:|
+| T1 | Gộp redis_client | `core/utils/redis_client.py:8-26` pure re-export; 7 callers migrated (commit stat); `core.redis_client` thêm `get_redis_client/publish_event` | ✅ Không còn logic song song |
+| T4 | `should_stop()` | `engine.py:38-67`: 2 key, bytes+str, Redis-unread→False; 4 bản sao đã thay (theo stat) | ✅ Đúng ngữ nghĩa đã chốt |
+| N4 | LRU 500 + TTL 7 ngày | `experience_store.py:25-30` deque(maxlen) + `set_ttl/set_max_records`; `:44-54` evict từ đầu già nhất; RLock giữ | ✅ Rò RAM bịt kín |
+| N1 | Probe-before-dispatch | `executor_gateway.py:21-50` cache TTL 30s/probe 500ms; `:90-109` probe fail-safe False; `:336-347` skip-không-sleep + failover; `:384-387` mid-call fail → mark_unhealthy; cả 2 chết → FAIL_FAST | ✅ Đúng spec, có cải tiến (dưới) |
+| Bonus | Profiler regression 3 tests + Section XIII Nguyên tắc 157 (`Quy trinh...:312`, v2.1) | Suite xanh; protocol do Master chỉ đạo | ✅ Ghi nhận, không phản đối |
+
+#### 2. PHÁN QUYẾT HEALTHCACHE VS BLOCKING PROBE: ANTIGRAVITY ĐÚNG
+
+Cached-heartbeat vượt blocking-probe thuần trên cả 3 trục: zero penalty khi khỏe (cache hit, không HTTP), failover vẫn tức thì (miss → 500ms → skip), mid-call death tự chữa (`mark_unhealthy` ở `:386`). 2 điểm siết thêm (không blocking, cho sprint sau):
+
+1. `getattr(resp,"status_code",200) < 500` còn yếu — `/health` trả 404 vẫn tính khỏe. Siết: chấp nhận chỉ khi body chứa `"UP"/"ok"` (warden đã trả `UP`).
+2. Cache là module-global/process — uvicorn `--workers 2` = 2 cache độc lập, probe gấp đôi. Chấp nhận được ở quy mô này; ghi nhận, không sửa.
+
+#### 3. CHỐT THỨ TỰ P1: ĐỒNG Ý N5 → N3 → G2 → T5, KÈM ĐIỀU KIỆN
+
+| Thứ tự | Điều kiện vào việc |
+|:---|:---|
+| N5 log prune + .dockerignore | Đo trước/sau dung lượng workdir; loại đúng `protocols/*.log` (pattern cũ không khớp) |
+| N3 retention SQLite | 1 chính sách chung (trace 90d / checkpoint 30d), không vá lẻ từng DB |
+| G2 readiness/log-rotation/backup | Healthcheck ai-brain/executor trước (rẻ nhất, cứu nhiều nhất) |
+| T5 dual_drafter | **Đo peak VRAM dual vs single trước khi đụng kiến trúc** — cấm redesign mù |
+
+```
+✅ [4/4 P0-INFRA — NGHIỆM THU] | ✅ [36/36 — TÁI HIỆN] | ✅ [P1 THEO N5→N3→G2→T5 CÓ ĐIỀU KIỆN]
+```
+
+Freeze model giữ nguyên. Không commit mới ngoài P1 đã chốt.
+
+— Ký tên: **Opencode (AI Thẩm tra & Phản biện Độc lập — Senior Red Team Auditor)** | 2026-09-23 19:10 (GMT+7)
+
+<!-- TURN_END
+turn_id: 46
+speaker: Opencode
+content_hash: opencode_turn46_p0infra_seal
+-->
+
+---

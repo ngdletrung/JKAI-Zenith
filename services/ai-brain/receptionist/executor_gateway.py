@@ -90,7 +90,8 @@ class ExecutorGateway:
     async def _probe_executor_health(self, name: str, executor_url: str) -> bool:
         """
         [N1] Fast health probe: GET /health with 500ms hard timeout.
-        Populates _health_cache on result. Fail-safe: returns False on any exception.
+        Healthy = status_code 2xx AND body contains 'UP', 'ok', or 'healthy'.
+        Fail-safe: any exception or ambiguous response -> False.
         """
         cached = _health_cache.is_known_healthy(name)
         if cached is not None:
@@ -100,13 +101,28 @@ class ExecutorGateway:
                 self.http_client.get(f"{executor_url}/health"),
                 timeout=_HealthCache.PROBE_TIMEOUT,
             )
-            is_healthy = getattr(resp, "status_code", 200) < 500
+            status = getattr(resp, "status_code", None)
+            if status is None or not (200 <= status < 300):
+                _health_cache.mark_unhealthy(name)
+                return False
+            # Validate body to avoid false-positive on 200 error pages
+            try:
+                body = resp.json() if hasattr(resp, "json") else {}
+                if isinstance(body, dict):
+                    body_str = json.dumps(body).lower()
+                else:
+                    body_str = str(body).lower()
+            except Exception:
+                body_str = ""
+            _HEALTHY_SIGNALS = ("up", "ok", "healthy", "\"status\": \"up\"", "\"status\":\"up\"")
+            is_healthy = any(sig in body_str for sig in _HEALTHY_SIGNALS)
             _health_cache.update(name, is_healthy)
             return is_healthy
         except Exception as probe_err:
             logger.debug("[HEALTH-PROBE] %s unreachable: %s", name, probe_err)
             _health_cache.mark_unhealthy(name)
             return False
+
 
 
     async def execute_tool(self, request: ExecutionRequest, task_id: str) -> str:

@@ -1,0 +1,21 @@
+P0-Infra [T1][T4][N4][N1]: Redis unification, should_stop, ExperienceStore LRU+TTL, ExecutorGateway circuit breaker
+
+[T1] core/utils/redis_client.py: re-exports from core.redis_client (single source of truth)
+     Migrated 7 callers from core.utils.redis_client -> core.redis_client
+
+[T4] core/utils/engine.py: centralized should_stop(task_id, redis_conn) helper
+     Replaced 4 copy-pasted stop-signal check blocks
+     Added tests/test_should_stop.py (3 tests)
+
+[N4] core/memory/experience_store.py: collections.deque(maxlen=500) + TTL eviction
+     Linear RAM growth eliminated; RLock thread-safety preserved
+     Added tests/test_experience_store.py (3 tests)
+
+[N1] services/ai-brain/receptionist/executor_gateway.py: probe-before-dispatch
+     _HealthCache class (30s TTL, 500ms probe timeout)
+     Immediate failover on unhealthy (no 1s sleep), FAIL_FAST < 2s if both down
+     Added tests/test_executor_gateway_health.py (5 tests)
+
+Protocol: Added Section XIII Nguyen Tac 157 - Mutual Dialectic Rule
+Regression: tests/test_task_profiler_regression.py (3 tests)
+Suite: 36/36 PASSED

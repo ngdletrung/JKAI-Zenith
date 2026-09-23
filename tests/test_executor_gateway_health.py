@@ -27,7 +27,7 @@ from receptionist.executor_gateway import (
 
 class FakeResponse:
     def __init__(self, data=None, status_code=200):
-        self._data = data or {}
+        self._data = data if data is not None else {"status": "UP"}
         self.status_code = status_code
 
     def json(self):
@@ -57,8 +57,8 @@ def clear_health_cache():
 
 @pytest.mark.asyncio
 async def test_probe_healthy_returns_true():
-    """Executor returns 200 -> probe returns True, cache updated."""
-    gw = _make_gateway(get_resp=FakeResponse(status_code=200))
+    """Executor returns 200 with {'status': 'UP'} -> probe returns True, cache updated."""
+    gw = _make_gateway(get_resp=FakeResponse(data={"status": "UP"}, status_code=200))
     result = await gw._probe_executor_health("executor", "http://executor:8000")
     assert result is True
     assert _health_cache.is_known_healthy("executor") is True
@@ -66,11 +66,27 @@ async def test_probe_healthy_returns_true():
 
 @pytest.mark.asyncio
 async def test_probe_unhealthy_returns_false_and_caches():
-    """Executor returns 500 -> probe returns False, cache marks unhealthy."""
-    gw = _make_gateway(get_resp=FakeResponse(status_code=503))
+    """Executor returns 503 -> probe returns False, cache marks unhealthy."""
+    gw = _make_gateway(get_resp=FakeResponse(data={"status": "DOWN"}, status_code=503))
     result = await gw._probe_executor_health("executor", "http://executor:8000")
     assert result is False
     assert _health_cache.is_known_healthy("executor") is False
+
+
+@pytest.mark.asyncio
+async def test_probe_404_is_false_positive_guard():
+    """Executor returns 404 -> probe returns False (not treated as healthy)."""
+    gw = _make_gateway(get_resp=FakeResponse(data={}, status_code=404))
+    result = await gw._probe_executor_health("executor", "http://executor:8000")
+    assert result is False
+
+
+@pytest.mark.asyncio
+async def test_probe_200_bad_body_is_unhealthy():
+    """Executor returns 200 but body does not contain UP/ok/healthy -> unhealthy."""
+    gw = _make_gateway(get_resp=FakeResponse(data={"error": "service unavailable"}, status_code=200))
+    result = await gw._probe_executor_health("executor", "http://executor:8000")
+    assert result is False
 
 
 @pytest.mark.asyncio
