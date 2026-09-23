@@ -147,6 +147,29 @@ class DeepPipeline:
         replan_feedback = ""
         final_result = None
 
+        # [P0-1] Preflight Executor Health Check: fail-fast < 3s if all executors are dead (Turn 60 Consensus)
+        try:
+            from receptionist.executor_gateway import preflight_check_executors
+            ok, preflight_msg, _ = await preflight_check_executors()
+            if not ok:
+                engine.publish_mission_log("CRITICAL", f"🛑 [PREFLIGHT-ABORT] {preflight_msg}", task_id, trace_id)
+                return {
+                    "status": "BLOCKED",
+                    "error": f"Mission preflight check failed: {preflight_msg}",
+                    "answer": f"Sứ mệnh không thể bắt đầu vì toàn bộ executor đang ngừng hoạt động thưa Master: {preflight_msg}",
+                    "task_id": task_id,
+                    "execution": {},
+                    "judicial_review": {
+                        "verdict": "FAIL",
+                        "passed": False,
+                        "feedback": preflight_msg,
+                    },
+                    "sensitive": False,
+                }
+            engine.publish_mission_log("SYSTEM", f"✅ [PREFLIGHT-OK] {preflight_msg}", task_id, trace_id, stealth=True)
+        except Exception as preflight_err:
+            logger.debug("[PREFLIGHT-WARN] Could not run preflight check: %s", preflight_err)
+
         # [ENGINE SWITCH]: Cầu nối điều phối nạp tĩnh mô hình cho luồng DEEP
         try:
             await mode_switcher.switch_to("DEEP", engine, task_id)

@@ -11,8 +11,10 @@ Spec compliance (from OpenCode Turn 44):
 import asyncio
 import sys
 import os
+import time
 import pytest
 from unittest.mock import AsyncMock, MagicMock
+
 
 # Add ai-brain to path (hyphenated directory)
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "services", "ai-brain"))
@@ -22,7 +24,10 @@ from receptionist.executor_gateway import (
     ExecutionRequest,
     _health_cache,
     _HealthCache,
+    probe_executor_health,
+    preflight_check_executors,
 )
+
 
 
 class FakeResponse:
@@ -192,4 +197,43 @@ def test_redis_multi_worker_sync():
     # Worker C (tiến trình mới khác)
     cache_c = _HealthCache(redis_conn=mock_redis)
     assert cache_c.is_known_healthy("executor") is False
+
+
+@pytest.mark.asyncio
+async def test_preflight_check_executors_at_least_one_healthy():
+    """
+    [P0-1] Preflight check passes if at least one executor is UP.
+    """
+    mock_client = MagicMock()
+    # executor is healthy, executor_2 is down
+    def mock_get(url):
+        if "8002" in str(url) or "executor" in str(url):
+            return FakeResponse(data={"status": "UP"}, status_code=200)
+        raise ConnectionError("down")
+    mock_client.get = AsyncMock(side_effect=mock_get)
+
+
+    ok, reason, available = await preflight_check_executors(http_client=mock_client)
+    assert ok is True
+    assert len(available) >= 1
+    assert "Available executors" in reason
+
+
+@pytest.mark.asyncio
+async def test_preflight_check_executors_all_down_fails_fast():
+    """
+    [P0-1] Preflight check fails fast if all executors are DOWN.
+    """
+    mock_client = MagicMock()
+    mock_client.get = AsyncMock(side_effect=ConnectionError("all down"))
+
+    start = time.perf_counter()
+    ok, reason, available = await preflight_check_executors(http_client=mock_client)
+    duration = time.perf_counter() - start
+
+    assert ok is False
+    assert len(available) == 0
+    assert "All executors DOWN" in reason
+    assert duration < 3.0, f"Preflight must fail fast in < 3s, took {duration:.2f}s"
+
 

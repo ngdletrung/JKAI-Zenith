@@ -1,8 +1,8 @@
 {
-    "cpu": 53,
-    "ram": 66,
-    "gpu": 1,
-    "vram_mb": 1024,
+    "cpu": 1,
+    "ram": 9,
+    "gpu": 0,
+    "vram_mb": 0,
     "status": "OPTIMAL",
     "health": {
         "status": "OPTIMAL",
@@ -11,21 +11,25 @@
             "🧠 AI-Brain": "Online ✅"
         },
         "aux_services": {
-            "🦾 AI-Executor": "Online ✅",
+            "🦾 AI-Executor 1": "Online ✅",
+            "🦾 AI-Executor 2": "Online ✅",
             "🔍 Qdrant DB": "Online ✅",
             "📚 RAG-Service": "Online ✅",
-            "🔗 N8N-Main": "Online ✅"
+            "🔗 N8N-Main": "Online ✅",
+            "🛡️ File-Warden": "Degraded (404) ⚠️"
         },
         "details": [
             "📡 AI-Control-Plane: `Online ✅`",
             "🧠 AI-Brain: `Online ✅`",
-            "🦾 AI-Executor: `Online ✅`",
+            "🦾 AI-Executor 1: `Online ✅`",
+            "🦾 AI-Executor 2: `Online ✅`",
             "🔍 Qdrant DB: `Online ✅`",
             "📚 RAG-Service: `Online ✅`",
             "🔗 N8N-Main: `Online ✅`",
+            "🛡️ File-Warden: `Degraded (404) ⚠️`",
             "📡 Redis AI: `Online ✅`"
         ]
     },
     "active_thoughts": "IDLE",
-    "ts": 1790087663.0293028
+    "ts": 1790171806.7573254
 }

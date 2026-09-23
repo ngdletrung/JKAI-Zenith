@@ -1,0 +1,28 @@
+{
+  "id": "m_default_2309-2028_2334d2",
+  "title": "bạn thấy thế nào ?",
+  "goal": "bạn thấy thế nào ?",
+  "status": "failed",
+  "ts": 1790170234.4058747,
+  "logs": [
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: [Errno -2] Name or service not known | manifest={\"status\": \"error\", \"error\": \"Receptionist error: [Errno -2] Name or service not known\"}",
+      "ts": 1790170234.3231943,
+      "source": "SYSTEM",
+      "task_id": "default_2309-2028_2334d2"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: [Errno -2] Name or service not known)",
+      "ts": 1790170234.380344,
+      "source": "SYSTEM",
+      "task_id": "default_2309-2028_2334d2"
+    }
+  ],
+  "artifacts": {
+    "plan": "bạn thấy thế nào ?",
+    "walkthrough": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: [Errno -2] Name or service not known)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

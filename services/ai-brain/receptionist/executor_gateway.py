@@ -2,7 +2,9 @@ import asyncio
 import json
 import logging
 import time
+import httpx
 from dataclasses import dataclass
+from typing import Any
 from core.utils.engine import engine
 
 logger = logging.getLogger("JKAI.ExecutorGateway")
@@ -93,6 +95,99 @@ class ExecutionRequest:
     tool_args: dict
     timeout: int = 600
 
+async def probe_executor_health(name: str, executor_url: str, http_client: Any = None) -> bool:
+    """
+    [N1-v2 / P0-1] Unified health probe: GET /health with 500ms hard timeout.
+    Healthy = status_code 2xx AND body field 'status'/'healthy' matches UP/OK/TRUE (JSON-first).
+    Fallback to quoted substring only when body is not valid JSON.
+    Fail-safe: any exception or ambiguous response -> False.
+    """
+    cached = _health_cache.is_known_healthy(name)
+    if cached is not None:
+        return cached
+    close_client = False
+    if http_client is None:
+        http_client = httpx.AsyncClient(timeout=_HealthCache.PROBE_TIMEOUT + 0.5)
+        close_client = True
+    try:
+        resp = await asyncio.wait_for(
+            http_client.get(f"{executor_url}/health"),
+            timeout=_HealthCache.PROBE_TIMEOUT,
+        )
+        status = getattr(resp, "status_code", None)
+        if status is None or not (200 <= status < 300):
+            _health_cache.mark_unhealthy(name)
+            return False
+        # JSON-first: parse body and check known health fields
+        try:
+            body = resp.json() if hasattr(resp, "json") else None
+            if isinstance(body, dict):
+                # Check standard fields: status, health, state
+                for field in ("status", "health", "state"):
+                    val = body.get(field, "")
+                    if isinstance(val, str) and val.strip().lower() in ("up", "ok", "healthy", "running"):
+                        _health_cache.update(name, True)
+                        return True
+                # Check boolean field 'healthy': true
+                if body.get("healthy") is True:
+                    _health_cache.update(name, True)
+                    return True
+                # No matching field → unhealthy
+                _health_cache.mark_unhealthy(name)
+                return False
+        except Exception:
+            body = None
+        # Fallback (non-JSON body): quoted substring match only to avoid false positives
+        try:
+            raw = str(getattr(resp, "text", "") or "").lower()
+            _QUOTED_SIGNALS = ('"up"', '"ok"', '"healthy"', '"running"', 'true')
+            is_healthy = any(sig in raw for sig in _QUOTED_SIGNALS)
+        except Exception:
+            is_healthy = False
+        _health_cache.update(name, is_healthy)
+        return is_healthy
+    except Exception as probe_err:
+        logger.debug("[HEALTH-PROBE] %s unreachable: %s", name, probe_err)
+        _health_cache.mark_unhealthy(name)
+        return False
+    finally:
+        if close_client:
+            await http_client.aclose()
+
+
+async def preflight_check_executors(http_client: Any = None) -> tuple[bool, str, list[str]]:
+    """
+    [P0-1] Preflight check before mission start (Turn 60 Consensus).
+    Reuses existing _health_cache and probe_executor_health.
+    Fails fast in < 3s if both executor and executor_2 are unreachable.
+    Returns: (is_available: bool, reason: str, available_urls: list[str])
+    """
+    from core.utils.registry import registry
+    close_client = False
+    if http_client is None:
+        http_client = httpx.AsyncClient(timeout=_HealthCache.PROBE_TIMEOUT + 0.5)
+        close_client = True
+    try:
+        available = []
+        errors = []
+        for name in ("executor", "executor_2"):
+            try:
+                url = registry.get_service_url(name)
+                is_alive = await probe_executor_health(name, url, http_client)
+                if is_alive:
+                    available.append(url)
+                else:
+                    errors.append(f"{name} ({url})")
+            except Exception as e:
+                errors.append(f"{name}: {e}")
+        if not available:
+            return False, f"All executors DOWN. Details: {'; '.join(errors)}", []
+        return True, f"Available executors: {', '.join(available)}", available
+    finally:
+        if close_client:
+            await http_client.aclose()
+
+
 class ExecutorGateway:
     """
     JKAI Zenith - Executor Gateway
@@ -123,56 +218,9 @@ class ExecutorGateway:
         return {}
 
     async def _probe_executor_health(self, name: str, executor_url: str) -> bool:
-        """
-        [N1-v2] Fast health probe: GET /health with 500ms hard timeout.
-        Healthy = status_code 2xx AND body field 'status'/'healthy' matches UP/OK/TRUE (JSON-first).
-        Fallback to quoted substring only when body is not valid JSON.
-        Fail-safe: any exception or ambiguous response -> False.
-        """
-        cached = _health_cache.is_known_healthy(name)
-        if cached is not None:
-            return cached
-        try:
-            resp = await asyncio.wait_for(
-                self.http_client.get(f"{executor_url}/health"),
-                timeout=_HealthCache.PROBE_TIMEOUT,
-            )
-            status = getattr(resp, "status_code", None)
-            if status is None or not (200 <= status < 300):
-                _health_cache.mark_unhealthy(name)
-                return False
-            # JSON-first: parse body and check known health fields
-            try:
-                body = resp.json() if hasattr(resp, "json") else None
-                if isinstance(body, dict):
-                    # Check standard fields: status, healthy, health
-                    for field in ("status", "health", "state"):
-                        val = body.get(field, "")
-                        if isinstance(val, str) and val.strip().lower() in ("up", "ok", "healthy", "running"):
-                            _health_cache.update(name, True)
-                            return True
-                    # Check boolean field 'healthy': true
-                    if body.get("healthy") is True:
-                        _health_cache.update(name, True)
-                        return True
-                    # No matching field → unhealthy
-                    _health_cache.mark_unhealthy(name)
-                    return False
-            except Exception:
-                body = None
-            # Fallback (non-JSON body): quoted substring match only to avoid false positives
-            try:
-                raw = str(getattr(resp, "text", "") or "").lower()
-                _QUOTED_SIGNALS = ('"up"', '"ok"', '"healthy"', '"running"', 'true')
-                is_healthy = any(sig in raw for sig in _QUOTED_SIGNALS)
-            except Exception:
-                is_healthy = False
-            _health_cache.update(name, is_healthy)
-            return is_healthy
-        except Exception as probe_err:
-            logger.debug("[HEALTH-PROBE] %s unreachable: %s", name, probe_err)
-            _health_cache.mark_unhealthy(name)
-            return False
+        return await probe_executor_health(name, executor_url, self.http_client)
+
+
 
 
 

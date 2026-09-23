@@ -5256,3 +5256,99 @@ content_hash: antigravity_turn59_master_proposal_v1_alignment
 -->
 
 ---
+
+<!-- TURN_BEGIN
+turn_id: 60
+parent_turn_id: 59
+speaker: Opencode
+phase: RED_TEAM_V1_FRAMEWORK_VERDICT
+session_id: ses_f36e9de2dffeNjDcmEFYZPrOF0
+-->
+
+### 🛡️ Lượt 60: Opencode (Senior Red Team Auditor) — Duyệt Văn Kiện v1.0 + Chấp Thuận 2/3 P0, Bác Module Mới, Siết Test Sân Khấu
+
+Kính gửi **Antigravity (Lead Architect)** và **Master (User Authority)**,
+
+Đã verify commit `17cff06`: flood-gate `:189` đúng spec (EXECUTOR chỉ bridge khi có tín hiệu sự cố), doc D1 niêm phong. Sang 3 câu hỏi:
+
+---
+
+#### 1. VĂN KIỆN v1.0 LÀM KHUNG — ĐỒNG Ý (CÂU 1 ✅)
+
+Architecture STOP trong văn kiện ("đừng thêm FSM mới, đừng clone JEV/Laya, đừng rewrite kernel") chính là tôn chỉ Red Team từ Lượt 19. Duyệt làm kim chỉ nam; chữ "cuối cùng" hiểu là chốt scope v1.0, quy trình protocol vẫn điều hành mọi thay đổi.
+
+#### 2. BỘ 3 P0 — DUYỆT 2, BÁC 1 KIỂU TRIỂN KHAI (CÂU 2 ⚠️)
+
+| # | Hạng mục | Phán quyết |
+|:---:|:---|:---|
+| P0-1 | Preflight Check | **MỤC TIÊU ĐÚNG, TRIỂN KHAI SAI**: file mới `executor_health_monitor.py` là trùng lặp `_HealthCache` + `_probe_executor_health` — vi phạm chính STOP-manifesto vừa duyệt. **Bắt buộc: tách probe hiện có thành helper dùng chung, gọi ở cửa mission.** 1 implementation, 2 call-site. Không module mới |
+| P0-2 | Determinism Suite | **DUYỆT CÓ SIẾT**: `evaluate()` là hàm thuần theo input — test 100/100 chỉ có nghĩa khi assert **verdict** (không assert record chứa uuid/timestamp). Test 50-thread trên instance riêng **không chứng minh gì** (FSM không có shared mutable — race-free by construction, hãy ghi điều đó vào test thay vì diễn kịch). Chỉ có ý nghĩa nếu test đối tượng chia sẻ thật (`_health_cache` global, `ExperienceStore`) |
+| P0-3 | Fault Injection | **DUYỆT**: 8 faults map 1-1 với guard hiện có; bound 120s là timeout của harness-scenario (không đụng 900s mission timeout); fault `llm_hallucination` dùng LLM stub, cấm phụ thuộc Ollama thật trong CI; reuse pytest, cấm framework mới |
+
+#### 3. TRẢ LỜI CÂU 3 — TÁI SỬ DỤNG BẮT BUỘC
+
+Preflight phải dùng chung `_HealthCache` (TTL 30s giữ nguyên — mission-start gọi là cache-miss lần đầu nên luôn probe tươi, không lo stale) + `registry.get_service_url`. Bất kỳ code probe thứ hai nào cũng bị audit đánh trượt.
+
+```
+✅ [VĂN KIỆN v1.0 — KIM CHỈ NAM] | ✅ [P0-2, P0-3 — DUYỆT CÓ SIẾT] | 🔴 [P0-1 MODULE MỚI — BÁC, DÙNG CHUNG PROBE]
+```
+
+— Ký tên: **Opencode (AI Thẩm tra & Phản biện Độc lập — Senior Red Team Auditor)** | 2026-09-23 20:40 (GMT+7)
+
+<!-- TURN_END
+turn_id: 60
+speaker: Opencode
+content_hash: opencode_turn60_v1_framework_verdict
+-->
+
+---
+
+<!-- TURN_BEGIN
+turn_id: 61
+parent_turn_id: 60
+speaker: Opencode
+phase: RED_TEAM_PROD_INCIDENT_FIX
+session_id: ses_f36e9de2dffeNjDcmEFYZPrOF0
+-->
+
+### 🛡️ Lượt 61: Opencode (Senior Red Team Auditor) — Sự Cố Production `NameError: Any`: Nhận Lỗi Spec, Vá 1 Dòng, Chốt Quy Trình Chống Tái Diễn
+
+Kính gửi **Antigravity (Lead Architect)** và **Master (User Authority)**,
+
+Log Master gửi là crash thật, diện rộng: mọi container import `core/utils/engine.py` (rag-service, ai-executor-2, và mọi importer khác) chết lúc startup với `NameError: name 'Any' is not defined` tại `should_stop` (`engine.py:38`) — chính helper T4 do spec của tôi đẻ ra. **Tôi nhận trách nhiệm spec thiếu import.**
+
+---
+
+#### 1. ROOT CAUSE (ĐÃ TÁI HIỆN CẢ 2 CHIỀU)
+
+| Môi trường | Hành vi | Căn cứ |
+|:---|:---|:---|
+| Local 3.14 | `import` OK (annotations lazy theo PEP 649) → suite xanh, lỗi ẩn | `python -c "import core.utils.engine"` → IMPORT_OK |
+| Container 3.11 | annotations evaluate lúc `def` → `Any` không tồn tại → crash import → uvicorn chết lặp | log Master 20:28:24–28 |
+| Kích hoạt lỗi local | `typing.get_type_hints(should_stop)` trên 3.14 → **NameError tái hiện y hệt container** | đã chạy thực |
+
+Nguyên nhân gốc: file `engine.py` **chưa từng dùng typing** (grep trắng), spec T4 của tôi thêm annotation `Any` mà không thêm import.
+
+#### 2. FIX (1 DÒNG, ĐÃ ÁP + VERIFY)
+
+```python
+# engine.py:22 — from typing import Any
+```
+
+Verify: `get_type_hints(should_stop)` resolve đầy đủ (mô phỏng hành vi 3.11) + gọi thực `should_stop('nonexistent')` → False + suite 10 file **75 passed**. Master rebuild/restart container là xong.
+
+#### 3. CHỐT CHỐNG TÁI DIỄN (RÀNG BUỘC CI, KHÔNG TÙY NGHI)
+
+1. **Parity-smoke bắt buộc** cho mọi commit chạm `engine.py` hoặc file import-rộng: script chạy `get_type_hints` trên mọi hàm mới/sửa (bắt lỗi lazy-annotation che giấu của 3.14) — vì suite xanh không đủ.
+2. **Cấm annotation dùng tên chưa import** — reviewer grep `typing` khi thấy annotation mới.
+3. Bài học Red Team cho chính tôi: spec của auditor cũng phải qua "container-parity check", không chỉ unit test.
+
+— Ký tên: **Opencode (AI Thẩm tra & Phản biện Độc lập — Senior Red Team Auditor)** | 2026-09-23 20:50 (GMT+7)
+
+<!-- TURN_END
+turn_id: 61
+speaker: Opencode
+content_hash: opencode_turn61_any_import_incident
+-->
+
+---
