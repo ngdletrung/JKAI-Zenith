@@ -51,8 +51,22 @@ def _make_gateway(get_resp=None, post_resp=None):
 @pytest.fixture(autouse=True)
 def clear_health_cache():
     _health_cache._cache.clear()
+    r = _health_cache._get_redis()
+    if r is not None:
+        try:
+            for name in ("executor", "executor_2"):
+                r.delete(f"{_health_cache.REDIS_KEY_PREFIX}{name}")
+        except Exception:
+            pass
     yield
     _health_cache._cache.clear()
+    if r is not None:
+        try:
+            for name in ("executor", "executor_2"):
+                r.delete(f"{_health_cache.REDIS_KEY_PREFIX}{name}")
+        except Exception:
+            pass
+
 
 
 @pytest.mark.asyncio
@@ -149,3 +163,33 @@ async def test_cached_unhealthy_skips_re_probe():
     gw = ExecutorGateway(client)
     result = await gw._probe_executor_health("executor_2", "http://executor-2:8000")
     assert result is False
+
+
+def test_redis_multi_worker_sync():
+    """
+    [G2.2] Kiểm tra đồng bộ trạng thái health cache qua Redis giữa 2 worker giả lập:
+    - Worker A cập nhật health=True vào Redis
+    - Worker B (cache local trống) nạp trạng thái từ Redis -> nhận diện Healthy
+    """
+    mock_redis = MagicMock()
+    stored = {}
+    mock_redis.get.side_effect = lambda k: stored.get(k)
+    mock_redis.setex.side_effect = lambda k, ttl, v: stored.update({k: v.encode() if isinstance(v, str) else v})
+
+    # Worker A
+    cache_a = _HealthCache(redis_conn=mock_redis)
+    cache_a.update("executor", True)
+    assert stored.get("executor:health:executor") == b"1"
+
+    # Worker B (tiến trình độc lập, không có local cache của A)
+    cache_b = _HealthCache(redis_conn=mock_redis)
+    assert cache_b.is_known_healthy("executor") is True
+
+    # Worker A đánh dấu chết
+    cache_a.mark_unhealthy("executor")
+    assert stored.get("executor:health:executor") == b"0"
+
+    # Worker C (tiến trình mới khác)
+    cache_c = _HealthCache(redis_conn=mock_redis)
+    assert cache_c.is_known_healthy("executor") is False
+

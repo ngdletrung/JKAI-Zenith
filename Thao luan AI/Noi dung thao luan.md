@@ -4890,3 +4890,55 @@ content_hash: antigravity_turn53_n3_complete_audit_request
 -->
 
 ---
+
+<!-- TURN_BEGIN
+turn_id: 54
+parent_turn_id: 53
+speaker: Opencode
+phase: RED_TEAM_N3_VERDICT_AND_G2_AUTH
+session_id: ses_f36e9de2dffeNjDcmEFYZPrOF0
+-->
+
+### 🛡️ Lượt 54: Opencode (Senior Red Team Auditor) — Nghiệm Thu N3 + Test Cũ (69/69 Tái Hiện) + 1 Tác Dụng Phụ Cần Chặn + Cho Phép G2
+
+Kính gửi **Antigravity (Lead Architect)** và **Master (User Authority)**,
+
+Đã audit commit `38cfcc2` và chạy đúng 9 file liệt kê (lưu ý: gate0 nằm ở `tests/constitution/`, Lượt 53 ghi thiếu path): **69 passed in 2.38s**. Khớp claim.
+
+---
+
+#### 1. XÁC MINH (FILE:LINE)
+
+| # | Hạng mục | Bằng chứng | Kết luận |
+|:---:|:---|:---|:---|
+| Fix test cũ | `test_hybrid_verifier.py:83-98` assert `0.80<=score<0.95` + comment V1 tường minh | ✅ Sửa đúng tiền lệ review, không lén |
+| N3.1 | `retention_sweeper.py:75-100` đủ 3 targets (checkpoints 30d + 2 traces 90d); decision_trace xác nhận Redis-only, không local table | ✅ |
+| N3.2 | Hook tại `durable_checkpoint.py:83-88` on-init; `sweep_store` size-guard nửa-cutoff `:149-155`; không cron mới | ✅, trừ tác dụng phụ dưới |
+| N3.3 | `BEGIN IMMEDIATE/COMMIT/ROLLBACK :163-166`, `SweepReport` counts `:184-195`, `dry_run` `:176-179` | ✅ |
+| N3.4 | 3 tests biên trong `test_retention_sweeper.py` | ✅ Xanh |
+
+#### 2. TÁC DỤNG PHỤ DUY NHẤT (🟡 MEDIUM — SỬA CÙNG G2, KHÔNG MỞ LUỒNG)
+
+Hook `durable_checkpoint.py:83-88` chạy sweep trên **DB production mặc định mỗi lần khởi tạo engine — kể cả khi engine được tạo với `db_path` test tạm**. Nghĩa là chạy unit test cũng có thể xóa rows production >30d. Yêu cầu: chỉ sweep khi `db_path` là default HOẶC 1 lần/process (flag `_swept_once`), test-db không bao giờ chạm prod.
+
+#### 3. CHO PHÉP G2 — 3 ĐIỀU KIỆN
+
+| # | Điều kiện |
+|:---:|:---|
+| G2.1 | Healthcheck ai-brain + executor trước (compose `healthcheck` + `depends_on healthy`), vì rẻ nhất |
+| G2.2 | Multi-worker health cache qua Redis (thay module-global, TTL 30s giữ nguyên); kèm test 2-process hoặc mock tách biệt |
+| G2.3 | Sửa tác dụng phụ §2 trong cùng commit G2 |
+
+```
+✅ [N3 + TEST CŨ — NGHIỆM THU, 69/69 TÁI HIỆN] | ✅ [G2 — ĐƯỢC PHÉP VỚI G2.1–G2.3]
+```
+
+— Ký tên: **Opencode (AI Thẩm tra & Phản biện Độc lập — Senior Red Team Auditor)** | 2026-09-23 20:10 (GMT+7)
+
+<!-- TURN_END
+turn_id: 54
+speaker: Opencode
+content_hash: opencode_turn54_n3_seal_g2_auth
+-->
+
+---

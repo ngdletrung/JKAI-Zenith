@@ -20,34 +20,69 @@ def _get_evidence_guard():
 
 class _HealthCache:
     """
-    [N1] Circuit Breaker Health Cache for executor endpoints.
-    Caches last known health state per executor to avoid blocking HTTP probe on every call.
-    Cache TTL = 30s. Probe timeout = 500ms.
+    [N1 / G2.2] Circuit Breaker Health Cache for executor endpoints.
+    Multi-worker safe via Redis-backed cache with in-process fast fallback.
+    TTL = 30s. Probe timeout = 500ms.
     """
     PROBE_TIMEOUT: float = 0.5     # 500ms max per health probe
     CACHE_TTL: float = 30.0        # seconds before re-probing
+    REDIS_KEY_PREFIX: str = "executor:health:"
 
-    def __init__(self):
-        self._cache: dict[str, tuple[bool, float]] = {}  # name -> (is_healthy, last_check_ts)
+    def __init__(self, redis_conn=None):
+        self._cache: dict[str, tuple[bool, float]] = {}  # local fallback: name -> (is_healthy, last_check_ts)
+        self._redis = redis_conn
+
+    def _get_redis(self):
+        if self._redis is not None:
+            return self._redis
+        try:
+            from core.redis_client import get_redis_client
+            return get_redis_client()
+        except Exception:
+            return None
 
     def is_known_healthy(self, name: str) -> bool | None:
-        """Return True/False if within TTL, None if cache expired or unknown."""
+        """Return True/False if within TTL, None if expired or unknown."""
+        # 1. Fast local memory check
         entry = self._cache.get(name)
-        if entry is None:
-            return None
-        healthy, ts = entry
-        if time.monotonic() - ts > self.CACHE_TTL:
-            return None
-        return healthy
+        if entry is not None:
+            healthy, ts = entry
+            if time.monotonic() - ts <= self.CACHE_TTL:
+                return healthy
+
+        # 2. Multi-worker shared Redis check (G2.2)
+        r = self._get_redis()
+        if r is not None:
+            try:
+                val = r.get(f"{self.REDIS_KEY_PREFIX}{name}")
+                if val is not None:
+                    # Redis stores '1' (healthy) or '0' (unhealthy)
+                    is_h = val in (b"1", "1", 1, True)
+                    # Update local fast cache to match
+                    self._cache[name] = (is_h, time.monotonic())
+                    return is_h
+            except Exception:
+                pass
+
+        return None
 
     def update(self, name: str, healthy: bool) -> None:
         self._cache[name] = (healthy, time.monotonic())
+        # Sync to Redis for multi-worker processes
+        r = self._get_redis()
+        if r is not None:
+            try:
+                val = "1" if healthy else "0"
+                r.setex(f"{self.REDIS_KEY_PREFIX}{name}", int(self.CACHE_TTL), val)
+            except Exception:
+                pass
 
     def mark_unhealthy(self, name: str) -> None:
         self.update(name, False)
 
 
 _health_cache = _HealthCache()
+
 
 
 @dataclass(frozen=True)

@@ -80,12 +80,15 @@ class DurableCheckpointEngine:
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._local = threading.local()
         self._init_db()
-        # [N3.2] On-startup retention sweep
-        try:
-            from core.storage.retention_sweeper import run_startup_retention_sweep
-            run_startup_retention_sweep(dry_run=False)
-        except Exception as e:
-            logger.debug(f"[RETENTION-INIT-SKIP] Could not run on-startup sweep: {e}")
+        # [N3.2 / G2.3] On-startup retention sweep ONLY on default production DB
+        # Prevents test databases from wiping production data
+        if db_path is None or db_path == DEFAULT_DB_PATH:
+            try:
+                from core.storage.retention_sweeper import run_startup_retention_sweep
+                run_startup_retention_sweep(dry_run=False)
+            except Exception as e:
+                logger.debug(f"[RETENTION-INIT-SKIP] Could not run on-startup sweep: {e}")
+
 
 
     def _get_conn(self) -> sqlite3.Connection:
