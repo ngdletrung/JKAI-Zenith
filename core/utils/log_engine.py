@@ -185,7 +185,9 @@ class LogEngine:
                               history_key="monitor:progress_history", history_max=1999)
 
         # [P2-O1] Đồng bộ các sự kiện mission quan trọng sang Structured JSON Logger
-        if tag in ("CRITICAL", "ERROR", "SECURITY", "EXECUTOR", "POLICY", "AUDIT", "CIRCUIT_BREAKER"):
+        # [Turn 58 Note]: Tránh flood log cho tag EXECUTOR — chỉ bridge khi có tín hiệu lỗi/thất bại/cảnh báo
+        is_executor_incident = (tag == "EXECUTOR" and any(k in clean_msg.lower() for k in ("fail", "error", "warn", "down", "replan", "circuit", "unhealthy")))
+        if tag in ("CRITICAL", "ERROR", "SECURITY", "POLICY", "AUDIT", "CIRCUIT_BREAKER") or is_executor_incident:
             try:
                 from core.observability.structured_logger import log_structured_event
                 log_structured_event(
@@ -193,11 +195,12 @@ class LogEngine:
                     tool_name=tag.lower(),
                     authority_decision="DENY" if tag in ("SECURITY", "POLICY") else "ALLOW",
                     trace_id=trace_id or task_id,
-                    error_code=tag if tag in ("CRITICAL", "ERROR") else None,
+                    error_code=tag if tag in ("CRITICAL", "ERROR") or is_executor_incident else None,
                     extra={"task_id": task_id, "tag": tag, "stealth": stealth}
                 )
             except Exception:
                 pass
+
 
 
     def publish_progress(self, pct, msg, phase="", task_id="system",
