@@ -121,7 +121,7 @@ class HybridVerifier:
         return True, "Deterministic Gate APPROVED: All physical & syntactic constraints satisfied", 1.0
 
     # =========================================================================
-    # NHÁNH NON-CODE: CALIBRATED EVALUATION (ĐO ĐỘ TIN CẬY KHÔNG CHẤM BỪA)
+    # NHÁNH NON-CODE: CALIBRATED EVALUATION (EVIDENCE-BASED, NOT LENGTH HEURISTIC)
     # =========================================================================
 
     @classmethod
@@ -131,34 +131,76 @@ class HybridVerifier:
         args: Dict[str, Any],
         result: Any
     ) -> Tuple[bool, str, float]:
+        """
+        [V1] Evidence-based confidence for non-code tool results.
+        Confidence must reflect actual evidence of content, NOT payload key presence.
+        Rule: 0.98 is NEVER awarded unless content is non-empty, non-error, and has substance.
+        """
         if result is None:
             return False, "Calibrated Gate REJECTED: Tool returned None result", 0.0
 
-        # Kiểm tra kết quả rỗng
+        # Empty container check
         if isinstance(result, (str, list, dict)) and len(result) == 0:
             return False, "Calibrated Gate REJECTED: Tool returned empty payload", 0.1
 
-        # Nếu là dictionary báo lỗi
-        if isinstance(result, dict) and result.get("status") == "error":
-            return False, f"Calibrated Gate REJECTED: {result.get('msg', 'Error')}", 0.0
-
-        # Độ tin cậy tính dựa trên tính toàn vẹn của dữ liệu trả về
-        confidence = 0.95
+        # Explicit error signal
         if isinstance(result, dict):
-            # Nếu có dữ liệu hữu ích
-            if result.get("items") or result.get("content") or result.get("results") or result.get("stdout"):
-                confidence = 0.98
-            elif len(result) < 2:
-                confidence = 0.60
-        elif isinstance(result, str):
-            if len(result.strip()) > 50:
-                confidence = 0.95
-            else:
+            if result.get("status") == "error":
+                return False, f"Calibrated Gate REJECTED: {result.get('msg', 'Error')}", 0.0
+            if result.get("error") or result.get("exception"):
+                return False, f"Calibrated Gate REJECTED: Error in result: {result.get('error') or result.get('exception')}", 0.0
+
+        # ── Evidence scoring (replaces length heuristic) ──────────────────────
+        # Principle: Confidence = f(evidence) — NOT f(key presence or byte count)
+        confidence = 0.50  # Baseline — elevated only by concrete evidence
+
+        if isinstance(result, dict):
+            # Evidence 1: Non-empty list content (items, results)
+            items_val = result.get("items") or result.get("results")
+            if isinstance(items_val, (list, dict)) and len(items_val) > 0:
+                confidence = max(confidence, 0.85)
+            # Evidence 2: Substantive string content (>= 20 chars, not "ok"/"done" filler)
+            for key in ("content", "stdout", "output", "text", "data"):
+                val = result.get(key)
+                if isinstance(val, str) and len(val.strip()) >= 20:
+                    confidence = max(confidence, 0.85)
+                    break
+                elif isinstance(val, (dict, list)) and len(val) > 0:
+                    confidence = max(confidence, 0.80)
+                    break
+            # Evidence 3: Explicit success status
+            status_val = result.get("status", "")
+            if isinstance(status_val, str) and status_val.lower() in ("success", "ok", "done", "completed"):
+                confidence = max(confidence, 0.75)
+            # Evidence 4: Multiple meaningful keys (breadth of result)
+            meaningful_keys = [k for k, v in result.items()
+                               if v not in (None, "", [], {}) and k not in ("status", "msg", "message")]
+            if len(meaningful_keys) >= 3:
+                confidence = min(confidence + 0.05, 0.90)
+            # Penalize: only 1 key with trivially short value → low confidence
+            if len(result) < 2 and confidence <= 0.60:
+                confidence = 0.40
+
+        elif isinstance(result, list):
+            if len(result) >= 3:
+                confidence = 0.85
+            elif len(result) >= 1:
                 confidence = 0.70
 
-        if confidence < 0.50:
-            return False, f"Calibrated Gate REJECTED: Low confidence ({confidence:.2f})", confidence
-        elif confidence < 0.90:
-            return True, f"Calibrated Gate APPROVED with warning (Confidence: {confidence:.2f})", confidence
+        elif isinstance(result, str):
+            stripped = result.strip()
+            if len(stripped) >= 100:
+                confidence = 0.85
+            elif len(stripped) >= 20:
+                confidence = 0.70
+            else:
+                confidence = 0.40  # filler like "ok", "done" — not real evidence
 
-        return True, f"Calibrated Gate APPROVED (Confidence: {confidence:.2f})", confidence
+        # ── Verdict ───────────────────────────────────────────────────────────
+        if confidence < 0.50:
+            return False, f"Calibrated Gate REJECTED: Insufficient evidence (confidence={confidence:.2f})", confidence
+        elif confidence < 0.80:
+            return True, f"Calibrated Gate APPROVED with warning (confidence={confidence:.2f})", confidence
+
+        return True, f"Calibrated Gate APPROVED (confidence={confidence:.2f})", confidence
+
