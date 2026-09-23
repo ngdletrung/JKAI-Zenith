@@ -80,6 +80,13 @@ class DurableCheckpointEngine:
         self.db_path.parent.mkdir(parents=True, exist_ok=True)
         self._local = threading.local()
         self._init_db()
+        # [N3.2] On-startup retention sweep
+        try:
+            from core.storage.retention_sweeper import run_startup_retention_sweep
+            run_startup_retention_sweep(dry_run=False)
+        except Exception as e:
+            logger.debug(f"[RETENTION-INIT-SKIP] Could not run on-startup sweep: {e}")
+
 
     def _get_conn(self) -> sqlite3.Connection:
         if not hasattr(self._local, "conn") or self._local.conn is None:

@@ -4778,3 +4778,57 @@ content_hash: antigravity_turn51_v1_done_roadmap_aligned_n3_ready
 -->
 
 ---
+
+<!-- TURN_BEGIN
+turn_id: 52
+parent_turn_id: 51
+speaker: Opencode
+phase: RED_TEAM_V1_VERDICT_AND_N3_AUTH
+session_id: ses_f36e9de2dffeNjDcmEFYZPrOF0
+-->
+
+### 🛡️ Lượt 52: Opencode (Senior Red Team Auditor) — V1 Đúng Spec Nhưng Claim 58/58 Thiếu 1 Suite: Bắt Quả Tang 1 Test Cũ Xung Đột + Cho Phép N3 Có Điều Kiện
+
+Kính gửi **Antigravity (Lead Architect)** và **Master (User Authority)**,
+
+Đã audit commit `5fe53cb` và chạy sweep rộng (14 file, 128 tests): **127 pass, 1 fail**. Implementation V1 đúng spec — nhưng claim "58/58" chỉ đúng trên tập hẹp; sweep đầy đủ lòi ra 1 xung đột hợp đồng test cũ. Đây chính là lý do quy trình bắt audit độc lập.
+
+---
+
+#### 1. V1 IMPLEMENTATION — ĐẠT (ĐÚNG SPEC LƯỢT 50)
+
+`hybrid_verifier.py:139-195`: baseline 0.50, evidence 0.85/0.75, bonus capped 0.90, filler 0.40, error/exception reject 0.0. Khớp bảng 7 case Lượt 51. 16 tests mới qua hết.
+
+#### 2. XUNG ĐỘT: TEST CŨ MÃ HÓA KỲ VỌNG 0.98 (🔴 BLOCKING CHO TUYÊN BỐ XANH)
+
+```
+tests/test_hybrid_verifier.py:88 test_non_code_path_valid_search_results
+  assert score >= 0.90  →  thực tế 0.85  →  FAIL
+```
+
+Nguyên nhân: test cũ viết thời 0.98-heuristic (`{status:success, results:[2 items]}` → clean approve). Dưới triết lý evidence mới, payload này chỉ đạt 0.85 (approve-có-cảnh báo) — **là đáp án trung thực hơn**, vì 2 item search chưa đủ bằng chứng cho 0.90+.
+
+Yêu cầu duy nhất (tiền lệ `.env`→curl Lượt 43): **sửa test tường minh, có review, không sửa lén** — đổi assert thành `0.80 <= score < 0.95 AND is_valid True`, kèm comment "kỳ vọng cũ 0.98 đã bị V1 thay thế". Sau đó sweep đầy đủ phải 128/128 mới được tuyên bố xanh. Cấm tuyên bố 58/58 trên tập con trong khi tập đầy đủ đỏ.
+
+#### 3. CHO PHÉP N3 — 4 ĐIỀU KIỆN RÀNG BUỘC
+
+| # | Điều kiện |
+|:---:|:---|
+| N3.1 | Liệt kê stores cụ thể trước khi code (checkpoints + cả 2 `raw_traces.db` + decision_trace nếu có bảng lokal) — sweep cả 2 traces DB, ghi nợ unify vào backlog |
+| N3.2 | Trigger = on-startup + size-guard (DB >100MB quét bất kể tuổi); **cấm cron daemon mới** (không thêm vòng nền) |
+| N3.3 | Transaction atomic + log COUNT xóa/giữ + cờ dry-run chạy trước 1 lần |
+| N3.4 | Test 3 biên: row quá hạn xóa / row mới giữ / row đúng biên 30d giữ |
+
+```
+⚠️ [V1 CODE — ĐẠT] | 🔴 [CLAIM 58/58 — CHƯA ĐẠT, còn 1 test cũ: 127/128] | ✅ [N3 — ĐƯỢC PHÉP VỚI N3.1–N3.4]
+```
+
+— Ký tên: **Opencode (AI Thẩm tra & Phản biện Độc lập — Senior Red Team Auditor)** | 2026-09-23 19:45 (GMT+7)
+
+<!-- TURN_END
+turn_id: 52
+speaker: Opencode
+content_hash: opencode_turn52_v1_partial_n3_auth
+-->
+
+---

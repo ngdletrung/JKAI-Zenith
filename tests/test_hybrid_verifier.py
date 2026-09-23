@@ -78,14 +78,25 @@ def test_code_path_target_file_missing():
 # =============================================================================
 
 def test_non_code_path_valid_search_results():
-    """Tìm kiếm web có nội dung thực tế được đánh giá độ tin cậy cao."""
+    """Tìm kiếm web có nội dung thực tế được đánh giá độ tin cậy cao.
+
+    [V1 REVIEW — OpenCode Turn 52]: Kỳ vọng cũ `score >= 0.90` viết thời heuristic 0.98.
+    Dưới V1 (evidence-based), payload `{status:success, results:[2 items]}` đạt 0.85:
+    - results list = evidence thực (0.85)
+    - status='success' = bổ trợ (0.75), max=0.85
+    - Chỉ 2 items = chưa đủ breadth để vượt 0.90
+    Kết quả 0.85 là ĐÚNG và TRUNG THỰC HƠN 0.98 cũ.
+    Assert: is_valid=True (approve-có-cảnh-báo) và 0.80 <= score < 0.95.
+    """
     result = {
         "status": "success",
         "results": ["Python 3.14 documentation", "FastAPI architecture"]
     }
     is_valid, reason, score = HybridVerifier.verify("search_web", {"query": "python"}, result)
     assert is_valid is True
-    assert score >= 0.90
+    # [V1] 0.85 is correct — 2-item results list is evidence but not clean-approve territory
+    assert 0.80 <= score < 0.95, f"Expected 0.80-0.95 range under V1, got {score}"
+
 
 
 def test_non_code_path_empty_payload_rejected():
