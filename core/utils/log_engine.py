@@ -177,14 +177,28 @@ class LogEngine:
             "tag": tag, "msg": clean_msg, "ts": time.time(),
             "task_id": task_id, "trace_id": trace_id or task_id,
         }
-        if stealth:
-            data["stealth"] = True
         payload = json.dumps(data, ensure_ascii=False)
         r = redis_conn or self._get_redis()
         if r:
             self._publish_now(r, "monitor:log_channel", payload, save_history=True)
             self._publish_now(r, "monitor:progress_channel", payload, save_history=True,
                               history_key="monitor:progress_history", history_max=1999)
+
+        # [P2-O1] Đồng bộ các sự kiện mission quan trọng sang Structured JSON Logger
+        if tag in ("CRITICAL", "ERROR", "SECURITY", "EXECUTOR", "POLICY", "AUDIT", "CIRCUIT_BREAKER"):
+            try:
+                from core.observability.structured_logger import log_structured_event
+                log_structured_event(
+                    message=clean_msg,
+                    tool_name=tag.lower(),
+                    authority_decision="DENY" if tag in ("SECURITY", "POLICY") else "ALLOW",
+                    trace_id=trace_id or task_id,
+                    error_code=tag if tag in ("CRITICAL", "ERROR") else None,
+                    extra={"task_id": task_id, "tag": tag, "stealth": stealth}
+                )
+            except Exception:
+                pass
+
 
     def publish_progress(self, pct, msg, phase="", task_id="system",
                          trace_id=None, redis_conn=None):

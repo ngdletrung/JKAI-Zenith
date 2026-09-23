@@ -145,8 +145,30 @@ class RealTimeObservabilityEngine:
         elif span.status == "ERROR":
             self.counters["errors"] += 1
 
+        # [P2-O1] Đồng bộ sang Structured JSON Logger
+        try:
+            from core.observability.structured_logger import log_structured_event
+            err_code = "SPAN_ERROR" if span.status in ("ERROR", "TIMEOUT") else None
+            log_structured_event(
+                message=f"Span '{span.name}' completed with status '{span.status}'",
+                tool_name=span.attributes.get("tool_name", span.name),
+                authority_decision=span.attributes.get("authority_decision", "ALLOW"),
+                duration_ms=span.duration_ms,
+                error_code=err_code,
+                trace_id=span.trace_id,
+                extra={
+                    "span_id": span.span_id,
+                    "parent_span_id": span.parent_span_id,
+                    "span_status": span.status,
+                    "attributes": span.attributes
+                }
+            )
+        except Exception:
+            pass
+
         # Phát sóng telemetry ra Redis nếu có thể
         self._emit_telemetry_pulse(span)
+
 
     def increment_counter(self, counter_name: str, delta: int = 1) -> None:
         if counter_name in self.counters:
