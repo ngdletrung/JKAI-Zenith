@@ -5,7 +5,7 @@ import json
 sys.path.append(r"/app")
 sys.path.append(r"/shared")
 
-from core.utils.redis_client import get_redis
+from core.redis_client import get_redis
 
 r = get_redis()
 

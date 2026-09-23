@@ -3,7 +3,7 @@ import json
 import time as _time
 import asyncio
 from core.utils.engine import engine
-from core.utils.redis_client import redis_safe
+from core.redis_client import redis_safe
 
 class HITLManager:
     """

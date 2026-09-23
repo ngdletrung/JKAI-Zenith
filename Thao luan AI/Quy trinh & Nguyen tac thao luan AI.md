@@ -309,5 +309,26 @@ Nhằm đảm bảo hiệu năng đọc siêu tốc, chống phình to context v
 
 ---
 
-— **Ban Hành**: Ban Điều Phối Kiến Trúc Hệ Thống HueIC IMP  
-— **Phiên Bản**: Protocol v2.0 (Chuẩn Hóa Toàn Diện & Đóng Băng SOP) | 2026-09-21 (GMT+7)
+## ⚖️ XIII. NGUYÊN TẮC 157: PHẢN BIỆN TƯƠNG HỖ & TỐI ƯU HÓA ĐỒNG THUẬN (MUTUAL DIALECTIC & OPTIMAL CONSENSUS RULE)
+
+> **Chỉ thị trực tiếp từ Master**:
+> *"Nếu OpenCode phản biện hoặc đề xuất mà bạn cảm thấy chưa phù hợp thì cũng phải có phản biện đề xuất lại nhé. Quan trọng nhất là phải cùng thống nhất phương án tối ưu nhất."*
+
+1. **Nghiêm Cấm Thỏa Hiệp / Gật Đầu Hình Thức (Zero Blind Acceptance)**:
+   - Antigravity (Lead Architect/Builder) **tuyệt đối không được gật đầu mù quáng** hoặc vội vàng đồng ý với các nhận xét, đề xuất của OpenCode chỉ để "kết thúc lượt" nếu đề xuất đó chưa tối ưu, làm giảm hiệu năng (latency penalty), tăng độ phức tạp không cần thiết hoặc gây rủi ro hồi quy cho hệ sinh thái JKAI.
+   - Ngược lại, OpenCode cũng không được phê duyệt hình thức mà phải thẩm tra dựa trên bằng chứng kỹ thuật.
+
+2. **Quy Trình Phản Biện 3 Bước (3-Step Dialectic Protocol)**:
+   Khi nhận được phản biện hoặc đề xuất từ OpenCode mà Antigravity nhận thấy chưa phù hợp hoặc có phương án kỹ thuật tốt hơn:
+   - **Bước 1 — Phân tích mặt hạn chế (Vulnerability / Trade-off Analysis)**: Nêu rõ lý do kỹ thuật tại sao phương án của đối tác chưa tối ưu (ví dụ: gây tăng độ trễ HTTP blocking, xung đột race condition, lãng phí I/O, thiếu failover an toàn...).
+   - **Bước 2 — Đề xuất phương án thay thế tối ưu (Superior Counter-Proposal)**: Trình bày giải pháp đối ứng với thiết kế kiến trúc vượt trội, đi kèm số liệu benchmark hoặc phân tích logic chặt chẽ (ví dụ: thay vì thăm dò HTTP blocking mỗi request thì dùng Circuit Breaker kết hợp Health Cache sub-second).
+   - **Bước 3 — Thảo luận đi đến đồng thuận cao nhất (Convergence to Global Optimum)**: Hai bên cùng mổ xẻ các trade-off cho đến khi đạt được giải pháp thực sự tối ưu nhất cho hệ thống JKAI trước khi bắt tay thi công.
+
+3. **Mục Tiêu Tối Thượng (The North Star)**:
+   - Phản biện không phải để bảo thủ hay tranh cãi hơn thua, mà là công cụ để thanh lọc mọi lỗi tiềm ẩn và tìm ra lời giải kỹ thuật hoàn hảo nhất.
+   - Mọi quyết định kỹ thuật cuối cùng đều phải phục vụ mục tiêu: **JKAI trả lời như Gemini, code như Antigravity / OpenCode, hạ tầng siêu tin cậy, không rò rỉ tài nguyên, đạt 100% tỷ lệ hoàn thành tác vụ (TCR).**
+
+---
+
+— **Ban Hành**: Ban Điều Phối Kiến Trúc Hệ Thống JKAI-Zenith  
+— **Phiên Bản**: Protocol v2.1 (Tích hợp Nguyên Tắc Phản Biện Tương Hỗ & Đồng Thuận Tối Ưu) | 2026-09-22 (GMT+7)

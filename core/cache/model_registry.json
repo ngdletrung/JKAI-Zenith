@@ -61,8 +61,8 @@
     "family": "gemma4",
     "context_length_max": 131072,
     "model_classes": [
-      "TOOL_USE",
       "GENERAL",
+      "TOOL_USE",
       "VISION"
     ],
     "has_vision": true,
@@ -91,8 +91,8 @@
     "model_classes": [
       "GENERAL",
       "TOOL_USE",
-      "REASONING",
-      "VISION"
+      "VISION",
+      "REASONING"
     ],
     "has_vision": true,
     "has_tool_calling": true,
@@ -120,8 +120,8 @@
     "model_classes": [
       "GENERAL",
       "TOOL_USE",
-      "REASONING",
-      "VISION"
+      "VISION",
+      "REASONING"
     ],
     "has_vision": true,
     "has_tool_calling": true,
@@ -177,8 +177,8 @@
     "model_classes": [
       "GENERAL",
       "TOOL_USE",
-      "REASONING",
-      "VISION"
+      "VISION",
+      "REASONING"
     ],
     "has_vision": true,
     "has_tool_calling": true,
@@ -204,8 +204,8 @@
     "family": "llama",
     "context_length_max": 131072,
     "model_classes": [
-      "TOOL_USE",
-      "GENERAL"
+      "GENERAL",
+      "TOOL_USE"
     ],
     "has_vision": false,
     "has_tool_calling": true,
@@ -231,9 +231,9 @@
     "family": "qwen2",
     "context_length_max": 32768,
     "model_classes": [
-      "CODING",
+      "GENERAL",
       "TOOL_USE",
-      "GENERAL"
+      "CODING"
     ],
     "has_vision": false,
     "has_tool_calling": true,
@@ -261,8 +261,8 @@
     "model_classes": [
       "GENERAL",
       "TOOL_USE",
-      "REASONING",
-      "VISION"
+      "VISION",
+      "REASONING"
     ],
     "has_vision": true,
     "has_tool_calling": true,
@@ -288,9 +288,9 @@
     "family": "phi3",
     "context_length_max": 131072,
     "model_classes": [
-      "CODING",
+      "GENERAL",
       "TOOL_USE",
-      "GENERAL"
+      "CODING"
     ],
     "has_vision": false,
     "has_tool_calling": true,
@@ -316,9 +316,9 @@
     "family": "qwen2",
     "context_length_max": 32768,
     "model_classes": [
-      "CODING",
+      "GENERAL",
       "TOOL_USE",
-      "GENERAL"
+      "CODING"
     ],
     "has_vision": false,
     "has_tool_calling": true,

@@ -1,6 +1,7 @@
 import asyncio
 import json
 import logging
+import time
 from dataclasses import dataclass
 from core.utils.engine import engine
 
@@ -15,6 +16,39 @@ def _get_evidence_guard():
         from core.kernel.evidence_gate import EvidenceGuard
         _EVIDENCE_GUARD = EvidenceGuard()
     return _EVIDENCE_GUARD
+
+
+class _HealthCache:
+    """
+    [N1] Circuit Breaker Health Cache for executor endpoints.
+    Caches last known health state per executor to avoid blocking HTTP probe on every call.
+    Cache TTL = 30s. Probe timeout = 500ms.
+    """
+    PROBE_TIMEOUT: float = 0.5     # 500ms max per health probe
+    CACHE_TTL: float = 30.0        # seconds before re-probing
+
+    def __init__(self):
+        self._cache: dict[str, tuple[bool, float]] = {}  # name -> (is_healthy, last_check_ts)
+
+    def is_known_healthy(self, name: str) -> bool | None:
+        """Return True/False if within TTL, None if cache expired or unknown."""
+        entry = self._cache.get(name)
+        if entry is None:
+            return None
+        healthy, ts = entry
+        if time.monotonic() - ts > self.CACHE_TTL:
+            return None
+        return healthy
+
+    def update(self, name: str, healthy: bool) -> None:
+        self._cache[name] = (healthy, time.monotonic())
+
+    def mark_unhealthy(self, name: str) -> None:
+        self.update(name, False)
+
+
+_health_cache = _HealthCache()
+
 
 @dataclass(frozen=True)
 class ExecutionRequest:
@@ -52,6 +86,28 @@ class ExecutorGateway:
         elif isinstance(resp, dict):
             return resp
         return {}
+
+    async def _probe_executor_health(self, name: str, executor_url: str) -> bool:
+        """
+        [N1] Fast health probe: GET /health with 500ms hard timeout.
+        Populates _health_cache on result. Fail-safe: returns False on any exception.
+        """
+        cached = _health_cache.is_known_healthy(name)
+        if cached is not None:
+            return cached
+        try:
+            resp = await asyncio.wait_for(
+                self.http_client.get(f"{executor_url}/health"),
+                timeout=_HealthCache.PROBE_TIMEOUT,
+            )
+            is_healthy = getattr(resp, "status_code", 200) < 500
+            _health_cache.update(name, is_healthy)
+            return is_healthy
+        except Exception as probe_err:
+            logger.debug("[HEALTH-PROBE] %s unreachable: %s", name, probe_err)
+            _health_cache.mark_unhealthy(name)
+            return False
+
 
     async def execute_tool(self, request: ExecutionRequest, task_id: str) -> str:
         """
@@ -274,13 +330,23 @@ class ExecutorGateway:
                 "grant": decision.grant if hasattr(decision, 'grant') else None
             }
 
-            # Retry: primary executor -> fallback executor-2
+            # [N1] Probe-before-dispatch: health check (500ms) before committing request budget.
+            # Unhealthy -> immediate failover to executor_2, no 1s sleep penalty.
+            # Both dead  -> FAIL_FAST with clear error < 2s total.
             executor_names = ["executor", "executor_2"]
             last_exception = None
             for attempt, name in enumerate(executor_names):
                 try:
                     executor_url = registry.get_service_url(name)
-                    self._log("EXECUTOR", f"Attempt {attempt+1}/{len(executor_names)} -> {name} ({executor_url})", task_id)
+                    healthy = await self._probe_executor_health(name, executor_url)
+                    if not healthy:
+                        msg = f"[HEALTH-GATE] {name} ({executor_url}) is DOWN — skipping."
+                        self._log("EXECUTOR", msg, task_id)
+                        last_exception = RuntimeError(msg)
+                        # Immediately failover, no sleep needed (probe already gave 500ms window)
+                        continue
+
+                    self._log("EXECUTOR", f"[HEALTH-OK] {name} is UP — dispatching {request.tool_name}", task_id, stealth=True)
                     data = await self._post_to_executor(f"{executor_url}/call_tool", payload, request.timeout)
 
                     if data.get("status") == "needs_auth":
@@ -304,6 +370,8 @@ class ExecutorGateway:
                             self._log("EXECUTOR", f"[RECOVERY] {plan.to_log_line()}", task_id)
                         except Exception:
                             pass
+                    # Mark this executor as still healthy since response was received
+                    _health_cache.update(name, True)
                     is_success = outcome.is_success
                     output = data.get("output", "No output.")
                     return ExecutionResult(
@@ -315,9 +383,8 @@ class ExecutorGateway:
 
                 except Exception as e:
                     last_exception = e
-                    self._log("EXECUTOR", f"Executor {name} failed: {e}. {'Falling back...' if attempt < len(executor_names)-1 else 'No more executors.'}", task_id)
-                    if attempt < len(executor_names) - 1:
-                        await asyncio.sleep(1.0)
+                    _health_cache.mark_unhealthy(name)
+                    self._log("EXECUTOR", f"Executor {name} failed mid-call: {e}. {'Failing over...' if attempt < len(executor_names)-1 else 'No more executors — FAIL_FAST.'}", task_id)
 
             output = f"Error calling executor: {last_exception}"
             is_success = False

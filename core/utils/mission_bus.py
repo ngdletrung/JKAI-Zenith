@@ -4,7 +4,7 @@ import os
 import re
 import hashlib
 from typing import Any, Dict, List, Optional
-from core.utils.redis_client import redis_safe
+from core.redis_client import redis_safe
 
 # 🛡️ [ENVIRONMENT-ADAPTER]: Operating environment detection
 try:

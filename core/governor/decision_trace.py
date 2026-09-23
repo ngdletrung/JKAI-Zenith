@@ -286,7 +286,7 @@ def get_tracer() -> DecisionTracer:
     if _tracer is None:
         redis_client = None
         try:
-            from core.utils.redis_client import redis_safe
+            from core.redis_client import redis_safe
             redis_client = redis_safe(lambda r: r)
         except Exception:
             pass

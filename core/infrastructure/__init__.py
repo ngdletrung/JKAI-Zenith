@@ -12,7 +12,7 @@ Constitutional Invariant:
 """
 
 from core.utils.hardware_scheduler import HardwareScheduler, hardware_scheduler
-from core.utils.redis_client import get_redis, redis_safe
+from core.redis_client import get_redis, redis_safe
 from core.utils.models import ResourceRequest, BackendType
 
 __all__ = [

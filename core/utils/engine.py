@@ -34,6 +34,38 @@ class MasterAbortException(BaseException):
     """Emergency abort signal from Master to stop execution immediately."""
     pass
 
+
+def should_stop(task_id: str | None = None, redis_conn: Any = None) -> bool:
+    """
+    Centralized helper checking if emergency stop signal has been issued by Master.
+    Checks:
+      1. Global stop signal: 'agent:stop_signal'
+      2. Mission-specific stop signal: 'agent:stop_signal:{task_id}' (if task_id provided)
+    Supports both str and bytes values: ('true', b'true', '1', b'1').
+    Fail-safe: If redis_conn is None and cannot be acquired, or if Redis read fails,
+    returns False (never aborts blindly).
+    """
+    if redis_conn is None:
+        try:
+            from core.redis_client import get_redis
+            redis_conn = get_redis()
+        except Exception:
+            return False
+    if not redis_conn:
+        return False
+    try:
+        global_sig = redis_conn.get("agent:stop_signal")
+        if global_sig in (b'true', 'true', b'1', '1'):
+            return True
+        if task_id:
+            task_sig = redis_conn.get(f"agent:stop_signal:{task_id}")
+            if task_sig in (b'true', 'true', b'1', '1'):
+                return True
+    except Exception as e:
+        logger.debug("[SHOULD-STOP-CHECK-ERR] %s", e)
+        return False
+    return False
+
 class JKAIIntelligenceEngine:
     def __init__(self):
         self.logger = logger
@@ -997,8 +1029,7 @@ class JKAIIntelligenceEngine:
                 )
                 return ans
             except Exception as e:
-                r_check = self._get_redis()
-                if r_check and (r_check.get("agent:stop_signal") in [b'true', 'true'] or (task_id and r_check.get(f"agent:stop_signal:{task_id}") in [b'true', 'true'])):
+                if should_stop(task_id, self._get_redis()):
                     raise MasterAbortException("Mission aborted by Master.") from e
                 logger.error("[ENGINE-CHAT-ERR] %s: %r", type(e).__name__, e)
                 continue
@@ -1344,13 +1375,10 @@ class JKAIIntelligenceEngine:
                 async def stop_monitor():
                     r_mon = self._get_redis()
                     while not main_task.done():
-                        if r_mon:
-                            stop_sig = r_mon.get("agent:stop_signal")
-                            stop_sig_task = r_mon.get(f"agent:stop_signal:{task_id}") if task_id else None
-                            if stop_sig in [b'true', 'true'] or stop_sig_task in [b'true', 'true']:
-                                logger.info("[SIGNAL-MONITOR] Đã nhận lệnh dừng khẩn cấp, đang hủy tác vụ chính...")
-                                main_task.cancel()
-                                break
+                        if should_stop(task_id, r_mon):
+                            logger.info("[SIGNAL-MONITOR] Đã nhận lệnh dừng khẩn cấp, đang hủy tác vụ chính...")
+                            main_task.cancel()
+                            break
                         await asyncio.sleep(0.2)
                 
                 monitor_task = asyncio.create_task(stop_monitor())
@@ -1387,8 +1415,7 @@ class JKAIIntelligenceEngine:
                 # Hệ thống giờ đây sẽ ép buộc chạy đúng model tại đúng cổng phần cứng đã quy định.
 
                 # [PRE-FLIGHT-ABORT]: Kiểm tra lệnh dừng trước khi khởi động nơ-ron 
-                r_pre = self._get_redis()
-                if r_pre and (r_pre.get("agent:stop_signal") in [b'true', 'true'] or (task_id and r_pre.get(f"agent:stop_signal:{task_id}") in [b'true', 'true'])):
+                if should_stop(task_id, self._get_redis()):
                     self._publish_thought(role, "[ABORT]: Stop signal active. Execution cancelled.", task_id)
                     raise MasterAbortException("Mission aborted by Master.")
 
@@ -1526,13 +1553,9 @@ class JKAIIntelligenceEngine:
                             # [SIGNAL-INTERRUPT]: Kiểm tra lệnh dừng khẩn cấp 
                             if now - last_signal_check > 2.0:
                                 last_signal_check = now
-                                r = self._get_redis()
-                                if r:
-                                    stop_sig = r.get("agent:stop_signal")
-                                    stop_sig_task = r.get(f"agent:stop_signal:{task_id}") if task_id else None
-                                    if stop_sig in [b'true', 'true'] or stop_sig_task in [b'true', 'true']:
-                                        self._publish_thought(role, "[SIGNAL]: Received termination signal. Stopping execution.", task_id)
-                                        raise MasterAbortException("Mission aborted by Master.")
+                                if should_stop(task_id, self._get_redis()):
+                                    self._publish_thought(role, "[SIGNAL]: Received termination signal. Stopping execution.", task_id)
+                                    raise MasterAbortException("Mission aborted by Master.")
 
                             # [DEGENERATION CHECK]: Phát hiện vòng lặp vô tận 
                             if len(full_content) > 1000 and len(set(full_content[-100:])) < 5:

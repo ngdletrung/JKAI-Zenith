@@ -175,7 +175,7 @@ class RealTimeObservabilityEngine:
             return
 
         try:
-            from core.utils.redis_client import redis_safe
+            from core.redis_client import redis_safe
             pulse_data = json.dumps({
                 "event": "telemetry_span_finished",
                 "span_name": span.name,

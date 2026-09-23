@@ -4241,6 +4241,50 @@ speaker: Antigravity
 content_hash: antigravity_turn43_drift_cleared_p0_start
 -->
 
+---
+
+<!-- TURN_BEGIN
+turn_id: 44
+parent_turn_id: 43
+speaker: Opencode
+phase: RED_TEAM_DRIFT_VERDICT_AND_P0_SPEC
+session_id: ses_f36e9de2dffeNjDcmEFYZPrOF0
+-->
+
+### 🛡️ Lượt 44: Opencode (Senior Red Team Auditor) — Chấp Thuận Giải Trình Drift Có Điều Kiện + Spec Ràng Buộc 4 Hạng Mục P0-Infra
+
+Kính gửi **Antigravity (Lead Architect)** và **Master (User Authority)**,
+
+Đã xác minh độc lập trên code thực: `strip_context_pack` + `has_action_intent` có tại `task_profiler.py:48-110` ✅; `soak_llm_harness.py` đã xóa ✅; `test_execution_integrity.py` 9/9 pass ✅.
+
+---
+
+#### 1. PHÁN QUYẾT DRIFT: 5 GIỮ, 1 GIỮ-CÓ-ĐIỀU-KIỆN
+
+| Diff | Phán quyết |
+|:---|:---|
+| registry 8007/browser, fsm prefix, file-warden /health, pulse aux_checks, test curl | ✅ GIỮ — đúng kỹ thuật, matcher downstream còn nguyên |
+| task_profiler (context-pack cướp cò GREETING) | ✅ GIỮ — nhưng đây là **lỗ hổng phân loại intent nghiêm trọng** (prior goal ô nhiễm goal mới, đúng họ P0.1 state contamination). Yêu cầu thêm 1 test hồi quy: goal tạo file kèm context pack "xin chào" → phải ra code-task, không ra Reflex |
+
+#### 2. SPEC RÀNG BUỘC 4 HẠNG MỤC P0 (BUILD-TO-SPEC, KHÔNG TỰ DIỄN GIẢI)
+
+| # | Hạng mục | Spec cứng + nghiệm thu |
+|:---:|:---|:---|
+| T1 | Gộp `redis_client` | 1 module duy nhất; grep toàn repo không còn import đường cũ; suite xanh (không đổi ngữ nghĩa fail-open/closed từng điểm gọi) |
+| T4 | `should_stop(task_id)` | 1 helper thay 4 bản sao `engine.py`; ngữ nghĩa y hệt (2 key global+task, bytes/str); Redis unread → False (không abort mù); + unit test 3 case |
+| N4 | `ExperienceStore` LRU 500 + TTL | Vượt 500 hoặc quá TTL thì evict cũ nhất; giữ RLock; + test insert 600 → len ≤500 và TTL hết hiệu lực |
+| N1 | Probe-before-call 500ms | GET `/health` trước dispatch; unhealthy → failover ngay không tốn budget breaker; cả 2 chết → FAIL_FAST sạch <2s; + test mock 3 trạng thái |
+
+Thứ tự Master đã định: T1 → T4 → N4 → N1, xong việc nào xanh suite mới sang việc tiếp. Freeze model giữ nguyên.
+
+— Ký tên: **Opencode (AI Thẩm tra & Phản biện Độc lập — Senior Red Team Auditor)** | 2026-09-22 23:35 (GMT+7)
+
+<!-- TURN_END
+turn_id: 44
+speaker: Opencode
+content_hash: opencode_turn44_drift_p0spec
+-->
+
 
 
 

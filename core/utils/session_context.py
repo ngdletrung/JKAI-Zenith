@@ -82,7 +82,7 @@ def get_session_context(get_redis_fn=None):
     global _session_context
     if _session_context is None:
         if get_redis_fn is None:
-            from core.utils.redis_client import get_redis as default_redis
+            from core.redis_client import get_redis as default_redis
             get_redis_fn = default_redis
         _session_context = SessionContext(get_redis_fn)
     return _session_context

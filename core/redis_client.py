@@ -124,7 +124,16 @@ def get_redis():
     """Trả về sync Redis client (legacy API)."""
     return redis_client.get_sync_client()
 
+get_redis_client = get_redis
+
 async def get_async_redis():
     """Trả về async Redis client (legacy API)."""
     client = await redis_client.get_async_client()
     return client
+
+def publish_event(channel: str, message: dict):
+    """Helper publish event qua Redis Pub/Sub."""
+    import json
+    def _pub(r):
+        return r.publish(channel, json.dumps(message, ensure_ascii=False))
+    return redis_safe(_pub, default=0)

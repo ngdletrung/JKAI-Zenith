@@ -1,8 +1,7 @@
 import asyncio
 import logging
-import httpx
 from typing import Optional
-from core.utils.redis_client import redis_safe
+from core.redis_client import redis_safe
 from core.utils.models import ResourceRequest, BackendType
 
 logger = logging.getLogger('HardwareScheduler')
