@@ -1369,6 +1369,8 @@ class JKAIIntelligenceEngine:
             is_thinking = False
             think_stream_id = None
             final_tool_calls = []
+            eval_count_captured = None
+            prompt_eval_count_captured = None
             
             monitor_task = None
             try:
@@ -1608,6 +1610,9 @@ class JKAIIntelligenceEngine:
                                     continue
                                 if chunk.get('done') or 'error' in chunk:
                                     logger.info("[OLLAMA CHUNK DONE/ERR] done_reason=%s | eval_count=%s | raw=%s", chunk.get('done_reason'), chunk.get('eval_count', 0), chunk)
+                                    if chunk.get('done'):
+                                        eval_count_captured = chunk.get('eval_count')
+                                        prompt_eval_count_captured = chunk.get('prompt_eval_count')
                                 msg_obj = chunk.get('message', {})
                                 token = msg_obj.get('content', '')
                                 reasoning_token = msg_obj.get('reasoning_content', '')
@@ -1742,6 +1747,26 @@ class JKAIIntelligenceEngine:
                     except Exception: pass
 
                 self._publish_thought(role, f"Hoàn tất trong {duration:.2f}s. (Size: {len(full_content)} chars)", task_id)
+
+                # 🏛️ [TOKEN-BUDGET-GUARD]: Kiểm soát ngân sách token tập trung (Giai đoạn 2 / Item 2.2)
+                try:
+                    from core.governance.token_budget_guard import token_budget_guard, TokenBudgetConfig
+                    raw_prompt_text = "".join([m.get("content", "") for m in messages if isinstance(m, dict)])
+                    tb_cfg = None
+                    if kwargs.get('max_total_tokens'):
+                        tb_cfg = TokenBudgetConfig(max_total_tokens=int(kwargs['max_total_tokens']))
+                    token_budget_guard.record_usage(
+                        mission_id=task_id or "system",
+                        prompt_tokens=prompt_eval_count_captured,
+                        completion_tokens=eval_count_captured,
+                        prompt_text=raw_prompt_text,
+                        completion_text=full_content,
+                        custom_config=tb_cfg
+                    )
+                except MasterAbortException:
+                    raise
+                except Exception as _tb_err:
+                    logger.debug("[BUDGET-RECORD-ERR] %s", _tb_err)
 
                 # [OUTPUT-FILTER]: Loại bỏ emoji và enforce behavioral rules
                 from prompt_engine.filter import response_filter
