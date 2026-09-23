@@ -52,9 +52,11 @@ npm-debug.log*
 ehthumbs.db
 Thumbs.db
 
-# Logs & Temp files
+# Logs & Temp files — [N5] Complete log & n8n event log exclusion
 logs/
 *.log
+n8nEventLog*
+n8n_data/n8nEventLog*
 temp/
 tmp/
 scratch/

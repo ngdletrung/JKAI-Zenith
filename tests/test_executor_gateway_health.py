@@ -83,10 +83,42 @@ async def test_probe_404_is_false_positive_guard():
 
 @pytest.mark.asyncio
 async def test_probe_200_bad_body_is_unhealthy():
-    """Executor returns 200 but body does not contain UP/ok/healthy -> unhealthy."""
+    """Executor returns 200 but status field is missing -> unhealthy."""
     gw = _make_gateway(get_resp=FakeResponse(data={"error": "service unavailable"}, status_code=200))
     result = await gw._probe_executor_health("executor", "http://executor:8000")
     assert result is False
+
+
+@pytest.mark.asyncio
+async def test_probe_broken_status_no_false_positive():
+    """{'status':'broken'} contains 'ok' as substring but must NOT be treated as healthy (JSON-first)."""
+    gw = _make_gateway(get_resp=FakeResponse(data={"status": "broken"}, status_code=200))
+    result = await gw._probe_executor_health("executor", "http://executor:8000")
+    assert result is False, "Substring 'ok' in 'broken' must NOT be a false positive"
+
+
+@pytest.mark.asyncio
+async def test_probe_setup_status_no_false_positive():
+    """{'status':'setup'} contains 'up' as substring but must NOT be treated as healthy (JSON-first)."""
+    gw = _make_gateway(get_resp=FakeResponse(data={"status": "setup"}, status_code=200))
+    result = await gw._probe_executor_health("executor", "http://executor:8000")
+    assert result is False, "Substring 'up' in 'setup' must NOT be a false positive"
+
+
+@pytest.mark.asyncio
+async def test_probe_ok_status_is_healthy():
+    """{'status':'ok'} (exact match) must be treated as healthy."""
+    gw = _make_gateway(get_resp=FakeResponse(data={"status": "ok"}, status_code=200))
+    result = await gw._probe_executor_health("executor", "http://executor:8000")
+    assert result is True
+
+
+@pytest.mark.asyncio
+async def test_probe_healthy_boolean_true():
+    """{'healthy': True} must be treated as healthy."""
+    gw = _make_gateway(get_resp=FakeResponse(data={"healthy": True}, status_code=200))
+    result = await gw._probe_executor_health("executor", "http://executor:8000")
+    assert result is True
 
 
 @pytest.mark.asyncio

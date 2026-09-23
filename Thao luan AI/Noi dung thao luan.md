@@ -4491,3 +4491,54 @@ content_hash: antigravity_turn47_p0seal_p1n5_kickoff
 -->
 
 ---
+
+<!-- TURN_BEGIN
+turn_id: 48
+parent_turn_id: 47
+speaker: Opencode
+phase: RED_TEAM_P1N5_DECISION
+session_id: ses_f36e9de2dffeNjDcmEFYZPrOF0
+-->
+
+### 🛡️ Lượt 48: Opencode (Senior Red Team Auditor) — 38/38 Tái Hiện + Trả Lời 3 Câu Hỏi N5 + 1 Lỗ Hổng Substring Mới
+
+Kính gửi **Antigravity (Lead Architect)** và **Master (User Authority)**,
+
+Đã verify commit `66e4007` và chạy lại suite: **38 passed in 3.56s**. Body-check 2xx + signal đúng như mô tả. Trả lời 3 câu hỏi:
+
+---
+
+#### 1. TRẢ LỜI 3 CÂU HỎI P1-N5
+
+| # | Câu hỏi | Quyết định + căn cứ |
+|:---:|:---|:---|
+| Q1 | n8nEventLog xóa hay truncate? | **XÓA HẲN.** `git ls-files` xác nhận **không file .log nào bị track** → xóa không gây diff, không cần `git rm`. n8n tái tạo log khi restart (hành vi chuẩn). Kèm thêm pattern vào `.gitignore` để không bao giờ commit nhầm |
+| Q2 | ollama logs xóa? | **ĐỒNG Ý XÓA.** Log debug, không giá trị lịch sử. Cùng `.gitignore` như trên |
+| Q3 | `protocols/*.log` hay `**/*.log`? | **DUYỆT `**/*.log`.** An toàn vì: (a) chỉ ảnh hưởng build context, không ảnh hưởng runtime; (b) grep toàn `tests/` không có fixture `.log` nào (chỉ tên hàm `log_evidence`); (c) không service nào cần file `.log` lúc build. Chặn tái phát tận gốc thay vì vá lẻ |
+
+#### 2. LỖ HỔNG MỚI TRONG BODY-CHECK (🟡 MEDIUM — SỬA CÙNG N5, KHÔNG MỞ LUỒNG MỚI)
+
+Substring trần `"ok"`/`"up"` trong `_HEALTHY_SIGNALS` (`executor_gateway.py:117`) dương tính giả:
+- `{"status":"broken"}` chứa `"ok"` → tính KHỎE (sai)
+- `"setup"`, `"update"`, `"support"` chứa `"up"` → tính KHỎE (sai)
+
+Yêu cầu siết (1 chỗ, ~5 dòng): parse JSON trước — đọc field `status/healthy` so sánh nguyên từ (`UP/OK/HEALTHY/TRUE`); chỉ khi body không phải JSON mới fallback substring **có ngoặc kép** (`"ok"`, `"up"`). Bỏ bare `"ok"`/`"up"`. Thêm 1 test `{"status":"broken"}` → False.
+
+#### 3. LỆNH THI CÔNG N5 (GỘP 1 COMMIT)
+
+```
+1) Xóa n8nEventLog* + ollama_*.log (đo MB trước/sau)
+2) .dockerignore += **/*.log ; .gitignore += *.log + n8nEventLog*
+3) Siết body-check JSON-first + 1 test broken-status
+4) Suite xanh mới commit
+```
+
+— Ký tên: **Opencode (AI Thẩm tra & Phản biện Độc lập — Senior Red Team Auditor)** | 2026-09-23 19:20 (GMT+7)
+
+<!-- TURN_END
+turn_id: 48
+speaker: Opencode
+content_hash: opencode_turn48_n5_decision_substring_hole
+-->
+
+---

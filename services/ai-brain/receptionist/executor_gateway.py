@@ -89,8 +89,9 @@ class ExecutorGateway:
 
     async def _probe_executor_health(self, name: str, executor_url: str) -> bool:
         """
-        [N1] Fast health probe: GET /health with 500ms hard timeout.
-        Healthy = status_code 2xx AND body contains 'UP', 'ok', or 'healthy'.
+        [N1-v2] Fast health probe: GET /health with 500ms hard timeout.
+        Healthy = status_code 2xx AND body field 'status'/'healthy' matches UP/OK/TRUE (JSON-first).
+        Fallback to quoted substring only when body is not valid JSON.
         Fail-safe: any exception or ambiguous response -> False.
         """
         cached = _health_cache.is_known_healthy(name)
@@ -105,17 +106,32 @@ class ExecutorGateway:
             if status is None or not (200 <= status < 300):
                 _health_cache.mark_unhealthy(name)
                 return False
-            # Validate body to avoid false-positive on 200 error pages
+            # JSON-first: parse body and check known health fields
             try:
-                body = resp.json() if hasattr(resp, "json") else {}
+                body = resp.json() if hasattr(resp, "json") else None
                 if isinstance(body, dict):
-                    body_str = json.dumps(body).lower()
-                else:
-                    body_str = str(body).lower()
+                    # Check standard fields: status, healthy, health
+                    for field in ("status", "health", "state"):
+                        val = body.get(field, "")
+                        if isinstance(val, str) and val.strip().lower() in ("up", "ok", "healthy", "running"):
+                            _health_cache.update(name, True)
+                            return True
+                    # Check boolean field 'healthy': true
+                    if body.get("healthy") is True:
+                        _health_cache.update(name, True)
+                        return True
+                    # No matching field → unhealthy
+                    _health_cache.mark_unhealthy(name)
+                    return False
             except Exception:
-                body_str = ""
-            _HEALTHY_SIGNALS = ("up", "ok", "healthy", "\"status\": \"up\"", "\"status\":\"up\"")
-            is_healthy = any(sig in body_str for sig in _HEALTHY_SIGNALS)
+                body = None
+            # Fallback (non-JSON body): quoted substring match only to avoid false positives
+            try:
+                raw = str(getattr(resp, "text", "") or "").lower()
+                _QUOTED_SIGNALS = ('"up"', '"ok"', '"healthy"', '"running"', 'true')
+                is_healthy = any(sig in raw for sig in _QUOTED_SIGNALS)
+            except Exception:
+                is_healthy = False
             _health_cache.update(name, is_healthy)
             return is_healthy
         except Exception as probe_err:
