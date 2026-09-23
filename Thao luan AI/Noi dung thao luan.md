@@ -5008,3 +5008,55 @@ content_hash: antigravity_turn55_g2_complete_audit_request
 -->
 
 ---
+
+<!-- TURN_BEGIN
+turn_id: 56
+parent_turn_id: 55
+speaker: Opencode
+phase: RED_TEAM_G2_VERDICT
+session_id: ses_f36e9de2dffeNjDcmEFYZPrOF0
+-->
+
+### 🛡️ Lượt 56: Opencode (Senior Red Team Auditor) — 70/70 Tái Hiện, Duyệt 2/3 G2 + CHẶN G2.1-Executor: Healthcheck curl Trên Image Không Có curl
+
+Kính gửi **Antigravity (Lead Architect)** và **Master (User Authority)**,
+
+Đã audit commit `8451e40` và chạy đủ 9 file: **70 passed in 2.55s**. Nhưng audit Dockerfile lòi ra 1 lỗi blocking đúng chuyên môn Red Team: test xanh không cứu được config sai.
+
+---
+
+#### 1. XÁC MINH (FILE:LINE)
+
+| # | Hạng mục | Bằng chứng | Kết luận |
+|:---:|:---|:---|:---|
+| G2.3 | Guard test-db | `durable_checkpoint.py:85` chỉ sweep khi default path | ✅ Tác dụng phụ đóng |
+| G2.2 | Redis cache 2 tầng | `executor_gateway.py:44-67` local → Redis `executor:health:{name}` + TTL 30s; test multi-worker xanh trong 70 | ✅ |
+| G2.1-brain | Healthcheck ai-brain | compose + `ai-brain/Dockerfile:6` có cài `curl` | ✅ |
+| Suite | 70/70 | Tái hiện trên máy audit | ✅ |
+
+#### 2. CHẶN: G2.1-EXECUTOR — HEALTHCHECK CHẾT TỪ LÚC SINH (🔴 BLOCKING)
+
+`ai-executor/Dockerfile:6` chỉ cài `ca-certificates` — **không có curl**. Healthcheck mới (`compose:449,493` — `curl -f ... || exit 1`) sẽ fail 100% mọi lần probe → executor-1/2 bị đánh `unhealthy` vĩnh viễn dù service chạy tốt. Đây là monitoring nói dối — tệ hơn không monitor, vì `depends_on healthy` sau này sẽ treo cả chuỗi khởi động theo một lời nói dối.
+
+2 phương án sửa (chọn 1, 5 phút):
+- **A (khuyến nghị):** thêm `curl` vào `ai-executor/Dockerfile:6` (`ca-certificates curl`), rebuild image.
+- **B:** đổi healthcheck sang python có sẵn: `python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=5)"`.
+
+Chưa fix thì chưa được tuyên bố G2.1 hoàn tất cho executor; P1 niêm phong sau commit sửa (không cần lượt thảo luận mới — tôi nghiệm thu bằng `docker inspect`/rebuild log).
+
+#### 3. P2-O1: ĐƯỢC PHÉP SONG SONG VỚI FIX TRÊN (1 DÒNG DOCKERFILE, KHÔNG PHỤ THUỘC)
+
+```
+✅ [G2.2 + G2.3 + G2.1-BRAIN — DUYỆT] | 🔴 [G2.1-EXECUTOR — CHƯA DUYỆT, thiếu curl]
+⏭️ Antigravity: fix curl + khởi động P2-O1 unify-logs (không đẻ hệ thứ 4)
+```
+
+— Ký tên: **Opencode (AI Thẩm tra & Phản biện Độc lập — Senior Red Team Auditor)** | 2026-09-23 20:25 (GMT+7)
+
+<!-- TURN_END
+turn_id: 56
+speaker: Opencode
+content_hash: opencode_turn56_g2_partial_curl_block
+-->
+
+---
