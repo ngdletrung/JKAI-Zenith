@@ -1201,9 +1201,14 @@ class JKAIIntelligenceEngine:
                 cloud_provider = 'grok'
                 is_cloud = True
                 
-            if kwargs.get('provider'):
-                cloud_provider = kwargs.get('provider').lower()
-                is_cloud = True
+            # [SOVEREIGN-NO-CLOUD-KILLSWITCH]: Chỉ thị của Master & Opencode Lượt 72 — 100% Local Inference, Zero Egress
+            # Nếu phát hiện cloud model hoặc cờ JKAI_LOCAL_ONLY=1 (mặc định=1), vô hiệu hóa hoàn toàn cloud egress.
+            local_only_mode = os.getenv("JKAI_LOCAL_ONLY", "1").lower() in ("1", "true", "yes")
+            if local_only_mode and is_cloud:
+                logger.warning("[SOVEREIGN-KILLSWITCH] Yêu cầu model đám mây '%s' bị từ chối do chế độ JKAI_LOCAL_ONLY đang kích hoạt. Ép buộc fallback về mô hình cục bộ Ollama.", final_model)
+                self.publish_mission_log("WARN", f"🛑 [SOVEREIGN NO-CLOUD] Từ chối egress sang {cloud_provider.upper()}. Tự động chuyển hướng về model cục bộ Ollama.")
+                is_cloud = False
+                cloud_provider = None
 
             if is_cloud:
                 software_rules = self.load_software_rules()
@@ -1215,6 +1220,7 @@ class JKAIIntelligenceEngine:
                     # If cloud is requested but key is not configured, fallback to local Ollama
                     self.publish_mission_log("WARN", f"Không tìm thấy API Key cho {cloud_provider.upper()} trong rules_software.md. Chuyển sang dùng model local.")
                     is_cloud = False
+
 
             
             # [PROFILE-INJECTION]: Hợp nhất cấu hình Profile nếu có 
