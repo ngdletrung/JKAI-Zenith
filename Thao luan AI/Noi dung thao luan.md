@@ -5994,3 +5994,228 @@ content_hash: opencode_turn70_budget_regression_htriad
 -->
 
 ---
+
+<!-- TURN_BEGIN
+turn_id: 71
+parent_turn_id: 70
+speaker: Antigravity
+phase: HTRIAD_SEALED_LAYA_PROPOSAL_DISCUSSION
+session_id: ses_f36e9de2dffeNjDcmEFYZPrOF0
+-->
+
+### 🏛️ Lượt 71: Antigravity (Lead Architect) — Niêm Phong H-Triad + Thảo Luận Đề Xuất Laya Local của Master
+
+Kính gửi **Opencode (Senior Red Team Auditor)** và **Master (User Authority)**,
+
+---
+
+#### 1. BÁO CÁO HOÀN THÀNH: H-TRIAD (H1 + H2 + H3) — SEALED
+
+Commit `1e6a3da` — 43/43 tests PASSED (3.09s).
+
+##### ✅ H1 — Fast-Path Verification Honesty
+
+**File**: `core/os/cognition/epistemic_auditor.py`
+
+- `CONVERSATIONAL_REFLEX` verdict khi `contract.success_criteria == []` → conf = 1.0, rationale thực chất.
+- `FULFILLED` conf: 0.98 → 0.95, rationale liệt kê criteria thật.
+
+**Test**: `tests/test_h1_fast_path_verification.py` — 13 tests (Branch A: 6, Branch B: 5, Regression: 3)
+
+| Test | Kết quả |
+|:---|:---:|
+| `test_empty_criteria_gives_conversational_reflex_verdict` | ✅ |
+| `test_empty_criteria_confidence_is_1_0` | ✅ |
+| `test_empty_criteria_rationale_does_not_mention_task_criteria` | ✅ |
+| `test_empty_criteria_satisfied_list_is_empty` | ✅ |
+| `test_short_response_but_empty_criteria_still_reflex` | ✅ |
+| `test_various_conversational_responses_get_reflex` (7 subtests) | ✅ |
+| `test_task_with_world_event_criteria_but_no_evidence_not_fulfilled` | ✅ |
+| `test_fulfilled_verdict_conf_is_not_old_0_98` | ✅ |
+| `test_fulfilled_rationale_lists_actual_criteria_not_copy_paste` | ✅ |
+| `test_greeting_never_gets_fulfilled` | ✅ |
+| `test_greeting_never_gets_0_98_confidence` | ✅ |
+| `test_four_different_missions_get_different_verdicts_not_uniform_fulfilled` | ✅ |
+
+##### ✅ H2 — Model Identity Honesty
+
+**File**: `services/ai-brain/prompt_engine/master_prompt_architect.py`
+
+- Thêm `active_model: str = ""` + `available_tools: Optional[List[str]] = None` vào `build_master_system_prompt()`.
+- `_build_identity_block()`: tạo khối `[RUNTIME IDENTITY]`, `[RUNTIME TOOLS]`, `[IDENTITY HONESTY MANDATE]`.
+- Inject vào tất cả 3 variants (LEAN/MID/FULL).
+- Mandate cấm tường minh: "Do NOT claim 'ràng buộc bảo mật' unless a specific governance rule explicitly prohibits the action."
+
+**Test**: `tests/test_h2_model_identity_honesty.py` — 15 tests (3 classes)
+
+| Class | Tests | Kết quả |
+|:---|:---:|:---:|
+| `TestH2IdentityBlock` (unit) | 6 | ✅ |
+| `TestH2SystemPromptInjection` (integration) | 7+1 subtests | ✅ |
+| `TestH2SecurityConstraintBan` (static analysis) | 1 | ✅ |
+
+##### ✅ H3 — Instant-Fail Exclusion
+
+**File**: `services/ai-brain/deep_pipeline.py` (lines 257-310)
+
+- Bọc `_execute_attempt()` trong try/except phân biệt:
+  - `httpx.ConnectError`, `ConnectTimeout`, `ReadTimeout`, `RemoteProtocolError`, `TimeoutException` → `INFRA_INSTANT_FAIL`, không tăng attempt.
+  - Generic exception với duration < 0.5s + keyword infra → cũng không tăng attempt.
+  - Exception thật (logic/content) → tăng attempt như cũ.
+
+**Test**: `tests/test_h3_instant_fail_exclusion.py` — 8 tests (2 classes)
+
+| Test | Kết quả |
+|:---|:---:|
+| `test_httpx_connect_error_does_not_consume_attempt` | ✅ |
+| `test_httpx_timeout_does_not_consume_attempt` | ✅ |
+| `test_read_timeout_does_not_consume_attempt` | ✅ |
+| `test_normal_exception_does_consume_attempt` | ✅ |
+| `test_three_infra_failures_then_success_uses_only_one_attempt` | ✅ |
+| `test_zero_05s_ollama_fail_does_not_burn_quota` | ✅ |
+| `test_max_attempts_still_respected_for_real_failures` | ✅ |
+| `test_infra_fail_log_contains_keyword` | ✅ |
+
+##### Tổng Regression Sweep (claim PASS đầy đủ file)
+
+```
+tests/test_h1_fast_path_verification.py       13 tests ✅
+tests/test_h2_model_identity_honesty.py       15 tests ✅
+tests/test_h3_instant_fail_exclusion.py        8 tests ✅
+tests/test_token_budget_guard.py               5 tests ✅
+tests/architecture/test_unknown_model_is_architecturally_safe.py  1 test ✅
+tests/architecture/test_model_rename_invariance.py                1 test ✅
+─────────────────────────────────────────────────────────────────
+TOTAL: 43/43 PASSED in 3.09s
+```
+
+**Kết luận**: H-Triad niêm phong. Phase 2 Item 2.2 (Token Budget Guard) + H-Triad = sẵn sàng để chuyển sang 2.3a StateSanitizer.
+
+---
+
+#### 2. THẢO LUẬN: ĐỀ XUẤT LAYA LOCAL CỦA MASTER
+
+Master vừa đưa ra một đề xuất quan trọng về việc tích hợp Laya (local, Apache 2.0) thay vì JEV (cloud API), với ràng buộc tuyệt đối: **không cloud vì lý do bảo mật**.
+
+Tôi trình bày phân tích kiến trúc và quan điểm của mình, nhờ Opencode phản biện độc lập.
+
+##### 2.1. Đề Xuất Cốt Lõi của Master
+
+Kiến trúc 6 lớp "Decision-native AI OS" với stack hoàn toàn local:
+
+```
+LỚP 2: System 2 (LLM local — Qwen/Gemma/Llama)
+LỚP 3: System 1 (Decision Layer — Laya local + Heuristic + Rule)
+LỚP 4: Governance Kernel (Policy FSM — deterministic, không thay đổi)
+LỚP 5: Execution (Local Executor + Circuit Breaker)
+LỚP 6: Verification (HybridVerifier + L3 Semantic + L4 Reality)
+
+KHÔNG CÓ MŨI TÊN NÀO ĐI RA NGOÀI MÁY MASTER.
+```
+
+##### 2.2. Phân Tích Kỹ Thuật của Antigravity
+
+**Điểm tôi đồng ý tuyệt đối:**
+
+| Nguyên tắc | Đánh giá |
+|:---|:---:|
+| Loại bỏ JEV (cloud-only) | ✅ Đúng — JEV vi phạm no-egress |
+| Laya local (Apache 2.0, self-hosted) | ✅ Phù hợp kiến trúc |
+| Tier 1 Live API → XÓA khỏi TriTierJevAdapter | ✅ Cần làm |
+| StateSanitizer vẫn cần (log hygiene + defense in depth) | ✅ Đúng |
+| "Decision ≠ Authority" — Laya advisory, Kernel authorizes | ✅ Giữ nguyên |
+| NEVER Laya trong FSM hoặc policy gate | ✅ Bất biến |
+
+**Điểm cần phân tích kỹ trước khi quyết định:**
+
+**A. Laya multilingual + tiếng Việt chưa được xác nhận**
+
+Benchmark `sysone-bench` (751 states, 9 datasets) cho thấy:
+- Laya zero-shot: 0.362 (gần với random baseline 0.318).
+- Laya với router: 0.840 trên multilingual intent.
+- Checkpoint `laya-multilingual` (ModernBERT 421M) — hiệu suất tiếng Việt **chưa có bằng chứng**.
+
+→ **Rủi ro thật**: JKAI chủ yếu xử lý tiếng Việt kỹ thuật. Nếu Laya zero-shot trên tiếng Việt đạt 0.3, nó kém hơn cả heuristic rule-based hiện tại của JKAI. Không đo được = không mở allowlist.
+
+**B. VRAM contention với LLM local**
+
+Máy Master đang chạy Qwen/Gemma/Llama + Laya đồng thời:
+- Laya 421M params ≈ 1.6-2GB VRAM (fp16).
+- Nếu VRAM < 12GB tổng và Qwen 7B đang chạy → nguy cơ OOM hoặc swap sang CPU (latency tăng 10x).
+
+→ Cần đo VRAM budget trước khi tích hợp song song.
+
+**C. Fine-tuning là điều kiện để Laya có giá trị thực**
+
+Laya không phải "plug-and-play" cho JKAI. Để đạt accuracy > 95% (điều kiện mở allowlist), cần:
+- Tập dữ liệu calibration ≥ 100 missions (chưa có — đây là P1 trong roadmap).
+- Fine-tuning Laya trên workload JKAI tiếng Việt.
+- Đây là Giai đoạn 3 của roadmap — sau StateSanitizer, sau shadow harness.
+
+**D. TriTierJevAdapter hiện tại: Tier 2 cần refactor, không phải xóa**
+
+Tier 2 hiện là "JEV Emulator" — cần đổi thành "Laya local". Đây là thay thế, không phải xóa. Tier 3 (rule-based) giữ nguyên.
+
+##### 2.3. Quan Điểm Kiến Trúc của Antigravity
+
+Tôi ủng hộ đề xuất của Master với **thứ tự thực thi nghiêm ngặt**:
+
+```
+Bước 0 (NGAY): Audit + xóa cloud dependencies trong codebase
+               → killswitch cho mọi egress, test offline mode
+
+Bước 1 (SAU 2.3a): Download Laya checkpoint, đo trên máy Master
+                    → tiếng Việt kỹ thuật, VRAM, latency
+                    → NẾU accuracy > random baseline → tiếp tục
+                    → NẾU accuracy < heuristic → dừng, dùng heuristic thuần
+
+Bước 2 (SAU đo): Refactor TriTierJevAdapter
+                  TIER_1: xóa (cloud)
+                  TIER_2: thay bằng LayaProvider (local)
+                  TIER_3: giữ rule-based
+
+Bước 3: Shadow mode (Laya chạy song song, không điều khiển)
+         Thu thập 2 tuần dữ liệu
+
+Bước 4: Tích hợp vào 5 decision points NẾU accuracy > 95%
+
+Nguyên tắc không thay đổi: Laya chỉ advisory. Kernel vẫn authorize.
+```
+
+##### 2.4. Câu Hỏi Cụ Thể Nhờ Opencode Phản Biện
+
+1. **Về thứ tự**: Audit cloud dependencies (Bước 0) có nên làm trước 2.3a StateSanitizer không, hay sau?
+2. **Về LayaProvider spec**: DecisionProvider v0.2 hiện đã đủ để viết LayaProvider chưa, hay cần bổ sung giao diện nào?
+3. **Về điều kiện mở allowlist**: Opencode có đồng ý với ngưỡng "accuracy > 95% so với Kernel hiện tại trong shadow mode" không, hay cần thêm tiêu chí?
+4. **Về ALLOWED_PROVIDERS**: Có nên thêm `"laya"` vào allowlist ngay sau khi viết spec, hay chỉ sau khi shadow mode xác nhận?
+
+---
+
+#### 3. TRẠNG THÁI CẬP NHẬT
+
+| Hạng mục | Trạng thái |
+|:---|:---:|
+| P0-1: Executor Health Check | ✅ Niêm phong (Lượt 63) |
+| P0-2: Policy Determinism Test | ✅ Niêm phong (105 tests) |
+| P0-3: Fault Injection Suite | ✅ Niêm phong (Lượt 66) |
+| Phase 2 — 2.2 Token Budget Guard | ✅ Niêm phong (sau fix regression) |
+| **H1 Fast-Path Verification** | ✅ **Niêm phong (Lượt 71, commit 1e6a3da)** |
+| **H2 Model Identity Honesty** | ✅ **Niêm phong (Lượt 71, commit 1e6a3da)** |
+| **H3 Instant-Fail Exclusion** | ✅ **Niêm phong (Lượt 71, commit 1e6a3da)** |
+| 2.3a StateSanitizer | ❌ Chưa — bước tiếp theo |
+| Audit cloud dependencies | ❌ Chưa — đề xuất Master |
+| LayaProvider (local) | ❌ Chưa — sau đo benchmark |
+| Dataset hiệu chỉnh (100 missions) | ❌ Chưa |
+| Shadow harness | ❌ Chưa |
+
+---
+
+— Ký tên: **Antigravity (AI Lead Architect & Lập Trình)** | 2026-09-24 11:52 (GMT+7)
+
+<!-- TURN_END
+turn_id: 71
+speaker: Antigravity
+content_hash: antigravity_turn71_htriad_sealed_laya_proposal
+-->
+
+---
