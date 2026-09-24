@@ -254,17 +254,60 @@ class DeepPipeline:
             if replan_feedback:
                 current_goal += f"\n\n[REPLAN-FEEDBACK]: Báo cáo thực thi trước đó bị Critic từ chối vì: '{replan_feedback}'. Vui lòng điều chỉnh kế hoạch, sửa đổi các bước lỗi và khắc phục triệt để."
 
-            final_result = await self._execute_attempt(
-                goal=current_goal,
-                task_id=task_id,
-                planner_instance=planner_instance,
-                context=context,
-                history=history,
-                images=images,
-                mode=mode,
-                trace_id=trace_id,
-                attempt=attempt
-            )
+            _attempt_start_ts = asyncio.get_event_loop().time()
+            try:
+                final_result = await self._execute_attempt(
+                    goal=current_goal,
+                    task_id=task_id,
+                    planner_instance=planner_instance,
+                    context=context,
+                    history=history,
+                    images=images,
+                    mode=mode,
+                    trace_id=trace_id,
+                    attempt=attempt
+                )
+            except (httpx.ConnectError, httpx.ConnectTimeout, httpx.ReadTimeout,
+                    httpx.RemoteProtocolError, httpx.TimeoutException) as _infra_exc:
+                # [H3] Instant-fail: network/Ollama unreachable — do NOT consume attempt quota
+                _duration = asyncio.get_event_loop().time() - _attempt_start_ts
+                engine.publish_mission_log(
+                    "SYSTEM",
+                    f"[INFRA_INSTANT_FAIL] Ollama/network unreachable in {_duration:.3f}s: {_infra_exc}. "
+                    f"Attempt quota NOT consumed (attempt {attempt + 1}/{max_attempts}). Retrying infra...",
+                    task_id, trace_id
+                )
+                logger.warning(
+                    "[H3-INFRA-FAIL] Attempt %d NOT counted — instant infra fail (%.3fs): %s",
+                    attempt + 1, _duration, _infra_exc
+                )
+                # Retry immediately without incrementing logical attempt
+                await asyncio.sleep(0.5)
+                continue
+            except Exception as _generic_exc:
+                # [H3] Generic instant-fail guard: if exception fired in < 0.5s it's likely infra
+                _duration = asyncio.get_event_loop().time() - _attempt_start_ts
+                _exc_name = type(_generic_exc).__name__
+                if _duration < 0.5 and any(
+                    kw in _exc_name.lower() for kw in ["connection", "timeout", "network", "socket", "eof"]
+                ):
+                    engine.publish_mission_log(
+                        "SYSTEM",
+                        f"[INFRA_INSTANT_FAIL] Fast exception ({_exc_name}) in {_duration:.3f}s: {_generic_exc}. "
+                        f"Attempt quota NOT consumed.",
+                        task_id, trace_id
+                    )
+                    logger.warning(
+                        "[H3-INFRA-FAIL] Fast generic exception (%s) in %.3fs — attempt NOT counted: %s",
+                        _exc_name, _duration, _generic_exc
+                    )
+                    await asyncio.sleep(0.5)
+                    continue
+                # Real logic/content failure — count this attempt
+                logger.error("[DEEP-PIPELINE] _execute_attempt raised: %s", _generic_exc)
+                engine.publish_mission_log("ERROR", f"[ATTEMPT ERROR] {_generic_exc}", task_id, trace_id)
+                raise
+
 
             judicial_review = final_result.get("judicial_review", {})
             verdict = str(judicial_review.get("verdict", "FAIL")).upper()

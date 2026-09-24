@@ -26,6 +26,7 @@ class AuditVerdict(str, Enum):
     PARTIALLY_FULFILLED = "PARTIALLY_FULFILLED"
     OFF_TOPIC = "OFF_TOPIC"
     EVIDENCE_INSUFFICIENT = "EVIDENCE_INSUFFICIENT"
+    CONVERSATIONAL_REFLEX = "CONVERSATIONAL_REFLEX"
 
 
 @dataclass(frozen=True)
@@ -95,7 +96,11 @@ class EpistemicAuditor:
                 satisfied.append("MINIMUM_CONTENT_COVERAGE")
 
         # 5. Determine Verdict
-        if has_noise and "WORLD_EVENT_COVERAGE" in missing:
+        if not contract.success_criteria:
+            verdict = AuditVerdict.CONVERSATIONAL_REFLEX
+            conf = 1.0
+            rationale = "Direct communicative reflex: zero formal task invariants required."
+        elif has_noise and "WORLD_EVENT_COVERAGE" in missing:
             verdict = AuditVerdict.OFF_TOPIC
             conf = 0.95
             rationale = "Response is dominated by excluded entertainment/horoscope noise rather than requested world events."
@@ -105,8 +110,8 @@ class EpistemicAuditor:
             rationale = "Core topic mentioned but response is too shallow/terse (LOW_COVERAGE). Needs richer details."
         elif not missing:
             verdict = AuditVerdict.FULFILLED
-            conf = 0.98
-            rationale = "All objective acceptance criteria and depth requirements successfully verified."
+            conf = 0.95
+            rationale = f"All {len(satisfied)} objective criteria verified: {satisfied}."
         elif "WORLD_EVENT_COVERAGE" in satisfied:
             verdict = AuditVerdict.PARTIALLY_FULFILLED
             conf = 0.75

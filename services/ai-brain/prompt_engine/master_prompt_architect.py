@@ -43,14 +43,27 @@ class MasterPromptArchitect:
         extra_tools: list = None,
         prompt_variant: str = "MID",
         max_tokens_limit: int = 4000,
+        active_model: str = "",
+        available_tools: Optional[List[str]] = None,
         **kwargs
     ) -> str:
         """
         Xây dựng System Prompt tối ưu theo biến thể: FULL, MID, hoặc LEAN.
+
+        H2 (Model Identity Honesty):
+          - active_model: tên model Ollama đang chạy thực tế (vd: "qwen2.5:3b").
+            Inject vào prompt để model biết chính xác mình là ai.
+          - available_tools: danh sách tên tool thực sự có trong runtime.
+            Inject vào prompt để model không bịa tool hoặc từ chối vô căn cứ.
+          - Model KHÔNG ĐƯỢC claim "ràng buộc bảo mật" (security constraint) khi
+            không có rule nào cấm; identity phải khai báo trung thực từ runtime.
         """
         # Chuẩn hóa task_type thành dạng danh sách tags
         task_tags = [task_type] if isinstance(task_type, str) else list(task_type or ["CHAT"])
         primary_task = task_tags[0] if task_tags else "CHAT"
+
+        # [H2] Build runtime identity block — không hardcode, không bịa
+        identity_block = self._build_identity_block(active_model, available_tools)
 
         # 🧠 [COGNITIVE-CONTEXT-COMPILER]: Compile cognition prompt
         compiled_cognition = ""
@@ -74,14 +87,24 @@ class MasterPromptArchitect:
         # 1. BIẾN THỂ LEAN (~100-150 tokens) - Dành cho Phản Xạ Nhanh Sub-second
         if prompt_variant == "LEAN":
             lean_p = self._build_lean_prompt(role, primary_task)
-            full_lean = f"{compiled_cognition}\n\n{lean_p}" if compiled_cognition else lean_p
-            return self.truncate_to_limit(full_lean, max_tokens=max_tokens_limit)
+            parts_lean = []
+            if identity_block:
+                parts_lean.append(identity_block)
+            if compiled_cognition:
+                parts_lean.append(compiled_cognition)
+            parts_lean.append(lean_p)
+            return self.truncate_to_limit("\n\n".join(parts_lean), max_tokens=max_tokens_limit)
 
         # 2. BIẾN THỂ MID (~300-450 tokens) - TỐI ƯU HOÀN HẢO CHO MODEL 3B-4B TRÊN GPU
         if prompt_variant == "MID":
             mid_p = self._build_mid_prompt(role, task_tags)
-            full_mid = f"{compiled_cognition}\n\n{mid_p}" if compiled_cognition else mid_p
-            return self.truncate_to_limit(full_mid, max_tokens=max_tokens_limit)
+            parts_mid = []
+            if identity_block:
+                parts_mid.append(identity_block)
+            if compiled_cognition:
+                parts_mid.append(compiled_cognition)
+            parts_mid.append(mid_p)
+            return self.truncate_to_limit("\n\n".join(parts_mid), max_tokens=max_tokens_limit)
 
         # 3. BIẾN THỂ FULL (~1200 tokens) - Dành cho Deep Reasoner MoE 30B trên CPU
         from prompt_engine.sop_protocol_catalog import get_role_sop
@@ -91,13 +114,20 @@ class MasterPromptArchitect:
         time_anchor = self._get_time_anchor_str()
         task_instruction = self._task_instruction(task_tags)
 
-        parts = [
+        # [H2] Prepend identity block vào SECTION 1 nếu có
+        section1_identity = (
             f"# SECTION 1: ROLE IDENTITY & BOUNDARY\n"
             f"You are JKAI Zenith — Elite Autonomous AI OS created by Master LeeTrung.\n"
             f"Your active operational role is: **{role.upper()}**.\n"
             f"Live Spatio-Temporal Anchor: **{time_anchor}**.\n"
-            f"Always operate in the context of current real-world time. Never hallucinate past dates.",
-            
+            f"Always operate in the context of current real-world time. Never hallucinate past dates."
+        )
+        if identity_block:
+            section1_identity += f"\n{identity_block}"
+
+        parts = [
+            section1_identity,
+
             f"# SECTION 2: OPERATIONAL 5-STAGE SOP CHECKLIST\n"
             f"{get_role_sop(role)}",
 
@@ -124,6 +154,49 @@ class MasterPromptArchitect:
             full_prompt = f"{compiled_cognition}\n\n{full_prompt}"
         return self.truncate_to_limit(full_prompt, max_tokens=max_tokens_limit)
 
+
+    def _build_identity_block(
+        self,
+        active_model: str = "",
+        available_tools: Optional[List[str]] = None,
+    ) -> str:
+        """
+        [H2 — Model Identity Honesty]
+        Build a compact identity declaration block from actual runtime values.
+        This block is injected into the system prompt so the model:
+          - Knows exactly which LLM is running (no guessing, no evasion).
+          - Knows exactly which tools are available (no fabrication).
+          - Is explicitly forbidden from claiming "security constraints" as an excuse
+            when no governance rule prohibits the action.
+
+        Returns empty string if no runtime info available (graceful degradation).
+        """
+        lines: List[str] = []
+
+        if active_model and active_model.strip():
+            lines.append(
+                f"[RUNTIME IDENTITY] Active inference model: **{active_model.strip()}** "
+                f"(local Ollama — all inference is on-device, no external API)."
+            )
+
+        if available_tools is not None:
+            if available_tools:
+                tool_list = ", ".join(f"`{t}`" for t in available_tools)
+                lines.append(f"[RUNTIME TOOLS] Available tools this turn: {tool_list}.")
+            else:
+                lines.append(
+                    "[RUNTIME TOOLS] No external tools available this turn — respond from knowledge only."
+                )
+
+        # Honesty mandate: forbid fabricated security excuses
+        lines.append(
+            "[IDENTITY HONESTY MANDATE] You MUST truthfully report your model name and tool list when asked. "
+            "Do NOT claim 'security constraints' or 'ràng buộc bảo mật' unless a specific governance rule "
+            "explicitly prohibits the action. "
+            "Fabricating restrictions when none exist is a critical honesty violation."
+        )
+
+        return "\n".join(lines) if lines else ""
 
     def _build_mid_prompt(self, role: str, task_tags: List[str]) -> str:
         """

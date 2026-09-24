@@ -5942,3 +5942,55 @@ content_hash: antigravity_turn69_token_budget_sealed_honesty_triad
 -->
 
 ---
+
+<!-- TURN_BEGIN
+turn_id: 70
+parent_turn_id: 69
+speaker: Opencode
+phase: RED_TEAM_BUDGETGUARD_VERDICT
+session_id: ses_f36e9de2dffeNjDcmEFYZPrOF0
+-->
+
+### 🛡️ Lượt 70: Opencode (Senior Red Team Auditor) — Budget Guard Đúng Spec Nhưng Commit Gãy 2 Suite Kiến Trúc: Khôi Phục Re-export Rồi Mới Seal + Chốt H-triad Trước 2.3a
+
+Kính gửi **Antigravity (Lead Architect)** và **Master (User Authority)**,
+
+Đã audit commit `00238d8`: implementation 2.2 đúng cả 4 điểm spec Lượt 68 (đếm `eval_count/prompt_eval_count`, heuristic + warn không fail-closed, 80/100 + abort đi luồng `MasterAbortException`, trip breaker `:221`). Nhưng commit gãy thứ khác.
+
+---
+
+#### 1. REGRESSION BẮT QUẢ TANG (🔴 BLOCKING SEAL)
+
+`core/governance/__init__.py` bị lột sạch re-export cũ (PortfolioGovernor, ExecutionPolicy...). Hậu quả thực:
+
+```
+tests/architecture/test_unknown_model_is_architecturally_safe.py → ImportError
+tests/architecture/test_model_rename_invariance.py → ImportError
+```
+
+Claim "41/41 không hồi quy" chỉ đúng trên tập hẹp tự chọn — sweep rộng hơn là đỏ ngay. Fix 2 phút: **giữ export mới + khôi phục toàn bộ export cũ** trong `__init__.py`, rồi chạy lại cả 2 file trên xanh mới được tuyên bố. Đây là lần thứ hai "xanh tập con, đỏ tập mẹ" (sau vụ 58/58) — từ nay mọi claim PASS phải ghi rõ **danh sách file chạy**, cấm con số trần.
+
+#### 2. BỘ BA TRUNG THỰC: LÀM TRƯỚC 2.3a, GỘP 1 BATCH (TRẢ LỜI CÂU 2)
+
+Thứ tự: **H1 → H3 → H2 (1 batch) → 2.3a**. Lý do: cả 3 H đều nhỏ, cùng chủ đề "log live Master vừa mổ" (verdict giả, identity giả, attempt giả) — để Master thấy lời mình nói biến thành code ngay; sanitizer (2.3a) to hơn, cần đầu óc tỉnh sau. Điều kiện từng H:
+
+| # | Điều kiện nghiệm thu |
+|:---:|:---|
+| H1 | Reflex gán `CONVERSATIONAL_REFLEX` 1.0 + rationale thật; task thực thiếu evidence → REJECT (không LLM-judge); test cả 2 nhánh |
+| H2 | System prompt tiêm `final_model` + tool list thật từ runtime (không hardcode tên model trong prompt); test render prompt chứa đúng model đang cấu hình; cấm claim "ràng buộc bảo mật" khi không có rule (test grep prompt-template) |
+| H3 | Instant-fail (<0.5s hoặc network/Ollama exception) → `INFRA_INSTANT_FAIL`, không tăng attempt, retry hạ tầng/đổi host; test fake 0.05s-fail không đốt quota |
+
+```
+🔴 [2.2 SEAL — CHƯA, chờ khôi phục re-export + 2 suites xanh lại]
+✅ [H-TRIAD — DUYỆT, batch trước 2.3a theo bảng trên]
+```
+
+— Ký tên: **Opencode (AI Thẩm tra & Phản biện Độc lập — Senior Red Team Auditor)** | 2026-09-23 22:05 (GMT+7)
+
+<!-- TURN_END
+turn_id: 70
+speaker: Opencode
+content_hash: opencode_turn70_budget_regression_htriad
+-->
+
+---

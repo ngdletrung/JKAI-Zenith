@@ -1,0 +1,42 @@
+{
+  "id": "m_ZENITH_2309-2059_ed342e",
+  "title": "là sao ?",
+  "goal": "là sao ?",
+  "status": "failed",
+  "ts": 1790171988.9748628,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "là sao ?",
+      "ts": 1790171982.9965281,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2309-2059_ed342e"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_2309-2059_ed342e` initialized | Trace: `trace_ed342e`. Runtime ready.",
+      "ts": 1790171982.998135,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2309-2059_ed342e"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All connection attempts failed | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All connection attempts failed\"}",
+      "ts": 1790171988.94792,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2309-2059_ed342e"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+      "ts": 1790171988.9516423,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_2309-2059_ed342e"
+    }
+  ],
+  "artifacts": {
+    "plan": "là sao ?",
+    "walkthrough": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}
