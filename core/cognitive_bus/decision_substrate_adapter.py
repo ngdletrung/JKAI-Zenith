@@ -316,10 +316,20 @@ class TriTierDecisionAdapter:
                 prob = 0.98 if matched else 0.10
                 conf = 0.99
             else:
-                # If question asks about threats / harm / injection / corruption / breach / danger
-                risk_terms = ["injection", "destructive", "delete", "corrupt", "exfiltration", "breach", "danger", "override", "exceed", "violate", "unauthorized"]
+                # If question asks about threats / harm / injection / corruption / breach / danger (English + Vietnamese)
+                risk_terms = [
+                    "injection", "destructive", "delete", "corrupt", "exfiltration", "breach", 
+                    "danger", "override", "exceed", "violate", "unauthorized",
+                    "nguy cơ", "phá hoại", "độc hại", "bảo mật", "tấn công", "nguy hiểm"
+                ]
+                safety_terms = ["an toàn", "safe", "policy_compliant", "hợp lệ", "tuân thủ"]
+                
                 is_risk_question = any(term in q_lower for term in risk_terms)
-                if is_risk_question:
+                is_safety_question = any(term in q_lower for term in safety_terms)
+
+                if is_safety_question and not is_risk_question:
+                    prob = 0.01 if is_malicious else 0.99
+                elif is_risk_question:
                     prob = 0.98 if is_malicious else 0.01
                 else:
                     prob = 0.02 if is_malicious else 0.98
@@ -336,12 +346,24 @@ class TriTierDecisionAdapter:
             )
         elif prim == DecisionPrimitive.CHOICE:
             opts = options or ["option_a", "option_b", "none"]
-            # Check if any option is explicitly mentioned in state
             winner = None
-            for opt in opts:
-                if opt != "none_of_the_above" and opt.lower() in state_str:
-                    winner = opt
-                    break
+            
+            # 1. Semantic Routing Detection for FAST_PATH vs DEEP_PATH
+            if "deep_path" in [o.lower() for o in opts] and "fast_path" in [o.lower() for o in opts]:
+                deep_indicators = ["sql", "explain", "tối ưu", "optimize", "analyze", "phân tích", "leak", "driver", "code", "architecture"]
+                if any(w in state_str for w in deep_indicators):
+                    winner = next((o for o in opts if o.lower() == "deep_path"), None)
+                elif any(w in state_str for w in ["chào", "hello", "hi", "thời tiết", "weather"]):
+                    winner = next((o for o in opts if o.lower() == "fast_path"), None)
+
+            # 2. Direct string matching fallback
+            if winner is None:
+                for opt in opts:
+                    if opt != "none_of_the_above" and opt.lower() in state_str:
+                        winner = opt
+                        break
+
+            # 3. Default fallback
             if winner is None:
                 winner = "none_of_the_above" if "none_of_the_above" in opts else opts[-1]
 
