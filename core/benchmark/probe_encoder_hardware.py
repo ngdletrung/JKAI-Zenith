@@ -129,6 +129,71 @@ def run_hardware_probe(output_file: str = "core/benchmark/probe_hardware_raw_out
         "note": "Per Red Team Turn 84: No linear extrapolation accepted. Requires physical checkpoint on target device."
     }
 
+    # 4. Probe Local Hardware-Accelerated Ollama Runtime (port 11434)
+    try:
+        import urllib.request
+        req_tags = urllib.request.Request("http://127.0.0.1:11434/api/tags")
+        with urllib.request.urlopen(req_tags, timeout=2) as resp:
+            tags_data = json.loads(resp.read().decode("utf-8"))
+            installed_models = [m.get("name") for m in tags_data.get("models", [])]
+        
+        # Probe all-minilm:latest (23M params, F16)
+        if "all-minilm:latest" in installed_models:
+            print("Evaluating Ollama all-minilm:latest (23M params, GPU accelerated)...")
+            url_emb = "http://127.0.0.1:11434/api/embeddings"
+            payload_emb = json.dumps({"model": "all-minilm:latest", "prompt": "Check state transition"}).encode("utf-8")
+            
+            # Warmup
+            with urllib.request.urlopen(urllib.request.Request(url_emb, data=payload_emb, headers={"Content-Type": "application/json"}), timeout=5) as r:
+                _ = r.read()
+                
+            lats_emb = []
+            for _ in range(20):
+                t0 = time.perf_counter()
+                with urllib.request.urlopen(urllib.request.Request(url_emb, data=payload_emb, headers={"Content-Type": "application/json"}), timeout=5) as r:
+                    _ = r.read()
+                lats_emb.append((time.perf_counter() - t0) * 1000.0)
+            lats_emb.sort()
+            n_e = len(lats_emb)
+            results["benchmarks"]["ollama_minilm_23m"] = {
+                "params": "23M (F16, Ollama GPU)",
+                "p50_ms": round(lats_emb[n_e // 2], 2),
+                "p95_ms": round(lats_emb[min(int(n_e * 0.95), n_e - 1)], 2),
+                "mean_ms": round(statistics.mean(lats_emb), 2)
+            }
+            
+        # Probe qwen3:0.6b (751M params, Q4_K_M)
+        if "qwen3:0.6b" in installed_models:
+            print("Evaluating Ollama qwen3:0.6b (751M params, GPU accelerated)...")
+            url_gen = "http://127.0.0.1:11434/api/generate"
+            payload_gen = json.dumps({
+                "model": "qwen3:0.6b",
+                "prompt": "Is safe? Answer YES or NO:\n",
+                "stream": False,
+                "options": {"num_predict": 3, "temperature": 0.0}
+            }).encode("utf-8")
+            
+            # Warmup
+            with urllib.request.urlopen(urllib.request.Request(url_gen, data=payload_gen, headers={"Content-Type": "application/json"}), timeout=10) as r:
+                _ = r.read()
+                
+            lats_gen = []
+            for _ in range(10):
+                t0 = time.perf_counter()
+                with urllib.request.urlopen(urllib.request.Request(url_gen, data=payload_gen, headers={"Content-Type": "application/json"}), timeout=10) as r:
+                    _ = r.read()
+                lats_gen.append((time.perf_counter() - t0) * 1000.0)
+            lats_gen.sort()
+            n_g = len(lats_gen)
+            results["benchmarks"]["ollama_qwen3_0_6b"] = {
+                "params": "751M (Q4_K_M, Ollama GPU)",
+                "p50_ms": round(lats_gen[n_g // 2], 2),
+                "p95_ms": round(lats_gen[min(int(n_g * 0.95), n_g - 1)], 2),
+                "mean_ms": round(statistics.mean(lats_gen), 2)
+            }
+    except Exception as e:
+        print(f"[WARN] Local Ollama probe skipped: {e}")
+
     # Write raw output
     out_path = Path(output_file)
     out_path.parent.mkdir(parents=True, exist_ok=True)

@@ -1,5 +1,5 @@
 {
-  "timestamp": "2026-09-27 20:22:35",
+  "timestamp": "2026-09-27 20:28:22",
   "system_env": {
     "python_version": "3.14.4 (tags/v3.14.4:23116f9, Apr  7 2026, 14:10:54) [MSC v.1944 64 bit (AMD64)]",
     "torch_version": "2.12.0+cpu",
@@ -13,14 +13,14 @@
       "seq_len": 64,
       "metrics": {
         "num_runs": 50,
-        "p50_ms": 16.9,
-        "p95_ms": 19.32,
-        "p99_ms": 21.5,
-        "mean_ms": 17.05,
-        "min_ms": 11.35,
-        "max_ms": 21.5,
-        "rss_before_mb": 412.87,
-        "rss_after_mb": 412.87,
+        "p50_ms": 14.38,
+        "p95_ms": 18.75,
+        "p99_ms": 19.14,
+        "mean_ms": 14.6,
+        "min_ms": 10.39,
+        "max_ms": 19.14,
+        "rss_before_mb": 412.51,
+        "rss_after_mb": 412.51,
         "rss_delta_mb": 0.0
       }
     },
@@ -29,14 +29,14 @@
       "seq_len": 128,
       "metrics": {
         "num_runs": 30,
-        "p50_ms": 213.57,
-        "p95_ms": 226.97,
-        "p99_ms": 230.63,
-        "mean_ms": 196.25,
-        "min_ms": 139.19,
-        "max_ms": 230.63,
-        "rss_before_mb": 836.69,
-        "rss_after_mb": 836.68,
+        "p50_ms": 173.83,
+        "p95_ms": 233.84,
+        "p99_ms": 239.42,
+        "mean_ms": 173.71,
+        "min_ms": 130.36,
+        "max_ms": 239.42,
+        "rss_before_mb": 836.38,
+        "rss_after_mb": 836.37,
         "rss_delta_mb": -0.01
       }
     },
@@ -44,6 +44,18 @@
       "params": "~395M",
       "status": "UNMEASURED",
       "note": "Per Red Team Turn 84: No linear extrapolation accepted. Requires physical checkpoint on target device."
+    },
+    "ollama_minilm_23m": {
+      "params": "23M (F16, Ollama GPU)",
+      "p50_ms": 8.7,
+      "p95_ms": 31.66,
+      "mean_ms": 12.36
+    },
+    "ollama_qwen3_0_6b": {
+      "params": "751M (Q4_K_M, Ollama GPU)",
+      "p50_ms": 36.61,
+      "p95_ms": 51.85,
+      "mean_ms": 39.85
     }
   }
 }
