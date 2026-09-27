@@ -374,7 +374,7 @@ class CommandRouter:
             live_service_details = []
             service_endpoints = {
                 "📡 AI-Control-Plane": "http://ai-control-plane:8000/health",
-                "🧠 AI-Brain": "http://localhost:8000/health",
+                "🧠 AI-Brain": "http://127.0.0.1:8000/health",
                 "🦾 AI-Executor": "http://ai-executor-1:8000/health",
                 "🔍 Qdrant DB": "http://qdrant:6333/healthz",
                 "📚 RAG-Service": "http://rag-service:8000/health",

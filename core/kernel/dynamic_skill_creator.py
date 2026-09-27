@@ -48,7 +48,7 @@ Kỹ năng này được tự động tạo và lập trình bởi JKAI Dynamic 
             from core.config import IS_DOCKER
             executor_url = os.getenv("EXECUTOR_URL", "http://ai-executor-1:8000")
             if not IS_DOCKER and "ai-executor-1" in executor_url:
-                executor_url = "http://localhost:8002"
+                executor_url = "http://127.0.0.1:8002"
             with httpx.Client(timeout=5.0) as client:
                 client.post(f"{executor_url}/invalidate_cache")
             logger.info(f"⚡ [SKILL-CREATOR-SUCCESS]: Đã nạp kỹ năng `{skill_name_clean}` vào bản đồ nơ-ron thực thi!")

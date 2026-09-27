@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 import requests, time
-API = 'http://localhost:9999/api/submit_task'
+API = 'http://127.0.0.1:9999/api/submit_task'
 tests = [
     ('Gio la may gio?',61), ('Hom nay ngay may?',62),
     ('Thoi tiet the nao?',63), ('Lap trinh la gi?',64),

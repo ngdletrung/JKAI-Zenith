@@ -14,7 +14,7 @@ class QdrantClientWrapper:
         from core.config import IS_DOCKER
         env_url = os.getenv("QDRANT_URL", "http://qdrant:6333")
         if not IS_DOCKER and ("qdrant" in env_url or "rag-service" in env_url):
-            self.url = env_url.replace("qdrant", "localhost").replace("rag-service", "localhost")
+            self.url = env_url.replace("qdrant", "127.0.0.1").replace("rag-service", "127.0.0.1")
         else:
             self.url = env_url
         self.collection_name = "jkai_zenith_intel"

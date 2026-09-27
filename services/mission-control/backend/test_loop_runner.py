@@ -11,7 +11,7 @@ import subprocess
 import sys
 from datetime import datetime
 
-API_BASE = os.getenv("JKAI_API_URL", "http://localhost:9999/api")
+API_BASE = os.getenv("JKAI_API_URL", "http://127.0.0.1:9999/api")
 REDIS_PASS = "Admin@123456"
 
 QUESTIONS = [

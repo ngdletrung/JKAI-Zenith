@@ -55,7 +55,7 @@ class ZenithPulse:
         
         # 1. CORE SERVICES (Ảnh hưởng trực tiếp đến trạng thái OPTIMAL / DEGRADED)
         core_checks = {
-            "📡 AI-Control-Plane": "http://localhost:8000/health",
+            "📡 AI-Control-Plane": "http://127.0.0.1:8000/health",
             "🧠 AI-Brain": f"{self.brain_url.rstrip('/')}/health",
         }
         
