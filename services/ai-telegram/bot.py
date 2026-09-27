@@ -765,16 +765,37 @@ if __name__ == "__main__":
     if not wait_for_internet():
         print("⚠️ [RESILIENCE]: Không thể thiết lập kết nối internet sau 60s. Đang khởi động ở chế độ offline...")
     
-    # 🛡️ [TELE-TIMEOUT-GUARD]: Set HTTP Read/Connect timeouts higher than Telegram long_polling_timeout (20s)
+    # 🛡️ [TELE-TIMEOUT-GUARD]: Thiết lập HTTP Read/Connect timeouts và Retry chống rớt kết nối RemoteDisconnected
+    try:
+        from requests.adapters import HTTPAdapter
+        from urllib3.util import Retry
+        retry_strategy = Retry(
+            total=5,
+            backoff_factor=1.5,
+            status_forcelist=[429, 500, 502, 503, 504],
+            raise_on_status=False
+        )
+        adapter = HTTPAdapter(max_retries=retry_strategy, pool_connections=10, pool_maxsize=10)
+        telebot.apihelper.session.mount("https://", adapter)
+        telebot.apihelper.session.mount("http://", adapter)
+        print("🛡️ [TELE-RESILIENCE]: Đã nạp HTTPAdapter Retry Strategy chống RemoteDisconnected.")
+    except Exception as e:
+        print(f"⚠️ [TELE-ADAPTER-WARN]: Không thể thiết lập HTTPAdapter: {e}")
+
     telebot.apihelper.READ_TIMEOUT = 90
     telebot.apihelper.CONNECT_TIMEOUT = 30
 
     threading.Thread(target=init_whisper, daemon=True).start()
     threading.Thread(target=log_listener, daemon=True).start()
-    print("🚀 [JKAI-TELEGRAM] Bot is polling with resilient timeouts (READ_TIMEOUT=90s)...")
+    print("🚀 [JKAI-TELEGRAM] Bot is polling with resilient timeouts (READ_TIMEOUT=90s, auto-reconnect)...")
     while True:
         try:
-            bot.infinity_polling(timeout=60, long_polling_timeout=20)
+            bot.infinity_polling(
+                timeout=30,
+                long_polling_timeout=20,
+                allowed_updates=["message", "callback_query"],
+                restart_on_change=False
+            )
         except Exception as e:
-            print(f"⚠️ [TELE-POLLING-RETRY] Polling exception caught: {e}. Retrying in 5s...")
+            print(f"⚠️ [TELE-POLLING-RETRY] Polling exception caught ({type(e).__name__}): {e}. Retrying in 5s...")
             time.sleep(5)
