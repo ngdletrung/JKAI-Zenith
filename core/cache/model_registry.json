@@ -5,8 +5,8 @@
     "family": "llama",
     "context_length_max": 8192,
     "model_classes": [
-      "TOOL_USE",
-      "GENERAL"
+      "GENERAL",
+      "TOOL_USE"
     ],
     "has_vision": false,
     "has_tool_calling": true,
@@ -32,9 +32,9 @@
     "family": "lfm2",
     "context_length_max": 128000,
     "model_classes": [
-      "TOOL_USE",
+      "REASONING",
       "GENERAL",
-      "REASONING"
+      "TOOL_USE"
     ],
     "has_vision": false,
     "has_tool_calling": true,
@@ -60,9 +60,9 @@
     "family": "qwen3moe",
     "context_length_max": 262144,
     "model_classes": [
-      "TOOL_USE",
+      "REASONING",
       "GENERAL",
-      "REASONING"
+      "TOOL_USE"
     ],
     "has_vision": false,
     "has_tool_calling": true,
@@ -88,8 +88,8 @@
     "family": "gemma4",
     "context_length_max": 131072,
     "model_classes": [
-      "TOOL_USE",
       "GENERAL",
+      "TOOL_USE",
       "VISION"
     ],
     "has_vision": true,
@@ -116,10 +116,10 @@
     "family": "qwen35moe",
     "context_length_max": 262144,
     "model_classes": [
-      "TOOL_USE",
+      "REASONING",
       "GENERAL",
-      "VISION",
-      "REASONING"
+      "TOOL_USE",
+      "VISION"
     ],
     "has_vision": true,
     "has_tool_calling": true,
@@ -145,10 +145,10 @@
     "family": "gemma4",
     "context_length_max": 262144,
     "model_classes": [
-      "TOOL_USE",
+      "REASONING",
       "GENERAL",
-      "VISION",
-      "REASONING"
+      "TOOL_USE",
+      "VISION"
     ],
     "has_vision": true,
     "has_tool_calling": true,
@@ -174,9 +174,9 @@
     "family": "qwen3",
     "context_length_max": 40960,
     "model_classes": [
-      "TOOL_USE",
+      "REASONING",
       "GENERAL",
-      "REASONING"
+      "TOOL_USE"
     ],
     "has_vision": false,
     "has_tool_calling": true,
@@ -202,10 +202,10 @@
     "family": "qwen35",
     "context_length_max": 262144,
     "model_classes": [
-      "TOOL_USE",
+      "REASONING",
       "GENERAL",
-      "VISION",
-      "REASONING"
+      "TOOL_USE",
+      "VISION"
     ],
     "has_vision": true,
     "has_tool_calling": true,
@@ -231,8 +231,8 @@
     "family": "llama",
     "context_length_max": 131072,
     "model_classes": [
-      "TOOL_USE",
-      "GENERAL"
+      "GENERAL",
+      "TOOL_USE"
     ],
     "has_vision": false,
     "has_tool_calling": true,
@@ -258,9 +258,9 @@
     "family": "qwen2",
     "context_length_max": 32768,
     "model_classes": [
-      "TOOL_USE",
       "GENERAL",
-      "CODING"
+      "CODING",
+      "TOOL_USE"
     ],
     "has_vision": false,
     "has_tool_calling": true,
@@ -286,10 +286,10 @@
     "family": "qwen35",
     "context_length_max": 262144,
     "model_classes": [
-      "TOOL_USE",
+      "REASONING",
       "GENERAL",
-      "VISION",
-      "REASONING"
+      "TOOL_USE",
+      "VISION"
     ],
     "has_vision": true,
     "has_tool_calling": true,
@@ -315,9 +315,9 @@
     "family": "phi3",
     "context_length_max": 131072,
     "model_classes": [
-      "TOOL_USE",
       "GENERAL",
-      "CODING"
+      "CODING",
+      "TOOL_USE"
     ],
     "has_vision": false,
     "has_tool_calling": true,
@@ -343,9 +343,9 @@
     "family": "qwen2",
     "context_length_max": 32768,
     "model_classes": [
-      "TOOL_USE",
       "GENERAL",
-      "CODING"
+      "CODING",
+      "TOOL_USE"
     ],
     "has_vision": false,
     "has_tool_calling": true,
@@ -450,9 +450,9 @@
     "family": "qwen3",
     "context_length_max": 131072,
     "model_classes": [
-      "TOOL_USE",
+      "REASONING",
       "GENERAL",
-      "REASONING"
+      "TOOL_USE"
     ],
     "has_vision": false,
     "has_tool_calling": true,
