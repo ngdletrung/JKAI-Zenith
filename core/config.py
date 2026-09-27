@@ -33,14 +33,14 @@ class Settings:
     OS_OVERLOAD_CPU: int = int(os.getenv("OS_OVERLOAD_CPU", "85"))
 
     # --- [INFRASTRUCTURE & NETWORK] ---
-    _ollama_default = "http://localhost:11434" if not IS_DOCKER else "http://host.docker.internal:11434"
+    _ollama_default = "http://127.0.0.1:11434" if not IS_DOCKER else "http://host.docker.internal:11434"
     OLLAMA_URL: str = os.getenv("OLLAMA_URL", f"{_ollama_default}/api/generate")
     OLLAMA_HOST: str = os.getenv("OLLAMA_HOST", _ollama_default)
     CONTROL_PLANE_URL: Optional[str] = os.getenv("CONTROL_PLANE_URL")
     RAG_API_URL: str = os.getenv("RAG_API_URL", "http://rag-service:8000")
 
     # Redis (Dùng cho Log & Task Queue)
-    REDIS_HOST: str = os.getenv("REDIS_HOST", "localhost" if not IS_DOCKER else "redis-ai")
+    REDIS_HOST: str = os.getenv("REDIS_HOST", "127.0.0.1" if not IS_DOCKER else "redis-ai")
     REDIS_PORT: int = int(os.getenv("REDIS_PORT", "6379"))
 
     # --- [SECURITY & SOVEREIGNTY] ---

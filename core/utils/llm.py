@@ -16,7 +16,7 @@ import requests
 
 logger = logging.getLogger("llm_utils_v4")
 
-OLLAMA_URL = os.getenv("OLLAMA_URL", "http://localhost:11434/api/generate")
+OLLAMA_URL = os.getenv("OLLAMA_URL", "http://127.0.0.1:11434/api/generate")
 DEFAULT_TIMEOUT = int(os.getenv("LLM_TIMEOUT", "60"))
 
 def call_llm(
