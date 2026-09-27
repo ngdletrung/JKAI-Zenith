@@ -9,9 +9,9 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, List, Any, Optional, Tuple
 
-from core.cognitive_bus.jev_substrate_adapter import (
-    TriTierJevAdapter,
-    JevPrimitive,
+from core.cognitive_bus.decision_substrate_adapter import (
+    TriTierDecisionAdapter,
+    DecisionPrimitive,
     TypedJudgementPacket,
     ParallelBatchVerdict,
     ExecutionTier
@@ -38,9 +38,9 @@ class L3VerificationVerdict:
 
 class L3SemanticVerifier:
     """
-    Evaluates semantic goal alignment and acceptance criteria satisfaction using Jev Substrate.
+    Evaluates semantic goal alignment and acceptance criteria satisfaction using Decision Substrate.
     - 5-Level Continuous Score (0.0 .. 4.0)
-    - Dynamic Noul Criteria Batch Verification
+    - Dynamic Boolean Criteria Batch Verification
     - Strict Boundary: L3 PASS does not mean mission complete; L4 Reality Verifier owns physical truth.
     """
 
@@ -57,8 +57,8 @@ class L3SemanticVerifier:
     MIN_CONFIDENCE_THRESHOLD = 0.85
     CRITERIA_SATISFACTION_THRESHOLD = 0.95
 
-    def __init__(self, jev_adapter: Optional[TriTierJevAdapter] = None):
-        self.jev_adapter = jev_adapter or TriTierJevAdapter(enable_mock=True)
+    def __init__(self, decision_adapter: Optional[TriTierDecisionAdapter] = None):
+        self.decision_adapter = decision_adapter or TriTierDecisionAdapter(enable_mock=True)
 
     def build_criteria_question(self, criterion_id: str, description: str) -> str:
         """Standardized DSL Template for criteria questions."""
@@ -81,19 +81,19 @@ class L3SemanticVerifier:
 
         # 1. Main Score Query
         score_q = "Where does the achieved result stand regarding the original mission criteria and constraints?"
-        batch_queries: List[Tuple[JevPrimitive, str, Optional[List[str]]]] = [
-            (JevPrimitive.SCORE, score_q, self.SCORE_LEVELS)
+        batch_queries: List[Tuple[DecisionPrimitive, str, Optional[List[str]]]] = [
+            (DecisionPrimitive.SCORE, score_q, self.SCORE_LEVELS)
         ]
 
-        # 2. Dynamic Batch Noul Criteria Queries
+        # 2. Dynamic Batch Boolean Criteria Queries
         crit_q_map = {}
         for c_id, c_desc in acceptance_criteria:
             q_text = self.build_criteria_question(c_id, c_desc)
             crit_q_map[q_text] = c_id
-            batch_queries.append((JevPrimitive.NOUL, q_text, None))
+            batch_queries.append((DecisionPrimitive.BOOLEAN, q_text, None))
 
-        # 3. Execute atomic parallel batch over Jev
-        batch_verdict: ParallelBatchVerdict = self.jev_adapter.evaluate_parallel_batch(
+        # 3. Execute atomic parallel batch over Decision Substrate
+        batch_verdict: ParallelBatchVerdict = self.decision_adapter.evaluate_parallel_batch(
             unified_state,
             batch_queries
         )

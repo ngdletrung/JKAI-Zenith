@@ -9,9 +9,9 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, List, Any, Optional, Tuple
 
-from core.cognitive_bus.jev_substrate_adapter import (
-    TriTierJevAdapter,
-    JevPrimitive,
+from core.cognitive_bus.decision_substrate_adapter import (
+    TriTierDecisionAdapter,
+    DecisionPrimitive,
     TypedJudgementPacket,
     ExecutionTier,
     StateSanitizer
@@ -110,8 +110,8 @@ class ErrorClassifier:
         ModelScale.MODEL_30B  # Ceiling reached!
     ]
 
-    def __init__(self, jev_adapter: Optional[TriTierJevAdapter] = None):
-        self.jev_adapter = jev_adapter or TriTierJevAdapter(enable_mock=True)
+    def __init__(self, decision_adapter: Optional[TriTierDecisionAdapter] = None):
+        self.decision_adapter = decision_adapter or TriTierDecisionAdapter(enable_mock=True)
         self.anomaly_watcher = E15AnomalyWatcher()
 
     def classify_and_resolve(
@@ -231,8 +231,8 @@ class PriorityWeightedRecoveryResolver:
         ("state_mismatch", 5)
     ]
 
-    def __init__(self, jev_adapter: Optional[TriTierJevAdapter] = None):
-        self.jev_adapter = jev_adapter or TriTierJevAdapter(enable_mock=True)
+    def __init__(self, decision_adapter: Optional[TriTierDecisionAdapter] = None):
+        self.decision_adapter = decision_adapter or TriTierDecisionAdapter(enable_mock=True)
 
     def diagnose_and_resolve(
         self,
@@ -258,13 +258,13 @@ class PriorityWeightedRecoveryResolver:
         # 1. Sanitize state to prevent prompt injection and protect credentials
         sanitized_state = StateSanitizer.sanitize(task_failure_state)
 
-        # 2. Multi-hypothesis signals evaluation via Jev Noul primitives
+        # 2. Multi-hypothesis signals evaluation via Decision Substrate Boolean primitives
         hypotheses_questions = [
-            (JevPrimitive.NOUL, "Is this failure caused by an unauthorized policy or security violation?", None),
-            (JevPrimitive.NOUL, "Is this failure caused by a schema or validation type error?", None),
-            (JevPrimitive.NOUL, "Is this failure caused by environment drift, connection timeout, or network unreachability?", None),
-            (JevPrimitive.NOUL, "Is this failure caused by a tool defect, command not found, or tool crash?", None),
-            (JevPrimitive.NOUL, "Is this failure caused by a state mismatch, contradiction, or precondition conflict?", None),
+            (DecisionPrimitive.BOOLEAN, "Is this failure caused by an unauthorized policy or security violation?", None),
+            (DecisionPrimitive.BOOLEAN, "Is this failure caused by a schema or validation type error?", None),
+            (DecisionPrimitive.BOOLEAN, "Is this failure caused by environment drift, connection timeout, or network unreachability?", None),
+            (DecisionPrimitive.BOOLEAN, "Is this failure caused by a tool defect, command not found, or tool crash?", None),
+            (DecisionPrimitive.BOOLEAN, "Is this failure caused by a state mismatch, contradiction, or precondition conflict?", None),
         ]
 
         q_map = {
@@ -275,7 +275,7 @@ class PriorityWeightedRecoveryResolver:
             "state_mismatch": hypotheses_questions[4][1]
         }
 
-        batch_verdict = self.jev_adapter.evaluate_parallel_batch(sanitized_state, hypotheses_questions)
+        batch_verdict = self.decision_adapter.evaluate_parallel_batch(sanitized_state, hypotheses_questions)
         judgements = batch_verdict.judgements
 
         signals = {

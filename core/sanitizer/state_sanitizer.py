@@ -75,6 +75,38 @@ class StateSanitizer:
         return raw_json
 
     @classmethod
+    def sanitize_with_report(cls, data: Any, is_external_provider: bool = False) -> Tuple[Any, Dict[str, Any]]:
+        """
+        Sanitizes data and produces a structured redaction report per DecisionProvider v0.2 spec.
+        """
+        redactions = []
+        
+        def _scan(d):
+            if isinstance(d, str):
+                for pat, repl in cls.SECRET_PATTERNS:
+                    if pat.search(d):
+                        redactions.append(repl)
+            elif isinstance(d, dict):
+                for k, v in d.items():
+                    if any(sec in k.lower() for sec in ["password", "secret_key", "auth_token", "private_key", "api_key", "apikey"]):
+                        redactions.append(f"field:{k}")
+                    else:
+                        _scan(v)
+            elif isinstance(d, list):
+                for item in d:
+                    _scan(item)
+
+        _scan(data)
+        sanitized = cls.sanitize(data)
+        report = {
+            "redacted_count": len(redactions),
+            "redacted_items": redactions,
+            "is_external_provider": is_external_provider,
+            "max_state_bytes_limit": cls.MAX_STATE_BYTES
+        }
+        return sanitized, report
+
+    @classmethod
     def compute_fingerprint(cls, data: Any) -> str:
         """
         [Fix b]: Computes SHA-256 fingerprint strictly from the sanitized canonical representation.

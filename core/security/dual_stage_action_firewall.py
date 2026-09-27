@@ -9,9 +9,9 @@ from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, List, Any, Optional, Tuple
 
-from core.cognitive_bus.jev_substrate_adapter import (
-    TriTierJevAdapter,
-    JevPrimitive,
+from core.cognitive_bus.decision_substrate_adapter import (
+    TriTierDecisionAdapter,
+    DecisionPrimitive,
     TypedJudgementPacket,
     ParallelBatchVerdict,
     ExecutionTier
@@ -99,8 +99,8 @@ class DualStageActionFirewall:
         "google_drive", "smtp_mail", "none_of_the_above"
     ]
 
-    def __init__(self, jev_adapter: Optional[TriTierJevAdapter] = None):
-        self.jev_adapter = jev_adapter or TriTierJevAdapter(enable_mock=True)
+    def __init__(self, decision_adapter: Optional[TriTierDecisionAdapter] = None):
+        self.decision_adapter = decision_adapter or TriTierDecisionAdapter(enable_mock=True)
         self.chain_state = ActionChainState()
         self.gce_fail_count = 0
         self.gce_circuit_broken = False
@@ -151,10 +151,10 @@ class DualStageActionFirewall:
             )
 
         # -------------------------------------------------------------
-        # STAGE 4.2: PARALLEL SEMANTIC AUDIT (Jev Batch Q1..Q6)
+        # STAGE 4.2: PARALLEL SEMANTIC AUDIT (Decision Substrate Batch Q1..Q6)
         # -------------------------------------------------------------
         batch_queries = [
-            (JevPrimitive.NOUL, q_text, None)
+            (DecisionPrimitive.BOOLEAN, q_text, None)
             for _, q_text in self.SEMANTIC_QUESTIONS
         ]
 
@@ -163,7 +163,7 @@ class DualStageActionFirewall:
             "mission_context": mission_context or {}
         }
 
-        verdict: ParallelBatchVerdict = self.jev_adapter.evaluate_parallel_batch(
+        verdict: ParallelBatchVerdict = self.decision_adapter.evaluate_parallel_batch(
             state_to_eval,
             batch_queries
         )

@@ -13,7 +13,12 @@ from enum import Enum
 from typing import Dict, List, Any, Optional
 from dataclasses import dataclass, field
 
-from core.cognitive_bus.jev_substrate_adapter import TriTierJevAdapter, JevPrimitive, TypedJudgementPacket, StateSanitizer
+from core.cognitive_bus.decision_substrate_adapter import (
+    TriTierDecisionAdapter,
+    DecisionPrimitive,
+    TypedJudgementPacket,
+    StateSanitizer
+)
 
 
 class ExecutionPath(str, Enum):
@@ -39,12 +44,12 @@ class RouteDecision:
 
 class DeterministicRoutingController:
     """
-    Deterministic Routing Controller with Jev Advisor & Rolling Average Circuit Breaker.
+    Deterministic Routing Controller with Decision Substrate Advisor & Rolling Average Circuit Breaker.
     
     Rules:
-    1. Jev proposes ProbabilisticAdvice (Choice over FAST_PATH, DEEP_PATH, HUMAN_ESCALATION).
-    2. If rolling_avg_confidence < 0.70 (over last 20 calls) -> Circuit OPEN (disable Jev routing).
-    3. If Jev confidence < 0.80 -> Fallback to default deterministic rule (DEEP_PATH).
+    1. Decision Substrate proposes ProbabilisticAdvice (Choice over FAST_PATH, DEEP_PATH, HUMAN_ESCALATION).
+    2. If rolling_avg_confidence < 0.70 (over last 20 calls) -> Circuit OPEN (disable Decision Substrate routing).
+    3. If confidence < 0.80 -> Fallback to default deterministic rule (DEEP_PATH).
     4. If HUMAN_ESCALATION probability > 0.40 -> Route to HUMAN_ESCALATION immediately.
     5. If FAST_PATH probability >= 0.80 -> Route to FAST_PATH.
     6. Else -> Route to DEEP_PATH.
@@ -58,8 +63,8 @@ class DeterministicRoutingController:
     CIRCUIT_MIN_AVG_CONFIDENCE: float = 0.70
     CIRCUIT_RECOVERY_AVG_CONFIDENCE: float = 0.80
 
-    def __init__(self, adapter: Optional[TriTierJevAdapter] = None):
-        self.adapter = adapter or TriTierJevAdapter(enable_mock=True)
+    def __init__(self, adapter: Optional[TriTierDecisionAdapter] = None):
+        self.adapter = adapter or TriTierDecisionAdapter(enable_mock=True)
         self.confidence_history: List[float] = []
         self.is_circuit_disabled: bool = False
 

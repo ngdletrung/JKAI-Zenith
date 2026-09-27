@@ -14,7 +14,12 @@ from enum import Enum
 from typing import Dict, List, Any, Optional, Tuple
 from dataclasses import dataclass, field
 
-from core.cognitive_bus.jev_substrate_adapter import TriTierJevAdapter, JevPrimitive, TypedJudgementPacket, StateSanitizer
+from core.cognitive_bus.decision_substrate_adapter import (
+    TriTierDecisionAdapter,
+    DecisionPrimitive,
+    TypedJudgementPacket,
+    StateSanitizer
+)
 
 
 class VerificationLayer(str, Enum):
@@ -55,8 +60,8 @@ class LayeredVerificationGraph:
     LAYER_1_QUESTIONS = ["schema_valid", "content_complete"]
     LAYER_2_QUESTIONS = ["side_effects_checked", "delivery_confirmed"]
 
-    def __init__(self, adapter: Optional[TriTierJevAdapter] = None):
-        self.adapter = adapter or TriTierJevAdapter(enable_mock=True)
+    def __init__(self, adapter: Optional[TriTierDecisionAdapter] = None):
+        self.adapter = adapter or TriTierDecisionAdapter(enable_mock=True)
 
     def verify_observation(self, observation_state: Dict[str, Any]) -> LayeredVerificationResult:
         t0 = time.time()
@@ -68,7 +73,7 @@ class LayeredVerificationGraph:
         # =========================================================================
         # LAYER 0: Prerequisite Checks (artifact_exists)
         # =========================================================================
-        l0_batch = [(JevPrimitive.NOUL, q, None) for q in self.LAYER_0_QUESTIONS]
+        l0_batch = [(DecisionPrimitive.BOOLEAN, q, None) for q in self.LAYER_0_QUESTIONS]
         l0_verdict = self.adapter.evaluate_parallel_batch(sanitized_state, l0_batch)
         layer_results[VerificationLayer.LAYER_0_PREREQUISITE.value] = l0_verdict.judgements
 
@@ -98,7 +103,7 @@ class LayeredVerificationGraph:
         # =========================================================================
         # LAYER 1: Semantic Integrity Checks (schema_valid, content_complete)
         # =========================================================================
-        l1_batch = [(JevPrimitive.NOUL, q, None) for q in self.LAYER_1_QUESTIONS]
+        l1_batch = [(DecisionPrimitive.BOOLEAN, q, None) for q in self.LAYER_1_QUESTIONS]
         l1_verdict = self.adapter.evaluate_parallel_batch(sanitized_state, l1_batch)
         layer_results[VerificationLayer.LAYER_1_INTEGRITY.value] = l1_verdict.judgements
 
@@ -128,7 +133,7 @@ class LayeredVerificationGraph:
         # =========================================================================
         # LAYER 2: Reality & Side Effects (side_effects_checked, delivery_confirmed)
         # =========================================================================
-        l2_batch = [(JevPrimitive.NOUL, q, None) for q in self.LAYER_2_QUESTIONS]
+        l2_batch = [(DecisionPrimitive.BOOLEAN, q, None) for q in self.LAYER_2_QUESTIONS]
         l2_verdict = self.adapter.evaluate_parallel_batch(sanitized_state, l2_batch)
         layer_results[VerificationLayer.LAYER_2_REALITY.value] = l2_verdict.judgements
 
