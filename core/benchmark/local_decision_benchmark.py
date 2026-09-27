@@ -80,6 +80,8 @@ class BenchmarkReport:
     vram_headroom_passed: Optional[bool]
     all_5_criteria_passed: bool
     summary_verdict: str
+    ece_nature: str = "ILLUSTRATIVE_RULE_BASELINE"
+    ece_note: str = "Illustrative internal rule baseline (n=50; non-exchangeable heuristic; empirical variance observed between 0.0000 and 0.0094)"
 
 
 class LocalDecisionBenchmarkHarness:
@@ -371,6 +373,8 @@ class LocalDecisionBenchmarkHarness:
             expected_calibration_error=ece,
             ece_sample_size=total_n,
             ece_passed=ece_ok,
+            ece_nature="ILLUSTRATIVE_RULE_BASELINE",
+            ece_note=f"Illustrative internal rule baseline (n={total_n}; non-exchangeable heuristic; empirical variance observed between 0.0000 and 0.0094)",
             per_point_metrics=per_point,
             rss_memory_delta_mb=rss_delta,
             vram_measurement_status=vram_status,
