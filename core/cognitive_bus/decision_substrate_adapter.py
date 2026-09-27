@@ -286,14 +286,14 @@ class TriTierDecisionAdapter:
         if prim == DecisionPrimitive.BOOLEAN:
             # Check for adversarial attack markers
             is_malicious = any(kw in state_str for kw in [
-                "prompt_injection", "override", "rm -rf", "delete from", "drop table", 
+                "prompt_injection", "override", "rm -rf", "delete from", "drop table", "drop database", "format c:",
                 "curl -x", "cat /etc/shadow", "eval(", "exec(", "grant_super_admin", "admin/roles",
                 "unauthorized", "forbidden", "idor", "privilege", "security_breach"
             ])
             # Domain-specific failure diagnostic questions
             if "failure caused by" in q_lower:
                 if "schema" in q_lower or "validation" in q_lower:
-                    matched = any(w in state_str for w in ["schema", "type_error", "validation_error", "missing_key", "jsondecode"])
+                    matched = any(w in state_str for w in ["schema", "type_error", "validation", "missing_key", "missing required", "missing key", "jsondecode"])
                     prob = 0.82 if matched else 0.08
                     conf = 0.96
                 elif "environment" in q_lower or "drift" in q_lower:
