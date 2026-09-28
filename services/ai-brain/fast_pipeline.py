@@ -386,6 +386,30 @@ class FastPipeline:
             verified_block = "\n".join(preflight_verified_data)
             context_msgs.append({"role": "system", "content": f"🚨 [GROUND-TRUTH-VERIFICATION]: Dữ liệu kiểm chứng thực nghiệm từ hệ điều hành:\n{verified_block}\nBắt buộc phải trả lời dựa trên dữ liệu kiểm chứng này, không tự bịa đặt."})
 
+        # 4.6. Negative Memory Injection: Tra cứu bài học sai trong quá khứ để không lặp lại
+        try:
+            from core.memory.experience_store import ExperienceStore
+            from core.memory.telemetry_experience_bridge import compute_error_fingerprint, telemetry_bridge
+            
+            # Đảm bảo đồng bộ nhãn mới nhất nếu có
+            telemetry_bridge.sync_labeled_records()
+            
+            fingerprint = compute_error_fingerprint(state.goal)
+            past_lessons = ExperienceStore.get_negative_lessons(fingerprint)
+            if past_lessons:
+                lesson_text = "\n".join([f"- {l}" for l in past_lessons[-3:]])
+                context_msgs.append({
+                    "role": "system",
+                    "content": (
+                        f"⚠️ [NEGATIVE-LESSON-GUARD]: Trong quá khứ với câu hỏi tương tự, câu trả lời đã bị đánh giá SAI/CHƯA CHUẨN.\n"
+                        f"Các sai sót cần tuyệt đối tránh:\n{lesson_text}\n"
+                        f"Chỉ thị: Phải đổi chiến lược trả lời, trực diện, chính xác và không lặp lại sai sót trên."
+                    )
+                })
+                engine.publish_mission_log("BRAIN", f"[NEGATIVE-MEMORY-HIT] Áp dụng {len(past_lessons)} bài học cảnh báo từ phản hồi của Master.", state.task_id, state.trace_id, stealth=True)
+        except Exception as ex_neg:
+            logger.warning("[NEGATIVE-MEMORY-WARN] Lỗi tra cứu bài học cũ: %s", ex_neg)
+
         # 5. One-Pass Inference qua Central Engine
         role = state.decision.role
         response = await engine.call_chat(
@@ -570,6 +594,34 @@ class FastPipeline:
                     log.warning("Could not persist ExperienceRecord: %s", ex_exp)
         except Exception as ex_audit:
             log.warning("Epistemic audit failed: %s", ex_audit)
+
+        # 1b. Thẩm định Chất lượng Phản hồi & Chuẩn hóa ACS (Đúng - Trúng - Đủ)
+        try:
+            from core.os.cognition.answer_quality_verifier import answer_quality_verifier
+            from core.kernel.decision_ledger import decision_ledger
+
+            aqv_report = answer_quality_verifier.verify(state.final_answer, state.goal)
+            
+            # Tự động hiệu chỉnh câu chào nếu thiếu (không đổi ngữ nghĩa cốt lõi)
+            if aqv_report.corrected_text:
+                state.final_answer = aqv_report.corrected_text
+
+            engine.publish_mission_log(
+                "ANSWER_QUALITY_AUDIT",
+                f"{aqv_report.summary()} | score={aqv_report.overall_score:.2f}",
+                state.task_id,
+                state.trace_id
+            )
+
+            decision_ledger.record_decision(
+                decision_type="ANSWER_QUALITY_AUDIT",
+                task_id=state.task_id,
+                input_summary=f"Goal: {state.goal[:80]}...",
+                output_decision="PASSED" if aqv_report.overall_passed else "FLAGGED",
+                reason=f"DUNG={aqv_report.dung.passed} TRUNG={aqv_report.trung.passed} DU={aqv_report.du.passed}"
+            )
+        except Exception as ex_aqv:
+            log.warning("Answer quality verification failed: %s", ex_aqv)
 
         try:
             from core.kernel.self_reflection import self_reflection

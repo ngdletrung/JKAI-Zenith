@@ -347,6 +347,67 @@ def verify_nuclear_key(data):
 def api_ping():
     return jsonify({"ok": True})
 
+@app.route('/api/label_log', methods=['POST'])
+def label_log():
+    """[LABEL-LOG]: Ghi nhan cham diem tu Master (Dung/Chua chuan/Sai) cho tung tin nhan JKAI."""
+    import uuid as _uuid
+    from datetime import datetime, timezone
+    from pathlib import Path as _Path
+
+    body = request.get_json(silent=True) or {}
+    log_id   = body.get("log_id", "")
+    task_id  = body.get("task_id", "")
+    score    = body.get("score")
+    verdict  = body.get("verdict", "")
+    msg_preview = (body.get("msg_preview") or "")[:200]
+    notes    = body.get("notes", "")
+
+    if score not in (0.0, 0.5, 1.0):
+        return jsonify({"ok": False, "error": "score phai la 0.0, 0.5 hoac 1.0"}), 400
+    if verdict not in ("CORRECT", "PARTIALLY_CORRECT", "COMPLETELY_WRONG"):
+        return jsonify({"ok": False, "error": "verdict khong hop le"}), 400
+    if not log_id:
+        return jsonify({"ok": False, "error": "log_id bat buoc"}), 400
+
+    record = {
+        "schema_version": "1.3",
+        "record_id": "web_" + _uuid.uuid4().hex[:10],
+        "log_id": log_id,
+        "task_id": task_id or None,
+        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "score": score,
+        "verdict": verdict,
+        "msg_preview": msg_preview,
+        "notes": notes,
+        "labeled_by": "Master",
+        "source": "web_ui",
+    }
+
+    try:
+        # /storage/shadow_telemetry được mount vao container
+        storage_dir = _Path("/storage/shadow_telemetry")
+        if not storage_dir.exists():
+            # Fallback khi chay ngoai Docker (dev local)
+            storage_dir = _Path(os.path.dirname(__file__)).parent.parent.parent / "storage" / "shadow_telemetry"
+        storage_dir.mkdir(parents=True, exist_ok=True)
+        label_file = storage_dir / "labeled_telemetry.jsonl"
+        with label_file.open("a", encoding="utf-8") as f:
+            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+            f.flush()
+        
+        # [AUTONOMY FEEDBACK LOOP]: Tự động nạp bài học tiêu cực vào ExperienceStore ngay lập tức
+        try:
+            from core.memory.telemetry_experience_bridge import telemetry_bridge
+            if score in (0.0, 0.5):
+                telemetry_bridge.ingest_record(record)
+        except Exception as bridge_err:
+            logger.warning("[LABEL-LOG-BRIDGE-WARN]: Không thể nạp ngay vào bộ nhớ: %s", bridge_err)
+
+        logger.info("[LABEL-LOG]: %s -> %s (score=%.1f)", log_id, verdict, score)
+        return jsonify({"ok": True, "record_id": record["record_id"]})
+    except Exception as exc:
+        logger.error("[LABEL-LOG-ERR]: %s", exc)
+        return jsonify({"ok": False, "error": str(exc)}), 500
 
 @app.route('/api/system_status')
 def system_status():
