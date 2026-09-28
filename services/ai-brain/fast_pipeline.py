@@ -421,6 +421,44 @@ class FastPipeline:
         res_content = response.get("answer", "") if isinstance(response, dict) else (response or "")
         res_str = str(res_content)
 
+        # 5.1. Xử lý và thực thi công cụ trực tiếp (Tool-Calling Execution Wiring)
+        tool_calls = []
+        if isinstance(response, dict) and response.get("tool_calls"):
+            tool_calls = response["tool_calls"]
+        elif tools:
+            # Fallback: bóc tách tool calls dạng lexical (Action: ... / Markdown JSON) nếu model output dưới dạng văn bản
+            from core.os.cognition.fast_tool_parser import extract_tool_calls_lexical
+            tool_calls = extract_tool_calls_lexical(res_str)
+
+        if tool_calls:
+            engine.publish_mission_log("ACTUATOR", f"Phát hiện {len(tool_calls)} lệnh gọi công cụ từ mô hình. Đang thực thi trực tiếp qua ExecutorGateway...", state.task_id, state.trace_id)
+            try:
+                from receptionist.executor_gateway import ExecutorGateway
+                from core.kernel.task_contract_store import get_or_create_default_contract, get_or_create_policy_snapshot
+                
+                # Khởi tạo hợp đồng nhiệm vụ & policy snapshot mặc định để không bị ExecutionIntegrity chặn
+                get_or_create_default_contract(state.task_id)
+                get_or_create_policy_snapshot(state.task_id)
+
+                client = await self._get_http_client()
+                gateway = ExecutorGateway(client)
+                tool_obs = await self._run_skills(tool_calls, state.task_id, gateway, state.trace_id)
+                
+                # Nạp kết quả thực thi công cụ vào context và gọi mô hình tổng hợp lần cuối
+                engine.publish_mission_log("BRAIN", "Đã nhận kết quả thực thi công cụ. Đang tổng hợp phản hồi cuối cùng...", state.task_id, state.trace_id, stealth=True)
+                synth_msgs = context_msgs + [
+                    {"role": "assistant", "content": res_str},
+                    {"role": "user", "content": f"[TOOL OBSERVATION RESULT]:\n{tool_obs}\n\nHãy tổng hợp kết quả chính xác, chu đáo để trả lời Master dựa trên kết quả thực thi ở trên."}
+                ]
+                final_res = await engine.call_chat(
+                    messages=[{"role": "system", "content": system_content}] + synth_msgs,
+                    role=role, task_id=state.task_id,
+                    skip_memory=True, skip_build_final=True, skip_identity=True
+                )
+                res_str = final_res.get("answer", "") if isinstance(final_res, dict) else str(final_res)
+            except Exception as ex_tool:
+                logger.warning("[TOOL-WIRING-ERR] Lỗi thực thi công cụ trực tiếp: %s", ex_tool)
+
         # 6. Self-Reflection Guard
         try:
             audit = self_reflection_guard.audit_response(res_str)
@@ -743,7 +781,9 @@ class FastPipeline:
             pass
         return [
             {"type": "function", "function": {"name": "SEARCH_WEB_GLOBAL", "description": "Tìm kiếm dữ liệu trực tuyến.", "parameters": {"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]}}},
-            {"type": "function", "function": {"name": "OFFICE_SUITE_MASTER", "description": "Tạo file Word, Excel, PDF.", "parameters": {"type": "object", "properties": {"action": {"type": "string"}, "filename": {"type": "string"}}, "required": ["action", "filename"]}}},
+            {"type": "function", "function": {"name": "VIEW_FILE", "description": "Đọc nội dung tệp tin văn bản, mã nguồn cục bộ theo dòng.", "parameters": {"type": "object", "properties": {"AbsolutePath": {"type": "string"}, "StartLine": {"type": "integer"}, "EndLine": {"type": "integer"}}, "required": ["AbsolutePath"]}}},
+            {"type": "function", "function": {"name": "WRITE_TO_FILE", "description": "Tạo hoặc ghi đè nội dung tệp tin mã nguồn, text, markdown trực tiếp.", "parameters": {"type": "object", "properties": {"TargetFile": {"type": "string"}, "CodeContent": {"type": "string"}, "Overwrite": {"type": "boolean"}}, "required": ["TargetFile", "CodeContent"]}}},
+            {"type": "function", "function": {"name": "OFFICE_SUITE_MASTER", "description": "Tạo file Word, Excel, PDF chuyên nghiệp.", "parameters": {"type": "object", "properties": {"action": {"type": "string"}, "filename": {"type": "string"}, "title": {"type": "string"}}, "required": ["action", "filename", "title"]}}},
             {"type": "function", "function": {"name": "search_memory", "description": "Tra cứu bộ nhớ nội bộ.", "parameters": {"type": "object", "properties": {"query": {"type": "string"}}, "required": ["query"]}}}
         ]
 
