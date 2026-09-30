@@ -3,9 +3,14 @@ param([string]$LogPath)
 
 $env:OLLAMA_HOST             = "127.0.0.1:11435"
 $env:OLLAMA_NO_GPU           = "1"
+$env:CUDA_VISIBLE_DEVICES    = ""
+$env:HIP_VISIBLE_DEVICES     = ""
+$env:ROCR_VISIBLE_DEVICES    = ""
 $env:GGML_VK_VISIBLE_DEVICES = ""
+$env:OLLAMA_VULKAN           = "0"
 $env:OLLAMA_LLM_LIBRARY      = "cpu"
-$env:OLLAMA_KEEP_ALIVE        = "-1"
+$env:OLLAMA_NUM_PARALLEL     = "1"
+$env:OLLAMA_KEEP_ALIVE       = "-1"
 
 $Host.UI.RawUI.WindowTitle = "[OLLAMA-CPU :11435]"
 

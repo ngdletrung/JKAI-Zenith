@@ -36,7 +36,7 @@ _AUDIT_RE = re.compile(
 # Không dùng \bxem\b đơn lẻ — tránh nhầm «…tính năng… xem?»
 
 _FIX_RE = re.compile(
-    r"\b(sửa|sua|fix|repair|sửa lỗi|sua loi|khắc phục|khac phuc)\b",
+    r"\b(sửa|sua|fix|repair|sửa lỗi|sua loi|khắc phục|khac phuc|tạo|tao|create|viết|viet|write|sinh|generate|make|thêm|them|add|build)\b",
     re.IGNORECASE,
 )
 
@@ -259,20 +259,23 @@ def detect_workspace_target(text: str) -> Optional[str]:
         if rel and is_allowed_workspace_rel(rel):
             return rel
 
-    # thư mục foo/bar
+    # thư mục foo/bar (ưu tiên các cụm có 'thư mục', 'folder' trước các giới từ 'trong', 'tại')
     fm = re.search(
-        r"(?:thư mục|thu muc|folder|trong|tại|tai)\s+[`\"']?([\w\-]+(?:/[\w\-]+)*)",
+        r"(?:(?:trong|tại|tai)\s+)?(?:thư\s+mục|thu\s+muc|folder|thư mục con|thu muc con|directory|dir)\s+[`\"']?([\w\-]+(?:/[\w\-]+)*)"
+        r"|(?:trong|tại|tai)\s+[`\"']?([\w\-]+(?:/[\w\-]+)*)",
         path_scan,
         re.IGNORECASE,
     )
     if fm:
-        rel = normalize_workspace_rel(fm.group(1))
-        if is_allowed_workspace_rel(rel):
-            if "/" not in rel:
-                if workspace_scope_exists(rel):
+        matched_path = fm.group(1) or fm.group(2)
+        if matched_path:
+            rel = normalize_workspace_rel(matched_path)
+            if is_allowed_workspace_rel(rel):
+                if "/" not in rel:
+                    if workspace_scope_exists(rel):
+                        return rel
+                else:
                     return rel
-            else:
-                return rel
 
     # Đoạn path có dấu / (chỉ chấp nhận nếu THỰC SỰ TỒN TẠI trên đĩa cứng Workspace)
     candidates = []

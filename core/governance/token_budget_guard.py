@@ -1,19 +1,22 @@
 # -*- coding: utf-8 -*-
 """
-🏛️ JKAI ZENITH — TOKEN BUDGET GUARD (P1 / Giai Đoạn 2: Item 2.2)
+🏛️ JKAI ZENITH — TOKEN BUDGET GUARD (P1 / Giai Đoạn 2: Item 2.2, sửa đổi v28.3.0)
 File: core/governance/token_budget_guard.py
 
 Role:
-  Kiểm soát chi phí và ngân sách Token cho từng Mission/Task.
-  Chặn đứng rủi ro "đốt token vô hạn" khi gặp vòng lặp lỗi hoặc hallucination loop.
+  Local-first usage telemetry + vòng lặp-bảo vệ cho từng Mission/Task.
+  KHÔNG còn ngắt cứng mission vì vượt quota token (local không tốn tiền theo token).
+  Mission dừng khi hết việc, hết tài nguyên, hoặc chạm trần XỬ LÝ (số lượt gọi).
 
-Ràng buộc thiết kế từ Senior Red Team Auditor (Lượt 68):
+Ràng buộc thiết kế (sửa đổi từ spec Lượt 68 sang local-first):
   1. Đếm tập trung: sử dụng eval_count/prompt_eval_count từ Ollama / LLM provider.
   2. Khi usage vắng mặt: ước lượng heuristic (chars // 4) + log warning, KHÔNG fail-closed.
-  3. Ngưỡng 80%: phát cảnh báo structured log [BUDGET_WARNING].
-  4. Ngưỡng 100%: abort mission (ném TokenBudgetExceededException), đánh dấu FAILED,
-     đồng thời trip replan circuit breaker.
-  5. Thread-safe tracking theo task_id / mission_id.
+  3. Ngưỡng 80%/100%/200% token: chỉ phát telemetry log, KHÔNG abort (mặc định).
+  4. Trần xử lý `max_invocations`: vượt quá -> abort (ném TokenBudgetExceededException),
+     đánh dấu FAILED, đồng thời trip replan circuit breaker (chống retry storm / Self-DoS).
+  5. Chế độ `abort_on_exceed=True` (opt-in): giữ hành vi ngắt cứng cũ cho mission
+     cần kiểm soát chi phí cloud hoặc ngân sách thử nghiệm chặt.
+  6. Thread-safe tracking theo task_id / mission_id.
 """
 
 from __future__ import annotations
@@ -39,10 +42,14 @@ class TokenBudgetExceededException(MasterAbortException):
 
 @dataclass
 class TokenBudgetConfig:
-    """Cấu hình hạn mức ngân sách token."""
+    """Cấu hình hạn mức ngân sách token (local-first: telemetry + trần lượt gọi)."""
     max_total_tokens: int = 50000
     warning_threshold_ratio: float = 0.80
     max_estimated_cost_usd: float = 0.20
+    # Trần XỬ LÝ: số lượt gọi tối đa một mission (chống lặp vô hạn / Self-DoS).
+    max_invocations: int = 500
+    # Opt-in hành vi cũ: ngắt cứng khi vượt quota token (mission cloud-cost).
+    abort_on_exceed: bool = False
 
 
 @dataclass
@@ -125,15 +132,14 @@ class TokenBudgetGuard:
         """
         Ghi nhận lượng token tiêu thụ từ một lượt gọi chat/generate.
 
-        Quy tắc:
+        Quy tắc (local-first v28.3.0):
         1. Nếu prompt_tokens hoặc completion_tokens bị thiếu -> Ước lượng heuristic (len // 4)
            và log WARN, KHÔNG được fail-closed.
         2. Tích lũy vào ledger.
-        3. Nếu tích lũy >= 80% hạn mức: Ghi log [BUDGET_WARNING].
-        4. Nếu tích lũy > 100% hạn mức:
-           - Đánh dấu tripped = True.
-           - Trip replan circuit breaker (nếu có thể nạp).
-           - Ném TokenBudgetExceededException.
+        3. Ngưỡng token 80%/100%/200%: chỉ telemetry log, KHÔNG abort (trừ khi
+           `abort_on_exceed=True` được bật opt-in cho mission đó).
+        4. Trần lượt gọi `max_invocations`: vượt quá -> đánh dấu tripped = True,
+           trip replan circuit breaker, ném TokenBudgetExceededException.
         """
         is_estimated = False
 
@@ -176,7 +182,7 @@ class TokenBudgetGuard:
             max_limit = ledger.config.max_total_tokens
             warn_limit = int(max_limit * ledger.config.warning_threshold_ratio)
 
-            # Kiểm tra ngưỡng 80% (Warning)
+            # Kiểm tra ngưỡng 80% (Warning, telemetry only)
             if ledger.cumulative_total_tokens >= warn_limit and not ledger.warned_80:
                 ledger.warned_80 = True
                 pct = (ledger.cumulative_total_tokens / max_limit) * 100.0
@@ -193,8 +199,25 @@ class TokenBudgetGuard:
                     percentage=round(pct, 1)
                 )
 
-            # Kiểm tra ngưỡng 100% (Abort)
-            if ledger.cumulative_total_tokens > max_limit:
+            # Ngưỡng token 100%/200%: telemetry only (local không ngắt vì hết quota).
+            for ratio, tag in ((1.0, "BUDGET_EXCEEDED_SOFT"), (2.0, "BUDGET_EXCEEDED_2X")):
+                if ledger.cumulative_total_tokens > int(max_limit * ratio):
+                    pct = (ledger.cumulative_total_tokens / max_limit) * 100.0
+                    logger.warning(
+                        "[%s] Mission %s consumed %d/%d tokens (%.1f%% of budget, no abort)",
+                        tag, mission_id, ledger.cumulative_total_tokens, max_limit, pct
+                    )
+                    self._emit_structured_log(
+                        level="WARN" if ratio < 2.0 else "CRITICAL",
+                        tag=tag,
+                        mission_id=mission_id,
+                        tokens_used=ledger.cumulative_total_tokens,
+                        max_tokens=max_limit,
+                        percentage=round(pct, 1)
+                    )
+
+            # Opt-in legacy: ngắt cứng khi vượt quota (mission cloud-cost / test chặt).
+            if ledger.config.abort_on_exceed and ledger.cumulative_total_tokens > max_limit:
                 ledger.tripped = True
                 pct = (ledger.cumulative_total_tokens / max_limit) * 100.0
                 err_msg = (
@@ -209,6 +232,30 @@ class TokenBudgetGuard:
                     tokens_used=ledger.cumulative_total_tokens,
                     max_tokens=max_limit,
                     percentage=round(pct, 1)
+                )
+
+                # Cắt cầu dao replan-breaker để chặn retry storm
+                self._trip_replan_circuit_breaker(mission_id)
+
+                raise TokenBudgetExceededException(err_msg)
+
+            # Trần XỬ LÝ: vượt max_invocations -> abort + trip breaker (chống lặp vô hạn).
+            if ledger.invocation_count > ledger.config.max_invocations:
+                ledger.tripped = True
+                err_msg = (
+                    f"Invocation cap exceeded for mission {mission_id}: "
+                    f"{ledger.invocation_count} calls > limit {ledger.config.max_invocations} "
+                    f"(suspected infinite loop, token total {ledger.cumulative_total_tokens})"
+                )
+                logger.error("[INVOCATION_CAP_EXCEEDED] %s", err_msg)
+                self._emit_structured_log(
+                    level="CRITICAL",
+                    tag="INVOCATION_CAP_EXCEEDED",
+                    mission_id=mission_id,
+                    tokens_used=ledger.cumulative_total_tokens,
+                    max_tokens=max_limit,
+                    invocations=ledger.invocation_count,
+                    percentage=round((ledger.cumulative_total_tokens / max_limit) * 100.0, 1)
                 )
 
                 # Cắt cầu dao replan-breaker để chặn retry storm

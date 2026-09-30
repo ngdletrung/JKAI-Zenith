@@ -1143,3 +1143,45 @@
 *Zenith Architectural Changelog. v50.0 DEMS v1.0 Epistemic Control & Multi-Turn Coreference. Fully Verified.*
 
 
+
+## [2026-10-11] - ZENITH v50.1: ENGINE STREAMING INTEGRITY, GPU LOCK ISOLATION & SINGLE-PASS PIPELINE HARDENING
+*   **Bối cảnh (Why)**:
+    - Khắc phục 4 điểm nghẽn thực thi ở tầng code trong `core/utils/engine.py`, `services/ai-brain/state_pipeline.py`, `services/ai-brain/fast_pipeline.py` và `services/ai-brain/receptionist/receptionist_core.py`:
+      1. Khối flush non-delta cuối luồng và `[THINKING EXTRACTION]` trong `engine.call_chat` bị thụt lề 28 spaces nằm bên trong vòng lặp `async for line in _iter_stream_lines():`, gây bắn toàn bộ nội dung qua Redis ở mỗi token và ghi đè sớm `full_content = thinking_content.strip()` ngay từ token suy luận đầu tiên.
+      2. Các tác vụ chạy trên CPU (Port 11435 như `EMBEDDER`, `VISION`) vẫn chiếm giữ khóa `lock:gpu_vram` nhưng không giải phóng ở khối `finally` (`if is_gpu:`), gây rò rỉ khóa GPU trong 30s TTL.
+      3. Cấu hình `temperature` bị ghi đè cứng (`0.7` cho `RECEPTIONIST`) đè lên SSoT `intelligence/rule_hardware.md`, và `state_pipeline.py` gọi `json.loads(response)` trực tiếp khi `engine.call_chat(..., json_mode=True)` đã trả về `dict`.
+      4. `FastPipeline.execute` chạy lặp lại `EntityResolver().resolve()` và `intent_router.route()` sau khi `orchestrate_request` đã phân tích xong.
+*   **Giải pháp (How)**:
+    1. **Stream Completion Dedent & Lock Isolation (`core/utils/engine.py`)**: Đưa khối final non-delta flush và `[THINKING EXTRACTION]` ra ngoài vòng lặp nhận token (24 spaces); chỉ khóa `gpu_vram` khi `is_gpu and not is_cloud` và giải phóng chính xác theo cờ `gpu_lock_acquired`.
+    2. **SSoT Options & AMG v2 Merge (`core/utils/engine.py`)**: Hợp nhất `exec_profile.to_ollama_options()` với `role_cfg['options']` từ `rule_hardware.md`, lọc sạch metadata keys trong `safe_options`, và chỉ áp dụng temperature mặc định khi SSoT chưa khai báo.
+    3. **JSON Dict Safe Unpacking (`services/ai-brain/state_pipeline.py`)**: Chuẩn hóa `res_data = response if isinstance(response, dict) else json.loads(str(response))`.
+    4. **Single-Pass Route & Coref Forwarding (`services/ai-brain/receptionist/receptionist_core.py`, `services/ai-brain/fast_pipeline.py`)**: Truyền `jkai_route_decision` và `jkai_coref_resolved` từ Ingress Orchestrator xuống `FastPipeline.execute`.
+*   **Trạng thái**: **ACTIVE - ENGINE & PIPELINE RUNTIME HARDENING v50.1 VERIFIED (AST & IN-MEMORY VERIFICATION 100% PASS)**
+
+## [2026-10-11] - ZENITH v50.2: SOVEREIGN BILINGUAL (EN/VI) REFLEX HUB, DUAL CALIBRATION GATE & IP GUARDRAIL
+*   **Bối cảnh (Why)**:
+    - Tích hợp kiến trúc phán quyết 1-lượt không tự hồi quy (Single-Forward-Pass Non-Autoregressive Decision Substrate) hỗ trợ song ngữ Anh–Việt (`en` & `vi`) làm module trung tâm đa tác vụ cho JKAI-Zenith.
+    - Đảm bảo tuân thủ tuyệt đối nguyên tắc Bản quyền & Chủ quyền Thương hiệu (`.keywork.md` Phần V), nguyên tắc 2-NEVER (`Decision != Authority`), và kỷ luật hiệu chuẩn nhãn vàng (`.keywork.md` Phần X & `ADR-0003`/`ADR-0005`).
+*   **Giải pháp (How)**:
+    1. **Dual Manifest & Automated IP Brand Guardrail (`models/reflex_checkpoint_manifest.json`, `models/reflex_engine/0.4.2/manifest.json`, `requirements-reflex.txt`, `tests/test_ip_brand_guardrail.py`)**:
+       - Liên kết 2 chiều giữa manifest gốc và manifest phiên bản `0.4.2`, khóa giấy phép `Apache-2.0`, `egress_policy: "local-only"`, `allow_remote_hub_download: false`, và quét AST theo ranh giới từ (`split_identifier_tokens`) đảm bảo 0% định danh chứa từ khóa thương hiệu bên thứ ba.
+    2. **Sovereign Bilingual Backend (`core/cognitive_bus/backends/reflex_engine_backend.py`, `local_reflex_backend.py`)**:
+       - Khai báo `os.environ.setdefault("USE_TF", "0")` chống deadlock TensorFlow trên Windows; cài đặt `detect_language_bcp47` (loại bỏ từ khóa giao thoa tiếng Anh như `the/he/co/so/du/ban`, yêu cầu `vi_hits >= 2` cho văn bản không dấu), `predict_batch(sort_by_length=True)` và `predict_tournament(group_size=12)`.
+       - Đạt **100% (40/40)** trên `benchmarks/tier2/cases_vi_master_40.jsonl` (`P95 = 0.315ms < 450ms`) so với **40% (16/40)** của Tier 3 Rules.
+    3. **Central 6-Task Hub & Consumer 1 Soak Telemetry (`core/cognitive_bus/reflex_hub.py`, `core/utils/cognitive_memory.py`)**:
+       - Cung cấp 6 tác vụ trung tâm (`classify_intent_and_route`, `audit_plan_safety` khóa cứng `advisory_only=True` bằng `PermissionError`, `verify_cache_and_rerank`, `audit_answer_quality`, `shortlist_capabilities`, `batch_triage_experiences`).
+       - Đấu nối Consumer 1 (`verify_cache_and_rerank`) vào `CognitiveMemory.check_reflex` kèm bộ đếm Soak Telemetry (`get_soak_telemetry()`, lưu tại `data/telemetry/reflex_cache_soak_telemetry.jsonl`) để chặn trả lời nhầm câu ngược nghĩa (*bật/tắt*, *enable/disable*).
+    4. **Dual 100/200 Calibration Gate & Instant Feedback (`core/cognitive_bus/reflex_evolution.py`)**:
+       - Cấm fit nhiệt độ khi `n < 100` (`BLOCKED_BY_100_GOLD_LABEL_GATE`); chỉ fit nội bộ khi `100 <= n < 200` (`FITTED_INTERNAL_ONLY`, giữ `uncalibrated`); chỉ promote `"calibrated"` khi `n >= 200` mỗi ngôn ngữ và `ECE <= 0.15`. Hỗ trợ `learn_from_feedback` (`<50ms`) và thu hoạch cặp tương phản RLCD.
+*   **Trạng thái**: **ACTIVE - SOVEREIGN REFLEX HUB v50.2 VERIFIED (61/61 UNIT & CONTRACT TESTS PASSED | RED TEAM AUDITED)**
+
+## [2026-10-11] - ZENITH v50.3: 6-STEP GOVERNANCE HARDENING, MASTER KEY LOCK & 5-LAYER VI/EN DISAMBIGUATION PIPELINE
+*   **Bối cảnh (Why)**:
+    - Hoàn thiện 6 bước rào chắn quản trị theo lộ trình kiểm toán (`DECISION_VOCAB` chống sinh enum trùng lặp, `VERIFY_AND_CLOSE` chống kết luận hoàn thành sớm, hiệu chuẩn theo bucket số lựa chọn với dải nhiệt độ rộng `[0.2, 15.0]`, gom dữ liệu vàng từ 5 mẫu lỗi thực, cổng giết A/B 3 tiêu chí, và khóa cứng quyền flip backend / promote hiệu chuẩn về tay Master).
+    - Loại bỏ hoàn toàn mọi chuỗi URL ngoại vi trong manifest và triển khai đầy đủ Pipeline 5 Lớp xử lý tiếng Việt có dấu, không dấu và pha trộn Anh–Việt kèm khử nhập nhằng miền mạng vs xây dựng.
+*   **Giải pháp (How)**:
+    1. **Zero Duplicate Enums & `VERIFY_AND_CLOSE` Fence (`core/cognitive_bus/reflex_hub.py`, `reflex_engine_backend.py`)**: Khóa cứng `DECISION_VOCAB` (8 nhãn) và `ACTION_VOCAB` (21 hành động); chặn mọi nhãn `COMPLETE` / `COMPLETE_CANDIDATE` từ model (`validate_no_model_completion_label`), chỉ cho phép đề xuất `VERIFY_AND_CLOSE` trình Runtime `CompletionAuthority`.
+    2. **Multi-Bucket Calibration `[0.2, 15.0]`, Smart State Truncation & Order-Invariance (`reflex_evolution.py`, `confidence_policy.py`, `reflex_engine_backend.py`)**: Đặt ngưỡng abstain rộng hơn cho `SCORE` (`0.92` uncalibrated / `0.80` calibrated), tìm kiếm nhiệt độ trên `[0.2, 15.0]` theo bucket (`choice:2`, `choice:3-5`, `choice:6-10`, `boolean:2`, `score:3-5`), nén JSON state (`separators=(",", ":")`), cắt `state` thông minh (giữ đuôi cho list hội thoại, giữ đầu cho tài liệu), và đảm bảo bất biến thứ tự 100% (`flip_rate == 0.0`).
+    3. **5-Layer VI/EN Pipeline (`detect_language_with_trace`) & Zero External URLs (`tests/test_ip_brand_guardrail.py`)**: Chạy tuần tự 5 lớp (`L1_DIACRITIC_SHORTCUT`, `L2_UNACCENTED_VI_MARKER`, `L3_SYMMETRIC_EN_FUNCTION`, `L4_HONEST_ABSTAIN_NEUTRAL`, `L5_UPSTREAM_ACCENT_RESTORE_AND_DOMAIN_PRIOR`), gắn nhãn đường đi vào `packet.metadata`, và xóa sạch URL trong cả 2 manifest (`external_urls_allowed: false`).
+    4. **Master Key Lock (`backends/__init__.py`, `reflex_evolution.py`)**: Cả `set_active_backend()` và `promote_calibration()` đều ném `PermissionError` nếu không có `master_approved=True` và chữ ký `master_signature`.
+*   **Trạng thái**: **ACTIVE - 6-STEP GOVERNANCE & 5-LAYER PIPELINE v50.3 VERIFIED (71/71 UNIT & CONTRACT TESTS PASSED)**

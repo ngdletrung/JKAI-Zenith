@@ -1,0 +1,437 @@
+{
+  "backend_name": "tier3-deterministic-rule-baseline",
+  "backend_version": "2.1",
+  "calibration_state": "uncalibrated",
+  "ece_reported": null,
+  "is_deterministic": true,
+  "is_local_only": true,
+  "environment": {
+    "hostname": "AdminPC-MMO",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "python_version": "3.14.4",
+    "cpu": "Intel64 Family 6 Model 79 Stepping 1, GenuineIntel",
+    "ram_gb": 63.9,
+    "gpu": "32.0.21045.5002  AMD Radeon RX 6600",
+    "gpu_driver": "unknown",
+    "git_commit": "abad83fbf513",
+    "git_dirty": true,
+    "timestamp_utc": "2026-10-11T04:01:11.529262+00:00"
+  },
+  "cases": [
+    {
+      "case_id": "vi_sec_001",
+      "input_hash": "b8cad7bb23d5d4a4feb90a9d1af1a1fbc0635aefb0027d973f0c28b6b1f7e911",
+      "result": 1.0,
+      "confidence": 0.99,
+      "latency_ms": 0.046799999836366624,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_sec_002",
+      "input_hash": "e73cf8ae8b5788690775071c0c3d7c0009757f977d5748fc1a2586e8f1ac88f8",
+      "result": 0.0,
+      "confidence": 0.99,
+      "latency_ms": 0.09450000015931437,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_sec_003",
+      "input_hash": "c3bf3b03be5a705678aa219a5b34e959f4caae7f6ed8c5a2c97be2573caca961",
+      "result": 1.0,
+      "confidence": 0.99,
+      "latency_ms": 0.0652999997328152,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_sec_004",
+      "input_hash": "2481710d46bcdd7549090df6bbb57ead88785fb78101d932fdbb2711226f90b9",
+      "result": 0.0,
+      "confidence": 0.99,
+      "latency_ms": 0.08989999969344353,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_sec_005",
+      "input_hash": "f21f182dfc6c714542fe3bccf529d5265a4dbe373dc0c67be83033537323165a",
+      "result": 1.0,
+      "confidence": 0.99,
+      "latency_ms": 0.07350000032602111,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_sec_006",
+      "input_hash": "0161817b1a3b2cd55987d47928733ceb4b18547c22ba9e6b01625df37b6b435e",
+      "result": 0.0,
+      "confidence": 0.99,
+      "latency_ms": 0.08299999990413198,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_sec_007",
+      "input_hash": "c737e6f7d27e66225f5a06125106c8f5b47a7c9d760be4cd2cf736ac5934dd2e",
+      "result": 0.0,
+      "confidence": 0.99,
+      "latency_ms": 0.14989999999670545,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_sec_008",
+      "input_hash": "8b2f4dccd54d466ebf3faeda435ad42b9b5c1797bf1335bcd28b3b4de35850c5",
+      "result": 0.0,
+      "confidence": 0.99,
+      "latency_ms": 0.07929999992484227,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_sec_009",
+      "input_hash": "722fc9af533ed2275514afbc0eea3df7e35d76aaed320ad45da360135a534dfa",
+      "result": 0.0,
+      "confidence": 0.99,
+      "latency_ms": 0.08920000072976109,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_sec_010",
+      "input_hash": "1669ebe4ffd787c0b3826052c7f7edd8bd6c34cc89bd02c0893cbd051a2abda7",
+      "result": 0.0,
+      "confidence": 0.99,
+      "latency_ms": 0.07999999979801942,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_cap_001",
+      "input_hash": "74fb9f9a1739381cc6709552db8eb1140d0e389cca6dca1c78e72919d0a3b709",
+      "result": "none_of_the_above",
+      "confidence": 0.96,
+      "latency_ms": 0.028699999347736593,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_cap_002",
+      "input_hash": "f80dabd7f8551784efbda4cffcdbfce994d966cd0092e510402fcf2dc861bd1a",
+      "result": "none_of_the_above",
+      "confidence": 0.96,
+      "latency_ms": 0.0227999998969608,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_cap_003",
+      "input_hash": "2ea002a27c92535d17341d8ebc2576026a29b1a550a5258795a4471b1638916f",
+      "result": "none_of_the_above",
+      "confidence": 0.96,
+      "latency_ms": 0.018599999748403206,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_cap_004",
+      "input_hash": "a694d633c7c0bd5fe494ee5c2aaeab29122b90961729c2df5f59c98c958535d0",
+      "result": "none_of_the_above",
+      "confidence": 0.96,
+      "latency_ms": 0.017899999875226058,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_cap_005",
+      "input_hash": "6c33126954a0f868b2aa6d8f35cac465d08e2e84b44ac9cad49fcc1e7765676c",
+      "result": "none_of_the_above",
+      "confidence": 0.96,
+      "latency_ms": 0.01720000000204891,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_cap_006",
+      "input_hash": "35405227900761a5f803fd603260bf0dc4da058af0c45018eed98cfad9115308",
+      "result": "none_of_the_above",
+      "confidence": 0.96,
+      "latency_ms": 0.01700000029813964,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_cap_007",
+      "input_hash": "96b96f9227062a85e0f5b2671f03f78bcbd97b758c8e89564ee79103d0d6d2d5",
+      "result": "none_of_the_above",
+      "confidence": 0.96,
+      "latency_ms": 0.01669999983278103,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_cap_008",
+      "input_hash": "8bb14e243f210139000338e5afc0d223871a2734a6cec4a4808a44a87acdaff4",
+      "result": "none_of_the_above",
+      "confidence": 0.96,
+      "latency_ms": 0.01700000029813964,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_cap_009",
+      "input_hash": "26a54ffefa75e5cb4aa4908be46ddf9cad1bdadc505783a806e28d4863145fb2",
+      "result": "none_of_the_above",
+      "confidence": 0.96,
+      "latency_ms": 0.021099999685247894,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_cap_010",
+      "input_hash": "4f66658a2b1a53cd5880b10638d0b3dfc06cdb21d8455eb8dd04c9e276f37a7a",
+      "result": "none_of_the_above",
+      "confidence": 0.96,
+      "latency_ms": 0.01739999970595818,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_err_001",
+      "input_hash": "fbbdb02d1dfad5a54461fba773fb4c654e3fd6818d65fd6cf3862fb43f2dbe2f",
+      "result": "unknown_anomaly",
+      "confidence": 0.96,
+      "latency_ms": 0.017899999875226058,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_err_002",
+      "input_hash": "95f3247a87a5c01d6dd602b73d3c6b2a6a2d37fa7d47701a54810ebdc7c3658c",
+      "result": "unknown_anomaly",
+      "confidence": 0.96,
+      "latency_ms": 0.017700000171316788,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_err_003",
+      "input_hash": "0ca27808eeb41e9eff345c6b55d1181651e3a7b352b0a7b6514feb766fd041a0",
+      "result": "unknown_anomaly",
+      "confidence": 0.96,
+      "latency_ms": 0.01650000012887176,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_err_004",
+      "input_hash": "2a0e7c4e1fdedd1dfaea5693d6d130c2c75ab134a872f8dad19fcab40eb1cf0e",
+      "result": "unknown_anomaly",
+      "confidence": 0.96,
+      "latency_ms": 0.015999999959603883,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_err_005",
+      "input_hash": "4cde92026c11d86d914345366bc0dd00feb8f7037266144112cd71501d09d4c8",
+      "result": "unknown_anomaly",
+      "confidence": 0.96,
+      "latency_ms": 0.015900000107649248,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_err_006",
+      "input_hash": "a0b357a36a3a1f47c69b2b2fa2fcd11b798e80ac4dcd1b603915f8e5a8698454",
+      "result": "unknown_anomaly",
+      "confidence": 0.96,
+      "latency_ms": 0.015999999959603883,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_err_007",
+      "input_hash": "51f074536c6c298e0ea9776b74509787711e137d8815c870d6cebae319336526",
+      "result": "unknown_anomaly",
+      "confidence": 0.96,
+      "latency_ms": 0.015499999790336005,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_err_008",
+      "input_hash": "94dad6f1a10ee767e8d508551486b58545e15923b5e5b619d2fadbeb72615ae0",
+      "result": "unknown_anomaly",
+      "confidence": 0.96,
+      "latency_ms": 0.015900000107649248,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_err_009",
+      "input_hash": "0ae4b27d9d344c5868d7b07c62681e0e76f0684fe15881701f97fda7f23f7aef",
+      "result": "unknown_anomaly",
+      "confidence": 0.96,
+      "latency_ms": 0.015600000551785342,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_err_010",
+      "input_hash": "8c85cbce69e1e6ea4aac7aa406efec6e2f704b3417cd62e3ac43a3d4ee67b143",
+      "result": "unknown_anomaly",
+      "confidence": 0.96,
+      "latency_ms": 0.01500000053056283,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_rout_001",
+      "input_hash": "40699993465ae4913247f548fa96a8d1a88d956a7548e7da493bb561d83687cf",
+      "result": "fast_path",
+      "confidence": 0.96,
+      "latency_ms": 0.023799999326001853,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_rout_002",
+      "input_hash": "12ffcda908acc7890c053ee40bf51ffeb32168ecfa7ad94d72f6bd60db2a2db0",
+      "result": "deep_path",
+      "confidence": 0.96,
+      "latency_ms": 0.020399999812070746,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_rout_003",
+      "input_hash": "a701c8797a6ba7b8be189ae94acfea6d3d0183fd1e00fc341ed5f7b2188de51c",
+      "result": "deep_path",
+      "confidence": 0.96,
+      "latency_ms": 0.01990000055229757,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_rout_004",
+      "input_hash": "4e40d4ce970c304ba79736a7f856070a1afad25b8c32f9d7798be66155caf8d5",
+      "result": "deep_path",
+      "confidence": 0.96,
+      "latency_ms": 0.020000000404252205,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_rout_005",
+      "input_hash": "061a6caf43720878e2a34863b3fd2cf5e0f3dfbb849f20b850d7de93e77dcda2",
+      "result": "fast_path",
+      "confidence": 0.96,
+      "latency_ms": 0.019500000234984327,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_rout_006",
+      "input_hash": "30b59ee104d707a231f3c4876ddd18756963f461172f634431fdfa0712b3940d",
+      "result": "fast_path",
+      "confidence": 0.96,
+      "latency_ms": 0.021800000467919745,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_rout_007",
+      "input_hash": "648ba65389834fcb97f857d116028135cea63c05a031b4207fc4c12cb96ba034",
+      "result": "fast_path",
+      "confidence": 0.96,
+      "latency_ms": 0.020599999515980016,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_rout_008",
+      "input_hash": "39117cfa4d0600286ebbb1fb4699375198cece325261445e1fab316d4d5fadda",
+      "result": "deep_path",
+      "confidence": 0.96,
+      "latency_ms": 0.01920000067912042,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_rout_009",
+      "input_hash": "7585257e7c7df9fa35908595626c0926f2a216e1ddc7e4877477223381e63318",
+      "result": "deep_path",
+      "confidence": 0.96,
+      "latency_ms": 0.019699999938893598,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_rout_010",
+      "input_hash": "82a93105f8df1b18bc7f0233fa880dc9a3648c5abe1094366e64c6fd0f5059c2",
+      "result": "fast_path",
+      "confidence": 0.96,
+      "latency_ms": 0.021600000764010474,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    }
+  ],
+  "latency": {
+    "n": 40,
+    "p50_ms": 0.01990000055229757,
+    "p95_ms": 0.09450000015931437,
+    "p99_ms": 0.14989999999670545,
+    "mean_ms": 0.035357500041754975
+  },
+  "accuracy": 0.4,
+  "ece_measured": 0.5674999999999999,
+  "n_cases": 40,
+  "n_errors": 0,
+  "notes": [
+    "backend load: 0.0 ms",
+    "warmup runs: 3"
+  ]
+}

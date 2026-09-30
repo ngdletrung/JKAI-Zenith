@@ -5,7 +5,7 @@ JKAI Zenith - Internal Rule Baseline Benchmark Harness (v2.1 Sealed)
 
 ĐỐI TƯỢNG ĐO ĐẠC:
 - Đo đạc tính tự nhất quán của TIER 3 DETERMINISTIC RULE BASELINE NỘI BỘ (Regex & Keyword Heuristics).
-- TUYỆT ĐỐI KHÔNG PHẢI MÔ HÌNH HỌC (System 1 Neural Model hay Laya checkpoint).
+- TUYỆT ĐỐI KHÔNG PHẢI MÔ HÌNH HỌC (System 1 Neural Model hay reflex checkpoint).
 - Đóng vai trò chốt chặn cuối cùng (Fallback Tier 3) khi hệ thống ngoại suy hoặc không có mô hình học.
 
 KẾT QUẢ ĐÃ ĐƯỢC RED TEAM NGHIỆM THU (Lượt 80):

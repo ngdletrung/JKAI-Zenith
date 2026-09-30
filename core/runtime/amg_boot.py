@@ -26,7 +26,7 @@ from dataclasses import dataclass, field
 from typing import Dict, List, Optional, Set
 
 from core.governor.hardware_monitor import HardwareMonitor, HardwareState
-from core.governor.model_capabilities import ExecutionProfile, ModelClass
+from core.governor.model_capabilities import ExecutionProfile, ModelCapabilityProfile, ModelClass, ModelMemoryProfile
 from core.governor.model_inspector import ModelInspector
 from core.governor.model_registry import ModelRegistry
 from core.governor.portfolio_governor import PortfolioGovernor
@@ -159,9 +159,9 @@ class AMGBootstrap:
         profiles_to_cache = {}
 
         for m in snap.available_models:
-            # Check incremental cache
+            # Check incremental cache (must also have non-null memory profile)
             c_entry = cached_raw.get(m.name)
-            if c_entry and c_entry.get("ollama_digest") == m.digest:
+            if c_entry and c_entry.get("ollama_digest") == m.digest and c_entry.get("memory") is not None:
                 # Load from cache
                 p = self._profile_from_cache(c_entry)
                 registry.register(p)
@@ -170,7 +170,13 @@ class AMGBootstrap:
                 # Inspect model via adapter
                 info = gpu_adapter.inspect_model_sync(m.name)
                 if info:
+                    if getattr(m, "size_gb", 0.0) > 0 and getattr(info, "size_bytes", 0) <= 0:
+                        info.size_bytes = int(m.size_gb * (1024 ** 3))
                     p = ModelInspector.build_profile(info)
+                    if getattr(m, "digest", ""):
+                        p.ollama_digest = m.digest
+                    if getattr(m, "size_gb", 0.0) > 0 and p.memory and p.memory.weight_file_size_gb <= 0:
+                        p.memory.weight_file_size_gb = m.size_gb
                     registry.register(p)
                     profiles_to_cache[m.name] = p
 
@@ -278,6 +284,20 @@ class AMGBootstrap:
             logger.info("[AMG-BOOT/Phase0] No allowed model list available; skipping purge.")
             return
 
+        role_configs = self._read_role_configs_from_hardware_config()
+        allowed_by_host: Dict[str, Set[str]] = {"GPU": set(), "CPU": set()}
+        for r_info in role_configs.values():
+            m_name = str(r_info.get("model", "")).strip()
+            ka_val = str(r_info.get("keep_alive", "0")).strip()
+            if not m_name or m_name.lower() == "auto" or ka_val == "0":
+                continue
+            hw_val = str(r_info.get("hardware", "GPU")).upper()
+            ngpu = r_info.get("num_gpu")
+            if "CPU" in hw_val or ngpu == 0:
+                allowed_by_host["CPU"].add(m_name)
+            else:
+                allowed_by_host["GPU"].add(m_name)
+
         hosts_to_check = [
             (self.gpu_host, "GPU"),
             (self.cpu_host, "CPU"),
@@ -290,17 +310,19 @@ class AMGBootstrap:
                 logger.info(f"[AMG-BOOT/Phase0] {label} ({host}): no resident models, nothing to purge.")
                 continue
 
+            host_allowed = allowed_by_host.get(label) or allowed
+
             for resident in residents:
                 resident_name = resident.name
-                # Check if this resident is in the allowed set (case-insensitive, also check base name)
+                # Check if this resident is in the allowed set for this specific host
                 is_allowed = (
-                    resident_name in allowed
-                    or resident_name.lower() in {a.lower() for a in allowed}
+                    resident_name in host_allowed
+                    or resident_name.lower() in {a.lower() for a in host_allowed}
                     or any(
                         resident_name.lower().startswith(a.lower().split(":")[0])
                         and ":"  in a
                         and resident_name.split(":")[-1] == a.split(":")[-1]
-                        for a in allowed
+                        for a in host_allowed
                     )
                 )
                 if is_allowed:
@@ -349,19 +371,72 @@ class AMGBootstrap:
             if role not in target_roles:
                 target_roles.append(role)
 
+        # Read explicit role configs directly from rule_hardware.md
+        role_configs: Dict[str, dict] = cls._read_role_configs_from_hardware_config()
+
+        # Also include persistent roles (KEEP_ALIVE == -1) from rule_hardware.md when running real boot
+        for r_name, r_info in role_configs.items():
+            if str(r_info.get("keep_alive", "0")) == "-1" and r_name not in target_roles:
+                m_cand = str(r_info.get("model", "")).strip()
+                if m_cand and m_cand.lower() != "auto" and registry.get(m_cand) is not None:
+                    target_roles.append(r_name)
+
+        # Deduplicate models so we don't warm the same model 6 times for different roles on boot
+        warmed_models: Set[str] = set()
+
         for role in target_roles:
-            quality = "high" if request.startup_mode == "DEEP" else "medium"
+            rcfg = role_configs.get(role.upper(), {})
+            cfg_model = str(rcfg.get("model", "auto") or "auto").strip()
+            cfg_hw = str(rcfg.get("hardware", "auto") or "auto").strip()
+            cfg_ctx = int(rcfg.get("num_ctx", 4096) or 4096)
+            cfg_ka = str(rcfg.get("keep_alive", "-1") or "-1").strip()
+
+            # Use explicit model from rule_hardware.md only if it is present in the registry (preserves unit test isolation)
+            if cfg_model.lower() != "auto" and registry.get(cfg_model) is not None:
+                req_model = cfg_model
+                req_hw = cfg_hw
+            else:
+                req_model = "auto"
+                req_hw = "auto"
+
+            quality = "high" if request.startup_mode == "DEEP" else str(rcfg.get("quality") or "medium").lower()
             profile = governor.resolve(
                 role=role,
-                requested_model="auto",
+                requested_model=req_model,
                 quality=quality,
+                context_len=cfg_ctx,
+                requested_hardware=req_hw,
                 hw=hw_state,
             )
+            profile.keep_alive = cfg_ka
+            if req_model != "auto":
+                if rcfg.get("num_gpu") is not None:
+                    profile.num_gpu_layers = int(rcfg["num_gpu"])
+                if rcfg.get("num_thread") is not None:
+                    profile.num_thread = int(rcfg["num_thread"])
+                if req_hw.upper() == "CPU" or rcfg.get("num_gpu") == 0:
+                    profile.backend = "CPU"
+                    profile.memory_layout = "RAM_ONLY"
+                elif "GPU" in req_hw.upper() and profile.backend == "CPU":
+                    profile.backend = "GPU"
+                    profile.memory_layout = "VRAM_ONLY"
+            if role == "EMBEDDER" or "embed" in profile.model_name.lower():
+                setattr(profile, "is_embedding_only", True)
 
             # Determine Lifecycle Policy (WARM vs LAZY vs EVICTABLE)
+            model_key = f"{profile.backend}:{profile.model_name.lower()}"
             if role == "RECEPTIONIST" and request.startup_mode == "FAST":
                 policy_str = "WARM"
                 reason = "Capability matched 'conversation'; fast-first boot policy"
+                warmed_models.add(model_key)
+            elif cfg_ka == "-1" and req_model != "auto":
+                if model_key not in warmed_models:
+                    policy_str = "WARM"
+                    reason = f"Persistent model configured with KEEP_ALIVE=-1 in rule_hardware.md for {role}"
+                    warmed_models.add(model_key)
+                else:
+                    policy_str = "LAZY"
+                    reason = f"Model {profile.model_name} already scheduled for WARM load"
             elif role == "EMBEDDER":
                 policy_str = "LAZY"
                 reason = "Capability required; lazy load on first embedding request"
@@ -379,13 +454,69 @@ class AMGBootstrap:
         return decisions
 
     @staticmethod
+    def _read_role_configs_from_hardware_config() -> Dict[str, dict]:
+        """Parse Active Role Mapping table from intelligence/rule_hardware.md."""
+        hw_path = pathlib.Path(__file__).resolve().parents[2] / "intelligence" / "rule_hardware.md"
+        configs: Dict[str, dict] = {}
+        if not hw_path.exists():
+            return configs
+        try:
+            with hw_path.open(encoding="utf-8") as f:
+                for line in f:
+                    s = line.strip()
+                    if not s.startswith("|") or s.startswith("| Role") or s.startswith("| :"):
+                        continue
+                    cols = [c.strip().strip("*") for c in s.split("|")[1:-1]]
+                    if len(cols) >= 10:
+                        role_name = cols[0].upper()
+                        try:
+                            num_ctx = int(cols[3])
+                        except Exception:
+                            num_ctx = 4096
+                        try:
+                            num_gpu = int(cols[5])
+                        except Exception:
+                            num_gpu = None
+                        try:
+                            num_thread = int(cols[6])
+                        except Exception:
+                            num_thread = None
+                        configs[role_name] = {
+                            "role": role_name,
+                            "model": cols[1],
+                            "hardware": cols[2],
+                            "num_ctx": num_ctx,
+                            "num_gpu": num_gpu,
+                            "num_thread": num_thread,
+                            "keep_alive": cols[9],
+                            "capability": cols[11] if len(cols) > 11 else "",
+                            "quality": cols[12] if len(cols) > 12 and cols[12] else "medium",
+                        }
+        except Exception:
+            pass
+        return configs
+
+    @staticmethod
     def _profile_from_cache(entry: dict) -> ModelCapabilityProfile:
         classes = {ModelClass[c] for c in entry.get("model_classes", ["GENERAL"]) if c in ModelClass.__members__}
+        mem_raw = entry.get("memory")
+        mem_obj = None
+        if isinstance(mem_raw, dict):
+            mem_obj = ModelMemoryProfile(
+                weight_file_size_gb=float(mem_raw.get("weight_file_size_gb", 0.0)),
+                quantization=str(mem_raw.get("quantization", "Q4_K_M")),
+                bytes_per_param=float(mem_raw.get("bytes_per_param", 0.5)),
+                total_parameters_b=float(mem_raw.get("total_parameters_b", 7.0)),
+                active_parameters_b=float(mem_raw.get("active_parameters_b", 7.0)),
+                num_layers=int(mem_raw.get("num_layers", 32)),
+                is_moe=bool(mem_raw.get("is_moe", False)),
+            )
         return ModelCapabilityProfile(
             model_name=entry.get("model_name", ""),
             architecture=entry.get("architecture", "transformer"),
             family=entry.get("family", ""),
             context_length_max=entry.get("context_length_max", 8192),
+            memory=mem_obj,
             model_classes=classes,
             has_vision=entry.get("has_vision", False),
             has_tool_calling=entry.get("has_tool_calling", True),

@@ -1,0 +1,17 @@
+# ==============================================================================
+# [ZENITH FILE DIRECTIVE]
+# - File: requirements-reflex.txt
+# - Role: Pinned Optional Dependencies for Sovereign Local Reflex Engine (Mode A ONNX/Safetensors)
+# - Ownership: Master LeeTrung
+# - Status: Active | Version: SDS v28.0
+# - Runtime Invariant: Always set os.environ.setdefault("USE_TF", "0") before importing
+#   transformers or torch on Windows to prevent TensorFlow/abseil import deadlock.
+#   Zero external HuggingFace Hub egress at runtime (local_files_only=True).
+# ==============================================================================
+
+numpy>=1.26.0,<3.0.0
+onnxruntime>=1.18.0,<2.0.0
+safetensors>=0.4.3,<1.0.0
+tokenizers>=0.19.0,<1.0.0
+transformers>=4.44.0,<5.0.0
+torch>=2.3.0,<3.0.0

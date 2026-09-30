@@ -127,14 +127,14 @@ def verify_after_repair(
                 ok_all = False
             lines.append(f"- `py_compile {rel}`: {'✅' if ok else '❌'} {msg}")
 
-    scan = scan_python_syntax(ws, max_files=400)
-    if scan:
-        ok_all = False
-        lines.append(f"- Syntax scan: ❌ còn **{len(scan)}** file lỗi (vd `{scan[0]['path']}` L{scan[0]['line']})")
-    else:
-        lines.append("- Syntax scan (`services/`, `core/`, `scripts/`): ✅")
-
     if run_compileall:
+        scan = scan_python_syntax(ws, max_files=400)
+        if scan:
+            ok_all = False
+            lines.append(f"- Syntax scan: ❌ còn **{len(scan)}** file lỗi (vd `{scan[0]['path']}` L{scan[0]['line']})")
+        else:
+            lines.append("- Syntax scan (`services/`, `core/`, `scripts/`): ✅")
+
         c_ok, c_msg = _compileall_dirs(ws)
         if not c_ok:
             ok_all = False

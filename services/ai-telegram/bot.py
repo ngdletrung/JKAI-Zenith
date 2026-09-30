@@ -68,11 +68,36 @@ def wait_for_internet(timeout=60):
             time.sleep(2)
     return False
 
+def _apply_output_gate(text):
+    """Biên giới thông tin: che từ nội bộ trước khi gửi Master (không bao giờ chặn gửi)."""
+    try:
+        try:
+            from core.governance.internal_vocabulary import gate_user_text
+        except ImportError:
+            from internal_vocabulary import gate_user_text
+        cleaned, hits = gate_user_text(text)
+        if hits:
+            print(f"ℹ️ [OUTPUT-GATE] Đã che {len(hits)} từ nội bộ trước khi gửi Master.")
+        return cleaned
+    except Exception as e:
+        print(f"⚠️ [OUTPUT-GATE-SKIP] Không tải được gate ({e}), gửi nguyên văn.")
+        return text
+
+
+def public_error(label, exc):
+    """Chặn rò nội bộ từ tận nguồn: log full exception ở server, chỉ gửi Master mã sự cố."""
+    import uuid
+    incident = uuid.uuid4().hex[:8]
+    print(f"❌ [TELE-INCIDENT:{incident}] {label}: {exc!r}")
+    return f"❌ <b>{label}:</b> Hệ thống gặp sự cố (mã: {incident}). Chi tiết đã ghi log máy chủ."
+
+
 def safe_edit_message_text(chat_id, message_id, text, p_id=None, last_edit_map=None, **kwargs):
     """
     🛡️ [TELE-RATE-LIMIT-GUARD]: Thao tác sửa tin nhắn Telegram an toàn tuyệt đối.
     Tránh lỗi 429 Too Many Requests và tự động fallback sang text thuần nếu lỗi định dạng HTML.
     """
+    text = _apply_output_gate(text)
     try:
         res = bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text, **kwargs)
         if p_id and isinstance(last_edit_map, dict):
@@ -108,6 +133,7 @@ def safe_edit_message_text(chat_id, message_id, text, p_id=None, last_edit_map=N
 
 def safe_send_message(chat_id, text, **kwargs):
     """🚀 [RESILIENT-SENDER]: Giao thức gửi tin nhắn bền bỉ với cơ chế HTML Fallback tức thì."""
+    text = _apply_output_gate(text)
     import random
     time.sleep(random.uniform(0.1, 0.3))
     max_retries = 3
@@ -188,7 +214,7 @@ def execute_neural_command(goal, images=None, mode="fast"):
             else:
                 safe_send_message(MASTER_ID, f"⚠️ <b>LỖI HỆ THỐNG:</b> Không thể kết nối Trung tâm <i>(Mã lỗi: {res.status_code})</i>. Đang chuyển vào hàng chờ...", parse_mode="HTML")
     except Exception as e:
-        safe_send_message(MASTER_ID, f"❌ <b>LỖI KẾT NỐI:</b> {str(e)}", parse_mode="HTML")
+        safe_send_message(MASTER_ID, public_error("LỖI KẾT NỐI", e), parse_mode="HTML")
 
 # ==========================================
 # 📦 BỘ GOM LOG CHỐNG SPAM (LOG AGGREGATOR)
@@ -506,7 +532,7 @@ def cmd_help(message):
             else:
                 safe_send_message(MASTER_ID, f"⚠️ <b>LỖI HỆ THỐNG:</b> Không thể kết nối Trung tâm <i>(Mã lỗi: {res.status_code})</i>.", parse_mode="HTML")
     except Exception as e:
-        safe_send_message(MASTER_ID, f"❌ <b>LỖI KẾT NỐI:</b> {str(e)}", parse_mode="HTML")
+        safe_send_message(MASTER_ID, public_error("LỖI KẾT NỐI", e), parse_mode="HTML")
 
 @bot.message_handler(commands=['status', 'stat'])
 def cmd_status(message):
@@ -521,7 +547,7 @@ def cmd_status(message):
                 safe_send_message(MASTER_ID, f"⚠️ <b>LỖI:</b> Không thể truy vấn trạng thái (HTTP {res.status_code})", parse_mode="HTML")
             # Kết quả trạng thái đã được pubsub tự động phát sóng lên Telegram qua monitor:log_channel
     except Exception as e:
-        safe_send_message(MASTER_ID, f"❌ <b>LỖI TRUY VẤN:</b> {str(e)}", parse_mode="HTML")
+        safe_send_message(MASTER_ID, public_error("LỖI TRUY VẤN", e), parse_mode="HTML")
 
 @bot.message_handler(commands=['audit'])
 def cmd_audit(message):
@@ -546,7 +572,7 @@ def cmd_audit(message):
             else:
                 safe_send_message(MASTER_ID, f"⚠️ Không thể kết nối endpoint audit ({res.status_code})", parse_mode="HTML")
     except Exception as e:
-        safe_send_message(MASTER_ID, f"❌ <b>LỖI AUDIT:</b> {str(e)}", parse_mode="HTML")
+        safe_send_message(MASTER_ID, public_error("LỖI AUDIT", e), parse_mode="HTML")
 
 @bot.message_handler(commands=['cancel', 'stop'])
 def cmd_stop(message):
@@ -558,7 +584,7 @@ def cmd_stop(message):
             data = res.json()
             safe_send_message(MASTER_ID, f"🛑 <b>HỆ THỐNG:</b> {data.get('msg')}", parse_mode="HTML")
     except Exception as e:
-        safe_send_message(MASTER_ID, f"❌ <b>LỖI NGẮT MẠCH:</b> {str(e)}", parse_mode="HTML")
+        safe_send_message(MASTER_ID, public_error("LỖI NGẮT MẠCH", e), parse_mode="HTML")
 
 @bot.message_handler(content_types=['voice'])
 def handle_voice(message):
@@ -769,6 +795,7 @@ if __name__ == "__main__":
     try:
         from requests.adapters import HTTPAdapter
         from urllib3.util import Retry
+        import requests
         retry_strategy = Retry(
             total=5,
             backoff_factor=1.5,
@@ -776,6 +803,8 @@ if __name__ == "__main__":
             raise_on_status=False
         )
         adapter = HTTPAdapter(max_retries=retry_strategy, pool_connections=10, pool_maxsize=10)
+        if telebot.apihelper.session is None:
+            telebot.apihelper.session = requests.Session()
         telebot.apihelper.session.mount("https://", adapter)
         telebot.apihelper.session.mount("http://", adapter)
         print("🛡️ [TELE-RESILIENCE]: Đã nạp HTTPAdapter Retry Strategy chống RemoteDisconnected.")

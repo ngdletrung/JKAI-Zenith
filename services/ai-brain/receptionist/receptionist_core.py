@@ -85,6 +85,9 @@ class Receptionist:
         kwargs = os_plan.merge_into_kwargs(kwargs)
         kwargs["jkai_os_intent"] = os_plan.os_intent
         kwargs["jkai_os_pipeline"] = os_plan.pipeline
+        if getattr(os_plan, "route_decision", None) is not None:
+            kwargs["jkai_route_decision"] = os_plan.route_decision
+            kwargs["jkai_route_goal"] = goal
         if ms:
             kwargs["mission_state"] = ms
 
@@ -102,8 +105,9 @@ class Receptionist:
                         prev_mc = ctx_mgr.get_or_create(prev_mission_id)
                         resolved_goal = ent_resolver.resolve(goal, last_subject=prev_mc.conversation.get("last_subject", ""), last_query=prev_mc.conversation.get("last_query", ""))
                         if resolved_goal != goal:
-                            self._log("BRAIN", f"[CONTEXT] Anaphora resolved: '{goal}' → '{resolved_goal}'", task_id)
+                            self._log("BRAIN", f"[CONTEXT] Anaphora resolved: '{goal}' -> '{resolved_goal}'", task_id)
                             goal = resolved_goal
+                kwargs["jkai_coref_resolved"] = True
             except Exception as ctx_err:
                 self._log("WARN", f"[CONTEXT] Context init failed, continuing: {ctx_err}", task_id)
                 mc = ctx_mgr.get_or_create(task_id, goal=goal)

@@ -206,5 +206,25 @@ export const ZenithService = {
       }
     })();
     return () => ctrl.abort();
+  },
+  async labelLog(payload: {
+    log_id: string;
+    task_id?: string;
+    score: 0 | 0.5 | 1;
+    verdict: 'CORRECT' | 'PARTIALLY_CORRECT' | 'COMPLETELY_WRONG';
+    msg_preview?: string;
+    notes?: string;
+  }): Promise<{ ok: boolean; record_id?: string; error?: string }> {
+    try {
+      const r = await fetch(`${API_BASE}/api/label_log`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      return r.ok ? r.json() : { ok: false, error: `HTTP ${r.status}` };
+    } catch (e: any) {
+      console.error('Label log error:', e);
+      return { ok: false, error: e.message };
+    }
   }
 };

@@ -118,7 +118,7 @@ class StatePipeline:
             try:
                 messages = [{"role": "user", "content": prompt}]
                 response = await engine.call_chat(messages, role="PLANNER", json_mode=True, task_id=task_id)
-                res_data = json.loads(response)
+                res_data = response if isinstance(response, dict) else json.loads(str(response))
                 
                 if res_data.get("override"):
                     engine._increment_stat("llm_override")

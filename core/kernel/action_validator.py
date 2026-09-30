@@ -17,8 +17,12 @@ from core.kernel.tool_contracts import ToolContractRegistry
 TOOL_REQUIRED_PARAMS: Dict[str, Set[str]] = {
     "write_to_file": {"TargetFile", "CodeContent"},
     "replace_file_content": {"TargetFile", "TargetContent", "ReplacementContent"},
-    "run_command": {"CommandLine", "Cwd"},
+    "run_command": {"CommandLine"},
     "view_file": {"AbsolutePath"},
+    "verify_file": {"TargetFile"},
+    "delete_file": {"TargetFile"},
+    "list_dir": {"DirectoryPath"},
+    "grep_search": {"Query"},
     "SEARCH_WEB_GLOBAL": {"query"},
     "search_web": {"query"},
     "python_execute": {"code"},
@@ -60,9 +64,23 @@ def missing_required(tool_name: str, args: Dict[str, Any]) -> List[str]:
     present_keys = set(args.keys()) if isinstance(args, dict) else set()
     norm_present = {k.lower().replace("_", "") for k in present_keys}
 
+    PARAM_EQUIV: Dict[str, Set[str]] = {
+        "targetfile": {"targetfile", "path", "filepath", "targetpath", "filename", "file"},
+        "codecontent": {"codecontent", "content", "code", "text", "payload", "newcontent", "data", "body"},
+        "commandline": {"commandline", "command", "cmd", "script"},
+        "absolutepath": {"absolutepath", "path", "filepath", "file"},
+        "directorypath": {"directorypath", "path", "dir", "directory", "folder"},
+        "targetcontent": {"targetcontent", "oldcontent", "target", "snippet", "oldstr", "oldcode", "find", "search"},
+        "replacementcontent": {"replacementcontent", "newcontent", "replacement", "content", "newstr", "newcode", "replace", "new"},
+        "query": {"query", "q", "pattern", "searchquery"},
+        "code": {"code", "pythoncode", "script"}
+    }
+
     missing = []
     for req in required:
-        if req.lower().replace("_", "") not in norm_present:
+        req_norm = req.lower().replace("_", "")
+        equiv_set = PARAM_EQUIV.get(req_norm, {req_norm})
+        if not (equiv_set & norm_present):
             missing.append(req)
 
     return sorted(missing)
@@ -112,7 +130,7 @@ def validate_action(
             )
 
     # 2. Strict Schema Contract Check (P0.2)
-    is_valid, err_payload, _ = ToolContractRegistry.validate_tool_call(canonical_name, params, strict=False)
+    is_valid, err_payload, parsed_model = ToolContractRegistry.validate_tool_call(canonical_name, params, strict=False)
     if not is_valid and err_payload:
         missing = err_payload.get("missing_fields", [])
         mismatches = err_payload.get("type_mismatches", {})
@@ -130,16 +148,17 @@ def validate_action(
             details=err_payload
         )
 
-    # Legacy missing check fallback
-    miss = missing_required(tool, params)
-    if miss:
-        return ActionVerdict(
-            decision=ActionDecision.SCHEMA_INVALID,
-            tool=tool,
-            normalized_tool=canonical_name,
-            reason=f"Thiếu tham số bắt buộc: {', '.join(miss)}",
-            details={"missing_fields": miss}
-        )
+    # Legacy missing check fallback only if contract validation wasn't applicable
+    if not is_valid:
+        miss = missing_required(tool, params)
+        if miss:
+            return ActionVerdict(
+                decision=ActionDecision.SCHEMA_INVALID,
+                tool=tool,
+                normalized_tool=canonical_name,
+                reason=f"Thiếu tham số bắt buộc: {', '.join(miss)}",
+                details={"missing_fields": miss}
+            )
 
     # 3. Dual-Stage Action Firewall (Stage 4.1 + Stage 4.2)
     fw_verdict = None

@@ -236,6 +236,14 @@ async def browse(req: BrowseRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+@app.post("/interact")
+async def interact(req: BrowseRequest):
+    """
+    [COMPAT-ALIAS] Endpoint alias for /browse to satisfy tool definitions.
+    """
+    return await browse(req)
+
+
 # ═══════════════════════════════════════════════════════════════════
 # 📸  /screenshot — STEALTH SCREENSHOT
 # Uses CloakBrowser binary directly for fingerprint-clean snapshots.

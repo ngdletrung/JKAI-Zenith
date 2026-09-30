@@ -15,6 +15,8 @@ Write-KuteLog "Dang kich hoat CHE DO KHOI PHUC QUAN DOAN... (^_^)" "PROCESS"
 if (Test-Path "D:\Docker\JKAI\Zenith_Guardian.ps1") {
     Write-KuteLog "Dang goi Ve si Zenith_Guardian de tai thiet he thong..." "PROCESS"
     powershell.exe -ExecutionPolicy Bypass -File "D:\Docker\JKAI\Zenith_Guardian.ps1"
+    Write-KuteLog "Dang kich hoat AMG v2 Boot Orchestrator..." "PROCESS"
+    python -m core.runtime.amg_boot --mode FAST
 } else {
     Write-KuteLog "Khong tim thay script Guardian! Master vui long kiem tra lai." "ERROR"
 }

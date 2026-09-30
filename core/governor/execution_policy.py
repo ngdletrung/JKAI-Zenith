@@ -78,6 +78,8 @@ class ExecutionPolicy:
 
         # Raw options passthrough (temperature, num_predict, etc.)
         raw_options = self._extract_raw_options(role_config)
+        if "num_ctx" in raw_options and raw_options["num_ctx"]:
+            ctx = int(raw_options["num_ctx"])
 
         gov = self._get_governor()
         profile = gov.resolve(
@@ -90,17 +92,18 @@ class ExecutionPolicy:
         )
 
         # Merge raw_options from rule_hardware.md (highest precedence)
+        if "keep_alive" in role_config and role_config["keep_alive"] is not None:
+            profile.keep_alive = str(role_config["keep_alive"])
         if raw_options:
-            profile.raw_options.update(raw_options)
-            # Also apply specific fields directly
             if "temperature" in raw_options:
-                profile.temperature = raw_options.pop("temperature")
+                profile.temperature = float(raw_options.pop("temperature"))
             if "num_predict" in raw_options:
-                profile.num_predict = raw_options.pop("num_predict")
+                profile.num_predict = int(raw_options.pop("num_predict"))
             if "num_ctx" in raw_options:
-                profile.num_ctx = raw_options.pop("num_ctx")
+                profile.num_ctx = int(raw_options.pop("num_ctx"))
             if "num_thread" in raw_options:
-                profile.num_thread = raw_options.pop("num_thread")
+                profile.num_thread = int(raw_options.pop("num_thread"))
+            profile.raw_options.update(raw_options)
 
         return profile
 
@@ -108,10 +111,15 @@ class ExecutionPolicy:
     def _extract_raw_options(config: Dict[str, Any]) -> Dict[str, Any]:
         """Extract Ollama-passthrough options from role config dict."""
         _SKIP_KEYS = {"role", "model", "quality", "hardware", "capability",
-                      "profile", "gpu_layers", "backend"}
+                      "profile", "gpu_layers", "backend", "options", "keep_alive", "size_gb"}
         result = {}
+        nested_opts = config.get("options")
+        if isinstance(nested_opts, dict):
+            for nk, nv in nested_opts.items():
+                if nk not in _SKIP_KEYS and nv is not None and nv != "":
+                    result[nk] = nv
         for k, v in config.items():
-            if k not in _SKIP_KEYS and v is not None and v != "":
+            if k not in _SKIP_KEYS and v is not None and v != "" and not isinstance(v, dict):
                 try:
                     result[k] = type(v)(v) if not isinstance(v, (int, float, bool, str)) else v
                 except Exception:
@@ -142,7 +150,7 @@ class ExecutionPolicy:
             backend=backend_clean,
             memory_layout=layout,
             num_gpu_layers=gpu_layers,
-            num_predict=int(raw_options.pop("num_predict", role_req.max_output_tokens if role_req else 512)),
+            num_predict=int(raw_options.pop("num_predict", role_req.max_output_tokens if role_req else 2048)),
             num_ctx=int(raw_options.pop("num_ctx", 4096)),
             num_thread=int(raw_options.pop("num_thread", 20)),
             temperature=float(raw_options.pop("temperature", role_req.default_temp if role_req else 0.2)),

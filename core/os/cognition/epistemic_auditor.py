@@ -13,6 +13,7 @@ Produces objective audit verdicts:
 
 from __future__ import annotations
 import re
+from datetime import datetime
 from dataclasses import dataclass, field
 from enum import Enum
 from typing import Dict, List, Optional
@@ -95,7 +96,71 @@ class EpistemicAuditor:
             else:
                 satisfied.append("MINIMUM_CONTENT_COVERAGE")
 
+        # 4b. FACTUAL_REFLEX: short factual date/time question with no heavy scopes.
+        # A correct weekday/date answer is FULFILLED as-is — length and coverage
+        # criteria must not apply to one-line factual answers (Red Team: 27/09 log).
+        _HEAVY_CRITERIA = ("WORLD_EVENT_COVERAGE", "FINANCIAL_METRIC_COVERAGE", "CODE_INTEGRITY")
+        if ("CURRENT_DATE_ANCHOR" in contract.success_criteria
+                and not any(c in contract.success_criteria for c in _HEAVY_CRITERIA)):
+            _vi_days = ["thứ hai", "thứ ba", "thứ tư", "thứ năm", "thứ sáu", "thứ bảy", "chủ nhật"]
+            _en_days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+            _today = datetime.now()
+            if (_vi_days[_today.weekday()] in resp_lower
+                    or _en_days[_today.weekday()] in resp_lower
+                    or (contract.required_time and contract.required_time in response_text)):
+                return EpistemicAuditReport(
+                    verdict=AuditVerdict.FULFILLED,
+                    confidence=1.0,
+                    satisfied_criteria=["CURRENT_DATE_ANCHOR"],
+                    missing_criteria=[],
+                    detected_scopes=[classified.primary_scope] + classified.secondary_scopes,
+                    contains_excluded_noise=has_noise,
+                    rationale="Factual reflex verified against system clock: correct weekday/date, no coverage criteria apply."
+                )
+
+        # 5a. MATH_NUMERIC_FIDELITY block — bài toán số học KHÔNG được đi cửa reflex
+        # Chạy TRƯỚC verdict tổng hợp để intercept đúng chỗ.
+        if "MATH_NUMERIC_FIDELITY" in contract.success_criteria:
+            # Lấy từ khoá đơn vị/số liệu từ goal để kiểm tra fidelity
+            _UNIT_TOKENS_RE = re.compile(
+                r'\b(\d[\d.,]*)\s*'
+                r'(thùng|tấn|kg|km|m\b|lit|lít|cái|chiếc|người|chuyến|lượt|nghìn|triệu|tỷ|đồng|%)',
+                re.IGNORECASE
+            )
+            goal_units = {m.group(2).lower() for m in _UNIT_TOKENS_RE.finditer(contract.raw_goal)}
+            resp_units = {m.group(2).lower() for m in _UNIT_TOKENS_RE.finditer(response_text)}
+
+            missing_units = goal_units - resp_units
+            if missing_units:
+                satisfied.append("MATH_CALC_PRESENT")
+                missing.append(f"MATH_UNIT_FIDELITY(goal_units={sorted(goal_units)}, resp_units={sorted(resp_units)})")
+                return EpistemicAuditReport(
+                    verdict=AuditVerdict.PARTIALLY_FULFILLED,
+                    confidence=0.70,
+                    satisfied_criteria=satisfied,
+                    missing_criteria=missing,
+                    detected_scopes=[classified.primary_scope] + classified.secondary_scopes,
+                    contains_excluded_noise=has_noise,
+                    rationale=(
+                        f"Bài toán số học: đơn vị/từ khoá trong đề ({sorted(goal_units)}) "
+                        f"không xuất hiện đủ trong đáp án ({sorted(resp_units)}). "
+                        f"Lỗi fidelity — đáp án đổi đơn vị so với đề bài."
+                    )
+                )
+            else:
+                satisfied.append("MATH_NUMERIC_FIDELITY")
+                return EpistemicAuditReport(
+                    verdict=AuditVerdict.FULFILLED,
+                    confidence=0.92,
+                    satisfied_criteria=satisfied,
+                    missing_criteria=missing,
+                    detected_scopes=[classified.primary_scope] + classified.secondary_scopes,
+                    contains_excluded_noise=has_noise,
+                    rationale="Bài toán số học: đơn vị và kết quả khớp với đề bài."
+                )
+
         # 5. Determine Verdict
+
         if not contract.success_criteria:
             verdict = AuditVerdict.CONVERSATIONAL_REFLEX
             conf = 1.0

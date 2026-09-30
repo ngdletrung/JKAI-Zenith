@@ -1,0 +1,247 @@
+{
+  "version": "1.0",
+  "updated_at": "2026-09-29 19:33:37",
+  "tasks": {
+    "NET_MIKROTIK": {
+      "name": "Mạng MikroTik (DHCP, NAT, firewall RouterOS)",
+      "subs": [
+        "DHCP",
+        "NAT",
+        "FIREWALL",
+        "VLAN",
+        "BRIDGE",
+        "ROUTING"
+      ],
+      "keywords": [
+        "mikrotik",
+        "routeros",
+        "winbox",
+        "/ip dhcp",
+        "/ip firewall",
+        "/interface bridge",
+        "torch",
+        "mạng trường",
+        "mang truong",
+        "router mikrotik"
+      ]
+    },
+    "NET_CISCO": {
+      "name": "Mạng Cisco (IOS, VLAN switch)",
+      "subs": [
+        "IOS",
+        "VLAN",
+        "SWITCH",
+        "ROUTER",
+        "TRUNK"
+      ],
+      "keywords": [
+        "cisco",
+        "switchport",
+        "cisco ios",
+        "show ip int",
+        "catalyst",
+        "packet tracer",
+        "enable secret",
+        "conf t"
+      ]
+    },
+    "NET_GENERAL": {
+      "name": "Mạng đại cương (TCP/IP, subnet, DNS theory)",
+      "subs": [
+        "TCP_IP",
+        "SUBNET",
+        "DNS",
+        "ROUTING_THEORY"
+      ],
+      "keywords": [
+        "tcp/ip",
+        "subnet mask",
+        "default gateway",
+        "dns",
+        "ping ",
+        "traceroute",
+        "cidr",
+        "địa chỉ ip",
+        "bảng định tuyến",
+        "arp table"
+      ]
+    },
+    "CODE_PYTHON": {
+      "name": "Lập trình Python (Script, debug, refactor)",
+      "subs": [
+        "WEB",
+        "DATA",
+        "AUTOMATION"
+      ],
+      "keywords": [
+        "python",
+        ".py",
+        "pip ",
+        "traceback",
+        "def ",
+        "pytest",
+        "pandas",
+        "numpy",
+        "fastapi",
+        "django",
+        "flask",
+        "pydantic"
+      ]
+    },
+    "CODE_JAVA": {
+      "name": "Lập trình Java (Spring, OOP, build)",
+      "subs": [
+        "WEB",
+        "CORE"
+      ],
+      "keywords": [
+        "java",
+        "spring boot",
+        "spring",
+        "maven",
+        "gradle",
+        "pom.xml",
+        "public static void main",
+        "jvm",
+        "jpa",
+        "hibernate",
+        ".jar",
+        "javac"
+      ]
+    },
+    "OFFICE_DOC": {
+      "name": "Văn bản, Excel, báo cáo, kho bãi",
+      "subs": [
+        "FINANCE",
+        "ADMIN"
+      ],
+      "keywords": [
+        "thùng",
+        "chuyến",
+        "phí xăng",
+        "tính toán",
+        "hóa đơn",
+        "báo cáo",
+        "công văn",
+        "excel",
+        "word",
+        "hợp đồng",
+        "kho bãi",
+        "bảng kê",
+        "chi phí"
+      ]
+    },
+    "SYSADMIN": {
+      "name": "Quản trị hệ thống (Windows, user, backup)",
+      "subs": [
+        "WINDOWS",
+        "LINUX",
+        "USER",
+        "BACKUP"
+      ],
+      "keywords": [
+        "windows server",
+        "user account",
+        "backup",
+        "powershell",
+        "cmd.exe",
+        "taskkill",
+        "restart-service",
+        "registry",
+        "active directory",
+        "group policy"
+      ]
+    },
+    "COMM": {
+      "name": "Chào hỏi, giải thích, hỏi lại",
+      "subs": [
+        "GREETING",
+        "ANAPHORA",
+        "CLARIFICATION"
+      ],
+      "keywords": [
+        "chi tiết hơn",
+        "giải thích thêm",
+        "còn cái kia",
+        "nói rõ hơn",
+        "chào",
+        "hello",
+        "bạn là ai",
+        "hướng dẫn tôi",
+        "tạm biệt"
+      ]
+    },
+    "NET_FORTINET": {
+      "name": "Tường lửa Fortinet / FortiGate (FortiOS, VDOM, Policy)",
+      "subs": [
+        "VDOM",
+        "HA",
+        "FIREWALL_POLICY",
+        "IPSEC"
+      ],
+      "keywords": [
+        "fortinet",
+        "fortigate",
+        "fortios",
+        "vdom",
+        "firewall policy"
+      ]
+    },
+    "LOGIC_REASONING": {
+      "name": "Suy luận Logic tổng quát (Diễn dịch, Nhân quả, Ràng buộc, Occam, Phản sự thực)",
+      "subs": [
+        "DEDUCTION",
+        "CAUSAL",
+        "CONSTRAINT",
+        "DAG",
+        "ABDUCTION",
+        "FALSIFICATION",
+        "COUNTERFACTUAL",
+        "GAME_THEORY",
+        "EPISTEMIC"
+      ],
+      "keywords": [
+        "logic",
+        "suy luận",
+        "mâu thuẫn",
+        "ngụy biện",
+        "nhân quả",
+        "ràng buộc",
+        "giả thuyết",
+        "occam",
+        "bác bỏ",
+        "chứng minh",
+        "deadlock",
+        "phản sự thực"
+      ]
+    }
+  },
+  "aliases": {
+    "MATH": "OFFICE_DOC",
+    "CODE_FILEOPS": "CODE_PYTHON",
+    "COMMUNICATION": "COMM",
+    "OFFICE_FINANCE": "OFFICE_DOC",
+    "ANAPHORA": "COMM",
+    "EPISTEMIC": "COMM",
+    "FORTIGATE": "NET_FORTINET",
+    "FORTIOS": "NET_FORTINET",
+    "LOGIC_DEDUCTION": "LOGIC_REASONING",
+    "LOGIC_CONTRADICTION": "LOGIC_REASONING",
+    "LOGIC_CAUSAL": "LOGIC_REASONING",
+    "LOGIC_CAUSAL_DAG": "LOGIC_REASONING",
+    "LOGIC_CONSTRAINT": "LOGIC_REASONING",
+    "LOGIC_DAG": "LOGIC_REASONING",
+    "LOGIC_DAG_DEADLOCK": "LOGIC_REASONING",
+    "LOGIC_ABDUCTION": "LOGIC_REASONING",
+    "LOGIC_FALSIFICATION": "LOGIC_REASONING",
+    "LOGIC_COUNTERFACTUAL": "LOGIC_REASONING",
+    "LOGIC_SECOND_ORDER": "LOGIC_REASONING",
+    "LOGIC_BOUNDARY": "LOGIC_REASONING",
+    "LOGIC_EPISTEMIC": "LOGIC_REASONING",
+    "LOGIC_ADVERSARIAL": "LOGIC_REASONING",
+    "LOGIC_TOT_SEARCH": "LOGIC_REASONING",
+    "LOGIC_FORMAL_VERIFICATION": "LOGIC_REASONING",
+    "LOGIC_BAYESIAN_OCCAM": "LOGIC_REASONING",
+    "LOGIC_GAME_THEORY": "LOGIC_REASONING"
+  }
+}

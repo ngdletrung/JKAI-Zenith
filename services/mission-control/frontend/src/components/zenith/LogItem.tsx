@@ -7,6 +7,7 @@ import { ZenithService } from '../../services/ZenithService';
 import { useAgentController } from '../../hooks/useAgentController';
 import { MarkdownRenderer } from './MarkdownRenderer';
 import { NuclearApprovalPad } from './NuclearApprovalPad';
+import { LabelPad } from './LabelPad';
 import { ToolBlock, ActionBadge, ReasoningBlock, MicroscopeIcon, SurgicalDiff, FileEditRow, WorkingDots } from './LogElements';
 
 export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasoning?: boolean }) => {
@@ -290,7 +291,15 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
               {isTool ? <ToolBlock msg={msg} /> : !msg.trim() ? <Radar className="animate-spin text-cyan-400" /> : <MarkdownRenderer content={msg} />}
             </div>
             {(!isUser && !isError && (l.is_core === true || l.type === 'CODE')) && <NuclearApprovalPad language={language} task_id={(l as any).task_id} />}
-            
+            {/* 🏷️ [LABEL-PAD]: Chấm điểm chất lượng câu trả lời JKAI */}
+            {!isUser && !isError && (tag === 'JKAI' || tag === 'DONE' || tag === 'RESULT' || tag === 'MISSION_RESULT') && (
+              <LabelPad
+                logId={l.id}
+                taskId={(l as any).task_id}
+                msgPreview={msg.slice(0, 200)}
+                language={language}
+              />
+            )}
             {/* ⏱️ [TIMESTAMP]: Chỉ hiện khi hover */}
             <div className={`absolute -bottom-6 ${isUser ? 'right-0' : 'left-0'} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}>
               <span className="text-[10px] font-mono text-white/20 uppercase tracking-widest">

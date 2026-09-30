@@ -86,6 +86,29 @@ class CognitiveMemory:
                         ttl = self.ttl_map["time_sensitive"] if self._is_time_sensitive(clean_query) else self.ttl_map["session"]
                         
                         if age < ttl:
+                            orig_q = payload.get("original_query", "")
+                            if orig_q:
+                                try:
+                                    from core.cognitive_bus.reflex_hub import get_sovereign_reflex_hub
+                                    guard_res = get_sovereign_reflex_hub().verify_cache_and_rerank(
+                                        query=clean_query,
+                                        candidates=[{
+                                            "original_query": orig_q,
+                                            "answer": payload.get("text", payload.get("answer", "")),
+                                            "score": float(score),
+                                        }],
+                                        top_k=1,
+                                    )
+                                    if guard_res.get("rejected_antonym_count", 0) > 0 or not guard_res.get("cache_safe", True):
+                                        logger.info(
+                                            "[NEURAL-GUARD]: Bỏ qua cache trái nghĩa ('%s' vs '%s')",
+                                            clean_query,
+                                            orig_q,
+                                        )
+                                        return None
+                                except Exception as guard_err:
+                                    logger.debug("[NEURAL-GUARD-SKIP]: %s", guard_err)
+
                             msg = f"[NEURAL-HIT]: Phản xạ nơ-ron (Score: {score:.2f}, Session: {entry_session or 'Global'})"
                             engine.publish_mission_log("CACHE", msg, task_id)
                             logger.info(msg)

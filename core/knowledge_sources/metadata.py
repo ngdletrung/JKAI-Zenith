@@ -32,10 +32,20 @@ class MetadataDB:
 
     def _get_conn(self) -> sqlite3.Connection:
         if self._conn is None:
-            self._conn = sqlite3.connect(self.db_path, check_same_thread=False)
-            self._conn.row_factory = sqlite3.Row
-            self._conn.execute("PRAGMA journal_mode=WAL")
-            self._conn.execute("PRAGMA synchronous=NORMAL")
+            try:
+                os.makedirs(os.path.dirname(os.path.abspath(self.db_path)), exist_ok=True)
+                self._conn = sqlite3.connect(self.db_path, check_same_thread=False, timeout=10.0)
+                self._conn.row_factory = sqlite3.Row
+                try:
+                    self._conn.execute("PRAGMA journal_mode=WAL")
+                except sqlite3.OperationalError:
+                    self._conn.execute("PRAGMA journal_mode=DELETE")
+                self._conn.execute("PRAGMA synchronous=NORMAL")
+            except sqlite3.OperationalError:
+                import tempfile
+                fallback_path = os.path.join(tempfile.gettempdir(), DB_FILENAME)
+                self._conn = sqlite3.connect(fallback_path, check_same_thread=False, timeout=10.0)
+                self._conn.row_factory = sqlite3.Row
         return self._conn
 
     def _init_db(self):

@@ -496,7 +496,7 @@ class RoleRequirement:
     """Execution characteristics required for a JKAI role."""
     role_name: str
     reasoning_budget: str = "LOW"           # LOW | MEDIUM | HIGH
-    max_output_tokens: int = 512
+    max_output_tokens: int = 2048
     default_temp: float = 0.2
     requires_tools: bool = False
     minimum_capability_score: float = 0.30  # Minimum score for fallback acceptance
@@ -504,17 +504,17 @@ class RoleRequirement:
 
 # Default role requirement catalogue
 ROLE_REQUIREMENTS: Dict[str, RoleRequirement] = {
-    "RECEPTIONIST":   RoleRequirement("RECEPTIONIST",   "LOW",    384, 0.20, minimum_capability_score=0.20),
-    "CHAT":           RoleRequirement("CHAT",           "LOW",    512, 0.40, minimum_capability_score=0.20),
-    "SUMMARIZER":     RoleRequirement("SUMMARIZER",     "LOW",    512, 0.10, minimum_capability_score=0.20),
-    "CRITIC":         RoleRequirement("CRITIC",         "MEDIUM", 768, 0.10, minimum_capability_score=0.40),
-    "PLANNER":        RoleRequirement("PLANNER",        "MEDIUM", 1024, 0.05, requires_tools=True, minimum_capability_score=0.55),
-    "EXECUTOR":       RoleRequirement("EXECUTOR",       "MEDIUM", 1024, 0.00, requires_tools=True, minimum_capability_score=0.50),
-    "EXECUTOR_ALPHA": RoleRequirement("EXECUTOR_ALPHA", "MEDIUM", 1024, 0.00, requires_tools=True, minimum_capability_score=0.50),
-    "EXECUTOR_BETA":  RoleRequirement("EXECUTOR_BETA",  "MEDIUM", 1024, 0.00, requires_tools=True, minimum_capability_score=0.50),
+    "RECEPTIONIST":   RoleRequirement("RECEPTIONIST",   "LOW",    2048, 0.20, minimum_capability_score=0.20),
+    "CHAT":           RoleRequirement("CHAT",           "LOW",    2048, 0.40, minimum_capability_score=0.20),
+    "SUMMARIZER":     RoleRequirement("SUMMARIZER",     "LOW",    2048, 0.10, minimum_capability_score=0.20),
+    "CRITIC":         RoleRequirement("CRITIC",         "MEDIUM", 2048, 0.10, minimum_capability_score=0.40),
+    "PLANNER":        RoleRequirement("PLANNER",        "MEDIUM", 2048, 0.05, requires_tools=True, minimum_capability_score=0.55),
+    "EXECUTOR":       RoleRequirement("EXECUTOR",       "MEDIUM", 2048, 0.00, requires_tools=True, minimum_capability_score=0.50),
+    "EXECUTOR_ALPHA": RoleRequirement("EXECUTOR_ALPHA", "MEDIUM", 2048, 0.00, requires_tools=True, minimum_capability_score=0.50),
+    "EXECUTOR_BETA":  RoleRequirement("EXECUTOR_BETA",  "MEDIUM", 2048, 0.00, requires_tools=True, minimum_capability_score=0.50),
     "DEEP_REASONER":  RoleRequirement("DEEP_REASONER",  "HIGH",   4096, 0.25, minimum_capability_score=0.70),
-    "VISION":         RoleRequirement("VISION",         "LOW",    512, 0.10, minimum_capability_score=0.90),
-    "EMBEDDER":       RoleRequirement("EMBEDDER",       "LOW",    0,   0.00, minimum_capability_score=0.90),
+    "VISION":         RoleRequirement("VISION",         "LOW",    512,  0.10, minimum_capability_score=0.90),
+    "EMBEDDER":       RoleRequirement("EMBEDDER",       "LOW",    0,    0.00, minimum_capability_score=0.90),
 }
 
 
@@ -644,8 +644,13 @@ class ExecutionProfile:
         }
         if self.num_thread:
             opts["num_thread"] = self.num_thread
-        # Raw overrides have highest precedence
-        opts.update(self.raw_options)
+        # Raw overrides have highest precedence (unwrap nested 'options' if present and strip non-option metadata)
+        _meta_keys = {"options", "keep_alive", "size_gb", "profile", "model", "hardware", "role", "quality", "capability"}
+        if isinstance(self.raw_options.get("options"), dict):
+            opts.update(self.raw_options["options"])
+        for k, v in self.raw_options.items():
+            if k not in _meta_keys and not isinstance(v, dict):
+                opts[k] = v
         return {k: v for k, v in opts.items() if v is not None}
 
     def to_ollama_payload(
@@ -657,11 +662,14 @@ class ExecutionProfile:
         Serialize ExecutionProfile to complete Ollama /api/chat payload.
         Consumed by NeuralRuntime and Engine.
         """
+        ka_val: Any = self.keep_alive
+        if isinstance(ka_val, str) and ka_val.lstrip("-").isdigit():
+            ka_val = int(ka_val)
         payload: Dict[str, Any] = {
             "model": self.model_name,
             "options": self.to_ollama_options(),
             "stream": stream,
-            "keep_alive": self.keep_alive,
+            "keep_alive": ka_val,
         }
         if messages is not None:
             payload["messages"] = messages

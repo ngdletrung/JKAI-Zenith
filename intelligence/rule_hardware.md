@@ -39,21 +39,39 @@ CPU_OMP_NUM_THREADS=20
 
 ---
 
+## 🎚️ 2.6. Per-Model Processing Envelope (Local: không trần dữ liệu, chỉ trần xử lý theo model)
+
+> Triết lý local: kho dữ liệu không giới hạn. Mỗi lượt model nuốt bao nhiêu token thì giới hạn
+> theo sức của chính model đó (VRAM-fit + native max), mission dừng khi hết việc hoặc hết máy,
+> không dừng vì hết quota token. `TokenBudgetGuard` chỉ làm telemetry + chống lặp vô hạn.
+
+| Model | Native max ctx (registry) | Operational ctx | Hardware | Ghi chú |
+| :--- | :--- | :--- | :--- | :--- |
+| `qwen3:0.6b` (Tier2 reflex) | 40960 | 8192 | GPU/VRAM | Prompt Tier2 nhỏ, KV không đáng kể |
+| `qwen2.5-coder:3b` (Executor) | 32768 | 8192 | GPU/VRAM | Đã soak thực tế trên RX 6600 8GB, giữ nguyên |
+| `qwen2.5-coder:14b` | 32768 | 8192 khi resident GPU / 32768 khi offload CPU | CPU/RAM | CPU 64GB gánh được KV lớn; mức CPU chưa soak, mặc định an toàn 8192 |
+| `qwen3.5:4b` (Planner/Critic/Deep) | 262144 | 8192 | GPU/VRAM | Native 262K để dành cho offload CPU đọc sâu về sau, chưa bật |
+| `nomic-embed-text` | 2048 | 2048 | CPU/RAM | Embedding, không sinh token |
+| `moondream` (Vision) | 2048 | 2048 | CPU/RAM | Vision, không sinh token dài |
+
+---
+
 ## 🕹️ 3. Active Role Mapping
-| Role | Active Model | Hardware | num_ctx | Temp | num_gpu | num_thread | top_p | repeat_penalty | KEEP_ALIVE | Active Profile | Capability | Quality |
-| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **RECEPTIONIST** | qwen3.5:4b | **GPU/VRAM** | 8192 | 0.20 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general,reasoning,tool_use | medium |
-| **PLANNER** | gemma4:12b-it-qat | **CPU/RAM** | 8192 | 0.05 | 0 | 20 | 0.90 | 1.05 | **-1** | RAM_OPTIMIZED | reasoning,planning | highest |
-| **CRITIC** | qwen3.5:4b | **GPU/VRAM** | 8192 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | reasoning | high |
-| **EXECUTOR** | qwen2.5-coder:3b | **GPU/VRAM** | 8192 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
-| **EXECUTOR_ALPHA** | qwen2.5-coder:3b | **GPU/VRAM** | 8192 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
-| **EXECUTOR_BETA** | qwen2.5-coder:3b | **GPU/VRAM** | 8192 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
-| **DEEP_REASONER** | gemma4:12b-it-qat | **CPU/RAM** | 8192 | 0.25 | 0 | 20 | 0.90 | 1.10 | **-1** | RAM_OPTIMIZED | reasoning | highest |
-| **SUMMARIZER** | qwen3.5:4b | **GPU/VRAM** | 8192 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general,reasoning,tool_use | medium |
-| **EMBEDDER** | nomic-embed-text:latest | **CPU/RAM** | 2048 | 0.00 | 0 | 20 | 1.00 | 1.00 | **-1** | STABLE_SYNC | embedding | medium |
-| **GRAPHIC_MASTER** | SDXL-Turbo-ROCm | **GPU/VRAM** | 0 | 0.00 | 100 | 0 | -1 | -1 | **0** | ULTRA_ART | | |
-| **VISION** | moondream:latest | **CPU/RAM** | 2048 | 0.10 | 0 | 20 | 0.90 | 1.10 | **0** | RAM_OPTIMIZED | vision | medium |
-| **VOICE** | faster-whisper | **CPU/RAM** | 512 | 0.00 | 0 | 0 | 1.00 | 1.00 | **0** | RAM_OPTIMIZED | | |
+| Role | Active Model | Hardware | num_ctx | num_predict | Temp | num_gpu | num_thread | top_p | repeat_penalty | KEEP_ALIVE | Active Profile | Capability | Quality |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| **RECEPTIONIST** | qwen3.5:4b | **GPU/VRAM** | 8192 | 2048 | 0.20 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general,reasoning,tool_use | medium |
+| **CHAT** | qwen3.5:4b | **GPU/VRAM** | 8192 | 2048 | 0.20 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general,reasoning | medium |
+| **PLANNER** | qwen3.5:4b | **GPU/VRAM** | 8192 | 2048 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | reasoning,planning | high |
+| **CRITIC** | qwen3.5:4b | **GPU/VRAM** | 8192 | 2048 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | reasoning | high |
+| **EXECUTOR** | qwen2.5-coder:3b | **GPU/VRAM** | 8192 | 2048 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
+| **EXECUTOR_ALPHA** | qwen2.5-coder:3b | **GPU/VRAM** | 8192 | 2048 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
+| **EXECUTOR_BETA** | qwen2.5-coder:3b | **GPU/VRAM** | 8192 | 2048 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
+| **DEEP_REASONER** | qwen3.5:4b | **GPU/VRAM** | 8192 | 4096 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | reasoning | high |
+| **SUMMARIZER** | qwen3.5:4b | **GPU/VRAM** | 8192 | 2048 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general,reasoning,tool_use | medium |
+| **EMBEDDER** | nomic-embed-text:latest | **CPU/RAM** | 2048 | 0 | 0.00 | 0 | 20 | 1.00 | 1.00 | **-1** | STABLE_SYNC | embedding | medium |
+| **GRAPHIC_MASTER** | SDXL-Turbo-ROCm | **GPU/VRAM** | 0 | 0 | 0.00 | 100 | 0 | -1 | -1 | **0** | ULTRA_ART | | |
+| **VISION** | moondream:latest | **CPU/RAM** | 2048 | 512 | 0.10 | 0 | 20 | 0.90 | 1.10 | **0** | RAM_OPTIMIZED | vision | medium |
+| **VOICE** | faster-whisper | **CPU/RAM** | 512 | 512 | 0.00 | 0 | 0 | 1.00 | 1.00 | **0** | RAM_OPTIMIZED | | |
 
 
 
@@ -79,6 +97,18 @@ CPU_OMP_NUM_THREADS=20
 - **Constitutional Directive**: *"Bootstrapper may start a runtime, but it must never select a model. Model selection and model lifecycle belong exclusively to the Adaptive Model Governor."*
 
 ---
+
+## ⚙️ 6. Kiến Trúc Tối Ưu Phần Cứng (NCNN-Inspired Hardware Affinity)
+1. **Sovereign Routing (Định tuyến Tuyệt đối)**: Engine định tuyến dựa trên ranh giới vật lý cứng (Hardware Column) thay vì các biến số tùy chọn, đảm bảo GPU và CPU không bao giờ dẫm chân lên nhau.
+2. **NUMA-Awareness**: Tôn trọng cấu trúc đa vi xử lý (Xeon E5). Bắt buộc Memory Allocation phải nằm trên cùng một khe cắm (NUMA Node) với luồng thực thi để tránh thắt cổ chai bus (QPI).
+3. **Zero-Copy MMAP**: Sử dụng MMAP cho các tầng Model CPU (Q4_K_M) để biến NVMe/RAM thành một bộ đệm liền mạch, triệt tiêu I/O Overhead giống triết lý INT8 của NCNN.
+4. **Thread Locking**: Đóng băng số lượng luồng thực thi CPU (20 luồng) để chặn đứng hành vi Context Switching của Hệ điều hành, giữ cache luôn 'nóng' (Hot Cache) trong quá trình nhân ma trận.
+5. **Lượng Tử Hóa Activations (KV Cache)**: Bật cờ `OLLAMA_KV_CACHE_TYPE=q8_0` cho toàn bộ hệ thống để ép KV Cache (dữ liệu trung gian của LLM) về định dạng INT8. Giúp Xeon tính toán ma trận trực tiếp INT8 x INT8 -> INT32 bằng tập lệnh AVX2, triệt tiêu Memory Wall và tiết kiệm 50% băng thông RAM/VRAM.
+6. **Triệt tiêu Cache Thrashing**: Giới hạn CPU Engine tải tối đa `CPU_OLLAMA_NUM_PARALLEL=1` và `CPU_OLLAMA_MAX_LOADED_MODELS=12`. Đảm bảo luồng xử lý không tranh giành và đẩy bật lẫn nhau ra khỏi bộ nhớ đệm 55MB L3 Cache cực kỳ quý giá của Xeon Broadwell-EP.
+7. **Pinning NUMA Node**: Kích hoạt `CPU_OLLAMA_NUMA=1` để khóa luồng thực thi (Threads) và Memory Allocation vào cùng một phân mảnh (Cluster-on-Die / NUMA Node) của Xeon E5. Giảm 30-50% độ trễ QPI (QuickPath Interconnect).
+
+---
 *Sovereign Property of Master LeeTrung. Developed by Antigravity AI. Optimized for Eternal Excellence.*
+
 
 

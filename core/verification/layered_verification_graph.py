@@ -60,8 +60,34 @@ class LayeredVerificationGraph:
     LAYER_1_QUESTIONS = ["schema_valid", "content_complete"]
     LAYER_2_QUESTIONS = ["side_effects_checked", "delivery_confirmed"]
 
-    def __init__(self, adapter: Optional[TriTierDecisionAdapter] = None):
+    def __init__(
+        self,
+        adapter: Optional[TriTierDecisionAdapter] = None,
+        shadow_harness: Optional[Any] = None
+    ):
         self.adapter = adapter or TriTierDecisionAdapter(enable_mock=True)
+        self.shadow_harness = shadow_harness
+
+    def _wrap_result(self, res: LayeredVerificationResult, observation_state: Dict[str, Any]) -> LayeredVerificationResult:
+        """Emits shadow observation triple (state, reflex_draft, execution_receipt)."""
+        if self.shadow_harness:
+            try:
+                receipt = {
+                    "overall_passed": res.overall_passed,
+                    "failed_layer": res.failed_layer.value if res.failed_layer else None,
+                    "failure_reason": res.failure_reason,
+                    "total_latency_ms": res.total_latency_ms,
+                    "overall_confidence": res.overall_confidence
+                }
+                self.shadow_harness.record_observation(
+                    raw_state=observation_state if isinstance(observation_state, dict) else {"state": observation_state},
+                    reflex_draft={"decision_evidence": res.decision_evidence},
+                    execution_receipt=receipt,
+                    metadata={"source": "LayeredVerificationGraph"}
+                )
+            except Exception:
+                pass
+        return res
 
     def verify_observation(self, observation_state: Dict[str, Any]) -> LayeredVerificationResult:
         t0 = time.time()
@@ -90,7 +116,7 @@ class LayeredVerificationGraph:
             if packet.confidence < self.CONFIDENCE_FLOOR or packet.result < self.PASS_PROB_THRESHOLD:
                 total_latency = (time.time() - t0) * 1000.0
                 skipped_layers = [VerificationLayer.LAYER_1_INTEGRITY, VerificationLayer.LAYER_2_REALITY]
-                return LayeredVerificationResult(
+                return self._wrap_result(LayeredVerificationResult(
                     overall_passed=False,
                     failed_layer=VerificationLayer.LAYER_0_PREREQUISITE,
                     failure_reason=f"Prerequisite failed on '{q}': result={packet.result:.2f}, confidence={packet.confidence:.2f}",
@@ -98,7 +124,7 @@ class LayeredVerificationGraph:
                     skipped_layers=skipped_layers,
                     total_latency_ms=total_latency,
                     decision_evidence=decision_evidence
-                )
+                ), observation_state)
 
         # =========================================================================
         # LAYER 1: Semantic Integrity Checks (schema_valid, content_complete)
@@ -120,7 +146,7 @@ class LayeredVerificationGraph:
             if packet.confidence < self.CONFIDENCE_FLOOR or packet.result < self.PASS_PROB_THRESHOLD:
                 total_latency = (time.time() - t0) * 1000.0
                 skipped_layers = [VerificationLayer.LAYER_2_REALITY]
-                return LayeredVerificationResult(
+                return self._wrap_result(LayeredVerificationResult(
                     overall_passed=False,
                     failed_layer=VerificationLayer.LAYER_1_INTEGRITY,
                     failure_reason=f"Integrity check failed on '{q}': result={packet.result:.2f}, confidence={packet.confidence:.2f}",
@@ -128,7 +154,7 @@ class LayeredVerificationGraph:
                     skipped_layers=skipped_layers,
                     total_latency_ms=total_latency,
                     decision_evidence=decision_evidence
-                )
+                ), observation_state)
 
         # =========================================================================
         # LAYER 2: Reality & Side Effects (side_effects_checked, delivery_confirmed)
@@ -149,7 +175,7 @@ class LayeredVerificationGraph:
             # Gate Check Layer 2
             if packet.confidence < self.CONFIDENCE_FLOOR or packet.result < self.PASS_PROB_THRESHOLD:
                 total_latency = (time.time() - t0) * 1000.0
-                return LayeredVerificationResult(
+                return self._wrap_result(LayeredVerificationResult(
                     overall_passed=False,
                     failed_layer=VerificationLayer.LAYER_2_REALITY,
                     failure_reason=f"Reality check failed on '{q}': result={packet.result:.2f}, confidence={packet.confidence:.2f}",
@@ -157,14 +183,14 @@ class LayeredVerificationGraph:
                     skipped_layers=[],
                     total_latency_ms=total_latency,
                     decision_evidence=decision_evidence
-                )
+                ), observation_state)
 
         # All layers passed! Compute overall mean confidence
         all_confs = [p.confidence for l_dict in layer_results.values() for p in l_dict.values()]
         mean_conf = round(sum(all_confs) / max(1, len(all_confs)), 4) if all_confs else 1.0
 
         total_latency = (time.time() - t0) * 1000.0
-        return LayeredVerificationResult(
+        return self._wrap_result(LayeredVerificationResult(
             overall_passed=True,
             failed_layer=None,
             failure_reason=None,
@@ -173,4 +199,5 @@ class LayeredVerificationGraph:
             total_latency_ms=total_latency,
             decision_evidence=decision_evidence,
             overall_confidence=mean_conf
-        )
+        ), observation_state)
+

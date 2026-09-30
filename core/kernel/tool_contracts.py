@@ -45,6 +45,15 @@ class ViewFileContract(BaseModel):
     EndLine: Optional[int] = Field(default=None, description="End line 1-indexed")
 
 
+class VerifyFileContract(BaseModel):
+    TargetFile: str = Field(..., description="Path to file to verify")
+
+
+class DeleteFileContract(BaseModel):
+    TargetFile: str = Field(..., description="Path to file to delete")
+    Confirm: Optional[bool] = Field(default=True, description="Safety confirmation flag")
+
+
 class GrepSearchContract(BaseModel):
     SearchPath: str = Field(..., description="Path to directory or file to search")
     Query: str = Field(..., description="Search term or regex pattern")
@@ -99,6 +108,8 @@ class ToolContractRegistry:
         "CommandLine": ["command", "cmd", "script", "command_line"],
         "SearchPath": ["path", "dir", "directory", "folder", "search_dir"],
         "Query": ["pattern", "keyword", "term", "q", "search_query"],
+        "TargetContent": ["target", "old_content", "old_str", "old_code", "find", "search", "snippet", "targetcontent"],
+        "ReplacementContent": ["replacement", "new_content", "new_str", "new_code", "replace", "new", "replacementcontent"],
     }
 
     @classmethod
@@ -213,12 +224,35 @@ class ToolContractRegistry:
 # Register standard tool contracts
 ToolContractRegistry.register("write_to_file", WriteFileContract, ["write_code", "writefile", "write_file"])
 ToolContractRegistry.register("replace_file_content", ReplaceFileContentContract, ["replace_content", "replace_file"])
-ToolContractRegistry.register("run_command", RunCommandContract, ["execute_command", "run_cmd", "cmd"])
+ToolContractRegistry.register("run_command", RunCommandContract, ["execute_command", "run_cmd", "cmd", "code_execution", "execute_code", "run_code"])
 ToolContractRegistry.register("view_file", ViewFileContract, ["read_file", "read_code", "viewfile"])
 ToolContractRegistry.register("grep_search", GrepSearchContract, ["grep", "search_files", "pattern"])
 ToolContractRegistry.register("list_dir", ListDirContract, ["listdir", "ls"])
-ToolContractRegistry.register("web_search", WebSearchContract, ["search_web", "tavily_search", "search_web_global"])
+ToolContractRegistry.register("verify_file", VerifyFileContract, ["check_file"])
+ToolContractRegistry.register("delete_file", DeleteFileContract, ["remove_file", "rm"])
+ToolContractRegistry.register("web_search", WebSearchContract, ["search_web", "tavily_search", "search_web_global", "omni_search_engine", "search_web_global_tool"])
 ToolContractRegistry.register("python_execute", PythonExecuteContract, ["py_exec", "run_python"])
+
+# Canonical allowed-tool hint for planner prompts / CONTRACT_VIOLATION feedback.
+# Planner MUST only emit these canonical names in field 'tool'.
+ALLOWED_TOOL_NAMES = sorted(list(ToolContractRegistry._registry.keys()))
+
+
+def is_known_tool(tool_name: str) -> bool:
+    """True if tool resolves to a registered contract (canonical or alias)."""
+    if not tool_name or not isinstance(tool_name, str):
+        return False
+    return ToolContractRegistry.get_canonical_name(tool_name) is not None
+
+
+def looks_like_sentence_tool(tool_name: str) -> bool:
+    """Detect planner hallucination: full-sentence 'tool' names instead of registry names."""
+    if not tool_name or not isinstance(tool_name, str):
+        return True
+    t = tool_name.strip()
+    if len(t) > 40 or " " in t.strip():
+        return True
+    return False
 
 
 # =========================================================================

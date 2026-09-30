@@ -155,6 +155,54 @@ class ParallelEnrichmentHandler(BaseHandler):
         except Exception as e:
             logger.debug("[MISSION-CTX-ERR] %s", e)
 
+        # ── 4. Cross-Mission Anaphora Context Bridge ──
+        # Nếu goal mới chứa đại từ nối ("chi tiết hơn", "còn cái kia", "tiếp", …)
+        # nhưng không có context block từ mission/parent → inject tóm tắt hội thoại trước.
+        _ANAPHORA_TRIGGERS = frozenset([
+            "chi tiết hơn", "giải thích", "giải thích thêm", "chi tiết",
+            "tiếp tục", "tiếp theo", "còn", "cái đó", "vừa rồi",
+            "ở trên", "như trên", "đó là", "nó là", "cái kia",
+            "thêm nữa", "làm rõ", "cụ thể hơn", "expand", "elaborate",
+        ])
+        g_lower_check = g.lower().strip()
+        has_anaphora = any(trigger in g_lower_check for trigger in _ANAPHORA_TRIGGERS)
+        # Chỉ inject nếu goal ngắn (< 80 ký tự) — goal dài tự có context riêng
+        is_short_followup = len(g.strip()) < 80
+        already_has_ctx = "\n\n[Ngữ cảnh" in g or "[MISSION-CTX" in g or "[GROUND-TRUTH" in g
+
+        if has_anaphora and is_short_followup and not already_has_ctx:
+            try:
+                # Tìm assistant message gần nhất từ history (đã được inject bởi task_manager)
+                last_assistant = None
+                last_user = None
+                for msg in reversed(ctx.history or []):
+                    role = msg.get("role", "")
+                    content = msg.get("content", "").strip()
+                    if not content:
+                        continue
+                    if last_assistant is None and role == "assistant":
+                        last_assistant = content
+                    elif last_user is None and role == "user" and content != g.strip():
+                        last_user = content
+                    if last_assistant and last_user:
+                        break
+
+                if last_assistant:
+                    # Truncate tóm tắt nếu quá dài
+                    prev_ans_preview = last_assistant[:400] + ("…" if len(last_assistant) > 400 else "")
+                    prev_q_preview = (last_user or "")[:150] + ("…" if last_user and len(last_user) > 150 else "")
+                    ctx_block = (
+                        f"\n\n[Ngữ cảnh hội thoại — mission trước]\n"
+                        f"Master hỏi: {prev_q_preview}\n"
+                        f"JKAI đã trả lời: {prev_ans_preview}\n"
+                        f"[/Ngữ cảnh — yêu cầu hiện tại là tiếp nối chủ đề trên]"
+                    )
+                    g = g.strip() + ctx_block
+                    log_telemetry(plan, "ZENITH", "ANAPHORA-CTX: Đã inject ngữ cảnh mission trước vào goal.")
+            except Exception as anaphora_err:
+                logger.debug("[ANAPHORA-CTX-ERR] %s", anaphora_err)
+
         plan.goal = g
         plan.kwargs_patch = kw_patch
         return HandlerResult(early_exit=False)
+

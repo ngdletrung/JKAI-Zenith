@@ -179,9 +179,13 @@ class ModelLifecycleManager:
         url = f"http://{host}/api/{api_path}"
         options = self._profile_to_options(profile)
 
+        ka_val = profile.keep_alive
+        if isinstance(ka_val, str) and ka_val.lstrip("-").isdigit():
+            ka_val = int(ka_val)
+
         body = {
             "model": model_name,
-            "keep_alive": profile.keep_alive,
+            "keep_alive": ka_val,
             "options": options,
             "prompt": "warmup" if is_embed else ".",
         }

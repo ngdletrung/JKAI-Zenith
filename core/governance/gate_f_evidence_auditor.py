@@ -80,6 +80,7 @@ class GateFElevanceMetrics:
     is_gate_f_passed: bool = False    # False = unknown — not True
     ledger_status: str = "EMPTY"      # EMPTY | PARTIAL | FULL
     ledger_source: str = ""           # path or "HARDCODED" (audit signal)
+    not_measured_items: List[str] = field(default_factory=list) # Audit items marked NOT MEASURED per Red Team mandate
 
 
 class HardwareTelemetryEngine:
@@ -236,6 +237,7 @@ class GateFEvidenceAuditor:
         cls,
         output_dir: str = "gate_f_audit",
         missions_dir: Optional[str] = None,
+        operational_metrics_override: Optional[GateFElevanceMetrics] = None,
     ) -> Dict[str, Any]:
         """
         Generates Gate F audit evidence package.
@@ -262,48 +264,52 @@ class GateFEvidenceAuditor:
         ledger_summary: Optional[Any] = None
         operational_metrics: Dict[str, Any] = {}
 
-        try:
-            from core.governance.mission_ledger import MissionLedger
-            ledger = MissionLedger(missions_dir=_missions_dir)
-            ledger_summary = ledger.derive_metrics()
-            operational_metrics = ledger.as_gate_f_metrics_dict()
-            logger.info(
-                "MissionLedger derived: %d missions, %.1f%% success, Gate F=%s",
-                ledger_summary.total_missions,
-                ledger_summary.mission_success_rate,
-                "PASSED" if ledger_summary.is_gate_f_passed else "FAILED",
-            )
-        except Exception as e:
-            logger.warning("MissionLedger unavailable (%s) — Gate F metrics unverified", e)
-            operational_metrics = {
-                "total_missions": 0,
-                "successful_missions": 0,
-                "mission_success_rate": 0.0,
-                "is_gate_f_passed": False,
-                "ledger_status": "EMPTY",
-                "ledger_source": "LEDGER_UNAVAILABLE",
-            }
+        if operational_metrics_override is not None:
+            metrics = operational_metrics_override
+        else:
+            try:
+                from core.governance.mission_ledger import MissionLedger
+                ledger = MissionLedger(missions_dir=_missions_dir)
+                ledger_summary = ledger.derive_metrics()
+                operational_metrics = ledger.as_gate_f_metrics_dict()
+                logger.info(
+                    "MissionLedger derived: %d missions, %.1f%% success, Gate F=%s",
+                    ledger_summary.total_missions,
+                    ledger_summary.mission_success_rate,
+                    "PASSED" if ledger_summary.is_gate_f_passed else "FAILED",
+                )
+            except Exception as e:
+                logger.warning("MissionLedger unavailable (%s) — Gate F metrics unverified", e)
+                operational_metrics = {
+                    "total_missions": 0,
+                    "successful_missions": 0,
+                    "mission_success_rate": 0.0,
+                    "is_gate_f_passed": False,
+                    "ledger_status": "EMPTY",
+                    "ledger_source": "LEDGER_UNAVAILABLE",
+                }
 
-        # ── 3. Construct metrics dataclass ─────────────────────────
-        metrics = GateFElevanceMetrics(
-            total_missions=operational_metrics.get("total_missions", 0),
-            successful_missions=operational_metrics.get("successful_missions", 0),
-            mission_success_rate=operational_metrics.get("mission_success_rate", 0.0),
-            crash_recovery_rate=operational_metrics.get("crash_recovery_rate", 0.0),
-            recovery_correctness=operational_metrics.get("recovery_correctness", 0.0),
-            mission_state_loss=operational_metrics.get("mission_state_loss", 0),
-            identity_chain_loss=operational_metrics.get("identity_chain_loss", 0),
-            infinite_recovery_loop=operational_metrics.get("infinite_recovery_loop", 0),
-            cross_mission_contamination=operational_metrics.get("cross_mission_contamination", 0),
-            resource_exhaustion_oom=operational_metrics.get("resource_exhaustion_oom", 0),
-            peak_ram_gb=hw["ram_used_gb"],
-            peak_vram_gb=hw["gpu_used_vram_gb"],
-            p95_latency_ms=operational_metrics.get("p95_latency_ms", 0.0),
-            p99_latency_ms=operational_metrics.get("p99_latency_ms", 0.0),
-            is_gate_f_passed=operational_metrics.get("is_gate_f_passed", False),
-            ledger_status=operational_metrics.get("ledger_status", "EMPTY"),
-            ledger_source=_missions_dir,
-        )
+            # ── 3. Construct metrics dataclass ─────────────────────────
+            metrics = GateFElevanceMetrics(
+                total_missions=operational_metrics.get("total_missions", 0),
+                successful_missions=operational_metrics.get("successful_missions", 0),
+                mission_success_rate=operational_metrics.get("mission_success_rate", 0.0),
+                crash_recovery_rate=operational_metrics.get("crash_recovery_rate", 0.0),
+                recovery_correctness=operational_metrics.get("recovery_correctness", 0.0),
+                mission_state_loss=operational_metrics.get("mission_state_loss", 0),
+                identity_chain_loss=operational_metrics.get("identity_chain_loss", 0),
+                infinite_recovery_loop=operational_metrics.get("infinite_recovery_loop", 0),
+                cross_mission_contamination=operational_metrics.get("cross_mission_contamination", 0),
+                resource_exhaustion_oom=operational_metrics.get("resource_exhaustion_oom", 0),
+                peak_ram_gb=hw["ram_used_gb"],
+                peak_vram_gb=hw["gpu_used_vram_gb"],
+                p95_latency_ms=operational_metrics.get("p95_latency_ms", 0.0),
+                p99_latency_ms=operational_metrics.get("p99_latency_ms", 0.0),
+                is_gate_f_passed=operational_metrics.get("is_gate_f_passed", False),
+                ledger_status=operational_metrics.get("ledger_status", "EMPTY"),
+                ledger_source=_missions_dir,
+            )
+
 
         # ── 4. Write artifact files ────────────────────────────────
 
@@ -343,6 +349,7 @@ class GateFEvidenceAuditor:
             "p99_latency_ms": metrics.p99_latency_ms,
             "gpu_vendor": hw["gpu_vendor"],
             "oom_count": metrics.resource_exhaustion_oom,
+            "not_measured_items": metrics.not_measured_items,
         }
         with open(os.path.join(output_dir, "resource_metrics.json"), "w", encoding="utf-8") as f:
             json.dump(resource_metrics, f, indent=2, ensure_ascii=False)
@@ -360,9 +367,11 @@ class GateFEvidenceAuditor:
             json.dump(ledger_dict, f, indent=2, ensure_ascii=False)
 
         # FINAL_VERDICT.json
+        is_passed = metrics.is_gate_f_passed and len(metrics.not_measured_items) == 0
         verdict = {
-            "verdict": "PASSED" if metrics.is_gate_f_passed else "FAILED",
+            "verdict": "PASSED" if is_passed else ("NOT_MEASURED" if metrics.not_measured_items and metrics.is_gate_f_passed else "FAILED"),
             "verdict_basis": "derived_from_mission_ledger" if metrics.total_missions > 0 else "LEDGER_EMPTY_DEFAULT_FAIL",
+            "not_measured_items": metrics.not_measured_items,
             "metrics": asdict(metrics),
             "generated_at": time.time(),
         }
@@ -370,3 +379,4 @@ class GateFEvidenceAuditor:
             json.dump(verdict, f, indent=2, ensure_ascii=False)
 
         return verdict
+

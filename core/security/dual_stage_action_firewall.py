@@ -244,7 +244,7 @@ class DualStageActionFirewall:
         }
         
         q = "Which capability provider is uniquely qualified to execute this intent?"
-        packet = self.jev_adapter.evaluate_choice(state, q, self.CAPABILITY_PROVIDERS)
+        packet = self.decision_adapter.evaluate_choice(state, q, self.CAPABILITY_PROVIDERS)
         
         winner = str(packet.result)
         conf = packet.confidence

@@ -83,6 +83,8 @@ JKAI Zenith is built upon the integration of world-class open-source technologie
 | **Agent Skills** | Addy Osmani | MIT | 24 Skills & Workflows Architecture / Kiến trúc 24 kỹ năng và quy trình |
 | **Zero-Mem** | HKUST / PolyU / SWUFE / Jilin Univ | CC BY-NC-SA 4.0 | Zero-Token Memory Operations & DEMS / Quản trị bộ nhớ phi tạo sinh & DEMS |
 | **TypeSafe Jev** | TypeSafe AI / PJ Burnhill | Proprietary Ref / Terms | Fast System One Semantic Judgment / Phán đoán ngữ nghĩa System One |
+| **Laya concepts** | NandhaKishorM / Convai Innovations | Apache 2.0 | Non-autoregressive typed decisions, clean-room reference only, no endorsement / Khái niệm quyết định 1-lượt, tham khảo phòng sạch, không bảo trợ |
+| **Quyet 1.0 concepts** | Chinh Nguyen (`chinhnc`) | Apache 2.0 | Option-count bucketed calibration, smart state-only truncation & compact JSON state, clean-room reference only / Hiệu chuẩn theo bucket số phương án & cắt tỉa state thông minh, tham khảo phòng sạch |
 
 
 ---

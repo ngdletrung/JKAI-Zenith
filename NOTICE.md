@@ -133,6 +133,22 @@ This project incorporates components from several third-party projects. Full lic
 - **Notice**: The System One typed probabilistic judgment paradigm (Noul, Choice, Score primitives) and fast semantic classification patterns are assimilated and clean-room implemented into the JKAI Cognitive Bus Adapter, Dual-Stage Action Firewall, L3 Semantic Verifier, and Recovery Classifier.
 - **Lưu ý**: Mô hình phán đoán xác suất kiểu hóa System One (các nguyên thủy Noul, Choice, Score) và mẫu hình phân loại ngữ nghĩa tốc độ cao được đồng hóa và triển khai dạng phòng sạch (clean-room) vào JKAI Cognitive Bus Adapter, Tường lửa Hành động 2 giai đoạn, Bộ kiểm định ngữ nghĩa L3 và Bộ phân loại phục hồi lỗi.
 
+### Laya Decision Engine (Apache License 2.0 / NandhaKishorM / Convai Innovations)
+- **Project**: [laya](https://github.com/NandhaKishorM/laya) / Checkpoints: [convaiinnovations/laya](https://huggingface.co/convaiinnovations/laya)
+- **License**: [Apache-2.0.txt](file:///d:/Docker/JKAI/LICENSES/Apache-2.0.txt)
+- **Notice**: Copyright (c) Laya contributors (NandhaKishorM / Convai Innovations). Licensed under the Apache License 2.0.
+- **Assimilation scope**: Only the non-autoregressive single-forward-pass typed-decision concept (choice/score/noul) is studied as research reference. JKAI runtime code uses neutral internal names only (`local_decision_engine` / `reflex_engine` / `fast_classifier`); no `laya` identifier is used in any file, class, method, or module name per `.keyword.md` Part V. No Laya SDK is bundled as a hard runtime dependency; any local checkpoint is vendored offline and executed via the sovereign `Tier2Backend` wrapper with zero non-localhost egress.
+- **Modifications**: JKAI clean-room wrapper and calibration gate are original work of JKAI-Zenith (Master LeeTrung). No upstream Laya source file is redistributed with modifications in this repository.
+- **No endorsement**: This attribution does not imply endorsement or certification of JKAI by Convai Innovations. No Convai trade name is used beyond reasonable origin description.
+- **Lưu ý**: Chỉ học hỏi khái niệm quyết định kiểu hóa 1-lượt. Mã JKAI dùng tên nội bộ trung tính, không đóng gói SDK Laya, checkpoint chạy cục bộ 100%, không ngụ ý được Convai chứng nhận.
+
+### Quyet 1.0 Calibrated Decision Models (Apache License 2.0 / Chinh Nguyen)
+- **Project**: [Quyet-1.0-Large](https://huggingface.co/chinhnc/Quyet-1.0-Large) / Family: `Quyet-1.0` (Large, Medium, Small, Tiny)
+- **License**: [Apache-2.0.txt](file:///d:/Docker/JKAI/LICENSES/Apache-2.0.txt)
+- **Notice**: Quyet by Chinh Nguyen (Copyright (c) 2026 Chinh Nguyen). Licensed under the Apache License 2.0.
+- **Assimilation scope**: Only the engineering techniques — option-count bucketed temperature calibration (`choice:2`, `choice:3-5`, `choice:6-10`, `boolean:2`, `score:3-5`), compact JSON state serialization (`prompt_version: 2`), state-only smart truncation (keeping most recent turns for conversation lists and head for other states), and option criteria descriptions — are studied and clean-room implemented in JKAI's `ReflexEngineBackend` and `ReflexEvolutionManager`. No `quyet` package or identifier is used in JKAI code or runtime manifests, and zero remote connections are made at runtime.
+- **Lưu ý**: Chỉ học hỏi kỹ thuật hiệu chuẩn nhiệt độ theo bucket số lượng phương án, nén JSON state gọn nhẹ và cắt tỉa thông minh phần state. Mã JKAI triển khai phòng sạch 100% nội bộ, không dùng tên thương hiệu bên thứ ba trong code/manifest và không kết nối ra ngoài.
+
 ---
 
 ## 🧠 3. ARTIFICIAL INTELLIGENCE & DATA / TRÍ TUỆ NHÂN TẠO & DỮ LIỆU

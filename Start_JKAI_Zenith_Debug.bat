@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul
 color 0B
 title [JKAI ZENITH - AMG DIAGNOSTIC BOOT]
 echo ==============================================================================
@@ -7,7 +8,7 @@ echo ===========================================================================
 cd /d "D:\Docker\JKAI"
 
 :: 1. Infrastructure Bootstrap
-powershell -ExecutionPolicy Bypass -File "D:\Docker\JKAI\Zenith_Guardian.ps1"
+powershell -ExecutionPolicy Bypass -File "D:\Docker\JKAI\Zenith_Guardian.ps1" -HandOffToCaller
 if %ERRORLEVEL% NEQ 0 (
     echo [ERROR] Infrastructure bootstrap failed. Stopping.
     pause

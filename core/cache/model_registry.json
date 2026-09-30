@@ -1,31 +1,4 @@
 {
-  "test-model:7b": {
-    "model_name": "test-model:7b",
-    "architecture": "llama",
-    "family": "llama",
-    "context_length_max": 8192,
-    "model_classes": [
-      "GENERAL",
-      "TOOL_USE"
-    ],
-    "has_vision": false,
-    "has_tool_calling": true,
-    "is_embedding_only": false,
-    "assessment_confidence": 0.7,
-    "last_inspected_at": 1790166999.81497,
-    "ollama_digest": "abc123",
-    "memory": {
-      "weight_file_size_gb": 4.5,
-      "quantization": "Q4_K_M",
-      "bytes_per_param": 0.5,
-      "total_parameters_b": 7.0,
-      "active_parameters_b": 7.0,
-      "num_layers": 32,
-      "is_moe": false,
-      "kv_cache_mb_per_1k_ctx": 256.0,
-      "detection_method": "api_show"
-    }
-  },
   "oamazonasgabriel/lfm2.5-2.6b:q4_k_m-8gbgpu": {
     "model_name": "oamazonasgabriel/lfm2.5-2.6b:q4_k_m-8gbgpu",
     "architecture": "lfm2",
@@ -33,14 +6,14 @@
     "context_length_max": 128000,
     "model_classes": [
       "REASONING",
-      "GENERAL",
-      "TOOL_USE"
+      "TOOL_USE",
+      "GENERAL"
     ],
     "has_vision": false,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1790171997.163333,
+    "last_inspected_at": 1791687468.746653,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 1.56,
@@ -61,14 +34,14 @@
     "context_length_max": 262144,
     "model_classes": [
       "REASONING",
-      "GENERAL",
-      "TOOL_USE"
+      "TOOL_USE",
+      "GENERAL"
     ],
     "has_vision": false,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1790171997.9850419,
+    "last_inspected_at": 1791687469.2812686,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 16.48,
@@ -88,15 +61,15 @@
     "family": "gemma4",
     "context_length_max": 131072,
     "model_classes": [
-      "GENERAL",
       "TOOL_USE",
-      "VISION"
+      "VISION",
+      "GENERAL"
     ],
     "has_vision": true,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1790171999.9927554,
+    "last_inspected_at": 1791687470.9689903,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 4.14,
@@ -117,15 +90,15 @@
     "context_length_max": 262144,
     "model_classes": [
       "REASONING",
-      "GENERAL",
       "TOOL_USE",
-      "VISION"
+      "VISION",
+      "GENERAL"
     ],
     "has_vision": true,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1790172001.7735415,
+    "last_inspected_at": 1791687472.0636728,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 22.29,
@@ -146,15 +119,15 @@
     "context_length_max": 262144,
     "model_classes": [
       "REASONING",
-      "GENERAL",
       "TOOL_USE",
-      "VISION"
+      "VISION",
+      "GENERAL"
     ],
     "has_vision": true,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1790172003.922434,
+    "last_inspected_at": 1791687473.4492548,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 6.66,
@@ -175,14 +148,14 @@
     "context_length_max": 40960,
     "model_classes": [
       "REASONING",
-      "GENERAL",
-      "TOOL_USE"
+      "TOOL_USE",
+      "GENERAL"
     ],
     "has_vision": false,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1790172004.7727299,
+    "last_inspected_at": 1791687474.002642,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 0.49,
@@ -203,23 +176,23 @@
     "context_length_max": 262144,
     "model_classes": [
       "REASONING",
-      "GENERAL",
       "TOOL_USE",
-      "VISION"
+      "VISION",
+      "GENERAL"
     ],
     "has_vision": true,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1790172006.633729,
+    "last_inspected_at": 1791687468.1470218,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 3.16,
       "quantization": "Q4_K_M",
       "bytes_per_param": 0.5,
-      "total_parameters_b": 4.66,
-      "active_parameters_b": 4.66,
-      "num_layers": 32,
+      "total_parameters_b": 4.33,
+      "active_parameters_b": 4.33,
+      "num_layers": 33,
       "is_moe": false,
       "kv_cache_mb_per_1k_ctx": 256.0,
       "detection_method": "api_show"
@@ -231,14 +204,14 @@
     "family": "llama",
     "context_length_max": 131072,
     "model_classes": [
-      "GENERAL",
-      "TOOL_USE"
+      "TOOL_USE",
+      "GENERAL"
     ],
     "has_vision": false,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1790172007.4934542,
+    "last_inspected_at": 1791687474.4058056,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 1.88,
@@ -258,15 +231,15 @@
     "family": "qwen2",
     "context_length_max": 32768,
     "model_classes": [
+      "TOOL_USE",
       "GENERAL",
-      "CODING",
-      "TOOL_USE"
+      "CODING"
     ],
     "has_vision": false,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1790172008.1373167,
+    "last_inspected_at": 1791687474.8640532,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 1.8,
@@ -287,15 +260,15 @@
     "context_length_max": 262144,
     "model_classes": [
       "REASONING",
-      "GENERAL",
       "TOOL_USE",
-      "VISION"
+      "VISION",
+      "GENERAL"
     ],
     "has_vision": true,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1790172009.6228747,
+    "last_inspected_at": 1791687475.7011752,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 6.14,
@@ -315,15 +288,15 @@
     "family": "phi3",
     "context_length_max": 131072,
     "model_classes": [
+      "TOOL_USE",
       "GENERAL",
-      "CODING",
-      "TOOL_USE"
+      "CODING"
     ],
     "has_vision": false,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1790172010.324176,
+    "last_inspected_at": 1791687476.3923953,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 2.32,
@@ -343,15 +316,15 @@
     "family": "qwen2",
     "context_length_max": 32768,
     "model_classes": [
+      "TOOL_USE",
       "GENERAL",
-      "CODING",
-      "TOOL_USE"
+      "CODING"
     ],
     "has_vision": false,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1790172010.9030952,
+    "last_inspected_at": 1791687476.9895513,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 8.37,
@@ -371,14 +344,14 @@
     "family": "phi2",
     "context_length_max": 2048,
     "model_classes": [
-      "GENERAL",
-      "VISION"
+      "VISION",
+      "GENERAL"
     ],
     "has_vision": true,
     "has_tool_calling": false,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1790172011.1273239,
+    "last_inspected_at": 1791687477.19832,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 1.62,
@@ -404,7 +377,7 @@
     "has_tool_calling": false,
     "is_embedding_only": true,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1790172011.2246892,
+    "last_inspected_at": 1791687477.3137603,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 0.26,
@@ -430,7 +403,7 @@
     "has_tool_calling": false,
     "is_embedding_only": true,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1790172011.3150864,
+    "last_inspected_at": 1791687477.4008372,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 0.04,
@@ -451,14 +424,14 @@
     "context_length_max": 131072,
     "model_classes": [
       "REASONING",
-      "GENERAL",
-      "TOOL_USE"
+      "TOOL_USE",
+      "GENERAL"
     ],
     "has_vision": false,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1790172011.9326777,
+    "last_inspected_at": 1791687477.8604915,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 4.87,
@@ -466,6 +439,34 @@
       "bytes_per_param": 0.5,
       "total_parameters_b": 8.19,
       "active_parameters_b": 8.19,
+      "num_layers": 36,
+      "is_moe": false,
+      "kv_cache_mb_per_1k_ctx": 256.0,
+      "detection_method": "api_show"
+    }
+  },
+  "jkai-3b-v2:latest": {
+    "model_name": "jkai-3b-v2:latest",
+    "architecture": "qwen2",
+    "family": "qwen2",
+    "context_length_max": 32768,
+    "model_classes": [
+      "TOOL_USE",
+      "GENERAL",
+      "CODING"
+    ],
+    "has_vision": false,
+    "has_tool_calling": true,
+    "is_embedding_only": false,
+    "assessment_confidence": 0.9,
+    "last_inspected_at": 1790769289.6168377,
+    "ollama_digest": "",
+    "memory": {
+      "weight_file_size_gb": 1.8,
+      "quantization": "Q4_K_M",
+      "bytes_per_param": 0.5,
+      "total_parameters_b": 3.09,
+      "active_parameters_b": 3.09,
       "num_layers": 36,
       "is_moe": false,
       "kv_cache_mb_per_1k_ctx": 256.0,

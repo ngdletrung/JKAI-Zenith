@@ -3,12 +3,14 @@
 tests/test_token_budget_guard.py
 Unit test suite for TokenBudgetGuard (Giai Đoạn 2: Item 2.2).
 
-Tuân thủ nghiêm ngặt ràng buộc từ Senior Red Team Auditor (Lượt 68):
+Tuân thủ spec local-first v28.3.0 (sửa đổi từ spec Lượt 68):
   1. Vượt 80% -> cảnh báo warn log, không abort.
-  2. Vượt 100% -> abort mission (ném TokenBudgetExceededException kế thừa MasterAbortException), trip replan breaker.
-  3. Khi usage vắng mặt -> ước lượng heuristic (chars // 4) + warn log, KHÔNG fail-closed.
-  4. Stub-only, cấm gọi mạng thật.
-  5. Đảm bảo an toàn luồng (thread-safety) khi nhiều worker ghi nhận cùng lúc.
+  2. Vượt 100%/200% token -> telemetry only, KHÔNG abort (mặc định).
+  3. Opt-in `abort_on_exceed=True` -> giữ hành vi ngắt cứng cũ + trip replan breaker.
+  4. Vượt `max_invocations` (trần xử lý) -> abort + trip breaker (chống lặp vô hạn).
+  5. Khi usage vắng mặt -> ước lượng heuristic (chars // 4) + warn log, KHÔNG fail-closed.
+  6. Stub-only, cấm gọi mạng thật.
+  7. Đảm bảo an toàn luồng (thread-safety) khi nhiều worker ghi nhận cùng lúc.
 """
 
 import sys
@@ -90,11 +92,43 @@ class TestTokenBudgetGuard(unittest.TestCase):
             self.assertEqual(kwargs.get("tag"), "BUDGET_WARNING")
 
     # -------------------------------------------------------------------------
-    # 3. Test vượt 100% -> Abort mission + trip breaker (Spec 4.2)
+    # 3. Test vượt 100% token (mặc định soft) -> telemetry only, KHÔNG abort
     # -------------------------------------------------------------------------
-    def test_exceeding_100_percent_aborts_mission(self):
-        """Vượt 100% hạn mức phải ném TokenBudgetExceededException kế thừa MasterAbortException."""
+    def test_exceeding_100_percent_tokens_is_telemetry_only_by_default(self):
+        """Mặc định local-first: vượt quota token không ném, không trip, chỉ telemetry."""
         cfg = TokenBudgetConfig(max_total_tokens=1000, warning_threshold_ratio=0.80)
+
+        # Tiêu thụ 900 tokens (90%)
+        self.guard.record_usage(
+            mission_id=self.mission_id,
+            prompt_tokens=400,
+            completion_tokens=500,
+            custom_config=cfg
+        )
+
+        # Gọi thêm 200 tokens -> tổng 1100 (> 1000): KHÔNG được abort
+        with patch.object(self.guard, "_trip_replan_circuit_breaker") as mock_trip:
+            with patch.object(self.guard, "_emit_structured_log") as mock_emit:
+                rec, ledger = self.guard.record_usage(
+                    mission_id=self.mission_id,
+                    prompt_tokens=100,
+                    completion_tokens=100,
+                    custom_config=cfg
+                )
+            ledger = self.guard.get_or_create_ledger(self.mission_id)
+            self.assertFalse(ledger.tripped)
+            self.assertEqual(ledger.cumulative_total_tokens, 1100)
+            mock_trip.assert_not_called()
+            tags = [c.kwargs.get("tag") for c in mock_emit.call_args_list]
+            self.assertIn("BUDGET_EXCEEDED_SOFT", tags)
+
+    # -------------------------------------------------------------------------
+    # 3b. Test opt-in abort_on_exceed=True -> giữ hành vi ngắt cứng cũ
+    # -------------------------------------------------------------------------
+    def test_exceeding_100_percent_aborts_mission_when_opted_in(self):
+        """Opt-in abort_on_exceed: vượt 100% ném TokenBudgetExceededException + trip breaker."""
+        cfg = TokenBudgetConfig(max_total_tokens=1000, warning_threshold_ratio=0.80,
+                                abort_on_exceed=True)
 
         # Tiêu thụ 900 tokens (90%)
         self.guard.record_usage(
@@ -121,6 +155,37 @@ class TestTokenBudgetGuard(unittest.TestCase):
             ledger = self.guard.get_or_create_ledger(self.mission_id)
             self.assertTrue(ledger.tripped)
             self.assertEqual(ledger.cumulative_total_tokens, 1100)
+            mock_trip.assert_called_once_with(self.mission_id)
+
+    # -------------------------------------------------------------------------
+    # 3c. Test vượt max_invocations (trần xử lý) -> abort + trip breaker
+    # -------------------------------------------------------------------------
+    def test_exceeding_max_invocations_aborts_mission(self):
+        """Vượt trần lượt gọi: abort chống lặp vô hạn, kể cả khi token còn xa hạn mức."""
+        cfg = TokenBudgetConfig(max_total_tokens=100000, warning_threshold_ratio=0.80,
+                                max_invocations=3)
+
+        for _ in range(3):
+            self.guard.record_usage(
+                mission_id=self.mission_id,
+                prompt_tokens=10,
+                completion_tokens=10,
+                custom_config=cfg
+            )
+
+        with patch.object(self.guard, "_trip_replan_circuit_breaker") as mock_trip:
+            with self.assertRaises(TokenBudgetExceededException) as ctx:
+                self.guard.record_usage(
+                    mission_id=self.mission_id,
+                    prompt_tokens=10,
+                    completion_tokens=10,
+                    custom_config=cfg
+                )
+            self.assertIsInstance(ctx.exception, MasterAbortException)
+            self.assertIn("Invocation cap exceeded", str(ctx.exception))
+            ledger = self.guard.get_or_create_ledger(self.mission_id)
+            self.assertTrue(ledger.tripped)
+            self.assertEqual(ledger.cumulative_total_tokens, 80)
             mock_trip.assert_called_once_with(self.mission_id)
 
     # -------------------------------------------------------------------------

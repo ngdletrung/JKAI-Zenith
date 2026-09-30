@@ -67,6 +67,72 @@ def should_stop(task_id: str | None = None, redis_conn: Any = None) -> bool:
         return False
     return False
 
+
+_VERSION_CACHE: dict[str, Any] = {"mtime": 0.0, "version": "v28.4.0"}
+LENGTH_CONTINUATION_NOTICE = (
+    "\n\n---\n"
+    "*[Ghi chú Hệ thống: Phản hồi dài đã chạm trần sinh token mỗi lượt (`done_reason=length`). "
+    "Gõ **\"tiếp tục\"** để xem phần còn lại.]*"
+)
+
+
+def get_jkai_system_version() -> str:
+    """
+    Read the canonical JKAI Zenith repository version from CHANGELOG.md (e.g. 'v28.4.0').
+    Prevents models from hallucinating non-existent version numbers (such as v47.0).
+    """
+    try:
+        changelog_path = os.path.join(path_manager.get_root(), "CHANGELOG.md")
+        if os.path.exists(changelog_path):
+            mtime = os.path.getmtime(changelog_path)
+            if mtime == _VERSION_CACHE["mtime"] and _VERSION_CACHE["version"]:
+                return str(_VERSION_CACHE["version"])
+            with open(changelog_path, "r", encoding="utf-8") as f:
+                head = f.read(2048)
+            m = re.search(r"##\s*\[(v\d+\.\d+\.\d+)\]", head)
+            if m:
+                ver = m.group(1)
+                _VERSION_CACHE["mtime"] = mtime
+                _VERSION_CACHE["version"] = ver
+                return ver
+    except Exception:
+        pass
+    return str(_VERSION_CACHE.get("version") or "v28.4.0")
+
+
+def is_length_truncated(done_reason: Any, eval_count: Any = None, num_predict: Any = None) -> bool:
+    """
+    Return True if Ollama stopped generating because it hit the output token ceiling
+    (done_reason == 'length' or eval_count >= num_predict when num_predict > 0).
+    """
+    if str(done_reason or "").strip().lower() == "length":
+        return True
+    try:
+        np_val = int(num_predict) if num_predict is not None else 0
+        ec_val = int(eval_count) if eval_count is not None else 0
+        if np_val > 0 and ec_val >= np_val:
+            return True
+    except (ValueError, TypeError):
+        pass
+    return False
+
+
+def append_length_continuation_notice(text: str) -> str:
+    """
+    Ensure truncated output never cuts silently in the middle of a markdown table or code block.
+    Closes any unclosed code fence and appends an explicit continuation notice.
+    """
+    if not text:
+        return text
+    if LENGTH_CONTINUATION_NOTICE.strip() in text:
+        return text
+    out = text.rstrip()
+    # Close an unclosed triple-backtick fence if odd count
+    if out.count("```") % 2 == 1:
+        out += "\n```"
+    return out + LENGTH_CONTINUATION_NOTICE
+
+
 class JKAIIntelligenceEngine:
     def __init__(self):
         self.logger = logger
@@ -508,8 +574,8 @@ class JKAIIntelligenceEngine:
                     for m in models:
                         name = m["name"]
                         self.publish_mission_log("VRAM_FLUSH", f"[SOVEREIGN] Đang giải phóng: {name} tren {host}", task_id)
-                        await client.post(f"{host}/api/chat", json={
-                            "model": name, "messages": [], "keep_alive": 0
+                        await client.post(f"{host}/api/generate", json={
+                            "model": name, "keep_alive": 0
                         })
             self.publish_mission_log("VRAM_FLUSH", "[SOVEREIGN] VRAM đã được thanh lọc!", task_id)
             return True
@@ -1223,27 +1289,29 @@ class JKAIIntelligenceEngine:
 
 
             
-            # [PROFILE-INJECTION]: Hợp nhất cấu hình Profile nếu có 
-            final_options = options or role_cfg.get('options', {}).copy()
+            # [PROFILE-INJECTION]: Hợp nhất cấu hình AMG ExecutionProfile và rule_hardware.md (SSoT)
+            amg_opts = exec_profile.to_ollama_options() if hasattr(exec_profile, "to_ollama_options") else {}
+            ssot_opts = role_cfg.get('options', {}).copy()
+            final_options = {**amg_opts, **ssot_opts}
+            if options:
+                final_options.update(options)
             target_profile = profile or final_options.get('profile')
             if isinstance(target_profile, str) and target_profile.upper() in self.profiles:
-
-
                 preset = self.profiles[target_profile.upper()]
-
-                # Chỉ ghi đè các tham số chưa có 
+                # Chỉ ghi đè các tham số chưa có
                 for k, v in preset.items():
                     if k.lower() not in final_options:
                         final_options[k.lower()] = v
 
-            # [ROLE-DYNAMIC-SCALING]: Chỉ điều chỉnh temperature theo Role — num_ctx được đọc từ rule_hardware.md (SSoT)
-            role_upper = str(role).upper()
-            if "CRITIC" in role_upper:
-                final_options["temperature"] = 0.1
-            elif "PLANNER" in role_upper or "META_PLANNER" in role_upper:
-                final_options["temperature"] = 0.2
-            elif "RECEPTIONIST" in role_upper:
-                final_options["temperature"] = 0.7
+            # [ROLE-DYNAMIC-SCALING]: Chỉ đặt temperature mặc định khi chưa được quy định trong rule_hardware.md (SSoT) hoặc caller options
+            if "temperature" not in ssot_opts and not (options and "temperature" in options):
+                role_upper = str(role).upper()
+                if "CRITIC" in role_upper:
+                    final_options["temperature"] = 0.1
+                elif "PLANNER" in role_upper or "META_PLANNER" in role_upper:
+                    final_options["temperature"] = 0.2
+                elif "RECEPTIONIST" in role_upper:
+                    final_options["temperature"] = 0.2
 
 
             # [CPU-OFFLOAD]: Ép chạy trên CPU nếu là tác vụ giám sát nhẹ hoặc được yêu cầu 
@@ -1303,8 +1371,9 @@ class JKAIIntelligenceEngine:
                     else:
                         messages[-1]['images'] = [images]
 
-            # [PARAM-PURIFICATION]: Lọc bỏ các tham số rác 
-            safe_options = {k: v for k, v in final_options.items() if k not in ['profile']}
+            # [PARAM-PURIFICATION]: Lọc bỏ các tham số metadata ngoài chuẩn Ollama options
+            _meta_keys = {'profile', 'options', 'keep_alive', 'size_gb', 'model', 'hardware'}
+            safe_options = {k: v for k, v in final_options.items() if k not in _meta_keys and not isinstance(v, dict)}
             
             # Giao thức truyền tin Elite 
             payload = {
@@ -1377,6 +1446,7 @@ class JKAIIntelligenceEngine:
             final_tool_calls = []
             eval_count_captured = None
             prompt_eval_count_captured = None
+            done_reason_captured = None
             
             monitor_task = None
             try:
@@ -1428,9 +1498,12 @@ class JKAIIntelligenceEngine:
                     self._publish_thought(role, "[ABORT]: Stop signal active. Execution cancelled.", task_id)
                     raise MasterAbortException("Mission aborted by Master.")
 
-                # 🔒 Kích hoạt Khóa GPU VRAM để chống tràn bộ nhớ VRAM khi chạy đa tác tử
-                use_gpu_lock = True
-                if not use_gpu_lock or await self._acquire_neural_lock("gpu_vram", timeout=kwargs.get('lock_timeout')):
+                # Kích hoạt Khóa GPU VRAM chỉ khi tác vụ thực sự chạy trên GPU để tránh rò rỉ lock từ tác vụ CPU
+                use_gpu_lock = bool(is_gpu and not is_cloud)
+                gpu_lock_acquired = False
+                if use_gpu_lock:
+                    gpu_lock_acquired = await self._acquire_neural_lock("gpu_vram", timeout=kwargs.get('lock_timeout'))
+                if not use_gpu_lock or gpu_lock_acquired:
                     try:
                         if is_cloud:
                             prov_cfg = configs.get(cloud_provider, {})
@@ -1619,6 +1692,7 @@ class JKAIIntelligenceEngine:
                                     if chunk.get('done'):
                                         eval_count_captured = chunk.get('eval_count')
                                         prompt_eval_count_captured = chunk.get('prompt_eval_count')
+                                        done_reason_captured = chunk.get('done_reason')
                                 msg_obj = chunk.get('message', {})
                                 token = msg_obj.get('content', '')
                                 reasoning_token = msg_obj.get('reasoning_content', '')
@@ -1697,49 +1771,110 @@ class JKAIIntelligenceEngine:
                                         is_first_chunk = False
                                         last_log_time = now
 
-                            # Gui tin hieu hoan tat (final non-delta flush) de dong bo day du va luu vao lich su thưa Master
-                            if thinking_content.strip():
-                                if not think_stream_id:
-                                    think_stream_id = f"think_{uuid.uuid4().hex[:8]}"
-                                self._publish_thought(
-                                    role, 
-                                    f"[LUỒNG TƯ DUY NỘI TÂM]:\n{thinking_content.strip()}", 
-                                    task_id, 
-                                    stream_id=think_stream_id, 
-                                    is_delta=False
-                                )
-                            if full_content.strip():
-                                self._publish_thought(
-                                    role, 
-                                    full_content.strip(), 
-                                    task_id, 
-                                    stream_id=stream_id, 
-                                    is_delta=False
-                                )
+                        # Gui tin hieu hoan tat (final non-delta flush) mot lan duy nhat sau khi stream ket thuc
+                        if thinking_content.strip():
+                            if not think_stream_id:
+                                think_stream_id = f"think_{uuid.uuid4().hex[:8]}"
+                            self._publish_thought(
+                                role, 
+                                f"[LUỒNG TƯ DUY NỘI TÂM]:\n{thinking_content.strip()}", 
+                                task_id, 
+                                stream_id=think_stream_id, 
+                                is_delta=False
+                            )
+                        if full_content.strip():
+                            self._publish_thought(
+                                role, 
+                                full_content.strip(), 
+                                task_id, 
+                                stream_id=stream_id, 
+                                is_delta=False
+                            )
 
-                            duration = time.time() - start_time
+                        duration = time.time() - start_time
+                        
+                        # [THINKING EXTRACTION] - Trích xuất tư duy từ các model Reasoning (<think> tag hoặc streaming reasoning_token)
+                        if not full_content.strip() and thinking_content.strip():
+                            full_content = thinking_content.strip()
+                        elif THINK_TAG.search(full_content):
+                            thinking_match = THINK_TAG.search(full_content)
+                            thinking_process = thinking_match.group(1).strip()
+                            if thinking_process:
+                                self._publish_thought(role, f"[LUỒNG TƯ DUY NỘI TÂM]:\n{thinking_process}", task_id)
                             
-                            # [THINKING EXTRACTION] - Trích xuất tư duy từ các model Reasoning (<think> tag hoặc streaming reasoning_token)
-                            if not full_content.strip() and thinking_content.strip():
-                                full_content = thinking_content.strip()
-                            elif THINK_TAG.search(full_content):
-                                thinking_match = THINK_TAG.search(full_content)
-                                thinking_process = thinking_match.group(1).strip()
-                                if thinking_process:
-                                    self._publish_thought(role, f"[LUỒNG TƯ DUY NỘI TÂM]:\n{thinking_process}", task_id)
-                                
-                                # Chỉ lọc bỏ nếu phần còn lại có nội dung đáng kể 
-                                stripped_content = strip_think_tags(full_content).strip()
-                                if len(stripped_content) > 20:
-                                    full_content = stripped_content
-                                elif thinking_process:
-                                    # Nếu model chỉ "nghĩ" mà không "nói" ngoài thẻ, lấy phần nghĩ làm kết quả 
-                                    full_content = thinking_process
-                                else:
-                                    full_content = stripped_content
+                            # Chỉ lọc bỏ nếu phần còn lại có nội dung đáng kể 
+                            stripped_content = strip_think_tags(full_content).strip()
+                            if len(stripped_content) > 20:
+                                full_content = stripped_content
+                            elif thinking_process:
+                                # Nếu model chỉ "nghĩ" mà không "nói" ngoài thẻ, lấy phần nghĩ làm kết quả 
+                                full_content = thinking_process
+                            else:
+                                full_content = stripped_content
                     finally:
-                        if is_gpu:
+                        if gpu_lock_acquired:
                             await self._release_neural_lock("gpu_vram")
+                else:
+                    logger.warning("[NEURAL-LOCK] Timeout waiting for gpu_vram lock on role=%s model=%s", role, final_model)
+
+                # [LENGTH-CEILING-GUARD]: Catch Ollama done_reason=="length" (or eval_count >= num_predict).
+                # Either auto-continue 1 hop or append an explicit continuation notice — NEVER cut silently mid-table!
+                hit_length_ceiling = is_length_truncated(
+                    done_reason_captured,
+                    eval_count_captured,
+                    safe_options.get("num_predict"),
+                )
+                if hit_length_ceiling and full_content.strip() and not json_mode and not schema and not final_tool_calls:
+                    if not kwargs.get("_auto_continued") and kwargs.get("auto_continue_on_length", True):
+                        logger.info(
+                            "[AUTO-CONTINUE] Role=%s Model=%s hit output ceiling (done_reason=%s, eval_count=%s, num_predict=%s). Triggering 1-hop continuation.",
+                            role, final_model, done_reason_captured, eval_count_captured, safe_options.get("num_predict"),
+                        )
+                        self._publish_thought(
+                            role,
+                            "[AUTO-CONTINUE]: Phat hien dung do het tran token (done_reason=length). Dang tu dong viet tiep 1 nhip...",
+                            task_id,
+                        )
+                        cont_messages = [dict(m) for m in messages] + [
+                            {"role": "assistant", "content": full_content},
+                            {
+                                "role": "user",
+                                "content": (
+                                    "Hãy viết tiếp ngay phần đang bị cắt dở ở trên (tiếp nối chính xác từ dòng hoặc bảng đang dở, "
+                                    "tuyệt đối không lặp lại phần đầu) và kết thúc trọn vẹn."
+                                ),
+                            },
+                        ]
+                        cont_kwargs = dict(kwargs)
+                        cont_kwargs["_auto_continued"] = True
+                        cont_kwargs["auto_continue_on_length"] = False
+                        cont_kwargs["skip_memory"] = True
+                        try:
+                            cont_res = await self.call_chat(
+                                messages=cont_messages,
+                                role=role,
+                                model=final_model,
+                                json_mode=False,
+                                schema=None,
+                                options=options,
+                                profile=profile,
+                                keep_alive=keep_alive,
+                                task_id=task_id,
+                                skip_identity=True,
+                                skip_build_final=True,
+                                **cont_kwargs,
+                            )
+                            cont_str = cont_res.get("answer", "") if isinstance(cont_res, dict) else str(cont_res or "")
+                            if cont_str.strip() and not cont_str.startswith("Error:"):
+                                sep = "" if (full_content.endswith("\n") or cont_str.startswith("\n")) else "\n"
+                                full_content = f"{full_content}{sep}{cont_str.lstrip()}"
+                            else:
+                                full_content = append_length_continuation_notice(full_content)
+                        except Exception as cont_err:
+                            logger.warning("[AUTO-CONTINUE-WARN] 1-hop continuation failed (%s); appending explicit notice.", cont_err)
+                            full_content = append_length_continuation_notice(full_content)
+                    else:
+                        full_content = append_length_continuation_notice(full_content)
 
                 # [JSON THOUGHT EXTRACTION] - Trích xuất từ trường JSON (thought/reasoning)
                 if json_mode:

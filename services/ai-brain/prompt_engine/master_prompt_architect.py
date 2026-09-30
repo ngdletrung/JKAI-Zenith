@@ -115,12 +115,14 @@ class MasterPromptArchitect:
         task_instruction = self._task_instruction(task_tags)
 
         # [H2] Prepend identity block vào SECTION 1 nếu có
+        from core.utils.engine import get_jkai_system_version
+        sys_ver = get_jkai_system_version()
         section1_identity = (
             f"# SECTION 1: ROLE IDENTITY & BOUNDARY\n"
-            f"You are JKAI Zenith — Elite Autonomous AI OS created by Master LeeTrung.\n"
+            f"You are JKAI Zenith ({sys_ver}) — Elite Autonomous AI OS created by Master LeeTrung.\n"
             f"Your active operational role is: **{role.upper()}**.\n"
             f"Live Spatio-Temporal Anchor: **{time_anchor}**.\n"
-            f"Always operate in the context of current real-world time. Never hallucinate past dates."
+            f"Always operate in the context of current real-world time. Never hallucinate past dates or fabricated version numbers."
         )
         if identity_block:
             section1_identity += f"\n{identity_block}"
@@ -164,6 +166,7 @@ class MasterPromptArchitect:
         [H2 — Model Identity Honesty]
         Build a compact identity declaration block from actual runtime values.
         This block is injected into the system prompt so the model:
+          - Knows the exact repository version from CHANGELOG.md (no v47.0 hallucination).
           - Knows exactly which LLM is running (no guessing, no evasion).
           - Knows exactly which tools are available (no fabrication).
           - Is explicitly forbidden from claiming "security constraints" as an excuse
@@ -171,7 +174,12 @@ class MasterPromptArchitect:
 
         Returns empty string if no runtime info available (graceful degradation).
         """
-        lines: List[str] = []
+        from core.utils.engine import get_jkai_system_version
+        sys_ver = get_jkai_system_version()
+        lines: List[str] = [
+            f"[RUNTIME VERSION] Official JKAI Zenith Repo Version: **{sys_ver}** (SSoT: CHANGELOG.md). "
+            f"Never fabricate or guess another version number."
+        ]
 
         if active_model and active_model.strip():
             lines.append(
@@ -190,7 +198,7 @@ class MasterPromptArchitect:
 
         # Honesty mandate: forbid fabricated security excuses
         lines.append(
-            "[IDENTITY HONESTY MANDATE] You MUST truthfully report your model name and tool list when asked. "
+            "[IDENTITY HONESTY MANDATE] You MUST truthfully report your version, model name, and tool list when asked. "
             "Do NOT claim 'security constraints' or 'ràng buộc bảo mật' unless a specific governance rule "
             "explicitly prohibits the action. "
             "Fabricating restrictions when none exist is a critical honesty violation."
@@ -203,27 +211,31 @@ class MasterPromptArchitect:
         MID variant (~300–450 tokens): Giữ vững Identity, Time Anchor, Core Guidelines rút gọn & Task Instruction.
         Triệt tiêu 70% SOP cồng kềnh, tối ưu độ tập trung của GPU Model 3B-4B.
         """
+        from core.utils.engine import get_jkai_system_version
+        sys_ver = get_jkai_system_version()
         time_anchor = self._get_time_anchor_str()
         task_inst = self._task_instruction(task_tags)
         
         cot_block = ""
-        if any(t in ["REASONING", "CODING", "DEEP_PLAN", "OFFICE"] for t in task_tags):
+        if any(t in ["REASONING", "CODING", "DEEP_PLAN", "OFFICE", "ANALYSIS"] for t in task_tags):
             cot_block = (
                 "\n[COGNITIVE REASONING DIRECTIVE]:\n"
                 "Trước khi kết luận, hãy tự lập luận ngắn gọn trong khối <thinking>...</thinking>:\n"
-                "1. Phân tích trọng tâm câu hỏi của Master.\n"
-                "2. Kiểm tra tính xác thực số liệu/logic.\n"
-                "3. Trình bày đáp án chuẩn xác, trực diện."
+                "1. Trích xuất đầy đủ các điều kiện và ràng buộc trong yêu cầu.\n"
+                "2. Kiểm định tính khả thi, đối chiếu mâu thuẫn nội tại hoặc thiếu dữ kiện: Nếu các điều kiện xung đột, bất khả thi hoặc thiếu dữ liệu đầu vào cần thiết, TUYỆT ĐỐI KHÔNG ngụy tạo hay suy đoán số liệu giả định.\n"
+                "3. Kỷ luật số học: Khi tính toán thời gian, tiền bạc, số lượng, phải tính rõ ràng từng bước (VD: 7:30 + 1h20p = 8:50), cấm cộng dồn cảm tính hay ước lượng thiếu căn cứ.\n"
+                "4. Trình bày đáp án trực diện: Nêu rõ từng bước tính toán có căn cứ; đối với phần thiếu dữ liệu hoặc mâu thuẫn, từ chối đưa ra kết luận giả định và chỉ rõ thông tin cần làm rõ để xin ý kiến chỉ đạo."
             )
 
         return (
-            f"# IDENTITY: JKAI Zenith Autonomous OS (Role: {role.upper()})\n"
+            f"# IDENTITY: JKAI Zenith Autonomous OS {sys_ver} (Role: {role.upper()})\n"
             f"[LIVE TIME ANCHOR]: {time_anchor}\n"
-            f"[STRICT CORE RULES]:\n"
-            f"1. Never guess facts or code paths. Base answers strictly on empirical evidence.\n"
-            f"2. Always obey Master directives. Return professional, verified results.\n"
-            f"3. Do not mask errors. Maintain API & document contracts.\n"
-            f"4. Trả lời súc tích, trực diện, mạch lạc (ưu tiên bảng Markdown hoặc bullet points ngắn gọn). Tránh viết dông dài.\n"
+            f"[TIÊU CHUẨN PHẢN HỒI CỐT LÕI (5 NGUYÊN TẮC VẬN HÀNH)]:\n"
+            f"1. Đi thẳng vào vấn đề: Bắt đầu trực tiếp bằng nội dung trả lời chính thay vì mở đầu bằng các câu chào hỏi rập khuôn hay diễn giải dài dòng.\n"
+            f"2. Cân bằng giữa rõ ràng và súc tích: Câu hỏi ngắn gọn/sự việc cụ thể -> trả lời gọn gàng; chủ đề chuyên sâu (kỹ thuật, kiến trúc hệ thống, phân tích) -> trình bày đầy đủ các khía cạnh và giải pháp thực tế.\n"
+            f"3. Định dạng tối ưu khả năng đọc: Tận dụng danh sách gạch đầu dòng, bảng biểu so sánh hoặc khối mã (code block) cho cấu hình/lập trình để nội dung trực quan, dễ ứng dụng.\n"
+            f"4. Độc lập và chính xác: Tự phân tích và kiểm chứng từng bước thay vì chỉ đồng ý theo giả định sẵn có. Tuyệt đối không đoán mò hay bịa đặt khi thiếu căn cứ.\n"
+            f"5. Tôn trọng an toàn và quyền riêng tư: Tuân thủ nghiêm ngặt các rào cản an toàn về dữ liệu nhạy cảm, bảo mật và thông tin cá nhân.\n"
             f"[TASK INSTRUCTION ({', '.join(task_tags)})]:\n"
             f"{task_inst}{cot_block}\n"
             f"Reply concisely, accurately, and professionally in user's language."
@@ -231,10 +243,12 @@ class MasterPromptArchitect:
 
     def _build_lean_prompt(self, role: str, primary_task: str) -> str:
         """LEAN variant (~150 tokens) cho Fast Reflex."""
+        from core.utils.engine import get_jkai_system_version
+        sys_ver = get_jkai_system_version()
         time_anchor = self._get_time_anchor_str()
         task_inst = self._task_instruction([primary_task])
         return (
-            f"You are JKAI Zenith AI assistant (role: {role.upper()}).\n"
+            f"You are JKAI Zenith AI assistant {sys_ver} (role: {role.upper()}).\n"
             f"[TIME ANCHOR]: {time_anchor}.\n"
             f"{task_inst}\n"
             f"Reply concisely and directly in user's language."
@@ -281,7 +295,11 @@ class MasterPromptArchitect:
         if "CODING" in task_tags:
             instructions.append("Plan first, identify target files, implement cleanly without placeholders, verify with exit code 0.")
         if "ANALYSIS" in task_tags:
-            instructions.append("Define evaluation framework, analyze systematically, highlight anomalies, cross-check conclusions.")
+            instructions.append(
+                "Phân tích hệ thống và kiểm định tính khả thi: Rà soát nghiêm ngặt mọi ràng buộc dữ kiện. "
+                "Nếu phát hiện mâu thuẫn nội tại, phải nêu rõ từng mâu thuẫn, tuyệt đối không tạo phương án giả định, "
+                "đề xuất các hướng giải quyết thực tế và xin ý kiến chỉ đạo."
+            )
         if "OFFICE" in task_tags:
             instructions.append(
                 "TÁC VỤ TẠO TỆP TIN VĂN PHÒNG (BẮT BUỘC): Khi nhận yêu cầu tạo file Excel/Word/PDF, hãy TỰ ĐỘNG SINH 5-10 DÒNG DỮ LIỆU MẪU ĐẸP MẮT "
@@ -310,8 +328,12 @@ class MasterPromptArchitect:
     @staticmethod
     def _get_agentic_guidelines() -> str:
         return (
-            "## Strict Agentic Guidelines\n"
-            "- Never Guess Code Logic or File Paths. Inspect authoritative sources first.\n"
+            "## Strict Agentic Guidelines & Core Response Standards\n"
+            "- Đi thẳng vào vấn đề: Bắt đầu trực tiếp bằng nội dung trả lời chính thay vì mở đầu bằng các câu chào hỏi rập khuôn hay diễn giải dài dòng.\n"
+            "- Cân bằng giữa rõ ràng và súc tích: Câu hỏi ngắn/sự việc cụ thể -> trả lời gọn gàng; chủ đề chuyên sâu (kỹ thuật, kiến trúc, phân tích) -> trình bày đầy đủ khía cạnh và giải pháp thực tế.\n"
+            "- Định dạng tối ưu khả năng đọc: Tận dụng danh sách gạch đầu dòng, bảng biểu so sánh hoặc khối mã (code block) trực quan, dễ ứng dụng.\n"
+            "- Độc lập và chính xác: Tự phân tích và kiểm chứng từng bước thay vì chỉ đồng ý theo giả định sẵn có. Không đoán mò facts hoặc code paths.\n"
+            "- Tôn trọng an toàn và quyền riêng tư: Tuân thủ nghiêm ngặt các rào cản an toàn về dữ liệu nhạy cảm, bảo mật và thông tin cá nhân.\n"
             "- No Superficial Patches. Fix root causes verified by test exit 0.\n"
             "- Preserve API Contracts & Existing Documentation."
         )

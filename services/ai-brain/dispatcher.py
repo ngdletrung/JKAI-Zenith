@@ -465,6 +465,23 @@ class Dispatcher:
             # -------------------------------------------------------------------
             reflex_result = self._reflex_match(norm, task_id)
             if reflex_result:
+                try:
+                    from core.governance.shadow_harness import get_default_shadow_harness
+                    harness = get_default_shadow_harness()
+                    draft = reflex_result.to_dict() if hasattr(reflex_result, "to_dict") else {
+                        "action_type": str(getattr(reflex_result, "action_type", "")),
+                        "domain": getattr(reflex_result, "domain", ""),
+                        "skill": getattr(reflex_result, "skill", ""),
+                        "reasoning": getattr(reflex_result, "reasoning", "")
+                    }
+                    harness.record_observation(
+                        raw_state={"goal": goal, "norm": norm, "task_id": task_id},
+                        reflex_draft=draft,
+                        execution_receipt=None,
+                        metadata={"source": "DispatcherReflex", "task_id": task_id}
+                    )
+                except Exception:
+                    pass
                 self._cache_dispatch(norm, reflex_result)
                 return reflex_result
 

@@ -10,6 +10,8 @@
 # 3. Model-Blind Infrastructure: Zero model names, zero model selection semantics.
 # 4. Hands off all model decisions to AMG v2 (python -m core.runtime.amg_boot).
 # -----------------------------------------------------------------------------
+param([switch]$HandOffToCaller)
+
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $OutputEncoding = [System.Text.Encoding]::UTF8
 $PSDefaultParameterValues['*:Encoding'] = 'utf8'
@@ -82,12 +84,12 @@ try {
     $cpuAlive = $false
 
     try {
-        $r1 = Invoke-RestMethod -Uri "http://$OLLAMA_GPU_HOST/api/tags" -Method Get -TimeoutSec 3 -ErrorAction SilentlyContinue
+        $r1 = Invoke-RestMethod -Uri "http://$OLLAMA_GPU_HOST/api/tags" -Method Get -TimeoutSec 8 -ErrorAction SilentlyContinue
         if ($r1) { $gpuAlive = $true }
     } catch {}
 
     try {
-        $r2 = Invoke-RestMethod -Uri "http://$OLLAMA_CPU_HOST/api/tags" -Method Get -TimeoutSec 3 -ErrorAction SilentlyContinue
+        $r2 = Invoke-RestMethod -Uri "http://$OLLAMA_CPU_HOST/api/tags" -Method Get -TimeoutSec 8 -ErrorAction SilentlyContinue
         if ($r2) { $cpuAlive = $true }
     } catch {}
 
@@ -103,7 +105,8 @@ try {
             Stop-Process -Id $_.ProcessId -Force -ErrorAction SilentlyContinue
         }
 
-        # 2. Force kill any lingering Ollama or llama-server processes cleanly
+        # 2. Force kill any lingering Ollama (including 'ollama app.exe') or llama-server processes cleanly
+        Stop-Process -Name "ollama app" -Force -ErrorAction SilentlyContinue
         Get-Process "ollama*", "llama-server*" -ErrorAction SilentlyContinue | Stop-Process -Force
         Start-Sleep -Seconds 2
 
@@ -113,9 +116,9 @@ try {
 
         # Start GPU Engine if not alive
         if (-not $gpuAlive) {
-
             $env:OLLAMA_HOST              = $OLLAMA_GPU_HOST
             $env:GGML_VK_VISIBLE_DEVICES  = "0"
+            $env:OLLAMA_VULKAN            = "1"
             $env:OLLAMA_LLM_LIBRARY       = ""
             $env:OLLAMA_NO_GPU            = ""
             foreach ($k in $gpuEnv.Keys) { Set-Item -Path "Env:$k" -Value $gpuEnv[$k] }
@@ -132,9 +135,14 @@ try {
                 if (-not $cpuEnv.ContainsKey($k)) { Remove-Item -Path "Env:$k" -ErrorAction SilentlyContinue }
             }
             $env:OLLAMA_HOST             = $OLLAMA_CPU_HOST
+            $env:CUDA_VISIBLE_DEVICES    = ""
+            $env:HIP_VISIBLE_DEVICES     = ""
+            $env:ROCR_VISIBLE_DEVICES    = ""
             $env:GGML_VK_VISIBLE_DEVICES = ""
-            $env:OLLAMA_LLM_LIBRARY      = ""
+            $env:OLLAMA_VULKAN           = "0"
+            $env:OLLAMA_LLM_LIBRARY      = "cpu"
             $env:OLLAMA_NO_GPU           = "1"
+            $env:OLLAMA_NUM_PARALLEL     = "1"
             foreach ($k in $cpuEnv.Keys) { Set-Item -Path "Env:$k" -Value $cpuEnv[$k] }
             Write-KuteLog "Starting CPU Engine on $OLLAMA_CPU_HOST..." "PROCESS"
             $cpuLogPath = "D:\Docker\JKAI\intelligence\protocols\ollama_cpu.log"
@@ -151,12 +159,6 @@ try {
                 $resp2 = Invoke-RestMethod -Uri "http://$OLLAMA_CPU_HOST/api/tags" -Method Get -ErrorAction Stop
                 if ($resp1 -and $resp2) {
                     Write-KuteLog "Ollama Dual-Engine services are READY!" "SUCCESS"
-                    
-                    # 🚀 [ACTIVE-MODEL-PRELOADER]: Nạp sẵn toàn bộ Active Model từ rule_hardware.md vào VRAM/RAM ngay khi khởi động
-                    $PreloaderScript = "D:\Docker\JKAI\scripts\preload_models.py"
-                    if (Test-Path $PreloaderScript) {
-                        python $PreloaderScript
-                    }
                     break
                 }
             } catch {
@@ -222,6 +224,11 @@ try {
     }
 
     Write-KuteLog "Infrastructure READY. Handing off to AMG v2 Decision Engine..." "SUCCESS"
+    if (-not $HandOffToCaller) {
+        Write-KuteLog "Executing AMG v2 Boot Orchestrator (FAST mode)..." "PROCESS"
+        python -m core.runtime.amg_boot --mode FAST
+        Write-KuteLog "AMG v2 Boot Orchestrator COMPLETE." "SUCCESS"
+    }
     exit 0
 }
 catch {

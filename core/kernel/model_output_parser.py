@@ -257,6 +257,49 @@ class ModelOutputParser:
     # CHUẨN HÓA VÀ HỢP NHẤT DỮ LIỆU (NORMALIZATION & MERGE)
     # =========================================================================
 
+    # FIX-41310c: canonical tool aliases + sentence-tool rejection.
+    _TOOL_ALIASES = {
+        "write_file": "write_to_file",
+        "writefile": "write_to_file",
+        "write_code": "write_to_file",
+        "create_file": "write_to_file",
+        "save_file": "write_to_file",
+        "execute_command": "run_command",
+        "run_cmd": "run_command",
+        "cmd": "run_command",
+        "code_execution": "run_command",
+        "execute_code": "run_command",
+        "run_code": "run_command",
+        "read_file": "view_file",
+        "viewfile": "view_file",
+        "cat_file": "view_file",
+        "search_web_global": "web_search",
+        "omni_search_engine": "web_search",
+        "search_web": "web_search",
+        "google_search": "web_search",
+        "grep": "grep_search",
+        "search_code": "grep_search",
+        "listdir": "list_dir",
+        "ls": "list_dir",
+        "check_file": "verify_file",
+        "remove_file": "delete_file",
+        "py_exec": "python_execute",
+        "run_python": "python_execute",
+    }
+
+    @classmethod
+    def canonicalize_tool(cls, tool: Any) -> Any:
+        if not isinstance(tool, str):
+            return tool
+        t = tool.strip()
+        # Sentence hallucination -> not a tool. Return None so caller emits final_answer/CONTRACT_VIOLATION.
+        if not t or len(t) > 40 or " " in t or "/" in t:
+            return None
+        low = t.lower()
+        if low in cls._TOOL_ALIASES:
+            return cls._TOOL_ALIASES[low]
+        return low
+
     @classmethod
     def _normalize_dict(cls, data: Dict[str, Any]) -> Dict[str, Any]:
         """Chuẩn hóa dictionary về định dạng chuẩn của JKAI Agent."""
@@ -296,6 +339,15 @@ class ModelOutputParser:
             if not final_answer:
                 final_answer = str(params.get("input") or thought or "Hoàn thành nhiệm vụ.")
             tool = None
+        else:
+            # Canonicalize + reject sentence hallucination.
+            _canon = cls.canonicalize_tool(tool) if isinstance(tool, str) else tool
+            if isinstance(tool, str) and _canon is None:
+                # Keep raw sentence in thought for replan feedback.
+                thought = f"{thought}\n[REJECTED-TOOL-HALLUCINATION: {tool}]".strip()
+                tool = None
+            else:
+                tool = _canon
 
         return {
             "thought": str(thought).strip(),

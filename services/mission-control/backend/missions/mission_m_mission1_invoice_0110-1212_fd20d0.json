@@ -1,0 +1,476 @@
+{
+  "id": "m_mission1_invoice_0110-1212_fd20d0",
+  "title": "Kiểm tra tệp tests/test_agent_autonomy/test_mission1_invoice.py để biế",
+  "goal": "Kiểm tra tệp tests/test_agent_autonomy/test_mission1_invoice.py để biết lỗi test gì đang xảy ra. Sau đó đọc tests/test_agent_autonomy/mission1_invoice.py, xác định nguyên nhân tính sai tiền và dùng replace_file_content để sửa lỗi trong mission1_invoice.py. Sau khi sửa xong, chạy python -m pytest tests/test_agent_autonomy/test_mission1_invoice.py để đảm bảo 100% tests pass.",
+  "status": "completed",
+  "ts": 1790831599.057704,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "Kiểm tra tệp tests/test_agent_autonomy/test_mission1_invoice.py để biết lỗi test gì đang xảy ra. Sau đó đọc tests/test_agent_autonomy/mission1_invoice.py, xác định nguyên nhân tính sai tiền và dùng replace_file_content để sửa lỗi trong mission1_invoice.py. Sau khi sửa xong, chạy python -m pytest tests/test_agent_autonomy/test_mission1_invoice.py để đảm bảo 100% tests pass.",
+      "ts": 1790831539.7938151,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `mission1_invoice_0110-1212_fd20d0` initialized | Trace: `trace_fd20d0`. Runtime ready.",
+      "ts": 1790831539.7961314,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "MISSION-CTX resume `mission1_invoice`",
+      "ts": 1790831546.033717,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "WORKSPACE `tests/test_agent_autonomy` (fix)",
+      "ts": 1790831546.036634,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=1445 | preview='Kiểm tra tệp tests/test_agent_autonomy/test_mission1_invoice.py để biết lỗi test gì đang xảy ra. Sau đó đọc tests/test_agent_autonomy/mission1_invoice.py, xác định nguyên nhân tính sai tiền và dùng re' | hash=f8e40c7a4e54f8ec | task_id=mission1_invoice_0110-1212_fd20d0 | trace_id=trace_fd20d0",
+      "ts": 1790831546.0384798,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: ['MULTI_FILE_AUDIT_ACTION'] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1790831546.0404184,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [PIPELINE-RESOLVER]: Chế độ DEEP tự động kích hoạt (Reason: Master explicitly requested DEEP (Multi-Agent Ensemble Mode).).",
+      "ts": 1790831546.0426147,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=coding pipeline=deep mode=deep tags=ANALYSIS,CODING,MULTI_RESOURCE",
+      "ts": 1790831546.0449753,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "🎯 Cursor Agent — `tests/test_agent_autonomy` (fix)",
+      "ts": 1790831546.0498073,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 1/18",
+      "ts": 1790831546.4363391,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=7985.1ms | Output=4 chars",
+      "ts": 1790831554.4533315,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'view_file' authorized by ExecutionIntegrityLayer.",
+      "ts": 1790831554.667456,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: view_file(...) - TraceID: trace_fd20d0",
+      "ts": 1790831554.6847713,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'view_file' via sovereign local runtime.",
+      "ts": 1790831554.808529,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[view_file] ✅ Local execution succeeded",
+      "ts": 1790831554.8204315,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "-> Tool 'view_file' hoàn thành (output: 724 ký tự).",
+      "ts": 1790831554.827492,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 2/18",
+      "ts": 1790831554.8538854,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=7219.5ms | Output=4 chars",
+      "ts": 1790831562.0783727,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'run_command' authorized by ExecutionIntegrityLayer.",
+      "ts": 1790831562.1035228,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: run_command(...) - TraceID: trace_fd20d0",
+      "ts": 1790831562.1082485,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'run_command' via sovereign local runtime.",
+      "ts": 1790831562.111865,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[run_command] ⚠️ Local execution returned error:",
+      "ts": 1790831564.396901,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "-> Tool 'run_command' hoàn thành (output: 1040 ký tự).",
+      "ts": 1790831564.4022403,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 3/18",
+      "ts": 1790831564.4321969,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=4522.5ms | Output=4 chars",
+      "ts": 1790831568.9623356,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'view_file' authorized by ExecutionIntegrityLayer.",
+      "ts": 1790831568.9846373,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: view_file(...) - TraceID: trace_fd20d0",
+      "ts": 1790831568.9887555,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'view_file' via sovereign local runtime.",
+      "ts": 1790831568.9914274,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[view_file] ✅ Local execution succeeded",
+      "ts": 1790831569.0001705,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "-> Tool 'view_file' hoàn thành (output: 723 ký tự).",
+      "ts": 1790831569.0027075,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 4/18",
+      "ts": 1790831569.028529,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=5843.4ms | Output=4 chars",
+      "ts": 1790831574.8789566,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'replace_file_content' authorized by ExecutionIntegrityLayer.",
+      "ts": 1790831574.9336536,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: replace_file_content(...) - TraceID: trace_fd20d0",
+      "ts": 1790831574.9373386,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'replace_file_content' via sovereign local runtime.",
+      "ts": 1790831574.9401052,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[replace_file_content] ⚠️ Local execution returned error: ❌ Lỗi: Không tìm thấy TargetContent 'discount_pct = discount_pct / 100' trong `/workspace/tests/test_agent_autonomy/mission1_invoice.py`.\nNội dung tệp thực tế:\n\"\"\"Mission 1 (Calibration) — Module nghiep vu tinh tien hoa don.\n\nQUY TAC PHONG THI: Agent chi duoc doc file nay qua view_file tai gio G.\nKhong sua file nay bang tay — moi sua doi phai qua replace_file_content\ncua Agent va duoc kiem chung bang pytest.\n\"\"\"\n\nVAT_RATE = 0.10\n\n\ndef calc_subtotal(items):\n    \"\"\"items: list (price, qty). Tra ve tong tien truoc giam gia.\"\"\"\n    return sum(price * qty for price, qty in items)\n\n\ndef calc_total(items, discount_pct):\n    \"\"\"Tong thanh toan = (subtotal - giam gia) + VAT 10%.\"\"\"\n    subtotal = calc_subtotal(items)\n    discount = subtotal * discount_pct / 100\n    after_discount = subtotal - discount\n    vat = after_discount * VAT_RATE\n    return after_discount + vat - discount\n\n\nVui lòng nhìn kỹ nội dung tệp ở trên và sao chép chính xác đoạn cần sửa vào TargetContent.",
+      "ts": 1790831574.9522314,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "-> Tool 'replace_file_content' hoàn thành (output: 975 ký tự).",
+      "ts": 1790831574.9556324,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 5/18",
+      "ts": 1790831574.9824903,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=6476.0ms | Output=4 chars",
+      "ts": 1790831581.466755,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'replace_file_content' authorized by ExecutionIntegrityLayer.",
+      "ts": 1790831581.5034513,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: replace_file_content(...) - TraceID: trace_fd20d0",
+      "ts": 1790831581.5071986,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'replace_file_content' via sovereign local runtime.",
+      "ts": 1790831581.5096028,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[replace_file_content] ⚠️ Local execution returned error: ❌ Lỗi: Không tìm thấy TargetContent 'discount_pct = discount_pct / 100' trong `/workspace/tests/test_agent_autonomy/mission1_invoice.py`.\nNội dung tệp thực tế:\n\"\"\"Mission 1 (Calibration) — Module nghiep vu tinh tien hoa don.\n\nQUY TAC PHONG THI: Agent chi duoc doc file nay qua view_file tai gio G.\nKhong sua file nay bang tay — moi sua doi phai qua replace_file_content\ncua Agent va duoc kiem chung bang pytest.\n\"\"\"\n\nVAT_RATE = 0.10\n\n\ndef calc_subtotal(items):\n    \"\"\"items: list (price, qty). Tra ve tong tien truoc giam gia.\"\"\"\n    return sum(price * qty for price, qty in items)\n\n\ndef calc_total(items, discount_pct):\n    \"\"\"Tong thanh toan = (subtotal - giam gia) + VAT 10%.\"\"\"\n    subtotal = calc_subtotal(items)\n    discount = subtotal * discount_pct / 100\n    after_discount = subtotal - discount\n    vat = after_discount * VAT_RATE\n    return after_discount + vat - discount\n\n\nVui lòng nhìn kỹ nội dung tệp ở trên và sao chép chính xác đoạn cần sửa vào TargetContent.",
+      "ts": 1790831581.5204027,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "-> Tool 'replace_file_content' hoàn thành (output: 975 ký tự).",
+      "ts": 1790831581.5232382,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "🚧 [ANTI-OSCILLATION] Phát hiện chu kỳ lặp (replace_file_content). Đang bẻ gãy dao động.",
+      "ts": 1790831581.525461,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 6/18",
+      "ts": 1790831581.5538583,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=9011.6ms | Output=4 chars",
+      "ts": 1790831590.5717602,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'replace_file_content' authorized by ExecutionIntegrityLayer.",
+      "ts": 1790831590.6118035,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: replace_file_content(...) - TraceID: trace_fd20d0",
+      "ts": 1790831590.6154778,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'replace_file_content' via sovereign local runtime.",
+      "ts": 1790831590.6183574,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "INFO",
+      "msg": "Đã tạo backup cho `/workspace/tests/test_agent_autonomy/mission1_invoice.py`: /workspace/tests/test_agent_autonomy/mission1_invoice.py.bak.1790831590",
+      "ts": 1790831590.6759465,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[replace_file_content] ✅ Local execution succeeded",
+      "ts": 1790831590.7105408,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "FILE-EDIT",
+      "msg": "{\"type\": \"file_edit\", \"path\": \"tests/test_agent_autonomy/mission1_invoice.py\", \"diff\": \"--- a/tests/test_agent_autonomy/mission1_invoice.py\\n+++ b/tests/test_agent_autonomy/mission1_invoice.py\\n@@ -19,4 +19,4 @@\\n     discount = subtotal * discount_pct / 100\\n\\n     after_discount = subtotal - discount\\n\\n     vat = after_discount * VAT_RATE\\n\\n-    return after_discount + vat - discount\\n\\n+    return after_discount + vat\\n\\n\", \"added\": 1, \"removed\": 1, \"task_id\": \"mission1_invoice_0110-1212_fd20d0\", \"ts\": 1790831590.720132, \"open_tab\": true}",
+      "ts": 1790831590.7332647,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "-> Tool 'replace_file_content' hoàn thành (output: 90 ký tự).",
+      "ts": 1790831590.8617785,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 7/18",
+      "ts": 1790831590.8903878,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=2129.6ms | Output=4 chars",
+      "ts": 1790831593.0272417,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'run_command' authorized by ExecutionIntegrityLayer.",
+      "ts": 1790831593.0569026,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: run_command(...) - TraceID: trace_fd20d0",
+      "ts": 1790831593.0609438,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'run_command' via sovereign local runtime.",
+      "ts": 1790831593.0631902,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[run_command] ✅ Local execution succeeded",
+      "ts": 1790831595.235978,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "-> Tool 'run_command' hoàn thành (output: 392 ký tự).",
+      "ts": 1790831595.2386289,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 8/18",
+      "ts": 1790831595.2705896,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=3207.2ms | Output=3 chars",
+      "ts": 1790831598.4836445,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "🔬 Đang chạy kiểm thử tự động để xác minh chất lượng code Python...",
+      "ts": 1790831598.4864194,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "✅ Hoàn tất",
+      "ts": 1790831598.8038046,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Mục tiêu hoàn thành.",
+      "ts": 1790831598.981949,
+      "source": "SYSTEM",
+      "task_id": "mission1_invoice_0110-1212_fd20d0"
+    }
+  ],
+  "artifacts": {
+    "plan": "Kiểm tra tệp tests/test_agent_autonomy/test_mission1_invoice.py để biết lỗi test gì đang xảy ra. Sau đó đọc tests/test_agent_autonomy/mission1_invoice.py, xác định nguyên nhân tính sai tiền và dùng replace_file_content để sửa lỗi trong mission1_invoice.py. Sau khi sửa xong, chạy python -m pytest tests/test_agent_autonomy/test_mission1_invoice.py để đảm bảo 100% tests pass.",
+    "walkthrough": "Mục tiêu hoàn thành.",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

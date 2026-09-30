@@ -1,6 +1,7 @@
 import asyncio
 import logging
 from typing import Optional
+import httpx
 from core.redis_client import redis_safe
 from core.utils.models import ResourceRequest, BackendType
 

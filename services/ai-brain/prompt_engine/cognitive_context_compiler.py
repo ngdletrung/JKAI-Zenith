@@ -65,10 +65,12 @@ class CognitiveContextCompiler:
         ucws: UCWS = get_ucws(self.mission_id)
         core_memory_text = get_all_blocks_prompt()
 
-        # 1. Identity Section
+        # 1. Identity Section (Pinned to real CHANGELOG.md version, never fabricated v47.0)
+        from core.utils.engine import get_jkai_system_version
+        sys_ver = get_jkai_system_version()
         identity_sec = (
             "<identity source=\"system_kernel\">\n"
-            "  runtime = JKAI Zenith OS v47.0\n"
+            f"  runtime = JKAI Zenith OS {sys_ver}\n"
             f"  role = {role.upper()}\n"
             f"  cognitive_mode = {cognitive_mode.upper()}\n"
             "</identity>"

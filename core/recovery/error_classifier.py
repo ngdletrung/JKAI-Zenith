@@ -133,7 +133,7 @@ class ErrorClassifier:
         options = [e.value for e in ErrorSubclass]
         q = "Which of the 15 standard error subclasses precisely categorizes this failure?"
         
-        packet: TypedJudgementPacket = self.jev_adapter.evaluate_choice(state, q, options)
+        packet: TypedJudgementPacket = self.decision_adapter.evaluate_choice(state, q, options)
         subclass_str = str(packet.result)
         conf = packet.confidence
 

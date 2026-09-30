@@ -92,15 +92,32 @@ class ExecutionIntegrityLayer:
 
     # Observation tools: FAIL-OPEN (Safe to allow read-only)
     # Mutation/Execution tools: FAIL-CLOSED (Require explicit PolicySnapshot/TaskContract)
+    # NOTE: must contain BOTH "search_web*" and "web_search" canonical forms.
     OBSERVATION_TOOL_PREFIXES = [
-        "search_web", "search_web_global", "read_url", "fetch_url", "view_file",
+        "search_web", "search_web_global", "web_search", "websearch", "read_url", "fetch_url", "view_file",
         "search_memory", "execute_skill", "search", "read", "fetch", "lookup",
     ]
 
-    def _is_observation_tool(self, action: str) -> bool:
+    # Word-boundary destructive intent (fixes "rm" matching "form"/"performance").
+    # "rm" alone only counts as standalone word or "rm -rf"/"rmdir".
+    _DESTRUCTIVE_RE = None
+
+    @classmethod
+    def _destructive_re(cls):
+        import re as _re
+        if cls._DESTRUCTIVE_RE is None:
+            cls._DESTRUCTIVE_RE = _re.compile(
+                r"(?i)\b(delete|remove|unlink|rmdir|drop\s+database|truncate\s+table|xoa)\b|\brm\b\s*-rf?\b"
+            )
+        return cls._DESTRUCTIVE_RE
+
+    def is_observation_tool(self, action: str) -> bool:
         """Returns True if this tool is an observation/read-only tool (Fail-Open eligible)."""
         act = action.lower().strip()
         return any(act.startswith(prefix) or act == prefix for prefix in self.OBSERVATION_TOOL_PREFIXES)
+
+    # Backwards-compatible alias
+    _is_observation_tool = is_observation_tool
 
     def __init__(self, mission_id: str):
         self.mission_id = mission_id
@@ -122,8 +139,52 @@ class ExecutionIntegrityLayer:
         Enforces Single Authority Rule and Blacklist Supremacy via SingleAuthorityFSM.
         """
         args = arguments or {}
-        act_lower = action.lower()
+        act_lower = (action or "").lower()
         args_str = str(args).lower()
+
+        # [FIX-41310c-1] Canonical tool guard BEFORE any destructive-keyword scan.
+        # Planner hallucination ("Define site architecture: ...", "auto_code_01",
+        # "CODE_EXECUTION" raw) must return CONTRACT_VIOLATION with actionable hint,
+        # NOT a misleading "forbids file deletion" denial.
+        try:
+            from core.kernel.tool_contracts import (
+                ToolContractRegistry, is_known_tool, looks_like_sentence_tool,
+                ALLOWED_TOOL_NAMES,
+            )
+            canon = ToolContractRegistry.get_canonical_name(action or "")
+            if looks_like_sentence_tool(action or ""):
+                hint = ", ".join(ALLOWED_TOOL_NAMES)
+                return ExecutionDecision(
+                    outcome=DecisionOutcome.DENY,
+                    reason=(
+                        f"CONTRACT_VIOLATION: Unknown tool '{action}'. "
+                        f"Must use one canonical tool name in field 'tool'. "
+                        f"Allowed: {hint}. "
+                        f"Map CODE_EXECUTION->run_command, OMNI_SEARCH_ENGINE/SEARCH_WEB_GLOBAL->web_search, "
+                        f"create_file->write_to_file. Step IDs (auto_code_01, plan_*) are NOT tools."
+                    ),
+                    action=action,
+                )
+            if canon is not None:
+                # Normalize known aliases to canonical for downstream checks.
+                action = canon
+                act_lower = action.lower()
+            # [FIX-41310c-2] Auto-repair web_search missing query from sibling args.
+            if canon == "web_search":
+                q = args.get("query") or args.get("Query") or args.get("q") or args.get("pattern")
+                if not q or not str(q).strip():
+                    fallback = None
+                    for _k in ("topic", "keyword", "term", "question", "goal", "description", "input"):
+                        _v = args.get(_k) or args.get(_k.capitalize())
+                        if isinstance(_v, str) and len(_v.strip()) >= 3:
+                            fallback = _v.strip()[:300]
+                            break
+                    if fallback:
+                        args = dict(args)
+                        args["query"] = fallback
+                        args_str = str(args).lower()
+        except ImportError:
+            pass
 
         # [RELIABILITY-FIRST SLICE A] Step 0: Single Authority FSM Hard Blacklist Check
         effective_snapshot = snapshot
@@ -220,8 +281,11 @@ class ExecutionIntegrityLayer:
         # ---------------------------------------------------------------------
         # Nếu là công cụ quan sát/đọc (Observation / Search / Read), không chặn bởi từ khóa tìm kiếm
         if not self._is_observation_tool(action):
-            # A. Deletion Check
-            is_delete_req = any(k in act_lower for k in self.DESTRUCTIVE_KEYWORDS) or any(k in args_str for k in ["delete_file", "remove_file", "rmdir", "unlink"])
+            # A. Deletion Check — canonical tool membership + word-boundary intent.
+            # FIX-41310c: old `any(k in act_lower)` matched "rm" inside "form"/"performance".
+            is_delete_tool = act_lower in {"delete_file", "remove_file", "rm", "rmdir", "unlink"}
+            is_delete_intent = bool(self._destructive_re().search(act_lower + " " + args_str))
+            is_delete_req = is_delete_tool or is_delete_intent
             if is_delete_req and not can_delete:
                 logger.info(f"Execution HARD DENIED for action={action}: can_delete_files=False.")
                 return ExecutionDecision(

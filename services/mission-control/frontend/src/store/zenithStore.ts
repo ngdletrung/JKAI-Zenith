@@ -465,20 +465,18 @@ export const useZenithStore = create<ZenithState>()(
           const ms = String(now.getMilliseconds()).padStart(3, '0');
           log.timeStr = `${now.toLocaleTimeString('en-GB', { hour12: false })}.${ms}`;
 
+          const tag = log.tag?.toUpperCase() || 'SYS';
+          const msg = log.msg || '';
           if (!log.id) {
-            const tag = log.tag?.toUpperCase() || 'SYS';
-            const msg = log.msg || '';
-            // 🛡️ [DETERMINISTIC-STREAM-ID]: For streaming logs (THOUGHT/PROGRESS), use a stable ID to prevent re-mounting/flashing
-            if (['THOUGHT', 'PROGRESS', 'PLANNER', 'TƯ DUY', 'BAN KẾ HOẠCH'].includes(tag) && log.task_id) {
-              log.id = `stream_${tag}_${log.task_id}`;
+            // 🛡️ [DETERMINISTIC-STREAM-ID]: For streaming logs (THOUGHT/PROGRESS/EXECUTOR), use a stable ID to prevent re-mounting/flashing
+            if (['THOUGHT', 'PROGRESS', 'PLANNER', 'TƯ DUY', 'BAN KẾ HOẠCH', 'EXECUTOR'].includes(tag) && log.task_id) {
+              log.id = (log as any).pin_id || `stream_${tag}_${log.task_id}`;
             } else {
               log.id = `hash_${tag}_${msg.length}_${msg.slice(0, 20)}_${normalizedTs}`;
             }
           }
 
           let traceItem: TraceItem | null = null;
-          const tag = log.tag?.toUpperCase() || 'SYS';
-          const msg = log.msg || '';
 
           if (tag === 'SEARCH_RESULT' || msg.includes('Found')) {
             const countMatch = msg.match(/Found (\d+) results/i);
@@ -615,8 +613,17 @@ export const useZenithStore = create<ZenithState>()(
             }
           }
 
-          updatedOps.push(log);
-          updatedProg.push(log);
+          // Khử trùng lặp cho các tin nhắn kết quả (JKAI, MISSION_RESULT, DONE)
+          const isResultTag = ['JKAI', 'MISSION_RESULT', 'RESULT', 'DONE'].includes(tag);
+          const isDupResult = isResultTag && updatedProg.slice(-5).some(prev => 
+            ['JKAI', 'MISSION_RESULT', 'RESULT', 'DONE'].includes((prev.tag || '').toUpperCase()) && 
+            prev.msg.trim() === msg.trim()
+          );
+
+          if (!isDupResult) {
+            updatedOps.push(log);
+            updatedProg.push(log);
+          }
 
           return {
             ...s,
@@ -637,8 +644,8 @@ export const useZenithStore = create<ZenithState>()(
             let contentId = nl.id;
             if (!contentId) {
               const tag = (nl.tag || 'SYS').toUpperCase();
-              if (['THOUGHT', 'PROGRESS', 'PLANNER', 'TƯ DUY', 'BAN KẾ HOẠCH'].includes(tag) && nl.task_id) {
-                contentId = `stream_${tag}_${nl.task_id}`;
+              if (['THOUGHT', 'PROGRESS', 'PLANNER', 'TƯ DUY', 'BAN KẾ HOẠCH', 'EXECUTOR'].includes(tag) && nl.task_id) {
+                contentId = nl.id || (nl as any).pin_id || `stream_${tag}_${nl.task_id}`;
               } else {
                 contentId = `hash_${tag}_${msg.length}_${msg.slice(0, 20)}_${normalizedTs}`;
               }
@@ -785,9 +792,17 @@ export const useZenithStore = create<ZenithState>()(
               }
             }
 
-            // Master requested to temporarily remove all routing and filtering for testing:
-            updatedOps.push(nl);
-            updatedProg.push(nl);
+            // Khử trùng lặp cho các tin nhắn kết quả (JKAI, MISSION_RESULT, DONE)
+            const isResultTag = ['JKAI', 'MISSION_RESULT', 'RESULT', 'DONE'].includes(tag);
+            const isDupResult = isResultTag && updatedProg.slice(-5).some(prev => 
+              ['JKAI', 'MISSION_RESULT', 'RESULT', 'DONE'].includes((prev.tag || '').toUpperCase()) && 
+              prev.msg.trim() === msg.trim()
+            );
+
+            if (!isDupResult) {
+              updatedOps.push(nl);
+              updatedProg.push(nl);
+            }
           }
 
 

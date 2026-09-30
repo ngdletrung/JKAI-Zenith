@@ -82,6 +82,30 @@ class GoalContractCompiler:
             required_topics.append("TECHNICAL")
             success_criteria.append("CODE_INTEGRITY")
 
+        # 4b. Detect Math / Numeric Calculation Task
+        # Dùng regex phát hiện: biểu thức số học, từ khoá tính toán, đơn vị số.
+        # Nếu đây là bài toán → thêm MATH_NUMERIC_FIDELITY để:
+        #   (a) Cấm epistemic_auditor gán CONVERSATIONAL_REFLEX (score 1.0 cho bài rớt)
+        #   (b) Kích hoạt fidelity check đơn vị/từ khoá trong AQV
+        _MATH_KWS = [
+            "tính", "cộng", "trừ", "nhân", "chia", "bao nhiêu", "tổng", "tổng cộng",
+            "chi phí", "phí", "giá", "tiền", "số lượng", "chuyến", "lượt",
+            "tỷ lệ", "phần trăm", "%", "÷", "×", "=",
+        ]
+        _MATH_NUM_RE = re.compile(r'\d+\s*(?:[×x\*\/÷\+\-]|\b(?:chia|nhân|cộng|trừ)\b)\s*\d+', re.IGNORECASE)
+        _UNIT_RE = re.compile(
+            r'\d+\s*(?:thùng|tấn|kg|km|m|lit|lít|cái|chiếc|người|chuyến|lượt|nghìn|triệu|tỷ|k\b|đồng)',
+            re.IGNORECASE
+        )
+        _is_math = (
+            _MATH_NUM_RE.search(goal_text)
+            or _UNIT_RE.search(goal_text)
+            or sum(1 for kw in _MATH_KWS if kw in text_lower) >= 2
+        )
+        if _is_math:
+            required_topics.append("MATH")
+            success_criteria.append("MATH_NUMERIC_FIDELITY")
+
         # 5. Tool Suggestion Substrate (Scope-Aware & False-Positive Protected)
         suggested_tool = None
         suggested_action_prompt = None
