@@ -1,4 +1,4 @@
-﻿"""
+"""
 JKAI ZENITH AI OS — EVIDENCE PROVENANCE SCHEMA v2.2 (Constitution I3, I8, I9, I10, I11)
 File: core/os/cognition/evidence_ledger_v2.py
 """

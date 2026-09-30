@@ -29,6 +29,73 @@ from receptionist.executor_gateway import ExecutorGateway
 
 logger = logging.getLogger("JKAI.FastPipeline")
 
+
+# ─────────────────────────────────────────────────────────────────────────────
+# HELPER: Unwrap structured JSON responses từ model
+# Model đôi khi trả về { "thinking": [...], "response_text": "..." }
+# thay vì plain text. Hàm này chiết xuất phần văn bản thực sự.
+# ─────────────────────────────────────────────────────────────────────────────
+def _unwrap_structured_response(text: str) -> str:
+    """Trích xuất nội dung văn bản từ JSON có cấu trúc của model.
+
+    Xử lý các trường hợp:
+    - Model trả về raw JSON string: ``{ "thinking": [...], "response_text": "..." }``
+    - JSON bị prefix bởi greeting cũ (phòng thủ thêm): ``Chào Master, { ... }``
+    - Nested ``response`` array với ``content`` list.
+
+    Nếu text không phải JSON hoặc không có field quen thuộc thì trả về nguyên.
+    """
+    if not text:
+        return text
+
+    stripped = text.strip()
+
+    # Bước 1: Loại bỏ greeting prefix thừa trước JSON (phòng thủ)
+    prefix_match = re.match(
+        r'^(?:Chào Master,?\s*|Master,?\s*)(\{.*\})$',
+        stripped,
+        re.DOTALL
+    )
+    if prefix_match:
+        stripped = prefix_match.group(1).strip()
+
+    # Bước 2: Chỉ parse nếu trông giống JSON object
+    if not (stripped.startswith('{') and stripped.endswith('}')):
+        return text
+
+    try:
+        data = json.loads(stripped)
+        # Ưu tiên field "response_text" (COGNITIVE REASONING DIRECTIVE format)
+        if 'response_text' in data and isinstance(data['response_text'], str):
+            return data['response_text'].strip() or text
+        # Field "answer" (một số model khác)
+        if 'answer' in data and isinstance(data['answer'], str):
+            return data['answer'].strip() or text
+        # Field "response" dạng array [{content: [...]}] (Ollama chat format)
+        if 'response' in data:
+            resp = data['response']
+            if isinstance(resp, str):
+                return resp.strip() or text
+            if isinstance(resp, list):
+                parts = []
+                for item in resp:
+                    if isinstance(item, dict):
+                        content = item.get('content', '')
+                        if isinstance(content, list):
+                            parts.extend(
+                                c.get('text', '') for c in content
+                                if isinstance(c, dict) and c.get('type') == 'text'
+                            )
+                        elif isinstance(content, str):
+                            parts.append(content)
+                joined = ' '.join(p for p in parts if p).strip()
+                if joined:
+                    return joined
+    except (json.JSONDecodeError, TypeError, KeyError):
+        pass
+
+    return text
+
 _ref_pattern = re.compile(
     r"\b(nó|đó|kia|này|trên|vừa rồi|lúc nãy|trước đó|câu trước|ở trên|đã nói|như trên|như đã nói|cái đó|việc đó|vấn đề này|it|that|this|previous|above|mentioned)\b",
     re.IGNORECASE,
@@ -386,29 +453,57 @@ class FastPipeline:
             verified_block = "\n".join(preflight_verified_data)
             context_msgs.append({"role": "system", "content": f"🚨 [GROUND-TRUTH-VERIFICATION]: Dữ liệu kiểm chứng thực nghiệm từ hệ điều hành:\n{verified_block}\nBắt buộc phải trả lời dựa trên dữ liệu kiểm chứng này, không tự bịa đặt."})
 
-        # 4.6. Negative Memory Injection: Tra cứu bài học sai trong quá khứ để không lặp lại
+        # 4.6. Episodic Multi-Domain Memory Brain (Bộ Não Ngoài Truy Xuất Theo Mã Việc)
+        try:
+            from core.memory.episodic_brain import episodic_brain, classify_task, THETA_UNFIT_PLACEHOLDER
+            # Phân loại mã việc theo Taxonomy 2 tầng (Router tags -> Bảng từ khóa -> Khóa chặn)
+            task_code = classify_task(
+                goal=state.goal,
+                tags=getattr(state.decision, "tags", []) or [],
+                mode=str(getattr(state.decision, "mode", ""))
+            )
+
+            # Quy tắc sắt: Nếu có mã việc hợp lệ mới truy xuất, ngoài phạm vi cấm đoán bừa
+            if task_code:
+                exemplars = episodic_brain.recall_relevant_exemplars(
+                    goal=state.step_goal,
+                    task_code=task_code,
+                    top_k=2,
+                    threshold=THETA_UNFIT_PLACEHOLDER
+                )
+                if exemplars:
+                    memory_prompt = episodic_brain.format_context_prompt(exemplars)
+                    context_msgs.append({
+                        "role": "system",
+                        "content": memory_prompt.strip()
+                    })
+                    ref_ids = [ex.record_id for ex in exemplars]
+                    engine.publish_mission_log(
+                        "BRAIN",
+                        f"🧠 [EPISODIC-BRAIN-HIT]: Kích hoạt {len(exemplars)} bài học chuẩn Master (Refs: {', '.join(ref_ids)} | TaskCode: {task_code})",
+                        state.task_id,
+                        state.trace_id,
+                        stealth=True
+                    )
+        except Exception as ex_epi:
+            logger.warning("[EPISODIC-BRAIN-WARN] Lỗi truy xuất bộ não ngoài: %s", ex_epi)
+
+        # 4.7. Fallback Negative Memory từ ExperienceStore (nếu có bài học cục bộ cũ)
         try:
             from core.memory.experience_store import ExperienceStore
             from core.memory.telemetry_experience_bridge import compute_error_fingerprint, telemetry_bridge
-            
-            # Đảm bảo đồng bộ nhãn mới nhất nếu có
             telemetry_bridge.sync_labeled_records()
-            
             fingerprint = compute_error_fingerprint(state.goal)
             past_lessons = ExperienceStore.get_negative_lessons(fingerprint)
             if past_lessons:
                 lesson_text = "\n".join([f"- {l}" for l in past_lessons[-3:]])
                 context_msgs.append({
                     "role": "system",
-                    "content": (
-                        f"⚠️ [NEGATIVE-LESSON-GUARD]: Trong quá khứ với câu hỏi tương tự, câu trả lời đã bị đánh giá SAI/CHƯA CHUẨN.\n"
-                        f"Các sai sót cần tuyệt đối tránh:\n{lesson_text}\n"
-                        f"Chỉ thị: Phải đổi chiến lược trả lời, trực diện, chính xác và không lặp lại sai sót trên."
-                    )
+                    "content": f"⚠️ [NEGATIVE-LESSON-GUARD]: Tránh lặp lại sai sót cũ:\n{lesson_text}"
                 })
-                engine.publish_mission_log("BRAIN", f"[NEGATIVE-MEMORY-HIT] Áp dụng {len(past_lessons)} bài học cảnh báo từ phản hồi của Master.", state.task_id, state.trace_id, stealth=True)
         except Exception as ex_neg:
-            logger.warning("[NEGATIVE-MEMORY-WARN] Lỗi tra cứu bài học cũ: %s", ex_neg)
+            logger.debug("[NEGATIVE-MEMORY-SKIP] %s", ex_neg)
+
 
         # 5. One-Pass Inference qua Central Engine
         role = state.decision.role
@@ -563,8 +658,10 @@ class FastPipeline:
                         current_code = code_actuator.extract_python_code(res_str) or current_code
                         continue
 
-        # Ghi nhận kết quả
-        state.final_answer = res_str or "Đã hoàn tất xử lý yêu cầu thưa Master."
+        # Ghi nhận kết quả — chiết xuất văn bản nếu model trả về JSON có cấu trúc
+        state.final_answer = _unwrap_structured_response(
+            res_str or "Đã hoàn tất xử lý yêu cầu thưa Master."
+        )
         state.is_completed = True
 
     # ─────────────────────────────────────────────────────────────────────────
@@ -599,17 +696,15 @@ class FastPipeline:
                 reason=audit_report.rationale
             )
 
-            # Substrate Tool Suggestion: Tự động đề xuất xuất file khi người dùng có nhu cầu tổng hợp
+            # Substrate Tool Suggestion: Ghi nhận vào ledger nhưng không tự ý gắn đuôi chào mời vào câu trả lời của Master
             if contract.suggested_action_prompt and not state.artifacts_created:
-                if contract.suggested_action_prompt not in state.final_answer:
-                    state.final_answer = f"{state.final_answer}\n\n💡 *{contract.suggested_action_prompt}*"
-                    decision_ledger.record_decision(
-                        decision_type="TOOL_SUGGESTION",
-                        task_id=state.task_id,
-                        input_summary=f"Goal: {state.goal[:80]}...",
-                        output_decision=contract.suggested_tool or "OFFICE_SUITE_MASTER",
-                        reason=contract.suggested_action_prompt
-                    )
+                decision_ledger.record_decision(
+                    decision_type="TOOL_SUGGESTION",
+                    task_id=state.task_id,
+                    input_summary=f"Goal: {state.goal[:80]}...",
+                    output_decision=contract.suggested_tool or "OFFICE_SUITE_MASTER",
+                    reason=contract.suggested_action_prompt
+                )
             
             # Tích hợp tự động học hỏi vào ExperienceStore (Engram v2)
             if audit_report.verdict.value in ("PARTIALLY_FULFILLED", "OFF_TOPIC", "EVIDENCE_INSUFFICIENT"):
@@ -640,9 +735,9 @@ class FastPipeline:
 
             aqv_report = answer_quality_verifier.verify(state.final_answer, state.goal)
             
-            # Tự động hiệu chỉnh câu chào nếu thiếu (không đổi ngữ nghĩa cốt lõi)
+            # Áp dụng bản hiệu chỉnh từ AQV (nếu có), đồng thời unwrap JSON phòng thủ
             if aqv_report.corrected_text:
-                state.final_answer = aqv_report.corrected_text
+                state.final_answer = _unwrap_structured_response(aqv_report.corrected_text)
 
             engine.publish_mission_log(
                 "ANSWER_QUALITY_AUDIT",

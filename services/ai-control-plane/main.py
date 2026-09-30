@@ -572,3 +572,59 @@ async def get_reflection_journal(limit: int = 20):
         }
     except Exception as e:
         return {"status": "error", "msg": str(e)}
+
+@app.post("/api/label_log")
+async def label_log_endpoint(payload: dict):
+    """
+    MASTER ACTIVE LEARNING INGESTION:
+    Tiếp nhận nhãn vàng do Master trực tiếp chấm trên Dashboard UI.
+    Lưu trực tiếp vào master_gold_dataset.jsonl và đồng bộ ExperienceStore.
+    """
+    try:
+        import uuid
+        from core.dataset.dataset_manager import dataset_manager, LabeledRecord
+
+        
+        task_id = payload.get("task_id", f"manual_{int(time.time())}")
+        log_id = payload.get("log_id", str(uuid.uuid4())[:8])
+        raw_verdict = payload.get("verdict", "CORRECT")
+        notes = payload.get("notes") or payload.get("msg_preview", "")
+
+        # Ánh xạ sang ACCEPT / REJECT / REVIEW
+        verdict_map = {
+            "CORRECT": "ACCEPT",
+            "PARTIALLY_CORRECT": "REVIEW",
+            "COMPLETELY_WRONG": "REJECT"
+        }
+        final_verdict = verdict_map.get(raw_verdict, "REVIEW")
+
+        # Đọc goal và response từ Redis nếu có
+        def _get_context(r):
+            # Tìm goal
+            raw_meta = r.hgetall(f"task:meta:{task_id}")
+            return raw_meta
+        
+        meta = redis_safe(_get_context, {})
+        goal = payload.get("msg_preview") or f"Mission {task_id}"
+
+        record = LabeledRecord(
+            id=f"GOLD_{task_id}_{log_id}",
+            category="MASTER_ACTIVE_LABEL",
+            goal=goal,
+            history=[],
+            model_response=notes,
+            target_response="Master Approved Behavior" if final_verdict == "ACCEPT" else "Needs Improvement",
+            verdict=final_verdict,
+            failure_type="MODEL_BEHAVIOR_FAILURE" if final_verdict == "REJECT" else None,
+            source_mission_id=task_id,
+            reviewed_by_master=True,
+            master_notes=notes
+        )
+
+        dataset_manager.record_master_feedback(record)
+        logger.info(f"💎 [GOLD-LABEL-INGESTED]: Master scored Task {task_id} as {final_verdict}")
+        return {"ok": True, "record_id": record.id, "verdict": final_verdict}
+    except Exception as ex:
+        logger.error(f"[LABEL-LOG-ERR] {ex}")
+        return {"ok": False, "error": str(ex)}
+

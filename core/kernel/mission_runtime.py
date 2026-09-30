@@ -20,11 +20,17 @@ class MissionRuntime:
     🎮 MissionRuntime: Lớp điều phối trung tâm quản lý toàn bộ vòng đời của Mission.
     Kết nối: EventStore + SnapshotEngine + CapabilityBroker + DAGScheduler.
     """
-    def __init__(self, base_dir: str = "data/missions", broker: Optional[CapabilityBroker] = None):
+    def __init__(
+        self,
+        base_dir: str = "data/missions",
+        broker: Optional[CapabilityBroker] = None,
+        shadow_harness: Optional[Any] = None
+    ):
         self.event_store = EventStore(base_dir=base_dir)
         self.broker = broker or CapabilityBroker()
         self.snapshot_engine = SnapshotEngine(base_dir=base_dir, event_store=self.event_store)
         self.scheduler = DAGScheduler(event_store=self.event_store, capability_broker=self.broker)
+        self.shadow_harness = shadow_harness
 
     def submit_mission(self, context: MissionContext) -> str:
         """
@@ -63,6 +69,19 @@ class MissionRuntime:
         # Thiết lập callback để tự động lưu Snapshot mỗi khi có node hoàn thành
         async def wrapped_executor(node, input_ctx):
             output = await executor_func(node, input_ctx)
+            # Ghi nhận shadow telemetry an toàn
+            if self.shadow_harness:
+                try:
+                    node_id = getattr(node, "id", None) or getattr(node, "node_id", str(node))
+                    node_action = getattr(node, "capability", None) or getattr(node, "name", "")
+                    self.shadow_harness.record_observation(
+                        raw_state=input_ctx if isinstance(input_ctx, dict) else {"ctx": str(input_ctx)},
+                        reflex_draft={"node_id": node_id, "action": node_action},
+                        execution_receipt={"status": "COMPLETED", "output": str(output)[:1000]},
+                        metadata={"mission_id": mission_id, "source": "MissionRuntime"}
+                    )
+                except Exception:
+                    pass
             # Chụp nhanh snapshot để lưu checkpoint an toàn xuống đĩa
             latest_state = self.snapshot_engine.get_latest_state(mission_id)
             # Lấy event cuối cùng vừa được ghi vào log
@@ -71,6 +90,7 @@ class MissionRuntime:
                 last_event = all_events[-1]
                 self.snapshot_engine.save_snapshot(latest_state, last_event.event_id, last_event.timestamp)
             return output
+
 
         success = await self.scheduler.execute_plan(mission_id, state.plan, state.context, wrapped_executor)
         

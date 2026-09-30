@@ -68,11 +68,28 @@ def wait_for_internet(timeout=60):
             time.sleep(2)
     return False
 
+def _apply_output_gate(text):
+    """Biên giới thông tin: che từ nội bộ trước khi gửi Master (không bao giờ chặn gửi)."""
+    try:
+        try:
+            from core.governance.internal_vocabulary import gate_user_text
+        except ImportError:
+            from internal_vocabulary import gate_user_text
+        cleaned, hits = gate_user_text(text)
+        if hits:
+            print(f"⚠️ [OUTPUT-GATE] Che {len(hits)} từ nội bộ trước khi gửi Master: {hits}")
+        return cleaned
+    except Exception as e:
+        print(f"⚠️ [OUTPUT-GATE-SKIP] Không tải được gate ({e}), gửi nguyên văn.")
+        return text
+
+
 def safe_edit_message_text(chat_id, message_id, text, p_id=None, last_edit_map=None, **kwargs):
     """
     🛡️ [TELE-RATE-LIMIT-GUARD]: Thao tác sửa tin nhắn Telegram an toàn tuyệt đối.
     Tránh lỗi 429 Too Many Requests và tự động fallback sang text thuần nếu lỗi định dạng HTML.
     """
+    text = _apply_output_gate(text)
     try:
         res = bot.edit_message_text(chat_id=chat_id, message_id=message_id, text=text, **kwargs)
         if p_id and isinstance(last_edit_map, dict):
@@ -108,6 +125,7 @@ def safe_edit_message_text(chat_id, message_id, text, p_id=None, last_edit_map=N
 
 def safe_send_message(chat_id, text, **kwargs):
     """🚀 [RESILIENT-SENDER]: Giao thức gửi tin nhắn bền bỉ với cơ chế HTML Fallback tức thì."""
+    text = _apply_output_gate(text)
     import random
     time.sleep(random.uniform(0.1, 0.3))
     max_retries = 3

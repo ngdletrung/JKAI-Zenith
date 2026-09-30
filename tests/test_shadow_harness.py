@@ -75,3 +75,42 @@ def test_shadow_harness_disabled_mode():
         assert record is None
         files = list(Path(tmp_dir).glob("*.jsonl"))
         assert len(files) == 0
+
+
+def test_shadow_harness_two_phase_pairing():
+    """Verifies that start_observation + complete_observation produces a complete paired triple."""
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        harness = ShadowHarness(telemetry_dir=tmp_dir)
+
+        # 1. Start observation at decision time
+        cid = harness.start_observation(
+            raw_state={"user_query": "replan mission 123", "token": "secret_abc"},
+            reflex_draft={"action": "REPLAN", "confidence": 0.95},
+            metadata={"caller": "test"}
+        )
+        assert cid is not None
+        assert cid.startswith("corr_")
+
+        # No file on disk yet (unpaired records are NOT written)
+        files = list(Path(tmp_dir).glob("*.jsonl"))
+        assert len(files) == 0
+
+        # 2. Complete observation when execution receipt arrives
+        receipt = {"exit_code": 0, "verified": True, "latency_ms": 12.5}
+        record = harness.complete_observation(cid, execution_receipt=receipt)
+
+        assert record is not None
+        assert record.execution_receipt == receipt
+        assert record.sanitized_state["token"] == "[REDACTED_SECRET]" or "secret" not in json.dumps(record.sanitized_state)
+        assert record.reflex_draft["action"] == "REPLAN"
+
+        # Now exactly 1 paired record exists on disk
+        files = list(Path(tmp_dir).glob("*.jsonl"))
+        assert len(files) == 1
+
+        stats = harness.get_telemetry_stats()
+        assert stats["total_records"] == 1
+        assert stats["paired_records"] == 1
+        assert stats["unpaired_records"] == 0
+        assert stats["pairing_rate_pct"] == 100.0
+

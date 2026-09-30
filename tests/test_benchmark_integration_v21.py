@@ -74,7 +74,7 @@ class TestBenchmarkIntegrationV21(unittest.IsolatedAsyncioTestCase):
         """A2: REQUIRE_APPROVAL proof — high-risk action halts, returns interrupt_id, HTTP call count is 0."""
         task_id = "task_A"
         contract = TaskContract(
-            objective="Update config",
+            objective="Network access",
             decision_authority=DecisionAuthority(can_modify_files=True)
         )
         set_active_contract(task_id, contract)
@@ -82,8 +82,8 @@ class TestBenchmarkIntegrationV21(unittest.IsolatedAsyncioTestCase):
         req = ExecutionRequest(
             trace_id="tr_a2",
             capability_token={},
-            tool_name="write_file",
-            tool_args={"file_path": ".env", "content": "SECRET=123"}
+            tool_name="run_command",
+            tool_args={"command": "curl https://external-api.com"}
         )
 
         res = await self.gateway.execute_tool(req, task_id=task_id)
@@ -99,29 +99,30 @@ class TestBenchmarkIntegrationV21(unittest.IsolatedAsyncioTestCase):
         """A3: ALLOW proof — safe action proceeds, returns ALLOW, and HTTP executor is called 1 time."""
         task_id = "task_A"
         contract = TaskContract(
-            objective="Read data",
+            objective="Query external data",
             decision_authority=DecisionAuthority(can_modify_files=True)
         )
         set_active_contract(task_id, contract)
 
         # Mock HTTP response from executor
         mock_response = MagicMock()
-        mock_response.json.return_value = {"status": "success", "output": "File content mock"}
+        mock_response.json.return_value = {"status": "success", "output": "Tool content mock"}
         self.mock_http_client.post.return_value = mock_response
 
-        with patch("core.utils.registry.registry.get_service_url", return_value="http://mock-executor"):
+        with patch("core.utils.registry.registry.get_service_url", return_value="http://mock-executor"), \
+             patch.object(self.gateway, "_probe_executor_health", return_value=True):
             req = ExecutionRequest(
                 trace_id="tr_a3",
                 capability_token={},
-                tool_name="read_file",
-                tool_args={"file_path": "report.pdf"}
+                tool_name="custom_http_tool",
+                tool_args={"param": "test"}
             )
             res = await self.gateway.execute_tool(req, task_id=task_id)
 
             self.assertIsInstance(res, ExecutionResult)
             self.assertEqual(res.outcome, DecisionOutcome.ALLOW)
             self.assertTrue(res.tool_executed)
-            self.assertEqual(res.result, "File content mock")
+            self.assertEqual(res.result, "Tool content mock")
             # HTTP executor MUST have been called exactly 1 time
             self.assertEqual(self.mock_http_client.post.call_count, 1)
 
@@ -245,8 +246,8 @@ class TestBenchmarkIntegrationV21(unittest.IsolatedAsyncioTestCase):
         set_active_contract(task_id_a, TaskContract(objective="A", decision_authority=DecisionAuthority(can_modify_files=True)))
         set_active_contract(task_id_b, TaskContract(objective="B", decision_authority=DecisionAuthority(can_modify_files=True)))
 
-        # Task A triggers high-risk write -> REQUIRE_APPROVAL
-        req_a = ExecutionRequest(trace_id="tr_c1a", capability_token={}, tool_name="write_file", tool_args={"file_path": ".env"})
+        # Task A triggers high-risk command -> REQUIRE_APPROVAL
+        req_a = ExecutionRequest(trace_id="tr_c1a", capability_token={}, tool_name="run_command", tool_args={"command": "curl https://external-api.com"})
         res_a = await self.gateway.execute_tool(req_a, task_id=task_id_a)
 
         self.assertEqual(res_a.outcome, DecisionOutcome.REQUIRE_APPROVAL)
@@ -256,8 +257,8 @@ class TestBenchmarkIntegrationV21(unittest.IsolatedAsyncioTestCase):
         req_b = ExecutionRequest(
             trace_id="tr_c1b",
             capability_token={"replayed_interrupt_id": interrupt_id_a},
-            tool_name="write_file",
-            tool_args={"file_path": ".env"}
+            tool_name="run_command",
+            tool_args={"command": "curl https://external-api.com"}
         )
         res_b = await self.gateway.execute_tool(req_b, task_id=task_id_b)
 
@@ -271,14 +272,14 @@ class TestBenchmarkIntegrationV21(unittest.IsolatedAsyncioTestCase):
         task_id = "task_A"
         set_active_contract(task_id, TaskContract(objective="A", decision_authority=DecisionAuthority(can_modify_files=True, can_delete_files=False)))
 
-        req_write = ExecutionRequest(trace_id="tr_c2", capability_token={}, tool_name="write_file", tool_args={"file_path": ".env"})
+        req_write = ExecutionRequest(trace_id="tr_c2", capability_token={}, tool_name="run_command", tool_args={"command": "curl https://external-api.com"})
         res_write = await self.gateway.execute_tool(req_write, task_id=task_id)
 
-        # write_file on .env triggers REQUIRE_APPROVAL
+        # curl triggers REQUIRE_APPROVAL
         self.assertEqual(res_write.outcome, DecisionOutcome.REQUIRE_APPROVAL)
 
         # Mutating action to delete_file must trigger HARD DENY (not approval)
-        req_del = ExecutionRequest(trace_id="tr_c2", capability_token={}, tool_name="delete_file", tool_args={"file_path": ".env"})
+        req_del = ExecutionRequest(trace_id="tr_c2", capability_token={}, tool_name="delete_file", tool_args={"TargetFile": "important.docx"})
         res_del = await self.gateway.execute_tool(req_del, task_id=task_id)
 
         self.assertEqual(res_del.outcome, DecisionOutcome.DENY)

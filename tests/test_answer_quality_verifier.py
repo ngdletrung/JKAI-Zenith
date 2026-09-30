@@ -16,12 +16,15 @@ class TestAnswerQualityCore:
         assert r.dung.passed is False
         assert r.overall_passed is False
 
-    def test_03_missing_greeting_auto_corrected(self):
+    def test_03_direct_answer_passes_du(self):
+        """Câu trả lời trực tiếp không cần greeting — AQV không được tự bổ sung."""
         text = ("Báo cáo phân tích của bạn đã hoàn thành đầy đủ với tất cả "
                 "các chỉ số được tổng hợp chi tiết theo từng hạng mục yêu cầu.")
         r = answer_quality_verifier.verify(text, goal="báo cáo phân tích")
-        assert r.corrected_text is not None
-        assert r.corrected_text.startswith("Chào Master,")
+        # AQV không còn được phép force greeting — corrected_text phải là None
+        assert r.corrected_text is None, (
+            f"AQV không được tự thêm greeting. corrected_text={r.corrected_text!r}"
+        )
         assert r.du.passed is True
 
     def test_04_verbose_off_goal_fails_trung(self):

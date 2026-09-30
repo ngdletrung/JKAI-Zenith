@@ -8,7 +8,7 @@ RUN pip install --no-cache-dir --upgrade pip && \
 
 # 2. Cài đặt các phụ thuộc hệ thống và Chromium (Bước này nặng nhất nên được cache tuyệt đối)
 RUN playwright install-deps chromium && \
-    playwright install chromium
+    playwright install chromium chrome
 
 # 3. Sao chép requirements và cài đặt các thư viện khác
 COPY requirements.txt .

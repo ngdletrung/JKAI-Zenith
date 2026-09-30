@@ -45,6 +45,15 @@ class ViewFileContract(BaseModel):
     EndLine: Optional[int] = Field(default=None, description="End line 1-indexed")
 
 
+class VerifyFileContract(BaseModel):
+    TargetFile: str = Field(..., description="Path to file to verify")
+
+
+class DeleteFileContract(BaseModel):
+    TargetFile: str = Field(..., description="Path to file to delete")
+    Confirm: Optional[bool] = Field(default=True, description="Safety confirmation flag")
+
+
 class GrepSearchContract(BaseModel):
     SearchPath: str = Field(..., description="Path to directory or file to search")
     Query: str = Field(..., description="Search term or regex pattern")
@@ -99,6 +108,8 @@ class ToolContractRegistry:
         "CommandLine": ["command", "cmd", "script", "command_line"],
         "SearchPath": ["path", "dir", "directory", "folder", "search_dir"],
         "Query": ["pattern", "keyword", "term", "q", "search_query"],
+        "TargetContent": ["target", "old_content", "old_str", "old_code", "find", "search", "snippet", "targetcontent"],
+        "ReplacementContent": ["replacement", "new_content", "new_str", "new_code", "replace", "new", "replacementcontent"],
     }
 
     @classmethod
@@ -217,6 +228,8 @@ ToolContractRegistry.register("run_command", RunCommandContract, ["execute_comma
 ToolContractRegistry.register("view_file", ViewFileContract, ["read_file", "read_code", "viewfile"])
 ToolContractRegistry.register("grep_search", GrepSearchContract, ["grep", "search_files", "pattern"])
 ToolContractRegistry.register("list_dir", ListDirContract, ["listdir", "ls"])
+ToolContractRegistry.register("verify_file", VerifyFileContract, ["check_file"])
+ToolContractRegistry.register("delete_file", DeleteFileContract, ["remove_file", "rm"])
 ToolContractRegistry.register("web_search", WebSearchContract, ["search_web", "tavily_search", "search_web_global"])
 ToolContractRegistry.register("python_execute", PythonExecuteContract, ["py_exec", "run_python"])
 

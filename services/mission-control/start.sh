@@ -1,6 +1,8 @@
 #!/bin/sh
 set -e
 
+export PYTHONPATH="/shared:/workspace:${PYTHONPATH}"
+
 echo "ðŸš€ [JKAI] Starting Mission Control backend (9998)..."
 cd /app/backend
 gunicorn -k geventwebsocket.gunicorn.workers.GeventWebSocketWorker -w 1 --worker-connections 3000 --backlog 4096 --timeout 120 --keep-alive 75 --bind 0.0.0.0:9998 main:app &

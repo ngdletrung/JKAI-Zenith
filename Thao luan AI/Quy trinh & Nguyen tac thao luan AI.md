@@ -98,7 +98,11 @@ python -c "import json; from pathlib import Path; p = Path('Thao luan AI/state.j
    - Chỉ đạo trực tiếp của Người Dùng: *"Chú ý là OpenCode phải ghi rõ mọi thông tin cũng như đề xuất cải tiến vào file thảo luận nhé"*.
    - OpenCode BẮT BUỘC phải dùng công cụ chỉnh sửa tệp để **ghi trực tiếp toàn văn mọi thông tin, luận điểm phản biện, câu hỏi chất vấn và mọi đề xuất cải tiến** vào tệp `Noi dung thao luan.md` (được đóng gói trong Turn Block chuẩn v2.0).
    - Tuyệt đối nghiêm cấm việc chỉ chat phản hồi qua API hoặc chỉ tóm tắt sơ sài mà không lưu lại toàn vẹn tri thức và đề xuất cải tiến vào tệp.
-
+5. **Bắt Buộc Đề Xuất Cải Tiến Kỹ Thuật Chủ Động (Mandatory Proactive Technical Proposals)**:
+   - Chỉ đạo trực tiếp của Master: *"hình như opencode ko có đề xuất thì phải ? ... vậy thì phải yêu cầu opencode thêm đề xuất cải tiến nữa chứ ? ... đưa nguyên tắc này vào luôn trong qui trình thảo luận"*.
+   - OpenCode **TUYỆT ĐỐI KHÔNG ĐƯỢC PHÉP** chỉ đóng vai trò "người chấm thi thụ động" (chỉ pass/fail, chỉ trích lỗi rồi đứng ngoài, hoặc chỉ gật/lắc đầu trước các phương án của Antigravity).
+   - Trong mọi lượt phản biện, bên cạnh việc thẩm tra và chỉ ra rủi ro (Red Team Critique), OpenCode **BẮT BUỘC PHẢI CHỦ ĐỘNG ĐƯA RA CÁC ĐỀ XUẤT CẢI TIẾN KỸ THUẬT (PROACTIVE IMPROVEMENT PROPOSALS)** cụ thể: kiến trúc, mô hình, hàm mất mát (loss function), tối ưu hóa luồng dữ liệu, thuật toán hoặc giải pháp kỹ thuật thay thế tối ưu hơn.
+   - Bất kỳ lượt phản biện nào từ OpenCode chỉ có nhận xét suông hoặc phán xét hình thức mà không đi kèm đề xuất giải pháp/cải tiến mang tính xây dựng sẽ bị coi là **chưa đạt chuẩn hoàn tất lượt** (Incomplete Turn).
 
 ---
 
@@ -284,26 +288,29 @@ Tuyệt đối không dùng khái niệm "test pass 100%" làm thước đo duy 
 
 ## 🧹 XII. NGUYÊN TẮC DỌN DẸP, NÉN BỘ NHỚ VÀ LƯU TRỮ (SCRATCHPAD ARCHIVING & COMPACTION)
 
-Nhằm đảm bảo hiệu năng đọc siêu tốc, chống phình to context và ngăn ngừa tuyệt đối nguy cơ mất mát dữ liệu, việc cắt tỉa hoặc dọn dẹp tệp `Noi dung thao luan.md` tuân thủ các quy tắc sắt đá:
+> **Chỉ thị trực tiếp từ Master**:
+> *"trong qui trình thảo luận quên nguyên tắc khi hết 1 chủ đề thì phải xoá bớt nội dung trong file thao luân để ngắn lại chứ"*
 
-1. **Thẩm Quyền Duy Nhất (Sole Cleaning Authority)**:
+Nhằm đảm bảo hiệu năng đọc siêu tốc, chống phình to context, triệt tiêu nguy cơ cạn kiệt token window và ngăn ngừa tuyệt đối mất mát dữ liệu, việc cắt tỉa hoặc dọn dẹp tệp `Noi dung thao luan.md` tuân thủ các quy tắc sắt đá sau:
+
+1. **Nguyên Tắc Bắt Buộc: Hết 1 Chủ Đề Phải Xoá Bớt Nội Dung (Mandatory Topic Completion Pruning)**:
+   - **Tuyệt đối không để tệp thảo luận tích luỹ dồn dập qua nhiều chủ đề** dẫn tới tình trạng tệp phình to hàng ngàn dòng / hàng megabyte (gây quá tải token, chậm trễ I/O và suy giảm độ sắc bén của mô hình).
+   - Ngay khi hai bên **hoàn tất hoặc chuyển sang một chủ đề mới** (ví dụ: xong chủ đề 5 lỗ hổng P0, xong chủ đề lọc sạch dataset, xong chủ đề thiết kế script huấn luyện LoRA): Antigravity **BẮT BUỘC PHẢI SAO LƯU (ARCHIVE) VÀ XOÁ BỚT TOÀN BỘ CÁC LƯỢT TRANH LUẬN CŨ**.
+   - Cấu trúc tệp `Noi dung thao luan.md` sau khi cắt tỉa bắt buộc chỉ gồm:
+     1. Header phiên làm việc quy chuẩn.
+     2. **Bảng đúc kết đồng thuận các chủ đề trước (Distilled Topic Consensus Summary)**: Tóm tắt cực kỳ cô đọng (~30–50 dòng) các quyết định kỹ thuật, mã nguồn đã sửa và kết quả kiểm thử đã chốt.
+     3. Lượt gần nhất của đối tác (để bảo toàn chuỗi `parent_turn_id`).
+     4. Lượt mở đầu của chủ đề mới tiếp theo.
+   - **Ngưỡng trần cứng (Hard Limit)**: Tệp `Noi dung thao luan.md` **BẮT BUỘC PHẢI DUY TRÌ DƯỚI 300 DÒNG (HOẶC DƯỚI 40 KB)**. Mọi trường hợp để tệp vượt quá 500 dòng mà không cắt tỉa đều bị coi là vi phạm nghiêm trọng quy chế vận hành.
+
+2. **Thẩm Quyền Duy Nhất (Sole Cleaning Authority)**:
    - **CHỈ CÓ DUY NHẤT ANTIGRAVITY (Lead Builder & Chủ tọa)** có thẩm quyền thực hiện việc lưu trữ (archive), cắt tỉa hoặc dọn dẹp tệp `Noi dung thao luan.md`.
    - OpenCode và các công cụ khác **TUYỆT ĐỐI KHÔNG ĐƯỢC PHÉP** xóa, cắt ngắn hoặc sửa đổi cấu trúc các lượt trước trong tệp thảo luận. OpenCode chỉ thực hiện duy nhất thao tác nối thêm (append) Turn Block của mình vào cuối tệp.
-2. **3 Thời Điểm Kích Hoạt Dọn Dẹp / Cắt Tỉa (The 3 Cleaning Triggers)**:
-   - **Thời điểm 1 — Kết thúc toàn diện phiên làm việc (`COMPLETED`)**:
-     * Ngay khi phiên làm việc hoàn tất toàn bộ các pha/vòng và được nghiệm thu.
-     * Toàn bộ nội dung phiên cũ bắt buộc phải được sao chép nguyên vẹn 100% sang `Thao luan AI/archive_Phien_{XX}_{Ten_Phien}.md`.
-     * Tệp `Noi dung thao luan.md` sau khi dọn dẹp chỉ giữ lại phần Header quy chuẩn và Lượt 1 mở đầu của phiên làm việc mới.
-   - **Thời điểm 2 — Nén bộ nhớ giữa các Vòng trong phiên thảo luận dài (Intra-Session Milestone Compaction)**:
-     * Trong các phiên thảo luận lớn (như Phiên 19 gồm 4 Vòng), dung lượng tệp sẽ tăng dần theo từng vòng trao đổi.
-     * Ngay sau khi hai bên đạt mốc đồng thuận kết thúc một Cột mốc lớn (ví dụ xong Vòng 1 & 2), Antigravity sẽ:
-       1. Lưu trọn vẹn lịch sử chi tiết vào tệp lưu trữ trung gian: `Thao luan AI/archive_Phien_{XX}_Part1_{Ten_Vong}.md`.
-       2. Nén toàn bộ nội dung các lượt tranh luận cũ thành một khối **"BẢNG ĐÚC KẾT ĐỒNG THUẬN CÁC VÒNG TRƯỚC" (Distilled Consensus Snapshot)** cô đọng (~30–40 dòng).
-       3. Giữ lại Header + Khối Đúc kết + Lượt gần nhất $\rightarrow$ Đưa tệp về dưới 200 dòng để giải phóng ngữ cảnh tối đa cho các Vòng tiếp theo.
-   - **Thời điểm 3 — Chạm ngưỡng an toàn dung lượng (Safety Capacity Threshold)**:
-     * Khi tệp vượt quá **500 dòng** hoặc **35 KB**, Antigravity sẽ chủ động kích hoạt nén bộ nhớ ngay ở đầu lượt của mình trước khi viết nội dung mới.
+
 3. **Nguyên Tắc Bất Khả Xâm Phạm: Lưu-Trước-Xóa (Archive-Before-Clean — Zero Data Loss)**:
-   - Tuyệt đối nghiêm cấm việc xóa trắng hoặc cắt tỉa bất kỳ dòng nội dung nào mà chưa được sao lưu an toàn vào thư mục `archive_...`.
+   - **Lưu trữ toàn vẹn 100% trước khi xóa**: Toàn bộ nội dung chi tiết của các chủ đề/vòng thảo luận cũ bắt buộc phải được copy nguyên vẹn sang tệp lưu trữ:
+     `Thao luan AI/archive_Phien_{XX}_{Ten_Chu_De_Hoac_Part}.md`.
+   - Tuyệt đối nghiêm cấm việc xóa trắng hoặc cắt tỉa bất kỳ dòng nội dung nào khi chưa có tệp archive tương ứng trên đĩa.
    - **Bảo toàn chuỗi liên tục (Turn Chain Continuity)**: Khi nén bộ nhớ, bắt buộc phải giữ lại Turn Block gần nhất của đối tác để đảm bảo chuỗi liên kết `parent_turn_id` của lượt tiếp theo không bị đứt gãy.
 
 
@@ -330,5 +337,27 @@ Nhằm đảm bảo hiệu năng đọc siêu tốc, chống phình to context v
 
 ---
 
+## 🚀 XIV. NGUYÊN TẮC 158: ĐỒNG KIẾN TẠO & TRÁCH NHIỆM KỸ THUẬT NGANG HÀNG (CO-CREATION & PEER ENGINEERING ACCOUNTABILITY)
+
+> **Chỉ thị trực tiếp từ Master**:
+> *"hình như opencode ko có đề xuất thì phải ? ... vậy thì phải yêu cầu opencode thêm đề xuất cải tiến nữa chứ ? ... đưa nguyên tắc này vào luôn trong qui trình thảo luận"*
+
+1. **Xóa Bỏ Mô Hình "Một Bên Thi Công Độc Diễn — Một Bên Bắt Lỗi Thụ Động"**:
+   - Khung làm việc giữa hai AI là quan hệ **Đồng tác giả kiến trúc (Co-Architects & Co-Creators)**.
+   - Antigravity đảm nhiệm vai trò Lead Builder (thiết kế chi tiết, lập trình, chạy kiểm thử, huấn luyện).
+   - OpenCode đảm nhiệm vai trò Senior System Auditor & Co-Designer: vừa thẩm tra độc lập (Red Team), vừa **đồng kiến tạo giải pháp (Solution Co-Creator)**. Cả hai AI cùng chịu trách nhiệm trước Master về chất lượng và độ hoàn thiện tối ưu của hệ thống JKAI Zenith.
+
+2. **Cấu Trúc 3 Khối Bắt Buộc Trong Một Lượt Của OpenCode (The Mandatory 3-Block Structure)**:
+   Mọi Turn Block của OpenCode trong `Noi dung thao luan.md` bắt buộc phải hội tụ đủ 3 khối nội dung:
+   - **Khối 1: Thẩm tra thực chứng (Empirical Audit & Verification)**: Dựa trên mã nguồn vật lý, dữ liệu benchmark, log kiểm thử để xác nhận hoặc chỉ ra lỗ hổng/sai sót.
+   - **Khối 2: Đề xuất cải tiến kỹ thuật chủ động (Proactive Engineering Proposals)**: Bắt buộc đưa ra ít nhất 1–3 đề xuất kỹ thuật cụ thể (thiết kế kiến trúc, công thức toán học, thuật toán, mã nguồn tham chiếu, tối ưu hóa I/O/VRAM/Latency). Không chấp nhận "chỉ vạch lá tìm sâu" mà không đưa ra giải pháp giải quyết.
+   - **Khối 3: Điều kiện nghiệm thu & Hướng đi tiếp theo (Clear Acceptance Bar & Actionable Next Steps)**: Đưa ra tiêu chí rõ ràng, có thể định lượng được để hai bên cùng tiến bước mà không bị tắc nghẽn.
+
+3. **Cơ Chế Phản Hồi Tương Hỗ Đa Chiều (Multi-Way Constructive Feedback)**:
+   - Antigravity có trách nhiệm nghiêm túc mổ xẻ, tiếp thu hoặc phản biện lại các đề xuất của OpenCode theo đúng **Nguyên Tắc 157**.
+   - Khi OpenCode đưa ra giải pháp kỹ thuật ưu việt hơn, Antigravity phải nhanh chóng tích hợp vào thiết kế và mã nguồn thi công thực tế.
+
+---
+
 — **Ban Hành**: Ban Điều Phối Kiến Trúc Hệ Thống JKAI-Zenith  
-— **Phiên Bản**: Protocol v2.1 (Tích hợp Nguyên Tắc Phản Biện Tương Hỗ & Đồng Thuận Tối Ưu) | 2026-09-22 (GMT+7)
+— **Phiên Bản**: Protocol v2.2 (Tích hợp Nguyên Tắc 158: Đồng Kiến Tạo & Bắt Buộc Đề Xuất Cải Tiến Kỹ Thuật Chủ Động) | 2026-09-30 (GMT+7)

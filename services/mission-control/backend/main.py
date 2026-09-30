@@ -403,6 +403,30 @@ def label_log():
         except Exception as bridge_err:
             logger.warning("[LABEL-LOG-BRIDGE-WARN]: Không thể nạp ngay vào bộ nhớ: %s", bridge_err)
 
+        # [MASTER-GOLD-DATASET-SYNC]: Tự động cập nhật vào Gold Dataset phục vụ Mốc Calibration & LoRA
+        try:
+            import sys as _sys
+            if "/shared" not in _sys.path:
+                _sys.path.insert(0, "/shared")
+            from core.dataset.dataset_manager import dataset_manager, LabeledRecord
+            v_map = {"CORRECT": "ACCEPT", "PARTIALLY_CORRECT": "REVIEW", "COMPLETELY_WRONG": "REJECT"}
+            gold_rec = LabeledRecord(
+                id=record["record_id"],
+                category="MASTER_ACTIVE_LABEL",
+                goal=msg_preview or f"Task {task_id}",
+                history=[],
+                model_response=msg_preview,
+                target_response="Master Approved Behavior" if verdict == "CORRECT" else "Needs Improvement",
+                verdict=v_map.get(verdict, "REVIEW"),
+                failure_type="MODEL_BEHAVIOR_FAILURE" if verdict == "COMPLETELY_WRONG" else None,
+                source_mission_id=task_id or log_id,
+                reviewed_by_master=True,
+                master_notes=notes or f"Score: {score}"
+            )
+            dataset_manager.record_master_feedback(gold_rec)
+        except Exception as ds_err:
+            logger.warning("[LABEL-LOG-DATASET-SYNC-WARN]: %s", ds_err)
+
         logger.info("[LABEL-LOG]: %s -> %s (score=%.1f)", log_id, verdict, score)
         return jsonify({"ok": True, "record_id": record["record_id"]})
     except Exception as exc:

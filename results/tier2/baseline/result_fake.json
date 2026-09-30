@@ -1,0 +1,87 @@
+{
+  "backend_name": "fake-tier2",
+  "backend_version": "1.0",
+  "calibration_state": "calibrated",
+  "ece_reported": 0.02,
+  "is_deterministic": true,
+  "is_local_only": true,
+  "environment": {
+    "hostname": "AdminPC-MMO",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "python_version": "3.14.4",
+    "cpu": "Intel64 Family 6 Model 79 Stepping 1, GenuineIntel",
+    "ram_gb": 63.9,
+    "gpu": "32.0.21045.5002  AMD Radeon RX 6600",
+    "gpu_driver": "unknown",
+    "git_commit": "1c19ff5f826f",
+    "git_dirty": true,
+    "timestamp_utc": "2026-09-27T14:40:45.865758+00:00"
+  },
+  "cases": [
+    {
+      "case_id": "vi_001",
+      "input_hash": "c2d5be0cd9e472e3b77e44a239c282414dc85d6e2d687b004db82c67f4e629d7",
+      "result": "billing",
+      "confidence": 0.97,
+      "latency_ms": 0.023599999622092582,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_002",
+      "input_hash": "c01713b0c43d60c6a1a39408b2e555d5d00286dd00ad747114f32df1eb9f8df3",
+      "result": "billing",
+      "confidence": 0.97,
+      "latency_ms": 0.02080000012938399,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_003",
+      "input_hash": "6c1a689c2a318d34afdd62531d2ee4fa2fc92e13d512093756d8ca17af89b8b6",
+      "result": "billing",
+      "confidence": 0.97,
+      "latency_ms": 0.026199999410891905,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_004",
+      "input_hash": "009f3d9f8306b250bf929aac803748551bf5d9c03f17a6e1ed40bd40f83e3f6c",
+      "result": 0.97,
+      "confidence": 0.97,
+      "latency_ms": 0.02469999890308827,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    },
+    {
+      "case_id": "vi_005",
+      "input_hash": "e91d7c545b6be5d09153e311ab2eb5e98674ec05d31d44ba9a60cb11b559ba62",
+      "result": 0.97,
+      "confidence": 0.97,
+      "latency_ms": 0.024100001610349864,
+      "distribution_sum": 1.0,
+      "tier": "TIER_2_LOCAL_EMULATOR",
+      "error": null
+    }
+  ],
+  "latency": {
+    "n": 5,
+    "p50_ms": 0.024100001610349864,
+    "p95_ms": 0.026199999410891905,
+    "p99_ms": 0.026199999410891905,
+    "mean_ms": 0.023879999935161322
+  },
+  "accuracy": 0.2,
+  "ece_measured": 0.77,
+  "n_cases": 5,
+  "n_errors": 0,
+  "notes": [
+    "backend load: 0.0 ms",
+    "warmup runs: 3"
+  ]
+}

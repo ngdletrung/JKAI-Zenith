@@ -9,14 +9,43 @@ from core.utils.engine import engine
 
 logger = logging.getLogger("JKAI.ExecutorGateway")
 
+# Top-level ExecutionResult and DecisionOutcome with fail-safe fallback
+try:
+    from core.kernel.execution_integrity import ExecutionResult, DecisionOutcome
+except ImportError:
+    from enum import Enum
+    class DecisionOutcome(str, Enum):
+        ALLOW = "ALLOW"
+        DENY = "DENY"
+        REQUIRE_APPROVAL = "REQUIRE_APPROVAL"
+
+    class ExecutionResult:
+        def __init__(self, outcome, tool_executed, result=None, reason="", interrupt_id=None, action=""):
+            self.outcome = outcome
+            self.tool_executed = tool_executed
+            self.result = result
+            self.reason = reason
+            self.interrupt_id = interrupt_id
+            self.action = action
+
+        def __str__(self):
+            if self.outcome == DecisionOutcome.ALLOW:
+                return str(self.result) if self.result is not None else ""
+            if self.outcome == DecisionOutcome.REQUIRE_APPROVAL:
+                return f"[APPROVAL-REQUIRED]: Tool '{self.action}' requires approval. InterruptID={self.interrupt_id}. Reason: {self.reason}"
+            return f"[EXECUTION-DENIED]: {self.reason}"
+
 _EVIDENCE_GUARD = None
 
 
 def _get_evidence_guard():
     global _EVIDENCE_GUARD
     if _EVIDENCE_GUARD is None:
-        from core.kernel.evidence_gate import EvidenceGuard
-        _EVIDENCE_GUARD = EvidenceGuard()
+        try:
+            from core.kernel.evidence_gate import EvidenceGuard
+            _EVIDENCE_GUARD = EvidenceGuard()
+        except ImportError as e:
+            logger.debug("[EVIDENCE-GUARD] EvidenceGuard not available: %s", e)
     return _EVIDENCE_GUARD
 
 
@@ -38,9 +67,16 @@ class _HealthCache:
         if self._redis is not None:
             return self._redis
         try:
+            import os
+            from core.config import IS_DOCKER
+            r_host = os.getenv("REDIS_HOST", "redis-ai")
+            # If on Windows host and host is default docker name "redis-ai", skip blocking connection
+            if not IS_DOCKER and r_host == "redis-ai":
+                return None
             from core.redis_client import get_redis_client
             return get_redis_client()
-        except Exception:
+        except Exception as e:
+            logger.debug("[HEALTH-CACHE] Redis client acquisition skipped: %s", e)
             return None
 
     def is_known_healthy(self, name: str) -> bool | None:
@@ -63,8 +99,8 @@ class _HealthCache:
                     # Update local fast cache to match
                     self._cache[name] = (is_h, time.monotonic())
                     return is_h
-            except Exception:
-                pass
+            except Exception as e:
+                logger.debug("[HEALTH-CACHE] Redis read failed: %s", e)
 
         return None
 
@@ -76,8 +112,8 @@ class _HealthCache:
             try:
                 val = "1" if healthy else "0"
                 r.setex(f"{self.REDIS_KEY_PREFIX}{name}", int(self.CACHE_TTL), val)
-            except Exception:
-                pass
+            except Exception as e:
+                logger.debug("[HEALTH-CACHE] Redis write failed: %s", e)
 
     def mark_unhealthy(self, name: str) -> None:
         self.update(name, False)
@@ -224,7 +260,7 @@ class ExecutorGateway:
 
 
 
-    async def execute_tool(self, request: ExecutionRequest, task_id: str) -> str:
+    async def execute_tool(self, request: ExecutionRequest, task_id: str) -> ExecutionResult:
         """
         [v26.2] Execution entry point with integrated security gate.
 
@@ -238,7 +274,7 @@ class ExecutorGateway:
         # [EXECUTION INTEGRITY GATE] — wire before ANY tool dispatch          #
         # ------------------------------------------------------------------ #
         try:
-            from core.kernel.execution_integrity import ExecutionIntegrityLayer, DecisionOutcome
+            from core.kernel.execution_integrity import ExecutionIntegrityLayer
             from core.kernel.task_contract_store import get_active_contract, get_active_policy, get_policy_snapshot, get_or_create_policy_snapshot
 
             task_contract = get_active_contract(task_id)
@@ -260,7 +296,6 @@ class ExecutorGateway:
                     f"[HARD-DENY] Tool '{request.tool_name}' blocked. Reason: {decision.reason}",
                     task_id,
                 )
-                from core.kernel.execution_integrity import ExecutionResult
                 return ExecutionResult(
                     outcome=DecisionOutcome.DENY,
                     tool_executed=False,
@@ -275,7 +310,6 @@ class ExecutorGateway:
                     f"InterruptID={decision.interrupt_id}. Reason: {decision.reason}",
                     task_id,
                 )
-                from core.kernel.execution_integrity import ExecutionResult
                 return ExecutionResult(
                     outcome=DecisionOutcome.REQUIRE_APPROVAL,
                     tool_executed=False,
@@ -293,9 +327,8 @@ class ExecutorGateway:
             )
 
         except ImportError as e:
-            # Integrity layer unavailable — fail-closed: log and deny
+            # Bug 1 Fix: Fail-closed without re-importing potentially failing module
             self._log("INTEGRITY", f"[FAIL-CLOSED] ExecutionIntegrityLayer import failed: {e}. Denying tool.", task_id)
-            from core.kernel.execution_integrity import ExecutionResult, DecisionOutcome
             return ExecutionResult(
                 outcome=DecisionOutcome.DENY,
                 tool_executed=False,
@@ -305,7 +338,6 @@ class ExecutorGateway:
         except Exception as e:
             # Unexpected error in integrity check — fail-closed
             self._log("INTEGRITY", f"[FAIL-CLOSED] Integrity check error: {e}. Denying tool.", task_id)
-            from core.kernel.execution_integrity import ExecutionResult, DecisionOutcome
             return ExecutionResult(
                 outcome=DecisionOutcome.DENY,
                 tool_executed=False,
@@ -327,7 +359,6 @@ class ExecutorGateway:
                 )
                 if not ev_decision.allowed:
                     self._log("INTEGRITY", f"[EVIDENCE-DENY] {ev_decision.path}: {ev_decision.reason}", task_id)
-                    from core.kernel.execution_integrity import ExecutionResult, DecisionOutcome
                     return ExecutionResult(
                         outcome=DecisionOutcome.DENY,
                         tool_executed=False,
@@ -339,9 +370,10 @@ class ExecutorGateway:
             pass
         except Exception as eg_err:
             # STRICT FAIL-CLOSED: if Evidence Gate fails for mutation tools, HARD DENY
-            from core.kernel.execution_integrity import ExecutionIntegrityLayer, ExecutionResult, DecisionOutcome
+            # Bug 3 Fix: use public is_observation_tool API
+            from core.kernel.execution_integrity import ExecutionIntegrityLayer
             eil = ExecutionIntegrityLayer(mission_id=task_id)
-            if not eil._is_observation_tool(request.tool_name):
+            if not eil.is_observation_tool(request.tool_name):
                 self._log("INTEGRITY", f"[EVIDENCE-GATE-ERROR] Evidence gate evaluation failed: {eg_err}", task_id)
                 logger.error("[FAIL-CLOSED] Evidence Gate error on mutation tool '%s': %s", request.tool_name, eg_err)
                 return ExecutionResult(
@@ -362,7 +394,6 @@ class ExecutorGateway:
         is_success = False
         output = "No output."
         try:
-            from core.kernel.execution_integrity import ExecutionResult, DecisionOutcome
             if request.tool_name.upper().startswith("OPENHANDS"):
                 from .openhands_provider import openhands_provider
                 res = await openhands_provider.execute_mission(request.tool_args.get("query", ""), task_id)
@@ -391,6 +422,8 @@ class ExecutorGateway:
                 "replace_content": "replace_file_content",
                 "delete_file": "delete_file",
                 "remove_file": "delete_file",
+                "verify_file": "verify_file",
+                "check_file": "verify_file",
                 "list_dir": "list_dir",
                 "listdir": "list_dir",
                 "ls": "list_dir",
@@ -399,25 +432,83 @@ class ExecutorGateway:
                 "cmd": "run_command",
                 "run_cmd": "run_command",
                 "execute_code": "run_command",
+                "grep_search": "grep_search",
+                "grep": "grep_search",
+                "search_code": "grep_search",
+                "search_web": "search_web",
+                "read_url_content": "read_url_content",
+                "browser_action": "browser_action",
+                "browse": "browser_action",
+                "web_browse": "browser_action",
+                "crawl": "browser_action",
             }
 
             if norm_name in LOCAL_PRIMITIVE_MAP:
                 local_fn_name = LOCAL_PRIMITIVE_MAP[norm_name]
                 try:
+                    kwargs = dict(request.tool_args or {})
+                    kwargs.pop("task_id", None)
+                    kwargs.pop("trace_id", None)
+
+                    if local_fn_name == "browser_action":
+                        self._log("EXECUTOR", f"🌐 [LOCAL-BROWSER-EXEC] Executing '{request.tool_name}' via CloakBrowser Visual Satellite.", task_id)
+                        from services.tools.definitions.browser_interact import browser_action
+                        b_url = kwargs.get("url") or kwargs.get("target_url") or "https://www.google.com"
+                        b_obj = kwargs.get("objective") or kwargs.get("task") or "Browse and report"
+                        local_res = await asyncio.to_thread(browser_action, url=b_url, objective=b_obj)
+                        is_ok = local_res.get("status") in ("success", "captured")
+                        out_msg = local_res.get("analysis") or local_res.get("markdown") or json.dumps(local_res, ensure_ascii=False)
+                        self._log("EXECUTOR", f"[{request.tool_name}] {'✅ Browser interaction succeeded' if is_ok else '⚠️ Browser error: ' + str(local_res.get('message', ''))}", task_id)
+                        return ExecutionResult(
+                            outcome=DecisionOutcome.ALLOW,
+                            tool_executed=is_ok,
+                            result=out_msg,
+                            action=request.tool_name
+                        )
+
                     import intelligence.skills.DEVOPS.SYSTEM_CORE_EXECUTOR.logic as core_exec
                     fn = getattr(core_exec, local_fn_name, None)
                     if fn and callable(fn):
                         self._log("EXECUTOR", f"⚡ [LOCAL-DIRECT-EXEC] Executing '{request.tool_name}' via sovereign local runtime.", task_id)
-                        kwargs = dict(request.tool_args or {})
-                        # Normalize key names
-                        if local_fn_name == "write_to_file":
-                            if "target_path" not in kwargs and "file_path" in kwargs:
-                                kwargs["target_path"] = kwargs["file_path"]
-                            if "target_content" not in kwargs and "content" in kwargs:
-                                kwargs["target_content"] = kwargs["content"]
-                        if local_fn_name == "run_command":
-                            if "command" not in kwargs and "code" in kwargs:
+
+                        # Normalize key names for all local primitives
+                        if local_fn_name == "list_dir":
+                            if "path" not in kwargs:
+                                kwargs["path"] = kwargs.get("directory_path") or kwargs.get("DirectoryPath") or kwargs.get("folder") or kwargs.get("dir") or "."
+                        elif local_fn_name == "view_file":
+                            if "path" not in kwargs:
+                                kwargs["path"] = kwargs.get("file_path") or kwargs.get("AbsolutePath") or kwargs.get("TargetFile") or kwargs.get("file") or ""
+                        elif local_fn_name == "write_to_file":
+                            if "target_path" not in kwargs:
+                                kwargs["target_path"] = kwargs.get("file_path") or kwargs.get("path") or kwargs.get("TargetFile") or ""
+                            if "target_content" not in kwargs:
+                                kwargs["target_content"] = kwargs.get("content") or kwargs.get("CodeContent") or ""
+                        elif local_fn_name == "replace_file_content":
+                            if "path" not in kwargs:
+                                kwargs["path"] = kwargs.get("file_path") or kwargs.get("TargetFile") or kwargs.get("target_path") or ""
+                            if "target" not in kwargs:
+                                kwargs["target"] = kwargs.get("TargetContent") or kwargs.get("targetContent") or kwargs.get("old_str") or kwargs.get("old_code") or kwargs.get("find") or ""
+                            if "replacement" not in kwargs:
+                                kwargs["replacement"] = kwargs.get("ReplacementContent") or kwargs.get("replacementContent") or kwargs.get("new_str") or kwargs.get("new_code") or kwargs.get("replace") or ""
+                        elif local_fn_name == "delete_file":
+                            if "path" not in kwargs:
+                                kwargs["path"] = kwargs.get("file_path") or kwargs.get("TargetFile") or kwargs.get("path") or ""
+                            kwargs.setdefault("confirm", True)
+                        elif local_fn_name == "verify_file":
+                            if "path" not in kwargs:
+                                kwargs["path"] = kwargs.get("file_path") or kwargs.get("TargetFile") or kwargs.get("path") or ""
+                        elif local_fn_name == "grep_search":
+                            if "query" not in kwargs:
+                                kwargs["query"] = kwargs.get("Query") or kwargs.get("pattern") or kwargs.get("keyword") or kwargs.get("q") or ""
+                            if "path" not in kwargs:
+                                kwargs["path"] = kwargs.get("SearchPath") or kwargs.get("directory") or kwargs.get("dir") or "."
+                        elif local_fn_name == "run_command":
+                            if "command" not in kwargs:
+                                kwargs["command"] = kwargs.get("CommandLine") or kwargs.get("cmd") or ""
+                            if not kwargs["command"] and "code" in kwargs:
                                 kwargs["command"] = f"python -c {kwargs['code']!r}"
+                            if "cwd" not in kwargs and "Cwd" in kwargs:
+                                kwargs["cwd"] = kwargs["Cwd"]
                         
                         local_res = await fn(task_id=task_id, **kwargs)
                         is_ok = local_res.get("status") == "success"
@@ -483,8 +574,8 @@ class ExecutorGateway:
                             plan = build_recovery_plan(
                                 request.tool_name, outcome.reason, request.tool_args)
                             self._log("EXECUTOR", f"[RECOVERY] {plan.to_log_line()}", task_id)
-                        except Exception:
-                            pass
+                        except Exception as rec_err:
+                            logger.debug("[RECOVERY-NOTICE] Recovery plan generation skipped: %s", rec_err)
                     # Mark this executor as still healthy since response was received
                     _health_cache.update(name, True)
                     is_success = outcome.is_success
@@ -521,16 +612,20 @@ class ExecutorGateway:
             )
         finally:
             try:
-                from redis_client import get_redis
-                r_conn = get_redis()
-                if r_conn:
-                    event_payload = json.dumps({
-                        "intent": request.tool_name,
-                        "is_success": is_success
-                    }, ensure_ascii=False)
-                    r_conn.publish("zenith:cognitive_events", event_payload)
+                import os
+                from core.config import IS_DOCKER
+                r_host = os.getenv("REDIS_HOST", "redis-ai")
+                if IS_DOCKER or r_host != "redis-ai":
+                    from redis_client import get_redis
+                    r_conn = get_redis()
+                    if r_conn:
+                        event_payload = json.dumps({
+                            "intent": request.tool_name,
+                            "is_success": is_success
+                        }, ensure_ascii=False)
+                        r_conn.publish("zenith:cognitive_events", event_payload)
             except Exception as publish_err:
-                print(f"[EXECUTOR-GATEWAY-WARN] Failed to publish cognitive event: {publish_err}")
+                logger.debug("[EXECUTOR-GATEWAY] Cognitive event publish skipped: %s", publish_err)
 
     async def request_sovereign_auth(self, action: str, params: dict, task_id: str):
         payload = {"action": action}
@@ -543,5 +638,6 @@ class ExecutorGateway:
                 "args": payload,
                 "task_id": task_id
             })
-        except Exception: pass
+        except Exception as auth_err:
+            logger.debug("[SOVEREIGN-AUTH-ERR] %s", auth_err)
 

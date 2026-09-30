@@ -130,12 +130,9 @@ class LogEngine:
                 payload["id"] = stream_id
                 payload["pin_id"] = stream_id
             log = json.dumps(payload, ensure_ascii=False)
-            # Publish delta to active WebSockets
+            # Publish delta to active WebSockets (streaming in-place)
             r.publish("monitor:log_channel", log)
             r.publish("monitor:progress_channel", log)
-            # [STREAM-RETENTION]: Save delta chunk into Redis log history to survive reload
-            r.lpush("monitor:log_history", log)
-            r.ltrim("monitor:log_history", 0, 499)
         except Exception:
             pass
 

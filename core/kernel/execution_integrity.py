@@ -97,10 +97,13 @@ class ExecutionIntegrityLayer:
         "search_memory", "execute_skill", "search", "read", "fetch", "lookup",
     ]
 
-    def _is_observation_tool(self, action: str) -> bool:
+    def is_observation_tool(self, action: str) -> bool:
         """Returns True if this tool is an observation/read-only tool (Fail-Open eligible)."""
         act = action.lower().strip()
         return any(act.startswith(prefix) or act == prefix for prefix in self.OBSERVATION_TOOL_PREFIXES)
+
+    # Backwards-compatible alias
+    _is_observation_tool = is_observation_tool
 
     def __init__(self, mission_id: str):
         self.mission_id = mission_id

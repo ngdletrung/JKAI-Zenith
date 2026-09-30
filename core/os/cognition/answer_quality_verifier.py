@@ -206,20 +206,17 @@ class AnswerQualityVerifier:
         return DimensionResult(QualityDimension.TRUNG, passed, score, issues)
 
     def _check_du(self, text: str, goal: str) -> DimensionResult:
-        """Đủ: có greeting (khi response đủ dài) + nội dung đủ."""
+        """Đủ: nội dung không rỗng/quá ngắn, tuân thủ Tiêu chuẩn 1 của Master (đi thẳng vào vấn đề)."""
         issues: List[str] = []
 
         if len(text) < 5:
             issues.append("Response trống hoặc quá ngắn")
             return DimensionResult(QualityDimension.DU, False, 0.0, issues)
 
-        # Greeting chỉ cần thiết với response dài (không phải factual reflex 1 dòng)
-        if len(text) >= self._GREETING_MIN_LEN and not _GREETING_RE.search(text):
-            issues.append("Thiếu greeting (Chào Master / Master)")
-
+        # Tuân thủ Tiêu chuẩn 1 của Master: Bắt đầu trực tiếp bằng nội dung trả lời chính.
+        # Không bắt buộc greeting rập khuôn; tuyệt đối không coi câu trả lời trực diện là thiếu đủ.
         passed = not issues
-        # Thiếu greeting là lỗi nhỏ (0.75), thiếu nội dung là lỗi lớn (0.2)
-        score = 1.0 if passed else (0.75 if "greeting" in str(issues) else 0.2)
+        score = 1.0 if passed else 0.2
         return DimensionResult(QualityDimension.DU, passed, score, issues)
 
     # ------------------------------------------------------------------
@@ -229,26 +226,8 @@ class AnswerQualityVerifier:
     def _correct_du(
         self, text: str, du: DimensionResult
     ) -> Tuple[str, DimensionResult]:
-        """Tự thêm greeting nếu thiếu và an toàn (chỉ prepend, không thay đổi nội dung)."""
-        if not any("greeting" in issue for issue in du.issues):
-            return text, du  # Không biết sửa gì
-
-        # Viết hoa ký tự đầu nếu đang thường
-        if text and text[0].islower():
-            first_char = text[0].upper()
-            corrected = f"Chào Master, {first_char}{text[1:]}"
-        else:
-            corrected = f"Chào Master, {text}"
-
-        new_du = DimensionResult(
-            dimension=QualityDimension.DU,
-            passed=True,
-            score=0.9,
-            issues=[],
-            correction_applied=True,
-        )
-        logger.info("[AQV] DU auto-corrected: greeting prepended.")
-        return corrected, new_du
+        """Tuân thủ Tiêu chuẩn 1 của Master: Không tự tiện chèn câu chào rập khuôn."""
+        return text, du
 
 
 # Singleton — import và dùng trực tiếp

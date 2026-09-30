@@ -15,7 +15,11 @@ def browser_action(url: str, objective: str):
     """
     logger.info("[JKAI-BROWSER-DEF] Requesting interaction on: %s | objective: %s", url, objective)
     
-    BROWSER_URL = os.getenv("BROWSER_SERVICE_URL", "http://ai-browser:8000/interact")
+    default_url = "http://ai-browser:8000/browse"
+    if not os.path.exists("/.dockerenv") and "BROWSER_SERVICE_URL" not in os.environ:
+        default_url = "http://127.0.0.1:8003/browse"
+
+    BROWSER_URL = os.getenv("BROWSER_SERVICE_URL", default_url)
     
     try:
         response = requests.post(BROWSER_URL, json={

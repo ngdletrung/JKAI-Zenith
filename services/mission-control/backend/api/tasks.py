@@ -219,3 +219,130 @@ def update_geolocation():
         
     return jsonify({"ok": False, "error": "Invalid location data"}), 400
 
+
+
+@bp.route("/api/label_log", methods=["POST"])
+def label_log():
+    """[LABEL-LOG]: Ghi nhan cham diem tu Master cho tung tin nhan JKAI."""
+    from pathlib import Path as _Path
+    import json as _json
+
+    body = request.get_json(silent=True) or {}
+    log_id = body.get("log_id", "")
+    task_id = body.get("task_id", "")
+    score = body.get("score")
+    verdict = body.get("verdict", "")
+    msg_preview = (body.get("msg_preview") or "")[:200]
+    notes = body.get("notes", "")
+
+    # --- Validate ---
+    if score not in (0.0, 0.5, 1.0):
+        return jsonify({"ok": False, "error": "score phai la 0.0, 0.5 hoac 1.0"}), 400
+    if verdict not in ("CORRECT", "PARTIALLY_CORRECT", "COMPLETELY_WRONG"):
+        return jsonify({"ok": False, "error": "verdict khong hop le"}), 400
+    if not log_id:
+        return jsonify({"ok": False, "error": "log_id bat buoc"}), 400
+
+    record = {
+        "schema_version": "1.3",
+        "record_id": "web_" + uuid.uuid4().hex[:10],
+        "log_id": log_id,
+        "task_id": task_id or None,
+        "timestamp_utc": datetime.now(timezone.utc).isoformat(),
+        "score": score,
+        "verdict": verdict,
+        "msg_preview": msg_preview,
+        "notes": notes,
+        "labeled_by": "Master",
+        "source": "web_ui",
+    }
+
+    try:
+        # tasks.py chay trong container tai /app/backend hoac trong host dev
+        # Thu tim storage/ tuong doi voi goc workspace (JKAI/)
+        storage_dir = _Path(os.getcwd())
+        # Leo len den goc JKAI (co the la services/mission-control/backend hoac /app)
+        for _ in range(5):
+            candidate = storage_dir / "storage" / "shadow_telemetry"
+            if (storage_dir / "storage").exists():
+                storage_dir = candidate
+                break
+            storage_dir = storage_dir.parent
+        else:
+            storage_dir = _Path(os.getcwd()) / "storage" / "shadow_telemetry"
+
+        storage_dir.mkdir(parents=True, exist_ok=True)
+        label_file = storage_dir / "labeled_telemetry.jsonl"
+        with label_file.open("a", encoding="utf-8") as f:
+            f.write(_json.dumps(record, ensure_ascii=False) + "\n")
+            f.flush()
+
+        # [MASTER-GOLD-DATASET-SYNC]: Tự động cập nhật vào Gold Dataset phục vụ Mốc Calibration & LoRA
+        try:
+            import sys as _sys
+            import importlib.util as _util
+            _dm_path = "/workspace/core/dataset/dataset_manager.py"
+            if not os.path.exists(_dm_path):
+                _dm_path = "/shared/core/dataset/dataset_manager.py"
+            if os.path.exists(_dm_path):
+                _spec = _util.spec_from_file_location("jkai_dataset_manager", _dm_path)
+                _mod = _util.module_from_spec(_spec)
+                _sys.modules[_spec.name] = _mod
+                _spec.loader.exec_module(_mod)
+                v_map = {"CORRECT": "ACCEPT", "PARTIALLY_CORRECT": "REVIEW", "COMPLETELY_WRONG": "REJECT"}
+                gold_rec = _mod.LabeledRecord(
+                    id=record["record_id"],
+                    category="MASTER_ACTIVE_LABEL",
+                    goal=msg_preview or f"Task {task_id}",
+                    history=[],
+                    model_response=msg_preview,
+                    target_response="Master Approved Behavior" if verdict == "CORRECT" else "Needs Improvement",
+                    verdict=v_map.get(verdict, "REVIEW"),
+                    failure_type="MODEL_BEHAVIOR_FAILURE" if verdict == "COMPLETELY_WRONG" else None,
+                    source_mission_id=task_id or log_id,
+                    reviewed_by_master=True,
+                    master_notes=notes or f"Score: {score}"
+                )
+                _mod.dataset_manager.record_master_feedback(gold_rec)
+
+                # [EPISODIC-BRAIN-REALTIME-INGEST]: Nạp tức thì vào Qdrant Vector Brain
+                try:
+                    _eb_path = "/workspace/core/memory/episodic_brain.py"
+                    if not os.path.exists(_eb_path):
+                        _eb_path = "/shared/core/memory/episodic_brain.py"
+                    if os.path.exists(_eb_path):
+                        _eb_spec = _util.spec_from_file_location("jkai_episodic_brain", _eb_path)
+                        _eb_mod = _util.module_from_spec(_eb_spec)
+                        _sys.modules[_eb_spec.name] = _eb_mod
+                        _eb_spec.loader.exec_module(_eb_mod)
+                        
+                        # Suy luận domain
+                        g_low = (msg_preview or "").lower()
+                        dom = "COMMUNICATION"
+                        if any(w in g_low for w in ["tính", "bao nhiêu", "chuyến", "thùng", "xăng", "tiền"]):
+                            dom = "MATH"
+                        elif any(w in g_low for w in ["code", "file", "hàm", "lỗi", "class"]):
+                            dom = "CODE_FILEOPS"
+                        elif any(w in g_low for w in ["chi tiết", "giải thích", "tiếp", "còn"]):
+                            dom = "ANAPHORA"
+
+                        _eb_mod.episodic_brain.ingest_exemplar(
+                            record_id=gold_rec.id,
+                            goal=gold_rec.goal,
+                            response=gold_rec.model_response,
+                            verdict=gold_rec.verdict,
+                            domain=dom,
+                            lesson=notes or ("Tuân thủ đáp án chuẩn của Master" if gold_rec.verdict == "ACCEPT" else "Tránh lỗi này")
+                        )
+                except Exception as eb_err:
+                    logger.debug("[EPISODIC-BRAIN-INGEST-WARN]: %s", eb_err)
+        except Exception as ds_err:
+            logger.warning("[TASKS-LABEL-LOG-DATASET-SYNC-WARN]: %s", ds_err)
+
+        logger.info("[LABEL-LOG]: %s -> %s (score=%.1f)", log_id, verdict, score)
+        return jsonify({"ok": True, "record_id": record["record_id"]})
+    except Exception as exc:
+        logger.error("[LABEL-LOG-ERR]: %s", exc)
+        return jsonify({"ok": False, "error": str(exc)}), 500
+
+
