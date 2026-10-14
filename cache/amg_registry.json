@@ -1,5 +1,5 @@
 {
-  "updated_at": 1791715661.4523616,
+  "updated_at": 1791952664.621809,
   "profiles": {
     "qwen3.5:4b": {
       "model_name": "qwen3.5:4b",
@@ -7,10 +7,10 @@
       "family": "qwen35",
       "context_length_max": 262144,
       "model_classes": [
+        "VISION",
         "REASONING",
         "TOOL_USE",
-        "GENERAL",
-        "VISION"
+        "GENERAL"
       ],
       "has_vision": true,
       "has_tool_calling": true,
@@ -86,9 +86,9 @@
       "family": "gemma4",
       "context_length_max": 131072,
       "model_classes": [
+        "VISION",
         "TOOL_USE",
-        "GENERAL",
-        "VISION"
+        "GENERAL"
       ],
       "has_vision": true,
       "has_tool_calling": true,
@@ -112,10 +112,10 @@
       "family": "qwen35moe",
       "context_length_max": 262144,
       "model_classes": [
+        "VISION",
         "REASONING",
         "TOOL_USE",
-        "GENERAL",
-        "VISION"
+        "GENERAL"
       ],
       "has_vision": true,
       "has_tool_calling": true,
@@ -139,10 +139,10 @@
       "family": "gemma4",
       "context_length_max": 262144,
       "model_classes": [
+        "VISION",
         "REASONING",
         "TOOL_USE",
-        "GENERAL",
-        "VISION"
+        "GENERAL"
       ],
       "has_vision": true,
       "has_tool_calling": true,
@@ -217,9 +217,9 @@
       "family": "qwen2",
       "context_length_max": 32768,
       "model_classes": [
-        "CODING",
+        "GENERAL",
         "TOOL_USE",
-        "GENERAL"
+        "CODING"
       ],
       "has_vision": false,
       "has_tool_calling": true,
@@ -243,10 +243,10 @@
       "family": "qwen35",
       "context_length_max": 262144,
       "model_classes": [
+        "VISION",
         "REASONING",
         "TOOL_USE",
-        "GENERAL",
-        "VISION"
+        "GENERAL"
       ],
       "has_vision": true,
       "has_tool_calling": true,
@@ -270,9 +270,9 @@
       "family": "phi3",
       "context_length_max": 131072,
       "model_classes": [
-        "CODING",
+        "GENERAL",
         "TOOL_USE",
-        "GENERAL"
+        "CODING"
       ],
       "has_vision": false,
       "has_tool_calling": true,
@@ -296,9 +296,9 @@
       "family": "qwen2",
       "context_length_max": 32768,
       "model_classes": [
-        "CODING",
+        "GENERAL",
         "TOOL_USE",
-        "GENERAL"
+        "CODING"
       ],
       "has_vision": false,
       "has_tool_calling": true,
@@ -322,8 +322,8 @@
       "family": "phi2",
       "context_length_max": 2048,
       "model_classes": [
-        "GENERAL",
-        "VISION"
+        "VISION",
+        "GENERAL"
       ],
       "has_vision": true,
       "has_tool_calling": false,

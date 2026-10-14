@@ -73,6 +73,28 @@ class PythonExecuteContract(BaseModel):
     code: str = Field(..., description="Python source code to execute")
 
 
+class QueryRepoMapContract(BaseModel):
+    query: Optional[str] = Field(default="", description="Symbol name, module, or keyword to locate in the AST RepoMap")
+    file_path: Optional[str] = Field(default="", description="Optional relative file path filter")
+    include_blast_radius: Optional[bool] = Field(default=True, description="Include reverse-import blast radius")
+    max_tokens: Optional[int] = Field(default=700, description="Target token budget for Tier 1 response")
+
+
+class ReadStreamWindowContract(BaseModel):
+    stream_id: str = Field(..., description="Stream ID from StreamBufferStore")
+    start_line: Optional[int] = Field(default=1, description="1-indexed start line")
+    end_line: Optional[int] = Field(default=100, description="1-indexed end line")
+
+
+class SearchInStreamContract(BaseModel):
+    stream_id: str = Field(..., description="Stream ID from StreamBufferStore")
+    query: str = Field(..., description="Keyword or regex pattern to search inside stream")
+    context_lines: Optional[int] = Field(default=2, description="Context lines around each match")
+    offset: Optional[int] = Field(default=0, description="Pagination offset")
+    limit: Optional[int] = Field(default=20, description="Pagination limit")
+
+
+
 # =========================================================================
 # 2. CONTRACT REGISTRY & FAIL-CLOSED VALIDATOR
 # =========================================================================
@@ -232,6 +254,11 @@ ToolContractRegistry.register("verify_file", VerifyFileContract, ["check_file"])
 ToolContractRegistry.register("delete_file", DeleteFileContract, ["remove_file", "rm"])
 ToolContractRegistry.register("web_search", WebSearchContract, ["search_web", "tavily_search", "search_web_global", "omni_search_engine", "search_web_global_tool"])
 ToolContractRegistry.register("python_execute", PythonExecuteContract, ["py_exec", "run_python"])
+ToolContractRegistry.register("query_repo_map", QueryRepoMapContract, ["repo_map", "repomap", "search_symbols", "blast_radius"])
+ToolContractRegistry.register("read_stream_window", ReadStreamWindowContract, ["read_stream", "stream_window"])
+ToolContractRegistry.register("search_in_stream", SearchInStreamContract, ["search_stream", "grep_stream"])
+
+
 
 # Canonical allowed-tool hint for planner prompts / CONTRACT_VIOLATION feedback.
 # Planner MUST only emit these canonical names in field 'tool'.

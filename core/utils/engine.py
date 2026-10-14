@@ -133,6 +133,93 @@ def append_length_continuation_notice(text: str) -> str:
     return out + LENGTH_CONTINUATION_NOTICE
 
 
+def _bound_unconstrained_gbnf_objects(node: Any, parent_key: str = "") -> Any:
+    """
+    Recursively bound open `dict[str, Any]` JSON Schema nodes (`type=='object'` with
+    `additionalProperties==True` and no `properties`) so Ollama 0.40.2's GBNF grammar
+    sampler terminates deterministically with `done_reason='stop'` instead of generating
+    arbitrary keys until hitting `num_predict`.
+    """
+    if not isinstance(node, dict):
+        return node
+    out = dict(node)
+    if out.get("type") == "object" and not out.get("properties") and out.get("additionalProperties") is True:
+        if parent_key == "steps":
+            out["properties"] = {
+                "step": {"type": "integer"},
+                "action": {"type": "string"},
+                "target": {"type": "string"},
+            }
+            out["required"] = ["step", "action"]
+        else:
+            out["properties"] = {
+                "path": {"type": "string"},
+                "file_path": {"type": "string"},
+                "stream_id": {"type": "string"},
+                "pattern": {"type": "string"},
+                "command": {"type": "string"},
+                "start_line": {"type": "integer"},
+                "end_line": {"type": "integer"},
+                "context_lines": {"type": "integer"},
+                "query": {"type": "string"},
+                "content": {"type": "string"},
+                "target": {"type": "string"},
+                "value": {"type": "string"},
+                "replacement": {"type": "string"},
+                "outline": {"type": "boolean"},
+                "include_blast_radius": {"type": "boolean"},
+                "offset": {"type": "integer"},
+                "limit": {"type": "integer"},
+                "max_tokens": {"type": "integer"},
+            }
+            out["required"] = []
+        out["additionalProperties"] = False
+        return out
+
+    if isinstance(out.get("properties"), dict):
+        new_props = {}
+        for k, v in out["properties"].items():
+            new_props[k] = _bound_unconstrained_gbnf_objects(v, parent_key=k)
+        out["properties"] = new_props
+
+    if isinstance(out.get("items"), dict):
+        out["items"] = _bound_unconstrained_gbnf_objects(out["items"], parent_key=parent_key)
+        if parent_key == "steps":
+            out.setdefault("maxItems", 6)
+
+    return out
+
+
+def normalize_json_schema(schema_or_model: Any) -> dict[str, Any] | str | None:
+    """
+    Normalize a structured output specification into an Ollama-compatible `format` value:
+      - `None` -> `None`
+      - `"json"` -> `"json"`
+      - Pydantic `BaseModel` subclass or instance -> bounded JSON Schema `dict`
+      - `dict` JSON Schema -> bounded JSON Schema `dict`
+    """
+    if schema_or_model is None:
+        return None
+    if isinstance(schema_or_model, str):
+        s_clean = schema_or_model.strip()
+        if s_clean.lower() == "json":
+            return "json"
+        try:
+            parsed = json.loads(s_clean)
+            if isinstance(parsed, dict):
+                return _bound_unconstrained_gbnf_objects(parsed)
+        except Exception:
+            return None
+        return None
+    if isinstance(schema_or_model, type) and hasattr(schema_or_model, "model_json_schema"):
+        return _bound_unconstrained_gbnf_objects(schema_or_model.model_json_schema())
+    if hasattr(schema_or_model, "model_json_schema") and callable(getattr(schema_or_model, "model_json_schema")):
+        return _bound_unconstrained_gbnf_objects(type(schema_or_model).model_json_schema())
+    if isinstance(schema_or_model, dict):
+        return _bound_unconstrained_gbnf_objects(schema_or_model)
+    return None
+
+
 class JKAIIntelligenceEngine:
     def __init__(self):
         self.logger = logger
@@ -1034,12 +1121,20 @@ class JKAIIntelligenceEngine:
             self._structured_output = init_structured_output(self)
         return self._structured_output
 
-    async def call_chat(self, messages, role='RECEPTIONIST', model=None, json_mode=False, schema=None, options=None, profile=None, keep_alive=None, task_id=None, images=None, tools=None, skip_identity=False, skip_build_final=False, **kwargs):
+    async def call_chat(self, messages, role='RECEPTIONIST', model=None, json_mode=False, schema=None, response_schema=None, options=None, profile=None, keep_alive=None, task_id=None, images=None, tools=None, skip_identity=False, skip_build_final=False, **kwargs):
         """
         API giao tiếp với Bộ não Trung tâm (Ollama Dual-Engine).
         Tích hợp [DYNAMIC KEEP-ALIVE] & [COGNITIVE PROFILE].
-        Hỗ trợ [NATIVE TOOL CALLING] (Function Calling).
+        Hỗ trợ [NATIVE TOOL CALLING] (Function Calling) & [GRAMMAR-CONSTRAINED DECODING] (JSON Schema).
         """
+        raw_schema_spec = response_schema if response_schema is not None else (schema if schema is not None else kwargs.get('format'))
+        normalized_schema = normalize_json_schema(raw_schema_spec)
+        if isinstance(normalized_schema, dict):
+            schema = normalized_schema
+            json_mode = True
+        elif normalized_schema == "json":
+            json_mode = True
+
         # [MICROSERVICE-ROUTING]: Định tuyến chuẩn xác theo vai trò (Role-Based Microservice Synapse)
         # Chỉ chuyển hướng sang EXECUTOR container khi role thực sự là EXECUTOR hoặc CODE_EXECUTOR
         # Tất cả các role Tư duy / Lễ tân / Kế hoạch / Phân tích (RECEPTIONIST, PLANNER, SUMMARIZER, CRITIC, VISION...)
@@ -1411,15 +1506,17 @@ class JKAIIntelligenceEngine:
             
             # [THINK-GATE]: Kiểm soát thinking mode cho Qwen3/QwQ/R1 models
             if is_reasoning_model:
-                if 'think' in kwargs:
+                if isinstance(schema, dict):
+                    payload['think'] = False
+                elif 'think' in kwargs:
                     payload['think'] = kwargs['think']
                 else:
                     payload['think'] = False
 
             exec_json_roles = ["PLANNER", "RESERVE_AGENT", "CRITIC", "EXECUTOR", "EXECUTOR_ALPHA", "EXECUTOR_BETA", "EXECUTOR_GAMMA", "META_PLANNER"]
-            if schema: 
+            if isinstance(schema, dict): 
                 payload['format'] = schema
-            elif json_mode or kwargs.get('format') == 'json' or (str(role).upper() in exec_json_roles and not kwargs.get('skip_json', False)): 
+            elif json_mode or schema == 'json' or kwargs.get('format') == 'json' or (str(role).upper() in exec_json_roles and not kwargs.get('skip_json', False)): 
                 payload['format'] = 'json'
             elif is_reasoning_model and payload.get('think') is True:
                 if 'format' in payload: del payload['format']

@@ -1,8 +1,6 @@
 import asyncio
 import os
 import re
-from graphrag_sdk import GraphRAG, ConnectionConfig, LiteLLM, LiteLLMEmbedder
-from graphrag_sdk.models.openai import OpenAIModels
 
 # [ZENITH FILE DIRECTIVE]
 # - File: graph_syncer.py
@@ -12,7 +10,30 @@ from graphrag_sdk.models.openai import OpenAIModels
 
 async def sync_knowledge():
     print("--- [ ZENITH NEURAL SYNCER ] ---")
-    
+    if os.getenv("JKAI_ENABLE_FALKOR_SYNC", "0") != "1":
+        from core.utils.repo_map import get_repo_map_index
+
+        idx = get_repo_map_index()
+        idx.refresh(force=True)
+        edge_count = sum(len(v) for v in idx._reverse_imports.values())
+        summary = {
+            "status": "success",
+            "mode": "local_ast_graph",
+            "indexed_python_files": len(idx._file_cache),
+            "excluded_third_party_files": idx._excluded_third_party_files,
+            "total_workspace_py_files": idx._total_workspace_py_files,
+            "total_symbols": len(idx._all_symbols),
+            "dependency_edges": edge_count,
+        }
+        print(
+            f"[LOCAL-FIRST AST SYNC] Indexed {summary['indexed_python_files']} Python files, "
+            f"{summary['total_symbols']} symbols, {summary['dependency_edges']} dependency edges."
+        )
+        return summary
+
+    from graphrag_sdk import GraphRAG, ConnectionConfig, LiteLLM, LiteLLMEmbedder
+    from graphrag_sdk.models.openai import OpenAIModels  # noqa: F401
+
     # 1. Configuration (Bridging to JKAI Sovereign Engine)
     # Using LiteLLM to route through our local Ollama (ai-executor proxy pattern)
     connection = ConnectionConfig(host="localhost", port=6380, graph_name="zenith_brain")
@@ -21,7 +42,8 @@ async def sync_knowledge():
     llm = LiteLLM(model="ollama/qwen2.5-coder:3b", api_base="http://localhost:11434")
     embedder = LiteLLMEmbedder(model="ollama/nomic-embed-text", api_base="http://localhost:11434")
 
-    intelligence_dir = r"d:\Docker\JKAI\intelligence"
+    from core.utils.project_workspace import get_jkai_workspace_root
+    intelligence_dir = str(get_jkai_workspace_root() / "intelligence")
     
     async with GraphRAG(connection=connection, llm=llm, embedder=embedder) as rag:
         print(f"Connected to FalkorDB at localhost:6380")

@@ -1,0 +1,100 @@
+{
+  "schema_version": "weknora_capability_registry_v2",
+  "ollama_host": "http://127.0.0.1:11434",
+  "probed_count": 3,
+  "live_count": 3,
+  "fallback_count": 0,
+  "cards": {
+    "qwen3.5:4b": {
+      "model_name": "qwen3.5:4b",
+      "card_status": "LIVE",
+      "probe_source": "ollama_api_show",
+      "family": "qwen35",
+      "parameter_size": "4.7B",
+      "quantization": "Q4_K_M",
+      "context_length": 262144,
+      "capabilities_raw": [
+        "completion",
+        "vision",
+        "tools",
+        "thinking"
+      ],
+      "supports_json_mode": true,
+      "supports_gbnf_grammar": true,
+      "supports_tool_calling": true,
+      "supports_vision": true,
+      "supports_thinking": true,
+      "is_embedding_only": false,
+      "recommended_num_predict": 4096,
+      "recommended_num_predict_trusted": true,
+      "speed_source": "live_api_generate",
+      "tokens_per_sec": 16.98,
+      "speed_samples_tps": [
+        17.07,
+        16.89
+      ],
+      "repeat_speed_drift_pct": 1.06,
+      "probed_at_unix": 1791809109.541
+    },
+    "oamazonasgabriel/lfm2.5-2.6b:q4_k_m-8gbGPU": {
+      "model_name": "oamazonasgabriel/lfm2.5-2.6b:q4_k_m-8gbGPU",
+      "card_status": "LIVE",
+      "probe_source": "ollama_api_show",
+      "family": "lfm2",
+      "parameter_size": "2.7B",
+      "quantization": "Q4_K_M",
+      "context_length": 128000,
+      "capabilities_raw": [
+        "tools",
+        "thinking",
+        "completion"
+      ],
+      "supports_json_mode": true,
+      "supports_gbnf_grammar": true,
+      "supports_tool_calling": true,
+      "supports_vision": false,
+      "supports_thinking": true,
+      "is_embedding_only": false,
+      "recommended_num_predict": 4096,
+      "recommended_num_predict_trusted": true,
+      "speed_source": "live_api_generate",
+      "tokens_per_sec": 73.5,
+      "speed_samples_tps": [
+        73.73,
+        73.28
+      ],
+      "repeat_speed_drift_pct": 0.61,
+      "probed_at_unix": 1791809117.962
+    },
+    "hf.co/unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:UD-Q4_K_XL": {
+      "model_name": "hf.co/unsloth/Qwen3-30B-A3B-Instruct-2507-GGUF:UD-Q4_K_XL",
+      "card_status": "LIVE",
+      "probe_source": "ollama_api_show",
+      "family": "qwen3moe",
+      "parameter_size": "30.5B",
+      "quantization": "Q4_K_M",
+      "context_length": 262144,
+      "capabilities_raw": [
+        "tools",
+        "thinking",
+        "completion"
+      ],
+      "supports_json_mode": true,
+      "supports_gbnf_grammar": true,
+      "supports_tool_calling": true,
+      "supports_vision": false,
+      "supports_thinking": true,
+      "is_embedding_only": false,
+      "recommended_num_predict": 2048,
+      "recommended_num_predict_trusted": true,
+      "speed_source": "live_api_generate",
+      "tokens_per_sec": 12.24,
+      "speed_samples_tps": [
+        11.66,
+        12.82
+      ],
+      "repeat_speed_drift_pct": 9.48,
+      "probed_at_unix": 1791809166.596
+    }
+  }
+}

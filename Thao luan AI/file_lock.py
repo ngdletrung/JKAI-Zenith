@@ -161,7 +161,7 @@ def atomic_write(filepath, content: str, encoding: str = "utf-8"):
     tmp_path = target.with_suffix(target.suffix + ".tmp")
 
     with file_lock(filepath):
-        with open(tmp_path, "w", encoding=encoding) as f:
+        with open(tmp_path, "w", encoding=encoding, newline="\n") as f:
             f.write(content)
             f.flush()
             os.fsync(f.fileno())
@@ -219,7 +219,7 @@ def verify_and_archive_discussion(
 
     with file_lock(str(disc_file)):
         original_disc = disc_file.read_text(encoding="utf-8") if disc_file.exists() else ""
-        content_to_archive = archive_content if archive_content is not None else original_disc
+        content_to_archive = (archive_content if archive_content is not None else original_disc).replace("\r\n", "\n")
         if not content_to_archive.strip():
             raise ValueError("Nội dung lưu trữ (archive_content) rỗng.")
 
@@ -256,7 +256,8 @@ def verify_and_archive_discussion(
         # Verify archive on disk
         if not arch_file.exists():
             raise RuntimeError(f"Không tìm thấy tệp lưu trữ sau khi ghi: {arch_file}")
-        disk_arch_bytes = arch_file.read_bytes()
+        disk_arch_text = arch_file.read_text(encoding="utf-8").replace("\r\n", "\n")
+        disk_arch_bytes = disk_arch_text.encode("utf-8")
         disk_arch_sha = hashlib.sha256(disk_arch_bytes).hexdigest()
         if disk_arch_sha != expected_arch_sha:
             raise RuntimeError(

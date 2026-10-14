@@ -45,6 +45,7 @@ class ActionVerdict:
     reason: str = ""
     details: Dict[str, Any] = field(default_factory=dict)
     firewall_verdict: Optional[Any] = None
+    stage_attribution: str = "CONTROLLER_GATE"
 
 
 def missing_required(tool_name: str, args: Dict[str, Any]) -> List[str]:
@@ -114,7 +115,8 @@ def validate_action(
         return ActionVerdict(
             decision=ActionDecision.UNKNOWN_TOOL,
             tool=str(tool),
-            reason="Tool name must be a non-empty string"
+            reason="Tool name must be a non-empty string",
+            stage_attribution="ACTION_PROPOSAL",
         )
 
     canonical_name = ToolContractRegistry.get_canonical_name(tool) or tool.strip().lower()
@@ -126,7 +128,8 @@ def validate_action(
             return ActionVerdict(
                 decision=ActionDecision.UNKNOWN_TOOL,
                 tool=tool,
-                reason=f"Công cụ '{tool}' không nằm trong danh mục công cụ được phép ({', '.join(sorted(known_tools))})"
+                reason=f"Công cụ '{tool}' không nằm trong danh mục công cụ được phép ({', '.join(sorted(known_tools))})",
+                stage_attribution="CONTROLLER_GATE",
             )
 
     # 2. Strict Schema Contract Check (P0.2)
@@ -145,7 +148,8 @@ def validate_action(
             tool=tool,
             normalized_tool=canonical_name,
             reason="; ".join(reason_parts) or "Tham số không hợp lệ theo Tool Contract",
-            details=err_payload
+            details=err_payload,
+            stage_attribution="ACTION_PROPOSAL",
         )
 
     # Legacy missing check fallback only if contract validation wasn't applicable
@@ -157,8 +161,10 @@ def validate_action(
                 tool=tool,
                 normalized_tool=canonical_name,
                 reason=f"Thiếu tham số bắt buộc: {', '.join(miss)}",
-                details={"missing_fields": miss}
+                details={"missing_fields": miss},
+                stage_attribution="ACTION_PROPOSAL",
             )
+
 
     # 3. Dual-Stage Action Firewall (Stage 4.1 + Stage 4.2)
     fw_verdict = None

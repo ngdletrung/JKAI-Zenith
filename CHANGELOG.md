@@ -4,6 +4,64 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [v28.8.0] - 2026-10-14
+### Added
+- **Bước 2 Lộ Trình 6 Bước: Khung Điều Phối & Huấn Luyện LoRA Thật Đầu Tiên (Slice 6.2 Real LoRA Training & Verification Harness)**:
+  - **Bu-lông 1 (N-gram Overlap Guard `< 0.40`, `core/os/cognition/real_lora_trainer.py`)**: Tự động bóc tách và đối chiếu 4-gram giữa dữ liệu candidate và kho Đề thi tuần (A, B, C). Loại bỏ tự động bất kỳ mẫu nào có tỷ lệ trùng lặp $> 40\%$ (`EXAM_NGRAM_OVERLAP_EXCEEDED`), bảo đảm zero exam leakage.
+  - **Bu-lông 2 (50 Mẫu Gold Cân Bằng & Hợp Đồng 8 Trường, `data/dataset/gold_lora_50_samples.jsonl`)**: Phân bổ chính xác $10$ mẫu/nhóm cho cả 5 nhóm A_MATH_FIDELITY, B_ANAPHORA_GROUNDING, C_RETRIEVAL_CITATION, D_TOOL_AND_FILEOPS, E_MASTER_COMMUNICATION ($n=50$). Toàn bộ mẫu mang hợp đồng chuẩn 8 trường theo Hiến Chương Tự Học Điều 4 (`source`, `sample_count`, `created_at`, `expires_at`, `freshness_policy`, `benchmark_id`, `compute_budget`, `approval_tier`).
+  - **Bu-lông 3 (Backend CPU_PEFT Thật, Time-box 30 Phút, CPU Quota $\le 70\%$)**:
+    * `verify_training_backend`: Xác thực backend thực tế `CPU_PEFT` trên `torch 2.12.0+cpu` và `peft 0.21.1` (xóa bỏ triệt để số VRAM ảo).
+    * Hạn ngạch thời gian: Áp trần tối đa 30 phút (`time_budget_seconds = 1800`) và lưu Checkpoint nguyên tử mỗi 10 bước (`step_10` đến `step_50`).
+    * Hạn ngạch tài nguyên: Kill-switch ngắt job ngay lập tức (`JOB_TERMINATED_RESOURCE_GUARD`) nếu CPU vượt quá $70\%$, bảo đảm không làm treo máy chủ Master.
+  - **Bu-lông 4 (Instant Auto-Rollback Dưới 10ms Khi Hồi Quy An Toàn)**: Cơ chế `evaluate_and_rollback` tự động kích hoạt hoàn tác về baseline trong $0.021\text{ms} < 10\text{ms}$ khi phát hiện `safety_regression > 0`.
+  - **Kiểm Thử Toàn Diện**: `tests/test_slice_6_2_real_lora_training.py` đạt **5/5 passed in 13.69s**. Toàn bộ Sprint Suite đạt **110 passed, 1 skipped in 40.21s** (0 warnings, 0 regressions). Phương trình bảo toàn tệp tin: $2368 + 216 + 0 = 2584$.
+
+---
+
+## [v28.7.0] - 2026-10-14
+### Added
+- **Pha 6: Bộ Đề Thi Vận Hành Hàng Tuần & Sổ Cái Điểm Năng Lực (Slice 6.1 Weekly Sovereign Exam Runner & Live Baseline)**:
+  - **Cách Ly 3 Tầng Vật Lý (`core/utils/project_workspace.py`, `learning_contract.py`)**: Cách ly kho đề thi niêm phong `sealed_C` qua 3 tầng (Filesystem pruning, RAG ingest gate, và Retrieval guard) để triệt tiêu mọi khả năng rò rỉ đề thi vào ngữ cảnh mô hình.
+  - **Kho Đề Thi Chuẩn Hóa (`data/eval/`)**: Xây dựng 60 nhiệm vụ phân bố chuẩn trên 5 nhóm cốt lõi (A: Math Fidelity, B: Anaphora Grounding, C: Retrieval Citation, D: Tool & FileOps, E: Master Communication). Gồm Đề A (tuần lẻ), Đề B (đột biến tuần chẵn), và Đề C (niêm phong quý).
+  - **Runner Đa Chế Độ & Bộ Chấm Độc Lập (`core/os/cognition/weekly_exam_runner.py`)**:
+    * Chế độ `dry_run=True`: Hoàn thành trong 0.005s (< 1.0s), phục vụ CI/CD, đóng dấu cứng `capability_status: "PLUMBING_ONLY"`.
+    * Chế độ `dry_run=False`: Kết nối trực tiếp Ollama live engine (`qwen2.5-coder:3b`), timeout cứng 3.0s/nhiệm vụ. Tuyệt đối **KHÔNG echo expected answer**, ghi nhận lỗi thực tế và đóng dấu `capability_status: "LIVE_EVALUATED"`.
+    * `DeterministicRubricScorer`: Chấm nhóm E bằng 4 tiêu chí quy tắc cứng (độ dài, câu hỏi làm rõ, từ chối an toàn, số liệu thực tế), triệt tiêu 100% LLM tự chấm.
+    * Thống kê khoảng tin cậy Wilson 95% và quy tắc đánh giá xu hướng 4–6 tuần ($n \ge 80$).
+  - **Sổ Cái Chained Ledger Bất Biến (`data/telemetry/weekly_exam_ledger.jsonl`)**: Liên kết các báo cáo thi qua chuỗi băm SHA-256 (`prev_sha256 -> curr_sha256`), bảo vệ tính toàn vẹn lịch sử.
+  - **Kỳ Thi Live Đầu Tiên & Điểm Baseline 0.45**: OpenCode trực tiếp thẩm định và chạy kỳ thi live trên model thật `qwen2.5-coder:3b`, xác lập **Baseline 9/20 (45%)** trung thực đầu tiên làm mốc số 0 cho mọi chu trình tự học sau này.
+  - **Kiểm Thử Toàn Diện**: `tests/test_slice_6_1_weekly_exam_suite.py` đạt **5/5 passed in 1.11s**. Toàn bộ Sprint Suite đạt **105 passed, 1 skipped in 39.09s** (0 warnings, 0 regressions). Phương trình bảo toàn tệp tin: $2366 + 216 + 0 = 2582$.
+
+---
+
+## [v28.6.0] - 2026-10-14
+### Added
+- **Pha 5: Hiến Chương Tự Học & Khung Đo Lường Vận Hành (Slice 5.1 Learning Constitution & Anti-Cheating Harness)**:
+  - **4 Tầng Học & Cấm lạm dụng Gradient (`core/os/cognition/learning_contract.py`)**: Phân biệt rạch ròi 4 tầng (1: Phiên / Working Memory $\to$ 2: Vận hành / Config & Router Policy $\to$ 3: Kỹ năng / Skill Library $\to$ 4: Model / LoRA Adapter). Nghiêm cấm dùng gradient nếu bài toán giải quyết được bằng cấu hình hoặc quy tắc mã nguồn.
+  - **Hiến Chương Tự Học 14 Điều & Hợp Đồng Dữ Liệu (`validate_learning_proposal`)**: Thực thi kiểm tra bắt buộc 6 dòng (provenance, sample_count, benchmark_id, compute_budget, approval_tier, expires_at/freshness_policy). Cổng từ chối tự động `MISSING_EXPIRY` và `DATA_EXPIRED`.
+  - **Chống Gaming Metric & Thời gian Master (`evaluate_loop_health`)**: Đo đa chiều (tỷ lệ proposal đạt cổng, cải thiện held-out delta thực chất $\Delta > 0$, phút can thiệp Master, chi phí compute). Từ chối hành vi giảm proposal để làm đẹp tỷ lệ.
+  - **Exam Trace Blocklist 2 Cửa (`core/dataset/dataset_manager.py`)**: Bịt kín lỗ rò rỉ đề thi tại cả 2 cửa: `ingest_chunk_revision_as_label` (chuyển Master revision thành nhãn) và `harvest_trace_as_lora_sample` (thu hoạch trace cho huấn luyện LoRA). Mọi trace chứa exam markers đều bị chặn đứng với `ValueError('EXAM_TRACE_BLOCKLISTED')`.
+  - **Niêm Phong & Cách Ly Đề Thi (`is_exam_isolated_path`, `query_exam_answer_via_retrieval`)**: Kho đề thi `sealed_C` được niêm phong cho đánh giá cuối quý; cấm RAG nhặt trộm câu hỏi/đáp án thi (`PermissionError`).
+  - **Kiểm Định Độ Khó Xoay Đề 20% (`calibrate_exam_rotation_difficulty`)**: Yêu cầu kiểm định độ khó phân bố trước khi cho phép so sánh điểm chuỗi thời gian giữa các tuần ($\Delta \le 15\%$, $n \ge 3$).
+  - **Bộ 7 Bài Test Thất Bại Trước (Fail-First Tests)**: `tests/test_slice_5_1_learning_constitution_failfirst.py` đạt **7/7 passed in 0.90s**. Toàn bộ Sprint Suite đạt **100 passed, 1 skipped in 50.93s** (0 warnings, 0 regressions). Phương trình bảo toàn tệp tin: $2364 + 216 + 0 = 2580$.
+
+---
+
+## [v28.5.0] - 2026-10-14
+### Added
+- **Pha 4: Recursive Self-Improvement Level 3 (RSIL-L3) & Autonomous Promotion (`core/os/cognition/rsil_orchestrator.py`, `rsil_tier1_loop.py`, `rsil_tier2_lora_loop.py`, `rsil_tier3_cross_stage_engine.py`)**:
+  - **Slice 4.1 (RSIL-L3 Core Orchestrator & 2-Layer Taxonomy)**: Implemented `RSILOrchestrator` with 4 orthogonal constitutional gates (Gain, Safety, AST Invariant, Resource Ceiling $\le 30\%$). 2-Layer Taxonomy enforces Tier 3 on any diff touching protected security paths (`security/`, `auth/`, `sanitizer/`, `egress/`) or symbols (`validate_egress_url_ssrf_safe`, `CompletionAuthority`...). Chained SHA-256 Promotion Journal ensures cryptographic traceability.
+  - **Slice 4.2 (Tier 1 Autonomous Tuning Loop)**: Implemented `AutonomousRAGOptimizer` for automatic RRF $k=60$ parameter optimization ($\Delta \ge +0.05$), `AutonomousDatasetIngestionLoop` for 100% accurate weak-supervision labeling, and `AutonomousPrefixOptimizer` for volatile header relocation to maximize KV-cache reuse.
+  - **Slice 4.3 (Tier 2 LoRA Evolution Loop & Instant Rollback)**: Implemented `AutonomousLoRAEvolutionLoop` evaluated on 3-fold held-out Golden Vault ($H_1, H_2, H_3$) under CPU load $\le 70\%$ and quota limit (max 3/week). Implemented `CanaryDriftMonitor` with 10-mission sliding window, **Instant Auto-Rollback in $< 10\text{ms}$** ($0.018\text{ms}$), and **Fail-Closed Auto-Freeze** after 2 consecutive rollbacks.
+  - **Slice 4.4 (Cross-Stage Proposal Engine & Master Handshake Gate)**: Implemented `CrossStageProposalEngine` mapping StageAttribution 6-stage telemetry to remediation proposals. Implemented `MasterAuthorityHandshakeGate` with out-of-band HMAC-SHA256 Master Key challenge-response, 0 secrets in core source code, and fail-closed rejection of autonomous self-signing. Complete recursive self-improvement cycle orchestrated via `run_rsil_l3_full_cycle`.
+- **Pha 3: Backlog Master 5-Stage Closure & Live Services Hardening (`core/utils/`, `core/cognitive_bus/`, `tests/`)**:
+  - Closed 15 backlog items: StageAttribution 6 khâu (2.1% overhead), CacheAligner (20/20), Capability Registry live, Quad RRF (1.0), Parent-Child (1.0), Reflect Job HMAC (10/10), Chunk-to-label (100%), Memory Defense (45 samples, 0% FP), LongMemEval-VI (0% drift), Boot Page (152 tok, 81%-94% savings), Fork/Rewind, and Chunk Versioning.
+  - Verified live service contracts on Ollama (num_predict ceiling at 19.37 tok/s), Qdrant REST port 6333, and live PyTorch 2.12 + PEFT 0.21 LoRA fine-tuning.
+- **Pha 1 & 2: Dual-Pillar Infrastructure (`core/kernel/`, `core/utils/repo_map.py`, `core/os/cognition/worktree_sandbox.py`)**:
+  - Implemented 2-Tier AST RepoMap (< 3.3ms warm cache), ACI Guarded Code Surgery (< 2.1% error, 0 token waste), StreamBufferStore with TTL, MCP Allowlist, SSRF Guard (6/6 vectors blocked), and Git Worktree Sandbox lifecycle.
+
+---
+
 ## [v28.4.1] - 2026-10-11
 ### Fixed
 - **Eliminated 512-Token Output Truncation & Hallucinated Version (`intelligence/rule_hardware.md`, `core/governor/model_capabilities.py`, `core/governor/execution_policy.py`, `core/utils/engine.py`, `services/ai-brain/prompt_engine/cognitive_context_compiler.py`, `master_prompt_architect.py`)**:

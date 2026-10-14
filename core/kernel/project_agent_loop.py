@@ -21,7 +21,17 @@ from core.kernel.durable_checkpoint import get_checkpoint_engine, StateEnvelope
 
 logger = logging.getLogger("jkai.project_agent")
 
-TOOLS_AUDIT = ("list_dir", "view_file", "grep_search", "run_command", "verify_file", "browser_action")
+TOOLS_AUDIT = (
+    "list_dir",
+    "view_file",
+    "grep_search",
+    "query_repo_map",
+    "read_stream_window",
+    "search_in_stream",
+    "run_command",
+    "verify_file",
+    "browser_action",
+)
 TOOLS_FIX = TOOLS_AUDIT + ("replace_file_content", "write_to_file", "delete_file")
 
 
@@ -107,11 +117,22 @@ class ProjectAgentLoop:
     def _write_trace(self, entry: Dict[str, Any], task_id: str) -> None:
         tf = self.trace_file or (Path("results") / f"trace_{task_id}.jsonl")
         try:
+            if "stage_attribution" not in entry:
+                from core.utils.repo_map import classify_step_stage_attribution
+                is_final = "final_answer" in entry and entry.get("final_answer") is not None
+                stage = classify_step_stage_attribution(
+                    tool=entry.get("tool"),
+                    decision=str(entry.get("decision", "PERMIT")),
+                    outcome_ok=bool(entry.get("outcome_ok", True)),
+                    is_final_verification=is_final,
+                )
+                entry["stage_attribution"] = stage.value
             tf.parent.mkdir(parents=True, exist_ok=True)
             with open(tf, "a", encoding="utf-8") as f:
                 f.write(json.dumps(entry, ensure_ascii=False) + "\n")
         except Exception as e:
             logger.warning("Failed to write trace to %s: %s", tf, e)
+
 
     async def _tool(self, name: str, params: dict, task_id: str, trace_id: str) -> str:
         try:
@@ -180,6 +201,14 @@ class ProjectAgentLoop:
             params["Query"] = q
             params["path"] = safe_search
             params["SearchPath"] = safe_search
+
+        elif name == "query_repo_map":
+            q = params.get("query") or params.get("Query") or params.get("pattern") or ""
+            f_path = params.get("file_path") or params.get("path") or ""
+            params["query"] = str(q)
+            params["file_path"] = str(f_path)
+            params.setdefault("include_blast_radius", True)
+            params.setdefault("max_tokens", 700)
 
         elif name == "run_command":
             cmd = str(params.get("command") or params.get("CommandLine") or params.get("cmd") or "").strip()
@@ -262,7 +291,13 @@ class ProjectAgentLoop:
             tool_args={**params, "task_id": task_id},
         )
         out = await self.gateway.execute_tool(req, task_id)
-        out_str = str(out)[:12000]
+        from core.utils.stream_buffer_store import buffer_text_if_large
+        out_str, _ = buffer_text_if_large(
+            str(out),
+            source_tool=str(name),
+            task_id=task_id,
+            max_inline_chars=12000,
+        )
         if safe_path and name in ("replace_file_content", "write_to_file"):
             low = out_str.lower()
             if "success" in low or "thành công" in low or "phẫu thuật thành công" in low:
@@ -274,26 +309,26 @@ class ProjectAgentLoop:
                     rel = rel[len("/workspace/") :]
                 emit_file_edit(rel, old_text, new_text, task_id=task_id, open_tab=True)
 
-                # Tự động kiểm chứng cú pháp Python nếu file bị sửa đổi kết thúc bằng .py
+                # Tự động kiểm chứng cú pháp + ACI Static Diagnostics (<15ms in-process) nếu file bị sửa kết thúc bằng .py
                 if safe_path.endswith(".py"):
-                    import subprocess
-                    import sys
                     try:
-                        res = subprocess.run(
-                            [sys.executable, "-m", "py_compile", safe_path],
-                            capture_output=True,
-                            text=True,
-                            timeout=5
-                        )
-                        if res.returncode != 0:
-                            compile_err = res.stderr.strip() or res.stdout.strip()
+                        from core.utils.ast_code_auditor import analyze_python_aci_diagnostics
+                        aci_diag = analyze_python_aci_diagnostics(new_text, filename=safe_path)
+                        if not aci_diag.get("syntax_ok", True):
                             out_str += (
-                                f"\n\n🚨 [COMPILE-WARNING]: Tệp tin python vừa lưu bị lỗi cú pháp và không thể biên dịch thành công!\n"
-                                f"Chi tiết lỗi:\n{compile_err}\n"
+                                f"\n\n🚨 [COMPILE-WARNING]: Tệp tin python vừa lưu bị lỗi cú pháp!\n"
+                                f"Chi tiết lỗi: {aci_diag.get('syntax_error')}\n"
                                 f"Vui lòng sử dụng lại tool để sửa lỗi cú pháp này trước khi thực hiện bước tiếp theo."
                             )
+                        elif aci_diag.get("undefined_names") or aci_diag.get("broken_imports"):
+                            out_str += (
+                                f"\n\n⚠️ [ACI-STATIC-DIAGNOSTICS ({aci_diag.get('elapsed_ms')}ms)]:\n"
+                                f"- undefined_names: {aci_diag.get('undefined_names')}\n"
+                                f"- broken_imports: {aci_diag.get('broken_imports')}\n"
+                                f"Hãy kiểm tra lại các biến/hàm hoặc import trên để tránh lỗi NameError/ImportError khi chạy."
+                            )
                     except Exception as compile_ex:
-                        logger.warning("Failed to auto compile-check: %s", compile_ex)
+                        logger.warning("Failed to auto ACI-check: %s", compile_ex)
         return out_str
 
     def _system_prompt(self, goal: str) -> str:
@@ -304,24 +339,35 @@ class ProjectAgentLoop:
             else "KHÔNG sửa file — chỉ báo lỗi. Nếu cần sửa Master sẽ nói 'sửa'."
         )
         flow_line = (
-            "Luồng chuẩn chế độ fix: view_file/run_command (đọc code hoặc chạy test để biết lỗi) → replace_file_content (sửa đúng dòng lỗi) → run_command (chạy pytest xác minh 100% PASS) → final_answer."
+            "Luồng chuẩn chế độ fix: query_repo_map/view_file/run_command (định vị symbol + đọc code hoặc chạy test để biết lỗi) → replace_file_content (sửa đúng dòng lỗi) → run_command (chạy pytest xác minh 100% PASS) → final_answer."
             if self.mode == "fix"
-            else "Luồng chuẩn chế độ audit: list_dir/view_file/grep_search/run_command → phân tích kỹ lưỡng nội dung → final_answer (tuyệt đối KHÔNG sửa file)."
+            else "Luồng chuẩn chế độ audit: query_repo_map/list_dir/view_file/grep_search/run_command → phân tích kỹ lưỡng nội dung → final_answer (tuyệt đối KHÔNG sửa file)."
         )
+        tier0_block = ""
+        try:
+            from core.utils.repo_map import get_tier0_overview
+            tier0_res = get_tier0_overview(max_tokens=350)
+            tier0_block = f"\n{tier0_res.get('text', '')}\n\n"
+        except Exception:
+            tier0_block = ""
         return (
             f"# JKAI CURSOR AGENT — workspace `{self.scope_rel}`\n"
             f"Thư mục gốc tác vụ: `{self.base}`\n"
-            f"Mục tiêu Master: {goal}\n\n"
+            f"Mục tiêu Master: {goal}\n"
+            f"{tier0_block}"
             f"## Quy tắc\n"
             f"1. {fix_line}\n"
             f"2. Mỗi bước trả về ĐÚNG một JSON (không markdown):\n"
             '{{"thought":"...","tool":"tên_tool","params":{{}},"final_answer":null}}\n'
-            f"   Bắt buộc chọn 'tool' (run_command, view_file, list_dir, replace_file_content) để hành động. Chỉ để tool=null khi đã hoàn thành 100% và điền 'final_answer'.\n"
+            f"   Bắt buộc chọn 'tool' (query_repo_map, run_command, view_file, list_dir, replace_file_content) để hành động. Chỉ để tool=null khi đã hoàn thành 100% và điền 'final_answer'.\n"
             f"3. Tools và tham số:\n"
+            f"   - query_repo_map: {{\"query\": \"tên_hàm_hoặc_class\", \"file_path\": \"tùy_chọn\"}}\n"
+            f"   - read_stream_window: {{\"stream_id\": \"stream_...\", \"start_line\": 1, \"end_line\": 100}}\n"
+            f"   - search_in_stream: {{\"stream_id\": \"stream_...\", \"query\": \"từ khóa\"}}\n"
             f"   - write_to_file: {{\"path\": \"tên_file\", \"content\": \"nội dung văn bản\"}}\n"
-            f"   - view_file: {{\"path\": \"tên_file\"}}\n"
+            f"   - view_file: {{\"path\": \"tên_file\", \"start_line\": 1, \"end_line\": 200, \"outline\": false}}\n"
             f"   - list_dir: {{\"path\": \".\"}}\n"
-            f"   - grep_search: {{\"query\": \"từ khóa\", \"path\": \".\"}}\n"
+            f"   - grep_search: {{\"query\": \"từ khóa\", \"path\": \".\", \"offset\": 0, \"limit\": 50}}\n"
             f"   - run_command: {{\"command\": \"lệnh\"}}\n"
             f"   - replace_file_content: {{\"path\": \"tên_file\", \"TargetContent\": \"đoạn cũ\", \"ReplacementContent\": \"đoạn mới\"}}\n"
             f"   - verify_file: {{\"path\": \"tên_file\"}}\n"

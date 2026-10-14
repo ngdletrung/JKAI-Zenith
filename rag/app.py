@@ -7,8 +7,16 @@ import hashlib
 import time
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-from qdrant_client import QdrantClient, AsyncQdrantClient
-from qdrant_client.http.models import VectorParams, Distance
+try:
+    from qdrant_client import QdrantClient, AsyncQdrantClient
+    from qdrant_client.http.models import VectorParams, Distance
+    _QDRANT_AVAILABLE = True
+except ImportError as _qdrant_err:
+    QdrantClient = None  # type: ignore[assignment]
+    AsyncQdrantClient = None  # type: ignore[assignment]
+    VectorParams = None  # type: ignore[assignment]
+    Distance = None  # type: ignore[assignment]
+    _QDRANT_AVAILABLE = False
 
 # [ANTI-HALLUCINATION]: Epistemic Discipline Engine
 try:
@@ -34,15 +42,33 @@ except ImportError as _verifier_err:
     _VERIFIER_AVAILABLE = False
 
 # LlamaIndex core & Qdrant integration
-from llama_index.core.embeddings import BaseEmbedding
-from llama_index.core.node_parser import SentenceSplitter
-from llama_index.core import Document, StorageContext, VectorStoreIndex, Settings
-from llama_index.vector_stores.qdrant import QdrantVectorStore
+try:
+    from llama_index.core.embeddings import BaseEmbedding
+    from llama_index.core.node_parser import SentenceSplitter
+    from llama_index.core import Document, StorageContext, VectorStoreIndex, Settings
+    from llama_index.vector_stores.qdrant import QdrantVectorStore
+    _LLAMA_INDEX_AVAILABLE = True
+except ImportError:
+    BaseEmbedding = object  # type: ignore[assignment,misc]
+    SentenceSplitter = None  # type: ignore[assignment]
+    Document = None  # type: ignore[assignment]
+    StorageContext = None  # type: ignore[assignment]
+    VectorStoreIndex = None  # type: ignore[assignment]
+    Settings = None  # type: ignore[assignment]
+    QdrantVectorStore = None  # type: ignore[assignment]
+    _LLAMA_INDEX_AVAILABLE = False
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI(title="JKAI Zenith RAG Engine - Core Knowledge Matrix")
+from contextlib import asynccontextmanager
+
+@asynccontextmanager
+async def _rag_lifespan(_app: FastAPI):
+    await init_collection()
+    yield
+
+app = FastAPI(title="JKAI Zenith RAG Engine - Core Knowledge Matrix", lifespan=_rag_lifespan)
 
 # ====================== ELITE CONFIG (UNIFIED ENGINE) ======================
 from core.utils.engine import engine
@@ -53,11 +79,15 @@ COLLECTION_NAME = os.getenv("QDRANT_COLLECTION", "n8n_knowledge")
 # [FALLBACK-L1]: URL endpoint web search (optional — neu khong set, skip Level 1)
 RAG_WEB_SEARCH_URL = os.getenv("RAG_WEB_SEARCH_URL", "")
 
-qdrant = AsyncQdrantClient(
-    host=QDRANT_HOST,
-    port=int(os.getenv("QDRANT_PORT", 6333)),
-    prefer_grpc=False,
-    https=False,
+qdrant = (
+    AsyncQdrantClient(
+        host=QDRANT_HOST,
+        port=int(os.getenv("QDRANT_PORT", 6333)),
+        prefer_grpc=False,
+        https=False,
+    )
+    if _QDRANT_AVAILABLE and AsyncQdrantClient is not None
+    else None
 )
 
 # 💎 Persistent Client for Elite Neural Communication
@@ -94,7 +124,8 @@ def run_sync(coro):
 
 class JKAIEmbedding(BaseEmbedding):
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        if _LLAMA_INDEX_AVAILABLE:
+            super().__init__(**kwargs)
 
     @classmethod
     def class_name(cls) -> str:
@@ -112,12 +143,15 @@ class JKAIEmbedding(BaseEmbedding):
     async def _aget_text_embedding(self, text: str):
         return await get_embedding(text)
 
-Settings.embed_model = JKAIEmbedding()
-Settings.llm = None
+if _LLAMA_INDEX_AVAILABLE and Settings is not None:
+    Settings.embed_model = JKAIEmbedding()
+    Settings.llm = None
 
 # ====================== INIT COLLECTION ======================
 async def init_collection():
     """Khởi tạo collection trong Qdrant nếu chưa tồn tại thưa Master"""
+    if qdrant is None:
+        return
     try:
         collections = await qdrant.get_collections()
         existing = [c.name for c in collections.collections]
@@ -133,10 +167,6 @@ async def init_collection():
             logger.info(f"Collection {COLLECTION_NAME} already exists")
     except Exception as e:
         logger.error(f"Failed to init collection: {e}")
-
-@app.on_event("startup")
-async def startup_event():
-    await init_collection()
 
 # ====================== MODELS ======================
 class AskRequest(BaseModel):
@@ -167,12 +197,14 @@ def expand_node_context(node) -> str:
         return original_text
         
     if not os.path.exists(source_path):
-        # Fallback to absolute project path or common workspace path
+        # Fallback to canonical workspace root or common workspace path
+        from core.utils.project_workspace import get_jkai_workspace_root
+        ws_root = str(get_jkai_workspace_root())
         possible_paths = [
             source_path,
             os.path.join(os.getcwd(), source_path),
             os.path.join(os.getcwd(), "workspace", os.path.basename(source_path)),
-            os.path.join("d:\\Docker\\JKAI", source_path)
+            os.path.join(ws_root, source_path),
         ]
         found = False
         for p in possible_paths:
@@ -224,11 +256,13 @@ def expand_context_from_hit(hit) -> str:
     if not source_path or start_idx is None or end_idx is None:
         return chunk_text
 
+    from core.utils.project_workspace import get_jkai_workspace_root
+    ws_root = str(get_jkai_workspace_root())
     possible_paths = [
         source_path,
         os.path.join(os.getcwd(), source_path),
-        os.path.join("d:\\Docker\\JKAI", source_path),
-        os.path.join("d:\\Docker\\JKAI", os.path.basename(source_path)),
+        os.path.join(ws_root, source_path),
+        os.path.join(ws_root, os.path.basename(source_path)),
     ]
     found_path = None
     for p in possible_paths:
@@ -564,3 +598,19 @@ async def trigger_scan():
         return {"status": "error", "message": "Scan timeout after 300 seconds"}
     except Exception as e:
         return {"status": "error", "message": str(e)}
+
+
+def run_rag_fixed_harness(top_k: int = 2) -> dict:
+    """
+    [Slice 3.2 - Giai đoạn 2.2: Harness đo RAG cố định tích hợp vào rag/app.py]:
+    Chạy bộ đo RAG cố định (WeKnora + Hindsight 4-Strategy RRF + Parent-Child Chunking).
+    Mọi PR chạm vào chunking/retrieval/rerank của RAG phải chạy lại hàm này.
+    """
+    from core.utils.rag_eval_harness import evaluate_fixed_rag_harness
+
+    return evaluate_fixed_rag_harness(top_k=top_k)
+
+
+@app.get("/evaluate_harness")
+def evaluate_harness_endpoint(top_k: int = 2):
+    return run_rag_fixed_harness(top_k=top_k)

@@ -1018,6 +1018,16 @@ class OmniSearchEngine:
         query = _clean_query(query)
         task_id = kwargs.get("task_id", "unknown")
         is_raw = kwargs.get("raw", False)
+        local_only = kwargs.get("local_only")
+        if local_only is True or os.getenv("JKAI_LOCAL_ONLY", "").strip().lower() in ("1", "true", "yes", "on"):
+            return {
+                "status": "unavailable",
+                "is_simulated": False,
+                "reason": "LOCAL_ONLY_MODE",
+                "query": query,
+                "output": None,
+                "msg": "OmniSearch bị từ chối minh bạch vì hệ thống đang chạy ở chế độ LOCAL_ONLY_MODE.",
+            }
         
         # 0. Giai quyet che do hoat dong tu dong (auto mode) thieu Master
         resolved_mode = mode
@@ -1043,7 +1053,7 @@ class OmniSearchEngine:
             search_query = query
 
         # 3. THUC THI CHUOI TIM KIEM SONG SONG (CONCURRENT PARALLEL SEARCH CHAIN) thua Master!
-        # Chay song song tat ca nguon tin va thu thap ket qua dong thoi de dat Latency nho nhat.
+        # Chay song song tat ca nguon tin thuc te da xac thuc (Tavily, DuckDuckGo, AI-Browse).
         logger.info(f"[OMNI-SEARCH-CONCURRENT]: Bat dau tim kiem dong thoi tren tat ca cac kenh cho '{search_query}'...")
         
         tasks = []
@@ -1071,11 +1081,6 @@ class OmniSearchEngine:
                 idx += 1
         except Exception:
             pass
-            
-        # Kenh 4: Cloud LLM fallback
-        tasks.append(self._search_cloud_llm(search_query))
-        source_indices[idx] = "cloud_llm"
-        idx += 1
 
         # Kich hoat dong thoi toan bo cac tieu tien trinh tim kiem thua Master!
         search_results = await asyncio.gather(*tasks, return_exceptions=True)
@@ -1111,8 +1116,12 @@ class OmniSearchEngine:
                 
         if not raw_candidates:
             return {
-                "status": "error",
-                "msg": "Tim kiem dong thoi that bai tren tat ca cac kenh thua Master."
+                "status": "unavailable",
+                "is_simulated": False,
+                "reason": "SEARCH_PROVIDERS_UNREACHABLE",
+                "query": query,
+                "output": None,
+                "msg": "Tim kiem dong thoi that bai tren tat ca cac kenh thua Master.",
             }
             
         logger.info(f"[OMNI-SEARCH-CONCURRENT]: Thu thap thanh cong {len(raw_candidates)} phan doan thong tin tu: {', '.join(source_success)}")
@@ -1269,13 +1278,8 @@ class OmniSearchEngine:
                         "content": chunk_content
                     })
         else:
-            content = ""
-            if source_type == "cloud_llm":
-                content = search_result.get("output", {}).get("content", "")
-                url = "https://cloud-llm-search.internal"
-            else:
-                content = search_result.get("output", {}).get("content", "")
-                url = "https://duckduckgo.com"
+            content = search_result.get("output", {}).get("content", "")
+            url = "https://duckduckgo.com"
                 
             extracted_date = extract_date_info(content, url)
             date_prefix = f"[Ngày {extracted_date}] " if extracted_date else ""
@@ -1324,22 +1328,6 @@ class OmniSearchEngine:
         except Exception as e:
             logger.error(f"[DDG-ERR]: {e}")
             return []
-
-    async def _search_cloud_llm(self, query: str) -> str:
-        from core.utils.engine import engine
-        prompt = (
-            f"Vui long tim kiem tren Internet thong tin moi nhat ve: '{query}'. "
-            "Tra loi ngan gon, chi tiet va chua cac thong tin thoi su/thuc te."
-        )
-        answer = await engine.call_chat(
-            messages=[{"role": "user", "content": prompt}],
-            role="PLANNER",
-            task_id="omni_search_internal",
-            trace_id="system"
-        )
-        if isinstance(answer, dict) and "answer" in answer:
-            return answer["answer"]
-        return str(answer)
 
     async def _search_browse(self, query: str, executor_url: str) -> str:
         from core.utils.engine import engine

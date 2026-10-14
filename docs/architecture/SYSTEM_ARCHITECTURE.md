@@ -136,4 +136,57 @@ Kernel State Transition: COMPLETED
   * Governed by mandatory Human-in-the-Loop (HITL) confirmation gates.
 
 ---
+
+## 7. Recursive Self-Improvement Level 3 (RSIL-L3) & Dual-Key Promotion Framework
+
+JKAI Zenith introduces **RSIL-L3 (Recursive Self-Improvement Level 3)**, an autonomous multi-stage feedback and promotion loop that transitions the system from outsourced model dependence to endogenous cognitive sovereignty.
+
+```text
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                       RSIL-L3 RECURSIVE ARCHITECTURE                        │
+│                                                                             │
+│   StageAttribution Telemetry (6 Stages) ──► CrossStageProposalEngine        │
+│                                                       │                     │
+│                                                       ▼                     │
+│                                            2-Layer Safety Taxonomy          │
+│                                                       │                     │
+│             ┌────────────────────────┬────────────────┴────────────────┐    │
+│             │                        │                                 │    │
+│             ▼                        ▼                                 ▼    │
+│      [ Tier 1 Loop ]          [ Tier 2 Loop ]                   [ Tier 3 Gate ]
+│     Hyperparameters/RAG        LoRA & Router                    Security/Bounds
+│             │                        │                                 │    │
+│             ▼                        ▼                                 ▼    │
+│     Autonomous Optimizer     3-Fold Golden Vault               Master Handshake
+│     Gain $\Delta \ge 0.05$   Gain + Drift + Zero Reg           Token Challenge
+│             │                        │                                 │    │
+│             ▼                        ▼                                 ▼    │
+│      Operational Key          Operational Key                   Master Secret
+│       AUTO-PROMOTE             AUTO-PROMOTE                      (Out-of-band)
+│             │                        │                                 │    │
+│             └────────────────────────┼─────────────────────────────────┘    │
+│                                      │                                      │
+│                                      ▼                                      │
+│                        10-Mission Canary Monitor                            │
+│                     (Rollback < 10ms if drift > 15%)                        │
+│                                      │                                      │
+│                                      ▼                                      │
+│                    Chained SHA-256 Promotion Journal                        │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
+
+### Core Invariants of RSIL-L3:
+1. **Dual-Key Constitutional Invariant**:
+   $$\text{Autonomous Promotion} \iff \text{Operational Witness Key (Checks-Passed)} \wedge \text{Master Authority Key (Boundary Expansion)}$$
+   The autonomous engine holds the operational witness key confirming empirical test passage. The Master retains absolute, out-of-band cryptographic custody over system boundaries and security mutations.
+2. **2-Layer Safety Taxonomy**:
+   Any proposed mutation touching protected paths (`core/security/`, `auth/`, `sanitizer/`, `egress/`) or protected symbols (`validate_egress_url_ssrf_safe`, `CompletionAuthority`...) is forced into **Tier 3 (Master Approval Required)**.
+3. **Zero-Secret-in-Code**:
+   Production core code contains zero static secrets or keys (`master_secret=None` fail-closed). Verification requires dynamic environment injection or out-of-band HMAC-SHA256 signature from the Master.
+4. **Instant Canary Auto-Rollback**:
+   Canary deployments are monitored on a rolling 10-mission sliding window. A measured drift $> 15\%$ triggers an automated rollback to baseline in $< 10\text{ms}$ ($0.018\text{ms}$ measured). Two consecutive rollbacks initiate a fail-closed freeze.
+5. **Chained SHA-256 Journal**:
+   Every promotion, refusal, challenge, rollback, and freeze event is committed into an append-only cryptographic journal (`prev_sha256 -> curr_sha256`) ensuring immutable auditability.
+
+---
 *JKAI Zenith Sovereign Architecture Specification — Master LeeTrung.*

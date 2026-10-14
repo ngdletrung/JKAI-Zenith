@@ -5,7 +5,7 @@
 [![Architecture](https://img.shields.io/badge/Architecture-Decision--Native_Microkernel-indigo?style=for-the-badge)](https://github.com/ngdletrung/JKAI-Zenith.git)
 [![Security](https://img.shields.io/badge/Security-Zero--Egress_Sovereign-red?style=for-the-badge)](https://github.com/ngdletrung/JKAI-Zenith.git)
 [![Hardware](https://img.shields.io/badge/Hardware-RX6600_8GB_%2B_Xeon_128GB-purple?style=for-the-badge)](https://github.com/ngdletrung/JKAI-Zenith.git)
-[![Test Suite](https://img.shields.io/badge/Tests-120%2B_Passing-success?style=for-the-badge)](https://github.com/ngdletrung/JKAI-Zenith.git)
+[![Test Suite](https://img.shields.io/badge/Tests-150%2B_Passing-success?style=for-the-badge)](https://github.com/ngdletrung/JKAI-Zenith.git)
 [![Embodied Runtime](https://img.shields.io/badge/Embodied_Runtime-21%2F21_Passing-success?style=for-the-badge)](https://github.com/ngdletrung/JKAI-Zenith.git)
 
 > **JKAI Zenith** is an enterprise-grade, microkernel-inspired **Decision-Native Sovereign AI Operating System**.  
@@ -240,14 +240,38 @@ JKAI Zenith is actively advancing along a four-phase evolutionary roadmap toward
   • Embodied Runtime Actuators M0 (File), M1 (Command Sandbox), M2 (Browser Stealth) — 21/21 Pass
   • Baseline v2.1 Ground Truth Sealed (30 OOD Cases) & 27 Gold Contrastive Pairs
   
-  Phase 3: Asynchronous Shadow Evaluation, Learning Loop & LoRA Distillation
-  [=================>                                ] 35% ACTIVE
+  Phase 3: Asynchronous Shadow Evaluation, Learning Loop & Live Services
+  [==================================================] 100% COMPLETED
   • Production Non-Blocking Shadow Evaluation on Live Mission Streams (100% Paired Telemetry)
-  • Master Review & Approval of 27 Gold Boundary Contrastive Pairs
-  • Offline LoRA / Distillation Fine-Tuning into Model v2 (Strictly Model-Agnostic)
-  • Re-testing on 30 OOD Cases to Measure Real Empirical Progress vs Baseline 14/60
+  • Master Review & Approval of Gold Boundary Contrastive Pairs (5-Stage Backlog Closed)
+  • Live Service Contracts: Ollama num_predict ceiling, Qdrant REST 6333, PyTorch 2.12 + PEFT LoRA training
+  • Re-testing on 30 OOD Cases with Zero Pytest Warnings & Exact File Conservation
   
-  Phase 4: Sovereign Distributed Capability Fabric & GUI Computer Use
+  Phase 4: RSIL-L3 Endogenous Intelligence & Autonomous Promotion Loop
+  [==================================================] 100% COMPLETED
+  • RSIL-L3 Core Orchestrator & 2-Layer Taxonomy (Tier 3 on security paths & symbols)
+  • Tier 1 Autonomous Tuning Loop (RAG RRF $k=60$ optimizer, weak-supervision ingestion, KV prefix)
+  • Tier 2 Autonomous LoRA Evolution Loop (3-fold Golden Vault $H_1, H_2, H_3$, Canary sliding window, Instant Rollback $< 10\text{ms}$, Auto-Freeze)
+  • Tier 3 Cross-Stage Proposal Engine & Master Handshake Gate (Dual-Key, 0 secrets in core, out-of-band HMAC signature)
+  • Chained SHA-256 Promotion Journal (`prev_sha256 -> curr_sha256`)
+
+  Phase 5: Sovereign Learning Constitution & Anti-Cheating Exam Harness
+  [==================================================] 100% COMPLETED
+  • Learning Constitution 14 Articles & 4-Tier Learning Taxonomy (Zero gradient misuse)
+  • 6-Field Data Contract (`data_contract` with TTL & freshness policy, auto-rejection of expired data)
+  • Multi-Metric Anti-Gaming Guard & Master intervention time reduction tracking
+  • 2-Door Exam Trace Blocklist & RAG Vector Isolation (`sealed_C` strictly isolated)
+  • 20% Rotation Difficulty Calibration & 7/7 Fail-First Constitutional Tests Passed
+
+  Phase 6: Weekly Sovereign Operational Exam Suite & Live Capability Baseline
+  [==================================================] 100% COMPLETED
+  • 3-Tier Physical Exam Isolation (Filesystem, RAG Ingest Gate, Retrieval Guard)
+  • Standardized 60-Task Exam Bank across 5 Core Groups (Math, Anaphora, Citation, Tools, Master Comm)
+  • Multi-Mode Runner with Hard Distinction: `PLUMBING_ONLY` (< 1.0s) vs `LIVE_EVALUATED` (Real Ollama 3B, zero echo)
+  • Deterministic Rubric Scorer for Group E (Zero LLM self-scoring) & Wilson 95% CI
+  • Chained SHA-256 Ledger & First Live Exam in JKAI History: Verified 9/20 (45%) Real Baseline on `qwen2.5-coder:3b`
+
+  Phase 7: Sovereign Distributed Capability Fabric & GUI Computer Use
   [                                                  ] 0% FUTURE VISION
   • M3 Desktop GUI Automation (Screen Capture + VLM + Human-in-the-loop Gate)
   • Multi-Host Microkernel Coordination across Heterogeneous Edge Hardware
@@ -264,10 +288,10 @@ Run the verified physical actuator and sensor test suite (21/21 passing in ~22s)
 python -m pytest tests/test_m0_file_primitives.py tests/test_m1_command_sandbox.py tests/test_m2_browser_actuator.py -v
 ```
 
-### 2. Verify Core Safety & Architecture Test Suite
-Run the comprehensive test suite across decision substrate, invariant, and architecture contracts (120+ tests green):
+### 2. Verify RSIL-L3 Autonomous Promotion & Architecture Test Suite
+Run the comprehensive test suite across RSIL-L3, decision substrate, and architecture contracts (150+ tests green):
 ```bash
-python -m pytest tests/test_decision_substrate_p0_p1.py tests/test_tier2_backend_contract.py tests/test_confidence_policy.py tests/test_confidence_policy_wiring.py tests/test_tier2_benchmark_harness.py tests/test_tier1_tier2_contract.py tests/test_shadow_harness.py tests/test_shadow_harness_integration.py tests/test_local_decision_benchmark_5criteria.py tests/test_h1_fast_path_verification.py -v
+python -m pytest tests/test_slice_4_1_rsil_l3_orchestrator_core.py tests/test_slice_4_2_tier1_autonomous_tuning_loop.py tests/test_slice_4_3_tier2_lora_evolution_loop.py tests/test_slice_4_4_cross_stage_rsil_l3_engine.py -v
 ```
 
 ### 3. Run Tier 2 Backend Comparison Benchmark
@@ -295,13 +319,13 @@ JKAI Zenith adheres to international open-source and enterprise software documen
 
 | Layer | Canonical Location | Description & Scope |
 |:---|:---|:---|
-| **AI Agent Working Principles (SSoT)** | [`/.keyword.md`](file:///d:/Docker/JKAI/.keyword.md) | **Strictly for AI Assistants (Antigravity, OpenCode, Sub-agents)**: Boot-on-start protocol, root philosophy (Anti-Patching, Anti-Redundancy), 4-step self-audit protocol, 6 Red Lines, and brand protection rules. |
-| **System Architecture Specification** | [`/docs/architecture/SYSTEM_ARCHITECTURE.md`](file:///d:/Docker/JKAI/docs/architecture/SYSTEM_ARCHITECTURE.md) | High-level system architecture (IEEE/ISO 42010), 3-Layer separation, Hybrid Cognitive Router, Event-Sourced Mission Runtime, and DAG Scheduler. |
+| **AI Agent Working Principles (SSoT)** | [`/.keyword.md`](file:///d:/Docker/JKAI/.keyword.md) | **Strictly for AI Assistants (Antigravity, OpenCode, Sub-agents)**: Boot-on-start protocol, root philosophy, 4-step self-audit protocol, 6 Red Lines, brand protection rules, and **RSIL-L3 Dual-Key Autonomous Promotion Framework**. |
+| **System Architecture Specification** | [`/docs/architecture/SYSTEM_ARCHITECTURE.md`](file:///d:/Docker/JKAI/docs/architecture/SYSTEM_ARCHITECTURE.md) | High-level system architecture (IEEE/ISO 42010), 3-Layer separation, Hybrid Cognitive Router, Event-Sourced Mission Runtime, DAG Scheduler, and RSIL-L3 Endogenous Intelligence Loop. |
 | **Hardware Affinity Architecture** | [`/docs/architecture/HARDWARE_AFFINITY.md`](file:///d:/Docker/JKAI/docs/architecture/HARDWARE_AFFINITY.md) | NCNN-inspired hardware affinity, dual Xeon E5 NUMA memory pinning, AMD RX6600 GPU VRAM allocation, and INT8 KV Cache acceleration (`rule_hardware.md`). |
 | **Topology & Codebase Graph** | [`/docs/architecture/TOPOLOGY.md`](file:///d:/Docker/JKAI/docs/architecture/TOPOLOGY.md) & [`/docs/architecture/JKAI_MAP_GRAPH.md`](file:///d:/Docker/JKAI/docs/architecture/JKAI_MAP_GRAPH.md) | Microservices network topology, ports, databases (Postgres, Redis, Qdrant), and comprehensive module dependency graph. |
-| **Architectural Decision Records** | [`/docs/adr/`](file:///d:/Docker/JKAI/docs/adr/) | Chronological immutable architectural decision records (ADR-001 through ADR-005+). |
-| **System Release Changelog** | [`/CHANGELOG.md`](file:///d:/Docker/JKAI/CHANGELOG.md) | Official release history, version milestones (Keep a Changelog standard), and feature evolutions. |
-| **Internal Cognitive Memory Log** | [`/intelligence/identity/GLOBAL_SYSTEM_CONTEXT.md`](file:///d:/Docker/JKAI/intelligence/identity/GLOBAL_SYSTEM_CONTEXT.md) | Long-term cumulative episodic evolution log utilized directly by the AI cognitive runtime. |
+| **Architectural Decision Records** | [`/docs/adr/`](file:///d:/Docker/JKAI/docs/adr/) | Chronological immutable architectural decision records (ADR-001 through ADR-006: RSIL-L3 Autonomous Promotion). |
+| **System Release Changelog** | [`/CHANGELOG.md`](file:///d:/Docker/JKAI/CHANGELOG.md) | Official release history, version milestones (Keep a Changelog standard), and feature evolutions (`v28.8.0`). |
+| **Internal Cognitive Memory Log** | [`/intelligence/identity/GLOBAL_SYSTEM_CONTEXT.md`](file:///d:/Docker/JKAI/intelligence/identity/GLOBAL_SYSTEM_CONTEXT.md) | Long-term cumulative episodic evolution log utilized directly by the AI cognitive runtime (`v54.0`). |
 
 ---
 *JKAI Zenith Sovereign Cognitive OS — Master LeeTrung.*

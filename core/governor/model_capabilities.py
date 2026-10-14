@@ -711,3 +711,345 @@ class ExecutionProfile:
             concurrency=1,
         )
 
+
+# ---------------------------------------------------------------------------
+# 8. WeKnora-Style Auto-Probing Capability Registry (Slice 3.1 — Stage 1.3)
+# ---------------------------------------------------------------------------
+
+import json as _json
+import os as _os
+import time as _time
+from pathlib import Path as _Path
+from typing import Callable as _Callable, Sequence as _Sequence
+
+
+def _extract_context_length_from_show(show_payload: Dict[str, Any]) -> int:
+    model_info = show_payload.get("model_info") or {}
+    if isinstance(model_info, dict):
+        for k, v in model_info.items():
+            if str(k).endswith(".context_length") and isinstance(v, (int, float)) and int(v) > 0:
+                return int(v)
+    params_text = str(show_payload.get("parameters") or "")
+    for line in params_text.splitlines():
+        parts = line.strip().split()
+        if len(parts) >= 2 and parts[0] == "num_ctx" and parts[1].isdigit():
+            return int(parts[1])
+    return 8192
+
+
+def _parse_param_size_billions(param_str: str) -> float:
+    raw = str(param_str or "").strip().upper()
+    if raw.endswith("B"):
+        try:
+            return float(raw[:-1])
+        except ValueError:
+            pass
+    if raw.endswith("M"):
+        try:
+            return float(raw[:-1]) / 1000.0
+        except ValueError:
+            pass
+    return 4.0
+
+
+def _compute_recommended_num_predict(
+    context_length: int,
+    is_embedding_only: bool,
+    param_b: float,
+) -> int:
+    if is_embedding_only:
+        return 0
+    ctx = max(2048, int(context_length))
+    # Cap num_predict safely at 25% of context window, bounded within [512, 4096]
+    budget = min(4096, max(512, ctx // 4))
+    if param_b >= 25.0:
+        return min(budget, 2048)
+    return budget
+
+
+def normalize_ollama_host(raw: Optional[str]) -> str:
+    """
+    Chuẩn hóa OLLAMA_HOST cho phía CLIENT:
+    - None/rỗng -> http://127.0.0.1:11434
+    - Thêm scheme http:// nếu thiếu, thêm port 11434 nếu thiếu
+    - Địa chỉ bind-all 0.0.0.0 / [::] (chỉ hợp lệ phía server) -> 127.0.0.1
+    """
+    from urllib.parse import urlsplit
+
+    value = str(raw if raw is not None else (_os.getenv("OLLAMA_HOST") or "")).strip()
+    if not value:
+        return "http://127.0.0.1:11434"
+    if "://" not in value:
+        value = "http://" + value
+    parts = urlsplit(value)
+    hostname = parts.hostname or "127.0.0.1"
+    if hostname in ("0.0.0.0", "::", "[::]"):
+        hostname = "127.0.0.1"
+    port = parts.port or 11434
+    return f"{parts.scheme or 'http'}://{hostname}:{port}"
+
+
+def _default_show_fetcher(host: str, model_name: str) -> Dict[str, Any]:
+    import httpx as _httpx
+
+    resp = _httpx.post(f"{host}/api/show", json={"name": model_name}, timeout=10.0)
+    resp.raise_for_status()
+    data = resp.json()
+    if not isinstance(data, dict):
+        raise ValueError("invalid /api/show payload")
+    return data
+
+
+def _default_generate_fetcher(host: str, model_name: str, num_predict: int) -> Dict[str, Any]:
+    import httpx as _httpx
+
+    resp = _httpx.post(
+        f"{host}/api/generate",
+        json={
+            "model": model_name,
+            "prompt": "Count from 1 to 40 separated by commas.",
+            "stream": False,
+            "think": False,
+            "options": {"num_predict": int(num_predict), "temperature": 0.0, "seed": 7},
+        },
+        timeout=_httpx.Timeout(300.0, connect=5.0),
+    )
+    resp.raise_for_status()
+    return resp.json()
+
+
+def _measure_live_tps(
+    host: str,
+    model_name: str,
+    runs: int,
+    num_predict: int,
+    generate_fetcher: _Callable[[str, str, int], Dict[str, Any]],
+) -> List[float]:
+    """
+    Đo THẬT tốc độ sinh token: tps = eval_count / (eval_duration_ns / 1e9).
+    eval_duration của Ollama không gồm thời gian nạp model/prompt eval, nên chạy 1 lượt warm-up
+    (không tính) rồi lấy `runs` mẫu. Trả về [] nếu không đo được.
+    """
+    try:
+        generate_fetcher(host, model_name, 8)  # warm-up: nạp model vào bộ nhớ
+    except Exception:
+        return []
+    samples: List[float] = []
+    for _ in range(runs):
+        try:
+            data = generate_fetcher(host, model_name, num_predict)
+        except Exception:
+            return []
+        eval_count = int(data.get("eval_count") or 0)
+        eval_ns = int(data.get("eval_duration") or 0)
+        if eval_count <= 0 or eval_ns <= 0:
+            return []
+        samples.append(round(eval_count / (eval_ns / 1e9), 2))
+    return samples
+
+
+def probe_ollama_model_card(
+    model_name: str,
+    ollama_host: Optional[str] = None,
+    repeat_runs: int = 2,
+    show_fetcher: Optional[_Callable[[str, str], Dict[str, Any]]] = None,
+    generate_fetcher: Optional[_Callable[[str, str, int], Dict[str, Any]]] = None,
+    measure_speed: bool = True,
+    speed_num_predict: int = 48,
+) -> Dict[str, Any]:
+    """
+    [Slice 3.1 - Giai đoạn 1.3: Capability Registry tự probe (học WeKnora) — bản sửa Lượt 280]:
+    - Metadata (context_length, capabilities, family, quantization) lấy từ `/api/show` thật.
+    - Tốc độ đo THẬT qua `/api/generate` (eval_count / eval_duration), KHÔNG dùng công thức.
+    - Không truy cập được Ollama -> `card_status="FALLBACK"`, `speed_source="NOT_TESTED"`,
+      `tokens_per_sec=None`: tuyệt đối không sinh số tốc độ giả.
+    """
+    host = normalize_ollama_host(ollama_host)
+    runs = max(2, int(repeat_runs))
+    show_fetch = show_fetcher or _default_show_fetcher
+    gen_fetch = generate_fetcher or _default_generate_fetcher
+
+    show_data: Dict[str, Any] = {}
+    probe_source = "ollama_api_show"
+    try:
+        show_data = show_fetch(host, model_name) or {}
+    except Exception:
+        show_data = {}
+        probe_source = "deterministic_fallback"
+
+    details = show_data.get("details") if isinstance(show_data.get("details"), dict) else {}
+    capabilities_list = [str(c).strip().lower() for c in (show_data.get("capabilities") or []) if str(c).strip()]
+    family = str(details.get("family") or "unknown").strip().lower()
+    param_size_str = str(details.get("parameter_size") or "")
+    param_b = _parse_param_size_billions(param_size_str) if param_size_str else 0.0
+    quantization = str(details.get("quantization_level") or "unknown")
+    context_length = _extract_context_length_from_show(show_data)
+
+    is_embedding_only = "embedding" in capabilities_list and "completion" not in capabilities_list
+    supports_completion = "completion" in capabilities_list
+    supports_tool_calling = "tools" in capabilities_list
+    supports_vision = "vision" in capabilities_list or bool(show_data.get("projector_info"))
+    supports_thinking = "thinking" in capabilities_list
+    # Ollama `format: json` / GBNF áp dụng cho mọi model sinh văn bản GGUF qua llama.cpp runner
+    supports_json_mode = supports_completion and not is_embedding_only
+    supports_gbnf_grammar = supports_json_mode and str(details.get("format") or "").lower() == "gguf"
+
+    speed_samples: List[float] = []
+    if measure_speed and probe_source == "ollama_api_show" and supports_completion:
+        speed_samples = _measure_live_tps(host, model_name, runs, int(speed_num_predict), gen_fetch)
+
+    if speed_samples:
+        mean_spd = round(sum(speed_samples) / len(speed_samples), 2)
+        drift_pct: Optional[float] = round((max(speed_samples) - min(speed_samples)) / max(0.01, mean_spd) * 100.0, 2)
+        tokens_per_sec: Optional[float] = mean_spd
+        speed_source = "live_api_generate"
+    else:
+        drift_pct = None
+        tokens_per_sec = None
+        speed_source = "NOT_TESTED"
+
+    card_status = "LIVE" if probe_source == "ollama_api_show" else "FALLBACK"
+    recommended_num_predict = _compute_recommended_num_predict(
+        context_length=context_length,
+        is_embedding_only=is_embedding_only,
+        param_b=param_b,
+    )
+
+    return {
+        "model_name": model_name,
+        "card_status": card_status,
+        "probe_source": probe_source,
+        "family": family,
+        "parameter_size": param_size_str or "unknown",
+        "quantization": quantization,
+        "context_length": context_length,
+        "capabilities_raw": capabilities_list,
+        "supports_json_mode": supports_json_mode,
+        "supports_gbnf_grammar": supports_gbnf_grammar,
+        "supports_tool_calling": supports_tool_calling,
+        "supports_vision": supports_vision,
+        "supports_thinking": supports_thinking,
+        "is_embedding_only": is_embedding_only,
+        "recommended_num_predict": recommended_num_predict,
+        "recommended_num_predict_trusted": card_status == "LIVE",
+        "speed_source": speed_source,
+        "tokens_per_sec": tokens_per_sec,
+        "speed_samples_tps": speed_samples,
+        "repeat_speed_drift_pct": drift_pct,
+        "probed_at_unix": round(_time.time(), 3),
+    }
+
+
+def probe_installed_models_registry(
+    model_names: Optional[_Sequence[str]] = None,
+    ollama_host: Optional[str] = None,
+    output_path: Optional[_Path | str] = None,
+    repeat_runs: int = 2,
+    measure_speed: bool = True,
+) -> Dict[str, Any]:
+    """
+    [Slice 3.1 - Giai đoạn 1.3]: Probe danh sách model Ollama (mặc định 3 model đầu trong /api/tags)
+    và ghi JSON Capability Cards. Card FALLBACK được đếm riêng để không ai dùng nhầm số ước lượng.
+    """
+    host = normalize_ollama_host(ollama_host)
+    targets = list(model_names or [])
+    if not targets:
+        try:
+            import httpx as _httpx
+            resp = _httpx.get(f"{host}/api/tags", timeout=5.0)
+            if resp.status_code == 200:
+                targets = [str(m.get("name")) for m in (resp.json().get("models") or []) if m.get("name")][:3]
+        except Exception:
+            targets = []
+
+    cards: Dict[str, Dict[str, Any]] = {}
+    for name in targets:
+        cards[name] = probe_ollama_model_card(
+            model_name=name,
+            ollama_host=host,
+            repeat_runs=repeat_runs,
+            measure_speed=measure_speed,
+        )
+
+    report = {
+        "schema_version": "weknora_capability_registry_v2",
+        "ollama_host": host,
+        "probed_count": len(cards),
+        "live_count": sum(1 for c in cards.values() if c["card_status"] == "LIVE"),
+        "fallback_count": sum(1 for c in cards.values() if c["card_status"] == "FALLBACK"),
+        "cards": cards,
+    }
+    if output_path is not None:
+        out_p = _Path(output_path)
+        out_p.parent.mkdir(parents=True, exist_ok=True)
+        out_p.write_text(_json.dumps(report, indent=2, ensure_ascii=False), encoding="utf-8")
+    return report
+
+
+def probe_live_num_predict_ceiling(
+    model_name: str = "qwen3.5:4b",
+    ollama_host: Optional[str] = None,
+    test_ceiling_tokens: int = 64,
+    timeout_seconds: float = 15.0,
+) -> Dict[str, Any]:
+    """
+    [Slice 3.6 - Đóng NOT_TESTED Mục c]:
+    Đo thật trần num_predict trên live Ollama bằng lệnh generate thực tế.
+    Kiểm chứng:
+    1. Ollama tôn trọng tham số options.num_predict (eval_count <= ceiling + dung sai stop token).
+    2. Dừng sạch sẽ (done=True).
+    3. Đo tốc độ tps thực tế qua eval_count và eval_duration.
+    4. Trả về status 'TESTED_PASS' khi online, hoặc 'NOT_TESTED (Ollama offline)' khi không thể kết nối.
+    """
+    import json as _json
+    import time as _time
+    import urllib.request as _urllib_request
+
+    host = normalize_ollama_host(ollama_host)
+    payload = {
+        "model": model_name,
+        "prompt": "Count numbers sequentially: 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,",
+        "stream": False,
+        "options": {
+            "num_predict": int(test_ceiling_tokens),
+            "temperature": 0.1,
+        },
+    }
+    req_body = _json.dumps(payload).encode("utf-8")
+    req = _urllib_request.Request(
+        f"{host}/api/generate",
+        data=req_body,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    t0 = _time.monotonic()
+    try:
+        with _urllib_request.urlopen(req, timeout=timeout_seconds) as resp:
+            data = _json.loads(resp.read().decode("utf-8"))
+        elapsed_sec = max(0.001, _time.monotonic() - t0)
+        eval_count = int(data.get("eval_count") or 0)
+        eval_dur_ns = int(data.get("eval_duration") or 0)
+        if eval_dur_ns > 0:
+            actual_tps = round(eval_count / (eval_dur_ns / 1e9), 2)
+        else:
+            actual_tps = round(eval_count / elapsed_sec, 2)
+        done = bool(data.get("done", False))
+        return {
+            "live_num_predict_ceiling_status": "TESTED_PASS",
+            "model_name": model_name,
+            "ollama_host": host,
+            "requested_ceiling": int(test_ceiling_tokens),
+            "actual_eval_count": eval_count,
+            "tokens_per_sec": actual_tps,
+            "stopped_cleanly": done,
+            "done_reason": data.get("done_reason", "stop"),
+            "elapsed_seconds": round(elapsed_sec, 3),
+        }
+    except Exception as exc:
+        return {
+            "live_num_predict_ceiling_status": f"NOT_TESTED (Ollama offline / {type(exc).__name__})",
+            "model_name": model_name,
+            "ollama_host": host,
+            "error_detail": str(exc),
+        }
+

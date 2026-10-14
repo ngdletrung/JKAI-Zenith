@@ -26,7 +26,27 @@ _BLOCK_FRAGMENTS = (
     ".pem",
 )
 
-_ROOT_ONLY_BLOCK = frozenset({".git", "node_modules", "__pycache__", ".venv", "dist", "build"})
+_ROOT_ONLY_BLOCK = frozenset(
+    {
+        ".git",
+        ".zenith",
+        "node_modules",
+        "__pycache__",
+        ".venv",
+        "venv",
+        "env",
+        "dist",
+        "build",
+        ".pytest_cache",
+        ".ruff_cache",
+        ".mypy_cache",
+        "sealed_C",
+        "sealed_c",
+    }
+)
+
+CANONICAL_IGNORED_DIRS = _ROOT_ONLY_BLOCK
+EXCLUDED_WORKSPACE_DIRS = CANONICAL_IGNORED_DIRS
 
 _AUDIT_RE = re.compile(
     r"\b(kiểm tra|kiem tra|check|audit|rà soát|ra soat|xem lỗi|xem loi|"
@@ -105,18 +125,73 @@ _READ_WEB_NOISE_RE = re.compile(
 )
 
 
+def strip_worktree_nesting(path_value: Path | str) -> Path:
+    """
+    If path_value points inside a .zenith/worktrees/... subdirectory, returns the canonical
+    parent repository root above .zenith so worktrees can never nest recursively.
+    """
+    resolved = Path(path_value).resolve()
+    parts = list(resolved.parts)
+    for i, part in enumerate(parts):
+        if part.lower() == ".zenith" and i > 0:
+            return Path(*parts[:i])
+    return resolved
+
+
 def get_jkai_workspace_root() -> Path:
-    from core.config import settings
+    try:
+        from core.config import settings
+        cfg_root = getattr(settings, "WORKSPACE_ROOT", None)
+    except Exception:
+        cfg_root = None
     from core.utils import path_manager
 
-    root = settings.WORKSPACE_ROOT or path_manager.get("WORKSPACE_ROOT") or path_manager.get_root()
-    p = Path(root)
-    if p.is_dir():
-        return p.resolve()
-    for cand in (Path("/workspace"), Path("D:/Docker/JKAI")):
+    root = cfg_root or os.getenv("WORKSPACE_ROOT") or path_manager.get("WORKSPACE_ROOT") or path_manager.get_root()
+    if root:
+        p = Path(root)
+        if p.is_dir():
+            return strip_worktree_nesting(p)
+    repo_from_file = Path(__file__).resolve().parents[2]
+    if repo_from_file.is_dir():
+        return strip_worktree_nesting(repo_from_file)
+    for cand in (Path("/workspace"), Path(".")):
         if cand.is_dir():
-            return cand.resolve()
+            return strip_worktree_nesting(cand)
     return Path(".").resolve()
+
+
+def iter_workspace_files(
+    root: Path | str | None = None,
+    suffixes: Optional[Tuple[str, ...]] = None,
+    extra_ignored_dirs: Optional[frozenset[str]] = None,
+):
+    """
+    Canonical workspace file iterator that prunes .zenith, .git, __pycache__, node_modules,
+    .venv, dist, build in-place during os.walk so no tool/RAG/RepoMap ever traverses worktree
+    or cache bloat.
+    """
+    base = Path(root).resolve() if root is not None else get_jkai_workspace_root()
+    ignored = CANONICAL_IGNORED_DIRS if not extra_ignored_dirs else (CANONICAL_IGNORED_DIRS | set(extra_ignored_dirs))
+    norm_suffixes = tuple(s.lower() for s in suffixes) if suffixes else None
+
+    for dirpath, dirnames, filenames in os.walk(base, topdown=True):
+        dirnames[:] = sorted(
+            d
+            for d in dirnames
+            if d not in ignored
+            and not d.startswith(".zenith")
+            and not d.endswith(".worktrees")
+            and not d.lower().startswith("sealed_")
+            and d.lower() != "sealed_c"
+        )
+        for fname in sorted(filenames):
+            if any(frag in fname.lower() for frag in _BLOCK_FRAGMENTS):
+                continue
+            if "sealed_c" in dirpath.replace("\\", "/").lower():
+                continue
+            if norm_suffixes and not fname.lower().endswith(norm_suffixes):
+                continue
+            yield Path(dirpath) / fname
 
 
 def normalize_workspace_rel(rel: str) -> str:
@@ -145,6 +220,8 @@ def is_allowed_workspace_rel(rel: str) -> bool:
     if norm in _ROOT_ONLY_BLOCK:
         return False
     low = norm.lower()
+    if "sealed_c" in low or "sealed_exam" in low:
+        return False
     if low in _FALSE_WORKSPACE_PATHS:
         return False
     if low.endswith("/dossier") or low.endswith("/manifest") or low.endswith("/logic") or low.endswith("/skill"):

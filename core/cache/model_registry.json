@@ -5,15 +5,15 @@
     "family": "lfm2",
     "context_length_max": 128000,
     "model_classes": [
-      "REASONING",
+      "GENERAL",
       "TOOL_USE",
-      "GENERAL"
+      "REASONING"
     ],
     "has_vision": false,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1791687468.746653,
+    "last_inspected_at": 1791952668.3753421,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 1.56,
@@ -33,15 +33,15 @@
     "family": "qwen3moe",
     "context_length_max": 262144,
     "model_classes": [
-      "REASONING",
+      "GENERAL",
       "TOOL_USE",
-      "GENERAL"
+      "REASONING"
     ],
     "has_vision": false,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1791687469.2812686,
+    "last_inspected_at": 1791952668.8897781,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 16.48,
@@ -61,15 +61,15 @@
     "family": "gemma4",
     "context_length_max": 131072,
     "model_classes": [
+      "GENERAL",
       "TOOL_USE",
-      "VISION",
-      "GENERAL"
+      "VISION"
     ],
     "has_vision": true,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1791687470.9689903,
+    "last_inspected_at": 1791952670.1883876,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 4.14,
@@ -89,16 +89,16 @@
     "family": "qwen35moe",
     "context_length_max": 262144,
     "model_classes": [
-      "REASONING",
+      "GENERAL",
       "TOOL_USE",
       "VISION",
-      "GENERAL"
+      "REASONING"
     ],
     "has_vision": true,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1791687472.0636728,
+    "last_inspected_at": 1791952671.2511575,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 22.29,
@@ -118,16 +118,16 @@
     "family": "gemma4",
     "context_length_max": 262144,
     "model_classes": [
-      "REASONING",
+      "GENERAL",
       "TOOL_USE",
       "VISION",
-      "GENERAL"
+      "REASONING"
     ],
     "has_vision": true,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1791687473.4492548,
+    "last_inspected_at": 1791952672.5725899,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 6.66,
@@ -147,15 +147,15 @@
     "family": "qwen3",
     "context_length_max": 40960,
     "model_classes": [
-      "REASONING",
+      "GENERAL",
       "TOOL_USE",
-      "GENERAL"
+      "REASONING"
     ],
     "has_vision": false,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1791687474.002642,
+    "last_inspected_at": 1791952673.0551617,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 0.49,
@@ -175,16 +175,16 @@
     "family": "qwen35",
     "context_length_max": 262144,
     "model_classes": [
-      "REASONING",
+      "GENERAL",
       "TOOL_USE",
       "VISION",
-      "GENERAL"
+      "REASONING"
     ],
     "has_vision": true,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1791687468.1470218,
+    "last_inspected_at": 1791952667.6837249,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 3.16,
@@ -211,7 +211,7 @@
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1791687474.4058056,
+    "last_inspected_at": 1791952673.5860868,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 1.88,
@@ -232,14 +232,14 @@
     "context_length_max": 32768,
     "model_classes": [
       "TOOL_USE",
-      "GENERAL",
-      "CODING"
+      "CODING",
+      "GENERAL"
     ],
     "has_vision": false,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1791687474.8640532,
+    "last_inspected_at": 1791952674.011585,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 1.8,
@@ -259,16 +259,16 @@
     "family": "qwen35",
     "context_length_max": 262144,
     "model_classes": [
-      "REASONING",
+      "GENERAL",
       "TOOL_USE",
       "VISION",
-      "GENERAL"
+      "REASONING"
     ],
     "has_vision": true,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1791687475.7011752,
+    "last_inspected_at": 1791952674.9694264,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 6.14,
@@ -289,14 +289,14 @@
     "context_length_max": 131072,
     "model_classes": [
       "TOOL_USE",
-      "GENERAL",
-      "CODING"
+      "CODING",
+      "GENERAL"
     ],
     "has_vision": false,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1791687476.3923953,
+    "last_inspected_at": 1791952675.572165,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 2.32,
@@ -317,14 +317,14 @@
     "context_length_max": 32768,
     "model_classes": [
       "TOOL_USE",
-      "GENERAL",
-      "CODING"
+      "CODING",
+      "GENERAL"
     ],
     "has_vision": false,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1791687476.9895513,
+    "last_inspected_at": 1791952676.0187435,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 8.37,
@@ -344,14 +344,14 @@
     "family": "phi2",
     "context_length_max": 2048,
     "model_classes": [
-      "VISION",
-      "GENERAL"
+      "GENERAL",
+      "VISION"
     ],
     "has_vision": true,
     "has_tool_calling": false,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1791687477.19832,
+    "last_inspected_at": 1791952676.1747944,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 1.62,
@@ -377,7 +377,7 @@
     "has_tool_calling": false,
     "is_embedding_only": true,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1791687477.3137603,
+    "last_inspected_at": 1791952676.2693882,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 0.26,
@@ -403,7 +403,7 @@
     "has_tool_calling": false,
     "is_embedding_only": true,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1791687477.4008372,
+    "last_inspected_at": 1791952676.3538368,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 0.04,
@@ -423,15 +423,15 @@
     "family": "qwen3",
     "context_length_max": 131072,
     "model_classes": [
-      "REASONING",
+      "GENERAL",
       "TOOL_USE",
-      "GENERAL"
+      "REASONING"
     ],
     "has_vision": false,
     "has_tool_calling": true,
     "is_embedding_only": false,
     "assessment_confidence": 0.9,
-    "last_inspected_at": 1791687477.8604915,
+    "last_inspected_at": 1791952676.768024,
     "ollama_digest": "",
     "memory": {
       "weight_file_size_gb": 4.87,
@@ -452,8 +452,8 @@
     "context_length_max": 32768,
     "model_classes": [
       "TOOL_USE",
-      "GENERAL",
-      "CODING"
+      "CODING",
+      "GENERAL"
     ],
     "has_vision": false,
     "has_tool_calling": true,

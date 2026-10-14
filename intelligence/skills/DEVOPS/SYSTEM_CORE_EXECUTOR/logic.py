@@ -123,29 +123,80 @@ async def list_dir(path: str = "", directory_path: str = "", DirectoryPath: str 
     except Exception as e:
         return {"status": "error", "msg": str(e)}
 
-async def view_file(path: str = "", file_path: str = "", AbsolutePath: str = "", start_line: int = 1, end_line: int = 500, task_id: str = "sys", **kwargs):
-    """👁️ [VISION]: Đọc nội dung tệp tin thấu thị."""
+async def view_file(
+    path: str = "",
+    file_path: str = "",
+    AbsolutePath: str = "",
+    start_line: int = 1,
+    end_line: int = 500,
+    outline: bool = False,
+    task_id: str = "sys",
+    **kwargs,
+):
+    """👁️ [VISION]: Đọc nội dung tệp tin theo khoảng dòng (start_line..end_line) hoặc xem mục lục AST (outline=True)."""
     raw_path = path or file_path or AbsolutePath or kwargs.get("AbsolutePath") or kwargs.get("TargetFile") or ""
     target_path = _resolve_target_path(raw_path)
+    s_line = int(kwargs.get("StartLine") or start_line or 1)
+    e_line = int(kwargs.get("EndLine") or end_line or 500)
+    want_outline = bool(outline or kwargs.get("outline", False))
     try:
         if not os.path.exists(target_path):
             return {"status": "error", "msg": f"File '{target_path}' không tồn tại."}
-        
+
         with open(target_path, "r", encoding="utf-8", errors="ignore") as f:
-            lines = f.readlines()
-            
-        content = "".join(lines[start_line-1:end_line])
+            raw_text = f.read()
+        lines = raw_text.splitlines(keepends=True)
+        total_lines = len(lines)
+
+        if want_outline:
+            if target_path.endswith(".py"):
+                from core.utils.ast_code_auditor import extract_python_file_outline
+                outline_text = extract_python_file_outline(raw_text, filename=target_path)
+            else:
+                headings = [
+                    f"[L{idx}] {ln.strip()}"
+                    for idx, ln in enumerate(lines, 1)
+                    if ln.lstrip().startswith(("#", "def ", "class ", "function ", "export "))
+                ]
+                outline_text = "\n".join(headings[:200]) if headings else f"[L1-L{total_lines}] ({total_lines} lines)"
+            return {
+                "status": "success",
+                "path": os.path.abspath(target_path),
+                "total_lines": total_lines,
+                "outline": outline_text,
+                "content": outline_text,
+            }
+
+        s_idx = max(1, s_line)
+        e_idx = min(total_lines, max(s_idx, e_line)) if total_lines > 0 else 0
+        content = "".join(lines[s_idx - 1 : e_idx]) if total_lines > 0 else ""
         return {
             "status": "success",
             "path": os.path.abspath(target_path),
-            "total_lines": len(lines),
-            "content": content
+            "start_line": s_idx,
+            "end_line": e_idx,
+            "total_lines": total_lines,
+            "has_more": e_idx < total_lines,
+            "content": content,
         }
     except Exception as e:
         return {"status": "error", "msg": str(e)}
 
+
+async def view_file_outline(path: str = "", file_path: str = "", AbsolutePath: str = "", task_id: str = "sys", **kwargs):
+    """🗺️ [AST-OUTLINE]: Xem nhanh mục lục cấu trúc Classes/Functions kèm số dòng [Lstart-Lend] của tệp tin."""
+    return await view_file(
+        path=path,
+        file_path=file_path,
+        AbsolutePath=AbsolutePath,
+        outline=True,
+        task_id=task_id,
+        **kwargs,
+    )
+
+
 async def write_to_file(path: str = "", file_path: str = "", TargetFile: str = "", target_path: str = "", content: str = "", CodeContent: str = "", target_content: str = "", overwrite: bool = True, task_id: str = "sys", **kwargs):
-    """✍️ [CREATION - M0 ATOMIC WRITE]: Kiến tạo tệp tin mới với Atomic Write, Auto-Backup & SHA-256 Checksum."""
+    """✍️ [CREATION - M0 ATOMIC WRITE]: Kiến tạo tệp tin mới với Atomic Write, Auto-Backup, SHA-256 & ACI Diagnostics."""
     raw_path = target_path or path or file_path or TargetFile or kwargs.get("TargetFile") or ""
     target_path = _resolve_target_path(raw_path)
     target_content = target_content or content or CodeContent or kwargs.get("CodeContent") or ""
@@ -158,7 +209,8 @@ async def write_to_file(path: str = "", file_path: str = "", TargetFile: str = "
         if exists_before and not overwrite:
             return {"status": "error", "msg": f"File '{target_path}' đã tồn tại. Dùng overwrite=True để ghi đè."}
         
-        # 🔬 [AST-PRE-VALIDATION]: Chặn đứng lỗi cú pháp trước khi ghi file Python
+        # 🔬 [AST + SYMTABLE ACI PRE-VALIDATION]: Chặn đứng lỗi cú pháp & chẩn đoán undefined_name/broken_import (<15ms)
+        aci_diag = None
         if target_path.endswith(".py") and target_content:
             try:
                 ast.parse(target_content)
@@ -167,6 +219,11 @@ async def write_to_file(path: str = "", file_path: str = "", TargetFile: str = "
                     "status": "error",
                     "msg": f"AST Syntax Error: Mã nguồn Python gây lỗi cú pháp ({syn_err}). Thao tác ghi bị từ chối."
                 }
+            try:
+                from core.utils.ast_code_auditor import analyze_python_aci_diagnostics
+                aci_diag = analyze_python_aci_diagnostics(target_content, filename=target_path)
+            except Exception:
+                aci_diag = None
 
         # 🛡️ [SECURITY-AUDIT]: Thẩm định an ninh trước khi ghi file
         report = auditor.audit_diff(target_content)
@@ -194,20 +251,55 @@ async def write_to_file(path: str = "", file_path: str = "", TargetFile: str = "
 
         engine.publish_mission_log("ACTION", f"Ghi tệp thành công `{target_path}` (SHA256: {sha256_hash[:12]}..., Size: {file_size}B)", task_id)
 
-        return {
+        blast_impact = None
+        if str(target_path).endswith(".py"):
+            try:
+                from core.utils.repo_map import notify_workspace_file_mutation
+                blast_impact = notify_workspace_file_mutation(
+                    target_path,
+                    action="write_to_file",
+                    task_id=task_id,
+                    sha256=sha256_hash,
+                )
+            except Exception:
+                blast_impact = None
+
+        msg = f"Đã kiến tạo tệp `{target_path}` thành công."
+        if aci_diag and (aci_diag.get("undefined_names") or aci_diag.get("broken_imports")):
+            msg += (
+                f"\n⚠️ [ACI-GUARDED-EDIT]: Phát hiện cảnh báo tĩnh — "
+                f"undefined_names={aci_diag.get('undefined_names')}, "
+                f"broken_imports={aci_diag.get('broken_imports')}."
+            )
+        if blast_impact and (
+            blast_impact.get("broken_downstream_imports")
+            or blast_impact.get("signature_changes")
+        ):
+            msg += (
+                f"\n⚠️ [BLAST-RADIUS-WARNING]: Phát hiện phụ thuộc liên file bị ảnh hưởng sau khi ghi — "
+                f"broken_downstream_imports={blast_impact.get('broken_downstream_imports')}, "
+                f"signature_changes={blast_impact.get('signature_changes')}."
+            )
+
+        out_payload = {
             "status": "success",
-            "msg": f"Đã kiến tạo tệp `{target_path}` thành công.",
+            "msg": msg,
             "path": os.path.abspath(target_path),
             "sha256": sha256_hash,
             "size_bytes": file_size,
             "backup_path": backup_path,
-            "atomic": True
+            "atomic": True,
         }
+        if aci_diag is not None:
+            out_payload["aci_diagnostics"] = aci_diag
+        if blast_impact is not None:
+            out_payload["blast_radius_impact"] = blast_impact
+        return out_payload
     except Exception as e:
         return {"status": "error", "msg": str(e)}
 
 async def replace_file_content(path: str = "", target: str = "", replacement: str = "", file_path: str = "", TargetFile: str = "", TargetContent: str = "", ReplacementContent: str = "", task_id: str = "sys", **kwargs):
-    """🛠️ [SURGERY - M0 ATOMIC SURGERY]: Phẫu thuật thay thế nội dung tệp tin an toàn với Atomic Write & Checksum."""
+    """🛠️ [SURGERY - M0 ATOMIC SURGERY]: Phẫu thuật thay thế nội dung tệp tin an toàn với Atomic Write, Checksum & ACI Diagnostics."""
     raw_path = path or file_path or TargetFile or kwargs.get("TargetFile") or kwargs.get("target_path") or ""
     target_path = _resolve_target_path(raw_path)
     tgt = target or TargetContent or kwargs.get("TargetContent") or ""
@@ -274,7 +366,8 @@ async def replace_file_content(path: str = "", target: str = "", replacement: st
                 )
             }
         
-        # 🔬 [AST-PRE-VALIDATION]: Chặn đứng lỗi cú pháp trước khi ghi file Python
+        # 🔬 [AST + SYMTABLE ACI PRE-VALIDATION]: Chặn đứng lỗi cú pháp & chẩn đoán undefined_name/broken_import (<15ms)
+        aci_diag = None
         if target_path.endswith(".py"):
             try:
                 ast.parse(new_content)
@@ -283,6 +376,11 @@ async def replace_file_content(path: str = "", target: str = "", replacement: st
                     "status": "error",
                     "msg": f"AST Syntax Error: Mã thay thế gây lỗi cú pháp ({syn_err}). Thao tác ghi bị từ chối."
                 }
+            try:
+                from core.utils.ast_code_auditor import analyze_python_aci_diagnostics
+                aci_diag = analyze_python_aci_diagnostics(new_content, filename=target_path)
+            except Exception:
+                aci_diag = None
 
         # 🛡️ [SECURITY-AUDIT]: Thẩm định an ninh phần thay thế
         report = auditor.audit_diff(repl)
@@ -307,15 +405,50 @@ async def replace_file_content(path: str = "", target: str = "", replacement: st
         sha256_hash = _calculate_sha256(target_path)
         file_size = os.path.getsize(target_path)
 
-        return {
+        blast_impact = None
+        if str(target_path).endswith(".py"):
+            try:
+                from core.utils.repo_map import notify_workspace_file_mutation
+                blast_impact = notify_workspace_file_mutation(
+                    target_path,
+                    action="replace_file_content",
+                    task_id=task_id,
+                    sha256=sha256_hash,
+                )
+            except Exception:
+                blast_impact = None
+
+        msg = f"Phẫu thuật thành công trên tệp `{target_path}`."
+        if aci_diag and (aci_diag.get("undefined_names") or aci_diag.get("broken_imports")):
+            msg += (
+                f"\n⚠️ [ACI-GUARDED-EDIT]: Phát hiện cảnh báo tĩnh — "
+                f"undefined_names={aci_diag.get('undefined_names')}, "
+                f"broken_imports={aci_diag.get('broken_imports')}."
+            )
+        if blast_impact and (
+            blast_impact.get("broken_downstream_imports")
+            or blast_impact.get("signature_changes")
+        ):
+            msg += (
+                f"\n⚠️ [BLAST-RADIUS-WARNING]: Phát hiện phụ thuộc liên file bị ảnh hưởng sau khi sửa — "
+                f"broken_downstream_imports={blast_impact.get('broken_downstream_imports')}, "
+                f"signature_changes={blast_impact.get('signature_changes')}."
+            )
+
+        out_payload = {
             "status": "success",
-            "msg": f"Phẫu thuật thành công trên tệp `{target_path}`.",
+            "msg": msg,
             "path": os.path.abspath(target_path),
             "sha256": sha256_hash,
             "size_bytes": file_size,
             "backup_path": backup_path,
-            "atomic": True
+            "atomic": True,
         }
+        if aci_diag is not None:
+            out_payload["aci_diagnostics"] = aci_diag
+        if blast_impact is not None:
+            out_payload["blast_radius_impact"] = blast_impact
+        return out_payload
     except Exception as e:
         return {"status": "error", "msg": str(e)}
 
@@ -347,14 +480,30 @@ async def delete_file(path: str = "", file_path: str = "", TargetFile: str = "",
             engine.publish_mission_log("WARN", f"Không thể tạo backup trước khi xóa `{target_path}`: {b_err}", task_id)
 
         os.remove(target_path)
+        blast_impact = None
+        if str(target_path).endswith(".py"):
+            try:
+                from core.utils.repo_map import notify_workspace_file_mutation
+                blast_impact = notify_workspace_file_mutation(
+                    target_path,
+                    action="delete_file",
+                    task_id=task_id,
+                    sha256=pre_delete_sha256 or "",
+                )
+            except Exception:
+                blast_impact = None
+
         engine.publish_mission_log("ACTION", f"Đã xóa tệp `{target_path}` thành công (Backup: {backup_path}).", task_id)
-        return {
+        ret = {
             "status": "success",
             "msg": f"Đã xóa tệp `{target_path}` thành công.",
             "path": os.path.abspath(target_path),
             "pre_delete_sha256": pre_delete_sha256,
-            "backup_path": backup_path
+            "backup_path": backup_path,
         }
+        if blast_impact is not None:
+            ret["blast_radius_impact"] = blast_impact
+        return ret
     except Exception as e:
         return {"status": "error", "msg": str(e)}
 
@@ -590,7 +739,11 @@ async def run_command(command: str = "", CommandLine: str = "", cwd: str = "", c
         tokens = []
         if not use_shell:
             try:
-                tokens = shlex.split(cmd, posix=False) if sys.platform == "win32" else shlex.split(cmd)
+                raw_tokens = shlex.split(cmd, posix=False) if sys.platform == "win32" else shlex.split(cmd)
+                tokens = [
+                    t[1:-1] if (sys.platform == "win32" and len(t) >= 2 and t[0] == t[-1] and t[0] in ('"', "'")) else t
+                    for t in raw_tokens
+                ]
                 bin_lower = os.path.basename(tokens[0]).lower().replace(".exe", "")
                 if bin_lower in ["dir", "type", "cls", "copy", "del", "move", "ren", "md", "rd", "echo"]:
                     use_shell = True
@@ -656,16 +809,46 @@ async def run_command(command: str = "", CommandLine: str = "", cwd: str = "", c
     stdout_str = stdout_data.decode(errors="ignore") if stdout_data else ""
     stderr_str = stderr_data.decode(errors="ignore") if stderr_data else ""
 
-    # Condition 6: Cắt đầu ra nếu vượt quá 16KB để bảo vệ RAM / context
+    # Condition 6 + Slice 1.4 StreamBufferStore: Lưu toàn văn vào StreamBufferStore kèm stream_id thay vì cắt cụt mù quáng
     truncated = False
+    stream_id = None
+    stream_meta = None
     if len(stdout_str) > MAX_OUTPUT_BYTES:
-        stdout_str = stdout_str[:MAX_OUTPUT_BYTES] + f"\n... [TRUNCATED - Output vượt quá {MAX_OUTPUT_BYTES} bytes]"
+        from core.utils.stream_buffer_store import store_stream
+        stream_meta = store_stream(
+            content=stdout_str,
+            source_tool="run_command",
+            task_id=task_id,
+            preview_chars=MAX_OUTPUT_BYTES,
+        )
+        stream_id = stream_meta["stream_id"]
+        stdout_str = (
+            stdout_str[:MAX_OUTPUT_BYTES]
+            + f"\n... [TRUNCATED - Output vượt quá {MAX_OUTPUT_BYTES} bytes | "
+            f"stream_id={stream_id} | total_lines={stream_meta['total_lines']} | "
+            f"coverage={stream_meta['coverage_ratio']} | "
+            f"Dùng read_stream_window(stream_id='{stream_id}', start_line={stream_meta['next_start_line']}, end_line=...) "
+            f"hoặc search_in_stream(stream_id='{stream_id}', query='...') để đọc tiếp]"
+        )
         truncated = True
     if len(stderr_str) > MAX_OUTPUT_BYTES:
-        stderr_str = stderr_str[:MAX_OUTPUT_BYTES] + f"\n... [TRUNCATED - Stderr vượt quá {MAX_OUTPUT_BYTES} bytes]"
+        from core.utils.stream_buffer_store import store_stream
+        err_meta = store_stream(
+            content=stderr_str,
+            source_tool="run_command:stderr",
+            task_id=task_id,
+            preview_chars=MAX_OUTPUT_BYTES,
+        )
+        if not stream_id:
+            stream_id = err_meta["stream_id"]
+            stream_meta = err_meta
+        stderr_str = (
+            stderr_str[:MAX_OUTPUT_BYTES]
+            + f"\n... [TRUNCATED - Stderr vượt quá {MAX_OUTPUT_BYTES} bytes | stream_id={err_meta['stream_id']}]"
+        )
         truncated = True
 
-    return {
+    ret_payload = {
         "status": "success" if exit_code == 0 else "error",
         "exit_code": exit_code,
         "stdout": stdout_str,
@@ -673,8 +856,14 @@ async def run_command(command: str = "", CommandLine: str = "", cwd: str = "", c
         "duration_ms": duration_ms,
         "timed_out": timed_out,
         "policy_tier": policy_tier,
-        "truncated": truncated
+        "truncated": truncated,
     }
+    if stream_id and stream_meta:
+        ret_payload["stream_id"] = stream_id
+        ret_payload["total_lines"] = stream_meta["total_lines"]
+        ret_payload["coverage_ratio"] = stream_meta["coverage_ratio"]
+        ret_payload["has_more"] = stream_meta["has_more"]
+    return ret_payload
 
 
 async def multi_replace_file_content(path: str, replacements: List[Dict[str, str]], task_id: str = "sys"):
@@ -724,52 +913,166 @@ def _clean_query(query) -> str:
         return query_str
     return str(query)
 
-async def search_web(query: str, task_id: str = "sys"):
-    """🌐 [RECON]: Tầm soát Internet thấu thị."""
+async def search_web(
+    query: str,
+    task_id: str = "sys",
+    local_only: Optional[bool] = None,
+    **kwargs,
+):
+    """🌐 [RECON]: Tầm soát Internet thấu thị (minh bạch Local-Only & tích hợp StreamBufferStore)."""
+    from tools.web_search import (
+        build_transparent_refusal,
+        execute_real_web_search_sync,
+        is_local_only_enabled,
+    )
+
     query = _clean_query(query)
+    eff_local_only = kwargs.get("local_only", local_only)
+    if is_local_only_enabled(eff_local_only):
+        return build_transparent_refusal(query=query, reason="LOCAL_ONLY_MODE")
+
     try:
         from intelligence.skills.CORE.OMNI_SEARCH_ENGINE.logic import omni_search
-        return await omni_search(query=query, task_id=task_id)
-    except Exception as e:
-        import httpx
-        api_key = os.getenv("TAVILY_API_KEY")
-        if api_key:
-            try:
-                async with httpx.AsyncClient(timeout=30.0) as client:
-                    resp = await client.post("https://api.tavily.com/search", json={
-                        "api_key": api_key, "query": query, "search_depth": "advanced"
-                    })
-                    if resp.status_code == 200:
-                        return resp.json()
-                    else:
-                        return {"status": "error", "msg": f"Tavily API Error: {resp.status_code} - {resp.text}"}
-            except Exception as ex:
-                return {"status": "error", "msg": f"Search Connection Fault: {str(ex)}"}
-        return {"status": "error", "msg": f"Search failed: {str(e)}"}
 
-async def read_url_content(url: str, task_id: str = "sys"):
-    """📄 [VISION]: Đọc nội dung URL thấu thị."""
+        res = await omni_search(query=query, task_id=task_id, local_only=eff_local_only, **kwargs)
+        if isinstance(res, dict) and res.get("status") == "success":
+            out_obj = res.get("output")
+            text_val = out_obj.get("content", "") if isinstance(out_obj, dict) else str(out_obj or "")
+            if len(text_val) > 8000 and not res.get("stream_id"):
+                from core.utils.stream_buffer_store import store_stream
+
+                env = store_stream(
+                    content=text_val,
+                    source_tool="search_web",
+                    task_id=task_id,
+                    mission_id=task_id,
+                    preview_chars=8000,
+                    metadata={"query": query},
+                )
+                res["stream_id"] = env["stream_id"]
+                res["total_lines"] = env["total_lines"]
+                res["coverage_ratio"] = env["coverage_ratio"]
+                res["has_more"] = env["has_more"]
+                res["next_start_line"] = env["next_start_line"]
+            res["is_simulated"] = False
+            return res
+    except Exception:
+        pass
+
+    return execute_real_web_search_sync(
+        query=query,
+        task_id=task_id,
+        mission_id=task_id,
+        local_only=eff_local_only,
+    )
+
+
+async def read_url_content(
+    url: str,
+    task_id: str = "sys",
+    local_only: Optional[bool] = None,
+    **kwargs,
+):
+    """📄 [VISION]: Đọc nội dung URL thấu thị (kiểm tra SSRF/Egress allowlist + lưu toàn văn vào StreamBufferStore)."""
     import httpx
+    from tools.web_search import (
+        build_transparent_refusal,
+        is_local_only_enabled,
+        validate_egress_url_ssrf_safe,
+    )
+
+    eff_local_only = kwargs.get("local_only", local_only)
+    if is_local_only_enabled(eff_local_only):
+        return build_transparent_refusal(query=url, reason="LOCAL_ONLY_MODE")
+
+    ssrf_verdict = validate_egress_url_ssrf_safe(
+        url=url,
+        allowed_domains=kwargs.get("allowed_domains"),
+    )
+    if not ssrf_verdict.get("allowed"):
+        return ssrf_verdict
+
+    MAX_URL_PREVIEW_CHARS = 5000
     try:
         async with httpx.AsyncClient(timeout=30.0) as client:
+
             resp = await client.get(f"https://r.jina.ai/{url}")
             if resp.status_code == 200:
-                return {"status": "success", "content": resp.text[:5000]}
+                full_text = str(resp.text or "")
+                if len(full_text) <= MAX_URL_PREVIEW_CHARS:
+                    return {
+                        "status": "success",
+                        "is_simulated": False,
+                        "url": url,
+                        "stream_id": None,
+                        "has_more": False,
+                        "content": full_text,
+                    }
+                from core.utils.stream_buffer_store import store_stream
+
+                env = store_stream(
+                    content=full_text,
+                    source_tool="read_url_content",
+                    task_id=task_id,
+                    mission_id=task_id,
+                    preview_chars=MAX_URL_PREVIEW_CHARS,
+                    metadata={"url": url},
+                )
+                sid = env["stream_id"]
+                preview_with_banner = (
+                    env["preview"]
+                    + f"\n... [STREAM_BUFFERED: stream_id={sid} | "
+                    f"lines_shown=1..{env['preview_end_line']}/{env['total_lines']} | "
+                    f"coverage={env['coverage_ratio']} | "
+                    f"Dùng read_stream_window(stream_id='{sid}', start_line={env['next_start_line']}, end_line=...) "
+                    f"hoặc search_in_stream(stream_id='{sid}', query='...') để đọc tiếp phần còn lại]"
+                )
+                return {
+                    "status": "success",
+                    "is_simulated": False,
+                    "url": url,
+                    "stream_id": sid,
+                    "total_lines": env["total_lines"],
+                    "coverage_ratio": env["coverage_ratio"],
+                    "has_more": env["has_more"],
+                    "next_start_line": env["next_start_line"],
+                    "content": preview_with_banner,
+                }
             else:
-                return {"status": "error", "msg": f"Jina.ai API Error: {resp.status_code}"}
+                return {
+                    "status": "unavailable",
+                    "is_simulated": False,
+                    "reason": f"JINA_HTTP_{resp.status_code}",
+                    "url": url,
+                    "msg": f"Jina.ai API Error: {resp.status_code}",
+                }
     except Exception as e:
-        return {"status": "error", "msg": str(e)}
+        return {
+            "status": "unavailable",
+            "is_simulated": False,
+            "reason": "URL_FETCH_ERROR",
+            "url": url,
+            "msg": str(e),
+        }
 
 async def generate_image(prompt: str, task_id: str = "sys"):
     """🎨 [CREATION]: Kiến tạo hình ảnh từ tri tưởng tượng."""
     from intelligence.skills.skill_generate_image.logic import skill_generate_image
     return await skill_generate_image(prompt=prompt, task_id=task_id)
 
-async def grep_search(query: str = "", path: str = ".", task_id: str = "sys", **kwargs):
-    """🔍 [SCANNER]: Quét tìm từ khóa trong toàn bộ thư mục."""
+async def grep_search(
+    query: str = "",
+    path: str = ".",
+    offset: int = 0,
+    limit: int = 50,
+    task_id: str = "sys",
+    **kwargs,
+):
+    """🔍 [SCANNER]: Quét tìm từ khóa một lượt (single-pass) qua iter_workspace_files() kèm phân trang (offset, limit)."""
     import re
     import concurrent.futures
     from pathlib import Path
+    from core.utils.project_workspace import iter_workspace_files
     
     query = query or kwargs.get("Query") or kwargs.get("pattern") or kwargs.get("q") or ""
     raw_path = path or kwargs.get("SearchPath") or kwargs.get("directory") or kwargs.get("dir") or "."
@@ -778,6 +1081,8 @@ async def grep_search(query: str = "", path: str = ".", task_id: str = "sys", **
         resolved_path = os.getcwd()
         
     base_path = Path(resolved_path)
+    page_offset = max(0, int(kwargs.get("offset", offset) or 0))
+    page_limit = max(1, min(200, int(kwargs.get("limit", limit) or 50)))
     pattern = re.compile(query, re.IGNORECASE)
     
     results = []
@@ -798,31 +1103,125 @@ async def grep_search(query: str = "", path: str = ".", task_id: str = "sys", **
         return file_results
 
     try:
-        target_files = []
-        for ext in [".py", ".js", ".md", ".txt", ".json", ".xml", ".ini", ".yaml", ".yml", ".ts", ".tsx", ".html", ".css"]:
-            target_files.extend(
-                [f for f in base_path.rglob(f"*{ext}") 
-                 if not any(x in str(f) for x in [".git", "node_modules", "__pycache__", ".svelte-kit", "dist", "build"])]
-            )
+        exts = (".py", ".js", ".md", ".txt", ".json", ".xml", ".ini", ".yaml", ".yml", ".ts", ".tsx", ".html", ".css")
+        if base_path.is_file():
+            target_files = [base_path]
+        else:
+            target_files = list(iter_workspace_files(root=base_path, suffixes=exts))
             
         with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
             future_to_file = {executor.submit(scan_file, f): f for f in target_files}
             for future in concurrent.futures.as_completed(future_to_file):
                 results.extend(future.result())
 
+        results.sort(key=lambda r: (r["file"], r["line"]))
+        total_count = len(results)
         if not results:
-            return {"status": "success", "msg": "Không tìm thấy kết quả nào trên thực địa."}
+            return {
+                "status": "success",
+                "count": 0,
+                "offset": page_offset,
+                "limit": page_limit,
+                "has_more": False,
+                "data": [],
+                "msg": "Không tìm thấy kết quả nào trên thực địa.",
+            }
 
-        report = f"✅ Đã tìm thấy {len(results)} kết quả. Dưới đây là các vị trí trọng tâm:\n"
-        for r in results[:20]:
+        paged_data = results[page_offset : page_offset + page_limit]
+        has_more = (page_offset + page_limit) < total_count
+        report = (
+            f"✅ Đã tìm thấy {total_count} kết quả (hiển thị {page_offset + 1}..{page_offset + len(paged_data)}, "
+            f"has_more={has_more}). Dưới đây là các vị trí trọng tâm:\n"
+        )
+        for r in paged_data[:20]:
             report += f"- `{r['file']}:{r['line']}`: {r['content'][:100]}\n"
             
         return {
             "status": "success",
-            "count": len(results),
-            "data": results[:50],
-            "report": report
+            "count": total_count,
+            "offset": page_offset,
+            "limit": page_limit,
+            "has_more": has_more,
+            "data": paged_data,
+            "report": report,
         }
     except Exception as e:
         return {"status": "error", "msg": str(e)}
+
+
+async def query_repo_map(
+    query: str = "",
+    file_path: str = "",
+    path: str = "",
+    include_blast_radius: bool = True,
+    max_tokens: int = 700,
+    task_id: str = "sys",
+    **kwargs,
+):
+    """🗺️ [AST-REPOMAP TIER 1]: Định vị tức thì symbol (class/def/method), phạm vi dòng [Lstart-Lend] và Blast Radius phụ thuộc ngược."""
+    try:
+        from core.utils.repo_map import query_repo_map as _query_rm
+
+        q_val = query or kwargs.get("Query") or kwargs.get("pattern") or kwargs.get("q") or ""
+        f_val = file_path or path or kwargs.get("TargetFile") or kwargs.get("AbsolutePath") or ""
+        inc_blast = bool(kwargs.get("include_blast_radius", include_blast_radius))
+        tok_budget = int(kwargs.get("max_tokens", max_tokens) or 700)
+        return _query_rm(
+            query=str(q_val),
+            file_path=str(f_val),
+            include_blast_radius=inc_blast,
+            max_tokens=tok_budget,
+        )
+    except Exception as e:
+        return {"status": "error", "msg": str(e)}
+
+
+async def read_stream_window(
+    stream_id: str = "",
+    start_line: int = 1,
+    end_line: int = 100,
+    task_id: str = "sys",
+    **kwargs,
+):
+    """📖 [STREAM-WINDOW]: Đọc phân trang cửa sổ dòng [start_line..end_line] từ StreamBufferStore kèm trích dẫn [L...]."""
+    try:
+        from core.utils.stream_buffer_store import read_stream_window as _read_win
+
+        sid = stream_id or kwargs.get("stream_id") or kwargs.get("path") or kwargs.get("target") or ""
+        s_line = int(kwargs.get("StartLine") or kwargs.get("start_line") or start_line or 1)
+        e_line = int(kwargs.get("EndLine") or kwargs.get("end_line") or end_line or (s_line + 99))
+        return _read_win(stream_id=str(sid), start_line=s_line, end_line=e_line)
+    except Exception as e:
+        return {"status": "error", "msg": str(e)}
+
+
+async def search_in_stream(
+    stream_id: str = "",
+    query: str = "",
+    context_lines: int = 2,
+    offset: int = 0,
+    limit: int = 20,
+    task_id: str = "sys",
+    **kwargs,
+):
+    """🔎 [STREAM-SEARCH]: Tìm kiếm có mục tiêu bên trong một stream_id lớn và cập nhật sổ cái độ bao phủ."""
+    try:
+        from core.utils.stream_buffer_store import search_in_stream as _search_stream
+
+        sid = stream_id or kwargs.get("stream_id") or kwargs.get("path") or kwargs.get("target") or ""
+        q_val = query or kwargs.get("Query") or kwargs.get("pattern") or kwargs.get("q") or ""
+        ctx = int(kwargs.get("context_lines", context_lines) or 2)
+        off = int(kwargs.get("offset", offset) or 0)
+        lim = int(kwargs.get("limit", limit) or 20)
+        return _search_stream(
+            stream_id=str(sid),
+            query=str(q_val),
+            context_lines=ctx,
+            offset=off,
+            limit=lim,
+        )
+    except Exception as e:
+        return {"status": "error", "msg": str(e)}
+
+
 

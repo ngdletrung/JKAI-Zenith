@@ -234,9 +234,40 @@ async def jkai_plan(
     )
 
 
+@mcp.tool()
+async def jkai_repo_map(
+    query: str = "",
+    max_results: int = 10,
+) -> str:
+    """
+    Query JKAI's 2-Tier AST RepoMap locally (Tier 0 architectural overview when query is empty,
+    or Tier 1 symbol & reverse-import blast radius navigation when query is provided).
+    Gated by LocalMCPPilotGovernor allowlist.
+    """
+    from core.kernel.mcp_pilot_allowlist import mcp_pilot_governor
+    from core.utils.repo_map import get_tier0_overview, query_repo_map
+
+    verdict = mcp_pilot_governor.authorize_mcp_call(
+        server_name="jkai",
+        tool_name="jkai_repo_map",
+        endpoint_url="stdio://local",
+        local_only=True,
+    )
+    if not verdict.get("allowed"):
+        return json.dumps(verdict, ensure_ascii=False, indent=2)
+
+    q_clean = str(query or "").strip()
+    if not q_clean:
+        res = get_tier0_overview()
+    else:
+        res = query_repo_map(q_clean, max_results=max_results)
+    return json.dumps({"status": "ok", "verdict": verdict, "result": res}, ensure_ascii=False, indent=2)
+
+
 def main() -> None:
     mcp.run(transport="stdio")
 
 
 if __name__ == "__main__":
     main()
+

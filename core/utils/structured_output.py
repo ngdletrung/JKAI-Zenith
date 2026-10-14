@@ -51,7 +51,8 @@ class StructuredOutputWrapper:
         task_id: str = "sys",
         **kwargs
     ) -> T:
-        schema = model_class.model_json_schema()
+        from core.utils.engine import normalize_json_schema
+        schema = normalize_json_schema(model_class) or model_class.model_json_schema()
         schema_str = json.dumps(schema, ensure_ascii=False, indent=2)
 
         last_error = None
@@ -67,6 +68,8 @@ class StructuredOutputWrapper:
                 messages=attempt_messages,
                 role=role,
                 json_mode=True,
+                schema=schema,
+                response_schema=model_class,
                 task_id=task_id,
                 **kwargs
             )

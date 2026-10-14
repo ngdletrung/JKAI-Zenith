@@ -15,12 +15,13 @@ from typing import Any, Dict, Optional, List, Union, Tuple, Set, Callable  # [FI
 from core.os.mission_state import MissionState
 from core.os.execution_plan import ExecutionPlan, ExecutionPlanStep
 from core.utils.engine import engine
+from core.utils.project_workspace import EXCLUDED_WORKSPACE_DIRS, strip_worktree_nesting
 from artifact_tracker import ArtifactTracker
 
 logger = logging.getLogger("jkai.os.state_pipeline")
 
 _MAX_SNAPSHOT_FILES = 500
-_EXCLUDED_DIRS = {"node_modules", ".git", "venv", ".venv", "__pycache__", "dist", "build", ".next", ".gemini", "Ollama_model", "target", "out", "scratch"}
+_EXCLUDED_DIRS = EXCLUDED_WORKSPACE_DIRS | {".gemini", "Ollama_model", "target", "out", "scratch"}
 
 
 async def _snapshot_workspace(path: str) -> dict:
@@ -589,17 +590,28 @@ class StatePipeline:
         except Exception:
             pass
 
+    @staticmethod
+    def _resolve_canonical_repo_root(workspace_path: str) -> str:
+        """Đảm bảo không bao giờ tạo worktree lồng đệ quy bên trong .zenith/worktrees/."""
+        resolved = strip_worktree_nesting(workspace_path).resolve()
+        parts = list(resolved.parts)
+        for idx, part in enumerate(parts):
+            if part.lower() == ".zenith" and idx > 0:
+                return str(Path(*parts[:idx]))
+        return str(resolved)
+
     async def _setup_agent_worktree(self, task_id: str, trace_id: str) -> Optional[str]:
         """[WORKTREE ISOLATION]: Khởi tạo không gian làm việc git worktree độc lập cho đại lý (subagent)."""
-        worktree_dir = os.path.join(self.workspace_path, ".zenith", "worktrees", f"wt_{task_id}")
+        canonical_root = self._resolve_canonical_repo_root(self.workspace_path)
+        worktree_dir = os.path.join(canonical_root, ".zenith", "worktrees", f"wt_{task_id}")
         try:
-            if not os.path.exists(os.path.join(self.workspace_path, ".git")):
+            if not os.path.exists(os.path.join(canonical_root, ".git")):
                 return None
-            os.makedirs(os.path.join(self.workspace_path, ".zenith", "worktrees"), exist_ok=True)
+            os.makedirs(os.path.join(canonical_root, ".zenith", "worktrees"), exist_ok=True)
             if not os.path.exists(worktree_dir):
                 proc = await asyncio.create_subprocess_exec(
                     "git", "worktree", "add", "-B", f"zenith_agent_{task_id}", worktree_dir, "HEAD",
-                    cwd=self.workspace_path, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+                    cwd=canonical_root, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
                 )
                 await proc.communicate()
                 if proc.returncode == 0:
@@ -611,14 +623,16 @@ class StatePipeline:
 
     async def _teardown_and_merge_worktree(self, task_id: str, trace_id: str, success: bool):
         """[WORKTREE ISOLATION]: Hợp nhất code về nhánh chính nếu kiểm định thành công, hoặc loại bỏ worktree nếu thất bại."""
-        worktree_dir = os.path.join(self.workspace_path, ".zenith", "worktrees", f"wt_{task_id}")
+        import shutil
+        canonical_root = self._resolve_canonical_repo_root(self.workspace_path)
+        worktree_dir = os.path.join(canonical_root, ".zenith", "worktrees", f"wt_{task_id}")
         if not os.path.exists(worktree_dir):
             return
         try:
             if success:
                 proc_merge = await asyncio.create_subprocess_exec(
                     "git", "merge", f"zenith_agent_{task_id}",
-                    cwd=self.workspace_path, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+                    cwd=canonical_root, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
                 )
                 await proc_merge.communicate()
                 engine.publish_mission_log("SYSTEM", f"[WORKTREE-MERGED] Kiểm định Passed! Đã hợp nhất thành công mã nguồn từ vùng cách ly về nhánh chính.", task_id, trace_id)
@@ -627,8 +641,12 @@ class StatePipeline:
                 
             proc_rm = await asyncio.create_subprocess_exec(
                 "git", "worktree", "remove", "--force", worktree_dir,
-                cwd=self.workspace_path, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
+                cwd=canonical_root, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.PIPE
             )
             await proc_rm.communicate()
         except Exception as e:
             logger.debug("[WORKTREE] Lỗi khi dọn dẹp worktree: %s", e)
+        finally:
+            if os.path.exists(worktree_dir):
+                shutil.rmtree(worktree_dir, ignore_errors=True)
+
