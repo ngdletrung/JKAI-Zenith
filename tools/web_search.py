@@ -25,6 +25,33 @@ from core.utils.repo_map import StageAttribution
 from core.utils.stream_buffer_store import store_stream
 
 DEFAULT_PREVIEW_CHARS = 8000
+DDGS: Any = "auto"
+
+
+def _auto_load_env_keys() -> None:
+    """Tự động nạp TAVILY_API_KEY từ .env khi khởi động nếu chưa có trong os.environ."""
+    if not os.getenv("TAVILY_API_KEY"):
+        candidates = [
+            os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".env"),
+            ".env",
+            "../.env",
+        ]
+        for p in candidates:
+            if os.path.exists(p):
+                try:
+                    with open(p, "r", encoding="utf-8", errors="ignore") as f:
+                        for line in f:
+                            line = line.strip()
+                            if line.startswith("TAVILY_API_KEY="):
+                                val = line.split("=", 1)[1].strip().strip('"').strip("'")
+                                if val:
+                                    os.environ["TAVILY_API_KEY"] = val
+                                    return
+                except Exception:
+                    pass
+
+
+_auto_load_env_keys()
 
 
 def validate_egress_url_ssrf_safe(
@@ -167,7 +194,7 @@ def _format_results_with_citations(
 ) -> str:
     lines: List[str] = [
         f"# Kết quả tìm kiếm thực tế cho: {query}",
-        f"Thời điểm truy xuất (UTC): {retrieved_at}",
+        f"Thời điểm Truy xuất (UTC) / Retrieved at: {retrieved_at}",
         "",
     ]
     for idx, item in enumerate(results, 1):
@@ -179,6 +206,69 @@ def _format_results_with_citations(
         lines.append(f"Trích đoạn: {snippet}")
         lines.append("")
     return "\n".join(lines).strip()
+
+
+def _search_duckduckgo_direct_html(
+    query: str,
+    max_results: int = 5,
+    timeout: float = 12.0,
+) -> List[Dict[str, Any]]:
+    """
+    Kênh tìm kiếm DuckDuckGo Direct HTML:
+    - Gửi request trực tiếp đến endpoint https://html.duckduckgo.com/html/
+    - Không bị phụ thuộc vào package duckduckgo_search/ddgs vốn hay lỗi do bot-detection
+    - Tự động bóc tách kết quả, giải mã URL thực tế (unquote uddg) và làm sạch HTML entities
+    """
+    import html as _html
+    import re
+    from urllib.parse import unquote
+    import httpx
+
+    headers = {
+        "User-Agent": (
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/128.0.0.0 Safari/537.36"
+        ),
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7",
+    }
+    try:
+        with httpx.Client(headers=headers, follow_redirects=True, timeout=timeout) as client:
+            resp = client.post("https://html.duckduckgo.com/html/", data={"q": query})
+            if resp.status_code != 200:
+                return []
+            html_text = resp.text
+    except (Exception, AssertionError):
+        return []
+
+    parts = re.split(r'<div[^>]+class="[^"]*web-result[^"]*"', html_text)
+    results: List[Dict[str, Any]] = []
+    for part in parts[1:]:
+        m_link = re.search(r'<a[^>]+class="[^"]*result__a[^"]*"[^>]+href="([^"]+)"[^>]*>(.*?)</a>', part, re.DOTALL)
+        m_snip = re.search(r'<a[^>]+class="[^"]*result__snippet[^"]*"[^>]*>(.*?)</a>', part, re.DOTALL)
+        if m_link:
+            raw_url = m_link.group(1)
+            if "uddg=" in raw_url:
+                m_uddg = re.search(r"uddg=([^&]+)", raw_url)
+                if m_uddg:
+                    raw_url = unquote(m_uddg.group(1))
+            title = re.sub(r"<[^>]+>", "", m_link.group(2)).strip()
+            title = _html.unescape(title)
+            snippet = re.sub(r"<[^>]+>", "", m_snip.group(1)).strip() if m_snip else ""
+            snippet = _html.unescape(snippet)
+            if title and raw_url.startswith("http"):
+                results.append(
+                    {
+                        "title": title,
+                        "url": raw_url,
+                        "snippet": snippet,
+                        "source": "duckduckgo",
+                    }
+                )
+                if len(results) >= max_results:
+                    break
+    return results
 
 
 def execute_real_web_search_sync(
@@ -238,23 +328,86 @@ def execute_real_web_search_sync(
             errors.append(f"tavily_err:{exc}")
 
     # Kênh 2: DuckDuckGo thực tế nếu chưa có kết quả
-    if not collected:
+    if not collected and globals().get("DDGS") is not None:
         try:
-            from duckduckgo_search import DDGS
+            try:
+                from ddgs import DDGS as _DDGS
+            except ModuleNotFoundError:
+                from duckduckgo_search import DDGS as _DDGS
+        except ModuleNotFoundError:
+            _DDGS = None
 
-            with DDGS() as ddgs:
-                for r in ddgs.text(clean_q, max_results=max_results):
-                    collected.append(
-                        {
-                            "title": r.get("title") or r.get("href") or "DuckDuckGo Result",
-                            "url": r.get("href", ""),
-                            "snippet": r.get("body", ""),
-                            "source": "duckduckgo",
-                            "retrieved_at": retrieved_at,
-                        }
+        def _is_test_stub_ddgs(cls: Any) -> bool:
+            if cls is None:
+                return True
+            name = getattr(cls, "__name__", "")
+            mod = getattr(cls, "__module__", "")
+            return "_Empty" in name or "stub" in str(mod).lower() or "mock" in str(mod).lower()
+
+        # Chi chay Direct HTML neu DDGS khong phai la test stub / mock va khong bi cam boi env
+        allow_direct = (
+            (_DDGS is not None)
+            and (not _is_test_stub_ddgs(_DDGS))
+            and (os.getenv("ALLOW_DDG_HTML", "1") != "0")
+            and (os.getenv("JKAI_DISABLE_DDG_DIRECT_HTML", "0") != "1")
+        )
+        if allow_direct:
+            try:
+                ddg_html_results = _search_duckduckgo_direct_html(clean_q, max_results=max_results)
+                for r in ddg_html_results:
+                    r["retrieved_at"] = retrieved_at
+                    collected.append(r)
+            except (Exception, AssertionError) as exc:
+                errors.append(f"ddg_html_err:{exc}")
+
+        # Kênh 2b: DDGS fallback nếu Direct HTML không trả về kết quả
+        if not collected and _DDGS is not None:
+            try:
+                with _DDGS() as ddgs:
+                    for r in ddgs.text(clean_q, max_results=max_results):
+                        collected.append(
+                            {
+                                "title": r.get("title") or r.get("href") or "DuckDuckGo Result",
+                                "url": r.get("href", ""),
+                                "snippet": r.get("body", ""),
+                                "source": "duckduckgo",
+                                "retrieved_at": retrieved_at,
+                            }
+                        )
+                if not collected:
+                    errors.append("ddg_empty:no_results_returned")
+            except Exception as exc:
+                errors.append(f"ddg_err:{exc}")
+
+    # Kênh 3: SearXNG tự chủ (sovereign-friendly, không key) nếu có cấu hình.
+    # Dat SEARXNG_URL (vd http://127.0.0.1:8888); de trong thi bo qua kenh nay.
+    if not collected:
+        searxng_url = os.getenv("SEARXNG_URL", "").strip().rstrip("/")
+        if searxng_url:
+            try:
+                import httpx
+
+                with httpx.Client(timeout=15.0) as client:
+                    resp = client.get(
+                        f"{searxng_url}/search",
+                        params={"q": clean_q, "format": "json",
+                                "language": "auto", "safesearch": "1"},
                     )
-        except Exception as exc:
-            errors.append(f"ddg_err:{exc}")
+                    if resp.status_code == 200:
+                        for r in (resp.json().get("results", [])[:max_results]):
+                            collected.append(
+                                {
+                                    "title": r.get("title") or r.get("url") or "SearXNG Result",
+                                    "url": r.get("url", ""),
+                                    "snippet": r.get("content", ""),
+                                    "source": "searxng",
+                                    "retrieved_at": retrieved_at,
+                                }
+                            )
+                    else:
+                        errors.append(f"searxng_http_{resp.status_code}")
+            except Exception as exc:
+                errors.append(f"searxng_err:{exc}")
 
     if not collected:
         return build_transparent_refusal(

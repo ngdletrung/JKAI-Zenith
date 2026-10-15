@@ -37,6 +37,38 @@ PROTECTED_PATTERNS = [
     "/etc/shadow", "/etc/passwd", "/etc/sudoers"
 ]
 
+def _ensure_tools_importable() -> None:
+    """Bao dam `import tools.*` hoat dong trong moi container (brain/executor/host).
+
+    Mot so container chi mount/goi thu vien `core` ma khong co `tools` tren
+    sys.path -> ModuleNotFoundError -> LOCAL-DIRECT-FAIL -> don viec sang
+    HTTP executor mot cach khong can thiet. Ham nay chen workspace root vao
+    sys.path (neu thieu) truoc moi lan import tools.*.
+    """
+    try:
+        import tools.web_search  # noqa: F401
+        return
+    except ModuleNotFoundError:
+        pass
+    try:
+        from core.utils.project_workspace import get_jkai_workspace_root
+        root = str(get_jkai_workspace_root())
+    except Exception:
+        try:
+            root = str(Path(__file__).resolve().parents[4])
+        except Exception:
+            return
+    try:
+        if root and root not in sys.path and os.path.isdir(root):
+            sys.path.insert(0, root)
+        if "tools" in sys.modules:
+            tools_mod = sys.modules["tools"]
+            ws_tools = os.path.join(root, "tools")
+            if os.path.isdir(ws_tools) and hasattr(tools_mod, "__path__") and ws_tools not in tools_mod.__path__:
+                tools_mod.__path__.append(ws_tools)
+    except Exception:
+        pass
+
 FORBIDDEN_SYSTEM_ROOTS = [
     "/", "c:", "c:/", "c:\\", "~", "~/", "d:", "d:/"
 ]
@@ -920,6 +952,7 @@ async def search_web(
     **kwargs,
 ):
     """🌐 [RECON]: Tầm soát Internet thấu thị (minh bạch Local-Only & tích hợp StreamBufferStore)."""
+    _ensure_tools_importable()
     from tools.web_search import (
         build_transparent_refusal,
         execute_real_web_search_sync,
@@ -930,6 +963,26 @@ async def search_web(
     eff_local_only = kwargs.get("local_only", local_only)
     if is_local_only_enabled(eff_local_only):
         return build_transparent_refusal(query=query, reason="LOCAL_ONLY_MODE")
+
+    # [Trọng điểm 2 - Multi-Query Deep Retrieval]: Kích hoạt khi có cờ deep=True/multi_query=True hoặc câu hỏi yêu cầu phân tích/tổng hợp chuyên sâu
+    want_multi_query = bool(kwargs.get("deep") or kwargs.get("multi_query") or kwargs.get("deep_search"))
+    if not want_multi_query:
+        q_lower = query.lower()
+        if any(w in q_lower for w in ("phân tích", "tổng hợp", "đánh giá", "toàn cảnh", "tuần qua", "overview")) and len(query.split()) >= 4:
+            want_multi_query = True
+
+    if want_multi_query and os.getenv("JKAI_MULTI_QUERY_ENABLED", "1") != "0":
+        try:
+            from core.os.cognition.multi_query_retriever import multi_query_retriever
+            mq_res = await multi_query_retriever.retrieve_deep(
+                query=query,
+                task_id=task_id,
+                local_only=bool(eff_local_only),
+            )
+            if isinstance(mq_res, dict) and mq_res.get("status") == "success":
+                return mq_res
+        except Exception:
+            pass
 
     try:
         from intelligence.skills.CORE.OMNI_SEARCH_ENGINE.logic import omni_search
@@ -975,6 +1028,7 @@ async def read_url_content(
 ):
     """📄 [VISION]: Đọc nội dung URL thấu thị (kiểm tra SSRF/Egress allowlist + lưu toàn văn vào StreamBufferStore)."""
     import httpx
+    _ensure_tools_importable()
     from tools.web_search import (
         build_transparent_refusal,
         is_local_only_enabled,

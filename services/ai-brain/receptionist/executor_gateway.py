@@ -553,6 +553,26 @@ class ExecutorGateway:
                         )
                 except Exception as local_err:
                     self._log("WARN", f"[LOCAL-DIRECT-FAIL] Local execution of '{request.tool_name}' failed: {local_err}. Falling back to HTTP executor.", task_id)
+                    try:
+                        import traceback
+                        from core.recovery.error_classifier import ErrorClassifier
+                        from core.utils.failure_memory import failure_memory, FailureStage
+                        classifier = ErrorClassifier()
+                        tb_str = traceback.format_exc()
+                        v = classifier.classify(str(local_err), tb_str)
+                        coro = failure_memory.record_failure(
+                            task_id=task_id,
+                            goal=f"Execute {request.tool_name}",
+                            task_type="local_primitive",
+                            failure_stage=FailureStage.TOOL_EXECUTION,
+                            error_detail=f"{v.subclass.value}: {local_err}",
+                            failed_tools=[request.tool_name],
+                            attempted_fix=v.recommended_action,
+                            fix_worked=False
+                        )
+                        asyncio.create_task(coro)
+                    except Exception:
+                        pass
 
             from core.utils.registry import registry
             payload = {
@@ -607,7 +627,16 @@ class ExecutorGateway:
                     # Mark this executor as still healthy since response was received
                     _health_cache.update(name, True)
                     is_success = outcome.is_success
-                    output = data.get("output", "No output.")
+                    if is_success:
+                        output = data.get("output", "No output.")
+                    else:
+                        # [HOTFIX-1410] Lan truyen ly do that bai that thay vi "No output."
+                        # de critic/replan thay NGUYEN NHAN (tool khong ton tai? timeout?
+                        # loi logic?) thay vi doan mo, tranh replan mu quang.
+                        output = (
+                            data.get("msg") or data.get("message") or data.get("detail")
+                            or data.get("error") or data.get("output") or "No output."
+                        )
                     return ExecutionResult(
                         outcome=DecisionOutcome.ALLOW,
                         tool_executed=is_success,

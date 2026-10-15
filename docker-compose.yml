@@ -295,7 +295,6 @@ services:
       - ./services/tools:/shared/tools
       - ./intelligence/tools:/shared/tool_schemas
       - ./intelligence/prompts:/prompts
-      - /var/run/docker.sock:/var/run/docker.sock
       - ./intelligence:/intelligence
       - storage-data:/storage
       - .:/workspace
@@ -339,7 +338,6 @@ services:
       - ./services/tools:/shared/tools
       - ./intelligence/tools:/shared/tool_schemas
       - ./intelligence/prompts:/prompts
-      - /var/run/docker.sock:/var/run/docker.sock
       - ./intelligence:/intelligence
       - storage-data:/storage
       - .:/workspace
@@ -572,7 +570,6 @@ services:
       - ./models:/shared/models
       - ./core:/shared/core
       - storage-data:/storage
-      - /var/run/docker.sock:/var/run/docker.sock
       - .:/workspace
     environment:
       - PYTHONPATH=/app/backend:/shared

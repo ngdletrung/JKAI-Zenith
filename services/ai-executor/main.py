@@ -43,6 +43,44 @@ async def execute_task(payload: dict):
     sync_hlc_from_payload(payload)
     task_id = payload.get("task_id", "unknown")
     steps = payload.get("steps", [])
+    grant = payload.get("grant")
+
+    # 🛡️ [FAIL-CLOSED-EXECUTION-GRANT] (JKAI-BND-002): Xác thực ExecutionGrant ký bởi AuthorityGateway
+    try:
+        from core.kernel.policy_snapshot import verify_execution_grant
+        is_valid, reason = verify_execution_grant(grant, expected_tool="batch_execute", actual_args={"steps": steps})
+        if not is_valid:
+            # Fallback kiểm tra per-step grant
+            all_valid = False
+            if steps and isinstance(steps, list):
+                all_valid = True
+                for s in steps:
+                    st = s.get("tool") or s.get("name")
+                    sa = s.get("args", {})
+                    sg = s.get("grant")
+                    ok, _ = verify_execution_grant(sg, expected_tool=st, actual_args=sa)
+                    if not ok:
+                        all_valid = False
+                        break
+            if not all_valid:
+                import logging
+                logging.getLogger('EXECUTOR').warning(
+                    f"❌ [GRANT-DENIED] Từ chối thực thi /execute (Task: {task_id}): {reason}"
+                )
+                return {
+                    "status": "error",
+                    "msg": f"FAIL-CLOSED: Execution rejected by Executor Boundary. {reason}",
+                    "denied": True
+                }
+    except Exception as g_err:
+        import logging
+        logging.getLogger('EXECUTOR').error(f"❌ [GRANT-VERIFY-ERROR] Lỗi kiểm tra grant /execute: {g_err}")
+        return {
+            "status": "error",
+            "msg": f"FAIL-CLOSED: Grant verification error ({g_err}).",
+            "denied": True
+        }
+
     return await executor.run_steps(steps, task_id)
 
 @app.post("/chat")

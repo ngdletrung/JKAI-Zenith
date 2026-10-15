@@ -21,8 +21,25 @@ except Exception as pdh_err:
     print(f"⚠️ [PDH-INIT-ERR]: {pdh_err}")
     gpu_query = None
 
-# MÃ BÍ MẬT - Xác thực từ Docker
-AKAI_SECRET_TOKEN = os.getenv("AKAI_SATELLITE_TOKEN", "AKAI_PRIME_SUPER_SECRET_999")
+import secrets
+from pathlib import Path
+
+# MÃ BÍ MẬT - Xác thực từ Docker (Fail-closed nếu không có cấu hình)
+AKAI_SECRET_TOKEN = os.getenv("SATELLITE_AUTH_TOKEN", "").strip() or os.getenv("AKAI_SATELLITE_TOKEN", "").strip()
+if not AKAI_SECRET_TOKEN:
+    AKAI_SECRET_TOKEN = secrets.token_hex(32)
+
+
+def is_safe_contained_path(target_path: str, base_root: Optional[Path] = None) -> bool:
+    """Xác thực đường dẫn không thoát ra ngoài workspace (chống Path Traversal)."""
+    try:
+        base = (base_root or Path(".").resolve()).resolve()
+        target = Path(target_path)
+        resolved = (base / target).resolve() if not target.is_absolute() else target.resolve()
+        return resolved == base or base in resolved.parents
+    except Exception:
+        return False
+
 
 @app.middleware("http")
 async def verify_akai_token(request: Request, call_next):

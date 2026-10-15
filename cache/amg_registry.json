@@ -1,5 +1,5 @@
 {
-  "updated_at": 1791952664.621809,
+  "updated_at": 1792064766.841003,
   "profiles": {
     "qwen3.5:4b": {
       "model_name": "qwen3.5:4b",
@@ -8,9 +8,9 @@
       "context_length_max": 262144,
       "model_classes": [
         "VISION",
+        "GENERAL",
         "REASONING",
-        "TOOL_USE",
-        "GENERAL"
+        "TOOL_USE"
       ],
       "has_vision": true,
       "has_tool_calling": true,
@@ -34,9 +34,9 @@
       "family": "lfm2",
       "context_length_max": 128000,
       "model_classes": [
+        "GENERAL",
         "REASONING",
-        "TOOL_USE",
-        "GENERAL"
+        "TOOL_USE"
       ],
       "has_vision": false,
       "has_tool_calling": true,
@@ -60,9 +60,9 @@
       "family": "qwen3moe",
       "context_length_max": 262144,
       "model_classes": [
+        "GENERAL",
         "REASONING",
-        "TOOL_USE",
-        "GENERAL"
+        "TOOL_USE"
       ],
       "has_vision": false,
       "has_tool_calling": true,
@@ -86,9 +86,9 @@
       "family": "gemma4",
       "context_length_max": 131072,
       "model_classes": [
+        "GENERAL",
         "VISION",
-        "TOOL_USE",
-        "GENERAL"
+        "TOOL_USE"
       ],
       "has_vision": true,
       "has_tool_calling": true,
@@ -113,9 +113,9 @@
       "context_length_max": 262144,
       "model_classes": [
         "VISION",
+        "GENERAL",
         "REASONING",
-        "TOOL_USE",
-        "GENERAL"
+        "TOOL_USE"
       ],
       "has_vision": true,
       "has_tool_calling": true,
@@ -140,9 +140,9 @@
       "context_length_max": 262144,
       "model_classes": [
         "VISION",
+        "GENERAL",
         "REASONING",
-        "TOOL_USE",
-        "GENERAL"
+        "TOOL_USE"
       ],
       "has_vision": true,
       "has_tool_calling": true,
@@ -166,9 +166,9 @@
       "family": "qwen3",
       "context_length_max": 40960,
       "model_classes": [
+        "GENERAL",
         "REASONING",
-        "TOOL_USE",
-        "GENERAL"
+        "TOOL_USE"
       ],
       "has_vision": false,
       "has_tool_calling": true,
@@ -192,8 +192,8 @@
       "family": "llama",
       "context_length_max": 131072,
       "model_classes": [
-        "TOOL_USE",
-        "GENERAL"
+        "GENERAL",
+        "TOOL_USE"
       ],
       "has_vision": false,
       "has_tool_calling": true,
@@ -244,9 +244,9 @@
       "context_length_max": 262144,
       "model_classes": [
         "VISION",
+        "GENERAL",
         "REASONING",
-        "TOOL_USE",
-        "GENERAL"
+        "TOOL_USE"
       ],
       "has_vision": true,
       "has_tool_calling": true,
@@ -322,8 +322,8 @@
       "family": "phi2",
       "context_length_max": 2048,
       "model_classes": [
-        "VISION",
-        "GENERAL"
+        "GENERAL",
+        "VISION"
       ],
       "has_vision": true,
       "has_tool_calling": false,
@@ -395,9 +395,9 @@
       "family": "qwen3",
       "context_length_max": 131072,
       "model_classes": [
+        "GENERAL",
         "REASONING",
-        "TOOL_USE",
-        "GENERAL"
+        "TOOL_USE"
       ],
       "has_vision": false,
       "has_tool_calling": true,

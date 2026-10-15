@@ -21,8 +21,16 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional
 
 
+import secrets
+
 # Khóa bí mật nội bộ giữa AI Brain (Authority Gateway) và AI Executor
-_SHARED_EXECUTION_SECRET = os.getenv("JKAI_EXECUTION_SECRET", "jkai_zenith_sovereign_governance_secret_2026").encode("utf-8")
+# Tuyệt đối không dùng chuỗi mặc định tĩnh để chống tấn công giả mạo chữ ký ExecutionGrant
+_ENV_EXECUTION_SECRET = os.getenv("JKAI_EXECUTION_SECRET", "").strip()
+_SHARED_EXECUTION_SECRET = (
+    _ENV_EXECUTION_SECRET.encode("utf-8")
+    if _ENV_EXECUTION_SECRET
+    else secrets.token_bytes(32)
+)
 
 
 @dataclass(frozen=True)
@@ -137,13 +145,15 @@ def issue_execution_grant(
     mission_id: str,
     snapshot_id: str,
     tool_name: str,
-    tool_args: Dict[str, Any],
+    tool_args: Optional[Dict[str, Any]] = None,
     ttl_seconds: float = 300.0,
+    **kwargs: Any,
 ) -> ExecutionGrant:
     """Phát hành ExecutionGrant có chữ ký HMAC-SHA256."""
     now = time.time()
     grant_id = f"grant_{uuid.uuid4().hex[:12]}"
-    args_payload = json.dumps(tool_args or {}, sort_keys=True)
+    resolved_args = tool_args if tool_args is not None else kwargs.get("actual_args", {})
+    args_payload = json.dumps(resolved_args or {}, sort_keys=True)
     args_hash = hashlib.sha256(args_payload.encode("utf-8")).hexdigest()
     expires_at = now + ttl_seconds
 
@@ -160,6 +170,9 @@ def issue_execution_grant(
         expires_at=expires_at,
         signature=signature,
     )
+
+
+create_execution_grant = issue_execution_grant
 
 
 def verify_execution_grant(

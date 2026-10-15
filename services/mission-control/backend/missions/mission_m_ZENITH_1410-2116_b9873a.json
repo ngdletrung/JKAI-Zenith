@@ -1,0 +1,609 @@
+{
+  "id": "m_ZENITH_1410-2116_b9873a",
+  "title": "hãy phân tích thị trường chứng khoán tuần qua",
+  "goal": "hãy phân tích thị trường chứng khoán tuần qua",
+  "status": "completed",
+  "ts": 1791987490.9875348,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "hãy phân tích thị trường chứng khoán tuần qua",
+      "ts": 1791987364.5503285,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1410-2116_b9873a` initialized | Trace: `trace_b9873a`. Runtime ready.",
+      "ts": 1791987364.5571623,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=45 | preview='hãy phân tích thị trường chứng khoán tuần qua' | hash=91efcd27ff8eb066 | task_id=ZENITH_1410-2116_b9873a | trace_id=trace_b9873a",
+      "ts": 1791987373.0495276,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: ['DEBUG_ANALYSIS_ACTION'] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1791987373.0521295,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [PIPELINE-RESOLVER]: Chế độ DEEP tự động kích hoạt (Reason: Master explicitly requested DEEP (Multi-Agent Ensemble Mode).).",
+      "ts": 1791987373.0544662,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=realtime pipeline=deep mode=deep tags=ANALYSIS,LOOKUP",
+      "ts": 1791987373.0562382,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1791987373.0598166,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "DeepPipeline T2–T6 (full)",
+      "ts": 1791987373.0616164,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "✅ [PREFLIGHT-OK] Available executors: http://ai-executor-1:8000, http://ai-executor-2:8000",
+      "ts": 1791987373.0892215,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[EXPERIENCE-STORE] Đã truy xuất 1 bài học thất bại từ quá khứ để phòng ngừa.",
+      "ts": 1791987373.1244256,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1791987373.1264663,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1791987373.1298082,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1791987373.1477702,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1791987373.3358586,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1791987373.3476937,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1791987373.5732439,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 27.11s.",
+      "ts": 1791987400.688755,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1791987400.7175694,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1791987400.7187536,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1791987400.7338276,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_recovery_01 (SEARCH_WEB_GLOBAL)**: Auto-recovery: search web for: hãy phân tích thị trường chứng khoán tuần qua\n\n[BÀI HỌC KINH NGHIỆM TỪ QUÁ KHỨ]:\n- Executor produced no valid evidence.\n(Hãy lập kế hoạch tránh các sai lầm trên).",
+      "ts": 1791987400.7612336,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1791987400.7643423,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TRIỂN KHAI BƯỚC] Đang khởi chạy thực thi song song: `[/]` **auto_recovery_01**",
+      "ts": 1791987400.7668178,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'SEARCH_WEB_GLOBAL' authorized by ExecutionIntegrityLayer.",
+      "ts": 1791987400.769568,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_b9873a",
+      "ts": 1791987400.7723818,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'SEARCH_WEB_GLOBAL' via sovereign local runtime.",
+      "ts": 1791987400.7741992,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[LOCAL-DIRECT-FAIL] Local execution of 'SEARCH_WEB_GLOBAL' failed: No module named 'tools.web_search'. Falling back to HTTP executor.",
+      "ts": 1791987400.7762716,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[HEALTH-OK] executor is UP — dispatching SEARCH_WEB_GLOBAL",
+      "ts": 1791987400.778301,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[SEARCH_WEB_GLOBAL] ⚠️ Execution failed: Executor returned non-success status.",
+      "ts": 1791987400.7855635,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TIẾN ĐỘ THỰC THI BƯỚC] Cảnh báo: `[!]` **auto_recovery_01**",
+      "ts": 1791987400.7897515,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[STEP CRITIC] Phát hiện lỗi tại bước auto_recovery_01. Kích hoạt Dynamic Re-planning...",
+      "ts": 1791987400.79267,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[RE-PLANNING] Đã cập nhật kế hoạch động. Nhận thêm 4 bước mới (Tổng: 5 bước).",
+      "ts": 1791987437.5141988,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TRIỂN KHAI BƯỚC] Đang khởi chạy thực thi song song: `[/]` **market_data_fetch_v1**, `[/]` **trend_analysis_v1**, `[/]` **sentiment_report_v1**, `[/]` **synthesis_v1**",
+      "ts": 1791987437.5182142,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'query_tool' authorized by ExecutionIntegrityLayer.",
+      "ts": 1791987437.522032,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: query_tool(...) - TraceID: trace_b9873a",
+      "ts": 1791987437.5266416,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'compute_metric' authorized by ExecutionIntegrityLayer.",
+      "ts": 1791987437.530206,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: compute_metric(...) - TraceID: trace_b9873a",
+      "ts": 1791987437.5336652,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'aggregate_news_sentiment' authorized by ExecutionIntegrityLayer.",
+      "ts": 1791987437.5364447,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: aggregate_news_sentiment(...) - TraceID: trace_b9873a",
+      "ts": 1791987437.540094,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'generate_report' authorized by ExecutionIntegrityLayer.",
+      "ts": 1791987437.5432093,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: generate_report(...) - TraceID: trace_b9873a",
+      "ts": 1791987437.5459363,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[HEALTH-OK] executor is UP — dispatching compute_metric",
+      "ts": 1791987437.559212,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[HEALTH-OK] executor is UP — dispatching aggregate_news_sentiment",
+      "ts": 1791987437.5647645,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[HEALTH-OK] executor is UP — dispatching generate_report",
+      "ts": 1791987437.5676775,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[HEALTH-OK] executor is UP — dispatching query_tool",
+      "ts": 1791987437.5716925,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[compute_metric] ⚠️ Execution failed: Executor returned non-success status.",
+      "ts": 1791987437.616655,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[aggregate_news_sentiment] ⚠️ Execution failed: Executor returned non-success status.",
+      "ts": 1791987437.6222813,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[generate_report] ⚠️ Execution failed: Executor returned non-success status.",
+      "ts": 1791987437.6270592,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[query_tool] ⚠️ Execution failed: Executor returned non-success status.",
+      "ts": 1791987437.6312335,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TIẾN ĐỘ THỰC THI BƯỚC] Cảnh báo: `[!]` **market_data_fetch_v1**, `[!]` **trend_analysis_v1**, `[!]` **sentiment_report_v1**, `[!]` **synthesis_v1**",
+      "ts": 1791987437.635358,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[STEP CRITIC] Phát hiện lỗi tại bước synthesis_v1. Kích hoạt Dynamic Re-planning...",
+      "ts": 1791987437.6396394,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[RE-PLANNING] Đã cập nhật kế hoạch động. Nhận thêm 4 bước mới (Tổng: 9 bước).",
+      "ts": 1791987463.4005175,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TRIỂN KHAI BƯỚC] Đang khởi chạy thực thi song song: `[/]` **data_source_validation**, `[/]` **historical_data_retrieval_v2**, `[/]` **technical_indicators_calculation**, `[/]` **volume_analysis_v1**",
+      "ts": 1791987463.404909,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'SEARCH_WEB_GLOBAL' authorized by ExecutionIntegrityLayer.",
+      "ts": 1791987463.4095867,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_b9873a",
+      "ts": 1791987463.4144619,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'SEARCH_WEB_GLOBAL' via sovereign local runtime.",
+      "ts": 1791987463.4172351,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[LOCAL-DIRECT-FAIL] Local execution of 'SEARCH_WEB_GLOBAL' failed: No module named 'tools.web_search'. Falling back to HTTP executor.",
+      "ts": 1791987463.419915,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[HEALTH-OK] executor is UP — dispatching SEARCH_WEB_GLOBAL",
+      "ts": 1791987463.4217622,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'SEARCH_WEB_GLOBAL' authorized by ExecutionIntegrityLayer.",
+      "ts": 1791987463.4258933,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_b9873a",
+      "ts": 1791987463.430332,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'SEARCH_WEB_GLOBAL' via sovereign local runtime.",
+      "ts": 1791987463.4320037,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[LOCAL-DIRECT-FAIL] Local execution of 'SEARCH_WEB_GLOBAL' failed: No module named 'tools.web_search'. Falling back to HTTP executor.",
+      "ts": 1791987463.4343743,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[HEALTH-OK] executor is UP — dispatching SEARCH_WEB_GLOBAL",
+      "ts": 1791987463.4363217,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'SEARCH_WEB_GLOBAL' authorized by ExecutionIntegrityLayer.",
+      "ts": 1791987463.4390874,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_b9873a",
+      "ts": 1791987463.442786,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'SEARCH_WEB_GLOBAL' via sovereign local runtime.",
+      "ts": 1791987463.4445796,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[LOCAL-DIRECT-FAIL] Local execution of 'SEARCH_WEB_GLOBAL' failed: No module named 'tools.web_search'. Falling back to HTTP executor.",
+      "ts": 1791987463.446716,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[HEALTH-OK] executor is UP — dispatching SEARCH_WEB_GLOBAL",
+      "ts": 1791987463.4485972,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'SEARCH_WEB_GLOBAL' authorized by ExecutionIntegrityLayer.",
+      "ts": 1791987463.451326,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_b9873a",
+      "ts": 1791987463.4548345,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'SEARCH_WEB_GLOBAL' via sovereign local runtime.",
+      "ts": 1791987463.4567623,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[LOCAL-DIRECT-FAIL] Local execution of 'SEARCH_WEB_GLOBAL' failed: No module named 'tools.web_search'. Falling back to HTTP executor.",
+      "ts": 1791987463.45901,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[HEALTH-OK] executor is UP — dispatching SEARCH_WEB_GLOBAL",
+      "ts": 1791987463.4606864,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[SEARCH_WEB_GLOBAL] ⚠️ Execution failed: Executor returned non-success status.",
+      "ts": 1791987463.4742062,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[SEARCH_WEB_GLOBAL] ⚠️ Execution failed: Executor returned non-success status.",
+      "ts": 1791987463.4846005,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[SEARCH_WEB_GLOBAL] ⚠️ Execution failed: Executor returned non-success status.",
+      "ts": 1791987463.4893887,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[SEARCH_WEB_GLOBAL] ⚠️ Execution failed: Executor returned non-success status.",
+      "ts": 1791987463.4941607,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TIẾN ĐỘ THỰC THI BƯỚC] Cảnh báo: `[!]` **data_source_validation**, `[!]` **historical_data_retrieval_v2**, `[!]` **technical_indicators_calculation**, `[!]` **volume_analysis_v1**",
+      "ts": 1791987463.4985595,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "🛑 [CIRCUIT-BREAKER-ACTIVATED] CIRCUIT BREAKER TRIPPED [LOGIC]: Code/Logic error repeated 3 times on 'unknown'. Escalate to Master.. Ngắt chuỗi Dynamic Re-planning tức thì!",
+      "ts": 1791987463.504063,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 9 kết quả.",
+      "ts": 1791987463.5061328,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[FAIL-CLOSED EVIDENCE] Không có bằng chứng thực thi hợp lệ. KHÔNG chế tổng hợp kết quả giả — chuyển qua T5 Critic để đánh giá thực tế (FAIL).",
+      "ts": 1791987463.5087721,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1791987468.3652444,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — FAIL (Score: 0.00)",
+      "ts": 1791987468.3763041,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[T6] Ban Thư Ký đang soạn Báo cáo...",
+      "ts": 1791987468.3795652,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Giao thức dừng đã được kích hoạt. Toàn bộ Đặc vụ đã dừng theo lệnh của Master.",
+      "ts": 1791987490.9473784,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1410-2116_b9873a"
+    }
+  ],
+  "artifacts": {
+    "plan": "hãy phân tích thị trường chứng khoán tuần qua",
+    "walkthrough": "Giao thức dừng đã được kích hoạt. Toàn bộ Đặc vụ đã dừng theo lệnh của Master.",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

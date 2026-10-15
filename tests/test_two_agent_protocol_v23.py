@@ -281,9 +281,9 @@ class TestTwoAgentProtocolV23:
         assert len(kw1.splitlines()) >= 340
         assert len(kw2.splitlines()) >= 340
 
-        # 5. SOP v2.3 contains mandatory first-contact briefing rule in Section II.1 and XI.1
+        # 5. SOP v2.4 (hoac moi hon) contains mandatory first-contact briefing rule in Section II.1 and XI.1
         sop_text = (PROTOCOL_DIR / "Quy trinh & Nguyen tac thao luan AI.md").read_text(encoding="utf-8")
-        assert "PROTOCOL V2.3" in sop_text
+        assert "PROTOCOL V2.4" in sop_text or "PROTOCOL V2.3" in sop_text
         assert "Mandatory First-Contact Protocol Briefing" in sop_text
 
     def test_exit_code_constants_and_state_precedence_contract(self):

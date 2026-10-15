@@ -18,7 +18,7 @@ class SystemXRayMonitor:
     def __init__(self):
         self.satellite_url = "http://host.docker.internal:9998"
         self.ollama_url = "http://host.docker.internal:11434"
-        self.akai_token = os.getenv("AKAI_PRIME_TOKEN", "AKAI_PRIME_SUPER_SECRET_999")
+        self.akai_token = os.getenv("SATELLITE_AUTH_TOKEN", "").strip() or os.getenv("AKAI_PRIME_TOKEN", "").strip()
 
     async def _call_satellite(self, command: str) -> Dict[str, Any]:
         """Thực thi lệnh trực tiếp trên máy chủ Windows của Master."""

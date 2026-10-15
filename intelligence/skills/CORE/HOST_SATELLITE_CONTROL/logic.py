@@ -3,7 +3,7 @@ import os
 
 # 🎯 GIAO THỨC KẾT NỐI HOST (UNIFIED BRIDGE)
 HOST_URL = "http://host.docker.internal:9998"
-AKAI_TOKEN = os.getenv("AKAI_SATELLITE_TOKEN", "AKAI_PRIME_SUPER_SECRET_999")
+AKAI_TOKEN = os.getenv("SATELLITE_AUTH_TOKEN", "").strip() or os.getenv("AKAI_SATELLITE_TOKEN", "").strip()
 
 async def host_speak(text: str):
     """Phát âm thanh qua loa máy tính Host"""

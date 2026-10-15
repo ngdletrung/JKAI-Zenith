@@ -268,8 +268,11 @@ class SearchBackendProbe:
         """Kiểm tra DuckDuckGo library sẵn sàng và có thể tìm kiếm."""
         t0 = time.time()
         try:
-            from duckduckgo_search import DDGS
-            with DDGS(timeout=5) as ddgs:
+            try:
+                from ddgs import DDGS as _DDGS
+            except ModuleNotFoundError:
+                from duckduckgo_search import DDGS as _DDGS
+            with _DDGS(timeout=5) as ddgs:
                 r = list(ddgs.text("python", max_results=1))
             ms = (time.time() - t0) * 1000
             if r:
@@ -1211,8 +1214,11 @@ async def SEARCH_WEB_GLOBAL(
         engine.publish_mission_log("WEB_SEARCH", f"DUCKDUCKGO: Cascading to DDG search for {query}", task_id, trace_id)
     if ddg_health.status != BackendStatus.DEAD:
         try:
-            from duckduckgo_search import DDGS
-            with DDGS(timeout=10) as ddgs:
+            try:
+                from ddgs import DDGS as _DDGS
+            except ModuleNotFoundError:
+                from duckduckgo_search import DDGS as _DDGS
+            with _DDGS(timeout=10) as ddgs:
                 ddg_results = [r for r in ddgs.text(query, max_results=5)]
 
             if ddg_results:

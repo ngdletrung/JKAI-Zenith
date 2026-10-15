@@ -18,6 +18,7 @@ from enum import Enum
 import hashlib
 import hmac
 import json
+import os
 from pathlib import Path
 import time
 from typing import Any, Dict, List, Optional, Tuple
@@ -250,8 +251,14 @@ class DualKeySigner:
     - Master Key: Cất vật lý, dùng cho các quyết định ngoài biên giới tự trị.
     """
 
-    def __init__(self, witness_secret: str = "JKAI_OPERATIONAL_WITNESS_SHARED_SALT_2026") -> None:
-        self._witness_secret = witness_secret.encode("utf-8")
+    def __init__(self, witness_secret: Optional[str] = None) -> None:
+        import secrets
+        env_secret = (witness_secret or os.getenv("JKAI_WITNESS_SECRET", "")).strip()
+        self._witness_secret = (
+            env_secret.encode("utf-8")
+            if env_secret
+            else secrets.token_bytes(32)
+        )
 
     def sign_operational_witness(self, proposal_id: str, gates_result: Dict[str, Any]) -> str:
         data_to_sign = f"{proposal_id}:{gates_result.get('all_gates_passed')}:{gates_result.get('timestamp')}"

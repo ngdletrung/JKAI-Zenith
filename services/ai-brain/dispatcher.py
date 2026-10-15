@@ -461,9 +461,36 @@ class Dispatcher:
                 return cached
 
             # -------------------------------------------------------------------
-            # REFLEX MATCH
+            # REFLEX MATCH (Gated by Tier2ReflexGate & SkillSunsetEngine)
             # -------------------------------------------------------------------
             reflex_result = self._reflex_match(norm, task_id)
+            if reflex_result:
+                # [Slice 6.3 - P1 Wiring]: Kiểm tra qua Tier2ReflexGate trước khi cho phép phản xạ
+                try:
+                    from core.os.cognition.tier2_calibration_gate import Tier2ReflexGate
+                    t2_gate = getattr(self, "_tier2_gate", None)
+                    if t2_gate is None:
+                        t2_gate = Tier2ReflexGate()
+                        self._tier2_gate = t2_gate
+                    decision = t2_gate.route_query(goal, raw_confidence=0.90)
+                    if decision.safety_vetoed:
+                        logger.warning("[TIER2-REFLEX-VETO] Safety Veto activated for goal: %s", goal)
+                        reflex_result = None
+                except Exception as t2_err:
+                    logger.debug("[TIER2-GATE-WARN] %s", t2_err)
+
+            if reflex_result and getattr(reflex_result, "skill", None):
+                # [Slice 6.4 - P1 Wiring]: Kiểm tra qua SkillSunsetEngine
+                try:
+                    from core.kernel.skill_lifecycle_engine import get_skill_sunset_engine
+                    sunset_engine = get_skill_sunset_engine(auto_bootstrap=True)
+                    can_run, s_err, s_info = sunset_engine.can_invoke_skill(reflex_result.skill)
+                    if not can_run:
+                        logger.warning("[SKILL-SUNSET-VETO] Skill %s is sunset: %s", reflex_result.skill, s_err)
+                        reflex_result = None
+                except Exception as s_err:
+                    logger.debug("[SUNSET-GATE-WARN] %s", s_err)
+
             if reflex_result:
                 try:
                     from core.governance.shadow_harness import get_default_shadow_harness

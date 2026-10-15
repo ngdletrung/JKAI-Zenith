@@ -34,6 +34,51 @@ from core.utils.workspace_manager import workspace_manager
 from core.utils.session_context import get_session_context
 from redis_client import get_redis
 
+# ── [HOTFIX-1410: UNKNOWN-TOOL STORM BREAKER] ─────────────────────────
+# Dau hieu loi "tool khong ton tai" tra ve tu Executor (tool_router.py).
+# Cac loi nay KHONG bao gio tu khoi bang retry/replan (tool khong ton tai
+# thi plan lai 10 chu ky van khong ton tai) -> phai ngat chu ky Rolling
+# Horizon som thay vi dot 10 chu ky x N buoc vo ich.
+_UNKNOWN_TOOL_PATTERNS = (
+    "not found in registry",
+    "logic file for",
+    "tool function",
+    "not found at",
+    "plugin logic file not found",
+    "could not create spec/loader",
+)
+
+
+def is_unknown_tool_failure(text: Any) -> bool:
+    """True neu thong bao loi cho thay tool khong ton tai trong registry."""
+    try:
+        low = str(text or "").lower()
+    except Exception:
+        return False
+    return any(pat in low for pat in _UNKNOWN_TOOL_PATTERNS)
+
+
+def should_break_on_unknown_tools(
+    cycle_failed_msgs: List[str],
+    mission_had_success: bool,
+    unknown_streak: int,
+    min_streak_to_break: int = 2,
+) -> Tuple[bool, int]:
+    """Quyet dinh ngat Rolling Horizon khi chi toan loi unknown-tool.
+
+    Tra ve (should_break, new_streak). Chi break khi: chu ky hien tai co
+    that bai, TAT CA loi deu la unknown-tool, va tu dau mission chua co
+    buoc thanh cong nao (tranh cat ngang mission dang chay tot).
+    """
+    if not cycle_failed_msgs:
+        return False, 0
+    if mission_had_success:
+        return False, 0
+    if all(is_unknown_tool_failure(m) for m in cycle_failed_msgs):
+        new_streak = unknown_streak + 1
+        return new_streak >= min_streak_to_break, new_streak
+    return False, 0
+
 # ══════════════════════════════════════════════════════════════════
 # SECTION 1 — TYPED REQUESTS (Backward Compatible)
 # ══════════════════════════════════════════════════════════════════
@@ -424,6 +469,23 @@ class TaskManager:
                 failed_steps=failed_steps,
                 judicial_review_notes=jr or {}
             )
+            # 🧠 [P1-WIRING]: Tự động nạp kinh nghiệm chiến dịch vào EpisodicBrain
+            try:
+                from core.memory.episodic_brain import episodic_brain
+                if episodic_brain:
+                    is_success = not failed_steps and (not jr or str(jr.get("verdict", "")).upper() in ("PASS", "SUCCESS"))
+                    if is_success:
+                        tools_used = [s.get("tool") for s in success_steps]
+                        episodic_brain.ingest_exemplar(
+                            record_id=f"rec_{core.task_id}",
+                            goal=core.state.goal,
+                            response=f"Steps executed successfully: {tools_used}",
+                            verdict="SUCCESS",
+                            lesson="Approved by Judicial Board with verified execution evidence.",
+                            domain="COMM",
+                        )
+            except Exception as _eb_err:
+                logger.debug(f"[EPISODIC-BRAIN-AUTO-INGEST-WARN] {_eb_err}")
         except Exception as e:
             self._log("ERROR", f"❌ [CIVILIZATION-ERR]: Lỗi ghi nhận bài học lịch sử ({e})")
 
@@ -756,6 +818,9 @@ class TaskManager:
             all_results = []
             max_cycles = 10
             sid = manifest.get("session_id") or trid
+            # [HOTFIX-1410] Trang thai storm-breaker cho mission nay.
+            unknown_tool_streak = 0
+            capability_gap_hit = None
             
             # Khởi tạo CognitiveTaskKernel ban đầu hoặc tái sử dụng core được truyền vào
             if core is None:
@@ -843,6 +908,35 @@ class TaskManager:
                         "result_summary": result_summary
                     })
                 
+                # ── [HOTFIX-1410: UNKNOWN-TOOL STORM BREAKER] ──
+                # Neu ca chu ky chi toan loi "tool khong ton tai" va tu dau
+                # mission chua co buoc thanh cong nao -> dung dot chu ky,
+                # tra loi capability-gap trung thuc thay vi chay het 10 chu ky.
+                _cycle_fail_msgs = [
+                    str(r.get("output") or r.get("answer") or r.get("msg") or "")
+                    for r in (cycle_results or [])
+                    if isinstance(r, dict) and r.get("status") == "error"
+                ]
+                _mission_had_success = any(
+                    isinstance(r, dict) and r.get("status") == "success"
+                    for r in (all_results or [])
+                )
+                _should_break, unknown_tool_streak = should_break_on_unknown_tools(
+                    _cycle_fail_msgs, _mission_had_success, unknown_tool_streak
+                )
+                if _should_break:
+                    _unknown_tools = sorted({
+                        str(s.get("tool", "unknown"))
+                        for s in steps
+                        if str(s.get("id")) in (dag.failed | dag.blocked)
+                    })
+                    capability_gap_hit = {
+                        "unknown_tools": _unknown_tools,
+                        "cycles_wasted": cycle,
+                    }
+                    self._log("SYSTEM", f"🛑 [STORM-BREAKER] Tat ca that bai deu la 'tool khong ton tai' ({', '.join(_unknown_tools)}) sau {cycle} chu ky, 0 buoc thanh cong. Dung Rolling Horizon, bao capability-gap trung thuc.", tid, trid)
+                    break
+                
                 # Nếu có bước nào bị lỗi nghiêm trọng, chuyển giao thông tin để Planner tự phục hồi ở chu kỳ tiếp theo
                 has_failures = any(s["id"] in (dag.failed | dag.blocked) for s in steps)
                 if has_failures:
@@ -850,6 +944,23 @@ class TaskManager:
             
             # Ghi nhận trạng thái hoàn tất cuối cùng lên task.md
             self._write_task_board(goal, "HOÀN TẤT", executed_steps_history)
+
+            # ── [HOTFIX-1410] Thoat som trung thuc khi gap capability-gap:
+            # ke hoach toan tool khong ton tai -> dung chay tiep T5/T6 vo ich,
+            # tra loi ro rang de Master biet can bo sung cong cu thay vi doi.
+            if capability_gap_hit:
+                _gap_tools = ", ".join(capability_gap_hit.get("unknown_tools") or ["unknown"])
+                _gap_answer = (
+                    f"⚠️ **Thiếu công cụ thực thi**: Kế hoạch yêu cầu các công cụ "
+                    f"({_gap_tools}) hiện chưa tồn tại trong hệ thống, sau "
+                    f"{capability_gap_hit.get('cycles_wasted', '?')} chu kỳ thử và 0 bước thành công. "
+                    f"Mission dừng sớm để tránh lãng phí tài nguyên. "
+                    f"Vui lòng bổ sung công cụ/skill tương ứng hoặc diễn đạt lại mục tiêu "
+                    f"dùng các công cụ hiện có (xem danh sách tool hợp lệ trong hệ thống)."
+                )
+                self._log("JKAI", _gap_answer, tid, trid)
+                return {"status": "capability_gap", "answer": _gap_answer, "task_id": tid,
+                        "unknown_tools": capability_gap_hit.get("unknown_tools", [])}
 
             # T5: Thẩm định Tư pháp cuối cùng
             async with w_lock:

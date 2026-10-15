@@ -29,7 +29,7 @@ class ZenithPulse:
         self.last_status = "OPTIMAL"
         self.client = httpx.AsyncClient(timeout=5.0)
         self.satellite_url = "http://host.docker.internal:9997"
-        self.akai_token = os.getenv("AKAI_PRIME_TOKEN", "AKAI_PRIME_SUPER_SECRET_999")
+        self.akai_token = os.getenv("SATELLITE_AUTH_TOKEN", "").strip() or os.getenv("AKAI_PRIME_TOKEN", "").strip()
 
     async def _send_tg(self, message: str):
         """Gửi tin nhắn Telegram tới Master."""

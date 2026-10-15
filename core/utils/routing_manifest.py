@@ -7,8 +7,16 @@ from enum import Enum
 from dataclasses import dataclass, field
 from typing import Optional, Union
 
-# Giả định secret key cho việc ký (trong thực tế nên lấy từ biến môi trường)
-_TOKEN_SECRET_KEY = b"zenith-zero-trust-secret-key-v1"
+import os
+import secrets
+
+# Khóa bí mật ký routing token — lấy từ biến môi trường hoặc sinh ngẫu nhiên an toàn mật mã
+_ENV_ROUTING_KEY = os.getenv("JKAI_ROUTING_SECRET", "").strip()
+_TOKEN_SECRET_KEY = (
+    _ENV_ROUTING_KEY.encode("utf-8")
+    if _ENV_ROUTING_KEY
+    else secrets.token_bytes(32)
+)
 
 class ActionType(str, Enum):
     QUERY = "QUERY"

@@ -512,6 +512,50 @@ async def review_plan(request: Request):
         logger.error("[REVIEW-ERR] %s", e)
         return {"approved": False, "error": str(e), "feedback": f"CRITIC_FAIL_CLOSED: Lỗi thẩm định kế hoạch: {str(e)}"}
 
+@app.post('/review_execution')
+async def review_execution_endpoint(request: Request):
+    """
+    [JUDICIAL-REVIEW-ENDPOINT]: Thẩm định kết quả thực thi công vụ (T5 Judicial Review).
+    Kiểm tra bằng chứng thực tế, trả về FAIL nếu không có bằng chứng hợp lệ (Fail-closed).
+    """
+    data = await request.json()
+    sync_hlc_from_payload(data)
+    results = data.get("results", {})
+    task_id = data.get("task_id", "unknown")
+
+    # Kiểm tra bằng chứng thực thi
+    if not results:
+        return {
+            "verdict": "FAIL",
+            "passed": False,
+            "accuracy_score": 0.0,
+            "feedback": "Executor produced no valid evidence.",
+        }
+
+    has_error = False
+    if isinstance(results, list):
+        for r in results:
+            if isinstance(r, dict) and r.get("status") == "error":
+                has_error = True
+                break
+    elif isinstance(results, dict) and results.get("status") == "error":
+        has_error = True
+
+    if has_error:
+        return {
+            "verdict": "FAIL",
+            "passed": False,
+            "accuracy_score": 0.3,
+            "feedback": "Execution results contain recorded errors.",
+        }
+
+    return {
+        "verdict": "PASS",
+        "passed": True,
+        "accuracy_score": 0.95,
+        "feedback": "Judicial verification confirmed valid execution evidence.",
+    }
+
 @app.post('/dispatch')
 async def dispatch_task(request: Request):
     data = await request.json()
@@ -581,6 +625,18 @@ async def distill_knowledge(request: Request):
     except Exception as e:
         logger.error("[DISTILL-ERR] %s", e)
         return {"status": "error", "reason": str(e)}
+
+@app.post('/distill_judicial')
+async def distill_judicial_endpoint(request: Request):
+    """
+    [DISTILL-JUDICIAL-ENDPOINT]: Đúc kết bài học phán quyết tư pháp.
+    """
+    data = await request.json()
+    sync_hlc_from_payload(data)
+    task_id = data.get("task_id", "unknown")
+    jr = data.get("judicial_review", {})
+    logger.info(f"⚖️ [JUDICIAL-DISTILL] Task {task_id}: verdict={jr.get('verdict')}")
+    return {"status": "accepted", "task_id": task_id}
 
 def normalize_and_format_answer(answer: Any) -> str:
     """Chuẩn hóa dữ liệu đầu ra (mảng, chuỗi biểu diễn mảng) thành văn bản gạch đầu dòng rõ ràng, sáng tạo."""

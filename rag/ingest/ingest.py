@@ -5,15 +5,21 @@ from pathlib import Path
 import requests
 from typing import List, Dict, Optional
 
-# Import các thư viện với error handling
+# Các thư viện trích xuất tài liệu (được nạp lazily khi cần xử lý định dạng tương ứng)
 try:
     import pymupdf4llm
+except ImportError:
+    pymupdf4llm = None
+
+try:
     import docx
+except ImportError:
+    docx = None
+
+try:
     import markdown
-except ImportError as e:
-    print(f"Lỗi import: {e}")
-    print("Chạy lệnh: pip install pymupdf4llm python-docx markdown")
-    raise e
+except ImportError:
+    markdown = None
 
 # Lấy URL từ environment hoặc dùng mặc định
 _base_url = os.getenv("RAG_API_URL", "http://rag-service:8000")
@@ -44,10 +50,62 @@ def extract_text(file_path: Path) -> str:
         except Exception as e:
             raise ValueError(f"Lỗi trích xuất file qua unstructured: {e}")
     
-    else:
-        raise ValueError(f"Unsupported file type: {suffix}")
+def should_allow_ingest_file(file_path: Path | str) -> bool:
+    """
+    [P0.4]: Kiểm tra blocklist bảo vệ RAG Ingest:
+    Chặn 100% tài liệu bí mật, sealed_C, .env, *.pem, credentials, certs khỏi RAG Ingest.
+    """
+    raw_str = str(file_path).replace("\\", "/").strip()
+    low = raw_str.lower()
+
+    # 1. Chặn các thư mục cấm (forbidden directories)
+    forbidden_dirs = {
+        "sealed_c",
+        "sealed_exam",
+        ".git",
+        ".zenith",
+        ".venv",
+        "venv",
+        "node_modules",
+        "certs",
+        "credentials",
+        "__pycache__",
+    }
+    parts = [p.lower() for p in raw_str.split("/") if p]
+    for p in parts:
+        if p in forbidden_dirs:
+            return False
+        if p.startswith(".env"):
+            return False
+
+    # 2. Chặn các đoạn nhạy cảm (sensitive fragments)
+    sensitive_fragments = (
+        "sealed_c",
+        "sealed_exam",
+        ".env",
+        ".pem",
+        "secret",
+        "credential",
+        "private_key",
+        "sovereign_exam",
+    )
+    for frag in sensitive_fragments:
+        if frag in low:
+            return False
+
+    # 3. Chặn các phần mở rộng nguy hiểm
+    suffix = Path(raw_str).suffix.lower()
+    if suffix in [".pem", ".key", ".crt", ".pfx", ".p12"]:
+        return False
+
+    return True
+
 
 def ingest_file(file_path: Path, metadata: Optional[Dict] = None):
+    if not should_allow_ingest_file(file_path):
+        print(f"🛑 [BLOCKED] File is in blocklist or sensitive: {file_path}")
+        return False
+
     if not file_path.exists():
         print(f"❌ File not found: {file_path}")
         return False
@@ -97,7 +155,7 @@ def ingest_folder(folder_path: str, recursive: bool = True, extensions: List[str
         extensions = [".pdf", ".docx", ".md", ".markdown", ".txt", ".pptx", ".ppt", ".xlsx", ".xls", ".html", ".htm", ".eml", ".csv"]
     
     pattern = "**/*" if recursive else "*"
-    files = [f for f in folder.glob(pattern) if f.is_file() and f.suffix.lower() in extensions]
+    files = [f for f in folder.glob(pattern) if f.is_file() and f.suffix.lower() in extensions and should_allow_ingest_file(f)]
     
     print(f"🔍 Found {len(files)} files to ingest...")
     

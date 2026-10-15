@@ -324,8 +324,8 @@ JKAI Zenith adheres to international open-source and enterprise software documen
 | **Hardware Affinity Architecture** | [`/docs/architecture/HARDWARE_AFFINITY.md`](file:///d:/Docker/JKAI/docs/architecture/HARDWARE_AFFINITY.md) | NCNN-inspired hardware affinity, dual Xeon E5 NUMA memory pinning, AMD RX6600 GPU VRAM allocation, and INT8 KV Cache acceleration (`rule_hardware.md`). |
 | **Topology & Codebase Graph** | [`/docs/architecture/TOPOLOGY.md`](file:///d:/Docker/JKAI/docs/architecture/TOPOLOGY.md) & [`/docs/architecture/JKAI_MAP_GRAPH.md`](file:///d:/Docker/JKAI/docs/architecture/JKAI_MAP_GRAPH.md) | Microservices network topology, ports, databases (Postgres, Redis, Qdrant), and comprehensive module dependency graph. |
 | **Architectural Decision Records** | [`/docs/adr/`](file:///d:/Docker/JKAI/docs/adr/) | Chronological immutable architectural decision records (ADR-001 through ADR-006: RSIL-L3 Autonomous Promotion). |
-| **System Release Changelog** | [`/CHANGELOG.md`](file:///d:/Docker/JKAI/CHANGELOG.md) | Official release history, version milestones (Keep a Changelog standard), and feature evolutions (`v28.8.0`). |
-| **Internal Cognitive Memory Log** | [`/intelligence/identity/GLOBAL_SYSTEM_CONTEXT.md`](file:///d:/Docker/JKAI/intelligence/identity/GLOBAL_SYSTEM_CONTEXT.md) | Long-term cumulative episodic evolution log utilized directly by the AI cognitive runtime (`v54.0`). |
+| **System Release Changelog** | [`/CHANGELOG.md`](file:///d:/Docker/JKAI/CHANGELOG.md) | Official release history, version milestones (Keep a Changelog standard), and feature evolutions (`v28.12.0`). |
+| **Internal Cognitive Memory Log** | [`/intelligence/identity/GLOBAL_SYSTEM_CONTEXT.md`](file:///d:/Docker/JKAI/intelligence/identity/GLOBAL_SYSTEM_CONTEXT.md) | Long-term cumulative episodic evolution log utilized directly by the AI cognitive runtime (`v58.0`). |
 
 ---
 *JKAI Zenith Sovereign Cognitive OS — Master LeeTrung.*

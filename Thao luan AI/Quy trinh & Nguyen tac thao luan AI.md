@@ -1,4 +1,4 @@
-# QUY CHẾ VÀ NGUYÊN TẮC THẢO LUẬN ĐA AI (TWO-AGENT COOPERATIVE EXECUTION PROTOCOL V2.3)
+# QUY CHẾ VÀ NGUYÊN TẮC THẢO LUẬN ĐA AI (TWO-AGENT COOPERATIVE EXECUTION PROTOCOL V2.4)
 
 > **Định danh**: **"Thảo Luận AI"** — Khung làm việc phối hợp, phản biện song hành giữa **Antigravity** (AI Lập trình & Kiến trúc - Builder) và **Opencode** (AI Thẩm tra & Phản biện Độc lập - Red Team).
 >
@@ -231,6 +231,7 @@ Tiến trình Waiter thực thi kiểm định thực tế cả 4 điều kiện
    - Bên trong thân khối có dòng chữ ký khớp `SIGNATURE_REGEX` của đúng `speaker`.
 2. **`turn_chain_valid == True`**:
    - `int(turn_id) == expected_next_turn` và `int(parent_turn_id) == current_turn_id`, đồng thời `turn_id` ở `TURN_BEGIN` khớp với `turn_id` ở `TURN_END`.
+   - `turn_id` chưa từng xuất hiện trong tệp (chống trùng/replay số lượt): khối tái sử dụng số lượt đã có bị từ chối `EXIT_INVALID_BLOCK (30)` kể cả khi các điều kiện còn lại đạt.
 3. **`session_match == True` (Chống Replay & TOCTOU Session Switch)**:
    - `block.session_id == expected_session_id` (đọc từ `state.json` lúc bắt đầu chờ).
    - Đồng thời kiểm tra **TOCTOU**: `live_state.session.opencode_session_id == expected_session_id`. Nếu session trong `state.json` bị đổi giữa lúc bắt đầu chờ và lúc ghi phản hồi, Waiter lập tức từ chối khối với lý do `TOCTOU_SESSION_CHANGED_MID_FLIGHT` (`EXIT_INVALID_BLOCK = 30`).
@@ -319,14 +320,22 @@ Tuyệt đối không dùng "test pass 100%" hay "build 0 lỗi" làm thước �
 
 1. **Lớp 1 — Automated Verification (Bằng chứng mã nguồn tự động)**:
    - Unit Tests, Integration Tests, Regression Suites, IP/Brand Guardrail (`test_ip_brand_guardrail.py`), và Protocol Conformance Tests (`test_two_agent_protocol_v23.py`).
+   - **Red phải là hành vi**: test đỏ đầu tiên của TDD phải assert sai hành vi cụ thể (assertion fail), cấm đếm `ModuleNotFoundError`/`ImportError` làm bằng chứng Red-to-Green.
+   - **SUITE_MANIFEST bắt buộc**: mọi suite lũy kế phải có `tests/SUITE_MANIFEST.json` khóa danh sách tệp + số test kỳ vọng mỗi tệp + lệnh chạy chính xác, kèm test tự kiểm manifest (lệch 1 là FAIL).
+   - **Chạy lại full sprint sau mọi sửa code**: bất kỳ chỉnh sửa mã nguồn nào (kể cả 1 dòng import) bắt buộc chạy lại toàn bộ sprint suite và ghi lệnh + thời gian + kết quả vào verdict. Báo "xanh" mà không nêu 3 thông tin này thì verdict vô hiệu.
 2. **Lớp 2 — Independent Red Team Audit (OpenCode thẩm tra độc lập)**:
    - Mở trực tiếp mã nguồn vật lý trên đĩa, chạy probe độc lập ngoài mẫu (**Zero Self-Grading**: người ra đề khác người viết scorer), đối chiếu trực tiếp với yêu cầu ban đầu của Người Dùng.
+   - **Đo lại độc lập trước khi kết luận**: không công nhận số báo cáo nào chưa tự chạy lại; probe riêng khớp mới ghi vào verdict.
 3. **Phân Loại Trạng Thái Nghiệm Thu Bắt Buộc (4-State Acceptance Rubric)**:
    Mọi báo cáo nghiệm thu phải phân định rạch ròi từng hạng mục vào 1 trong 4 trạng thái:
    - **`PASS`**: Đã có code thực tế trên đĩa + test tự động/probe độc lập chạy xanh + khớp yêu cầu nghiệp vụ.
    - **`FAIL`**: Code sai logic, test đỏ, hoặc báo cáo sai lệch so với mã nguồn thực tế.
    - **`BLOCKED`**: Đã thi công xong cơ chế nhưng đang chờ cổng điều kiện bắt buộc (ví dụ: chờ đủ 100 nhãn vàng `reviewed_by_master=True` hoặc chờ chữ ký phê duyệt của Master).
    - **`NOT_TESTED`**: Nhánh logic đã viết nhưng chưa kích hoạt được trong môi trường live thực tế (bắt buộc ghi rõ lý do và kế hoạch test giả lập, cấm gộp chung vào `PASS`).
+4. **Phân Biệt Số Quan Sát Và Số Bảo Đảm (Observation vs Guarantee)**:
+   - Giá trị tuyệt đối (tokens, %, ms, ECE...) hoặc được test ghim bằng assert chính xác, hoặc ghi nhãn **`OBSERVATION`** kèm phiên bản code sinh ra nó. Cấm trích số tuyệt đối không ghim vào bảng nghiệm thu.
+   - Ngưỡng (threshold: `<=`, `>=`, `<`) phải có test ghim ngưỡng; giá trị đo từng lần chạy là quan sát, có thể trôi theo máy.
+5. **Quyền VETO Chuẩn (Load-Bearing Veto)**: Phát hiện tải trọng (bypass cổng kiểm soát, secret trong source, số liệu phân nhóm sai lệch, endpoint ma, tự ký duyệt) thì verdict là **TỪ CHỐI NGHIỆM THU + chặn slice kế tiếp** cho đến khi sửa xong và audit lại. Cấm dùng `XANH ĐIỀU KIỆN` cho qua lỗi tải trọng.
 
 ---
 
@@ -383,9 +392,10 @@ Tuyệt đối không dùng "test pass 100%" hay "build 0 lỗi" làm thước �
 ## 🚀 XIV. NGUYÊN TẮC 158: ĐỒNG KIẾN TẠO & CẤU TRÚC 3 KHỐI LINH HOẠT (CO-CREATION & PEER ACCOUNTABILITY)
 
 Mọi Turn Block của OpenCode trong `Noi dung thao luan.md` gồm 3 khối chuẩn:
-- **Khối 1 — Thẩm tra thực chứng (Empirical Audit & Verification)**: Mở trực tiếp mã nguồn và chạy test/probe để xác nhận `PASS / FAIL / BLOCKED / NOT_TESTED`.
+- **Khối 1 — Thẩm tra thực chứng (Empirical Audit & Verification)**: Mở trực tiếp mã nguồn và chạy test/probe để xác nhận `PASS / FAIL / BLOCKED / NOT_TESTED`. **Bắt buộc kiểm ngoài manifest**: ngoài các tệp trong Audit Manifest, phải grep caller production và trace ít nhất 1 đường nóng liên quan (đường request thật, caller ngoài `tests/`); thiếu bước này thì verdict tối đa là VÀNG, không được XANH.
 - **Khối 2 — Đề xuất cải tiến kỹ thuật chủ động (Proactive Engineering Proposals)**: Đưa ra 1–3 đề xuất kỹ thuật thực chất; hoặc nếu mã nguồn đã hoàn thiện tối ưu, ghi rõ *"Không có đề xuất bổ sung sau khi đánh giá thực chứng"* kèm lý do và bằng chứng kiểm thử.
 - **Khối 3 — Điều kiện nghiệm thu & Bước tiếp theo (Clear Acceptance Bar & Next Steps)**: Nêu rõ điều kiện đóng sổ hoặc hướng đi tiếp theo.
+- **Kỷ luật probe của auditor**: Đọc signature/tham số API trước khi kết luận hành vi; probe lỗi do gọi sai API phải tự đính chính công khai trong lượt, không lặng lẽ bỏ qua.
 
 ---
 
@@ -459,4 +469,4 @@ Mọi Turn Block của OpenCode trong `Noi dung thao luan.md` gồm 3 khối chu
 ---
 
 — **Ban Hành**: Ban Điều Phối Kiến Trúc Hệ Thống JKAI-Zenith  
-— **Phiên Bản**: Protocol v2.3 (Hoàn thiện Kiểm định 4 Điều kiện SHA-256/TOCTOU, Khôi phục State An toàn, Archive Manifest & Conformance Tests) | 2026-10-11 (GMT+7)
+— **Phiên Bản**: Protocol v2.4 (Kiểm ngoài manifest + Red hành vi + Chống trùng turn_id + SUITE_MANIFEST + Phân biệt số quan sát/bảo đảm + Kỷ luật probe + Quyền VETO chuẩn) | 2026-10-14 (GMT+7)

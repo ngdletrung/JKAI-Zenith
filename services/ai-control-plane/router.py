@@ -87,10 +87,10 @@ class ServiceRouter:
     async def route_to_judicial_review(self, data: dict):
         try:
             resp = await self._post_with_retry(f"{self.brain_url}/review_execution", json=data)
-            return self._safe_json(resp, {"verdict": "SUCCESS"})
+            return self._safe_json(resp, {"verdict": "FAIL", "passed": False})
         except Exception as e:
             logger.error(f"[ROUTER] Judicial Review failed: {e}")
-            return {"verdict": "SUCCESS", "error": f"Judicial Review error: {e}"}
+            return {"verdict": "FAIL", "passed": False, "error": f"Judicial Review error: {e}"}
 
     async def route_to_executor(self, data: dict):
         try:
@@ -142,5 +142,8 @@ class ServiceRouter:
         except Exception as e:
             logger.error(f"[ROUTER] Dispatcher failed: {e}")
             return {"agent_soul": "./agent_receptionist.md", "skills": [], "mode": "fast", "error": str(e)}
+
+
+Router = ServiceRouter
 
 # *Sovereign Property of LeeTrung. Production Router v5.1. 🌌🏛️🔥🦾👑🔗*

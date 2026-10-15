@@ -633,16 +633,22 @@ class DeepPipeline:
                                 timeout=exec_timeout
                             )
                             try:
-                                exec_res = await gateway.execute_tool(req, task_id)
-                                is_success = getattr(exec_res, "tool_executed", True) if hasattr(exec_res, "tool_executed") else True
-                                out_val = getattr(exec_res, "result", str(exec_res)) if hasattr(exec_res, "result") else str(exec_res)
-                                outcome_str = getattr(exec_res, "outcome", "ALLOW")
-                                if str(outcome_str).upper() in ["DENY", "DECISIONOUTCOME.DENY"]:
-                                    is_success = False
+                                from core.os.cognition.in_flight_chain import in_flight_chain_executor
+
+                                is_success, out_val, chain_history = await in_flight_chain_executor.execute_step_with_chain(
+                                    gateway=gateway,
+                                    primary_request=req,
+                                    task_id=task_id,
+                                    trace_id=trace_id,
+                                    step_id=step.get("id", "step"),
+                                    step_timeout=exec_timeout,
+                                    logger_emitter=engine.publish_mission_log,
+                                )
                                 return step["id"], {
                                     "status": "success" if is_success else "error",
                                     "output": out_val or "Hoàn tất",
-                                    "result": out_val or "Hoàn tất"
+                                    "result": out_val or "Hoàn tất",
+                                    "in_flight_turns": len(chain_history),
                                 }
                             except Exception as step_err:
                                 logger.error("[DEEP-PIPELINE] Lỗi thực thi step %s qua Gateway: %s", step.get("id"), step_err)
@@ -1018,6 +1024,38 @@ class DeepPipeline:
                     "accuracy_score": 0.5,
                     "feedback": f"Critic crashed but execution evidence exists. {e}"
                 }
+
+        # ═══════════════════════════════════════════
+        # [SELF-HEAL WIRING DÂY 4]: Đánh giá Re-plan từ Ban Kiểm Soát T5
+        # ═══════════════════════════════════════════
+        replan_iter = kwargs.get("_replan_iter", 0)
+        try:
+            from core.os.cognition.self_heal_wiring import evaluate_critic_replan_decision
+            replan_dec = evaluate_critic_replan_decision(
+                judicial_review,
+                current_replan_count=replan_iter,
+                max_replan=2,
+            )
+            if replan_dec.get("should_replan"):
+                replan_prompt = replan_dec.get("replan_prompt")
+                engine.publish_mission_log(
+                    "CRITIC",
+                    f"[T5 REPLAN] Phán quyết chưa đạt chuẩn ({judicial_review.get('verdict')}). "
+                    f"Kích hoạt Re-plan vòng {replan_dec['next_replan_count']}/2...",
+                    task_id,
+                    trace_id,
+                )
+                new_kwargs = dict(kwargs)
+                new_kwargs["_replan_iter"] = replan_dec["next_replan_count"]
+                return await self.run(
+                    goal=f"{goal}\n\n{replan_prompt}",
+                    task_id=task_id,
+                    trace_id=trace_id,
+                    **new_kwargs,
+                )
+        except Exception as replan_e:
+            logger.debug("[T5-REPLAN-EVAL-ERROR] %s", replan_e)
+
         # ═══════════════════════════════════════════
         # T6: SUMMARIZER tóm tắt và trả kết quả
         # ═══════════════════════════════════════════

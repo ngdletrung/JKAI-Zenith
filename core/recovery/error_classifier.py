@@ -114,6 +114,52 @@ class ErrorClassifier:
         self.decision_adapter = decision_adapter or TriTierDecisionAdapter(enable_mock=True)
         self.anomaly_watcher = E15AnomalyWatcher()
 
+    def classify(self, error_trace: str, traceback_str: str = "") -> ErrorClassificationVerdict:
+        """Fast and deterministic classification helper for runtime wiring."""
+        t0 = time.time()
+        full_trace = f"{error_trace}\n{traceback_str}".strip()
+        low = full_trace.lower()
+        if "modulenotfounderror" in low or "importerror" in low or "missing_tool" in low:
+            sub = ErrorSubclass.E08_CAPABILITY_GAP_MISSING_TOOL
+            grp = RecoveryGroup.GROUP_4_CAPABILITY
+            return ErrorClassificationVerdict(
+                subclass=sub,
+                recovery_group=grp,
+                confidence=0.95,
+                distribution={sub.value: 0.95},
+                recommended_action="FALLBACK_TOOL_OR_RESOLVE_IMPORT: Check virtualenv or fallback to alternate tool.",
+                requires_escalation=False,
+                target_model=ModelScale.MODEL_4B,
+                latency_ms=(time.time() - t0) * 1000,
+            )
+        elif "filenotfounderror" in low or "nosuchfile" in low:
+            sub = ErrorSubclass.E03_FILE_NOT_FOUND_OR_BUSY
+            grp = RecoveryGroup.GROUP_1_INFRASTRUCTURE
+            return ErrorClassificationVerdict(
+                subclass=sub,
+                recovery_group=grp,
+                confidence=0.90,
+                distribution={sub.value: 0.90},
+                recommended_action="VERIFY_PATH_AND_RETRY: Path verification or fallback directory.",
+                requires_escalation=False,
+                target_model=ModelScale.MODEL_4B,
+                latency_ms=(time.time() - t0) * 1000,
+            )
+        elif "syntaxerror" in low:
+            sub = ErrorSubclass.E01_SYNTAX_PARSING_ERROR
+            grp = RecoveryGroup.GROUP_0_DEFAULT
+            return ErrorClassificationVerdict(
+                subclass=sub,
+                recovery_group=grp,
+                confidence=0.95,
+                distribution={sub.value: 0.95},
+                recommended_action="PARSE_AST_AND_PATCH: Clean code syntax via AST patcher.",
+                requires_escalation=False,
+                target_model=ModelScale.MODEL_4B,
+                latency_ms=(time.time() - t0) * 1000,
+            )
+        return self.classify_and_resolve(full_trace)
+
     def classify_and_resolve(
         self,
         error_trace: str,

@@ -45,6 +45,7 @@ if _cloak_dir not in sys.path:
     sys.path.insert(0, os.path.dirname(_cloak_dir))
 
 from core.utils.engine import engine
+from tools.web_search import validate_egress_url_ssrf_safe
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("ai-browser")
@@ -125,6 +126,10 @@ async def health():
 @app.post("/browse")
 async def browse(req: BrowseRequest):
     logger.info(f"[STEALTH-BROWSE] Objective: {req.objective} | URL: {req.url}")
+    ssrf_check = validate_egress_url_ssrf_safe(req.url)
+    if not ssrf_check.get("allowed"):
+        logger.warning(f"❌ [SSRF-BLOCKED] /browse rejected URL: {req.url}")
+        raise HTTPException(status_code=403, detail=ssrf_check.get("msg", "SSRF blocked"))
 
     try:
         # ── 1. Load LLM config from rule_hardware.md (PLANNER role) ──
@@ -255,6 +260,11 @@ async def take_screenshot(req: BrowseRequest):
     Eliminates incognito-mode detection penalties (-10% Trust Score on BrowserScan).
     """
     logger.info(f"[EYE-SNAP] CloakBrowser capturing: {req.url}")
+    ssrf_check = validate_egress_url_ssrf_safe(req.url)
+    if not ssrf_check.get("allowed"):
+        logger.warning(f"❌ [SSRF-BLOCKED] /screenshot rejected URL: {req.url}")
+        raise HTTPException(status_code=403, detail=ssrf_check.get("msg", "SSRF blocked"))
+
     try:
         from cloakbrowser.download import ensure_binary
         from cloakbrowser.config import get_default_stealth_args, IGNORE_DEFAULT_ARGS
@@ -377,6 +387,11 @@ async def crawl(req: CrawlRequest):
     Falls back gracefully to Playwright text extraction if crawl4ai is not installed.
     """
     logger.info(f"[CRAWL4AI] Crawling URL: {req.url}")
+    ssrf_check = validate_egress_url_ssrf_safe(req.url)
+    if not ssrf_check.get("allowed"):
+        logger.warning(f"❌ [SSRF-BLOCKED] /crawl rejected URL: {req.url}")
+        raise HTTPException(status_code=403, detail=ssrf_check.get("msg", "SSRF blocked"))
+
     try:
         try:
             # Attempt to import and use Crawl4AI

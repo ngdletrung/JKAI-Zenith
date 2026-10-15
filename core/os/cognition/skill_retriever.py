@@ -17,6 +17,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
 from core.kernel.semantic_skill_registry import semantic_skill_registry, SemanticSkillManifest, SkillDomain
+from core.kernel.skill_lifecycle_engine import get_skill_sunset_engine, SkillSunsetEngine
 
 logger = logging.getLogger("JKAI.SkillRetriever")
 
@@ -31,10 +32,19 @@ class ToolRetrievalVerdict:
 
 
 class DynamicSkillRetriever:
-    """Bộ truy xuất công cụ động & xác thực ngữ nghĩa."""
+    """Bộ truy xuất công cụ động & xác thực ngữ nghĩa tích hợp cổng hoàng hôn (Skill Sunset Gate)."""
 
-    def __init__(self):
+    def __init__(self, lifecycle_engine: Optional[SkillSunsetEngine] = None):
         self.registry = semantic_skill_registry
+        self.lifecycle_engine = lifecycle_engine or get_skill_sunset_engine(auto_bootstrap=True)
+
+    def verify_skill_execution_permission(self, skill_id: str, allow_sunset: bool = False) -> Tuple[bool, str]:
+        """
+        Cổng kiểm định quyền thực thi kỹ năng tại điểm gọi thật của hệ điều hành.
+        Fail-closed: Nếu kỹ năng ở trạng thái SUNSET và không có cờ cho phép -> Chặn đứng!
+        """
+        res = self.lifecycle_engine.can_invoke_skill(skill_id, allow_sunset=allow_sunset)
+        return res[0], res[1]
 
     def retrieve_active_tools(
         self,
@@ -56,6 +66,12 @@ class DynamicSkillRetriever:
         q_tokens = set(re.findall(r'\w+', q_lower))
 
         for m in all_manifests:
+            # Pre-flight Sunset Gate (Slice 6.4): Loại bỏ kỹ năng SUNSET khỏi prompt LLM
+            can_run, reason, info = self.lifecycle_engine.can_invoke_skill(m.skill_id)
+            if not can_run and info and info.get("status") == "SUNSET":
+                excluded.append(f"{m.skill_id}:SUNSET")
+                continue
+
             # 1. Nếu có trong danh sách ép buộc (forced_skills), cho điểm tối đa
             if forced_skills and (m.skill_id in forced_skills or any(a in forced_skills for a in m.aliases)):
                 scores[m.skill_id] = 10.0
