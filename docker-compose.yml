@@ -290,14 +290,14 @@ services:
     volumes:
       - ./services/ai-control-plane:/app
       - ./models:/shared/models
-      - ./core:/shared/core
+      - ./core:/shared/core:ro
       - ./services/ai-brain/prompt_engine:/shared/prompt_engine
       - ./services/tools:/shared/tools
       - ./intelligence/tools:/shared/tool_schemas
       - ./intelligence/prompts:/prompts
       - ./intelligence:/intelligence
       - storage-data:/storage
-      - .:/workspace
+      - ./workspace:/workspace
     environment:
       - PYTHONPATH=/app:/shared
       - PYTHONUNBUFFERED=1
@@ -333,14 +333,14 @@ services:
     volumes:
       - ./services/ai-control-plane:/app
       - ./models:/shared/models
-      - ./core:/shared/core
+      - ./core:/shared/core:ro
       - ./services/ai-brain/prompt_engine:/shared/prompt_engine
       - ./services/tools:/shared/tools
       - ./intelligence/tools:/shared/tool_schemas
       - ./intelligence/prompts:/prompts
       - ./intelligence:/intelligence
       - storage-data:/storage
-      - .:/workspace
+      - ./workspace:/workspace
     depends_on:
       redis-ai:
         condition: service_healthy
@@ -368,7 +368,7 @@ services:
     volumes:
       - ./services/ai-brain:/app
       - ./models:/shared/models
-      - ./core:/shared/core
+      - ./core:/shared/core:ro
       - ./services/tools:/shared/tools
       - ./intelligence/tools:/shared/tool_schemas
       - ./intelligence/prompts:/prompts
@@ -378,8 +378,8 @@ services:
       - ./intelligence/commands:/commands
       - ./intelligence/agents:/agents
       - ./intelligence:/intelligence
-      - .:/workspace
-      - ./README.md:/README.md
+      - ./workspace:/workspace
+      - ./README.md:/README.md:ro
     environment:
       - PYTHONPATH=/app:/shared
       - PYTHONUNBUFFERED=1
@@ -421,14 +421,14 @@ services:
     volumes:
       - ./services/ai-executor:/app
       - ./models:/shared/models
-      - ./core:/shared/core
+      - ./core:/shared/core:ro
       - ./services/ai-brain/prompt_engine:/shared/prompt_engine
       - ./services/tools:/shared/tools
       - ./intelligence/tools:/shared/tool_schemas
       - ./intelligence/prompts:/prompts
       - ./intelligence:/intelligence
       - storage-data:/data
-      - .:/workspace
+      - ./workspace:/workspace
     environment:
       - PYTHONPATH=/app:/shared
       - PYTHONUNBUFFERED=1
@@ -466,14 +466,14 @@ services:
     volumes:
       - ./services/ai-executor:/app
       - ./models:/shared/models
-      - ./core:/shared/core
+      - ./core:/shared/core:ro
       - ./services/ai-brain/prompt_engine:/shared/prompt_engine
       - ./services/tools:/shared/tools
       - ./intelligence/tools:/shared/tool_schemas
       - ./intelligence/prompts:/prompts
       - ./intelligence:/intelligence
       - storage-data:/data
-      - .:/workspace
+      - ./workspace:/workspace
     environment:
       - PYTHONPATH=/app:/shared
       - PYTHONUNBUFFERED=1
@@ -568,9 +568,9 @@ services:
       - ./services/mission-control/frontend/tsconfig.json:/app/frontend/tsconfig.json
       - ./services/mission-control/backend:/app/backend
       - ./models:/shared/models
-      - ./core:/shared/core
+      - ./core:/shared/core:ro
       - storage-data:/storage
-      - .:/workspace
+      - ./workspace:/workspace
     environment:
       - PYTHONPATH=/app/backend:/shared
       - PYTHONUNBUFFERED=1

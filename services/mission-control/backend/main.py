@@ -16,6 +16,20 @@ from core.redis_client import redis_safe
 
 from config import config
 
+try:
+    from core.security.mission_control_auth import (
+        verify_mission_control_auth_headers,
+        mask_connection_sensitive_data,
+    )
+except ImportError:
+    import sys
+    sys.path.insert(0, '/shared')
+    sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
+    from core.security.mission_control_auth import (
+        verify_mission_control_auth_headers,
+        mask_connection_sensitive_data,
+    )
+
 # 🌐 [NETWORK-COORDINATES]: Tọa độ mạng lưới Nhất thể hóa
 AI_CONTROL_PLANE_URL = os.getenv('AI_CONTROL_PLANE_URL', 'http://ai-control-plane:8000')
 AI_BRAIN_URL = os.getenv('AI_BRAIN_URL', 'http://ai-brain:8000')
@@ -40,6 +54,22 @@ socketio = SocketIO(
 
 # Register Blueprints
 app.register_blueprint(tasks_bp)
+
+# 🛡️ [DEBT-P0-01 GATE]: Enforce fail-closed authentication for all /api/connections endpoints
+@app.before_request
+def enforce_connections_auth_gate():
+    if request.path.startswith('/api/connections'):
+        headers_dict = dict(request.headers)
+        cookies_dict = dict(request.cookies)
+        is_valid, err_msg = verify_mission_control_auth_headers(headers_dict, cookies_dict)
+        if not is_valid:
+            logger.warning(f"[DEBT-P0-01] 401 unauthenticated access to {request.path} from {request.remote_addr}")
+            return jsonify({
+                "status": "error",
+                "error": "Unauthorized",
+                "detail": err_msg,
+                "denied": True,
+            }), 401
 
 MISSIONS_DIR = os.path.join(os.path.dirname(__file__), 'missions')
 if not os.path.exists(MISSIONS_DIR):
@@ -1501,36 +1531,9 @@ def list_connections():
         except Exception as e:
             logger.error(f"Error parsing rclone config: {e}")
 
-    return jsonify(connections)       
-    filename_map = {
-        'plan': 'implementation_plan.md',
-        'tasks': 'task.md',
-        'walkthrough': 'walkthrough.md'
-    }
-    for key, filename in filename_map.items():
-        try:
-            path = os.path.join(docs_dir, filename)
-            if os.path.exists(path):
-                with open(path, 'r', encoding='utf-8') as f:
-                    artifacts[key] = f.read()
-        except Exception:
-            pass
-            
-    data['artifacts'] = artifacts
-    data['ts'] = time.time()
-    path = os.path.join(MISSIONS_DIR, f"mission_{mid}.json")
-    try:
-        with open(path, 'w', encoding='utf-8') as f:
-            json.dump(data, f, ensure_ascii=False, indent=2)
-        socketio.emit("mission_saved", {
-            "id": mid,
-            "title": data.get('title', f"Su menh {mid}"),
-            "status": status,
-            "ts": data.get('ts', time.time())
-        })
-        return jsonify({"ok": True, "id": mid})
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
+    # 🛡️ [DEBT-P0-01 MASKING]: Mask 100% of sensitive cloud tokens before returning to client
+    masked_connections = [mask_connection_sensitive_data(c) for c in connections]
+    return jsonify(masked_connections)
 
 @app.route('/api/mission/<mid>', methods=['DELETE'])
 def delete_mission(mid):

@@ -1,0 +1,149 @@
+# -*- coding: utf-8 -*-
+"""
+core/security/mission_control_auth.py
+JKAI Zenith Mission-Control Auth & Sensitive Credential Masking Module.
+Phục vụ đóng dứt điểm nợ kỹ thuật DEBT-P0-01 (Mission-Control Endpoints Auth & Masking).
+
+Chức năng:
+1. Xác thực fail-closed cho các endpoint /api/connections qua Bearer token hoặc Session token.
+   Tuyệt đối KHÔNG có fallback secret tĩnh/hardcode trong mã nguồn (Tuân thủ P0.1).
+   Nếu không cấu hình token trong môi trường, hệ thống lập tức từ chối 100% request.
+2. Che giấu (masking) 100% token đám mây (Google Drive, OneDrive, SharePoint, OAuth, API keys)
+   trước khi trả về cho client / frontend.
+"""
+
+from __future__ import annotations
+
+import copy
+import hmac
+import logging
+import os
+import re
+from typing import Any, Dict, Optional, Tuple
+
+logger = logging.getLogger("JKAI.Security.MissionControlAuth")
+
+SENSITIVE_KEYS = frozenset({
+    "token",
+    "access_token",
+    "refresh_token",
+    "client_secret",
+    "secret",
+    "password",
+    "api_key",
+    "token_str",
+    "client_id",
+    "private_key",
+})
+
+
+def get_expected_auth_tokens() -> set[str]:
+    """
+    Lấy tập hợp các token hợp lệ từ môi trường (fail-closed).
+    Tuyệt đối không có fallback secret tĩnh trong mã nguồn.
+    Nếu không có token nào được cấu hình -> Trả về tập rỗng và ghi log cảnh báo.
+    """
+    tokens = set()
+    env_keys = [
+        "MISSION_CONTROL_AUTH_TOKEN",
+        "MISSION_CONTROL_TOKEN",
+        "JKAI_EXECUTION_SECRET",
+        "SECRET_KEY",
+    ]
+    for k in env_keys:
+        val = os.getenv(k, "").strip()
+        if val and len(val) >= 8:
+            tokens.add(val)
+    if not tokens:
+        logger.warning(
+            "[MC_AUTH_MISCONFIGURED] Không tìm thấy khóa xác thực Mission-Control trong biến môi trường! "
+            "Kích hoạt chế độ phòng thủ nghiêm ngặt fail-closed: Từ chối 100% request."
+        )
+    return tokens
+
+
+def verify_mission_control_token(token: str) -> bool:
+    """Xác thực token theo thuật toán hmac.compare_digest chống timing attack."""
+    if not token or not isinstance(token, str):
+        return False
+    token = token.strip()
+    valid_tokens = get_expected_auth_tokens()
+    if not valid_tokens:
+        return False
+    for expected in valid_tokens:
+        if hmac.compare_digest(token.encode("utf-8"), expected.encode("utf-8")):
+            return True
+    return False
+
+
+def verify_mission_control_auth_headers(
+    headers: Dict[str, Any],
+    cookies: Optional[Dict[str, Any]] = None,
+) -> Tuple[bool, Optional[str]]:
+    """
+    Xác thực tiêu đề HTTP hoặc Cookie.
+    Hỗ trợ:
+    - Authorization: Bearer <token>
+    - X-Session-Token: <token>
+    - X-Mission-Control-Token: <token>
+    - Cookie: session_token=<token>
+    """
+    if not headers:
+        headers = {}
+    if not cookies:
+        cookies = {}
+
+    valid_tokens = get_expected_auth_tokens()
+    if not valid_tokens:
+        return False, "Unauthorized: Mission Control authentication misconfigured or token unconfigured (fail-closed)"
+
+    auth_header = headers.get("Authorization") or headers.get("authorization") or ""
+    if auth_header.startswith("Bearer "):
+        token = auth_header[7:].strip()
+        if verify_mission_control_token(token):
+            return True, None
+
+    x_session = headers.get("X-Session-Token") or headers.get("x-session-token") or ""
+    if x_session and verify_mission_control_token(x_session.strip()):
+        return True, None
+
+    x_mc = headers.get("X-Mission-Control-Token") or headers.get("x-mission-control-token") or ""
+    if x_mc and verify_mission_control_token(x_mc.strip()):
+        return True, None
+
+    cookie_token = cookies.get("session_token") or cookies.get("mc_token") or ""
+    if cookie_token and verify_mission_control_token(cookie_token.strip()):
+        return True, None
+
+    return False, "Unauthorized: Valid Bearer or Session token required (fail-closed)"
+
+
+def mask_sensitive_value(value: Any) -> Any:
+    """Mask chuỗi nhạy cảm: giữ lại 3-4 ký tự đầu nếu dài, còn lại thế bằng ********."""
+    if not isinstance(value, str):
+        return "********"
+    s = value.strip()
+    if not s:
+        return ""
+    if len(s) > 12:
+        return s[:4] + "********"
+    return "********"
+
+
+def mask_connection_sensitive_data(conn: Any) -> Any:
+    """
+    Duyệt đệ quy và mask 100% token, khóa bí mật trong đối tượng connection.
+    Bảo đảm không bao giờ để lọt token OAuth/Drive/SharePoint thô về frontend.
+    """
+    if isinstance(conn, dict):
+        masked_dict = {}
+        for k, v in conn.items():
+            k_lower = str(k).lower()
+            if any(sens in k_lower for sens in SENSITIVE_KEYS):
+                masked_dict[k] = mask_sensitive_value(v)
+            else:
+                masked_dict[k] = mask_connection_sensitive_data(v)
+        return masked_dict
+    elif isinstance(conn, list):
+        return [mask_connection_sensitive_data(item) for item in conn]
+    return conn

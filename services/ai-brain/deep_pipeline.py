@@ -684,6 +684,21 @@ class DeepPipeline:
                         except Exception as e:
                             logger.warning("[DEEP-PIPELINE] Checkpoint save error: %s", e)
 
+                        # 🛡️ [TRỌNG ĐIỂM 3 - STEP CHECKPOINTING]: Lưu Checkpoint trạng thái bất biến
+                        try:
+                            from core.os.cognition.event_checkpoint import checkpoint_store
+                            checkpoint_store.create_checkpoint(
+                                mission_id=task_id,
+                                step_id=s_id,
+                                step_index=len(executed_step_ids),
+                                status=str(s_res.get("status", "success")).upper() if isinstance(s_res, dict) else "SUCCESS",
+                                evidence=s_res,
+                                action_name=s_id,
+                                trace_id=trace_id,
+                            )
+                        except Exception as cp_err:
+                            logger.debug("[CHECKPOINT-STORE] error: %s", cp_err)
+
                         # [SILENT-FAILURE HUNTER]
                         if isinstance(s_res, dict) and s_res.get("status") == "success":
                             output = s_res.get("output", {})
@@ -1038,6 +1053,28 @@ class DeepPipeline:
             )
             if replan_dec.get("should_replan"):
                 replan_prompt = replan_dec.get("replan_prompt")
+
+                # 🛡️ [TRỌNG ĐIỂM 3 - TIME-TRAVEL BACKTRACKING]: Khôi phục dữ kiện từ Checkpoint tốt nhất
+                retained_context = ""
+                try:
+                    from core.os.cognition.event_checkpoint import checkpoint_store
+                    best_cp, cons_evidence, facts = checkpoint_store.backtrack_to_best_checkpoint(task_id, trace_id=trace_id)
+                    if best_cp and facts:
+                        retained_context = (
+                            f"\n\n[DỮ KIỆN ĐÃ XÁC MINH TỪ CHECKPOINT {best_cp.checkpoint_id}]:\n"
+                            + "\n".join([f"- {fact}" for fact in facts[:5]])
+                            + "\n(Bảo toàn các dữ kiện trên và chỉ lập kế hoạch bổ sung các thông tin còn thiếu)."
+                        )
+                        engine.publish_mission_log(
+                            "CRITIC",
+                            f"🔄 [TIME-TRAVEL BACKTRACKING] Đã quay lui về Checkpoint `{best_cp.checkpoint_id}` "
+                            f"(bước: {best_cp.step_id}), bảo tồn {len(facts)} dữ kiện hợp lệ.",
+                            task_id,
+                            trace_id,
+                        )
+                except Exception as bt_err:
+                    logger.debug("[BACKTRACK-ERROR] %s", bt_err)
+
                 engine.publish_mission_log(
                     "CRITIC",
                     f"[T5 REPLAN] Phán quyết chưa đạt chuẩn ({judicial_review.get('verdict')}). "
@@ -1048,7 +1085,7 @@ class DeepPipeline:
                 new_kwargs = dict(kwargs)
                 new_kwargs["_replan_iter"] = replan_dec["next_replan_count"]
                 return await self.run(
-                    goal=f"{goal}\n\n{replan_prompt}",
+                    goal=f"{goal}\n\n{replan_prompt}{retained_context}",
                     task_id=task_id,
                     trace_id=trace_id,
                     **new_kwargs,

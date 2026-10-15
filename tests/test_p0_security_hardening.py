@@ -217,3 +217,131 @@ def test_condition_6_no_docker_socket_mounted_in_production_compose():
         "Yêu cầu triệt để gỡ bỏ hoặc kiểm soát nghiêm ngặt theo khuyến nghị Red Team Lượt 340."
     )
 
+
+def test_condition_7_mission_control_auth_and_masking_debt_p0_01():
+    """
+    [DEBT-P0-01 Closure Verification]:
+    1. Xác thực fail-closed: Các request không token hoặc token giả mạo vào /api/connections bị từ chối 401.
+    2. Token hợp lệ (Bearer / X-Session-Token / Cookie) được chấp nhận khi có cấu hình env.
+    3. Triệt tiêu hoàn toàn secret fallback tĩnh: Khi xóa biến môi trường, 100% token bị từ chối fail-closed.
+    4. Masking 100%: Toàn bộ token đám mây (Google Drive, OneDrive, OAuth) được mask triệt để.
+    """
+    import json
+    from unittest.mock import patch
+    from core.security.mission_control_auth import (
+        verify_mission_control_auth_headers,
+        mask_connection_sensitive_data,
+        get_expected_auth_tokens,
+    )
+
+    test_token = "zenith_test_mc_token_2026_valid"
+
+    with patch.dict(os.environ, {"MISSION_CONTROL_AUTH_TOKEN": test_token}):
+        # Không có header / rỗng -> Từ chối
+        valid, err = verify_mission_control_auth_headers({})
+        assert valid is False
+        assert "Unauthorized" in err
+
+        # Header giả mạo -> Từ chối
+        valid, err = verify_mission_control_auth_headers({"Authorization": "Bearer fake_invalid_token_xyz"})
+        assert valid is False
+
+        # Header Bearer hợp lệ -> Cho phép
+        valid, err = verify_mission_control_auth_headers({"Authorization": f"Bearer {test_token}"})
+        assert valid is True
+        assert err is None
+
+        # Header X-Session-Token hợp lệ -> Cho phép
+        valid, err = verify_mission_control_auth_headers({"X-Session-Token": test_token})
+        assert valid is True
+
+        # Cookie session hợp lệ -> Cho phép
+        valid, err = verify_mission_control_auth_headers({}, cookies={"session_token": test_token})
+        assert valid is True
+
+    # 2. Kiểm tra yêu cầu Red Team (Lượt 358): Xóa toàn bộ biến môi trường -> Từ chối 100% token fail-closed
+    with patch.dict(os.environ, {}, clear=True):
+        valid, err = verify_mission_control_auth_headers({"Authorization": f"Bearer {test_token}"})
+        assert valid is False
+        assert "Unauthorized" in err
+        # Dù kẻ tấn công gửi chuỗi đoán trước bất kỳ -> Đều bị từ chối vì không có fallback secret tĩnh
+        valid, err = verify_mission_control_auth_headers({"Authorization": "Bearer jkai_mc_sovereign_gate_2026_secured"})
+        assert valid is False
+
+    # 3. Kiểm chứng tĩnh: Tuyệt đối không còn _DEFAULT_MC_AUTH_SECRET trong file mã nguồn
+    auth_source = Path("core/security/mission_control_auth.py").read_text(encoding="utf-8")
+    assert "_DEFAULT_MC_AUTH_SECRET" not in auth_source, "Vẫn còn secret fallback tĩnh trong mã nguồn!"
+    assert "jkai_mc_sovereign_gate_2026_secured" not in auth_source
+
+    # 4. Kiểm tra Masking 100% token nhạy cảm
+    sample_connections = [
+        {
+            "id": "rclone_gdrive",
+            "name": "Google Drive (work@corp.com)",
+            "type": "gdrive",
+            "token": "secret_oauth_access_token_1234567890",
+            "config": {
+                "remote": "gdrive",
+                "client_secret": "super_secret_client_key_9999",
+                "refresh_token": "refresh_token_very_confidential_abc",
+                "password": "mypassword123",
+            },
+        }
+    ]
+    masked = mask_connection_sensitive_data(sample_connections)
+    masked_json = json.dumps(masked)
+
+    assert "secret_oauth_access_token_1234567890" not in masked_json
+    assert "super_secret_client_key_9999" not in masked_json
+    assert "refresh_token_very_confidential_abc" not in masked_json
+    assert "mypassword123" not in masked_json
+    assert masked[0]["config"]["client_secret"] != "super_secret_client_key_9999"
+
+    # 5. Kiểm tra mã nguồn main.py đã đấu nối chốt chặn
+    main_py = Path("services/mission-control/backend/main.py").read_text(encoding="utf-8")
+    assert "enforce_connections_auth_gate" in main_py
+    assert "mask_connection_sensitive_data" in main_py
+
+
+def test_condition_8_scoped_volumes_no_workspace_root_debt_p0_02():
+    """
+    [DEBT-P0-02 Closure Verification]:
+    1. Triệt để loại bỏ mount toàn phần `.:/workspace` ở toàn bộ services.
+    2. Chuyển sang mount thư mục con độc lập `./workspace:/workspace`.
+    3. Thư viện lõi `./core` phải được mount ở chế độ read-only `:ro`.
+    """
+    compose_path = Path("docker-compose.yml")
+    assert compose_path.exists()
+    content = compose_path.read_text(encoding="utf-8")
+
+    # Cấm tuyệt đối root mount .:/workspace
+    assert ".:/workspace" not in content, (
+        "Phát hiện mount toàn bộ thư mục gốc '.:/workspace' trong docker-compose.yml!"
+    )
+
+    # Bắt buộc dùng scoped workspace mount
+    assert "./workspace:/workspace" in content
+    assert content.count("./workspace:/workspace") >= 5
+
+    # Core mounts phải có :ro
+    assert "./core:/shared/core:ro" in content
+
+
+def test_condition_9_debt_ledger_closure():
+    """
+    [Debt Ledger Verification]:
+    Kiểm tra sổ nợ kỹ thuật data/telemetry/debt_ledger.jsonl:
+    - DEBT-P0-01 và DEBT-P0-02 đều đã được đóng trạng thái RESOLVED.
+    - Zero active overdue debt.
+    """
+    import json
+    ledger_path = Path("data/telemetry/debt_ledger.jsonl")
+    assert ledger_path.exists(), "Tệp debt_ledger.jsonl không tồn tại"
+
+    records = [json.loads(line) for line in ledger_path.read_text(encoding="utf-8").strip().splitlines() if line.strip()]
+    assert len(records) >= 2
+
+    for r in records:
+        assert r["status"] == "RESOLVED", f"Mục nợ {r['debt_id']} chưa được đóng: {r['status']}"
+        assert "resolved_at" in r
+

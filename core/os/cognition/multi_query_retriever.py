@@ -310,6 +310,7 @@ class MultiQueryRetriever:
 
         # Chọn top URLs chất lượng cao để đọc sâu
         from core.os.cognition.in_flight_chain import filter_candidate_urls
+        from tools.web_search import validate_egress_url_ssrf_safe
         deep_read_urls = filter_candidate_urls(deduped, max_urls=self.config.max_deep_reads)
 
         deep_articles: List[Dict[str, Any]] = []
@@ -318,14 +319,37 @@ class MultiQueryRetriever:
             import httpx
 
             for url in deep_read_urls:
+                # 🛡️ [SSRF-SAFE GATE]: Kiểm tra an toàn trước khi kết nối mạng ngoài
+                ssrf_verdict = validate_egress_url_ssrf_safe(url)
+                if not ssrf_verdict.get("allowed", False):
+                    logger.warning("[MULTI-QUERY] SSRF Guard blocked deep-read URL: %s", url)
+                    continue
+
+                content = ""
+                # Kênh chính: Jina Reader API
                 try:
-                    async with httpx.AsyncClient(timeout=self.config.deep_read_timeout) as client:
+                    async with httpx.AsyncClient(timeout=self.config.deep_read_timeout, follow_redirects=True) as client:
                         resp = await client.get(f"https://r.jina.ai/{url}")
                         if resp.status_code == 200 and resp.text:
                             content = str(resp.text).strip()
-                            deep_articles.append({"url": url, "full_text": content})
-                except Exception as read_err:
-                    logger.warning("[MULTI-QUERY] Không thể đọc sâu URL %s: %s", url, read_err)
+                except Exception as jina_err:
+                    logger.debug("[MULTI-QUERY] Jina Reader error for %s: %s", url, jina_err)
+
+                # Fallback: Thử kết nối bóc tách văn bản trực tiếp nếu dịch vụ ngoài lỗi
+                if not content:
+                    try:
+                        async with httpx.AsyncClient(timeout=self.config.deep_read_timeout, follow_redirects=True) as client:
+                            resp = await client.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
+                            if resp.status_code == 200 and resp.text:
+                                text_clean = re.sub(r"<script[^>]*>.*?</script>", "", resp.text, flags=re.DOTALL)
+                                text_clean = re.sub(r"<style[^>]*>.*?</style>", "", text_clean, flags=re.DOTALL)
+                                text_clean = re.sub(r"<[^>]+>", " ", text_clean)
+                                content = " ".join(text_clean.split())
+                    except Exception as fallback_err:
+                        logger.debug("[MULTI-QUERY] Fallback crawl error for %s: %s", url, fallback_err)
+
+                if content:
+                    deep_articles.append({"url": url, "full_text": content})
 
         # Xây dựng nội dung toàn văn hoàn chỉnh
         now_utc = datetime.datetime.now(datetime.timezone.utc).isoformat()

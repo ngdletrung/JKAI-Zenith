@@ -154,3 +154,28 @@ async def test_multi_query_retriever_refuses_honestly_when_no_data():
     assert res["status"] == "unavailable"
     assert res["is_simulated"] is False
     assert res["reason"] == "SEARCH_PROVIDERS_UNREACHABLE"
+
+
+@pytest.mark.asyncio
+async def test_multi_query_retriever_ssrf_protection():
+    task_id = "test_mission_mq_ssrf"
+    retriever = MultiQueryRetriever()
+
+    # Search returns loopback / metadata URL
+    fake_ssrf_res = {
+        "status": "success",
+        "results": [
+            {"title": "Metadata", "url": "http://169.254.169.254/latest/meta-data/", "snippet": "AWS keys"},
+            {"title": "Localhost", "url": "http://127.0.0.1:8000/internal", "snippet": "Local"},
+        ],
+    }
+
+    with patch("tools.web_search.execute_real_web_search_sync", return_value=fake_ssrf_res):
+        res = await retriever.retrieve_deep(
+            query="câu hỏi ssrf",
+            task_id=task_id,
+        )
+
+    assert res["status"] == "success"
+    # Cả 2 URL private đều phải bị chặn, không có deep read nào được thực hiện
+    assert res["deep_reads_count"] == 0
