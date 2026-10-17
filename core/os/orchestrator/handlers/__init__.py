@@ -14,11 +14,13 @@ from core.os.orchestrator.handlers.parallel_enrichment import ParallelEnrichment
 from core.os.orchestrator.handlers.workspace_scope import WorkspaceScopeHandler
 from core.os.orchestrator.handlers.intent_governor import IntentGovernorHandler
 from core.os.orchestrator.handlers.execution_planner import ExecutionPlannerHandler
+from core.os.orchestrator.handlers.cloud_discuss import CloudDiscussHandler
 
 __all__ = [
     "BaseHandler",
     "MathReflexHandler",
     "SlashCommandHandler",
+    "CloudDiscussHandler",
     "ReflexMemoryHandler",
     "FastBypassHandler",
     "ParallelEnrichmentHandler",
@@ -34,10 +36,11 @@ def get_default_pipeline_handlers() -> List[BaseHandler]:
     return [
         MathReflexHandler("MathReflex"),              # 1. Toán học AST siêu tốc (<1ms)
         SlashCommandHandler("SlashCommand"),          # 2. Lệnh tắt (/research, /code, /status)
-        ReflexMemoryHandler("ReflexMemory"),          # 3. Tra cứu bộ nhớ phản xạ nơ-ron
-        FastBypassHandler("FastBypass"),              # 4. Fast-path bypass cho câu đàm thoại xã giao
-        ParallelEnrichmentHandler("ParallelEnrich"),  # 5. Speculative Fork-Join (SkillDeck, RepoClone, MissionCtx)
-        WorkspaceScopeHandler("WorkspaceScope"),      # 6. Phạm vi Workspace & Cursor Agent
-        IntentGovernorHandler("IntentGovernor"),      # 7. CentralIntentRouter v4.0 + Single-pass Governor
-        ExecutionPlannerHandler("ExecutionPlanner"),  # 8. WorldState, MemoryState & Step Generation
+        CloudDiscussHandler("CloudDiscuss"),          # 3. Hội đồng Thảo luận Đa AI (JKAI Discuss Protocol v1.0)
+        ReflexMemoryHandler("ReflexMemory"),          # 4. Tra cứu bộ nhớ phản xạ nơ-ron
+        FastBypassHandler("FastBypass"),              # 5. Fast-path bypass cho câu đàm thoại xã giao
+        ParallelEnrichmentHandler("ParallelEnrich"),  # 6. Speculative Fork-Join (SkillDeck, RepoClone, MissionCtx)
+        WorkspaceScopeHandler("WorkspaceScope"),      # 7. Phạm vi Workspace & Cursor Agent
+        IntentGovernorHandler("IntentGovernor"),      # 8. CentralIntentRouter v4.0 + Single-pass Governor
+        ExecutionPlannerHandler("ExecutionPlanner"),  # 9. WorldState, MemoryState & Step Generation
     ]

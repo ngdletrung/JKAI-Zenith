@@ -10,6 +10,7 @@ Purpose:
 
 from __future__ import annotations
 
+import asyncio
 import logging
 from typing import AsyncIterator, Dict, List, Optional, Any, TYPE_CHECKING
 import httpx
@@ -41,8 +42,18 @@ class OllamaRuntimeAdapter(RuntimeAdapter):
         self._client: Optional[httpx.AsyncClient] = None
 
     def _get_client(self) -> httpx.AsyncClient:
-        if self._client is None or self._client.is_closed:
+        # [LOOP-AWARE POOL - Case 17/10]: traceback thật 'Event loop is closed @ base_events.py:520'
+        # xuất phát từ client này (pool kết nối giữ tham chiếu loop đã đóng — ví dụ sau asyncio.run()
+        # của model_registry discovery). Tái tạo client khi event loop đổi.
+        try:
+            _cur_loop = asyncio.get_running_loop()
+        except RuntimeError:
+            _cur_loop = None
+        if self._client is None or self._client.is_closed or getattr(self, "_client_loop", None) is not _cur_loop:
+            if self._client is not None and getattr(self, "_client_loop", None) is not _cur_loop:
+                logger.warning("[LOOP-AWARE-POOL] OllamaAdapter: event loop đổi — thay HTTP pool cũ (chống 'Event loop is closed').")
             self._client = httpx.AsyncClient(timeout=self._timeout)
+            self._client_loop = _cur_loop
         return self._client
 
     # ------------------------------------------------------------------
@@ -243,6 +254,7 @@ class OllamaRuntimeAdapter(RuntimeAdapter):
     async def close(self):
         if self._client and not self._client.is_closed:
             await self._client.aclose()
+        self._client_loop = None
 
 
 # Alias for backward compatibility

@@ -3,7 +3,7 @@
 > **Định danh**: **"Thảo Luận AI"** — Khung làm việc phối hợp, phản biện song hành giữa **Antigravity** (AI Lập trình & Kiến trúc - Builder) và **Opencode** (AI Thẩm tra & Phản biện Độc lập - Red Team).
 >
 > **Nguyên tắc phân tách tệp & Tồn kho thực tế (Separation of Concerns & File Inventory)**:
-> 1. **`Quy trinh & Nguyen tac thao luan AI.md`** (Tệp này): Chứa toàn bộ Quy chế, Hợp đồng chuyển trạng thái, Ma trận phục hồi lỗi, Hợp đồng nghiệm thu và Cấu trúc giao thức v2.3. Là tài liệu chuẩn mực cố định (SOP), không bị xóa khi dọn dẹp phiên.
+> 1. **`Quy trinh & Nguyen tac thao luan AI.md`** (Tệp này): Chứa toàn bộ Quy chế, Hợp đồng chuyển trạng thái, Ma trận phục hồi lỗi, Tiêu chí đánh giá nghiệm thu và Cấu trúc giao thức v2.4. Là tài liệu chuẩn mực cố định (SOP), không bị xóa khi dọn dẹp phiên.
 > 2. **`Noi dung thao luan.md`**: Chứa nhật ký chi tiết các lượt trao đổi của phiên làm việc hiện tại (Working Memory Scratchpad). Bắt buộc duy trì đồng thời **dưới 300 dòng VÀ dưới 40 KB**.
 > 3. **`state.json` & `state.json.bak`**: Lưu trữ trạng thái điều phối thời gian thực (Orchestration State Schema v2.0 — 9 khóa gốc chuẩn + khóa dừng tùy chọn) giữa hai AI.
 > 4. **`archive_manifest.json` & `archive_Phien_*.md`**: Sổ cái băm SHA-256 và các tệp lưu trữ lịch sử thảo luận đã cắt tỉa.
@@ -12,7 +12,7 @@
 > 7. **Tệp ngừng sử dụng (`poll_reply.py` — DEPRECATED)**: Script thuộc Nguyên tắc 154 cũ (poll 60s qua REST API), đã bị vô hiệu hóa và thay thế hoàn toàn bởi `wait_for_opencode_reply.py`.
 >
 > **NGUYÊN TẮC PHẠM VI TRUNG LẬP & CHỐT NGUỒN CHÂN LÝ SSoT DUY NHẤT**:
-> - Quy trình thảo luận này là khung làm việc chung cho mọi chủ đề.
+> - Quy trình thảo luận này là khung làm việc chung cho mọi chủ đề giữa hai AI.
 > - **Tệp SSoT gốc duy nhất (Canonical SSoT)** về nguyên tắc tác nghiệp của AI trong repo là **[`.keyword.md`](file:///d:/Docker/JKAI/.keyword.md)** (tệp `.keywork.md` được giữ đồng bộ 100% làm bản gương tương thích ngược). Chỉ cập nhật SSoT khi nội dung thống nhất liên quan trực tiếp đến nguyên tắc tác nghiệp toàn cục của AI.
 > - Thay đổi chỉ thuộc công cụ, script hay quy chế nội bộ trong thư mục `Thao luan AI/` thì chỉ sửa tệp quy trình này, không lan sang SSoT.
 
@@ -57,7 +57,7 @@ Hệ thống vận hành dựa trên kiến trúc 4 tầng quyền lực phân �
 
 ---
 
-## ⚡ II. TỔNG QUAN CƠ CHẾ LIÊN LẠC & QUY TRÌNH 5 BƯỚC CHUẨN MỰC VỚI OPENCODE (END-TO-END COMMUNICATION SOP V2.3)
+## ⚡ II. TỔNG QUAN CƠ CHẾ LIÊN LẠC & QUY TRÌNH 5 BƯỚC CHUẨN MỰC VỚI OPENCODE (END-TO-END COMMUNICATION SOP)
 
 ### A. Tổng Quan Kiến Trúc Liên Lạc Giữa Antigravity Và OpenCode
 Hai AI **không** trò chuyện qua bộ nhớ tạm mà phối hợp qua **Cơ chế Bắt tay Kép (Dual-Channel Handshake)**:
@@ -73,38 +73,54 @@ Hai AI **không** trò chuyện qua bộ nhớ tạm mà phối hợp qua **Cơ 
 
 ---
 
-### B. Quy Trình 5 Bước Bắt Buộc Mỗi Khi Liên Lạc Với OpenCode (5-Step Standard Operating Procedure)
+### B. Quy Trình 5 Bước Bắt Buộc Mỗi Khi Liên Lạc Với OpenCode (Kèm Hướng Dẫn Chi Tiết Cách Lấy `<SESSION_ID>`)
 Để đảm bảo tin nhắn **luôn gửi trúng cửa sổ OpenCode mà Người Dùng (Master) đang mở trên màn hình** và không bao giờ lệch chuỗi lượt, Antigravity bắt buộc thực hiện đúng 5 bước theo thứ tự sau:
 
-#### **Bước 1 — Kiểm tra cửa sổ Session OpenCode đang hoạt động của Master (`--list-sessions`)**
-Trước khi ghi lượt mới, chạy lệnh kiểm tra danh sách root session đang mở trên OpenCode Desktop:
+#### **Bước 1 — Lấy `<SESSION_ID>` của cửa sổ Session OpenCode đang hoạt động (`--list-sessions`)**
+Trước khi ghi lượt mới hoặc phát lệnh gửi OpenCode, bắt buộc chạy lệnh kiểm tra danh sách root session đang mở trên OpenCode Desktop:
 ```powershell
 python "Thao luan AI/trigger_opencode.py" --list-sessions
 ```
-- Lệnh này tự động dò cổng OpenCode, lọc bỏ các phiên subagent con (có `parentID` như `explore`), đối chiếu thư mục workspace (`D:\Docker\JKAI`) và chỉ ra chính xác **`👉 [ACTIVE TARGET]`** (phiên gốc mới nhất mà Master đang mở trên màn hình).
+- **Cơ chế tự động của lệnh**: Script tự động dò cổng OpenCode Desktop, gọi `GET /api/session`, lọc bỏ toàn bộ các phiên subagent con (có `parentID` như `explore`), đối chiếu đúng thư mục workspace (`D:\Docker\JKAI`) và xác định phiên gốc (`Root Session`) mới nhất mà Master đang mở trên màn hình.
+- **Cách đọc kết quả đầu ra để lấy `<SESSION_ID>`**:
+  Quan sát dòng `Session sẽ được chọn` hoặc dòng có đánh dấu mũi tên **`👉 [ACTIVE TARGET]`**:
+  ```text
+  [OPENCODE DESKTOP] Port: 45278 | Workspace: d:\docker\jkai
+    - Session trong state.json : ses_ed5508799ffdmGtyYBtXxiQBvy
+    - Session sẽ được chọn     : ses_ed5508799ffdmGtyYBtXxiQBvy
+  ----------------------------------------------------------------------------------------
+  👉 [ACTIVE TARGET] ses_ed5508799ffdmGtyYBtXxiQBvy | So sánh JKAI hiện tại với bạn | dir=D:\Docker\JKAI | ...
+  ```
+- Chuỗi định danh nằm ngay sau `👉 [ACTIVE TARGET]` (ví dụ: `ses_ed5508799ffdmGtyYBtXxiQBvy`) chính là **`<SESSION_ID>`** cần lấy.
+- **Quy tắc đồng bộ 3 nơi bắt buộc (Chống lỗi lệch phiên TOCTOU / `EXIT_INVALID_BLOCK = 30`)**:
+  Mã `<SESSION_ID>` vừa lấy được ở Bước 1 phải được ghi giống nhau 100% ở cả 3 vị trí:
+  1. Trường `session_id: <SESSION_ID>` bên trong thẻ mở `<!-- TURN_BEGIN ... -->` khi ghi vào `Noi dung thao luan.md` ở Bước 2.
+  2. Trường `session.opencode_session_id` trong `Thao luan AI/state.json` (tự động đồng bộ khi chạy `--recover-state` ở Bước 3).
+  3. Tham số `--session <SESSION_ID>` khi chạy lệnh `python "Thao luan AI/trigger_opencode.py" --session <SESSION_ID> --force "<Thông điệp điều phối>"` ở Bước 4.
 
 #### **Bước 2 — Ghi Turn Block của Antigravity vào cuối tệp `Noi dung thao luan.md`**
 - Đóng gói nội dung lượt mới trong cặp `<!-- TURN_BEGIN ... -->` và `<!-- TURN_END ... -->` với:
   - `turn_id`: Lượt hiện tại của Antigravity (ví dụ `255`).
   - `parent_turn_id`: Lượt liền trước của OpenCode (`254`).
   - `speaker: Antigravity`.
-  - `session_id`: Ghi đúng mã session `👉 [ACTIVE TARGET]` vừa xác định ở Bước 1.
+  - `session_id`: Ghi đúng mã `<SESSION_ID>` (`👉 [ACTIVE TARGET]`) vừa lấy ở Bước 1.
+  - `content_hash` (trong `TURN_END`): Mã băm SHA-256 16 ký tự hex tính từ thân bài qua `compute_turn_content_hash(body)`.
 - Kiểm tra tệp `Noi dung thao luan.md` bắt buộc **dưới 300 dòng VÀ dưới 40 KB** (nếu vượt phải archive các lượt cũ vào `archive_Phien_*.md` trước).
 
 #### **Bước 3 — Đồng bộ hóa `state.json` khớp 100% với lượt vừa ghi (`--recover-state`)**
 ```powershell
 python "Thao luan AI/trigger_opencode.py" --recover-state
 ```
-- Lệnh này đọc Turn Block hợp lệ cuối cùng vừa ghi ở Bước 2 để cập nhật nguyên tử `state.json` (`current_turn`, `expected_next_turn = current_turn + 1`, `last_speaker = "Antigravity"`, `session.opencode_session_id = <session_id>`, `status = "READY_TO_TRIGGER"`).
+- Lệnh này đọc Turn Block hợp lệ cuối cùng vừa ghi ở Bước 2 để cập nhật nguyên tử `state.json` (`current_turn`, `expected_next_turn = current_turn + 1`, `last_speaker = "Antigravity"`, `session.opencode_session_id = <SESSION_ID>`, `status = "READY_TO_TRIGGER"`).
 
-#### **Bước 4 — Phát duy nhất 1 lệnh Trigger đánh thức OpenCode (`trigger_opencode.py`)**
-- **Trường hợp 4a — Lần đầu mở chủ đề mới HOẶC vừa chuyển sang cửa sổ Session mới của Master (Bắt buộc nhắc đọc quy chế v2.3)**:
+#### **Bước 4 — Phát duy nhất 1 lệnh Trigger đánh thức OpenCode với `<SESSION_ID>` đã lấy (`trigger_opencode.py`)**
+- **Trường hợp 4a — Lần đầu mở chủ đề mới HOẶC vừa chuyển sang cửa sổ Session mới của Master (Bắt buộc nhắc đọc quy chế)**:
 ```powershell
-python "Thao luan AI/trigger_opencode.py" --session <SESSION_ID> --force "Kính gửi OpenCode: Mở đầu chủ đề/phiên mới, mời bạn ĐỌC TRƯỚC tệp quy chế 'Thao luan AI/Quy trinh & Nguyen tac thao luan AI.md' (Protocol v2.3) để nắm vững quy trình. Sau đó đọc Lượt [X] tại cuối tệp 'Thao luan AI/Noi dung thao luan.md' và ghi phản hồi Lượt [X+1] (turn_id: [X+1], parent_turn_id: [X], speaker: Opencode, session_id: <SESSION_ID>) vào cuối tệp 'Thao luan AI/Noi dung thao luan.md'."
+python "Thao luan AI/trigger_opencode.py" --session <SESSION_ID> --force "Kính gửi OpenCode: Mở đầu chủ đề/phiên mới, mời bạn ĐỌC TRƯỚC tệp quy chế 'Thao luan AI/Quy trinh & Nguyen tac thao luan AI.md' (Protocol v2.4) để nắm vững quy trình. Sau đó đọc Lượt [X] tại cuối tệp 'Thao luan AI/Noi dung thao luan.md' và ghi phản hồi Lượt [X+1] (turn_id: [X+1], parent_turn_id: [X], speaker: Opencode, session_id: <SESSION_ID>) vào cuối tệp 'Thao luan AI/Noi dung thao luan.md'."
 ```
 - **Trường hợp 4b — Các lượt trao đổi kế tiếp trong cùng một Session**:
 ```powershell
-python "Thao luan AI/trigger_opencode.py" --session <SESSION_ID> --force "Kính gửi OpenCode: Antigravity đã hoàn thành Lượt [X] tại 'Thao luan AI/Noi dung thao luan.md'. Mời bạn đọc cuối tệp và ghi phản biện Lượt [X+1] đúng chuẩn Turn Block v2.3."
+python "Thao luan AI/trigger_opencode.py" --session <SESSION_ID> --force "Kính gửi OpenCode: Antigravity đã hoàn thành Lượt [X] tại 'Thao luan AI/Noi dung thao luan.md'. Mời bạn đọc cuối tệp và ghi phản biện Lượt [X+1] đúng chuẩn Turn Block."
 ```
 - **Trường hợp 4c — Kích hoạt Pha 2 (Code Audit) yêu cầu kiểm toán mã nguồn thực tế**:
 ```powershell
@@ -131,7 +147,7 @@ python "Thao luan AI/wait_for_opencode_reply.py" --timeout 400 --interval 5
    - Sau khi gửi tín hiệu đánh thức, Antigravity chuyển hoàn toàn sang trạng thái lắng nghe thụ động (Waiter).
    - Antigravity tuyệt đối không can thiệp, không gửi thêm câu hỏi, không giục giã OpenCode cho đến khi Waiter trả về mã thoát.
 4. **Bắt Buộc Ghi Rõ Mọi Thông Tin & Đề Xuất Cải Tiến Vào Tệp (Mandatory Full In-File Documentation)**:
-   - OpenCode BẮT BUỘC phải dùng công cụ chỉnh sửa tệp để **ghi trực tiếp toàn văn mọi thông tin, luận điểm phản biện, câu hỏi chất vấn và mọi đề xuất cải tiến** vào tệp `Noi dung thao luan.md` (đóng gói trong Turn Block chuẩn v2.3).
+   - OpenCode BẮT BUỘC phải dùng công cụ chỉnh sửa tệp để **ghi trực tiếp toàn văn mọi thông tin, luận điểm phản biện, câu hỏi chất vấn và mọi đề xuất cải tiến** vào tệp `Noi dung thao luan.md` (đóng gói trong Turn Block chuẩn).
    - Nhật ký điều phối `dispatch_history.log` bắt buộc ghi chuẩn UTF-8 (`newline="\n"`), cấm để xảy ra lỗi mojibake.
 5. **Bắt Buộc Đánh Giá & Đề Xuất Cải Tiến Kỹ Thuật Chủ Động (Proactive Technical Proposals with Honest Exemption)**:
    - OpenCode không được chỉ đóng vai trò "người chấm thi thụ động". Trong mỗi lượt phản biện, bên cạnh việc thẩm tra mã nguồn thực tế (Red Team Critique), OpenCode phải chủ động đề xuất giải pháp cải tiến kỹ thuật cụ thể (kiến trúc, thuật toán, tối ưu I/O/VRAM/Latency, test khóa).
@@ -167,11 +183,11 @@ Timeout chỉ cho biết chưa nhận được Turn Block hoàn chỉnh trong 40
 Hệ thống quản lý chế độ thực thi minh bạch qua trường `execution.mode` trong `state.json`:
 
 | Chế Độ | Ký Hiệu | Hành Vi Sau Architecture Gate (`🤝 [ĐỒNG THUẬN KIẾN TRÚC]`) | Trường Hợp Sử Dụng |
-| :---: | :---: | :--- | :--- |
+| :--- | :---: | :--- | :--- |
 | **Tương Tác** | `INTERACTIVE` | **DỪNG LẠI NGAY LẬP TỨC**. In tóm tắt kiến trúc và chờ Người Dùng phê duyệt *"OK DO"* trước khi được phép viết mã nguồn. | Các phân hệ nhạy cảm, thay đổi lớn về CSDL, hoặc khi Người Dùng yêu cầu kiểm soát từng bước. |
 | **Tự Trị** | `AUTONOMOUS` | **KHÔNG DỪNG LẠI Ở BƯỚC TRUNG GIAN**. Antigravity tự động chuyển tiếp sang giai đoạn thi công code, chạy test suite, build pass 0 lỗi và bàn giao sang Pha 2 cho OpenCode audit. | Khi Người Dùng ủy quyền toàn diện (*"hai bạn tự thảo luận và làm từ A-Z"*). |
 
-### Danh Mục Hành Động Luôn Bắt Buộc Xin Phê Duyệt Người Dùng ( kể cả trong `AUTONOMOUS`):
+### Danh Mục Hành Động Luôn Bắt Buộc Xin Phê Duyệt Người Dùng (kể cả trong `AUTONOMOUS`):
 Ngay cả khi `execution.mode == "AUTONOMOUS"`, hai AI **tuyệt đối không được tự động thực hiện** các thao tác không thể đảo ngược sau nếu chưa có chữ ký/lệnh trực tiếp từ Người Dùng (Master):
 1. Xóa dữ liệu trọng yếu, xóa bảng/volume CSDL hoặc xóa tệp nguyên tắc gốc (`.keyword.md`, `.keywork.md`).
 2. Chuyển đổi công tắc backend chính thức (`set_active_backend`) hoặc thăng cấp trạng thái hiệu chuẩn (`promote_calibration`) trên Production.
@@ -179,13 +195,13 @@ Ngay cả khi `execution.mode == "AUTONOMOUS"`, hai AI **tuyệt đối không �
 
 ---
 
-## 📋 VI. CHUẨN HÓA MÃ TRẢ VỀ & THỨ TỰ ƯU TIÊN TRẠNG THÁI (STANDARDIZED EXIT CODES V2.3)
+## 📋 VI. CHUẨN HÓA MÃ TRẢ VỀ & THỨ TỰ ƯU TIÊN TRẠNG THÁI (STANDARDIZED EXIT CODES)
 
-Tiến trình `wait_for_opencode_reply.py` chuẩn hóa đúng 5 mã thoát:
+Tiến trình `wait_for_opencode_reply.py` chuẩn hóa đúng 5 mã thoát cốt lõi:
 
 | Exit Code | Tên Kỹ Thuật | Ý Nghĩa Kỹ Thuật | Hành Xử Của Antigravity |
 | :---: | :--- | :--- | :--- |
-| **`0`** | `EXIT_SUCCESS_NORMAL` | **Nhận phản biện hợp lệ (đạt đủ 4 điều kiện v2.3)**, không có stop marker. | Đọc nội dung phản biện, suy luận và viết Lượt tiếp theo, phát 1 trigger sang OpenCode. |
+| **`0`** | `EXIT_SUCCESS_NORMAL` | **Nhận phản biện hợp lệ (đạt đủ 4 điều kiện)**, không có stop marker. | Đọc nội dung phản biện, suy luận và viết Lượt tiếp theo, phát 1 trigger sang OpenCode. |
 | **`10`** | `EXIT_PROTOCOL_STOP` | **Nhận phản biện hợp lệ + Phát hiện Mốc dừng giao thức (`STOP_MARKER`)**. | **DỪNG TIẾN TRÌNH LẠI**. Không phát trigger. Hành vi tiếp theo do `execution.mode` quyết định (`WAIT_USER_APPROVAL` hoặc `COMPLETED`). |
 | **`20`** | `EXIT_TIMEOUT` | Vượt quá 400s không có phản hồi hoàn chỉnh. | Chuyển `ERROR_RECOVERY`, đọc `recovery.timeout_diagnosis` trong `state.json` để xử lý theo Ma trận Mục XVI.B. |
 | **`30`** | `EXIT_INVALID_BLOCK` | Có nội dung mới nhưng Turn Block ghi dở quá 30s, sai chuỗi `turn_id`/`parent_turn_id`, lệch `session_id` (TOCTOU), sai `content_hash` hoặc thiếu chữ ký. | Cảnh báo lỗi toàn vẹn khối, lưu vết vào `recovery.last_error` và dừng lại để sửa khối lỗi. |
@@ -198,7 +214,7 @@ $$\texttt{FILE\_BUSY (40)} \;\succ\; \texttt{PARTIAL\_WRITE / INVALID\_BLOCK (30
 
 ---
 
-## 🧱 VII. CẤU TRÚC TURN BLOCK CÓ ĐỊNH DANH, KIỂM ĐỊNH SHA-256 & CHỐNG REPLAY / TOCTOU (STRUCTURED TURN GATING V2.3)
+## 🧱 VII. CẤU TRÚC TURN BLOCK CÓ ĐỊNH DANH, KIỂM ĐỊNH SHA-256 & CHỐNG REPLAY / TOCTOU (STRUCTURED TURN GATING)
 
 Mọi lượt trao đổi trong `Noi dung thao luan.md` bắt buộc phải được đóng gói trong **Cấu trúc Turn Block chuẩn mực**:
 
@@ -209,6 +225,7 @@ parent_turn_id: 249
 speaker: Opencode
 phase: RED_TURN248_CLOSURE_AND_CEILING_FIX_VERDICT
 session_id: ses_ed7498d55ffe8w9PokqHBhaxI4
+round_type: ROUND_SUBSTANTIVE
 -->
 
 ### Luot 250: Opencode (Senior Red Team Auditor) — Nghiem thu Luot 249...
@@ -314,28 +331,49 @@ Tệp `Thao luan AI/state.json` gồm **9 khóa cấp cao nhất (top-level keys
 
 ---
 
-## 🧪 X. HAI LỚP KIỂM CHỨNG CHẤT LƯỢNG & RUBRIC NGHIỆM THU 4 TRẠNG THÁI (THE DUAL VERIFICATION LAYERS)
+## 🧪 X. HỆ THỐNG TIÊU CHÍ ĐÁNH GIÁ CHUYÊN NGHIỆP, MA TRẬN MỨC ĐỘ NGHIÊM TRỌNG & RUBRIC NGHIỆM THU (PROFESSIONAL EVALUATION & ACCEPTANCE CRITERIA)
 
-Tuyệt đối không dùng "test pass 100%" hay "build 0 lỗi" làm thước đo duy nhất cho tính đúng đắn nghiệp vụ. Hệ thống thiết lập 2 lớp kiểm chứng độc lập:
+Tuyệt đối không dùng "test pass 100%" hay "build 0 lỗi" làm thước đo duy nhất cho tính đúng đắn nghiệp vụ. Để đảm bảo mọi phán quyết nghiệm thu khách quan, tái lập được và không phụ thuộc vào cảm tính chủ quan, hệ thống áp dụng bộ tiêu chí chuẩn hóa sau:
 
-1. **Lớp 1 — Automated Verification (Bằng chứng mã nguồn tự động)**:
-   - Unit Tests, Integration Tests, Regression Suites, IP/Brand Guardrail (`test_ip_brand_guardrail.py`), và Protocol Conformance Tests (`test_two_agent_protocol_v23.py`).
-   - **Red phải là hành vi**: test đỏ đầu tiên của TDD phải assert sai hành vi cụ thể (assertion fail), cấm đếm `ModuleNotFoundError`/`ImportError` làm bằng chứng Red-to-Green.
-   - **SUITE_MANIFEST bắt buộc**: mọi suite lũy kế phải có `tests/SUITE_MANIFEST.json` khóa danh sách tệp + số test kỳ vọng mỗi tệp + lệnh chạy chính xác, kèm test tự kiểm manifest (lệch 1 là FAIL).
-   - **Chạy lại full sprint sau mọi sửa code**: bất kỳ chỉnh sửa mã nguồn nào (kể cả 1 dòng import) bắt buộc chạy lại toàn bộ sprint suite và ghi lệnh + thời gian + kết quả vào verdict. Báo "xanh" mà không nêu 3 thông tin này thì verdict vô hiệu.
-2. **Lớp 2 — Independent Red Team Audit (OpenCode thẩm tra độc lập)**:
-   - Mở trực tiếp mã nguồn vật lý trên đĩa, chạy probe độc lập ngoài mẫu (**Zero Self-Grading**: người ra đề khác người viết scorer), đối chiếu trực tiếp với yêu cầu ban đầu của Người Dùng.
-   - **Đo lại độc lập trước khi kết luận**: không công nhận số báo cáo nào chưa tự chạy lại; probe riêng khớp mới ghi vào verdict.
-3. **Phân Loại Trạng Thái Nghiệm Thu Bắt Buộc (4-State Acceptance Rubric)**:
-   Mọi báo cáo nghiệm thu phải phân định rạch ròi từng hạng mục vào 1 trong 4 trạng thái:
-   - **`PASS`**: Đã có code thực tế trên đĩa + test tự động/probe độc lập chạy xanh + khớp yêu cầu nghiệp vụ.
-   - **`FAIL`**: Code sai logic, test đỏ, hoặc báo cáo sai lệch so với mã nguồn thực tế.
-   - **`BLOCKED`**: Đã thi công xong cơ chế nhưng đang chờ cổng điều kiện bắt buộc (ví dụ: chờ đủ 100 nhãn vàng `reviewed_by_master=True` hoặc chờ chữ ký phê duyệt của Master).
-   - **`NOT_TESTED`**: Nhánh logic đã viết nhưng chưa kích hoạt được trong môi trường live thực tế (bắt buộc ghi rõ lý do và kế hoạch test giả lập, cấm gộp chung vào `PASS`).
-4. **Phân Biệt Số Quan Sát Và Số Bảo Đảm (Observation vs Guarantee)**:
-   - Giá trị tuyệt đối (tokens, %, ms, ECE...) hoặc được test ghim bằng assert chính xác, hoặc ghi nhãn **`OBSERVATION`** kèm phiên bản code sinh ra nó. Cấm trích số tuyệt đối không ghim vào bảng nghiệm thu.
-   - Ngưỡng (threshold: `<=`, `>=`, `<`) phải có test ghim ngưỡng; giá trị đo từng lần chạy là quan sát, có thể trôi theo máy.
-5. **Quyền VETO Chuẩn (Load-Bearing Veto)**: Phát hiện tải trọng (bypass cổng kiểm soát, secret trong source, số liệu phân nhóm sai lệch, endpoint ma, tự ký duyệt) thì verdict là **TỪ CHỐI NGHIỆM THU + chặn slice kế tiếp** cho đến khi sửa xong và audit lại. Cấm dùng `XANH ĐIỀU KIỆN` cho qua lỗi tải trọng.
+### 1. Thẩm Quyền Phán Quyết Độc Lập (Audit Authority Rule):
+- **OpenCode là bên duy nhất có thẩm quyền đưa ra phán quyết kiểm toán (`PASS`, `FAIL`, `BLOCKED`, `NOT_TESTED`)** dựa trên bằng chứng thực tế trên đĩa.
+- **Antigravity không được tự tuyên bố `PASS`** chỉ dựa trên báo cáo của chính mình, và chỉ được phép đóng hạng mục / chuyển sang bước kế tiếp khi đã có phán quyết `PASS` hợp lệ từ OpenCode (trong Turn Block đạt đủ 4 điều kiện kiểm định). Nếu OpenCode chưa phản hồi, phản hồi sai định dạng hoặc thiếu căn cứ bằng chứng, trạng thái bắt buộc giữ nguyên.
+
+### 2. Hai Lớp Kiểm Chứng Độc Lập (The Dual Verification Layers):
+- **Lớp 1 — Automated Verification (Bằng chứng mã nguồn tự động)**:
+  - Unit Tests, Integration Tests, Regression Suites, IP/Brand Guardrail (`test_ip_brand_guardrail.py`), và Protocol Conformance Tests (`test_two_agent_protocol_v23.py`).
+  - **Red phải là hành vi**: Test đỏ đầu tiên của TDD phải assert sai hành vi cụ thể (assertion fail), cấm đếm `ModuleNotFoundError`/`ImportError` làm bằng chứng Red-to-Green.
+  - **SUITE_MANIFEST bắt buộc**: Mọi suite lũy kế phải có `tests/SUITE_MANIFEST.json` khóa danh sách tệp + số test kỳ vọng mỗi tệp + lệnh chạy chính xác, kèm test tự kiểm manifest (lệch 1 là FAIL).
+  - **Chạy lại full sprint sau mọi sửa code**: Bất kỳ chỉnh sửa mã nguồn nào (kể cả 1 dòng import) bắt buộc chạy lại toàn bộ sprint suite và ghi lệnh + thời gian + kết quả vào verdict. Báo "xanh" mà không nêu 3 thông tin này thì verdict vô hiệu.
+- **Lớp 2 — Independent Red Team Audit (OpenCode thẩm tra độc lập)**:
+  - Mở trực tiếp mã nguồn vật lý trên đĩa, chạy probe độc lập ngoài mẫu (**Zero Self-Grading**: người ra đề khác người viết scorer), đối chiếu trực tiếp với yêu cầu ban đầu của Người Dùng.
+  - **Đo lại độc lập trước khi kết luận**: Không công nhận số báo cáo nào chưa tự chạy lại; probe riêng khớp mới ghi vào verdict.
+
+### 3. Tách Biệt Hai Trụ Cột Chấm Điểm (`TECHNICAL_CORRECTNESS` & `PROCESS_COMPLIANCE`):
+Một bản thi công có thể chạy ra kết quả đúng ngẫu nhiên nhưng vi phạm quy trình/kiến trúc, hoặc tuân thủ hình thức nhưng kết quả nghiệp vụ sai. Do đó, OpenCode bắt buộc đánh giá tách biệt hai điều kiện:
+1. **`TECHNICAL_CORRECTNESS` (Độ chính xác kỹ thuật & nghiệp vụ)**: Mã nguồn/giải pháp có giải quyết đúng và đủ bài toán, xử lý đúng các trường hợp biên (edge cases), không chứa logic giả lập (`mock`/hard-code trá hình) và đạt các ngưỡng hiệu năng yêu cầu không?
+2. **`PROCESS_COMPLIANCE` (Tính tuân thủ quy trình, an toàn & kiểm chứng)**: Giải pháp có tuân thủ đúng kiến trúc đã chốt, không sửa test/rubric để làm đẹp kết quả, không làm bẩn sổ cái production khi chạy test (bắt buộc dùng `tmp_path`), không rò rỉ secret, và có đầy đủ bằng chứng kiểm thử hồi quy không?
+- **Quy tắc hợp thành**: Một hạng mục chỉ được phán quyết **`PASS`** khi đồng thời **`TECHNICAL_CORRECTNESS == PASS` VÀ `PROCESS_COMPLIANCE == PASS`**.
+
+### 4. Ma Trận Phân Loại Mức Độ Nghiêm Trọng Bắt Buộc (`Severity Matrix`):
+Mọi lỗi hoặc phát hiện trong quá trình kiểm toán của OpenCode phải được gắn nhãn mức độ nghiêm trọng rõ ràng để tránh phán quyết cảm tính:
+
+| Mức độ (`Severity`) | Định nghĩa chuẩn | Ảnh hưởng bắt buộc tới Phán quyết |
+| :--- | :--- | :--- |
+| **`CRITICAL`** | Sai kết quả cốt lõi, lỗi crash runtime, bypass cổng bảo mật/kiểm soát, lộ secret trong mã nguồn, giả mạo số liệu/bằng chứng, hoặc làm hỏng dữ liệu ngoài phạm vi | $\to$ **`FAIL` bắt buộc (VETO)** — Chặn chuyển giai đoạn cho đến khi sửa triệt để và kiểm toán lại |
+| **`MAJOR`** | Sai quy trình trọng yếu (thiếu kiểm chứng thực tế, caller production chưa được đấu nối thật, làm gãy bài test hồi quy, test ghi bẩn vào dữ liệu production) dù kết quả cục bộ có vẻ đúng | $\to$ **`PROCESS_COMPLIANCE = FAIL`** ($\to$ Phán quyết chung **`FAIL`**) |
+| **`MINOR`** | Điểm chưa tối ưu nhẹ về cấu trúc mã, thiếu chú thích hoặc cảnh báo nhỏ không ảnh hưởng tới tính đúng đắn, an toàn và hiệu năng | $\to$ Ghi nhận để cải tiến, **không chặn `PASS`** |
+| **`COSMETIC`** | Khác biệt nhỏ về định dạng trình bày, cách đặt tên biến phụ hoặc style không ảnh hưởng hành vi | $\to$ Không tính điểm trừ, **không chặn `PASS`** |
+
+### 5. Phân Loại Trạng Thái Nghiệm Thu 4 Mức (`4-State Acceptance Rubric`) & Phân Tầng Bằng Chứng:
+- **`PASS`**: Đã có code thực tế trên đĩa + test tự động/probe độc lập chạy xanh + đạt cả `TECHNICAL_CORRECTNESS` và `PROCESS_COMPLIANCE` (`0` lỗi `CRITICAL`/`MAJOR`).
+- **`FAIL`**: Tồn tại ít nhất 1 lỗi `CRITICAL` hoặc `MAJOR`, test đỏ, hoặc báo cáo sai lệch so với mã nguồn thực tế.
+- **`BLOCKED`**: Đã thi công xong cơ chế nhưng đang chờ cổng điều kiện bắt buộc bên ngoài (ví dụ: chờ chữ ký phê duyệt của Master).
+- **`NOT_TESTED`**: Nhánh logic đã viết nhưng chưa kích hoạt được trong môi trường thực tế (bắt buộc ghi rõ lý do và kế hoạch kiểm thử, cấm gộp chung vào `PASS`).
+- **Phân biệt Bằng chứng Xác thực và Suy luận**:
+  * **Số Bảo Đảm (`GUARANTEE`)**: Được khóa bằng assert chính xác trong test tự động.
+  * **Số Quan Sát (`OBSERVATION`)**: Giá trị đo thực nghiệm tại một thời điểm (kèm phiên bản code/môi trường sinh ra nó).
+  * **Giả thuyết chưa xác minh (`UNVERIFIED_INFERENCE`)**: Nhận định suy luận chưa có trace hoặc probe thực chứng — tuyệt đối không được dùng làm căn cứ để kết luận nguyên nhân gốc hay phán quyết `PASS`/`FAIL`.
 
 ---
 
@@ -345,20 +383,20 @@ Tuyệt đối không dùng "test pass 100%" hay "build 0 lỗi" làm thước �
 > *"chú ý trong lần đầu gởi thông tin cho opencode thì cần báo opencode biết về quy trình này nhé. ghi vào rõ trong quy trinh de lần sau cứ vậy là phải làm"*
 
 1. **Quy Tắc Bắt Buộc Ở Lần Đầu Gửi Thông Tin Cho OpenCode (Mandatory First-Contact Protocol Briefing)**:
-   - Mỗi khi bắt đầu một phiên mới, mở một chủ đề thảo luận mới, hoặc khi quy trình vừa được nâng cấp: **Ngay trong lần đầu tiên gửi thông tin / lệnh kích hoạt (`trigger_opencode.py`) và trong Turn Block mở đầu tại `Noi dung thao luan.md`, Antigravity BẮT BUỘC phải thông báo rõ ràng cho OpenCode biết về tệp quy trình `Thao luan AI/Quy trinh & Nguyen tac thao luan AI.md` (Protocol v2.3)** và yêu cầu OpenCode đọc kỹ tệp quy trình này trước khi viết phản biện.
+   - Mỗi khi bắt đầu một phiên mới, mở một chủ đề thảo luận mới, hoặc khi quy trình vừa được nâng cấp: **Ngay trong lần đầu tiên gửi thông tin / lệnh kích hoạt (`trigger_opencode.py`) và trong Turn Block mở đầu tại `Noi dung thao luan.md`, Antigravity BẮT BUỘC phải thông báo rõ ràng cho OpenCode biết về tệp quy trình `Thao luan AI/Quy trinh & Nguyen tac thao luan AI.md` (Protocol v2.4)** và yêu cầu OpenCode đọc kỹ tệp quy trình này trước khi viết phản biện.
    - Quy tắc này là bất biến bắt buộc cho mọi lần thảo luận về sau ("cứ vậy là phải làm"), tuyệt đối không được bỏ qua bước thông báo quy trình ở lượt mở đầu.
 2. **Nguyên Tắc Bắt Buộc Pha 0 Khởi Động (Protocol Alignment Gate)**:
    - Khi bước vào chủ đề lớn hoặc phân hệ mới, Lượt đầu tiên (Pha 0) phải thống nhất đủ 4 nội dung:
      * **Mục tiêu tối thượng & Sản phẩm bàn giao (North Star & Deliverables)**.
      * **Lộ trình thảo luận theo Vòng (Round-by-Round Agenda)**.
-     * **Tiêu chuẩn chất lượng & Rubric nghiệm thu 4 trạng thái (`PASS / FAIL / BLOCKED / NOT_TESTED`)**.
+     * **Tiêu chuẩn chất lượng, Severity Matrix & Rubric nghiệm thu 4 trạng thái (`PASS / FAIL / BLOCKED / NOT_TESTED`)**.
      * **Ranh giới tác nghiệp & Kỷ luật nghiêm ngặt (Chưa đồng thuận kiến trúc và chưa được Master duyệt thì chưa tự ý viết code nghiệp vụ mới)**.
 3. **Mốc Ký Kết Thống Nhất Quy Trình (Protocol Sign-off Gate)**:
    - Chỉ khi cả Antigravity và OpenCode cùng ký xác nhận `🤝 [ĐỒNG THUẬN QUY TRÌNH THẢO LUẬN]` vào `Noi dung thao luan.md`, hai bên mới chính thức bước sang Vòng 1 chuyên môn.
 
 ---
 
-## 🧹 XII. NGUYÊN TẮC DỌN DẸP, NÉN BỘ NHỚ, SỔ CÁI ARCHIVE SHA-256 & ROLLBACK (SCRATCHPAD ARCHIVING & COMPACTION V2.3)
+## 🧹 XII. NGUYÊN TẮC DỌN DẸP, NÉN BỘ NHỚ, SỔ CÁI ARCHIVE SHA-256 & ROLLBACK (SCRATCHPAD ARCHIVING & COMPACTION)
 
 1. **Ngưỡng Trần Kép Bắt Buộc (Dual Hard Limits — Cả Hai Điều Kiện Phải Thỏa Mãn)**:
    - Tệp `Noi dung thao luan.md` **BẮT BUỘC PHẢI ĐỒNG THỜI DƯỚI 300 DÒNG (`< 300 lines`) VÀ DƯỚI 40 KB (`< 40,960 bytes`)**.
@@ -373,7 +411,7 @@ Tuyệt đối không dùng "test pass 100%" hay "build 0 lỗi" làm thước �
 
 ---
 
-## ⚖️ XIII. NGUYÊN TẮC 157: PHẢN BIỆN TƯƠNG HỖ, GIỚI HẠN VÒNG TRANH LUẬN & TRỌNG TÀI TỐI CAO (MUTUAL DIALECTIC & ARBITRATION RULE)
+## ⚖️ XIII. NGUYÊN TẮC 157: PHẢN BIỆN TƯƠNG HỖ, PHÂN LOẠI VÒNG TRAO ĐỔI & TRỌNG TÀI TỐI CAO (MUTUAL DIALECTIC & ARBITRATION RULE)
 
 1. **Nghiêm Cấm Thỏa Hiệp / Gật Đầu Hình Thức (Zero Blind Acceptance)**:
    - Không bên nào được gật đầu hình thức nếu đề xuất làm tăng độ trễ, gây rủi ro bảo mật/dữ liệu hoặc vi phạm kiến trúc.
@@ -381,20 +419,27 @@ Tuyệt đối không dùng "test pass 100%" hay "build 0 lỗi" làm thước �
    - Bước 1: Phân tích mặt hạn chế / trade-off bằng số liệu thực chứng.
    - Bước 2: Đề xuất phương án thay thế tối ưu hơn.
    - Bước 3: Hội tụ về phương án tối ưu toàn cục.
-3. **Giới Hạn Vòng Phản Biện & Cơ Chế Phân Xử Khi Bất Đồng (`MAX_DIALECTIC_ROUNDS = 3`)**:
-   - Một điểm bất đồng kỹ thuật chỉ được phép tranh luận tối đa **3 vòng qua lại (6 lượt)**.
-   - Nếu sau 3 vòng vẫn chưa đạt đồng thuận, hoặc nếu bất đồng liên quan đến **kiến trúc cốt lõi, bảo mật, dữ liệu, bản quyền hay thay đổi không thể đảo ngược**, Antigravity bắt buộc phải lập **Bảng Đối Sánh Trade-off 2 Phương Án (Option A vs Option B)** kèm bằng chứng của mỗi bên, chuyển trạng thái sang `WAITING_FOR_USER_APPROVAL`, và trình **Người Dùng (Master — Trọng tài tối cao)** ra phán quyết cuối cùng.
-4. **Chỉ Tiêu Độ Tin Cậy Thực Thực Chất**:
+3. **Phân Loại Loại Vòng Trao Đổi (`round_type`) & Giới Hạn Vòng Phản Biện (`MAX_DIALECTIC_ROUNDS = 3`)**:
+   - Để tránh việc hỏi làm rõ thông tin hoặc yêu cầu bổ sung bằng chứng làm đốt oan ngân sách tranh luận, mỗi lượt phản hồi được phân loại thành:
+     * **`ROUND_SUBSTANTIVE`**: Có bất đồng kỹ thuật hoặc phán quyết phản biện thực chất $\rightarrow$ tính vào giới hạn **`MAX_DIALECTIC_ROUNDS = 3` vòng (6 lượt)**.
+     * **`ROUND_EVIDENCE_REQUEST`**: Yêu cầu cung cấp thêm bằng chứng/log/test còn thiếu $\rightarrow$ không tính vào `ROUND_SUBSTANTIVE` (tối đa **2 lần/chủ đề**).
+     * **`ROUND_CLARIFICATION`**: Hỏi làm rõ ngữ nghĩa ngắn gọn $\rightarrow$ không tính vào `ROUND_SUBSTANTIVE` (tối đa **1 lần/chủ đề**).
+   - Nếu sau **3 vòng `ROUND_SUBSTANTIVE`** vẫn chưa đạt đồng thuận, hoặc nếu bất đồng liên quan đến **kiến trúc cốt lõi, bảo mật, dữ liệu, bản quyền hay thay đổi không thể đảo ngược**, Antigravity bắt buộc phải lập **Bảng Đối Sánh Trade-off 2 Phương Án (Option A vs Option B)** kèm bằng chứng của mỗi bên, chuyển trạng thái sang `WAITING_FOR_USER_APPROVAL`, và trình **Người Dùng (Master — Trọng tài tối cao)** ra phán quyết cuối cùng.
+4. **Chỉ Tiêu Độ Tin Cậy Thực Chất**:
    - Mục tiêu hoàn thành tác vụ (TCR) được đo lường thực tế qua bộ benchmark/soak telemetry có phân nhóm lỗi rõ ràng, không dùng khẩu hiệu tuyệt đối hóa để che giấu lỗi.
 
 ---
 
-## 🚀 XIV. NGUYÊN TẮC 158: ĐỒNG KIẾN TẠO & CẤU TRÚC 3 KHỐI LINH HOẠT (CO-CREATION & PEER ACCOUNTABILITY)
+## 🚀 XIV. NGUYÊN TẮC 158: ĐỒNG KIẾN TẠO & CẤU TRÚC 3 KHỐI CHUẨN MỰC (CO-CREATION & PEER ACCOUNTABILITY)
 
 Mọi Turn Block của OpenCode trong `Noi dung thao luan.md` gồm 3 khối chuẩn:
-- **Khối 1 — Thẩm tra thực chứng (Empirical Audit & Verification)**: Mở trực tiếp mã nguồn và chạy test/probe để xác nhận `PASS / FAIL / BLOCKED / NOT_TESTED`. **Bắt buộc kiểm ngoài manifest**: ngoài các tệp trong Audit Manifest, phải grep caller production và trace ít nhất 1 đường nóng liên quan (đường request thật, caller ngoài `tests/`); thiếu bước này thì verdict tối đa là VÀNG, không được XANH.
-- **Khối 2 — Đề xuất cải tiến kỹ thuật chủ động (Proactive Engineering Proposals)**: Đưa ra 1–3 đề xuất kỹ thuật thực chất; hoặc nếu mã nguồn đã hoàn thiện tối ưu, ghi rõ *"Không có đề xuất bổ sung sau khi đánh giá thực chứng"* kèm lý do và bằng chứng kiểm thử.
-- **Khối 3 — Điều kiện nghiệm thu & Bước tiếp theo (Clear Acceptance Bar & Next Steps)**: Nêu rõ điều kiện đóng sổ hoặc hướng đi tiếp theo.
+- **Khối 1 — Thẩm tra thực chứng & Phân loại Severity (Empirical Audit & Verification)**:
+  - Mở trực tiếp mã nguồn và chạy test/probe độc lập để chấm tách biệt `TECHNICAL_CORRECTNESS` và `PROCESS_COMPLIANCE`, phân loại mọi phát hiện theo **Severity Matrix** (`CRITICAL / MAJOR / MINOR / COSMETIC`) và xác nhận trạng thái `PASS / FAIL / BLOCKED / NOT_TESTED`.
+  - **Bắt buộc kiểm ngoài manifest**: Ngoài các tệp trong Audit Manifest, phải grep caller production và trace ít nhất 1 đường nóng liên quan (đường request thật, caller ngoài `tests/`); thiếu bước này thì verdict tối đa là VÀNG, không được XANH.
+- **Khối 2 — Đề xuất cải tiến kỹ thuật chủ động (Proactive Engineering Proposals)**:
+  - Đưa ra 1–3 đề xuất kỹ thuật thực chất nhằm giải quyết nguyên nhân gốc với rủi ro thấp nhất; hoặc nếu mã nguồn đã hoàn thiện tối ưu, ghi rõ *"Không có đề xuất bổ sung sau khi đánh giá thực chứng"* kèm lý do và bằng chứng kiểm thử.
+- **Khối 3 — Điều kiện nghiệm thu & Bước tiếp theo (Clear Acceptance Bar & Next Steps)**:
+  - Nêu rõ phán quyết chung, loại vòng (`round_type`) và điều kiện đóng sổ hoặc hướng đi tiếp theo.
 - **Kỷ luật probe của auditor**: Đọc signature/tham số API trước khi kết luận hành vi; probe lỗi do gọi sai API phải tự đính chính công khai trong lượt, không lặng lẽ bỏ qua.
 
 ---
@@ -406,11 +451,13 @@ Mọi Turn Block của OpenCode trong `Noi dung thao luan.md` gồm 3 khối chu
 2. **Cổng chặn Bản quyền & Manifest Mặc định Đóng (Fail-Closed License & Manifest Gate)**:
    - Mọi lượt chạm code/model phải qua `tests/test_ip_brand_guardrail.py` + kiểm tra manifest checkpoint (`models/reflex_checkpoint_manifest.json` và `models/reflex_engine/0.4.2/manifest.json`).
    - **Hành vi Fail-Closed bắt buộc**: Nếu thiếu tệp manifest, thiếu `sha256`, chứa URL ngoại vi trái phép (`external_urls_allowed: false`), hoặc `license` ở trạng thái không xác định (`"unknown"` / rỗng), hệ thống **mặc định chặn tích hợp và cấm phân phối** cho đến khi xác minh đầy đủ nguồn gốc, mã băm và giấy phép.
-3. **Vệ sinh Secret**: Tuyệt đối không dán mật khẩu, token hay private key vào tệp thảo luận, `state.json` hoặc `dispatch_history.log`.
+3. **Vệ sinh Secret & Sổ Cái Kiểm Toán**:
+   - Tuyệt đối không dán mật khẩu, token hay private key vào tệp thảo luận, `state.json` hoặc `dispatch_history.log`.
+   - Mọi bài test tự động (`pytest`) bắt buộc dùng `tmp_path` cho các tệp ledger/telemetry, không ghi dữ liệu test vào sổ cái production.
 
 ---
 
-## 📐 XVI. HỢP ĐỒNG VẬN HÀNH & KIỂM THỬ TUÂN THỦ GIAO THỨC V2.3 (OPERATIONAL CONTRACTS & CONFORMANCE SUITE)
+## 📐 XVI. HỢP ĐỒNG VẬN HÀNH & KIỂM THỬ TUÂN THỦ GIAO THỨC (OPERATIONAL CONTRACTS & CONFORMANCE SUITE)
 
 ### A. Hợp Đồng Chuyển Trạng Thái (`state.status` State Transition Contract)
 
@@ -418,12 +465,12 @@ Mọi Turn Block của OpenCode trong `Noi dung thao luan.md` gồm 3 khối chu
   ┌─────────────────────────┐
   │ WAITING_FOR_ANTIGRAVITY │ ◄── (Khởi tạo phiên / Sau khi OpenCode hoàn tất lượt hợp lệ)
   └────────────┬────────────┘
-               │ Antigravity ghi xong Turn Block hoàn chỉnh vào Noi dung thao luan.md
+               │ Antigravity chạy --list-sessions lấy <SESSION_ID>, ghi Turn Block & --recover-state
                ▼
   ┌─────────────────────────┐
-  │    READY_TO_TRIGGER     │ ◄── (Hoặc sau lệnh --recover-state khi lượt cuối là Antigravity)
+  │    READY_TO_TRIGGER     │
   └────────────┬────────────┘
-               │ trigger_opencode.py gửi POST /prompt thành công (HTTP 200/202/409)
+               │ trigger_opencode.py --session <SESSION_ID> gửi POST /prompt thành công (HTTP 200/202/409)
                ▼
   ┌─────────────────────────┐
   │  WAITING_FOR_OPENCODE   │
@@ -433,7 +480,7 @@ Mọi Turn Block của OpenCode trong `Noi dung thao luan.md` gồm 3 khối chu
         │             │                                                                    │
         │             │    (Chạy trigger_opencode.py --recover-state sau khi xử lý lỗi) ◄──┘
         ▼             │
-  [Waiter xác nhận 4 điều kiện Turn Block v2.3]
+  [Waiter xác nhận 4 điều kiện Turn Block]
         │
         ├──► Không có STOP_MARKER (Exit 0) ──────────────────────────► WAITING_FOR_ANTIGRAVITY
         ├──► Có STOP_MARKER / Cần duyệt (Exit 10, INTERACTIVE) ──────► WAITING_FOR_USER_APPROVAL
@@ -457,10 +504,10 @@ Mọi Turn Block của OpenCode trong `Noi dung thao luan.md` gồm 3 khối chu
 
 ### D. Bảng Đối Chiếu 3 Cột: Quy Định — Code Thực Tế — Kiểm Thử Tự Động (`tests/test_two_agent_protocol_v23.py`)
 
-| Hạng Mục | Quy Định SOP v2.3 | Mã Nguồn Thực Thi Thực Tế | Bài Kiểm Thử Khóa (`test_two_agent_protocol_v23.py`) |
+| Hạng Mục | Quy Định SOP | Mã Nguồn Thực Thi Thực Tế | Bài Kiểm Thử Khóa (`test_two_agent_protocol_v23.py`) |
 | :--- | :--- | :--- | :--- |
 | **P0-1 & P0-4: Kiểm định 4 điều kiện Turn Block & TOCTOU** | Mục VII (`format_valid`, `turn_chain_valid`, `session_match`, `content_hash_valid`, tắt fallback mặc định) | `wait_for_opencode_reply.py`: `validate_turn_block()`, `compute_turn_content_hash()`, `allow_legacy_fallback=False` | `test_validate_turn_block_four_conditions_and_toctou` |
-| **P0-2: Khôi phục `state.json` an toàn** | Mục II.5 & XVI.A (`--recover-state`, đọc Turn Block cuối, chặn reset khi đang chạy) | `trigger_opencode.py`: `recover_state()` | `test_safe_recover_state_reconciles_from_discussion_and_blocks_live_wait` |
+| **P0-2: Khôi phục `state.json` an toàn** | Mục II.B & XVI.A (`--recover-state`, đọc Turn Block cuối, chặn reset khi đang chạy) | `trigger_opencode.py`: `recover_state()` | `test_safe_recover_state_reconciles_from_discussion_and_blocks_live_wait` |
 | **P0-3: Chống ghi dở & Khóa tệp 30s** | Mục III.2, VI & XVI.B (`has_incomplete_turn_block`, `append_turn_block_atomic`, `is_file_busy=30.0s`) | `file_lock.py`: `has_incomplete_turn_block()`, `append_turn_block_atomic()`, `BUSY_MAX_AGE_SECONDS = 30.0` | `test_partial_write_detection_and_atomic_turn_append` |
 | **P1-5: Chẩn đoán sau Timeout** | Mục IV (`diagnose_timeout_reason`) | `wait_for_opencode_reply.py`: `diagnose_timeout_reason()` | `test_diagnose_timeout_reason_categories` |
 | **P1-8: Archive có Manifest SHA-256 & Rollback** | Mục XII (`< 300 dòng` VÀ `< 40 KB`, `archive_manifest.json`, rollback `.bak`) | `file_lock.py`: `verify_and_archive_discussion()` | `test_verified_archive_manifest_sha256_and_rollback_on_limit_violation` |
@@ -469,4 +516,4 @@ Mọi Turn Block của OpenCode trong `Noi dung thao luan.md` gồm 3 khối chu
 ---
 
 — **Ban Hành**: Ban Điều Phối Kiến Trúc Hệ Thống JKAI-Zenith  
-— **Phiên Bản**: Protocol v2.4 (Kiểm ngoài manifest + Red hành vi + Chống trùng turn_id + SUITE_MANIFEST + Phân biệt số quan sát/bảo đảm + Kỷ luật probe + Quyền VETO chuẩn) | 2026-10-14 (GMT+7)
+— **Phiên Bản**: Protocol v2.4 (Hướng dẫn lấy `SESSION_ID` đồng bộ 3 nơi + Tách điểm `TECHNICAL_CORRECTNESS` / `PROCESS_COMPLIANCE` + Ma trận `Severity Matrix` + Phân loại `round_type` + Kiểm ngoài manifest + Quyền VETO chuẩn) | 2026-10-17 (GMT+7)

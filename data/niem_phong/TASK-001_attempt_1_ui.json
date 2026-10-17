@@ -1,0 +1,29 @@
+{
+  "observation_tier": "[UI_OBSERVED]",
+  "task_id": "TASK-001",
+  "attempt_id": "attempt_1",
+  "runtime_task_id": "TASK-001_attempt_1_1710-1735_ebdde7",
+  "trace_id": "trace_ebdde7",
+  "endpoint_submitted": "http://localhost:9999/api/submit_task",
+  "start_ts_utc": "2026-10-17T10:35:36.512894+00:00",
+  "end_ts_utc": "2026-10-17T10:50:36.677011+00:00",
+  "monotonic_duration_ms": 900164.09,
+  "submit_response": {
+    "ok": true,
+    "status": "queued",
+    "task_id": "TASK-001_attempt_1_1710-1735_ebdde7",
+    "trace_id": "trace_ebdde7"
+  },
+  "mission_dashboard_entry": {
+    "goal": "[TASK-001 | Canary: NP2-CANARY-20261017-7C317FA4] Hãy thực thi kiểm toán kỹ thuật trực tiếp trên workspace `/workspace` đối với 2 tệp bảo mật lõi: `core/security/egress_gate.py` và `core/security/data_leak_guard.py`. Yêu cầu bắt buộc:\n1. Đọc hoặc chạy script phân tích trực tiếp 2 tệp trên (không suy đoán) và báo cáo chính xác: (a) tổng số dòng (line count) và mã băm SHA-256 (16 ký tự đầu) của từng tệp, (b) danh sách tên tất cả các class và hàm/phương thức định nghĩa trong từng tệp.\n2. Giải thích cơ chế phối hợp giữa phương thức kiểm tra egress trong `core/security/egress_gate.py` và `data_leak_guard.has_active_alert(mission_id)` để chặn follow-up egress khi phát hiện rò rỉ dữ liệu trong cùng `mission_id` (chỉ rõ tên class, tên phương thức và chuỗi `reason` chính xác trả về trong `EgressDecision(allowed=False, reason=...)`).\n3. Tự kiểm chứng (Self-Verification) lại các con số dòng và SHA-256 trước khi kết luận, và đính kèm nguyên văn mã Canary `NP2-CANARY-20261017-7C317FA4` ở phần kết luận báo cáo.",
+    "id": "m_TASK-001_attempt_1_1710-1735_ebdde7",
+    "preview": "1. Dòng 10: 'if not self.is_allowed_to_egress(mission_id):' thiếu dấu chấm phẩy (;) sau điều kiện if...",
+    "status": "completed",
+    "title": "[TASK-001 | Canary: NP2-CANARY-20261017-7C317FA4] Hãy thực thi kiểm to",
+    "ts": 1792233452.4676166
+  },
+  "ui_event_count": 55,
+  "final_answer_displayed": "",
+  "kill_switch_triggered": true,
+  "kill_reason": "TIMEOUT_900S"
+}

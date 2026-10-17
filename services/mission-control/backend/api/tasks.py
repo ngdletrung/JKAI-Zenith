@@ -3,7 +3,7 @@ from datetime import datetime, timezone, timedelta
 from flask import Blueprint, jsonify, request, Response, stream_with_context
 import requests, logging
 from werkzeug.utils import secure_filename
-from core.redis_client import redis_safe
+from mc_core.redis_client import redis_safe
 
 # 🛡️ [SYSTEM-LOGGING]: Cấu hình ghi nhật ký cấu trúc
 logger = logging.getLogger(__name__)

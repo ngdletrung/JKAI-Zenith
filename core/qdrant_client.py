@@ -28,9 +28,19 @@ class QdrantClientWrapper:
         self._semaphore = asyncio.Semaphore(16)
 
     def _get_async_client(self):
-        if self._async_client is None:
+        # [LOOP-AWARE POOL - Case 17/10]: tái tạo client khi event loop đổi (chống 'Event loop is closed')
+        try:
+            _cur_loop = asyncio.get_running_loop()
+        except RuntimeError:
+            _cur_loop = None
+        if (
+            self._async_client is None
+            or self._async_client.is_closed
+            or getattr(self, "_async_client_loop", None) is not _cur_loop
+        ):
             # Tang timeout cho cac tac vu batch lon
             self._async_client = httpx.AsyncClient(timeout=60.0)
+            self._async_client_loop = _cur_loop
         return self._async_client
 
     async def get_collections(self):

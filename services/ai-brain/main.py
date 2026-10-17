@@ -560,7 +560,7 @@ async def review_execution_endpoint(request: Request):
 async def dispatch_task(request: Request):
     data = await request.json()
     sync_hlc_from_payload(data)
-    return await dispatcher.dispatch(data.get('goal', ''), data.get('task_id', 'sys'))
+    return await dispatcher_new.dispatch(data.get('goal', ''), data.get('task_id', 'sys'))
 
 @app.post('/summarize')
 async def summarize_task(request: Request):
@@ -612,10 +612,6 @@ async def distill_knowledge(request: Request):
     data = await request.json()
     task_id = data.get('task_id', 'unknown')
     goal = data.get('goal', 'unknown')
-    
-    #  [PROPOSAL-PROTOCOL]: Tạo đề xuất thỉnh lệnh Master thưa Ngài
-    proposal_id = f"distill_{task_id}_{int(_time.time())}"
-    proposal_msg = f" [BỘ TRÍCH LỌC]: Phát hiện tri thức mới từ Sứ mệnh `{goal[:50]}...`. Master có cho phép Chắt lọc vào 12 Trụ cột không thưa Ngài?"
     
     try:
         #  [SOVEREIGN-DISTILLATION]: Để Distiller tự triệu hồi Vệ binh thưa Master

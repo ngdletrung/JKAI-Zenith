@@ -18,6 +18,7 @@ import asyncio
 import re
 import time
 import threading
+import traceback
 import functools
 from typing import Any
 from core.qdrant_client import qdrant_client
@@ -279,6 +280,7 @@ class JKAIIntelligenceEngine:
         self._router = ModelRouter(self.rules_path)
         self._redis_conn = None
         self._client = None 
+        self._client_loop = None  # Event loop sở hữu client hiện tại (chống 'Event loop is closed')
         self._role_mapping_cache = {} # Ensure this is initialized
         self.global_params = {}
         # 🔒 [ELITE REDIS LOCKS]: Khóa toàn cục hệ thống 
@@ -389,21 +391,31 @@ class JKAIIntelligenceEngine:
         if r: r.delete(f"lock:{lock_name}")
         return True
 
-    async def _enter_neural_gate(self, model_name):
-        """[NEURAL GATE]: Mở cổng nơ-ron cư trú ."""
-        pass
-
-    async def _exit_neural_gate(self, model_name):
-        """[NEURAL GATE]: Đóng cổng nơ-ron cư trú ."""
-        pass
-
     def _get_client(self):
-        """Khởi tạo hoặc trả về Persistent Async Connection Pool dùng chung để tối ưu HTTP Keep-Alive & giảm TCP Overhead."""
-        if self._client is None or self._client.is_closed:
+        """Khởi tạo hoặc trả về Persistent Async Connection Pool dùng chung để tối ưu HTTP Keep-Alive & giảm TCP Overhead.
+
+        [LOOP-AWARE POOL - Case 17/10]: client httpx bị "gắn" vào event loop tạo ra nó.
+        Nếu loop đó bị đóng (asyncio.run() ở thread nền, worker restart...) mà tái sử dụng
+        client thì raise RuntimeError: Event loop is closed. Tự tái tạo client khi loop đổi.
+        """
+        try:
+            _cur_loop = asyncio.get_running_loop()
+        except RuntimeError:
+            _cur_loop = None
+        if (
+            self._client is None
+            or self._client.is_closed
+            or getattr(self, "_client_loop", None) is not _cur_loop
+        ):
+            if self._client is not None and getattr(self, "_client_loop", None) is not _cur_loop:
+                # Client thuộc loop cũ (đã đóng hoặc khác loop) — bỏ tham chiếu, không aclose()
+                # vì aclose() từ loop khác cũng sẽ nổ. GC dọn giúp an toàn.
+                logger.warning("[LOOP-AWARE-POOL] Event loop đổi/tái tạo — thay client HTTP pool cũ (nguyên nhân gốc 'Event loop is closed').")
             self._client = httpx.AsyncClient(
                 timeout=httpx.Timeout(600.0, connect=15.0, read=300.0),
                 limits=httpx.Limits(max_keepalive_connections=100, max_connections=200, keepalive_expiry=300.0)
             )
+            self._client_loop = _cur_loop
         return self._client
 
     def _get_redis(self):
@@ -743,97 +755,23 @@ class JKAIIntelligenceEngine:
         return role_data.to_dict()
 
     def load_software_rules(self):
-        """📂 Trích xuất API keys và Base URLs từ rules_software.md ."""
+        """📂 Trích xuất cấu hình API keys và Base URLs từ biến môi trường (SSoT, không đọc secret từ markdown)."""
         configs = {}
-        intel_dir = os.path.join(path_manager.get_root(), 'intelligence')
-        paths = [
-            '/intelligence/rules_software.md',
-            'intelligence/rules_software.md',
-            os.path.join(intel_dir, 'rules_software.md')
-        ]
-        sw_path = None
-        for p in paths:
-            if os.path.exists(p):
-                sw_path = p
-                break
-
-        # RAM cache with mtime check — tránh đọc + parse file mỗi call_chat
-        if sw_path:
-            try:
-                now = time.time()
-                last_checked = getattr(self, '_software_rules_last_checked', 0)
-                if self._software_rules_cache is not None and (now - last_checked < 5.0):
-                    return self._software_rules_cache[1]
-                
-                self._software_rules_last_checked = now
-                current_mtime = os.path.getmtime(sw_path)
-                if self._software_rules_cache is not None:
-                    cached_mtime, cached_configs = self._software_rules_cache
-                    if cached_mtime == current_mtime:
-                        return cached_configs
-            except Exception:
-                pass
-
-        if sw_path:
-            try:
-                with open(sw_path, 'r', encoding='utf-8') as f:
-                    content = f.read()
-                for line in content.split('\n'):
-                    if '|' in line and ('_API_KEY' in line or 'Base URL' in line):
-                        parts = [p.strip() for p in line.split('|')]
-                        if len(parts) >= 5:
-                            # 🔍 [DYNAMIC-EXTRACTOR]: Lấy key và url trực tiếp từ bảng Markdown thưa Master
-                            clean_part = parts[2].replace('`', '').strip()
-                            var_name_match = re.search(r'([A-Z_]+_API_KEY)', clean_part)
-                            var_name = var_name_match.group(1) if var_name_match else None
-                            
-                            if var_name:
-                                provider = var_name.lower().replace('_api_key', '')
-                                
-                                # Lấy Base URL (thường ở cột 3)
-                                url_clean = parts[3].replace('`', '').strip()
-                                # Lấy API Key (thường ở cột 4)
-                                key_clean = parts[4].replace('`', '').strip()
-                                
-                                if key_clean and len(key_clean) > 5:
-                                    # [NEURAL-LINK]: Đồng bộ hóa vào biến môi trường để các skill khác có thể sử dụng thưa Master
-                                    os.environ[var_name] = key_clean
-                                    configs[provider] = {
-                                        'api_key': key_clean,
-                                        'base_url': url_clean if url_clean.startswith('http') else None
-                                    }
-            except Exception as e:
-                logger.error("Error parsing rules_software.md: %s", e)
-        
-        # Fallback to environment variables
-        for p in ['gemini', 'anthropic', 'openai', 'deepseek', 'tavily']:
-            var_name = f"{p.upper()}_API_KEY"
-            env_val = os.getenv(var_name)
-            if env_val:
-                if p not in configs:
-                    configs[p] = {}
-                configs[p]['api_key'] = env_val
-            
-            # Default fallback endpoints if missing in md
-            if p not in configs:
-                configs[p] = {}
-            if 'base_url' not in configs[p] or not configs[p]['base_url']:
-                if p == 'gemini':
-                    configs[p]['base_url'] = 'https://generativelanguage.googleapis.com/v1beta/'
-                elif p == 'anthropic':
-                    configs[p]['base_url'] = 'https://api.anthropic.com/v1'
-                elif p == 'openai':
-                    configs[p]['base_url'] = 'https://api.openai.com/v1'
-                elif p == 'deepseek':
-                    configs[p]['base_url'] = 'https://api.deepseek.com'
-                    
-        # Save to RAM cache for next call
-        if sw_path:
-            try:
-                self._software_rules_cache = (os.path.getmtime(sw_path), configs)
-            except Exception:
-                pass
-
+        default_urls = {
+            'gemini': 'https://generativelanguage.googleapis.com/v1beta/',
+            'anthropic': 'https://api.anthropic.com/v1',
+            'openai': 'https://api.openai.com/v1',
+            'deepseek': 'https://api.deepseek.com',
+            'grok': 'https://api.x.ai/v1',
+            'tavily': 'https://api.tavily.com',
+        }
+        for p, default_url in default_urls.items():
+            var_name = "XAI_API_KEY" if p == "grok" else f"{p.upper()}_API_KEY"
+            env_val = (os.getenv(var_name) or os.getenv(f"{p.upper()}_API_KEY") or "").strip()
+            configs[p] = {
+                'api_key': env_val if env_val and not env_val.startswith("[REDACTED") else None,
+                'base_url': os.getenv(f"{p.upper()}_BASE_URL", default_url),
+            }
         return configs
 
 
@@ -1320,7 +1258,8 @@ class JKAIIntelligenceEngine:
                 if use_manual_react:
                     self.publish_mission_log("INFO", f"[MANUAL-REACT] Đang thử lại với Giao thức ReAct thủ công cho {final_model}...")
                 else:
-                    self.publish_mission_log("WARN", f"[FALLBACK] Khởi chạy cơ chế dự phòng cho mô hình {final_model}...")
+                    # Case 17/10 (yêu cầu Master): bỏ "(lý do lần trước)" — CALL-ERROR phía trên đã báo nguyên nhân ngay lúc lỗi.
+                    self.publish_mission_log("WARN", f"[FALLBACK] Khởi chạy cơ chế dự phòng cho mô hình {final_model}...", task_id)
                     try:
                         from core.utils.hardware_scheduler import hardware_scheduler
                         fb_info = await hardware_scheduler.resolve_smart_fallback(final_model, self, [role, "RECEPTIONIST", "RESERVE_AGENT"])
@@ -1334,6 +1273,11 @@ class JKAIIntelligenceEngine:
                         else:
                             break # No fallback found
                     except Exception as fb_err:
+                        # [IMMEDIATE-CAUSE]: trước đây nuốt im lặng → Master không bao giờ biết fallback hỏng ở đâu.
+                        try:
+                            self.publish_mission_log("ERROR", f"[FALLBACK-ERROR] Không chuyển được model dự phòng từ {final_model}: {type(fb_err).__name__}: {fb_err}", task_id)
+                        except Exception:
+                            pass
                         break
 
             # [COGNITIVE-CONTEXT-SOVEREIGNTY]: Context is compiled into clean Evidence Packs by Context Compiler (P0-9).
@@ -2061,10 +2005,27 @@ class JKAIIntelligenceEngine:
                     err_str = f"[CONNECT-FAILED] Không thể kết nối tới mô hình {final_model} tại {req_url}."
                 elif isinstance(e, httpx.TimeoutException):
                     err_str = f"[TIMEOUT] Mô hình {final_model} vượt quá thời gian phản hồi (>900s)."
+                # Case 16/10: cloud call lỗi phải nêu provider + endpoint để Master thấy ngay.
+                if is_cloud and cloud_provider:
+                    err_str = f"[CLOUD-{cloud_provider.upper()}-ERR] {err_str} (endpoint: {req_url})"
                 
                 err_msg = f"Error: [ENGINE-ERR] {err_str}"
-                logger.error(err_msg)
+                _tb_frames = traceback.extract_tb(e.__traceback__)
+                _tb_last = _tb_frames[-1] if _tb_frames else None
+                _tb_loc = f" @ {os.path.basename(_tb_last.filename)}:{_tb_last.lineno}" if _tb_last else ""
+                logger.error(err_msg, exc_info=True)
                 self._publish_thought(role, err_msg, task_id)
+                # [IMMEDIATE-CAUSE - Case 17/10]: Báo NGAY nguyên nhân vào mission log tại thời điểm lỗi.
+                # Không được để tới message FALLBACK của lần retry sau mới thấy (khi ấy đã chậm 1 nhịp).
+                try:
+                    self.publish_mission_log(
+                        "ERROR",
+                        f"[CALL-ERROR] {final_model} hỏng lần {attempt + 1}/{max_attempts} "
+                        f"({role}): {type(e).__name__}: {str(e)[:180]}{_tb_loc} → {err_str}",
+                        task_id,
+                    )
+                except Exception:
+                    pass
                 
                 # [SMART-ERROR-RECOVERY]: Phát hiện lỗi Quota/429 để ép chuyển vùng nơ-ron
                 if any(x in err_str.lower() for x in ["429", "quota", "rate limit", "limit exceeded", "exhausted"]):

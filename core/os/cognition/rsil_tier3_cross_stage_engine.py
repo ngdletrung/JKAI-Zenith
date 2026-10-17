@@ -112,14 +112,6 @@ class CrossStageProposalEngine:
 # 2. MASTER AUTHORITY HANDSHAKE GATE
 # ==============================================================================
 
-class MasterAuthorityHandshakeGate:
-    """
-    Cổng bắt tay thẩm quyền Master:
-    - Bất kỳ đề xuất nào thuộc Tier 3 (chạm tệp an ninh, phân quyền, ranh giới hệ thống)
-      bắt buộc phải tạo Challenge Token và được ký bằng Master Authority Key.
-    - Ngăn chặn triệt để hành vi tự thăng cấp ngoài biên giới (Boundary Escalation Prevention).
-    """
-
 def sign_master_challenge_out_of_band(challenge_token: str, master_secret: str) -> str:
     """
     [Tách biệt tiến trình & thẩm quyền ngoài băng]:

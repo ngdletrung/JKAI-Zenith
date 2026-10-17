@@ -1,0 +1,133 @@
+{
+  "phase": "A5_CONTINUOUS_VERIFIED_LEARNING_LOOP_AND_TOOL_OFFLOAD",
+  "evaluated_at": "2026-10-17T08:59:59.916212+00:00",
+  "hardware_verification": {
+    "gpu": "AMD Radeon RX 6600 (8GB VRAM)",
+    "ram_system": "128GB",
+    "model": "qwen2.5-coder:3b",
+    "vram_budget_hard_cap_mb": 7680,
+    "measured_model_vram_mb": 2068,
+    "measured_total_active_vram_mb": 5092,
+    "within_hardware_limits": true
+  },
+  "learning_loop_diagnostics": {
+    "observed_source_traces": "data/telemetry/phase_a4_raw_inference_traces.jsonl",
+    "failures_detected_count": 2,
+    "failure_diagnoses": [
+      {
+        "task_id": "B_m03",
+        "group": "A_MATH_FIDELITY",
+        "prompt": "Tính tỷ lệ tăng token của parent-child (38.0 tok) so với flat (30.0 tok).",
+        "raw_response": "Tỷ lệ tăng token của parent-child so với flat là 80%.",
+        "expected": "26.67%",
+        "retrieved_memory_ids": [],
+        "root_cause": "RETRIEVAL_MISS",
+        "remediation_plan": "Bổ sung quy tắc tổng quát vào VerifiedMemoryStore cho miền A_MATH_FIDELITY kèm từ khóa nhận diện phù hợp và kích hoạt công cụ tính toán tất định nếu là bài toán số học.",
+        "requires_deterministic_tool": true,
+        "requires_new_memory_rule": true
+      },
+      {
+        "task_id": "B_m04",
+        "group": "A_MATH_FIDELITY",
+        "prompt": "Tính thông lượng 210 token sinh trong 10.5 giây.",
+        "raw_response": "210 token / 10.5 giây = 210 / 21 = 10.0 tok/s",
+        "expected": "20.0 tok/s",
+        "retrieved_memory_ids": [
+          "MEM_MATH_002"
+        ],
+        "root_cause": "ARITHMETIC_EXECUTION_SLIP",
+        "remediation_plan": "Model nhỏ đã truy xuất ['MEM_MATH_002'] nhưng trượt phép chia số thực/tỷ lệ. Chuyển giao (offload) phép tính định lượng sang DeterministicMathTool ở tầng Runtime.",
+        "requires_deterministic_tool": true,
+        "requires_new_memory_rule": false
+      }
+    ],
+    "synthesized_memory_ingestions": [
+      {
+        "memory_id": "MEM_MATH_003",
+        "ingested": true,
+        "reason": "ALREADY_PRESENT_VERIFIED_ON_DISK",
+        "completion_gate_status": "COMPLETE"
+      }
+    ],
+    "acceptance_or_rollback_gate": {
+      "accepted": true,
+      "decision": "ACCEPTED_VERIFIED_IMPROVEMENT",
+      "baseline_tcr": 0.9,
+      "candidate_tcr": 1.0,
+      "tcr_delta": 0.1,
+      "committed_store_sha256": "5790b62c33bd5f8bad6d504c03b18b8ed95543c298ba1fd4f803524f99c2645f",
+      "committed_store_byte_size": 10860
+    }
+  },
+  "verified_memory_store": {
+    "file": "data/knowledge/verified_experience_store.jsonl",
+    "sha256": "5790b62c33bd5f8bad6d504c03b18b8ed95543c298ba1fd4f803524f99c2645f",
+    "byte_size": 10860,
+    "stats": {
+      "total_records": 9,
+      "active_records": 9,
+      "superseded_records": 0,
+      "by_tier": {
+        "VERIFIED_EXPERIENCE": 6,
+        "ACCEPTED_KNOWLEDGE": 3
+      },
+      "by_domain_group": {
+        "A_MATH_FIDELITY": 3,
+        "B_ANAPHORA_GROUNDING": 1,
+        "C_RETRIEVAL_CITATION": 2,
+        "D_TOOL_AND_FILEOPS": 1,
+        "E_MASTER_COMMUNICATION": 1,
+        "ERROR_RECOVERY": 1
+      }
+    },
+    "exam_leak_guard": "2_DOOR_BLOCKLIST_AND_4GRAM_UNDER_0.40_VERIFIED"
+  },
+  "raw_inference_traces": {
+    "file": "data/telemetry/phase_a5_raw_inference_traces.jsonl",
+    "sha256": "0f494cf2691c8191472d498b42c14c052999ba1a62f0ea957b0b64587ce91133",
+    "byte_size": 31634,
+    "total_tasks": 20,
+    "passed_tasks": 20,
+    "reproducible_audit_status": "COMMITTED_ON_DISK"
+  },
+  "progression_comparison": {
+    "phase_a0_vanilla_baseline": {
+      "passed_tasks": 9,
+      "total_tasks": 20,
+      "live_tcr": 0.45,
+      "avg_latency_s": 3.487
+    },
+    "phase_a3_scaffolding_only": {
+      "passed_tasks": 11,
+      "total_tasks": 20,
+      "live_tcr": 0.55,
+      "avg_latency_s": 2.861
+    },
+    "phase_a4_scaffolding_plus_verified_memory": {
+      "passed_tasks": 18,
+      "total_tasks": 20,
+      "live_tcr": 0.9,
+      "avg_latency_s": 2.7977
+    },
+    "phase_a5_verified_learning_loop_plus_deterministic_tool": {
+      "passed_tasks": 20,
+      "total_tasks": 20,
+      "live_tcr": 1.0,
+      "wilson_95_ci": {
+        "centre": 0.9194,
+        "lower": 0.8389,
+        "upper": 1.0
+      },
+      "avg_latency_s": 2.6534,
+      "gain_over_a0_baseline": 0.55,
+      "gain_over_a3_scaffolding": 0.45,
+      "gain_over_a4_memory": 0.1,
+      "safety_violations": 0
+    }
+  },
+  "verdict": {
+    "promotion_decision": "PROMOTE_TO_PRODUCTION",
+    "gate_passed": true,
+    "status_classification": "VERIFIED_LEARNING_LOOP_LIVE_EVALUATED"
+  }
+}

@@ -7,7 +7,7 @@ import { ZenithService } from '../../services/ZenithService';
 import { useAgentController } from '../../hooks/useAgentController';
 import { LogItem } from './LogItem';
 import { ExecutionTrace } from './ExecutionTrace';
-import { WorkingDots } from './LogElements';
+import { WorkingDots, AntigravityProcessTree } from './LogElements';
 export const IntelligenceStream = memo(() => {
   const goal = useZenithStore(s => s.goal);
   const setGoal = useZenithStore(s => s.setGoal);
@@ -66,61 +66,202 @@ export const IntelligenceStream = memo(() => {
   const dict = Dictionary[language as keyof typeof Dictionary] || Dictionary.en;
 
   const visibleLogs = useMemo(() => { 
-      if (streamView === 'process') 
-      return progressLogs; if (streamView === 'full') { 
+    if (streamView === 'process') 
+      return progressLogs;
+    if (streamView === 'full') { 
       // 🧬 [NEURAL-FUSION]: Hợp nhất cả hai luồng 
       const merged = [...operationalLogs]; 
       progressLogs.forEach(pl => { if (!merged.some(ol => ol.id === pl.id)) merged.push(pl); }); 
-      return merged.sort((a, b) => (a.ts || 0) - (b.ts || 0)); } 
-      
-      // Ở Nhật ký điều hành, hiển thị log của MASTER, JKAI và gộp thêm các log hành động quan trọng từ progressLogs
-      const ops = operationalLogs.filter(l => {
-        const tag = (l.tag || '').toUpperCase();
-        return tag.startsWith('MASTER') || tag === 'JKAI' || tag === 'DONE' || tag === 'RESULT' || l.type === 'user';
-      });
-
-      const actions = progressLogs.filter(pl => {
-        const tag = (pl.tag || '').toUpperCase();
-        const msg = (pl.msg || '').toLowerCase();
-        // Lọc các log hành động thực thi, tìm kiếm, đọc/sửa file
-        const isTargetAction = ['EXECUTOR', 'SEARCH', 'RESEARCH', 'FILE', 'TOOL'].includes(tag);
-        const hasActionKeyword = msg.includes('read') || msg.includes('view') || msg.includes('edit') || 
-                                 msg.includes('patch') || msg.includes('write') || msg.includes('analyz') ||
-                                 msg.includes('explor') || msg.includes('search') || msg.includes('find') ||
-                                 msg.includes('phân tích') || msg.includes('sửa') || msg.includes('truy xuất');
-        return isTargetAction && hasActionKeyword;
-      });
-
-      const merged = [...ops];
-      actions.forEach(act => {
-        if (!merged.some(m => m.id === act.id)) {
-          merged.push(act);
-        }
-      });
       return merged.sort((a, b) => (a.ts || 0) - (b.ts || 0));
-    }, [streamView, operationalLogs, progressLogs]);
+    } 
+    
+    // Ở Nhật ký điều hành (Chat view chuẩn Antigravity):
+    // Giữ đúng thứ tự lịch sử thời gian: Tin nhắn Master -> Tư duy & Hành động của lượt đó -> Phản hồi JKAI
+    // 0. Hàm kiểm tra log rác nội bộ / tóm tắt nén compaction / status tiến trình
+    const isInternalNoiseText = (text: string) => {
+      const lower = (text || '').toLowerCase();
+      return lower.includes('sovereign local runtime') ||
+             lower.includes('local execution succeeded') ||
+             lower.includes('safe execution:') ||
+             lower.includes('[allow] tool') ||
+             lower.includes('runtime ready') ||
+             lower.includes('mission initialized') ||
+             lower.includes('goal identity') ||
+             lower.includes('policy topology') ||
+             lower.includes('phản xạ tức thì') ||
+             lower.includes('khởi chạy lộ trình') ||
+             lower.includes('react loop') ||
+             lower.includes('conversational_reflex') ||
+             lower.includes('aqv-pass') ||
+             lower.includes('aqv-') ||
+             lower.includes('[latency]') ||
+             lower.includes('reflex score=') ||
+             lower.includes('fallback:') ||
+             lower.includes('the system successfully created') ||
+             lower.includes('step completed without errors') ||
+             lower.includes('in-flight turn') ||
+             lower.includes('active task sequence') ||
+             lower.includes('multi-turn process with no errors') ||
+             lower.includes('no further details were required') ||
+             lower.includes('ongoing process involving') ||
+             lower.includes('action marked step one') ||
+             lower.includes('marked the beginning of an active task') ||
+             lower.includes('[t6] báo cáo đã soạn thảo hoàn tất') ||
+             lower.includes('[t6] ban thư ký đang soạn báo cáo') ||
+             lower.includes('báo cáo đã soạn thảo hoàn tất') ||
+             lower.includes('ban thư ký đang soạn báo cáo');
+    };
 
-  // 🏁 [ANSWER-INDEX-DETECTOR]: Xác định vị trí bắt đầu của câu trả lời để chèn Nhật ký tiến trình
-  const firstAnswerIndex = useMemo(() => {
-    // 1. Tìm index của câu hỏi MASTER cuối cùng
-    const lastMasterIdx = [...visibleLogs].reverse().findIndex(l => {
-      const tag = l.tag?.toUpperCase() || '';
-      return tag.startsWith('MASTER');
+    const ops = operationalLogs.filter(l => {
+      const tag = (l.tag || '').toUpperCase();
+      const msg = l.msg || '';
+      if (isInternalNoiseText(msg)) return false;
+      return tag.startsWith('MASTER') || tag === 'JKAI' || tag === 'DONE' || tag === 'RESULT' || tag.includes('RECEPTIONIST') || tag === 'SUMMARIZER' || tag === 'MISSION_RESULT' || l.type === 'user';
     });
-    
-    // Chuyển đổi index ngược về index xuôi trong mảng gốc
-    const lastMasterIndex = lastMasterIdx === -1 ? -1 : (visibleLogs.length - 1 - lastMasterIdx);
-    
-    if (lastMasterIndex === -1) return -1;
-    
-    // 2. Tìm câu trả lời đầu tiên xuất hiện SAU câu hỏi Master cuối cùng
-    const ansIdx = visibleLogs.slice(lastMasterIndex + 1).findIndex(l => {
-      const tag = l.tag?.toUpperCase() || '';
-      return tag === 'JKAI' || tag === 'SUMMARIZER';
+
+    const actionsAndThoughts = progressLogs.filter(pl => {
+      const tag = (pl.tag || '').toUpperCase();
+      const msg = pl.msg || '';
+      if (isInternalNoiseText(msg)) return false;
+
+      // 1. Hành động công cụ (Tools, Searches, Files, Commands)
+      const isTargetAction = ['EXECUTOR', 'SEARCH', 'RESEARCH', 'FILE', 'TOOL', 'COMMAND', 'EXEC', 'THỰC THI'].includes(tag);
+      const hasActionKeyword = msg.includes('read') || msg.includes('view') || msg.includes('edit') || 
+                               msg.includes('patch') || msg.includes('write') || msg.includes('analyz') ||
+                               msg.includes('explor') || msg.includes('search') || msg.includes('find') ||
+                               msg.includes('command') || msg.includes('exec') || msg.includes('chạy') ||
+                               msg.includes('lệnh') || msg.includes('phân tích') || msg.includes('sửa') || msg.includes('truy xuất');
+      
+      // 2. Tư duy nhận thức (Thoughts / Planner)
+      const isThought = tag.includes('THOUGHT') || tag.includes('PLANNER') || tag.includes('TƯ DUY');
+      
+      // 3. File diffs và phân đoạn bước
+      const isSpecial = tag === 'FILE-EDIT' || (tag === 'ZENITH' && msg.includes('[step'));
+
+      return (isTargetAction && hasActionKeyword) || isThought || isSpecial;
     });
-    
-    return ansIdx === -1 ? -1 : (lastMasterIndex + 1 + ansIdx);
-  }, [visibleLogs]);
+
+    const merged = [...ops];
+    actionsAndThoughts.forEach(act => {
+      if (!merged.some(m => m.id === act.id)) {
+        merged.push(act);
+      }
+    });
+
+    // 🛡️ [ANTIGRAVITY-DEDUP]: Khử trùng lặp huy hiệu hành động liên tiếp cho cùng 1 tác vụ
+    const sorted = merged.sort((a, b) => (a.ts || 0) - (b.ts || 0));
+    const deduplicated: typeof sorted = [];
+    let lastActionKey = '';
+    let lastActionTs = 0;
+
+    sorted.forEach(item => {
+      const tag = (item.tag || '').toUpperCase();
+      const msg = (item.msg || '').toLowerCase();
+      const isAction = ['EXECUTOR', 'SEARCH', 'RESEARCH', 'FILE', 'TOOL', 'COMMAND', 'EXEC', 'THỰC THI'].includes(tag);
+      
+      if (isAction) {
+        // Rút gọn key hành động để nhận diện duplicate
+        const actionKey = msg.replace(/\s+/g, ' ').slice(0, 40);
+        const itemTs = item.ts || 0;
+        if (actionKey === lastActionKey && Math.abs(itemTs - lastActionTs) < 4) {
+          return; // Bỏ qua badge trùng
+        }
+        lastActionKey = actionKey;
+        lastActionTs = itemTs;
+      } else {
+        lastActionKey = '';
+      }
+      deduplicated.push(item);
+    });
+
+    return deduplicated;
+  }, [streamView, operationalLogs, progressLogs]);
+
+  // 🌲 [ANTIGRAVITY-TURN-ARCHITECTURE]: Cấu trúc Turn chuẩn Antigravity
+  // Mỗi Turn đại diện cho 1 chu kỳ đối thoại trọn vẹn:
+  // Lời nhắn Master -> Cây tiến trình (tư duy, kế hoạch, tool calls) -> Phản hồi cuối cùng của JKAI
+  interface Turn {
+    id: string;
+    isGreeting?: boolean;
+    greetingLogs?: any[];
+    userLog?: any;
+    processLogs: any[];
+    assistantLog?: any;
+  }
+
+  const turns = useMemo(() => {
+    if (streamView === 'full' || streamView === 'process') {
+      return null;
+    }
+
+    const resultTurns: Turn[] = [];
+    let currentTurn: Turn | null = null;
+
+    visibleLogs.forEach((l, idx) => {
+      const tag = (l.tag || '').toUpperCase();
+      const raw = (l.msg || '').trim();
+      const isUser = tag.startsWith('MASTER') || l.type === 'user';
+      // Chỉ coi là Assistant Final nếu không phải là kế hoạch json và có nội dung thực tế
+      const isAssistantFinal = (tag === 'JKAI' || tag === 'DONE' || tag === 'RESULT' || tag === 'MISSION_RESULT' || tag.includes('RECEPTIONIST') || tag.includes('SUMMARIZER')) && !raw.startsWith('{');
+
+      if (isUser) {
+        // Bắt đầu 1 Turn mới của Master
+        if (currentTurn) {
+          resultTurns.push(currentTurn);
+        }
+        currentTurn = {
+          id: l.id || `turn-${idx}`,
+          userLog: l,
+          processLogs: [],
+          assistantLog: null,
+        };
+      } else if (!currentTurn) {
+        // Chưa có tin nhắn Master nào (ví dụ banner chào mừng lúc đầu)
+        let greetingTurn = resultTurns.find(t => t.isGreeting);
+        if (!greetingTurn) {
+          greetingTurn = {
+            id: 'greeting-turn',
+            isGreeting: true,
+            greetingLogs: [],
+            processLogs: [],
+          };
+          resultTurns.push(greetingTurn);
+        }
+
+        // Phân loại log trước tin nhắn Master:
+        const isAction = ['EXECUTOR', 'SEARCH', 'RESEARCH', 'FILE', 'TOOL', 'COMMAND', 'EXEC', 'THỰC THI'].includes(tag);
+        const isThought = tag.includes('THOUGHT') || tag.includes('PLANNER') || tag.includes('TƯ DUY');
+        const isProcess = isAction || isThought || tag === 'FILE-EDIT' || (tag === 'ZENITH' && raw.includes('[step'));
+
+        if (isProcess) {
+          greetingTurn.processLogs.push(l);
+        } else if (isAssistantFinal) {
+          greetingTurn.assistantLog = l;
+        } else {
+          greetingTurn.greetingLogs?.push(l);
+        }
+      } else {
+        // Trong một Turn của Master
+        if (isAssistantFinal) {
+          if (currentTurn.assistantLog) {
+            // Nếu đã có assistantLog trước đó trong cùng 1 turn (ví dụ bản thảo trước khi replan),
+            // chuyển nó vào processLogs để giữ lịch sử và không làm phân mảnh timeline
+            currentTurn.processLogs.push(currentTurn.assistantLog);
+          }
+          currentTurn.assistantLog = l;
+        } else {
+          // Các bước tư duy, trinh sát, kế hoạch, thực thi công cụ
+          currentTurn.processLogs.push(l);
+        }
+      }
+    });
+
+    if (currentTurn) {
+      resultTurns.push(currentTurn);
+    }
+
+    return resultTurns;
+  }, [visibleLogs, streamView]);
 
   // 🔍 [PROCESS-LINE-SYNC]: Lấy các log kỹ thuật gần nhất để hiển thị
   const technicalLogs = useMemo(() => {
@@ -413,42 +554,77 @@ export const IntelligenceStream = memo(() => {
               </div>
             ) : (
               <div className="flex flex-col gap-2.5 pb-20">
-                {(() => {
-                  const elements: React.ReactNode[] = [];
-                  
-                  // Nếu không tìm thấy bất kỳ câu trả lời nào, hiện list log và trace ở đáy
-                  if (firstAnswerIndex === -1) {
-                    visibleLogs.forEach((l: any, i: number) => {
-                      elements.push(<LogItem key={l.id || i} l={l} forceReasoning={streamView === 'full'} />);
-                    });
-                    if (hasTraceItems) {
-                      elements.push(
-                        <div key="exec-trace-holder" className="flex flex-col gap-1.5 px-2 py-1">
-                          <ExecutionTrace />
+                {turns ? (
+                  // Chế độ Antigravity Turn-based chuẩn mực:
+                  // Master Prompt -> Process Tree (ngay dưới) -> WorkingDots (nếu đang chạy) -> Final JKAI Answer
+                  turns.map((turn, tIdx) => {
+                    const isLastTurn = tIdx === turns.length - 1;
+                    const isRunningOnThisTurn = isLastTurn && status === 'running';
+
+                    if (turn.isGreeting) {
+                      return (
+                        <div key={turn.id} className="space-y-3">
+                          {turn.greetingLogs?.map((gl, gIdx) => (
+                            <LogItem key={gl.id || gIdx} l={gl} forceReasoning={false} />
+                          ))}
+                          {turn.processLogs.length > 0 && (
+                            <AntigravityProcessTree 
+                              items={turn.processLogs} 
+                              isRunning={false}
+                              startTs={turn.processLogs[0]?.ts}
+                              finishTs={turn.assistantLog?.ts}
+                            />
+                          )}
+                          {turn.assistantLog && (
+                            <LogItem l={turn.assistantLog} forceReasoning={false} />
+                          )}
                         </div>
                       );
                     }
-                  } else {
-                    // Nếu đã có câu trả lời, chèn trace NGAY TRƯỚC câu trả lời đó
-                    visibleLogs.forEach((l: any, i: number) => {
-                      if (i === firstAnswerIndex && hasTraceItems) {
-                        elements.push(
-                          <div key="exec-trace-holder" className="flex flex-col gap-1.5 px-2 py-1">
-                            <ExecutionTrace />
+
+                    return (
+                      <div key={turn.id} className="flex flex-col gap-3">
+                        {/* 1. Câu hỏi / Lệnh của Master */}
+                        {turn.userLog && (
+                          <LogItem l={turn.userLog} forceReasoning={false} />
+                        )}
+
+                        {/* 2. Cây Tiến Trình (Tư duy, Kế hoạch, Công cụ) - LUÔN nằm ngay dưới câu hỏi */}
+                        {turn.processLogs.length > 0 && (
+                          <AntigravityProcessTree 
+                            items={turn.processLogs} 
+                            isRunning={isRunningOnThisTurn && !turn.assistantLog}
+                            startTs={turn.userLog?.ts || turn.processLogs[0]?.ts}
+                            finishTs={turn.assistantLog?.ts}
+                          />
+                        )}
+
+                        {/* 3. Hiệu ứng đang chạy nếu đang xử lý lượt này và chưa có bước tiến trình nào */}
+                        {isRunningOnThisTurn && !turn.assistantLog && turn.processLogs.length === 0 && (
+                          <div className="my-1">
+                            <WorkingDots label={language === 'vi' ? 'Đang thực thi..' : 'Working..'} />
                           </div>
-                        );
-                      }
-                      elements.push(<LogItem key={l.id || i} l={l} forceReasoning={streamView === 'full'} />);
-                    });
-                  }
+                        )}
 
-                  return elements;
-                })()}
+                        {/* 4. Câu trả lời chính thức của JKAI */}
+                        {turn.assistantLog && (
+                          <LogItem l={turn.assistantLog} forceReasoning={false} />
+                        )}
 
-                {status === 'running' && (
-                  <div className="my-2">
-                    <WorkingDots label={language === 'vi' ? 'Đang thực thi..' : 'Working..'} />
-                  </div>
+                        {/* 5. Nếu đang chạy thêm sau phản hồi (ví dụ hậu kiểm) */}
+                        {isRunningOnThisTurn && turn.assistantLog && (
+                          <div className="my-1">
+                            <WorkingDots label={language === 'vi' ? 'Đang hoàn tất..' : 'Finalizing..'} />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })
+                ) : (
+                  // Chế độ Full / Process log
+                  visibleLogs.map((l, i) => (
+                    <LogItem key={l.id || i} l={l} forceReasoning={streamView === 'full'} />
+                  ))
                 )}
                 {/* ⚓ [NEURAL-ANCHOR]: Mỏ neo cưỡng chế cuộn  */}
                 <div ref={messagesEndRef} className="h-4 shrink-0" />

@@ -54,6 +54,7 @@ EXIT_TIMEOUT = 20            # Hard timeout exceeded (>400s)
 EXIT_INVALID_BLOCK = 30      # New content found but invalid signature / corrupted Turn Block / TOCTOU
 EXIT_FILE_BUSY = 40          # File is locked / .tmp in use for too long (>30s)
 
+
 SIGNATURE_REGEX = re.compile(
     r"^—\s*K[ýy]\s*t[êe]n:\s*\*{0,2}(Antigravity|Opencode)\*{0,2}\s*\([^)]+\)\s*\|\s*(\d{4}-\d{2}-\d{2}(?:\s+\d{2}:\d{2}(?::\d{2})?)?)\s*\(GMT\+7\)\s*$",
     re.IGNORECASE,

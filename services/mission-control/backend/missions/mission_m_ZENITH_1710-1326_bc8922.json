@@ -1,0 +1,791 @@
+{
+  "id": "m_ZENITH_1710-1326_bc8922",
+  "title": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+  "goal": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+  "status": "completed",
+  "ts": 1792219332.46552,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+      "ts": 1792218416.4664898,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1710-1326_bc8922` initialized | Trace: `trace_bc8922`. Runtime ready.",
+      "ts": 1792218416.4685743,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=46 | preview='hãy viết cho tôi đơn xin nghĩ phép cho con tôi' | hash=cfe443f1c1b87989 | task_id=ZENITH_1710-1326_bc8922 | trace_id=trace_bc8922",
+      "ts": 1792218431.2395015,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: ['SINGLE_FILE_ACTION'] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1792218431.2433603,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [PIPELINE-RESOLVER]: Chế độ DEEP tự động kích hoạt (Reason: Master explicitly requested DEEP (Multi-Agent Ensemble Mode).).",
+      "ts": 1792218431.2462387,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=office pipeline=deep mode=deep tags=OFFICE",
+      "ts": 1792218431.2488694,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1792218431.2532337,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "DeepPipeline T2–T6 (full)",
+      "ts": 1792218431.6414754,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "✅ [PREFLIGHT-OK] Available executors: http://ai-executor-1:8000, http://ai-executor-2:8000",
+      "ts": 1792218431.7312531,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [ENGINE-READY]: Chế độ DEEP — Cụm mô hình tư duy sâu đã có sẵn trên RAM/VRAM. Khởi chạy lập trình ngay!",
+      "ts": 1792218431.75029,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792218432.2277849,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792218432.3729017,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792218432.3782198,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792218432.5099766,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792218432.5386815,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792218433.851468,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 35.54s.",
+      "ts": 1792218469.39419,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792218469.4524784,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1792218469.478392,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792218469.4998772,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_recovery_01 (SEARCH_WEB_GLOBAL)**: Auto-recovery: search web for: hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+      "ts": 1792218469.5349565,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792218469.538283,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TRIỂN KHAI BƯỚC] Đang khởi chạy thực thi song song: `[/]` **auto_recovery_01**",
+      "ts": 1792218469.5412788,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'SEARCH_WEB_GLOBAL' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792218469.621711,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_bc8922",
+      "ts": 1792218469.6550088,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'SEARCH_WEB_GLOBAL' via sovereign local runtime.",
+      "ts": 1792218469.7904115,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[SEARCH_WEB_GLOBAL] ✅ Local execution succeeded",
+      "ts": 1792218505.5473735,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [IN-FLIGHT-CHAIN] Đã phát hiện 2 nguồn uy tín. Đang tự động đọc sâu nội dung toàn văn...",
+      "ts": 1792218505.5880857,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'read_url_content' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792218505.591829,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: read_url_content(...) - TraceID: trace_bc8922",
+      "ts": 1792218505.5954497,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'read_url_content' via sovereign local runtime.",
+      "ts": 1792218505.597978,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[read_url_content] ⚠️ Local execution returned error: 'dict' object has no attribute 'status'",
+      "ts": 1792218507.585536,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'read_url_content' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792218507.5930583,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: read_url_content(...) - TraceID: trace_bc8922",
+      "ts": 1792218507.5967762,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'read_url_content' via sovereign local runtime.",
+      "ts": 1792218507.5998287,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[read_url_content] ⚠️ Local execution returned error: 'dict' object has no attribute 'status'",
+      "ts": 1792218509.0615587,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TIẾN ĐỘ THỰC THI BƯỚC] Hoàn tất: `[x]` **auto_recovery_01**",
+      "ts": 1792218509.0658917,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1792218509.4154055,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792218550.716377,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — [UNVERIFIED] (Score: 0.00)",
+      "ts": 1792218662.6293824,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5 REPLAN] Phán quyết chưa đạt chuẩn ([UNVERIFIED]). Kích hoạt Re-plan vòng 1/2...",
+      "ts": 1792218662.8149157,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792218662.817592,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792218662.8223917,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792218662.830416,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792218665.1667185,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792218665.1745617,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792218665.28855,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[FALLBACK] Khởi chạy cơ chế dự phòng cho mô hình qwen3.5:4b... (lý do lần trước: RuntimeError: Event loop is closed)",
+      "ts": 1792218716.7841997,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 92.99s.",
+      "ts": 1792218758.283378,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792218758.3061235,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1792218758.3073163,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792218758.3246722,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_recovery_01 (SEARCH_WEB_GLOBAL)**: Auto-recovery: search web for: hãy viết cho tôi đơn xin nghĩ phép cho con tôi\n\n[CRITIC REPLAN INSTRUCTION]: Kế hoạch trước đó chưa đạt chuẩn phê duyệt. Lý do: [UNVERIFIED]. Yêu cầu bổ sung: Yêu cầu người dùng cung cấp thông tin chi tiết: Tên trường/đơn vị nhận đơn, tên và ngày tháng năm sinh của con cái, địa chỉ liên hệ của phụ huynh, lý do cụ thể xin nghỉ phép (ví dụ: điều trị bệnh) và khoảng thời gian dự kiến.; Tái thiết kế quy trình tạo mẫu đơn bằng cách sử dụng thông tin đầu vào thực tế để điền vào các trường trong cấu trúc mẫu thay vì chỉ cung cấp khung mẫu chung chung. Đối với mẫu tiếng Anh, cần đảm bảo ngữ pháp hoàn chỉnh (ví dụ: 'I hereby apply for leave...').; Tăng cường kiểm tra độ uy tín của nguồn dữ liệu trước khi trích dẫn; nếu không tìm thấy thông tin cập nhật gần đây về quy định nghỉ phép cụ thể, nên ghi chú rõ ràng rằng mẫu được tạo dựa trên các chuẩn mực chung và cần người dùng điều chỉnh.. Hãy phân rã mục tiêu thành các sub-queries cụ thể để thu thập đủ bằng chứng.",
+      "ts": 1792218758.3536184,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CHECKPOINT] Đã khôi phục 1 bước SUCCESS trước đó.",
+      "ts": 1792218758.3574193,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792218758.3597593,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1792218758.362003,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792218762.5190883,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — [UNVERIFIED] (Score: 0.00)",
+      "ts": 1792218891.1757712,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5 REPLAN] Phán quyết chưa đạt chuẩn ([UNVERIFIED]). Kích hoạt Re-plan vòng 2/2...",
+      "ts": 1792218891.1784077,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792218891.1805484,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792218891.1839886,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792218891.1908796,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792218891.2458842,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792218891.2554212,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792218891.3970163,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 58.3s.",
+      "ts": 1792218949.703069,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792218949.7324033,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1792218949.7337747,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792218949.7494361,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_recovery_01 (SEARCH_WEB_GLOBAL)**: Auto-recovery: search web for: hãy viết cho tôi đơn xin nghĩ phép cho con tôi\n\n[CRITIC REPLAN INSTRUCTION]: Kế hoạch trước đó chưa đạt chuẩn phê duyệt. Lý do: [UNVERIFIED]. Yêu cầu bổ sung: Yêu cầu người dùng cung cấp thông tin chi tiết: Tên trường/đơn vị nhận đơn, tên và ngày tháng năm sinh của con cái, địa chỉ liên hệ của phụ huynh, lý do cụ thể xin nghỉ phép (ví dụ: điều trị bệnh) và khoảng thời gian dự kiến.; Tái thiết kế quy trình tạo mẫu đơn bằng cách sử dụng thông tin đầu vào thực tế để điền vào các trường trong cấu trúc mẫu thay vì chỉ cung cấp khung mẫu chung chung. Đối với mẫu tiếng Anh, cần đảm bảo ngữ pháp hoàn chỉnh (ví dụ: 'I hereby apply for leave...').; Tăng cường kiểm tra độ uy tín của nguồn dữ liệu trước khi trích dẫn; nếu không tìm thấy thông tin cập nhật gần đây về quy định nghỉ phép cụ thể, nên ghi chú rõ ràng rằng mẫu được tạo dựa trên các chuẩn mực chung và cần người dùng điều chỉnh.. Hãy phân rã mục tiêu thành các sub-queries cụ thể để thu thập đủ bằng chứng.\n\n[CRITIC REPLAN INSTRUCTION]: Kế hoạch trước đó chưa đạt chuẩn phê duyệt. Lý do: [UNVERIFIED]. Yêu cầu bổ sung: Yêu cầu người dùng cung cấp thông tin chi tiết: Tên trường/đơn vị nhận đơn, tên đầy đủ và ngày tháng năm sinh của con cái, địa chỉ liên hệ chính xác của phụ huynh (người viết), lý do cụ thể xin nghỉ phép (ví dụ: điều trị bệnh, sự cố gia đình) và khoảng thời gian dự kiến cần nghỉ.; Tái thiết kế quy trình tạo mẫu đơn bằng cách sử dụng thông tin đầu vào thực tế để điền trực tiếp vào các trường trong cấu trúc mẫu thay vì chỉ cung cấp khung mẫu chung chung.; Đối với mẫu tiếng Anh, sửa đổi câu đề nghị thành dạng chính thức hơn phù hợp cho phụ huynh viết thay con (ví dụ: 'I hereby apply for leave on behalf of my child...').; Tăng cường kiểm tra độ uy tín của nguồn dữ liệu trước khi trích dẫn; nếu không tìm thấy thông tin cập nhật gần đây về quy định nghỉ phép cụ thể, phải ghi chú rõ ràng rằng mẫu được tạo dựa trên các chuẩn mực chung và cần người dùng điều chỉnh.. Hãy phân rã mục tiêu thành các sub-queries cụ thể để thu thập đủ bằng chứng.",
+      "ts": 1792218949.7761717,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CHECKPOINT] Đã khôi phục 1 bước SUCCESS trước đó.",
+      "ts": 1792218949.7807527,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792218949.7837708,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1792218949.78605,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792218955.286295,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=46 | preview='hãy viết cho tôi đơn xin nghĩ phép cho con tôi' | hash=cfe443f1c1b87989 | task_id=ZENITH_1710-1326_bc8922 | trace_id=trace_bc8922",
+      "ts": 1792219027.1843524,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: ['SINGLE_FILE_ACTION'] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1792219027.187538,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [PIPELINE-RESOLVER]: Chế độ DEEP tự động kích hoạt (Reason: Master explicitly requested DEEP (Multi-Agent Ensemble Mode).).",
+      "ts": 1792219027.19003,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=office pipeline=deep mode=deep tags=OFFICE",
+      "ts": 1792219027.1919086,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1792219027.1956835,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "DeepPipeline T2–T6 (full)",
+      "ts": 1792219027.1974936,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "✅ [PREFLIGHT-OK] Available executors: http://ai-executor-1:8000, http://ai-executor-2:8000",
+      "ts": 1792219027.2262049,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792219027.257567,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792219027.2607734,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792219027.2800355,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792219027.326105,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792219027.3346846,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792219027.4916606,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[FALLBACK] Khởi chạy cơ chế dự phòng cho mô hình qwen3.5:4b... (lý do lần trước: RuntimeError: Event loop is closed)",
+      "ts": 1792219027.5286653,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 52.41s.",
+      "ts": 1792219079.901348,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792219079.9254065,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1792219079.9264598,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792219079.9421985,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_recovery_01 (SEARCH_WEB_GLOBAL)**: Auto-recovery: search web for: hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+      "ts": 1792219079.9689121,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CHECKPOINT] Đã khôi phục 1 bước SUCCESS trước đó.",
+      "ts": 1792219079.972232,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792219079.9740005,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1792219079.9767704,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — [UNVERIFIED] (Score: 0.00)",
+      "ts": 1792219105.4979117,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[T6] Ban Thư Ký đang soạn Báo cáo...",
+      "ts": 1792219105.5027423,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792219110.0214672,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[T6] Báo cáo đã soạn thảo hoàn tất.",
+      "ts": 1792219234.9208431,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[REPLAN-ATTEMPT] Critic không phê duyệt. Lập kế hoạch lại. Attempt 2/3",
+      "ts": 1792219234.9705331,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792219234.9796307,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792219234.9865506,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792219234.9990618,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792219235.1537578,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792219235.2104826,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792219235.4230182,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[FALLBACK] Khởi chạy cơ chế dự phòng cho mô hình qwen3.5:4b... (lý do lần trước: ReadTimeout: )",
+      "ts": 1792219290.055472,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[FALLBACK] Khởi chạy cơ chế dự phòng cho mô hình qwen2.5-coder:3b... (lý do lần trước: RuntimeError: Event loop is closed)",
+      "ts": 1792219290.4446647,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "🛑 [MISSION-TIMEOUT] Sứ mệnh ZENITH_1710-1326_bc8922 vượt quá giới hạn an toàn 900s (15 phút). Kích hoạt ngắt khẩn cấp và hủy toàn bộ tác vụ con thưa Master.",
+      "ts": 1792219331.6106217,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Giao thức dừng đã được kích hoạt. Toàn bộ Đặc vụ đã dừng theo lệnh của Master.",
+      "ts": 1792219332.3865042,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1326_bc8922"
+    }
+  ],
+  "artifacts": {
+    "plan": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+    "walkthrough": "Giao thức dừng đã được kích hoạt. Toàn bộ Đặc vụ đã dừng theo lệnh của Master.",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

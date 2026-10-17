@@ -380,6 +380,22 @@ class CrawlRequest(BaseModel):
     extract_markdown: bool = True
     word_count_threshold: int = 10
 
+
+def _check_browser_allowlist(url: str) -> Optional[str]:
+    """Domain allowlist cho ai-browser (BROWSER_ALLOWED_DOMAINS, rỗng = cho phép hết + warn)."""
+    allow = [d.strip().lower() for d in os.getenv("BROWSER_ALLOWED_DOMAINS", "").split(",") if d.strip()]
+    if not allow:
+        return None
+    try:
+        from urllib.parse import urlparse as _up
+        host = (_up(url).hostname or "").lower()
+    except Exception:
+        return "URL không hợp lệ"
+    if not any(host == d or host.endswith("." + d) for d in allow):
+        return f"Domain '{host}' không thuộc allowlist ai-browser"
+    return None
+
+
 @app.post("/crawl")
 async def crawl(req: CrawlRequest):
     """
@@ -391,34 +407,60 @@ async def crawl(req: CrawlRequest):
     if not ssrf_check.get("allowed"):
         logger.warning(f"❌ [SSRF-BLOCKED] /crawl rejected URL: {req.url}")
         raise HTTPException(status_code=403, detail=ssrf_check.get("msg", "SSRF blocked"))
+    allow_err = _check_browser_allowlist(req.url)
+    if allow_err:
+        logger.warning(f"❌ [ALLOWLIST-BLOCKED] /crawl rejected URL: {req.url}")
+        raise HTTPException(status_code=403, detail=allow_err)
+
+    import hashlib as _hashlib
+    try:
+        from tools.web_search import extract_published_at as _extract_date
+    except Exception:
+        _extract_date = lambda html, url: ""  # noqa: E731
+
+    def _snapshot(md_content: str, engine_name: str, extra: Optional[dict] = None):
+        body = {
+            "status": "success",
+            "engine": engine_name,
+            "url": req.url,
+            "markdown": md_content,
+            "sha256": _hashlib.sha256(md_content.encode("utf-8")).hexdigest(),
+            "chars": len(md_content),
+            "attribution": "This product includes software developed by UncleCode (https://x.com/unclecode) as part of the Crawl4AI project (https://github.com/unclecode/crawl4ai).",
+        }
+        if extra:
+            body.update(extra)
+        return body
 
     try:
         try:
-            # Attempt to import and use Crawl4AI
-            from crawl4ai import AsyncWebCrawler, CrawlerRunConfig, CacheMode
-            
+            # Attempt to import and use Crawl4AI (tolerant buddy 0.4.x ↔ 0.9.x API)
+            from crawl4ai import AsyncWebCrawler
+            try:
+                from crawl4ai import CrawlerRunConfig, CacheMode
+                config = CrawlerRunConfig(
+                    cache_mode=CacheMode.BYPASS,
+                    word_count_threshold=req.word_count_threshold
+                )
+                _run_kwargs = {"config": config}
+            except Exception:
+                _run_kwargs = {}
+
             logger.info("[CRAWL4AI] Initializing AsyncWebCrawler thieu Master...")
-            config = CrawlerRunConfig(
-                cache_mode=CacheMode.BYPASS,
-                word_count_threshold=req.word_count_threshold
-            )
             async with AsyncWebCrawler() as crawler:
-                result = await crawler.arun(url=req.url, config=config)
-                
-                # Retrieve structured markdown
-                md_content = result.markdown
-                if hasattr(result, "markdown_v2") and result.markdown_v2:
-                    md_content = result.markdown_v2.raw_markdown
-                
+                result = await crawler.arun(url=req.url, **_run_kwargs)
+
+                # Retrieve structured markdown (markdown_v2 may not exist on all versions)
+                md_content = getattr(result, "markdown", "") or ""
+                _md2 = getattr(result, "markdown_v2", None)
+                if _md2 and getattr(_md2, "raw_markdown", None):
+                    md_content = _md2.raw_markdown
+
                 logger.info(f"[CRAWL4AI] Scraped {len(md_content)} characters thieu Master.")
-                return {
-                    "status": "success",
-                    "engine": "Crawl4AI",
-                    "url": req.url,
-                    "markdown": md_content,
-                    "text": result.extracted_content or md_content[:2000],
-                    "attribution": "This product includes software developed by UncleCode (https://x.com/unclecode) as part of the Crawl4AI project (https://github.com/unclecode/crawl4ai)."
-                }
+                return _snapshot(md_content, "Crawl4AI", {
+                    "text": (getattr(result, "extracted_content", "") or md_content[:2000]),
+                    "published_at": _extract_date(md_content, req.url),
+                })
         except ImportError:
             # Graceful fallback using Playwright
             logger.warning("[CRAWL4AI] Crawl4AI not installed. Falling back to Playwright...")
@@ -427,24 +469,19 @@ async def crawl(req: CrawlRequest):
                 browser = await pw.chromium.launch(headless=True)
                 page = await browser.new_page()
                 await page.goto(req.url, wait_until="networkidle", timeout=30000)
-                
+
                 # Simple markdown converter
                 title = await page.title()
                 body_text = await page.locator("body").inner_text()
-                
+
                 # Format a clean basic markdown representation
                 md_content = f"# {title}\n\n{body_text}"
                 await browser.close()
-                
+
                 logger.info(f"[PLAYWRIGHT-FALLBACK] Scraped {len(md_content)} characters thieu Master.")
-                return {
-                    "status": "success",
-                    "engine": "Playwright Fallback",
-                    "url": req.url,
-                    "markdown": md_content,
+                return _snapshot(md_content, "Playwright Fallback", {
                     "text": body_text[:2000],
-                    "attribution": "Fallback clean scraper engine."
-                }
+                })
     except Exception as e:
         logger.error(f"[CRAWL-ERR] {e}")
         raise HTTPException(status_code=500, detail=str(e))

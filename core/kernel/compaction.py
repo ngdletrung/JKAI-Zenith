@@ -113,7 +113,7 @@ class CompactionEngine:
                         {"role": "user", "content": f"[LOGS TO CONDENSE]:\n{history_text}"}
                     ],
                     role="SUMMARIZER",
-                    task_id=task_id,
+                    task_id=None,  # 🛡️ Không phát sóng tóm tắt nén bộ nhớ nội bộ ra kênh chat của người dùng
                     options={"temperature": 0.0}
                 )
                 if isinstance(raw_sum, dict) and "answer" in raw_sum:

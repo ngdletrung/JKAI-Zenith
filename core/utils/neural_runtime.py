@@ -29,16 +29,9 @@ class NeuralRuntime:
     def __init__(self, ollama_host: str):
         self.ollama_host = ollama_host
         
-        # 🌐 [CONNECTION-TUNING]: Tối ưu hóa Pooling Lifecycle
-        self._client = httpx.AsyncClient(
-            http2=False,
-            timeout=httpx.Timeout(900.0, connect=15.0, read=900.0, write=120.0), 
-            limits=httpx.Limits(
-                max_keepalive_connections=50, 
-                max_connections=100,
-                keepalive_expiry=60.0
-            )
-        )
+        # 🌐 [CONNECTION-TUNING]: Pooling Lifecycle — lazy + loop-aware (Case 17/10)
+        self._client: Optional[httpx.AsyncClient] = None
+        self._client_loop = None
         
         self._vector_size_cache = {}
         
@@ -56,12 +49,33 @@ class NeuralRuntime:
         self._health_cache = True
         self._health_ttl = 10.0  # seconds
 
+    def _get_client(self) -> httpx.AsyncClient:
+        # [LOOP-AWARE POOL]: tái tạo pool khi event loop đổi — chống 'Event loop is closed'
+        try:
+            _cur_loop = asyncio.get_running_loop()
+        except RuntimeError:
+            _cur_loop = None
+        if self._client is None or self._client.is_closed or self._client_loop is not _cur_loop:
+            if self._client is not None and self._client_loop is not _cur_loop:
+                logger.warning("[LOOP-AWARE-POOL] NeuralRuntime: event loop đổi — thay HTTP pool cũ.")
+            self._client = httpx.AsyncClient(
+                http2=False,
+                timeout=httpx.Timeout(900.0, connect=15.0, read=900.0, write=120.0),
+                limits=httpx.Limits(
+                    max_keepalive_connections=50,
+                    max_connections=100,
+                    keepalive_expiry=60.0
+                )
+            )
+            self._client_loop = _cur_loop
+        return self._client
+
     async def _check_health(self) -> bool:
         now = time.time()
         if now - self._last_health_check < self._health_ttl:
             return self._health_cache
         try:
-            resp = await self._client.get(f"{self.ollama_host}/api/tags", timeout=3.0)
+            resp = await self._get_client().get(f"{self.ollama_host}/api/tags", timeout=3.0)
             status = resp.status_code == 200
             self._health_cache = status
             self._last_health_check = now
@@ -113,7 +127,7 @@ class NeuralRuntime:
                     await asyncio.sleep(delay)
                     if not await self._check_health(): continue
 
-                async with self._client.stream('POST', f'{self.ollama_host}/api/chat', json=payload, timeout=900.0) as resp:
+                async with self._get_client().stream('POST', f'{self.ollama_host}/api/chat', json=payload, timeout=900.0) as resp:
                     if resp.status_code in [503, 429]:
                         logger.warning(f"⚠️ [NEURAL-BUSY]: Ollama đang bận ({resp.status_code}). Đang đợi nơ-ron hồi phục...")
                         self._report_failure()
@@ -251,7 +265,7 @@ class NeuralRuntime:
                 if keep_alive is not None:
                     payload["keep_alive"] = keep_alive
                 
-                resp = await self._client.post(
+                resp = await self._get_client().post(
                     f"{self.ollama_host}/api/embeddings",
                     json=payload,
                     timeout=60.0
@@ -431,4 +445,7 @@ class NeuralRuntime:
 
     async def close(self):
         """🔒 [SHUTDOWN]: Giải phóng tài nguyên kết nối."""
-        await self._client.aclose()
+        if self._client and not self._client.is_closed:
+            await self._client.aclose()
+        self._client = None
+        self._client_loop = None

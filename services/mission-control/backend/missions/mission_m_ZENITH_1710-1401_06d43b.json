@@ -1,0 +1,1302 @@
+{
+  "id": "m_ZENITH_1710-1401_06d43b",
+  "title": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+  "goal": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+  "status": "completed",
+  "ts": 1792221391.6675756,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+      "ts": 1792220486.3960805,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1710-1401_06d43b` initialized | Trace: `trace_06d43b`. Runtime ready.",
+      "ts": 1792220486.3977945,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=46 | preview='hãy viết cho tôi đơn xin nghĩ phép cho con tôi' | hash=cfe443f1c1b87989 | task_id=ZENITH_1710-1401_06d43b | trace_id=trace_06d43b",
+      "ts": 1792220491.446319,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: ['SINGLE_FILE_ACTION'] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1792220491.44957,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [PIPELINE-RESOLVER]: Chế độ DEEP tự động kích hoạt (Reason: Master explicitly requested DEEP (Multi-Agent Ensemble Mode).).",
+      "ts": 1792220491.4521167,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=office pipeline=deep mode=deep tags=OFFICE",
+      "ts": 1792220491.45458,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1792220491.458311,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "DeepPipeline T2–T6 (full)",
+      "ts": 1792220491.4601302,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "✅ [PREFLIGHT-OK] Available executors: http://ai-executor-1:8000, http://ai-executor-2:8000",
+      "ts": 1792220491.4873054,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[EXPERIENCE-STORE] Đã truy xuất 1 bài học thất bại từ quá khứ để phòng ngừa.",
+      "ts": 1792220491.5159836,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792220491.5180202,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792220491.5211165,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792220491.530021,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792220491.7368975,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792220491.745175,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792220491.8660223,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[FALLBACK] Khởi chạy cơ chế dự phòng cho mô hình qwen3.5:4b... (lý do lần trước: RuntimeError: Event loop is closed)",
+      "ts": 1792220491.9884026,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 23.8s.",
+      "ts": 1792220515.6676085,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792220515.691719,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1792220515.692539,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792220515.706727,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **step_01 (WRITE_TO_FILE)**: Write the leave application letter to the principal.",
+      "ts": 1792220515.7454753,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792220515.7487595,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TRIỂN KHAI BƯỚC] Đang khởi chạy thực thi song song: `[/]` **step_01**",
+      "ts": 1792220515.751814,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'WRITE_TO_FILE' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792220515.7546177,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: WRITE_TO_FILE(...) - TraceID: trace_06d43b",
+      "ts": 1792220515.7575886,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'WRITE_TO_FILE' via sovereign local runtime.",
+      "ts": 1792220515.759222,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "ACTION",
+      "msg": "Ghi tệp thành công `leave_application.txt` (SHA256: 5868ee555377..., Size: 433B)",
+      "ts": 1792220515.7805476,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[WRITE_TO_FILE] ✅ Local execution succeeded",
+      "ts": 1792220515.7830453,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TIẾN ĐỘ THỰC THI BƯỚC] Hoàn tất: `[x]` **step_01**",
+      "ts": 1792220515.7880964,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1792220515.792956,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792220518.0129108,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — [PARTIAL] (Score: 0.00)",
+      "ts": 1792220563.8022184,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5 REPLAN] Phán quyết chưa đạt chuẩn ([PARTIAL]). Kích hoạt Re-plan vòng 1/2...",
+      "ts": 1792220563.806063,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792220563.809196,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792220563.8122363,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792220563.8209774,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792220564.1366127,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792220564.3037722,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792220564.477993,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 51.18s.",
+      "ts": 1792220615.656433,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792220615.6871052,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1792220615.6877923,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792220615.7102695,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_recovery_01 (SEARCH_WEB_GLOBAL)**: Auto-recovery: search web for: hãy viết cho tôi đơn xin nghĩ phép cho con tôi\n\n[BÀI HỌC KINH NGHIỆM TỪ QUÁ KHỨ]:\n- Kết quả thực thi không có bằng chứng hợp lệ.\n(Hãy lập kế hoạch tránh các sai lầm trên).\n\n[CRITIC REPLAN INSTRUCTION]: Kế hoạch trước đó chưa đạt chuẩn phê duyệt. Lý do: [PARTIAL]. Yêu cầu bổ sung: Sử dụng công cụ `CriticRagVerifier` để truy xuất lại hoặc cập nhật cơ sở kiến thức với các mẫu đơn xin nghỉ phép tiếng Việt và Anh chính thống, bao gồm cả phần cam kết của phụ huynh.; Cập nhật nội dung trong bước thực thi (`step_01`) để đảm bảo có đầy đủ: Tên người viết (Ba mẹ), Ngày sinh con, Địa chỉ tại/Chức vụ hiện đang đảm nhiệm, và các thông tin liên hệ cần thiết.; Thêm vào quá trình kiểm chứng không chỉ là xem file tồn tại mà phải đọc nội dung (`grep` hoặc `head`) để xác minh sự có mặt của các trường dữ liệu bắt buộc.. Hãy phân rã mục tiêu thành các sub-queries cụ thể để thu thập đủ bằng chứng.",
+      "ts": 1792220615.7422767,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CHECKPOINT] Đã khôi phục 1 bước SUCCESS trước đó.",
+      "ts": 1792220615.7455106,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792220615.747294,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1792220615.7489593,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792220618.165846,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — [PARTIAL] (Score: 0.00)",
+      "ts": 1792220661.4969113,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5 REPLAN] Phán quyết chưa đạt chuẩn ([PARTIAL]). Kích hoạt Re-plan vòng 2/2...",
+      "ts": 1792220661.5014162,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792220661.5046384,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792220661.5110438,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792220661.521179,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792220661.5873334,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792220661.5948846,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792220661.771087,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 56.61s.",
+      "ts": 1792220718.382991,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792220718.405054,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1792220718.4058397,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792220718.4204054,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_recovery_01 (SEARCH_WEB_GLOBAL)**: Auto-recovery: search web for: hãy viết cho tôi đơn xin nghĩ phép cho con tôi\n\n[BÀI HỌC KINH NGHIỆM TỪ QUÁ KHỨ]:\n- Kết quả thực thi không có bằng chứng hợp lệ.\n(Hãy lập kế hoạch tránh các sai lầm trên).\n\n[CRITIC REPLAN INSTRUCTION]: Kế hoạch trước đó chưa đạt chuẩn phê duyệt. Lý do: [PARTIAL]. Yêu cầu bổ sung: Sử dụng công cụ `CriticRagVerifier` để truy xuất lại hoặc cập nhật cơ sở kiến thức với các mẫu đơn xin nghỉ phép tiếng Việt và Anh chính thống, bao gồm cả phần cam kết của phụ huynh.; Cập nhật nội dung trong bước thực thi (`step_01`) để đảm bảo có đầy đủ: Tên người viết (Ba mẹ), Ngày sinh con, Địa chỉ tại/Chức vụ hiện đang đảm nhiệm, và các thông tin liên hệ cần thiết.; Thêm vào quá trình kiểm chứng không chỉ là xem file tồn tại mà phải đọc nội dung (`grep` hoặc `head`) để xác minh sự có mặt của các trường dữ liệu bắt buộc.. Hãy phân rã mục tiêu thành các sub-queries cụ thể để thu thập đủ bằng chứng.\n\n[CRITIC REPLAN INSTRUCTION]: Kế hoạch trước đó chưa đạt chuẩn phê duyệt. Lý do: [PARTIAL]. Yêu cầu bổ sung: Tắt ngay lập tức việc sử dụng công cụ tìm kiếm web (`SEARCH_WEB_GLOBAL`) cho mục đích này. Thay vào đó, yêu cầu hệ thống truy cập trực tiếp vào kho lưu trữ văn bản hoặc cơ sở tri thức nội bộ để lấy các mẫu đơn xin nghỉ phép chuẩn xác.; Bổ sung bước kiểm tra bắt buộc trong quy trình: Sau khi tạo file, phải thực thi lệnh `cat leave_application.txt` và phân tích kết quả bằng regex để đảm bảo sự hiện diện của 4 trường dữ liệu cốt lõi trước khi đánh giá thành công.; Cập nhật logic xác minh không chỉ dựa trên trạng thái 'success' của quá trình viết tệp mà phải dựa trên độ phủ đầy (completeness) của nội dung đã sinh ra.. Hãy phân rã mục tiêu thành các sub-queries cụ thể để thu thập đủ bằng chứng.",
+      "ts": 1792220718.4533193,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CHECKPOINT] Đã khôi phục 1 bước SUCCESS trước đó.",
+      "ts": 1792220718.458118,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792220718.460017,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1792220718.462505,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792220720.1770144,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — [CONTRADICTION] (Score: 0.00)",
+      "ts": 1792220770.347334,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[T6] Ban Thư Ký đang soạn Báo cáo...",
+      "ts": 1792220770.3512688,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[FALLBACK] Khởi chạy cơ chế dự phòng cho mô hình qwen3.5:4b... (lý do lần trước: RuntimeError: Event loop is closed)",
+      "ts": 1792220829.0602589,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[T6] Báo cáo đã soạn thảo hoàn tất.",
+      "ts": 1792220842.8648489,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[REPLAN-ATTEMPT] Critic không phê duyệt. Lập kế hoạch lại. Attempt 2/3",
+      "ts": 1792220842.8714778,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792220842.875815,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792220842.8793414,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792220842.888197,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792220843.1412513,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792220843.1472938,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792220843.3245292,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 48.66s.",
+      "ts": 1792220891.9862294,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792220892.0114906,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1792220892.0123281,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792220892.0259733,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_recovery_01 (SEARCH_WEB_GLOBAL)**: Auto-recovery: search web for: hãy viết cho tôi đơn xin nghĩ phép cho con tôi\n\n[BÀI HỌC KINH NGHIỆM TỪ QUÁ KHỨ]:\n- Kết quả thực thi không có bằng chứng hợp lệ.\n(Hãy lập kế hoạch tránh các sai lầm trên).\n\n[REPLAN-FEEDBACK]: Báo cáo thực thi trước đó bị Critic từ chối vì: 'Kết quả thực thi không có bằng chứng hợp lệ.'. Vui lòng điều chỉnh kế hoạch, sửa đổi các bước lỗi và khắc phục triệt để.",
+      "ts": 1792220892.0505977,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CHECKPOINT] Đã khôi phục 1 bước SUCCESS trước đó.",
+      "ts": 1792220892.0543222,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792220892.0567665,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1792220892.0838325,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792220894.6627147,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — [VERIFIED] (Score: 0.00)",
+      "ts": 1792220914.5784683,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[T6] Ban Thư Ký đang soạn Báo cáo...",
+      "ts": 1792220914.5810292,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[T6] Báo cáo đã soạn thảo hoàn tất.",
+      "ts": 1792220961.1231334,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[REPLAN-ATTEMPT] Critic không phê duyệt. Lập kế hoạch lại. Attempt 3/3",
+      "ts": 1792220961.1326873,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792220961.1374056,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792220961.1412363,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792220961.1517005,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792220961.205692,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792220961.2140486,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792220961.4598918,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 51.8s.",
+      "ts": 1792221013.2630203,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792221013.2901065,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1792221013.292019,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792221013.3076081,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_recovery_01 (SEARCH_WEB_GLOBAL)**: Auto-recovery: search web for: hãy viết cho tôi đơn xin nghĩ phép cho con tôi\n\n[BÀI HỌC KINH NGHIỆM TỪ QUÁ KHỨ]:\n- Kết quả thực thi không có bằng chứng hợp lệ.\n(Hãy lập kế hoạch tránh các sai lầm trên).\n\n[REPLAN-FEEDBACK]: Báo cáo thực thi trước đó bị Critic từ chối vì: 'Kế hoạch thực thi đúng hướng. Việc tạo ra tệp văn bản là bước hoàn tất hợp lệ cho nhiệm vụ 'viết đơn'. Tuy nhiên, để đảm bảo chất lượng cao nhất (Elite Standard), cần yêu cầu Executor mở file vừa tạo và đọc nội dung chi tiết trước khi phê duyệt cuối cùng, nhằm loại bỏ rủi ro về sai sót trong việc soạn thảo mẫu.'. Vui lòng điều chỉnh kế hoạch, sửa đổi các bước lỗi và khắc phục triệt để.",
+      "ts": 1792221013.3325567,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CHECKPOINT] Đã khôi phục 1 bước SUCCESS trước đó.",
+      "ts": 1792221013.3359694,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792221013.3380435,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1792221013.3418999,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792221016.1278062,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — [PARTIAL] (Score: 0.00)",
+      "ts": 1792221047.6068432,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5 REPLAN] Phán quyết chưa đạt chuẩn ([PARTIAL]). Kích hoạt Re-plan vòng 1/2...",
+      "ts": 1792221047.6107254,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792221047.613258,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792221047.6177666,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792221047.626877,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792221047.677436,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792221047.6849272,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792221047.9165237,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=46 | preview='hãy viết cho tôi đơn xin nghĩ phép cho con tôi' | hash=cfe443f1c1b87989 | task_id=ZENITH_1710-1401_06d43b | trace_id=trace_06d43b",
+      "ts": 1792221093.107354,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: ['SINGLE_FILE_ACTION'] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1792221093.1098242,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [PIPELINE-RESOLVER]: Chế độ DEEP tự động kích hoạt (Reason: Master explicitly requested DEEP (Multi-Agent Ensemble Mode).).",
+      "ts": 1792221093.1117687,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=office pipeline=deep mode=deep tags=OFFICE",
+      "ts": 1792221093.1136706,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1792221093.117416,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "DeepPipeline T2–T6 (full)",
+      "ts": 1792221093.119156,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "✅ [PREFLIGHT-OK] Available executors: http://ai-executor-1:8000, http://ai-executor-2:8000",
+      "ts": 1792221093.1488829,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[EXPERIENCE-STORE] Đã truy xuất 3 bài học thất bại từ quá khứ để phòng ngừa.",
+      "ts": 1792221093.1735957,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792221093.1754663,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792221093.1780312,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792221093.189485,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792221093.4112606,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792221093.5316038,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792221093.6512415,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[FALLBACK] Khởi chạy cơ chế dự phòng cho mô hình qwen3.5:4b... (lý do lần trước: RuntimeError: Event loop is closed)",
+      "ts": 1792221093.8483088,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 53.16s.",
+      "ts": 1792221101.0762296,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792221101.1079164,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1792221101.109271,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792221101.1268888,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_recovery_01 (SEARCH_WEB_GLOBAL)**: Auto-recovery: search web for: hãy viết cho tôi đơn xin nghĩ phép cho con tôi\n\n[BÀI HỌC KINH NGHIỆM TỪ QUÁ KHỨ]:\n- Kết quả thực thi không có bằng chứng hợp lệ.\n(Hãy lập kế hoạch tránh các sai lầm trên).\n\n[REPLAN-FEEDBACK]: Báo cáo thực thi trước đó bị Critic từ chối vì: 'Kế hoạch thực thi đúng hướng. Việc tạo ra tệp văn bản là bước hoàn tất hợp lệ cho nhiệm vụ 'viết đơn'. Tuy nhiên, để đảm bảo chất lượng cao nhất (Elite Standard), cần yêu cầu Executor mở file vừa tạo và đọc nội dung chi tiết trước khi phê duyệt cuối cùng, nhằm loại bỏ rủi ro về sai sót trong việc soạn thảo mẫu.'. Vui lòng điều chỉnh kế hoạch, sửa đổi các bước lỗi và khắc phục triệt để.\n\n[CRITIC REPLAN INSTRUCTION]: Kế hoạch trước đó chưa đạt chuẩn phê duyệt. Lý do: [PARTIAL]. Yêu cầu bổ sung: Yêu cầu Executor mở file `leave_application.txt` vừa được tạo và trích xuất toàn bộ nội dung để phân tích chi tiết.; Thực hiện kiểm tra cú pháp, cấu trúc mẫu đơn (Lời đề nghị, Thời gian cụ thể, Thông tin liên hệ) dựa trên dữ liệu đã thu thập từ các nguồn web trong quá khứ.; Chỉ khi có bằng chứng xác thực về nội dung văn bản thì mới tiến hành phê duyệt hoặc yêu cầu sửa đổi.. Hãy phân rã mục tiêu thành các sub-queries cụ thể để thu thập đủ bằng chứng.",
+      "ts": 1792221101.154709,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CHECKPOINT] Đã khôi phục 1 bước SUCCESS trước đó.",
+      "ts": 1792221101.158066,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792221101.1600113,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1792221101.1626177,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792221107.9229662,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 52.97s.",
+      "ts": 1792221146.6216288,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792221146.6525342,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1792221146.6535132,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792221146.668362,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_recovery_01 (SEARCH_WEB_GLOBAL)**: Auto-recovery: search web for: hãy viết cho tôi đơn xin nghĩ phép cho con tôi\n\n[BÀI HỌC KINH NGHIỆM TỪ QUÁ KHỨ]:\n- Kết quả thực thi không có bằng chứng hợp lệ.\n- Kết quả thực thi không có bằng chứng hợp lệ.\n- Kế hoạch thực thi đúng hướng. Việc tạo ra tệp văn bản là bước hoàn tất hợp lệ cho nhiệm vụ 'viết đơn'. Tuy nhiên, để đảm bảo chất lượng cao nhất (Elite Standard), cần yêu cầu Executor mở file vừa tạo và đọc nội dung chi tiết trước khi phê duyệt cuối cùng, nhằm loại bỏ rủi ro về sai sót trong việc soạn thảo mẫu.\n(Hãy lập kế hoạch tránh các sai lầm trên).",
+      "ts": 1792221146.694579,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CHECKPOINT] Đã khôi phục 1 bước SUCCESS trước đó.",
+      "ts": 1792221146.6988912,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792221146.7013128,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1792221146.703691,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — [UNVERIFIED] (Score: 0.00)",
+      "ts": 1792221158.6582942,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5 REPLAN] Phán quyết chưa đạt chuẩn ([UNVERIFIED]). Kích hoạt Re-plan vòng 2/2...",
+      "ts": 1792221158.6617677,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792221158.6647823,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792221158.6688373,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792221158.6798983,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792221158.7257104,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792221158.7339747,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792221158.877327,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792221161.2116985,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 59.69s.",
+      "ts": 1792221218.5666616,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792221218.6054764,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1792221218.6065724,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792221218.6215532,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_recovery_01 (SEARCH_WEB_GLOBAL)**: Auto-recovery: search web for: hãy viết cho tôi đơn xin nghĩ phép cho con tôi\n\n[BÀI HỌC KINH NGHIỆM TỪ QUÁ KHỨ]:\n- Kết quả thực thi không có bằng chứng hợp lệ.\n(Hãy lập kế hoạch tránh các sai lầm trên).\n\n[REPLAN-FEEDBACK]: Báo cáo thực thi trước đó bị Critic từ chối vì: 'Kế hoạch thực thi đúng hướng. Việc tạo ra tệp văn bản là bước hoàn tất hợp lệ cho nhiệm vụ 'viết đơn'. Tuy nhiên, để đảm bảo chất lượng cao nhất (Elite Standard), cần yêu cầu Executor mở file vừa tạo và đọc nội dung chi tiết trước khi phê duyệt cuối cùng, nhằm loại bỏ rủi ro về sai sót trong việc soạn thảo mẫu.'. Vui lòng điều chỉnh kế hoạch, sửa đổi các bước lỗi và khắc phục triệt để.\n\n[CRITIC REPLAN INSTRUCTION]: Kế hoạch trước đó chưa đạt chuẩn phê duyệt. Lý do: [PARTIAL]. Yêu cầu bổ sung: Yêu cầu Executor mở file `leave_application.txt` vừa được tạo và trích xuất toàn bộ nội dung để phân tích chi tiết.; Thực hiện kiểm tra cú pháp, cấu trúc mẫu đơn (Lời đề nghị, Thời gian cụ thể, Thông tin liên hệ) dựa trên dữ liệu đã thu thập từ các nguồn web trong quá khứ.; Chỉ khi có bằng chứng xác thực về nội dung văn bản thì mới tiến hành phê duyệt hoặc yêu cầu sửa đổi.. Hãy phân rã mục tiêu thành các sub-queries cụ thể để thu thập đủ bằng chứng.\n\n[CRITIC REPLAN INSTRUCTION]: Kế hoạch trước đó chưa đạt chuẩn phê duyệt. Lý do: [UNVERIFIED]. Yêu cầu bổ sung: Yêu cầu Executor tạo lại hoặc kiểm tra nội dung trong file `leave_application.txt`.; Bắt buộc bước: Mở file vừa tạo, trích xuất toàn bộ nội dung và phân tích chi tiết các thành phần (Lời đề nghị, Thời gian cụ thể, Thông tin liên hệ).; So sánh cấu trúc văn bản với dữ liệu đã thu thập từ nguồn web trong quá khứ để đảm bảo tính hợp lệ.; Chỉ khi có bằng chứng xác thực về nội dung thì mới tiến hành phê duyệt hoặc yêu cầu sửa đổi.. Hãy phân rã mục tiêu thành các sub-queries cụ thể để thu thập đủ bằng chứng.",
+      "ts": 1792221218.6474164,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CHECKPOINT] Đã khôi phục 1 bước SUCCESS trước đó.",
+      "ts": 1792221218.6516697,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792221218.6535046,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1792221218.655586,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — [UNVERIFIED] (Score: 0.00)",
+      "ts": 1792221246.9218285,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5 REPLAN] Phán quyết chưa đạt chuẩn ([UNVERIFIED]). Kích hoạt Re-plan vòng 1/2...",
+      "ts": 1792221246.9242287,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792221246.9263875,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792221246.9298296,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792221246.9375691,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792221247.0155654,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792221247.0293117,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792221247.2668653,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792221249.211201,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 63.52s.",
+      "ts": 1792221310.7930703,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792221310.8173828,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1792221310.8185055,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792221310.8327847,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_recovery_01 (SEARCH_WEB_GLOBAL)**: Auto-recovery: search web for: hãy viết cho tôi đơn xin nghĩ phép cho con tôi\n\n[BÀI HỌC KINH NGHIỆM TỪ QUÁ KHỨ]:\n- Kết quả thực thi không có bằng chứng hợp lệ.\n- Kết quả thực thi không có bằng chứng hợp lệ.\n- Kế hoạch thực thi đúng hướng. Việc tạo ra tệp văn bản là bước hoàn tất hợp lệ cho nhiệm vụ 'viết đơn'. Tuy nhiên, để đảm bảo chất lượng cao nhất (Elite Standard), cần yêu cầu Executor mở file vừa tạo và đọc nội dung chi tiết trước khi phê duyệt cuối cùng, nhằm loại bỏ rủi ro về sai sót trong việc soạn thảo mẫu.\n(Hãy lập kế hoạch tránh các sai lầm trên).\n\n[CRITIC REPLAN INSTRUCTION]: Kế hoạch trước đó chưa đạt chuẩn phê duyệt. Lý do: [UNVERIFIED]. Yêu cầu bổ sung: Yêu cầu Executor mở file `leave_application.txt` và trích xuất toàn bộ nội dung làm bằng chứng mới.; So sánh nội dung đã tạo với các mẫu chuẩn (từ nguồn RAG hoặc kiến thức bên trong) để xác nhận tính chính xác của thông tin.; Chỉ thực hiện phê duyệt cuối cùng sau khi có đủ bằng chứng về nội dung văn bản, không dựa trên trạng thái 'tạo file thành công'.. Hãy phân rã mục tiêu thành các sub-queries cụ thể để thu thập đủ bằng chứng.",
+      "ts": 1792221310.8587177,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CHECKPOINT] Đã khôi phục 1 bước SUCCESS trước đó.",
+      "ts": 1792221310.862426,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792221310.8641672,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1792221310.8660398,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — [UNVERIFIED] (Score: 0.00)",
+      "ts": 1792221356.096797,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "SUMMARIZER",
+      "msg": "[T6] Ban Thư Ký đang soạn Báo cáo...",
+      "ts": 1792221356.1001477,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792221358.5597486,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "🛑 [MISSION-TIMEOUT] Sứ mệnh ZENITH_1710-1401_06d43b vượt quá giới hạn an toàn 900s (15 phút). Kích hoạt ngắt khẩn cấp và hủy toàn bộ tác vụ con thưa Master.",
+      "ts": 1792221391.3869944,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Giao thức dừng đã được kích hoạt. Toàn bộ Đặc vụ đã dừng theo lệnh của Master.",
+      "ts": 1792221391.603059,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1401_06d43b"
+    }
+  ],
+  "artifacts": {
+    "plan": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+    "walkthrough": "Giao thức dừng đã được kích hoạt. Toàn bộ Đặc vụ đã dừng theo lệnh của Master.",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

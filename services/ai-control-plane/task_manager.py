@@ -558,7 +558,12 @@ class TaskManager:
                 await asyncio.sleep(5)
 
     async def process_task(self, data: dict):
-        goal, tid, trid = data.get("goal", ""), data.get("task_id", "man"), data.get("trace_id", "sys")
+        # Case 16/10: cấm task_id "man" dùng chung — thiếu id thì sinh duy nhất để
+        # tránh nhiễm checkpoint + rớt lịch sử mission.
+        import time as _time
+        goal, tid, trid = data.get("goal", ""), data.get("task_id") or f"task_{int(_time.time())}", data.get("trace_id", "sys")
+        if tid == "man":
+            tid = f"task_{int(_time.time())}"
         lkey = f"task_lock:{tid}"
         if tid != "man" and not redis_safe(lambda r: r.set(lkey, "busy", nx=True, ex=1800)): return {"status": "skipped"}
         try: return await self._run_mission(goal, tid, trid, data.get("mode", "auto"), data)

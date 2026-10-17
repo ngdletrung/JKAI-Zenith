@@ -1,0 +1,71 @@
+{
+  "phase": "A6_PARAPHRASE_GENERALIZATION_AND_WEEKLY_AUTONOMOUS_AUDIT",
+  "evaluated_at": "2026-10-17T09:00:00.974897+00:00",
+  "hardware_verification": {
+    "gpu": "AMD Radeon RX 6600 (8GB VRAM)",
+    "ram_system": "128GB",
+    "model": "qwen2.5-coder:3b",
+    "vram_budget_hard_cap_mb": 7680,
+    "measured_model_vram_mb": 2068,
+    "measured_total_active_vram_mb": 5092,
+    "within_hardware_limits": true
+  },
+  "verified_memory_store": {
+    "file": "data/knowledge/verified_experience_store.jsonl",
+    "sha256": "5790b62c33bd5f8bad6d504c03b18b8ed95543c298ba1fd4f803524f99c2645f",
+    "byte_size": 10860,
+    "stats": {
+      "total_records": 9,
+      "active_records": 9,
+      "superseded_records": 0,
+      "by_tier": {
+        "VERIFIED_EXPERIENCE": 6,
+        "ACCEPTED_KNOWLEDGE": 3
+      },
+      "by_domain_group": {
+        "A_MATH_FIDELITY": 3,
+        "B_ANAPHORA_GROUNDING": 1,
+        "C_RETRIEVAL_CITATION": 2,
+        "D_TOOL_AND_FILEOPS": 1,
+        "E_MASTER_COMMUNICATION": 1,
+        "ERROR_RECOVERY": 1
+      }
+    },
+    "leak_violations_across_all_4_suites": 0
+  },
+  "paraphrase_generalization_challenge": {
+    "challenge_file": "data/eval/paraphrased_generalization_challenge.jsonl",
+    "challenge_sha256": "8b89e49300f27ddc1e46547ae06384fc0bd701073f6a82bdb80d26a1c7b53829",
+    "challenge_byte_size": 2375,
+    "raw_traces_file": "data/telemetry/phase_a6_paraphrase_generalization_traces.jsonl",
+    "raw_traces_sha256": "c3a9ae5270c58de60e842dbb4786687c400646791869dc128468c9e7ae38f44f",
+    "raw_traces_byte_size": 17397,
+    "total_tasks": 10,
+    "passed_tasks": 9,
+    "live_tcr": 0.9,
+    "wilson_95_ci": {
+      "centre": 0.789,
+      "lower": 0.5959,
+      "upper": 0.9821
+    },
+    "avg_latency_s": 8.8569
+  },
+  "weekly_autonomous_audit_6_gates": {
+    "mission_id": "WEEKLY_AUTONOMOUS_AUDIT_A6",
+    "completion_status": "COMPLETE",
+    "verified_gates_count": 6,
+    "total_gates_count": 6,
+    "combined_30_task_summary": {
+      "primary_ood_20_passed": 20,
+      "paraphrase_bilingual_10_passed": 9,
+      "combined_passed": 29,
+      "combined_total": 30,
+      "combined_live_tcr": 0.9667
+    }
+  },
+  "verdict": {
+    "audit_status": "AUTONOMOUS_AUDIT_PASSED",
+    "gate_passed": true,
+    "opencode_turn_380_observation_resolved": true
+  }
+}

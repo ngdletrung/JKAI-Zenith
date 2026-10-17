@@ -57,6 +57,7 @@ class FaultType(str, Enum):
     TOOL_CRASH = "TOOL_CRASH"              # Công cụ chết đột ngột, crash tiến trình
     NETWORK_DROP = "NETWORK_DROP"          # Mạng ngắt kết nối, timeout, connection refused
     MALFORMED_FORMAT = "MALFORMED_FORMAT"  # Phản hồi rác, JSON vỡ, stream truncated
+    PARTIAL_DELIVERY = "PARTIAL_DELIVERY"  # Giao nộp bán phần, thiếu tiêu chí thành công (cần replan/targeted repair)
 
 
 @dataclass
@@ -236,6 +237,136 @@ class RecoveryDrillHarness:
         self._record_to_ledger(result)
         return result
 
+    def execute_partial_delivery_replan_drill(
+        self,
+        drill_id: str,
+        initial_worker: Callable[[], Any],
+        targeted_repair_worker: Callable[[Dict[str, Any], List[str]], Any],
+        criteria_evaluator: Callable[[Any], List[Any]],
+        verifier: Callable[[Any], bool],
+        checkpoint_store: Optional[Any] = None,
+        adaptive_controller: Optional[Any] = None,
+    ) -> DrillResult:
+        """
+        Diễn tập 4: Giao nộp bán phần (PARTIAL/INCOMPLETE) -> Hệ thống phát hiện tiêu chí thiếu,
+        lưu Checkpoint bảo tồn thành quả, kích hoạt TARGETED_REPAIR và hoàn tất với 100% COMPLETE.
+        """
+        from core.os.cognition.mission_completion_gate import MissionCompletionGate
+        from core.os.cognition.deep_schemas import MissionOutcomeStatus, CriterionStatus
+        from core.os.cognition.event_checkpoint import CheckpointStore
+        from core.os.cognition.adaptive_controller import AdaptiveController, CognitiveStateSnapshot, AdaptiveStrategy
+
+        t0 = time.perf_counter()
+        recovered = False
+        mechanism = "UNRECOVERED"
+        final_output = None
+        details: Dict[str, Any] = {}
+
+        cp_store = checkpoint_store or CheckpointStore()
+        ctrl = adaptive_controller or AdaptiveController()
+
+        # Bước 1: Thực thi lần đầu (tạo kết quả bán phần)
+        initial_output = initial_worker()
+        criteria_step1 = criteria_evaluator(initial_output)
+        outcome1 = MissionCompletionGate.evaluate(
+            mission_id=drill_id,
+            criteria=criteria_step1,
+            verification_context_hash=hashlib.sha256(str(initial_output).encode()).hexdigest()[:16],
+            evidence_count=len(criteria_step1),
+            trace_id=f"trace_{drill_id}_step1",
+        )
+
+        # Kiểm chứng chốt chặn: Không được phép báo COMPLETE khi mới giao nộp bán phần
+        step1_incomplete = (outcome1.status in (MissionOutcomeStatus.INCOMPLETE, MissionOutcomeStatus.BLOCKED))
+
+        if step1_incomplete:
+            # Tạo Checkpoint lưu giữ thành quả bước 1
+            cp_store.create_checkpoint(
+                mission_id=drill_id,
+                step_id="step_1_initial",
+                step_index=1,
+                status="PARTIAL",
+                evidence=initial_output,
+                action_name="INITIAL_EXECUTION",
+                trace_id=f"trace_{drill_id}_step1",
+            )
+
+            # Bước 2: Time-Travel Backtracking & Thu thập tiêu chí chưa hoàn thành
+            best_cp, consolidated_evidence, consolidated_facts = cp_store.backtrack_to_best_checkpoint(
+                mission_id=drill_id,
+                trace_id=f"trace_{drill_id}_replan",
+            )
+            unresolved_ids = [c.criterion_id for c in criteria_step1 if c.status != CriterionStatus.VERIFIED]
+            verified_ids = [c.criterion_id for c in criteria_step1 if c.status == CriterionStatus.VERIFIED]
+
+            # Bước 3: Tham vấn AdaptiveController
+            snapshot = CognitiveStateSnapshot(
+                mission_id=drill_id,
+                prompt="Hoàn thiện các tiêu chí tác vụ còn thiếu",
+                outcome_status=outcome1.status.value,
+                unresolved_criteria_ids=unresolved_ids,
+                verified_criteria_ids=verified_ids,
+                evidence_items=[{"checkpoint_id": best_cp.checkpoint_id if best_cp else "", "facts": consolidated_facts}],
+                failed_attempts_count=1,
+                step_budget_remaining=4,
+            )
+            decision = ctrl.decide_strategy(snapshot, trace_id=f"trace_{drill_id}_replan")
+
+            if (
+                decision.selected_strategy == AdaptiveStrategy.ERROR_ADAPTIVE_RECOVERY
+                and decision.recovery_branch == "TARGETED_REPAIR"
+            ):
+                # Bước 4: Thực thi Targeted Repair cho các tiêu chí còn thiếu
+                final_output = targeted_repair_worker(consolidated_evidence, unresolved_ids)
+                criteria_step2 = criteria_evaluator(final_output)
+                outcome2 = MissionCompletionGate.evaluate(
+                    mission_id=drill_id,
+                    criteria=criteria_step2,
+                    verification_context_hash=hashlib.sha256(str(final_output).encode()).hexdigest()[:16],
+                    evidence_count=len(criteria_step2),
+                    trace_id=f"trace_{drill_id}_step2",
+                )
+
+                if outcome2.status == MissionOutcomeStatus.COMPLETE:
+                    cp_store.create_checkpoint(
+                        mission_id=drill_id,
+                        step_id="step_2_repair",
+                        step_index=2,
+                        status="SUCCESS",
+                        evidence=final_output,
+                        action_name="TARGETED_REPAIR",
+                        trace_id=f"trace_{drill_id}_step2",
+                    )
+                    if verifier(final_output):
+                        recovered = True
+                        mechanism = "CHECKPOINT_BACKTRACK_AND_TARGETED_REPAIR"
+
+                details = {
+                    "step1_status": outcome1.status.value,
+                    "step1_verified_ratio": f"{outcome1.success_criteria_verified}/{outcome1.success_criteria_total}",
+                    "step2_status": outcome2.status.value,
+                    "step2_verified_ratio": f"{outcome2.success_criteria_verified}/{outcome2.success_criteria_total}",
+                    "recovery_branch": decision.recovery_branch,
+                    "unresolved_repaired": unresolved_ids,
+                }
+
+        dt_ms = (time.perf_counter() - t0) * 1000.0
+        verified = verifier(final_output) if final_output is not None else False
+
+        result = DrillResult(
+            drill_id=drill_id,
+            fault_type=FaultType.PARTIAL_DELIVERY,
+            target_component="MISSION_COMPLETION_GATE_AND_ADAPTIVE_CONTROLLER",
+            injected_error="PARTIAL_ARTIFACT_DELIVERY_INCOMPLETE_CRITERIA",
+            recovered=recovered and verified,
+            recovery_mechanism=mechanism,
+            latency_ms=round(dt_ms, 3),
+            output_verified=verified,
+            details=details,
+        )
+        self._record_to_ledger(result)
+        return result
+
     def run_full_sovereign_adaptation_suite(self) -> Dict[str, Any]:
         """
         Chạy toàn bộ 15 kịch bản chọc lỗi (5 kịch bản x 3 kiểu sự cố)
@@ -389,7 +520,7 @@ class RecoveryDrillHarness:
             "data": entry_data,
         }
 
-        with open(self.ledger_path, "a", encoding="utf-8") as f:
+        with open(self.ledger_path, "a", encoding="utf-8", newline="\n") as f:
             f.write(json.dumps(ledger_entry, ensure_ascii=False) + "\n")
 
         return entry_hash
@@ -417,7 +548,7 @@ class RecoveryDrillHarness:
             "adaptation_summary": summary,
         }
 
-        with open(self.ledger_path, "a", encoding="utf-8") as f:
+        with open(self.ledger_path, "a", encoding="utf-8", newline="\n") as f:
             f.write(json.dumps(ledger_entry, ensure_ascii=False) + "\n")
 
         return entry_hash

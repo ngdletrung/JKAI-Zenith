@@ -1,0 +1,147 @@
+{
+  "id": "m_ZENITH_1710-1428_3697cf",
+  "title": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+  "goal": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+  "status": "failed",
+  "ts": 1792222140.9449592,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+      "ts": 1792222105.8045723,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1710-1428_3697cf` initialized | Trace: `trace_3697cf`. Runtime ready.",
+      "ts": 1792222105.808203,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=46 | preview='hãy viết cho tôi đơn xin nghĩ phép cho con tôi' | hash=cfe443f1c1b87989 | task_id=ZENITH_1710-1428_3697cf | trace_id=trace_3697cf",
+      "ts": 1792222112.3718393,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: ['SINGLE_FILE_ACTION'] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1792222112.3759413,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [PIPELINE-RESOLVER]: Chế độ DEEP tự động kích hoạt (Reason: Master explicitly requested DEEP (Multi-Agent Ensemble Mode).).",
+      "ts": 1792222112.3786666,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=office pipeline=deep mode=deep tags=OFFICE",
+      "ts": 1792222112.3809996,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1792222112.3858893,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "DeepPipeline T2–T6 (full)",
+      "ts": 1792222112.3881292,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "✅ [PREFLIGHT-OK] Available executors: http://ai-executor-1:8000, http://ai-executor-2:8000",
+      "ts": 1792222112.4182653,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[EXPERIENCE-STORE] Đã truy xuất 3 bài học thất bại từ quá khứ để phòng ngừa.",
+      "ts": 1792222112.4490294,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792222112.4524927,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792222112.4573677,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792222112.4719884,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792222112.5397995,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792222112.54665,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792222112.660851,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[FALLBACK] Khởi chạy cơ chế dự phòng cho mô hình qwen3.5:4b... (lý do lần trước: RuntimeError: Event loop is closed)",
+      "ts": 1792222112.6974912,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All connection attempts failed | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All connection attempts failed\"}",
+      "ts": 1792222140.9002154,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+      "ts": 1792222140.924085,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1428_3697cf"
+    }
+  ],
+  "artifacts": {
+    "plan": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+    "walkthrough": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

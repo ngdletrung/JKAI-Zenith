@@ -45,12 +45,15 @@ class MissionCompletionGate:
         verified = sum(1 for c in criteria if c.status == CriterionStatus.VERIFIED)
         unresolved = total - verified
 
-        if total > 0 and unresolved == 0:
-            status = MissionOutcomeStatus.COMPLETED_VERIFIED
-        elif verified > 0:
-            status = MissionOutcomeStatus.COMPLETED_WITH_LIMITATIONS
+        is_blocked = any(getattr(c, "status", None) in (CriterionStatus.FALSIFIED, "BLOCKED") for c in criteria)
+
+        if is_blocked:
+            status = MissionOutcomeStatus.BLOCKED
+        elif total > 0 and unresolved == 0:
+            status = MissionOutcomeStatus.COMPLETE
         else:
-            status = MissionOutcomeStatus.FAILED_VERIFICATION
+            # 🛡️ [COMPLETION AUTHORITY]: Tuyệt đối cấm báo COMPLETE khi còn tiêu chí chưa xong
+            status = MissionOutcomeStatus.INCOMPLETE
 
         outcome = MissionOutcome(
             mission_id=mission_id,
@@ -75,6 +78,28 @@ class MissionCompletionGate:
             },
             correlation_id=trace_id
         )
+
+        # 📡 [PHASE A1 TELEMETRY]: Tự động đồng bộ vào FullChainTracer nếu có active trace
+        try:
+            from core.telemetry.full_chain_tracer import full_chain_tracer
+            if trace_id in full_chain_tracer._active_traces:
+                full_chain_tracer.record_verification(
+                    trace_id=trace_id,
+                    total_criteria=total,
+                    verified_criteria=verified,
+                    unresolved_criteria=unresolved,
+                    evidence_hashes=[verification_context_hash],
+                    context_hash=verification_context_hash,
+                )
+                full_chain_tracer.finalize_trace(
+                    trace_id=trace_id,
+                    outcome_status=status.value,
+                    total_wallclock_ms=float(total_wallclock_ms),
+                    total_tokens=total_tokens,
+                    total_vram_peak_mb=total_vram_peak_mb,
+                )
+        except Exception as e:
+            logger.debug(f"Tracer sync bypassed: {e}")
 
         return outcome
 

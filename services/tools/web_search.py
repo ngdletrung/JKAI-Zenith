@@ -17,8 +17,10 @@ from __future__ import annotations
 
 import datetime
 import ipaddress
+import json
 import os
-from typing import Any, Dict, List, Optional, Sequence
+import re
+from typing import Any, Dict, List, Optional, Sequence, Tuple
 from urllib.parse import urlparse
 
 from core.utils.repo_map import StageAttribution
@@ -54,103 +56,271 @@ def _auto_load_env_keys() -> None:
 _auto_load_env_keys()
 
 
+# ── Freshness: ép cửa sổ thời gian cho intent realtime ──────────────
+# Case vàng 15/10: hỏi "tuần qua" nhưng query không mốc thời gian → bài 4/2025 lên top.
+REALTIME_WINDOWS = (
+    (("hôm nay", "hom nay", "today"), 1),
+    (("tuần qua", "tuan qua", "tuần này", "tuan nay", "tuần vừa qua", "last week", "past week", "this week"), 7),
+    (("tháng này", "thang nay", "tháng qua", "thang qua", "last month", "this month"), 30),
+    (("năm nay", "nam nay", "this year"), 365),
+    (("mới nhất", "moi nhat", "latest", "hiện tại", "hien tai", "realtime", "real-time"), 30),
+)
+
+_EXPLICIT_DATE_RE = re.compile(
+    r"(after:|before:|time_range|20\d\d[-/\.]\d{1,2}|\d{1,2}[-/\.]\d{1,2}[-/\.]\d{2,4})",
+    re.IGNORECASE,
+)
+
+
+def detect_time_intent(query: str) -> Optional[int]:
+    """Nhận diện intent realtime → số ngày cửa sổ. None nếu không phải realtime."""
+    q = str(query or "").lower()
+    for markers, days in REALTIME_WINDOWS:
+        if any(m in q for m in markers):
+            return days
+    return None
+
+
+def inject_time_window(
+    query: str,
+    now: Optional[datetime.datetime] = None,
+) -> Tuple[str, Optional[Dict[str, Any]]]:
+    """
+    Ép mốc `after:YYYY-MM-DD` vào query realtime chưa có mốc thời gian.
+    Trả về (effective_query, window_info|None). Không bao giờ chèn 2 lần.
+    """
+    clean_q = str(query or "").strip()
+    window_days = detect_time_intent(clean_q)
+    if window_days is None:
+        return clean_q, None
+    if _EXPLICIT_DATE_RE.search(clean_q):
+        return clean_q, {"window_days": window_days, "already_constrained": True, "after": None}
+    ref = now or datetime.datetime.now(datetime.timezone.utc)
+    after = (ref - datetime.timedelta(days=window_days)).date().isoformat()
+    return f"{clean_q} after:{after}", {"window_days": window_days, "already_constrained": False, "after": after}
+
+
+# ── Freshness: tách ngày xuất bản bài viết ──────────────────────────
+_META_DATE_RE = re.compile(
+    r'<meta[^>]+(?:property|name)=["\'](?:article:published_time|publish_date|date| DC\.date)["\'][^>]+content=["\']([^"\']+)["\']',
+    re.IGNORECASE,
+)
+_URL_DATE_RE = re.compile(r"/(20\d\d)[/\-](\d{1,2})(?:[/\-](\d{1,2}))?")
+
+
+def extract_published_at(html: str, url: str) -> str:
+    """
+    Tách ngày xuất bản: meta article:published_time → JSON-LD datePublished → ngày trong URL.
+    Trả về chuỗi YYYY-MM-DD hoặc "" nếu không xác định được.
+    """
+    html = str(html or "")
+    m = _META_DATE_RE.search(html)
+    if m:
+        return m.group(1).strip()[:10]
+    for m in re.finditer(
+        r'"date[Pp]ublished"\s*:\s*"([^"]+)"', html
+    ):
+        return m.group(1).strip()[:10]
+    m = _URL_DATE_RE.search(str(url or ""))
+    if m:
+        y, mo, d = m.group(1), m.group(2).zfill(2), (m.group(3) or "01").zfill(2)
+        return f"{y}-{mo}-{d}"
+    return ""
+
+
+def freshness_label(published_at: str, window_days: Optional[int], retrieved_at: str = "") -> str:
+    """Gắn nhãn độ tươi: fresh | stale:<date> | date_unknown."""
+    if not published_at:
+        return "date_unknown"
+    if window_days is None:
+        return "fresh"
+    try:
+        pub = datetime.date.fromisoformat(published_at[:10])
+        ref_s = (retrieved_at or "")[:10]
+        ref = datetime.date.fromisoformat(ref_s) if ref_s else datetime.datetime.now(datetime.timezone.utc).date()
+        if (ref - pub).days <= window_days + 1:
+            return "fresh"
+        return f"stale:{published_at[:10]}"
+    except Exception:
+        return "date_unknown"
+
+
+# ── Tầng retrieval nội bộ (thay r.jina.ai) ──────────────────────────
+# Preserve ZWNJ (\u200c) and ZWJ (\u200d) for Indic/Persian and Emoji sequences per OpenCode Turn 384!
+_INVISIBLE_CHARS_RE = re.compile(
+    "[\u200b\u200e\u200f\u202a\u202b\u202c\u202d\u202e"
+    "\u2060\u2061\u2062\u2063\u2064\ufeff\u00ad\u061c\U000e0000-\U000e007f]"
+)
+_TAG_STRIP_RE = re.compile(
+    r"<!--.*?-->|<script[^>]*>.*?</script>|<style[^>]*>.*?</style>"
+    r"|<noscript[^>]*>.*?</noscript>|<[^>]+>",
+    re.DOTALL | re.IGNORECASE,
+)
+
+_FETCH_UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) JKAI-Sovereign-Fetch/1.0"
+
+
+def strip_invisible_chars(text: str) -> str:
+    """Loại ký tự vô hình/bidi (kênh prompt injection), bảo toàn ZWNJ, ZWJ và NFC."""
+    import unicodedata as _ud
+    norm_text = _ud.normalize("NFC", str(text or ""))
+    return _INVISIBLE_CHARS_RE.sub("", norm_text)
+
+
+def html_to_clean_text(html: str, max_chars: int = 20000) -> str:
+    """Bóc text thuần từ HTML: áp dụng DeterministicWebSanitizer 3 tầng chuẩn xác."""
+    try:
+        from core.sanitizer.deterministic_web_sanitizer import DeterministicWebSanitizer
+        return DeterministicWebSanitizer.sanitize(html, max_chars=max_chars)
+    except Exception:
+        import html as _html_mod
+        text = _TAG_STRIP_RE.sub(" ", str(html or ""))
+        text = _html_mod.unescape(text)
+        text = strip_invisible_chars(text)
+        return " ".join(text.split())[:max_chars]
+
+
+def fetch_url_content(
+    url: str,
+    query: Optional[str] = None,
+    timeout: float = 15.0,
+    max_chars: int = 20000,
+    window_days: Optional[int] = None,
+    allowed_domains: Optional[Sequence[str]] = None,
+    resolver_fn: Optional[Any] = None,
+    http_client: Optional[Any] = None,
+) -> Dict[str, Any]:
+    """
+    Tầng retrieval nội bộ: SSRF Resolve-and-Pin → GET per-hop redirect revalidation → tách ngày → sanitize & verbatim passages.
+    Tuân thủ 5 điều kiện ràng buộc của Opencode (Lượt 384).
+    """
+    retrieved_at = datetime.datetime.now(datetime.timezone.utc).isoformat()
+    try:
+        from core.security.ssrf_resolve_pin_guard import SSRFResolveAndPinGuard
+        from core.sanitizer.deterministic_web_sanitizer import build_retrieval_contract_result
+
+        fetch_res = SSRFResolveAndPinGuard.fetch_with_revalidation(
+            url=url,
+            method="GET",
+            headers={"User-Agent": _FETCH_UA},
+            timeout=timeout,
+            max_redirects=3,
+            max_bytes=500_000,
+            allowed_domains=allowed_domains,
+            resolver_fn=resolver_fn,
+            http_client=http_client,
+        )
+
+        if not fetch_res.get("ok", False):
+            is_blocked = fetch_res.get("status") == "blocked"
+            return {
+                "status": "blocked" if is_blocked else "error",
+                "ok": False,
+                "url": fetch_res.get("url") or url,
+                "text": "",
+                "published_at": "",
+                "freshness": "date_unknown",
+                "retrieved_at": retrieved_at,
+                "source": "internal-fetch",
+                "error": fetch_res.get("error") or "Fetch failed",
+                "error_code": fetch_res.get("error_code"),
+                "redirect_chain": fetch_res.get("redirect_chain", []),
+                "pinned_ips": fetch_res.get("pinned_ips", []),
+            }
+
+        html = fetch_res.get("text", "")
+        pub = extract_published_at(html, url)
+        contract_res = build_retrieval_contract_result(
+            url=fetch_res.get("url") or url,
+            raw_html=html,
+            query=query,
+            max_chars=max_chars,
+            top_k_passages=3,
+        )
+
+        return {
+            "status": "success",
+            "ok": True,
+            "url": fetch_res.get("url") or url,
+            "text": contract_res.clean_text,
+            "published_at": pub,
+            "freshness": freshness_label(pub, window_days, retrieved_at),
+            "retrieved_at": retrieved_at,
+            "source": "internal-fetch",
+            "error": None,
+            "error_code": None,
+            "canonical_sha256": contract_res.canonical_sha256,
+            "passages": [p.to_dict() for p in contract_res.passages],
+            "tainted_envelope": contract_res.tainted_envelope,
+            "redirect_chain": fetch_res.get("redirect_chain", []),
+            "pinned_ips": fetch_res.get("pinned_ips", []),
+        }
+
+    except Exception as exc:
+        return {
+            "status": "error",
+            "ok": False,
+            "url": url,
+            "text": "",
+            "published_at": "",
+            "freshness": "date_unknown",
+            "retrieved_at": retrieved_at,
+            "source": "internal-fetch",
+            "error": str(exc)[:200],
+            "error_code": "FETCH_EXCEPTION",
+        }
+
+
+# Canonical alias for backward compatibility across modules/tests
+fetch_url_clean = fetch_url_content
+
+
 def validate_egress_url_ssrf_safe(
     url: str,
     allowed_domains: Optional[Sequence[str]] = None,
+    resolve_dns: bool = False,
+    resolver_fn: Optional[Any] = None,
 ) -> Dict[str, Any]:
     """
-    [Slice 2.4 - WeKnora SSRF-Safe & Whitelist-Only Egress Guard]:
-    - Chỉ cho phép giao thức `http` và `https`.
-    - Chặn tuyệt đối địa chỉ loopback, RFC1918 private network, link-local / cloud metadata
-      (`127.0.0.0/8`, `10.0.0.0/8`, `172.16.0.0/12`, `192.168.0.0/16`, `169.254.0.0/16`, `::1`, `localhost`, `.internal`, `.local`).
-    - Nếu cung cấp `allowed_domains` hoặc biến môi trường `JKAI_WEB_EGRESS_ALLOWLIST`, chỉ cho phép
-      truy cập các tên miền nằm trong danh sách trắng (bao gồm subdomain hợp lệ).
+    [Slice 2.4 / Phase A7 - WeKnora SSRF-Safe & Whitelist-Only Egress Guard]:
+    - Delegated to SSRFResolveAndPinGuard.validate_and_resolve for uniform zero-trust protection.
+    - Default resolve_dns=False preserves compatibility for unit tests without network,
+      while fetch_url_content and fetch_with_revalidation always enforce resolve_dns=True!
     """
-    raw_url = str(url or "").strip()
-    parsed = urlparse(raw_url)
-    scheme = (parsed.scheme or "").lower()
-    host = (parsed.hostname or "").strip().lower()
+    try:
+        from core.security.ssrf_resolve_pin_guard import SSRFResolveAndPinGuard
+        res = SSRFResolveAndPinGuard.validate_and_resolve(
+            url=url,
+            allowed_domains=allowed_domains,
+            resolve_dns=resolve_dns,
+            resolver_fn=resolver_fn,
+        )
+        res["stage_attribution"] = StageAttribution.CONTROLLER_GATE.value
+        return res
+    except Exception:
+        # Fallback to local parsing if import fails
+        raw_url = str(url or "").strip()
+        parsed = urlparse(raw_url)
+        scheme = (parsed.scheme or "").lower()
+        host = (parsed.hostname or "").strip().lower()
 
-    if scheme not in ("http", "https") or not host:
+        if scheme not in ("http", "https") or not host:
+            return {
+                "status": "refused",
+                "allowed": False,
+                "error_code": "SSRF_INVALID_SCHEME_OR_HOST",
+                "url": raw_url,
+                "stage_attribution": StageAttribution.CONTROLLER_GATE.value,
+                "msg": f"[EGRESS-REFUSED] Giao thức hoặc địa chỉ không hợp lệ: '{raw_url}'.",
+            }
         return {
-            "status": "refused",
-            "allowed": False,
-            "error_code": "SSRF_INVALID_SCHEME_OR_HOST",
-            "url": raw_url,
-            "stage_attribution": StageAttribution.CONTROLLER_GATE.value,
-            "msg": f"[EGRESS-REFUSED] Giao thức hoặc địa chỉ không hợp lệ: '{raw_url}'.",
-        }
-
-    if (
-        host in ("localhost", "0.0.0.0", "::1", "[::1]")
-        or host.endswith(".internal")
-        or host.endswith(".local")
-        or host.endswith(".localhost")
-    ):
-        return {
-            "status": "refused",
-            "allowed": False,
-            "error_code": "SSRF_BLOCKED_PRIVATE_OR_LOOPBACK",
+            "status": "allowed",
+            "allowed": True,
+            "error_code": None,
             "url": raw_url,
             "host": host,
             "stage_attribution": StageAttribution.CONTROLLER_GATE.value,
-            "msg": f"[SSRF-BLOCKED] Từ chối kết nối tới máy chủ nội bộ/loopback: '{host}'.",
         }
-
-    try:
-        ip_obj = ipaddress.ip_address(host.strip("[]"))
-        if (
-            ip_obj.is_private
-            or ip_obj.is_loopback
-            or ip_obj.is_link_local
-            or ip_obj.is_multicast
-            or ip_obj.is_reserved
-            or ip_obj.is_unspecified
-        ):
-            return {
-                "status": "refused",
-                "allowed": False,
-                "error_code": "SSRF_BLOCKED_PRIVATE_OR_LOOPBACK",
-                "url": raw_url,
-                "host": host,
-                "stage_attribution": StageAttribution.CONTROLLER_GATE.value,
-                "msg": f"[SSRF-BLOCKED] Từ chối kết nối tới địa chỉ IP nội bộ/metadata: '{host}'.",
-            }
-    except ValueError:
-        pass
-
-    env_wl = os.getenv("JKAI_WEB_EGRESS_ALLOWLIST", "").strip()
-    effective_wl: List[str] = []
-    if allowed_domains is not None:
-        effective_wl = [str(d).strip().lower() for d in allowed_domains if str(d).strip()]
-    elif env_wl:
-        effective_wl = [d.strip().lower() for d in env_wl.split(",") if d.strip()]
-
-    if effective_wl:
-        matched = any(host == dom or host.endswith(f".{dom}") for dom in effective_wl)
-        if not matched:
-            return {
-                "status": "refused",
-                "allowed": False,
-                "error_code": "EGRESS_DOMAIN_NOT_IN_ALLOWLIST",
-                "url": raw_url,
-                "host": host,
-                "allowed_domains": effective_wl,
-                "stage_attribution": StageAttribution.CONTROLLER_GATE.value,
-                "msg": (
-                    f"[EGRESS-REFUSED] Tên miền '{host}' không nằm trong danh sách trắng cho phép "
-                    f"(allowed_domains={effective_wl})."
-                ),
-            }
-
-    return {
-        "status": "allowed",
-        "allowed": True,
-        "error_code": None,
-        "url": raw_url,
-        "host": host,
-        "stage_attribution": StageAttribution.CONTROLLER_GATE.value,
-    }
 
 
 def is_local_only_enabled(local_only_flag: Optional[bool] = None) -> bool:
@@ -184,6 +354,7 @@ def build_transparent_refusal(
         "output": None,
         "error": msg,
         "msg": msg,
+        "detail": msg,
     }
 
 
@@ -203,9 +374,45 @@ def _format_results_with_citations(
         snippet = str(item.get("snippet") or item.get("content") or "").strip()
         lines.append(f"[{idx}] {title}")
         lines.append(f"URL: {url}")
+        pub = str(item.get("published_at") or "").strip()
+        fresh = str(item.get("freshness") or "").strip()
+        if pub:
+            lines.append(f"Ngày xuất bản: {pub}")
+        if fresh.startswith("stale:"):
+            lines.append(f"CẢNH BÁO ĐỘ TƯƠI: bài cũ ({fresh[6:]}) — chỉ dùng làm nền, không dùng làm số liệu hiện tại.")
+        elif fresh == "date_unknown":
+            lines.append("Ngày xuất bản: không xác định — thận trọng khi dùng số liệu.")
         lines.append(f"Trích đoạn: {snippet}")
         lines.append("")
     return "\n".join(lines).strip()
+
+
+class DDGBotDetectionError(RuntimeError):
+    """Ngoại lệ phát sinh khi DuckDuckGo kích hoạt cơ chế chống bot (CAPTCHA / 403 / 429 / Challenge)."""
+    pass
+
+
+DDG_BOT_SIGNATURES = (
+    "anomaly detected",
+    "checking your browser",
+    "cf-browser-verification",
+    "ddg-captcha",
+    "bots are not allowed",
+    "unusual traffic",
+    "challenge-running",
+    "challenge-form",
+    "please complete the security check",
+    "are you a human",
+)
+
+DDG_EXPLICIT_ZERO_RESULTS_SIGNATURES = (
+    "no results found",
+    "not found any results",
+    "no results for",
+    "class=\"no-results\"",
+    "class='no-results'",
+    "zero-results",
+)
 
 
 def _search_duckduckgo_direct_html(
@@ -214,9 +421,10 @@ def _search_duckduckgo_direct_html(
     timeout: float = 12.0,
 ) -> List[Dict[str, Any]]:
     """
-    Kênh tìm kiếm DuckDuckGo Direct HTML:
+    Kênh tìm kiếm DuckDuckGo Direct HTML có cơ chế nhận diện Bot-Detection:
     - Gửi request trực tiếp đến endpoint https://html.duckduckgo.com/html/
-    - Không bị phụ thuộc vào package duckduckgo_search/ddgs vốn hay lỗi do bot-detection
+    - Phát hiện chủ động HTTP 403/429 hoặc các trang Bot-Challenge/CAPTCHA (raise DDGBotDetectionError)
+    - Phân định rạch ròi giữa 'Zero Results' và 'Bị chặn bởi Bot Detection'
     - Tự động bóc tách kết quả, giải mã URL thực tế (unquote uddg) và làm sạch HTML entities
     """
     import html as _html
@@ -234,15 +442,41 @@ def _search_duckduckgo_direct_html(
         "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7",
     }
     try:
-        with httpx.Client(headers=headers, follow_redirects=True, timeout=timeout) as client:
-            resp = client.post("https://html.duckduckgo.com/html/", data={"q": query})
-            if resp.status_code != 200:
-                return []
-            html_text = resp.text
-    except (Exception, AssertionError):
+        from core.security.ssrf_resolve_pin_guard import SSRFResolveAndPinGuard
+        fetch_res = SSRFResolveAndPinGuard.fetch_with_revalidation(
+            url="https://html.duckduckgo.com/html/",
+            method="POST",
+            headers=headers,
+            data={"q": query},
+            timeout=timeout,
+        )
+        status_code = int(fetch_res.get("status_code") or 0)
+        html_text = str(fetch_res.get("text") or "")
+
+        # 1. Kiểm tra HTTP Status Code chặn bot
+        if status_code in (403, 429):
+            raise DDGBotDetectionError(f"DuckDuckGo trả về HTTP {status_code} (Rate Limit / Bot Challenge).")
+
+        if not fetch_res.get("ok", False):
+            # Nếu status_code khác 200 mà không phải 403/429
+            if status_code > 0:
+                raise RuntimeError(f"DuckDuckGo HTTP error {status_code}: {fetch_res.get('error', '')}")
+            return []
+    except DDGBotDetectionError:
+        raise
+    except Exception as exc:
+        if isinstance(exc, DDGBotDetectionError):
+            raise
         return []
 
-    parts = re.split(r'<div[^>]+class="[^"]*web-result[^"]*"', html_text)
+    # 2. Quét chữ ký Bot Detection / CAPTCHA trong nội dung HTML
+    lower_html = html_text.lower()
+    for sig in DDG_BOT_SIGNATURES:
+        if sig in lower_html:
+            raise DDGBotDetectionError(f"Phát hiện chữ ký chống bot của DuckDuckGo trong phản hồi: '{sig}'.")
+
+    # 3. Phân tách kết quả linh hoạt theo các selector của DuckDuckGo
+    parts = re.split(r'<div[^>]+class="[^"]*(?:web-result|results_links)[^"]*"', html_text)
     results: List[Dict[str, Any]] = []
     for part in parts[1:]:
         m_link = re.search(r'<a[^>]+class="[^"]*result__a[^"]*"[^>]+href="([^"]+)"[^>]*>(.*?)</a>', part, re.DOTALL)
@@ -268,6 +502,14 @@ def _search_duckduckgo_direct_html(
                 )
                 if len(results) >= max_results:
                     break
+
+    # 4. Nếu không trích xuất được kết quả nào: kiểm tra xem có phải Zero-Result thực thụ không
+    if not results:
+        is_explicit_zero = any(sig in lower_html for sig in DDG_EXPLICIT_ZERO_RESULTS_SIGNATURES)
+        if not is_explicit_zero and len(html_text) > 0 and len(html_text) < 1500:
+            # HTML quá ngắn mà không có kết quả và không có dấu hiệu zero-results: nghi ngờ bot challenge không cấu trúc
+            raise DDGBotDetectionError("Trang HTML DuckDuckGo bất thường (ngắn bất thường, không chứa kết quả tìm kiếm).")
+
     return results
 
 
@@ -294,93 +536,25 @@ def execute_real_web_search_sync(
     collected: List[Dict[str, Any]] = []
     errors: List[str] = []
 
-    # Kênh 1: Tavily API nếu có khóa
-    api_key = os.getenv("TAVILY_API_KEY", "").strip()
-    if api_key:
-        try:
-            import httpx
+    # Freshness (case vàng 15/10): query realtime bắt buộc có mốc after:
+    effective_q, window_info = inject_time_window(clean_q)
+    window_days = (window_info or {}).get("window_days")
+    if window_info and not window_info.get("already_constrained"):
+        clean_q = effective_q
 
-            with httpx.Client(timeout=15.0) as client:
-                resp = client.post(
-                    "https://api.tavily.com/search",
-                    json={
-                        "api_key": api_key,
-                        "query": clean_q,
-                        "search_depth": "basic",
-                        "max_results": max_results,
-                    },
-                )
-                if resp.status_code == 200:
-                    body = resp.json()
-                    for r in body.get("results", []):
-                        collected.append(
-                            {
-                                "title": r.get("title") or r.get("url") or "Tavily Result",
-                                "url": r.get("url", ""),
-                                "snippet": r.get("content", ""),
-                                "source": "tavily",
-                                "retrieved_at": retrieved_at,
-                            }
-                        )
-                else:
-                    errors.append(f"tavily_http_{resp.status_code}")
+    # Kênh 1: RSS Tươi (Direct Sovereign Feeds) cho tin tức/tài chính/thời sự
+    allow_rss = os.getenv("JKAI_DISABLE_RSS_DIRECT", "0") != "1"
+    if allow_rss:
+        try:
+            from core.retrieval.rss_poller import search_rss_feeds
+            rss_hits = search_rss_feeds(clean_q, max_results=max_results, max_age_hours=72)
+            if rss_hits:
+                for hit in rss_hits:
+                    collected.append(hit)
         except Exception as exc:
-            errors.append(f"tavily_err:{exc}")
+            errors.append(f"rss_err:{exc}")
 
-    # Kênh 2: DuckDuckGo thực tế nếu chưa có kết quả
-    if not collected and globals().get("DDGS") is not None:
-        try:
-            try:
-                from ddgs import DDGS as _DDGS
-            except ModuleNotFoundError:
-                from duckduckgo_search import DDGS as _DDGS
-        except ModuleNotFoundError:
-            _DDGS = None
-
-        def _is_test_stub_ddgs(cls: Any) -> bool:
-            if cls is None:
-                return True
-            name = getattr(cls, "__name__", "")
-            mod = getattr(cls, "__module__", "")
-            return "_Empty" in name or "stub" in str(mod).lower() or "mock" in str(mod).lower()
-
-        # Chi chay Direct HTML neu DDGS khong phai la test stub / mock va khong bi cam boi env
-        allow_direct = (
-            (_DDGS is not None)
-            and (not _is_test_stub_ddgs(_DDGS))
-            and (os.getenv("ALLOW_DDG_HTML", "1") != "0")
-            and (os.getenv("JKAI_DISABLE_DDG_DIRECT_HTML", "0") != "1")
-        )
-        if allow_direct:
-            try:
-                ddg_html_results = _search_duckduckgo_direct_html(clean_q, max_results=max_results)
-                for r in ddg_html_results:
-                    r["retrieved_at"] = retrieved_at
-                    collected.append(r)
-            except (Exception, AssertionError) as exc:
-                errors.append(f"ddg_html_err:{exc}")
-
-        # Kênh 2b: DDGS fallback nếu Direct HTML không trả về kết quả
-        if not collected and _DDGS is not None:
-            try:
-                with _DDGS() as ddgs:
-                    for r in ddgs.text(clean_q, max_results=max_results):
-                        collected.append(
-                            {
-                                "title": r.get("title") or r.get("href") or "DuckDuckGo Result",
-                                "url": r.get("href", ""),
-                                "snippet": r.get("body", ""),
-                                "source": "duckduckgo",
-                                "retrieved_at": retrieved_at,
-                            }
-                        )
-                if not collected:
-                    errors.append("ddg_empty:no_results_returned")
-            except Exception as exc:
-                errors.append(f"ddg_err:{exc}")
-
-    # Kênh 3: SearXNG tự chủ (sovereign-friendly, không key) nếu có cấu hình.
-    # Dat SEARXNG_URL (vd http://127.0.0.1:8888); de trong thi bo qua kenh nay.
+    # Kênh 2: SearXNG Tự chủ (Sovereign Metasearch) nếu có cấu hình
     if not collected:
         searxng_url = os.getenv("SEARXNG_URL", "").strip().rstrip("/")
         if searxng_url:
@@ -409,6 +583,101 @@ def execute_real_web_search_sync(
             except Exception as exc:
                 errors.append(f"searxng_err:{exc}")
 
+    # Kênh 3: Tavily API fallback (nếu có key cấu hình)
+    if not collected:
+        api_key = os.getenv("TAVILY_API_KEY", "").strip()
+        if api_key:
+            try:
+                import httpx
+
+                with httpx.Client(timeout=15.0) as client:
+                    resp = client.post(
+                        "https://api.tavily.com/search",
+                        json={
+                            "api_key": api_key,
+                            "query": clean_q,
+                            "search_depth": "basic",
+                            "max_results": max_results,
+                        },
+                    )
+                    if resp.status_code == 200:
+                        body = resp.json()
+                        for r in body.get("results", []):
+                            pub = str(r.get("published_date") or "").strip()[:10]
+                            collected.append(
+                                {
+                                    "title": r.get("title") or r.get("url") or "Tavily Result",
+                                    "url": r.get("url", ""),
+                                    "snippet": r.get("content", ""),
+                                    "source": "tavily",
+                                    "retrieved_at": retrieved_at,
+                                    "published_at": pub,
+                                    "freshness": freshness_label(pub, window_days, retrieved_at),
+                                }
+                            )
+                    else:
+                        errors.append(f"tavily_http_{resp.status_code}")
+            except Exception as exc:
+                errors.append(f"tavily_err:{exc}")
+
+    # Kênh 4: DuckDuckGo thực tế nếu chưa có kết quả (Direct HTML + Bot-Detection Awareness)
+    global_ddgs = globals().get("DDGS")
+    if not collected and global_ddgs is not None:
+        if global_ddgs != "auto":
+            _DDGS = global_ddgs
+        else:
+            try:
+                try:
+                    from ddgs import DDGS as _DDGS
+                except ModuleNotFoundError:
+                    from duckduckgo_search import DDGS as _DDGS
+            except ModuleNotFoundError:
+                _DDGS = None
+
+        def _is_test_stub_ddgs(cls: Any) -> bool:
+            if cls is None:
+                return True
+            name = getattr(cls, "__name__", "")
+            mod = getattr(cls, "__module__", "")
+            return "_Empty" in name or "stub" in str(mod).lower() or "mock" in str(mod).lower()
+
+        # Chi chay Direct HTML neu DDGS khong phai la test stub / mock va khong bi cam boi env
+        allow_direct = (
+            (_DDGS is not None)
+            and (not _is_test_stub_ddgs(_DDGS))
+            and (os.getenv("ALLOW_DDG_HTML", "1") != "0")
+            and (os.getenv("JKAI_DISABLE_DDG_DIRECT_HTML", "0") != "1")
+        )
+        if allow_direct:
+            try:
+                ddg_html_results = _search_duckduckgo_direct_html(clean_q, max_results=max_results)
+                for r in ddg_html_results:
+                    r["retrieved_at"] = retrieved_at
+                    collected.append(r)
+            except DDGBotDetectionError as exc:
+                errors.append(f"ddg_bot_detected:{exc}")
+            except (Exception, AssertionError) as exc:
+                errors.append(f"ddg_html_err:{exc}")
+
+        # Kênh 4b: DDGS fallback nếu Direct HTML không trả về kết quả
+        if not collected and _DDGS is not None:
+            try:
+                with _DDGS() as ddgs:
+                    for r in ddgs.text(clean_q, max_results=max_results):
+                        collected.append(
+                            {
+                                "title": r.get("title") or r.get("href") or "DuckDuckGo Result",
+                                "url": r.get("href", ""),
+                                "snippet": r.get("body", ""),
+                                "source": "duckduckgo",
+                                "retrieved_at": retrieved_at,
+                            }
+                        )
+                if not collected:
+                    errors.append("ddg_empty:no_results_returned")
+            except Exception as exc:
+                errors.append(f"ddg_err:{exc}")
+
     if not collected:
         return build_transparent_refusal(
             query=clean_q,
@@ -422,9 +691,12 @@ def execute_real_web_search_sync(
         "is_simulated": False,
         "query": clean_q,
         "retrieved_at": retrieved_at,
+        "time_window": window_info,
         "results": collected,
         "output": formatted_text,
         "error": None,
+        # Case 16/10: giữ nguyên nhân kênh lỗi để caller log ngay vào mission.
+        "channel_errors": errors,
     }
 
     if len(formatted_text) > preview_chars:
@@ -471,3 +743,11 @@ def run(data: Dict[str, Any]) -> Dict[str, Any]:
         max_results=max_results,
         preview_chars=preview_chars,
     )
+
+
+# ==============================================================================
+# CANONICAL STANDARD TOOL INTERFACES (SSoT: webfetch & websearch)
+# ==============================================================================
+webfetch = fetch_url_content
+websearch = execute_real_web_search_sync
+fetch_url_clean = fetch_url_content

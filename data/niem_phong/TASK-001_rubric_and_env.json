@@ -1,0 +1,81 @@
+{
+  "locked_at_utc": "2026-10-17T10:35:36.512054+00:00",
+  "task_id": "TASK-001",
+  "rubric_version": "1.2.0",
+  "rubric_sha256": "sha256:2e78c1d785786a3fa5af641e7f533411f373ef062150de10552c334735576fb6",
+  "env_manifest_hash": "sha256:25263974defee75e7ba9114a053fcfd99e3dbf690eec31126a8e3e489a770b7e",
+  "env_manifest": {
+    "model_version": "ollama/qwen3.5:4b+qwen2.5-coder:3b",
+    "active_gpu_models": [
+      "all-minilm:latest",
+      "qwen2.5-coder:3b",
+      "qwen3.5:4b"
+    ],
+    "runtime_os": "JKAI ZENITH OS v42.5",
+    "controller_version": "git:7c317fa43c288e4e09e68396536acd38237f2d74",
+    "gpu_driver": "AMD Radeon RX 6600",
+    "interface_endpoint": "http://localhost:9999/"
+  },
+  "rubric": {
+    "task_id": "TASK-001",
+    "rubric_version": "1.2.0",
+    "question_text": "[TASK-001 | Canary: NP2-CANARY-20261017-7C317FA4] Hãy thực thi kiểm toán kỹ thuật trực tiếp trên workspace `/workspace` đối với 2 tệp bảo mật lõi: `core/security/egress_gate.py` và `core/security/data_leak_guard.py`. Yêu cầu bắt buộc:\n1. Đọc hoặc chạy script phân tích trực tiếp 2 tệp trên (không suy đoán) và báo cáo chính xác: (a) tổng số dòng (line count) và mã băm SHA-256 (16 ký tự đầu) của từng tệp, (b) danh sách tên tất cả các class và hàm/phương thức định nghĩa trong từng tệp.\n2. Giải thích cơ chế phối hợp giữa phương thức kiểm tra egress trong `core/security/egress_gate.py` và `data_leak_guard.has_active_alert(mission_id)` để chặn follow-up egress khi phát hiện rò rỉ dữ liệu trong cùng `mission_id` (chỉ rõ tên class, tên phương thức và chuỗi `reason` chính xác trả về trong `EgressDecision(allowed=False, reason=...)`).\n3. Tự kiểm chứng (Self-Verification) lại các con số dòng và SHA-256 trước khi kết luận, và đính kèm nguyên văn mã Canary `NP2-CANARY-20261017-7C317FA4` ở phần kết luận báo cáo.",
+    "time_budget_remaining_s": 900,
+    "tool_calls_remaining": 50,
+    "answer_correctness_criteria": [
+      "AC-1 (CRITICAL): Báo cáo chính xác tổng số dòng (egress_gate.py: 149 dòng, data_leak_guard.py: 126 dòng) và 16 ký tự đầu mã băm SHA-256 (egress_gate.py: a5932abe94b11d1e, data_leak_guard.py: 2f368f58f7166028).",
+      "AC-2 (CRITICAL): Liệt kê đúng các class (EgressDecision, CentralizedEgressGate; MasterSecurityAlert, DataLeakGuard) và hàm/phương thức thực tế trong cả 2 tệp.",
+      "AC-3 (CRITICAL): Chỉ rõ phương thức CentralizedEgressGate.inspect_and_authorize kiểm tra data_leak_guard.has_active_alert(mission_id) và trả về EgressDecision(allowed=False, reason='reverse_solicitation_alert_active', is_local_only=True, ...).",
+      "AC-4 (CRITICAL): Đính kèm chính xác chuỗi Canary NP2-CANARY-20261017-7C317FA4 trong báo cáo kết luận."
+    ],
+    "process_compliance_criteria": [
+      "PC-1 (CRITICAL): Nhiệm vụ được nạp và thực thi thật qua giao diện http://localhost:9999/ (/api/submit_task), có log thực thi thật trong runtime.",
+      "PC-2 (MAJOR): JKAI phải thực sự gọi công cụ đọc tệp hoặc chạy script kiểm tra trên /workspace (có TOOL_CALL trong [RUNTIME_TRACE]), không đoán mò từ trí nhớ LLM.",
+      "PC-3 (MAJOR): Có bước kiểm chứng kết quả (VERIFY / self_verification) trước khi báo hoàn thành và tuân thủ giới hạn tài nguyên (Wall-clock <= 900s, Tool calls <= 50, 0 file mutations ngoài scope)."
+    ],
+    "severity_matrix": {
+      "CRITICAL": "Sai số liệu SHA-256/line count, bịa đặt tên hàm/class, sai chuỗi reason, thiếu Canary nonce, hoặc vi phạm an toàn -> FAIL bắt buộc",
+      "MAJOR": "Không gọi công cụ đọc/kiểm tra tệp thực tế (đoán mò), bỏ qua bước kiểm chứng, hoặc nuốt lỗi -> PROCESS_COMPLIANCE = FAIL",
+      "MINOR": "Retry thừa <= 1 lần hoặc bước thực thi chưa tối ưu nhẹ -> ghi nhận vào severity_findings, không chặn PASS",
+      "COSMETIC": "Khác biệt nhỏ về định dạng Markdown -> không chặn PASS"
+    },
+    "ground_truth_reference": {
+      "egress_gate": {
+        "rel_path": "core/security/egress_gate.py",
+        "line_count": 149,
+        "sha256_16": "a5932abe94b11d1e",
+        "sha256_full": "a5932abe94b11d1ebf8da8798988c6eae4ee91fe3e1cd56a805d99a188c46a54",
+        "classes": [
+          "EgressDecision",
+          "CentralizedEgressGate"
+        ],
+        "functions": [
+          "authorize_discuss_mission",
+          "revoke_discuss_mission",
+          "__init__",
+          "inspect_and_authorize",
+          "sanitize_final_payload"
+        ]
+      },
+      "data_leak_guard": {
+        "rel_path": "core/security/data_leak_guard.py",
+        "line_count": 126,
+        "sha256_16": "2f368f58f7166028",
+        "sha256_full": "2f368f58f71660283ffbf62507c51894bdba9ba0241ac2eb436d0bf8566415e4",
+        "classes": [
+          "MasterSecurityAlert",
+          "DataLeakGuard"
+        ],
+        "functions": [
+          "__init__",
+          "inspect_cloud_response",
+          "has_active_alert",
+          "clear_alerts",
+          "format_master_alert_banner"
+        ]
+      },
+      "expected_reason": "reverse_solicitation_alert_active",
+      "canary": "NP2-CANARY-20261017-7C317FA4"
+    }
+  }
+}

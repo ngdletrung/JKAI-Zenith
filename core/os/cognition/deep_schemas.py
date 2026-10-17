@@ -78,13 +78,18 @@ class RecoveryPolicyType(str, Enum):
 
 
 class MissionOutcomeStatus(str, Enum):
-    COMPLETED_VERIFIED = "COMPLETED_VERIFIED"
-    COMPLETED_WITH_LIMITATIONS = "COMPLETED_WITH_LIMITATIONS"
+    # Canonical 3-State Completion Authority (Phase A1 Mandate):
+    COMPLETE = "COMPLETE"
+    INCOMPLETE = "INCOMPLETE"
     BLOCKED = "BLOCKED"
-    FAILED_VERIFICATION = "FAILED_VERIFICATION"
-    FAILED_EXECUTION = "FAILED_EXECUTION"
-    ABORTED_SAFETY = "ABORTED_SAFETY"
-    UNRESOLVED = "UNRESOLVED"
+
+    # Backward Compatibility Aliases:
+    COMPLETED_VERIFIED = "COMPLETE"
+    COMPLETED_WITH_LIMITATIONS = "INCOMPLETE"
+    FAILED_VERIFICATION = "INCOMPLETE"
+    FAILED_EXECUTION = "BLOCKED"
+    ABORTED_SAFETY = "BLOCKED"
+    UNRESOLVED = "INCOMPLETE"
 
 
 # ============================================================================

@@ -1,0 +1,77 @@
+{
+  "phase": "A4_EXTERNAL_SCAFFOLDING_AND_VERIFIED_MEMORY",
+  "evaluated_at": "2026-10-17T08:59:58.815620+00:00",
+  "hardware_verification": {
+    "gpu": "AMD Radeon RX 6600 (8GB VRAM)",
+    "ram_system": "128GB",
+    "model": "qwen2.5-coder:3b",
+    "vram_budget_hard_cap_mb": 7680,
+    "measured_model_vram_mb": 2068,
+    "measured_total_active_vram_mb": 5092,
+    "within_hardware_limits": true
+  },
+  "verified_memory_store": {
+    "file": "data/knowledge/verified_experience_store.jsonl",
+    "sha256": "5790b62c33bd5f8bad6d504c03b18b8ed95543c298ba1fd4f803524f99c2645f",
+    "byte_size": 10860,
+    "stats": {
+      "total_records": 9,
+      "active_records": 9,
+      "superseded_records": 0,
+      "by_tier": {
+        "VERIFIED_EXPERIENCE": 6,
+        "ACCEPTED_KNOWLEDGE": 3
+      },
+      "by_domain_group": {
+        "A_MATH_FIDELITY": 3,
+        "B_ANAPHORA_GROUNDING": 1,
+        "C_RETRIEVAL_CITATION": 2,
+        "D_TOOL_AND_FILEOPS": 1,
+        "E_MASTER_COMMUNICATION": 1,
+        "ERROR_RECOVERY": 1
+      }
+    },
+    "exam_leak_guard": "2_DOOR_BLOCKLIST_AND_4GRAM_UNDER_0.40_VERIFIED"
+  },
+  "raw_inference_traces": {
+    "file": "data/telemetry/phase_a4_raw_inference_traces.jsonl",
+    "sha256": "41bdc67fbb28e402270b4855fe839857f70138ed308622545ff42bde2b8fab29",
+    "byte_size": 28021,
+    "total_tasks": 20,
+    "passed_tasks": 18,
+    "reproducible_audit_status": "COMMITTED_ON_DISK"
+  },
+  "progression_comparison": {
+    "phase_a0_vanilla_baseline": {
+      "passed_tasks": 9,
+      "total_tasks": 20,
+      "live_tcr": 0.45,
+      "avg_latency_s": 3.487
+    },
+    "phase_a3_scaffolding_only": {
+      "passed_tasks": 11,
+      "total_tasks": 20,
+      "live_tcr": 0.55,
+      "avg_latency_s": 2.861
+    },
+    "phase_a4_scaffolding_plus_verified_memory": {
+      "passed_tasks": 18,
+      "total_tasks": 20,
+      "live_tcr": 0.9,
+      "wilson_95_ci": {
+        "centre": 0.8356,
+        "lower": 0.699,
+        "upper": 0.9721
+      },
+      "avg_latency_s": 2.7977,
+      "gain_over_a0_baseline": 0.45,
+      "gain_over_a3_scaffolding": 0.35,
+      "safety_violations": 0
+    }
+  },
+  "verdict": {
+    "promotion_decision": "PROMOTE_TO_PRODUCTION",
+    "gate_passed": true,
+    "status_classification": "VERIFIED_MEMORY_AND_SCAFFOLDING_LIVE_EVALUATED"
+  }
+}

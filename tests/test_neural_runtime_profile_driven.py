@@ -51,7 +51,8 @@ class TestNeuralRuntimeProfileDriven:
             payload = mock_call.call_args[0][0]
             assert payload["model"] == "qwen3.5:4b"
             assert payload["options"]["num_ctx"] == 8192
-            assert payload["keep_alive"] == "-1"
+            # to_ollama_payload chuẩn hóa keep_alive chuỗi số -> int ("-1" -> -1) — giá trị được giữ nguyên
+            assert payload["keep_alive"] == -1
 
     def test_execute_profile_stream_yields_tokens(self, runtime):
         profile = ExecutionProfile(

@@ -71,7 +71,7 @@ class CivilizationLedger:
             distilled_lesson = await engine.call_chat(
                 messages=[{"role": "user", "content": prompt}],
                 role="SUMMARIZER",
-                task_id=task_id
+                task_id=None  # 🛡️ Không phát sóng bài học đúc kết ngầm ra kênh chat
             )
 
             if not distilled_lesson or not distilled_lesson.strip():

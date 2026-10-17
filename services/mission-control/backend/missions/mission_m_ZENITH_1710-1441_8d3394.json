@@ -1,0 +1,1190 @@
+{
+  "id": "m_ZENITH_1710-1441_8d3394",
+  "title": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+  "goal": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+  "status": "completed",
+  "ts": 1792223496.8222735,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+      "ts": 1792222879.837808,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1710-1441_8d3394` initialized | Trace: `trace_8d3394`. Runtime ready.",
+      "ts": 1792222879.839773,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=46 | preview='hãy viết cho tôi đơn xin nghĩ phép cho con tôi' | hash=cfe443f1c1b87989 | task_id=ZENITH_1710-1441_8d3394 | trace_id=trace_8d3394",
+      "ts": 1792222888.0867236,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: ['SINGLE_FILE_ACTION'] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1792222888.0894055,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [PIPELINE-RESOLVER]: Chế độ DEEP tự động kích hoạt (Reason: Master explicitly requested DEEP (Multi-Agent Ensemble Mode).).",
+      "ts": 1792222888.0913956,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=office pipeline=deep mode=deep tags=OFFICE",
+      "ts": 1792222888.0934207,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1792222888.0969586,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "DeepPipeline T2–T6 (full)",
+      "ts": 1792222888.249333,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "✅ [PREFLIGHT-OK] Available executors: http://ai-executor-1:8000, http://ai-executor-2:8000",
+      "ts": 1792222888.3081121,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [ENGINE-READY]: Chế độ DEEP — Cụm mô hình tư duy sâu đã có sẵn trên RAM/VRAM. Khởi chạy lập trình ngay!",
+      "ts": 1792222888.3376157,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792222888.5100849,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792222888.5419855,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792222888.546548,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792222888.6380754,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792222888.654709,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792222889.3634577,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 42.59s.",
+      "ts": 1792222931.9552925,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792222931.9884305,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1792222932.0018563,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792222932.0172932,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_recovery_01 (SEARCH_WEB_GLOBAL)**: Auto-recovery: search web for: hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+      "ts": 1792222932.04664,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792222932.0507612,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TRIỂN KHAI BƯỚC] Đang khởi chạy thực thi song song: `[/]` **auto_recovery_01**",
+      "ts": 1792222932.0567386,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'SEARCH_WEB_GLOBAL' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792222932.1163075,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_8d3394",
+      "ts": 1792222932.1305149,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'SEARCH_WEB_GLOBAL' via sovereign local runtime.",
+      "ts": 1792222932.1976345,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[SEARCH_WEB_GLOBAL] ✅ Local execution succeeded",
+      "ts": 1792222932.3149793,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [IN-FLIGHT-CHAIN] Đã phát hiện 2 nguồn uy tín. Đang tự động đọc sâu nội dung toàn văn...",
+      "ts": 1792222932.337309,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'read_url_content' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792222932.3400118,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: read_url_content(...) - TraceID: trace_8d3394",
+      "ts": 1792222932.3439593,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'read_url_content' via sovereign local runtime.",
+      "ts": 1792222932.3458128,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[read_url_content] ⚠️ Local execution returned error: 'dict' object has no attribute 'status'",
+      "ts": 1792222933.6706069,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'read_url_content' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792222933.6772895,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: read_url_content(...) - TraceID: trace_8d3394",
+      "ts": 1792222933.6826518,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'read_url_content' via sovereign local runtime.",
+      "ts": 1792222933.6858778,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[read_url_content] ⚠️ Local execution returned error: 'dict' object has no attribute 'status'",
+      "ts": 1792222935.609286,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TIẾN ĐỘ THỰC THI BƯỚC] Hoàn tất: `[x]` **auto_recovery_01**",
+      "ts": 1792222935.6160545,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1792222935.8120725,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792222940.2929585,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — [UNVERIFIED] (Score: 0.00)",
+      "ts": 1792223037.4489994,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5 REPLAN] Phán quyết chưa đạt chuẩn ([UNVERIFIED]). Kích hoạt Re-plan vòng 1/2...",
+      "ts": 1792223037.602454,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792223037.6051457,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792223037.6087155,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792223037.6197019,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792223038.100321,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792223038.1088085,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792223038.231997,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[FALLBACK] Khởi chạy cơ chế dự phòng cho mô hình qwen3.5:4b... (lý do lần trước: RuntimeError: Event loop is closed)",
+      "ts": 1792223087.1674097,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 121.5s.",
+      "ts": 1792223159.7375188,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792223159.7687998,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 12 bước.",
+      "ts": 1792223159.7699635,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792223159.7842317,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (12 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **01 (SEARCH_WEB_GLOBAL)**: Tìm kiếm thông tin về quy trình nộp đơn nghỉ phép từ Google\n  • `[ ]` **02 (READ_FILE)**: Đọc mẫu đơn tiếng Anh từ file\n  • `[ ]` **03 (READ_FILE)**: Đọc mẫu đơn tiếng Việt từ file\n  • `[ ]` **04 (SEARCH_WEB_GLOBAL)**: Tìm kiếm thông tin về quy trình nộp đơn nghỉ phép tại [School Name] từ Google\n  • `[ ]` **05 (READ_FILE)**: Đọc mẫu đơn tiếng Anh cho trường [School Name] từ file\n  • `[ ]` **06 (READ_FILE)**: Đọc mẫu đơn tiếng Việt cho trường [School Name] từ file\n  • `[ ]` **07 (SEARCH_WEB_GLOBAL)**: Tìm kiếm thông tin về quy trình nộp đơn nghỉ phép tại [School Address] từ Google\n  • `[ ]` **08 (READ_FILE)**: Đọc mẫu đơn tiếng Anh cho địa chỉ [School Address] từ file\n  • `[ ]` **09 (READ_FILE)**: Đọc mẫu đơn tiếng Việt cho địa chỉ [School Address] từ file\n  • `[ ]` **10 (SEARCH_WEB_GLOBAL)**: Tìm kiếm thông tin về quy trình nộp đơn nghỉ phép tại [School Principal] từ Google\n  • `[ ]` **11 (READ_FILE)**: Đọc mẫu đơn tiếng Anh cho giáo viên [School Principal] từ file\n  • `[ ]` **12 (READ_FILE)**: Đọc mẫu đơn tiếng Việt cho giáo viên [School Principal] từ file",
+      "ts": 1792223159.8094711,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CHECKPOINT] Đã khôi phục 1 bước SUCCESS trước đó.",
+      "ts": 1792223159.813744,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792223159.8158178,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TRIỂN KHAI BƯỚC] Đang khởi chạy thực thi song song: `[/]` **01**, `[/]` **02**, `[/]` **03**, `[/]` **04**, `[/]` **05**, `[/]` **06**, `[/]` **07**, `[/]` **08**, `[/]` **09**, `[/]` **10**, `[/]` **11**, `[/]` **12**",
+      "ts": 1792223159.8184838,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'SEARCH_WEB_GLOBAL' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223159.821667,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_8d3394",
+      "ts": 1792223159.8247943,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'SEARCH_WEB_GLOBAL' via sovereign local runtime.",
+      "ts": 1792223159.8266556,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'READ_FILE' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223159.8325036,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: READ_FILE(...) - TraceID: trace_8d3394",
+      "ts": 1792223159.8365066,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'READ_FILE' via sovereign local runtime.",
+      "ts": 1792223159.8386204,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[READ_FILE] ⚠️ Local execution returned error: File 'data/templates/leave_application_template_en.md' không tồn tại.",
+      "ts": 1792223159.8425186,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'READ_FILE' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223159.846358,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: READ_FILE(...) - TraceID: trace_8d3394",
+      "ts": 1792223159.8501678,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'READ_FILE' via sovereign local runtime.",
+      "ts": 1792223159.8524485,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[READ_FILE] ⚠️ Local execution returned error: File 'data/templates/leave_application_template_vi.md' không tồn tại.",
+      "ts": 1792223159.8560798,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'SEARCH_WEB_GLOBAL' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223159.8597848,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_8d3394",
+      "ts": 1792223159.8637342,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'SEARCH_WEB_GLOBAL' via sovereign local runtime.",
+      "ts": 1792223159.8655777,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'READ_FILE' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223159.8743443,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: READ_FILE(...) - TraceID: trace_8d3394",
+      "ts": 1792223159.8784113,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'READ_FILE' via sovereign local runtime.",
+      "ts": 1792223159.8812585,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[READ_FILE] ⚠️ Local execution returned error: File 'data/templates/leave_application_template_en_school.md' không tồn tại.",
+      "ts": 1792223159.8848813,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'READ_FILE' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223159.8905067,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: READ_FILE(...) - TraceID: trace_8d3394",
+      "ts": 1792223159.895595,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'READ_FILE' via sovereign local runtime.",
+      "ts": 1792223159.8987975,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[READ_FILE] ⚠️ Local execution returned error: File 'data/templates/leave_application_template_vi_school.md' không tồn tại.",
+      "ts": 1792223159.9036286,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'SEARCH_WEB_GLOBAL' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223159.9110472,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_8d3394",
+      "ts": 1792223159.9163833,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'SEARCH_WEB_GLOBAL' via sovereign local runtime.",
+      "ts": 1792223159.9198194,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'READ_FILE' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223159.928015,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: READ_FILE(...) - TraceID: trace_8d3394",
+      "ts": 1792223159.9331295,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'READ_FILE' via sovereign local runtime.",
+      "ts": 1792223159.9364717,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[READ_FILE] ⚠️ Local execution returned error: File 'data/templates/leave_application_template_en_address.md' không tồn tại.",
+      "ts": 1792223159.9395022,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'READ_FILE' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223159.9427547,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: READ_FILE(...) - TraceID: trace_8d3394",
+      "ts": 1792223159.9457364,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'READ_FILE' via sovereign local runtime.",
+      "ts": 1792223159.9493906,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[READ_FILE] ⚠️ Local execution returned error: File 'data/templates/leave_application_template_vi_address.md' không tồn tại.",
+      "ts": 1792223159.95454,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'SEARCH_WEB_GLOBAL' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223159.9607565,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_8d3394",
+      "ts": 1792223159.9658372,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'SEARCH_WEB_GLOBAL' via sovereign local runtime.",
+      "ts": 1792223159.9695725,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'READ_FILE' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223159.9794724,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: READ_FILE(...) - TraceID: trace_8d3394",
+      "ts": 1792223159.9838648,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'READ_FILE' via sovereign local runtime.",
+      "ts": 1792223159.9857762,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[READ_FILE] ⚠️ Local execution returned error: File 'data/templates/leave_application_template_en_principal.md' không tồn tại.",
+      "ts": 1792223159.9886322,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'READ_FILE' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223159.9917352,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: READ_FILE(...) - TraceID: trace_8d3394",
+      "ts": 1792223159.9947011,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'READ_FILE' via sovereign local runtime.",
+      "ts": 1792223159.9966059,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[READ_FILE] ⚠️ Local execution returned error: File 'data/templates/leave_application_template_vi_principal.md' không tồn tại.",
+      "ts": 1792223159.9994025,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[SEARCH_WEB_GLOBAL] ✅ Local execution succeeded",
+      "ts": 1792223194.0275223,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [IN-FLIGHT-CHAIN] Đã phát hiện 2 nguồn uy tín. Đang tự động đọc sâu nội dung toàn văn...",
+      "ts": 1792223194.0310385,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'read_url_content' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223194.0332997,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: read_url_content(...) - TraceID: trace_8d3394",
+      "ts": 1792223194.0372443,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'read_url_content' via sovereign local runtime.",
+      "ts": 1792223194.040051,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[read_url_content] ⚠️ Local execution returned error: 'dict' object has no attribute 'status'",
+      "ts": 1792223196.53529,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'read_url_content' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223196.5389924,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: read_url_content(...) - TraceID: trace_8d3394",
+      "ts": 1792223196.5430126,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'read_url_content' via sovereign local runtime.",
+      "ts": 1792223196.5449593,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[read_url_content] ⚠️ Local execution returned error: 'dict' object has no attribute 'status'",
+      "ts": 1792223196.8418992,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[SEARCH_WEB_GLOBAL] ✅ Local execution succeeded",
+      "ts": 1792223197.1309485,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [IN-FLIGHT-CHAIN] Đã phát hiện 2 nguồn uy tín. Đang tự động đọc sâu nội dung toàn văn...",
+      "ts": 1792223197.1359634,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'read_url_content' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223197.1392655,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: read_url_content(...) - TraceID: trace_8d3394",
+      "ts": 1792223197.143502,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'read_url_content' via sovereign local runtime.",
+      "ts": 1792223197.145609,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[read_url_content] ⚠️ Local execution returned error: 'dict' object has no attribute 'status'",
+      "ts": 1792223199.7192233,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'read_url_content' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223199.7229805,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: read_url_content(...) - TraceID: trace_8d3394",
+      "ts": 1792223199.7270277,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'read_url_content' via sovereign local runtime.",
+      "ts": 1792223199.7299573,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[read_url_content] ⚠️ Local execution returned error: 'dict' object has no attribute 'status'",
+      "ts": 1792223200.3768792,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[SEARCH_WEB_GLOBAL] ✅ Local execution succeeded",
+      "ts": 1792223210.9356582,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [IN-FLIGHT-CHAIN] Đã phát hiện 2 nguồn uy tín. Đang tự động đọc sâu nội dung toàn văn...",
+      "ts": 1792223210.9395382,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'read_url_content' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223210.9425623,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: read_url_content(...) - TraceID: trace_8d3394",
+      "ts": 1792223210.9457061,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'read_url_content' via sovereign local runtime.",
+      "ts": 1792223210.947423,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[read_url_content] ⚠️ Local execution returned error: 'dict' object has no attribute 'status'",
+      "ts": 1792223212.220104,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'read_url_content' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223212.223999,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: read_url_content(...) - TraceID: trace_8d3394",
+      "ts": 1792223212.2280428,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'read_url_content' via sovereign local runtime.",
+      "ts": 1792223212.230749,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[read_url_content] ⚠️ Local execution returned error: 'dict' object has no attribute 'status'",
+      "ts": 1792223213.5485108,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[SEARCH_WEB_GLOBAL] ✅ Local execution succeeded",
+      "ts": 1792223246.099788,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [IN-FLIGHT-CHAIN] Đã phát hiện 2 nguồn uy tín. Đang tự động đọc sâu nội dung toàn văn...",
+      "ts": 1792223246.1029508,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'read_url_content' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223246.1060417,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: read_url_content(...) - TraceID: trace_8d3394",
+      "ts": 1792223246.109715,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'read_url_content' via sovereign local runtime.",
+      "ts": 1792223246.1113355,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[read_url_content] ⚠️ Local execution returned error: 'dict' object has no attribute 'status'",
+      "ts": 1792223246.3427384,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'read_url_content' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223246.3464954,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: read_url_content(...) - TraceID: trace_8d3394",
+      "ts": 1792223246.3499255,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'read_url_content' via sovereign local runtime.",
+      "ts": 1792223246.3524292,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[read_url_content] ⚠️ Local execution returned error: 'dict' object has no attribute 'status'",
+      "ts": 1792223247.6500456,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TIẾN ĐỘ THỰC THI BƯỚC] Hoàn tất: `[x]` **01**, `[x]` **04**, `[x]` **07**, `[x]` **10** | Cảnh báo: `[!]` **02**, `[!]` **03**, `[!]` **05**, `[!]` **06**, `[!]` **08**, `[!]` **09**, `[!]` **11**, `[!]` **12**",
+      "ts": 1792223247.655641,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[STEP CRITIC] Phát hiện lỗi tại bước 12. Kích hoạt Dynamic Re-planning...",
+      "ts": 1792223247.6934936,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[RE-PLANNING] Đã cập nhật kế hoạch động. Nhận thêm 3 bước mới (Tổng: 15 bước).",
+      "ts": 1792223309.060012,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TRIỂN KHAI BƯỚC] Đang khởi chạy thực thi song song: `[/]` **auto_recovery_13**, `[/]` **auto_recovery_14**, `[/]` **auto_recovery_15**",
+      "ts": 1792223309.0631125,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'SEARCH_WEB_GLOBAL' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223309.066315,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_8d3394",
+      "ts": 1792223309.0703,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'SEARCH_WEB_GLOBAL' via sovereign local runtime.",
+      "ts": 1792223309.0722985,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[SEARCH-REFUSAL] EMPTY_QUERY: Truy vấn tìm kiếm rỗng.",
+      "ts": 1792223309.0749013,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[SEARCH_WEB_GLOBAL] ⚠️ Local execution returned error: Truy vấn tìm kiếm rỗng.",
+      "ts": 1792223309.0766802,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'SEARCH_WEB_GLOBAL' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223309.0826542,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_8d3394",
+      "ts": 1792223309.0879881,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'SEARCH_WEB_GLOBAL' via sovereign local runtime.",
+      "ts": 1792223309.0914779,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[SEARCH-REFUSAL] EMPTY_QUERY: Truy vấn tìm kiếm rỗng.",
+      "ts": 1792223309.0950303,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[SEARCH_WEB_GLOBAL] ⚠️ Local execution returned error: Truy vấn tìm kiếm rỗng.",
+      "ts": 1792223309.0983608,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'SEARCH_WEB_GLOBAL' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792223309.1034193,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: SEARCH_WEB_GLOBAL(...) - TraceID: trace_8d3394",
+      "ts": 1792223309.1083076,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'SEARCH_WEB_GLOBAL' via sovereign local runtime.",
+      "ts": 1792223309.110283,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[SEARCH-REFUSAL] EMPTY_QUERY: Truy vấn tìm kiếm rỗng.",
+      "ts": 1792223309.1121905,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[SEARCH_WEB_GLOBAL] ⚠️ Local execution returned error: Truy vấn tìm kiếm rỗng.",
+      "ts": 1792223309.1139183,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TIẾN ĐỘ THỰC THI BƯỚC] Cảnh báo: `[!]` **auto_recovery_13**, `[!]` **auto_recovery_14**, `[!]` **auto_recovery_15**",
+      "ts": 1792223309.1165133,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[STEP CRITIC] Phát hiện lỗi tại bước auto_recovery_15. Kích hoạt Dynamic Re-planning...",
+      "ts": 1792223309.1208076,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[FALLBACK] Khởi chạy cơ chế dự phòng cho mô hình qwen3.5:4b... (lý do lần trước: RuntimeError: Event loop is closed)",
+      "ts": 1792223372.029003,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[RE-PLANNING] Kế hoạch vượt ngưỡng an toàn (>15 bước). Đang cắt tỉa các bước dư thừa.",
+      "ts": 1792223417.0043087,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[RE-PLANNING] Đã cập nhật kế hoạch động. Nhận thêm 4 bước mới (Tổng: 15 bước).",
+      "ts": 1792223417.0084746,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 16 kết quả.",
+      "ts": 1792223417.0117624,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CACHE-HIT]: Tra ve ket qua da cache cho: hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+      "ts": 1792223487.6277063,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "WARN",
+      "msg": "[FALLBACK] Khởi chạy cơ chế dự phòng cho mô hình qwen3.5:4b... (lý do lần trước: RuntimeError: Event loop is closed)",
+      "ts": 1792223487.6648583,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Kính thưa **Master Lee Trung**, Ban Thư Ký đã nhận được yêu cầu soạn thảo đơn xin nghỉ phép cho con. Tuy nhiên, để đảm bảo tính chính xác và phù hợp với quy định của cơ quan quản lý giáo dục (Bộ Giáo dục & Đào tạo), nội dung văn bản cần dựa trên các thông tin thực tế cụ thể từ Master.",
+      "ts": 1792223496.7783344,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1710-1441_8d3394"
+    }
+  ],
+  "artifacts": {
+    "plan": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+    "walkthrough": "Kính thưa **Master Lee Trung**, Ban Thư Ký đã nhận được yêu cầu soạn thảo đơn xin nghỉ phép cho con. Tuy nhiên, để đảm bảo tính chính xác và phù hợp với quy định của cơ quan quản lý giáo dục (Bộ Giáo dục & Đào tạo), nội dung văn bản cần dựa trên các thông tin thực tế cụ thể từ Master.",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

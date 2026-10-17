@@ -1,0 +1,28 @@
+{
+  "id": "m_default_1710-1519_88ab63",
+  "title": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+  "goal": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+  "status": "failed",
+  "ts": 1792225168.4358187,
+  "logs": [
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All connection attempts failed | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All connection attempts failed\"}",
+      "ts": 1792225168.4059935,
+      "source": "SYSTEM",
+      "task_id": "default_1710-1519_88ab63"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+      "ts": 1792225168.410257,
+      "source": "SYSTEM",
+      "task_id": "default_1710-1519_88ab63"
+    }
+  ],
+  "artifacts": {
+    "plan": "hãy viết cho tôi đơn xin nghĩ phép cho con tôi",
+    "walkthrough": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: All connection attempts failed)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

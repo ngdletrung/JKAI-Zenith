@@ -532,11 +532,14 @@ services:
     volumes:
       - ./services/ai-browser:/app
       - ./core:/shared/core
+      - ./tools:/shared/tools:ro
       - ./intelligence:/intelligence:ro
     environment:
       - OLLAMA_HOST=http://host.docker.internal:11434
       - PYTHONUNBUFFERED=1
       - PYTHONPATH=/app:/shared
+      - BROWSER_ALLOWED_DOMAINS=
+      - ANONYMIZED_TELEMETRY=false
     extra_hosts:
       - "host.docker.internal:host-gateway"
     networks:
@@ -626,6 +629,26 @@ services:
       - BACKUP_INTERVAL_HOURS=24
     networks:
       - ai-network
+
+  # =========================
+  # 🔍 SOVEREIGN SEARXNG METASEARCH
+  # =========================
+  searxng:
+    image: searxng/searxng:latest
+    container_name: searxng
+    profiles: ["core", "full"]
+    restart: unless-stopped
+    ports:
+      - "8888:8080"
+    volumes:
+      - ./config/searxng:/etc/searxng:ro
+    environment:
+      - SEARXNG_BASE_URL=http://localhost:8888/
+      - SEARXNG_SECRET=${SEARXNG_SECRET_KEY:-}
+    networks:
+      - ai-network
+    mem_limit: 512m
+    cpus: 1
 
 # =========================
 # 📦 NAMED VOLUMES

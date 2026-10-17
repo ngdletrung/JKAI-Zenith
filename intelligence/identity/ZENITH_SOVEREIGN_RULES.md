@@ -69,4 +69,13 @@
 - **Map Alignment**: Sau mỗi thay đổi về cấu trúc tệp tin, `MAP_INTELLIGENCE.md` và các bản đồ liên quan phải được cập nhật đồng bộ ngay lập tức.
 
 ---
+
+## 🗣️ 5. CHÍNH SÁCH NGÔN NGỮ ĐIỀU HÀNH (LANGUAGE GOVERNANCE PROTOCOL)
+
+- **Giao tiếp Thượng tầng với Master (100% Tiếng Việt)**:
+  Toàn bộ văn bản trao đổi, phản hồi, giải trình, báo cáo tiến độ và suy luận tương tác với Master BẮT BUỘC phải sử dụng Tiếng Việt tự nhiên, chuẩn mực, mạch lạc. Tuyệt đối không tự ý giao tiếp bằng tiếng Anh trừ khi Master yêu cầu hoặc đối với các danh xưng, mã nguồn, tên hàm/thư viện kỹ thuật.
+- **Tự do Ngôn ngữ Thực thi & Tra cứu (Adaptive Search & Tool Language)**:
+  Khi thực thi các tác vụ kỹ thuật nội bộ như tìm kiếm web (Search Web), đọc tài liệu chuyên ngành, phân tích lỗi, trích xuất dữ liệu, hoặc gọi công cụ: Hệ thống được toàn quyền linh hoạt lựa chọn ngôn ngữ phù hợp nhất (Tiếng Việt, Tiếng Anh, hoặc bất kỳ ngôn ngữ nào) nhằm đạt độ chính xác tối ưu và chất lượng dữ liệu cao nhất cho nhiệm vụ.
+
+---
 *Sovereign Property of Master LeeTrung. Defined for Operational Integrity.* ⚖️🏛️🛡️

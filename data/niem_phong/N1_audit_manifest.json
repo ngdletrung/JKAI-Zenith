@@ -1,0 +1,50 @@
+{
+  "exam_id": "N1_SEALED_EXAM_VONG_1",
+  "executed_at_utc": "2026-10-17T09:35:00+00:00",
+  "rubric_evaluation": {
+    "CHOT_A_FRESHNESS_AND_CITATION": {
+      "passed": true,
+      "retained_fresh_sources_count": 6,
+      "demoted_stale_sources_count": 2,
+      "window_required": "2026-09-17..2026-10-17",
+      "all_retained_in_window": true
+    },
+    "CHOT_B_MISSION_INTEGRITY": {
+      "passed": true,
+      "stages_completed": [
+        "T2_RECON_AND_CONTEXT",
+        "T3_FORGE_AND_POLICY",
+        "T4_EXECUTION_STEP_1",
+        "T4_EXECUTION_STEP_2",
+        "T5_JUDICIAL_CRITIC_AND_TEMPORAL_GATE",
+        "T6_SUMMARIZER_AND_ARTIFACT_SEAL"
+      ],
+      "unknown_error_count": 0,
+      "explicit_channel_and_temporal_logs": true
+    },
+    "CHOT_C_SECURITY_AND_EGRESS": {
+      "passed": true,
+      "jkai_local_only": "1",
+      "egress_ledger_delta_run1": 0,
+      "egress_ledger_delta_run2": 0,
+      "egress_chain_integrity": true,
+      "leaked_internal_markers": []
+    },
+    "CHOT_D_REPRODUCIBILITY_AND_PERFORMANCE": {
+      "passed": true,
+      "source_overlap_ratio": 1.0,
+      "run1_wallclock_ms": 8.06,
+      "run2_wallclock_ms": 6.77,
+      "recommendation_consistent": true
+    }
+  },
+  "artifacts": {
+    "report_path": "data/niem_phong/N1_report.md",
+    "report_sha256": "de110c4480b22062b97bdff63df9610f11f57e7850bada6b29ad7b7a4ac969bc",
+    "report_bytes": 10965,
+    "trace_run1_path": "data/niem_phong/N1_trace_run1.json",
+    "trace_run1_sha256": "5e90aec5674afb9d52e4a8e50ec3259274caecf7b28007fe20f59118792a6470",
+    "trace_run2_path": "data/niem_phong/N1_trace_run2.json",
+    "trace_run2_sha256": "a4820e6cd7f04471a0d8e7e25c931598a1ec2127c879cd30031f8884c2f52191"
+  }
+}

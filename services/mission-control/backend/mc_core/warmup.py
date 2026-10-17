@@ -2,7 +2,7 @@ import time
 import json
 import os
 import hashlib
-from core.redis_client import redis_safe
+from mc_core.redis_client import redis_safe
 
 DEFAULT_HOT_FILES = [
     "/workspace/intelligence/identity/ZENITH_IDENTITY.md",

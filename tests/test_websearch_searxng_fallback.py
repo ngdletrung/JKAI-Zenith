@@ -47,8 +47,9 @@ def _run_search(monkeypatch, query="vnindex tuan qua"):
     monkeypatch.delenv("TAVILY_API_KEY", raising=False)
     monkeypatch.setenv("SEARXNG_URL", "http://searxng-test:8888")
     monkeypatch.setattr("httpx.Client", _FakeClient)
-    # Chan kenh DDG de test tap trung kenh SearXNG
+    # Chan kenh DDG va RSS de test tap trung kenh SearXNG
     monkeypatch.setattr(ws, "DDGS", None, raising=False)
+    monkeypatch.setenv("JKAI_DISABLE_RSS_DIRECT", "1")
     return ws.execute_real_web_search_sync(query, task_id="test")
 
 

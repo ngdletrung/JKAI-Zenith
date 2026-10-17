@@ -54,7 +54,8 @@ class CognitiveLoop:
             "1. **Một hành động mỗi lần**: Chỉ thực hiện DUY NHẤT một hành động (gọi công cụ) trong mỗi bước.\n"
             "2. **Quan sát & Phản xạ**: Sau mỗi hành động, bạn sẽ nhận được kết quả (Observation). Hãy dùng nó để quyết định bước tiếp theo.\n"
             "3. **Tự sửa lỗi**: Nếu công cụ thất bại, hãy tìm cách khác. Đừng bỏ cuộc.\n"
-            "4. **Kết thúc**: Khi đã đạt được mục tiêu, hãy trả lời với tiền tố 'FINAL_ANSWER:'.\n\n"
+            "4. **Kết thúc**: Khi đã đạt được mục tiêu, hãy trả lời với tiền tố 'FINAL_ANSWER:'.\n"
+            "5. **Quy tắc ngôn ngữ**: Toàn bộ trao đổi, phản hồi và kết luận với Master LUÔN LUÔN là TIẾNG VIỆT 100%. Khi tìm kiếm, tra cứu tài liệu chuyên môn hoặc gọi công cụ nội bộ, bạn được tự do dùng tiếng Việt, tiếng Anh hoặc bất kỳ ngôn ngữ nào tối ưu để đạt kết quả chính xác nhất.\n\n"
             f"{core_mem_p}"
         )
         self.history.append({"role": "system", "content": system_prompt})

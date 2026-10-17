@@ -332,25 +332,6 @@ class FourConstitutionalGates:
 # 6. BỘ ĐIỀU PHỐI TIẾN HÓA RSIL-L3 (ORCHESTRATOR)
 # ==============================================================================
 
-class RSILOrchestrator:
-    """
-    Bộ điều phối vòng tự học cấp 3 (RSIL-L3):
-    1. Quét bảng `StageAttribution` phát hiện khâu nghẽn nhất.
-    2. Đánh giá đề xuất candidate: từ chối nếu Tier 3 hoặc vi phạm 4 Cổng Hiến Pháp.
-    3. Auto-Promote ứng viên Tier 1/2 đạt chuẩn, ký Operational Witness, ghi sổ cái băm chuỗi.
-    4. Giám sát Canary: Rollback tức thì (< 10ms) nếu phát hiện drift > 15%.
-    """
-
-    def __init__(
-        self,
-        journal_path: Optional[Path] = None,
-        quota_tracker: Optional[AutonomousQuotaTracker] = None,
-    ) -> None:
-        self.journal = ChainedPromotionJournal(journal_path=journal_path)
-        self.quota = quota_tracker or AutonomousQuotaTracker()
-        self.signer = DualKeySigner()
-        self.gates = FourConstitutionalGates()
-
 def normalize_stage_trace_entry(rec: Dict[str, Any]) -> Tuple[str, bool]:
     """
     [Cơ chế Chuẩn Hóa Schema Trace Detector — Lượt 300]:

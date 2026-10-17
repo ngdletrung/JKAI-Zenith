@@ -162,11 +162,13 @@ def canonicalize_url(raw_url: str) -> str:
 
 
 def deduplicate_and_rank_results(
-    subquery_results: Sequence[Tuple[str, List[Dict[str, Any]]]]
+    subquery_results: Sequence[Tuple[str, List[Dict[str, Any]]]],
+    window_days: Optional[int] = None,
 ) -> List[Dict[str, Any]]:
     """
     Hợp nhất và khử trùng lặp kết quả từ nhiều sub-queries.
     Tính điểm uy tín và tần suất xuất hiện chéo (Cross-Query Consensus).
+    Freshness (case vàng 15/10): bài cũ quá cửa sổ intent bị trừ điểm và gắn nhãn stale.
     """
     seen: Dict[str, Dict[str, Any]] = {}
 
@@ -180,6 +182,15 @@ def deduplicate_and_rank_results(
                 continue
 
             if canon_url not in seen:
+                try:
+                    from tools.web_search import freshness_label
+                    pub = str(item.get("published_at") or "").strip()
+                    fresh = freshness_label(
+                        pub, window_days,
+                        str(item.get("retrieved_at") or ""),
+                    )
+                except Exception:
+                    pub, fresh = "", "date_unknown"
                 seen[canon_url] = {
                     "title": item.get("title") or "Untitled",
                     "url": url,
@@ -187,8 +198,11 @@ def deduplicate_and_rank_results(
                     "snippet": item.get("snippet") or item.get("content") or "",
                     "source": item.get("source") or "web",
                     "retrieved_at": item.get("retrieved_at") or datetime.datetime.now(datetime.timezone.utc).isoformat(),
+                    "published_at": pub,
+                    "freshness": fresh,
                     "matched_subqueries": [sub_q],
-                    "rank_score": 1.0 / (idx + 1),
+                    # Bài cũ quá cửa sổ intent bị trừ một nửa điểm rank
+                    "rank_score": (1.0 / (idx + 1)) * (0.5 if fresh.startswith("stale:") else 1.0),
                 }
             else:
                 entry = seen[canon_url]
@@ -296,8 +310,13 @@ class MultiQueryRetriever:
         tasks = [_search_one(sq) for sq in sub_queries]
         subquery_outputs = await asyncio.gather(*tasks)
 
-        # Hợp nhất và khử trùng lặp
-        deduped = deduplicate_and_rank_results(subquery_outputs)
+        # Hợp nhất và khử trùng lặp (kèm hạ điểm bài cũ quá cửa sổ intent)
+        try:
+            from tools.web_search import detect_time_intent
+            _window = detect_time_intent(query)
+        except Exception:
+            _window = None
+        deduped = deduplicate_and_rank_results(subquery_outputs, window_days=_window)
         _log(f"🌐 [MULTI-QUERY] Thu thập thành công {len(deduped)} nguồn thông tin không trùng lặp.")
 
         if not deduped:
@@ -310,46 +329,42 @@ class MultiQueryRetriever:
 
         # Chọn top URLs chất lượng cao để đọc sâu
         from core.os.cognition.in_flight_chain import filter_candidate_urls
-        from tools.web_search import validate_egress_url_ssrf_safe
         deep_read_urls = filter_candidate_urls(deduped, max_urls=self.config.max_deep_reads)
 
         deep_articles: List[Dict[str, Any]] = []
         if deep_read_urls:
             _log(f"⚡ [MULTI-QUERY] Đang đọc sâu toàn văn {len(deep_read_urls)} bài phân tích tâm điểm...")
-            import httpx
+            from tools.web_search import detect_time_intent, fetch_url_content
+
+            try:
+                _deep_window = detect_time_intent(query)
+            except Exception:
+                _deep_window = None
+
+            async def _fetch_one(target_url: str) -> Optional[Dict[str, Any]]:
+                try:
+                    fetched = await asyncio.to_thread(
+                        fetch_url_content,
+                        target_url,
+                        self.config.deep_read_timeout,
+                        20000,
+                        _deep_window,
+                    )
+                except Exception as read_err:
+                    logger.warning("[MULTI-QUERY] Không thể đọc sâu URL %s: %s", target_url, read_err)
+                    return None
+                if fetched.get("status") != "success" or not fetched.get("text"):
+                    return None
+                article: Dict[str, Any] = {"url": target_url, "full_text": fetched["text"]}
+                if fetched.get("published_at"):
+                    article["published_at"] = fetched["published_at"]
+                    article["freshness"] = fetched.get("freshness", "")
+                return article
 
             for url in deep_read_urls:
-                # 🛡️ [SSRF-SAFE GATE]: Kiểm tra an toàn trước khi kết nối mạng ngoài
-                ssrf_verdict = validate_egress_url_ssrf_safe(url)
-                if not ssrf_verdict.get("allowed", False):
-                    logger.warning("[MULTI-QUERY] SSRF Guard blocked deep-read URL: %s", url)
-                    continue
-
-                content = ""
-                # Kênh chính: Jina Reader API
-                try:
-                    async with httpx.AsyncClient(timeout=self.config.deep_read_timeout, follow_redirects=True) as client:
-                        resp = await client.get(f"https://r.jina.ai/{url}")
-                        if resp.status_code == 200 and resp.text:
-                            content = str(resp.text).strip()
-                except Exception as jina_err:
-                    logger.debug("[MULTI-QUERY] Jina Reader error for %s: %s", url, jina_err)
-
-                # Fallback: Thử kết nối bóc tách văn bản trực tiếp nếu dịch vụ ngoài lỗi
-                if not content:
-                    try:
-                        async with httpx.AsyncClient(timeout=self.config.deep_read_timeout, follow_redirects=True) as client:
-                            resp = await client.get(url, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)"})
-                            if resp.status_code == 200 and resp.text:
-                                text_clean = re.sub(r"<script[^>]*>.*?</script>", "", resp.text, flags=re.DOTALL)
-                                text_clean = re.sub(r"<style[^>]*>.*?</style>", "", text_clean, flags=re.DOTALL)
-                                text_clean = re.sub(r"<[^>]+>", " ", text_clean)
-                                content = " ".join(text_clean.split())
-                    except Exception as fallback_err:
-                        logger.debug("[MULTI-QUERY] Fallback crawl error for %s: %s", url, fallback_err)
-
-                if content:
-                    deep_articles.append({"url": url, "full_text": content})
+                article = await _fetch_one(url)
+                if article:
+                    deep_articles.append(article)
 
         # Xây dựng nội dung toàn văn hoàn chỉnh
         now_utc = datetime.datetime.now(datetime.timezone.utc).isoformat()

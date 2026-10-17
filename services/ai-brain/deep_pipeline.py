@@ -373,6 +373,7 @@ class DeepPipeline:
         mode: str = "auto",
         trace_id: str = "system",
         attempt: int = 0,
+        _replan_iter: int = 0,
     ) -> Dict[str, Any]:
         from core.utils.engine import engine
 
@@ -531,21 +532,21 @@ class DeepPipeline:
         executed_step_ids = set()
 
         # [CHECKPOINT RECOVERY]: Khôi phục trạng thái hoàn thành từ Redis
+        # Case 15-16/10: task_id tái sử dụng ("man") + checkpoint chứa lỗi cũ →
+        # T4 ăn lại kết quả chết, bỏ qua thực thi. CHỈ khôi phục step SUCCESS.
         checkpoint_key = f"jkai:checkpoint:{task_id}"
         try:
             r = engine._get_redis()
             if r:
                 cached_data = r.hgetall(checkpoint_key)
                 if cached_data:
-                    for s_id, s_res_str in cached_data.items():
-                        try:
-                            execution_results[s_id] = json.loads(s_res_str)
-                            executed_step_ids.add(s_id)
-                        except Exception:
-                            pass
+                    _restored, _skipped_failed = self._restore_successful_checkpoints(
+                        cached_data, execution_results, executed_step_ids
+                    )
                     engine.publish_mission_log(
                         "SYSTEM",
-                        f"[CHECKPOINT] Đã khôi phục {len(executed_step_ids)} bước hoàn thành trước đó.",
+                        f"[CHECKPOINT] Đã khôi phục {_restored} bước SUCCESS trước đó"
+                        + (f", bỏ qua {_skipped_failed} bước lỗi để chạy lại." if _skipped_failed else "."),
                         task_id, trace_id, stealth=True
                     )
         except Exception as e:
@@ -1040,10 +1041,31 @@ class DeepPipeline:
                     "feedback": f"Critic crashed but execution evidence exists. {e}"
                 }
 
+        # ── Rule thời gian xác định (case vàng 15/10): trộn nhiều năm không nhãn → hạ SUCCESS ──
+        try:
+            _temporal = self.check_temporal_consistency(self._compress_results(execution_results))
+            if not _temporal.get("ok"):
+                _v = str(judicial_review.get("verdict", "")).upper()
+                judicial_review["feedback"] = (
+                    str(judicial_review.get("feedback", "")) + f" [TEMPORAL-GATE] {_temporal['reason']}"
+                )
+                if _v == "SUCCESS":
+                    judicial_review["verdict"] = "PARTIAL"
+                    judicial_review["accuracy_score"] = min(
+                        float(judicial_review.get("accuracy_score", 1.0)), 0.65
+                    )
+                engine.publish_mission_log(
+                    "CRITIC",
+                    f"[TEMPORAL-GATE] Bằng chứng lẫn các năm {_temporal.get('years')} không nhãn độ tươi — hạ chuẩn xác minh.",
+                    task_id, trace_id,
+                )
+        except Exception as _tg_err:
+            logger.debug("[TEMPORAL-GATE-ERROR] %s", _tg_err)
+
         # ═══════════════════════════════════════════
         # [SELF-HEAL WIRING DÂY 4]: Đánh giá Re-plan từ Ban Kiểm Soát T5
         # ═══════════════════════════════════════════
-        replan_iter = kwargs.get("_replan_iter", 0)
+        replan_iter = _replan_iter
         try:
             from core.os.cognition.self_heal_wiring import evaluate_critic_replan_decision
             replan_dec = evaluate_critic_replan_decision(
@@ -1082,13 +1104,17 @@ class DeepPipeline:
                     task_id,
                     trace_id,
                 )
-                new_kwargs = dict(kwargs)
-                new_kwargs["_replan_iter"] = replan_dec["next_replan_count"]
-                return await self.run(
+                return await self._execute_attempt(
                     goal=f"{goal}\n\n{replan_prompt}{retained_context}",
                     task_id=task_id,
+                    planner_instance=planner_instance,
+                    context=context,
+                    history=history,
+                    images=images,
+                    mode=mode,
                     trace_id=trace_id,
-                    **new_kwargs,
+                    attempt=attempt,
+                    _replan_iter=replan_dec["next_replan_count"],
                 )
         except Exception as replan_e:
             logger.debug("[T5-REPLAN-EVAL-ERROR] %s", replan_e)
@@ -1098,7 +1124,7 @@ class DeepPipeline:
         # ═══════════════════════════════════════════
         try:
             engine.publish_mission_log(
-                "SUMMARIZER", "[T6] Ban Thư Ký đang soạn Báo cáo...", task_id, trace_id
+                "PROGRESS", "[T6] Ban Thư Ký đang soạn Báo cáo...", task_id, trace_id, stealth=True
             )
             manifesto = await engine.get_brain_knowledge("agent_summarizer.md") or "Bạn là Thư ký Zenith T6."
             judicial_info = (
@@ -1124,22 +1150,20 @@ class DeepPipeline:
                 f"Execution Results: {self._compress_results(execution_results)}\n"
                 f"{judicial_info}\n\n"
                 "══════════════════════════════════════════\n"
-                "[SUMMARIZER PROTOCOL - TECHNICAL & ANALYTICAL REPORT]\n"
+                "[SUMMARIZER PROTOCOL - DIRECT VALUE & 100% VIETNAMESE]\n"
                 "══════════════════════════════════════════\n"
-                "You are the Technical & Analytical Report Summarizer of JKAI Zenith.\n"
-                "Your mission is to synthesize the execution results and provide a structured, high-quality, professional technical report in Vietnamese.\n\n"
+                "You are the Chief Secretariat of JKAI Zenith.\n"
+                "Your mission is to directly fulfill Master's request with the highest quality and elegance in Vietnamese.\n\n"
                 "[CORE DIRECTIVES]\n"
-                "1. BASE YOUR REPORT ONLY on the Execution Results and Judicial Verdict. Do NOT invent or assume any facts.\n"
-                "2. Report the findings and outcomes clearly. If JUDICIAL_VERDICT is FAIL, report the failure truthfully and propose technical corrective actions.\n"
-                "3. Style and Formatting:\n"
-                "   - Do NOT use cliché titles like '[BÁO CÁO ELITE]' or '[MISSION_RESULT]'. Use a clear, context-specific technical title.\n"
-                "   - Avoid saying 'Mục tiêu Master đã được thực hiện' or 'Nhiệm vụ đã hoàn thành'. Go straight to the analytical content.\n"
-                "   - Use structured bullet points (- ) to separate key metrics, logs, and findings.\n"
-                "   - Use bold markdown (**keyword**) to emphasize critical system metrics, technical terms, or key variables.\n"
-                "   - Keep explanation details in normal text to maintain readability.\n"
-                "4. Use precise Vietnamese terminology. For example, translate terms like 'Post-Mortem', 'Autopsy', 'Error Report' to 'Báo cáo sự cố', 'Phân tích nguyên nhân', 'Hành động khắc phục', 'Chi tiết lỗi'. Avoid weird Sino-Vietnamese translations.\n"
-                f"5. Current time: {formatted_time}\n"
+                "1. DIRECT VALUE FIRST: If Master asks to draft a document, write a letter (e.g. đơn xin nghỉ phép), write code, explain a concept, or answer a specific question, YOUR RESPONSE MUST DIRECTLY DELIVER THE FULL, POLISHED, READY-TO-USE CONTENT FIRST in natural, elegant Vietnamese. Do NOT just give a meta-status report about file creation.\n"
+                "2. BASE YOUR REPORT ON REAL EVIDENCE: Base facts strictly on Execution Results. If files were created or modified, provide clear references.\n"
+                "3. 100% VIETNAMESE: Communicate with Master respectfully and clearly in Vietnamese.\n"
+                f"4. Current time: {formatted_time}\n"
             )
+
+            # Chỉ phát sóng ra kênh chat Master nếu phán quyết hợp lệ hoặc là vòng cuối
+            is_valid_verdict = any(w in str(judicial_review.get("verdict", "")).upper() for w in ["SUCCESS", "PARTIAL", "PASS", "APPROVED", "VALID", "OK"])
+            publish_task_id = task_id if (is_valid_verdict or attempt >= 2) else None
 
             with TraceContext("DeepPipeline-T6", trace_id=trace_id):
                 final_answer = await engine.call_chat(
@@ -1148,7 +1172,7 @@ class DeepPipeline:
                         {"role": "user", "content": summary_prompt},
                     ],
                     role="SUMMARIZER",
-                    task_id=task_id,
+                    task_id=publish_task_id,
                     trace_id=trace_id,
                     skip_build_final=True,
                 )
@@ -1173,6 +1197,27 @@ class DeepPipeline:
 
             receipts_block = "".join(_deep_receipts)
 
+            # ── Chốt nhất quán đầu-cuối (case vàng 15/10): đáp án phủ nhận evidence ──
+            try:
+                _cons = self.check_answer_evidence_consistency(final_answer, execution_results)
+                if _cons.get("contradiction"):
+                    _correction = (
+                        "\n\n[HIỆU CHÍNH HỆ THỐNG — ĐÁP ÁN MÂU THUẪN BẰNG CHỨNG] "
+                        f"{_cons['reason']}\n{_cons['evidence_digest']}\n"
+                        "Kết luận đúng: INCOMPLETE kèm bằng chứng trên, không phải không có dữ liệu."
+                    )
+                    if isinstance(final_answer, dict) and "answer" in final_answer:
+                        final_answer["answer"] += _correction
+                    elif isinstance(final_answer, str):
+                        final_answer += _correction
+                    engine.publish_mission_log(
+                        "CRITIC",
+                        f"[CONSISTENCY-GATE] Phát hiện đáp án mâu thuẫn bằng chứng — đã đính chính. {_cons['reason']}",
+                        task_id, trace_id,
+                    )
+            except Exception as _cg_err:
+                logger.debug("[CONSISTENCY-GATE-ERROR] %s", _cg_err)
+
             signature = f"\n\n---\nTổng hợp lúc {formatted_time}\n\nBan Thư Ký JKAI Zenith"
             
             if isinstance(final_answer, dict) and "answer" in final_answer:
@@ -1185,7 +1230,7 @@ class DeepPipeline:
                 final_answer += signature
                 
             engine.publish_mission_log(
-                "SUMMARIZER", "[T6] Báo cáo đã soạn thảo hoàn tất.", task_id, trace_id
+                "PROGRESS", "[T6] Báo cáo đã soạn thảo hoàn tất.", task_id, trace_id, stealth=True
             )
         except Exception as e:
             logger.error("[DEEP-PIPELINE] T6 error: %s", e)
@@ -1333,7 +1378,6 @@ class DeepPipeline:
         Critic chỉ được phép đánh giá SUCCESS nếu
         Executor thực sự tạo ra dữ liệu hữu ích.
         """
-
         if not execution_results:
             return False
 
@@ -1405,6 +1449,107 @@ class DeepPipeline:
                     return True
 
         return False
+
+    @staticmethod
+    def _restore_successful_checkpoints(
+        cached_data: Any,
+        execution_results: Dict[str, Any],
+        executed_step_ids: set,
+    ) -> tuple:
+        """Chỉ khôi phục step SUCCESS; step lỗi/blocked/rác thì bỏ để chạy lại."""
+        restored, skipped = 0, 0
+        items = cached_data.items() if hasattr(cached_data, "items") else []
+        for s_id, s_res_str in items:
+            try:
+                _res = json.loads(s_res_str) if isinstance(s_res_str, (str, bytes)) else s_res_str
+            except Exception:
+                skipped += 1
+                continue
+            if isinstance(_res, dict) and str(_res.get("status", "")).lower() == "success":
+                execution_results[s_id] = _res
+                executed_step_ids.add(s_id)
+                restored += 1
+            else:
+                skipped += 1
+        return restored, skipped
+
+    @staticmethod
+    def check_answer_evidence_consistency(final_answer: Any, execution_results: Any) -> Dict[str, Any]:
+        """
+        Chốt nhất quán đầu-cuối (case vàng 15/10): đáp án tuyên bố "không tìm thấy
+        kết quả" trong khi evidence thực thi có kết quả thành công → mâu thuẫn.
+        Trả về {"contradiction": bool, "reason": str, "evidence_digest": str}.
+        """
+        import re as _re
+        import unicodedata as _ud
+
+        def _flat(s: str) -> str:
+            s = _ud.normalize("NFD", str(s or "").lower())
+            return "".join(c for c in s if _ud.category(c) != "Mn")
+
+        ans_text = ""
+        if isinstance(final_answer, dict):
+            ans_text = str(final_answer.get("answer", ""))
+        else:
+            ans_text = str(final_answer or "")
+        ans_flat = _flat(ans_text)
+        denial_markers = (
+            "khong the tim thay ket qua",
+            "khong thu duoc ket qua",
+            "no_results",
+            "no results found",
+            "khong co bang chung thuc thi",
+        )
+        denies = any(m in ans_flat for m in denial_markers)
+        if not denies:
+            return {"contradiction": False, "reason": "", "evidence_digest": ""}
+
+        results = (
+            execution_results.values()
+            if isinstance(execution_results, dict)
+            else (execution_results or [])
+        )
+        good = []
+        for res in results:
+            if not isinstance(res, dict) or res.get("status") != "success":
+                continue
+            out = res.get("output") or res.get("result") or ""
+            out_s = out if isinstance(out, str) else str(out)
+            if len(out_s.strip()) > 50:
+                good.append(out_s.strip()[:300])
+        if not good:
+            return {"contradiction": False, "reason": "", "evidence_digest": ""}
+        return {
+            "contradiction": True,
+            "reason": (
+                "Đáp án tuyên bố không có kết quả trong khi "
+                f"{len(good)} bằng chứng thực thi thành công tồn tại."
+            ),
+            "evidence_digest": "\n".join(f"- {g[:200]}" for g in good[:3]),
+        }
+
+    @staticmethod
+    def check_temporal_consistency(evidence_text: str) -> Dict[str, Any]:
+        """
+        Rule thời gian xác định (case vàng 15/10): bằng chứng realtime trộn
+        nhiều năm khác nhau mà không nhãn độ tươi thì không được SUCCESS.
+        Trả về {"ok": bool, "years": [...], "reason": str}.
+        """
+        import re as _re
+
+        text = str(evidence_text or "")
+        years = sorted(set(_re.findall(r"\b(19\d\d|20\d\d)\b", text)))
+        labelled = ("cũ —" in text or "CẢNH BÁO ĐỘ TƯƠI" in text or "không xác định" in text)
+        if len(years) >= 2 and not labelled:
+            return {
+                "ok": False,
+                "years": years,
+                "reason": (
+                    f"Bằng chứng trộn lẫn các năm {', '.join(years)} mà không gắn nhãn độ tươi. "
+                    "Yêu cầu loại bài quá hạn hoặc gắn nhãn [cũ] trước khi kết luận."
+                ),
+            }
+        return {"ok": True, "years": years, "reason": ""}
 
 async def plan_only(
     goal: str,

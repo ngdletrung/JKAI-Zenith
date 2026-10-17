@@ -11,8 +11,8 @@ logger = logging.getLogger("main")
 from flask import Flask, send_from_directory, jsonify, request
 from flask_socketio import SocketIO, emit
 from api.tasks import bp as tasks_bp
-from core.warmup import start_warmup_sequence
-from core.redis_client import redis_safe
+from mc_core.warmup import start_warmup_sequence
+from mc_core.redis_client import redis_safe
 
 from config import config
 
@@ -2293,7 +2293,7 @@ def connection_explorer_write(conn_id):
         finally:
             try:
                 os.remove(temp_name)
-            except: pass
+            except Exception: pass
     else:
         abs_path = os.path.join(conn["path"], rel_path)
         try:
@@ -2340,7 +2340,7 @@ def connection_explorer_new(conn_id):
             finally:
                 try:
                     os.remove(temp_name)
-                except: pass
+                except Exception: pass
     else:
         abs_path = os.path.join(conn["path"], rel_path)
         try:
@@ -2526,9 +2526,9 @@ def start_rclone_port_forwarder():
             pass
         finally:
             try: source.close()
-            except: pass
+            except Exception: pass
             try: destination.close()
-            except: pass
+            except Exception: pass
 
     def forwarder_listener():
         print("📡 [RCLONE PORT FORWARDER] Listening on 0.0.0.0:53683 -> 127.0.0.1:53682")

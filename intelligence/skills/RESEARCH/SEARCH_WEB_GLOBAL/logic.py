@@ -160,6 +160,7 @@ class BackendStatus(Enum):
     OK       = "ok"        # Hoạt động tốt
     DEGRADED = "degraded"  # Có thể dùng nhưng chậm / rate-limited
     DEAD     = "dead"      # Không dùng được
+    DEPRECATED = "deprecated"  # Đã loại bỏ khỏi cascade, không probe nữa
 
 @dataclass
 class BackendHealth:
@@ -285,21 +286,8 @@ class SearchBackendProbe:
             return BackendHealth("ddg", BackendStatus.DEAD, ms, time.time(), str(e))
 
     async def _probe_jina(self) -> BackendHealth:
-        """Kiểm tra Jina Reader (r.jina.ai) bằng cách đọc example.com."""
-        t0 = time.time()
-        try:
-            async with httpx.AsyncClient(timeout=6.0) as client:
-                resp = await client.get(
-                    "https://r.jina.ai/https://example.com",
-                    headers={"Accept": "text/plain"},
-                )
-            ms = (time.time() - t0) * 1000
-            if resp.status_code == 200 and len(resp.text) > 30:
-                return BackendHealth("jina", BackendStatus.OK, ms, time.time(), f"Phản hồi bình thường ({ms:.0f}ms)")
-            return BackendHealth("jina", BackendStatus.DEGRADED, ms, time.time(), f"HTTP {resp.status_code}")
-        except Exception as e:
-            ms = (time.time() - t0) * 1000
-            return BackendHealth("jina", BackendStatus.DEAD, ms, time.time(), str(e))
+        """Jina Reader da loai bo (403 + phu thuoc ngoai) — luon bao DEPRECATED."""
+        return BackendHealth("jina", BackendStatus.DEPRECATED, 0, time.time(), "Removed: internal-fetch + Crawl4AI thay the")
 
     async def _probe_crawl4ai(self) -> BackendHealth:
         """Kiểm tra Crawl4AI local service qua /health endpoint."""
@@ -1530,11 +1518,31 @@ async def cao_du_lieu_web(
     trace_id: str = "system",
     max_chars: int = 15000,
 ) -> dict:
-    """Trich xuat van ban tu URL qua Crawl4AI (uu tien) hoac Jina (du phong) voi cache."""
+    """Trich xuat van ban tu URL: fetch noi bo (uu tien) -> Crawl4AI (JS) -> bao loi trung thuc."""
     cache_key = f"scrape:{url}"
     if cached := _cache.get(cache_key):
         log.info("[SCRAPE-CACHE HIT] url='%s'", url)
         return cached
+
+    # 0. Fetch noi bo truoc: nhanh, xac dinh, khong phu thuoc dich vu ngoai (thay Jina).
+    try:
+        from tools.web_search import fetch_url_content
+        import asyncio as _asyncio
+
+        fetched = await _asyncio.to_thread(fetch_url_content, url, 15.0, max_chars, None)
+        if fetched.get("status") == "success" and fetched.get("text"):
+            clean_content = clear_navigation_noise(fetched["text"])
+            out = {
+                "status": "success",
+                "content": clean_content[:max_chars],
+                "engine": "internal-fetch",
+                "published_at": fetched.get("published_at", ""),
+                "freshness": fetched.get("freshness", ""),
+            }
+            _cache.set(cache_key, out, ttl=1800)
+            return out
+    except Exception as internal_err:
+        log.warning("[INTERNAL-FETCH-WARN] Fetch noi bo that bai: %s. Chuyen sang Crawl4AI...", internal_err)
 
     # 1. Thu cao du lieu sieu toc bang Crawl4AI thuan tuyet
     try:
@@ -1552,34 +1560,15 @@ async def cao_du_lieu_web(
     except Exception as crawl_err:
         log.warning("[CRAWL4AI-SCRAPE-WARN] Crawl4AI thất bại: %s. Chuyển sang Jina.ai...", crawl_err)
 
-    # 2. Du phong: Trich xuat qua Jina.ai
+    # 2. Du phong cuoi: Crawl4AI/ai-browser cho trang can render JS.
+    # Jina.ai da loai bo (403 + phu thuoc ngoai) — thay bang fetch noi bo o buoc 0.
     if _cb_jina.is_open:
-        return {"status": "error", "msg": "Ca Crawl4AI va Jina deu khong the trich xuat du lieu."}
+        return {"status": "error", "msg": "Ca fetch noi bo va Crawl4AI deu khong the trich xuat du lieu."}
 
-    engine.publish_mission_log(
-        "SCRAPER", f"[JINA-FALLBACK] Boc tach du lieu tu URL: `{url}`...", task_id, trace_id
-    )
-
-    async def _do_scrape():
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            resp = await client.get(f"https://r.jina.ai/{url}")
-            resp.raise_for_status()
-            return resp.text
-
-    try:
-        raw_content = await _retry_async(_do_scrape, retries=2, base_delay=1.5)
-        _cb_jina.record_success()
-        
-        # Thanh loc cac link rac/thanh dieu huong de giu lai noi dung chinh xac nhat
-        clean_content = clear_navigation_noise(raw_content)
-        
-        out = {"status": "success", "content": clean_content[:max_chars], "engine": "Jina"}
-        _cache.set(cache_key, out, ttl=1800)
-        return out
-    except Exception as e:
-        _cb_jina.record_failure()
-        log.error("[SCRAPE] Jina thất bại: %s", e)
-        return {"status": "error", "msg": str(e)}
+    # Jina.ai da loai bo hoan toan (403 + phu thuoc ngoai).
+    # Fetch noi bo o buoc 0 + Crawl4AI o buoc 1 deu that bai → bao loi trung thuc.
+    log.error("[SCRAPE] Tat ca kenh trich xuat noi bo deu that bai cho URL: %s", url)
+    return {"status": "error", "msg": "Internal fetch va Crawl4AI deu that bai. Khong dung dich vu ngoai."}
 
 async def read_url_content(url: str, task_id: str = "sys", trace_id: str = "system") -> dict:
     """💎 [ALIAS]: Giao thức đọc nội dung URL thấu thị."""

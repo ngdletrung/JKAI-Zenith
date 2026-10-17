@@ -7,14 +7,27 @@ class PIIScrubber:
     """
 
     PATTERNS = [
-        # OpenAI / Generic API Keys
-        (r'sk-[a-zA-Z0-9]{20,}', '[MASKED_OPENAI_API_KEY]'),
+        # Local Filesystem Paths (Windows & Unix)
+        (r'\b[a-zA-Z]:[/\\](?:[^<>:"|?*\n\r\s]+[/\\])*[^<>:"|?*\n\r\s]*', '[LOCAL_PATH]'),
+        (r'/(?:home|var|etc|usr|opt|root|tmp)/[^\s]+', '[LOCAL_PATH]'),
+
+        # Internal IPs & Localhost
+        (r'\b(?:10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}|127\.0\.0\.1|localhost)\b', '[INTERNAL_HOST]'),
+
+        # Cloud Provider API Keys
+        (r'sk-[a-zA-Z0-9_\-]{20,}', '[MASKED_OPENAI_API_KEY]'),
+        (r'tvly-[a-zA-Z0-9_\-]{16,}', '[MASKED_TAVILY_KEY]'),
+        (r'xai-[a-zA-Z0-9_\-]{16,}', '[MASKED_XAI_KEY]'),
+        (r'AIzaSy[a-zA-Z0-9_\-]{30,}', '[MASKED_GEMINI_KEY]'),
         (r'AKIA[0-9A-Z]{16}', '[MASKED_AWS_ACCESS_KEY]'),
         (r'(bearer\s+)[a-zA-Z0-9_\-\.]{20,}', r'\1[MASKED_BEARER_TOKEN]', re.IGNORECASE),
         
         # URI Passwords (http://user:pass@host)
         (r'://([^:]+):([^@]+)@', r'://\1:[MASKED_PASSWORD]@'),
         
+        # Vietnamese Citizen ID (CCCD: 12 digits, CMND: 9 digits)
+        (r'\b\d{12}\b', '[REDACTED_CITIZEN_ID]'),
+
         # Credit Card Numbers
         (r'\b(?:\d[ -]*?){13,16}\b', '[MASKED_CREDIT_CARD]'),
         

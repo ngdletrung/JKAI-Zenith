@@ -70,16 +70,21 @@ if __name__ == "__main__":
     print(json.dumps(auditor.generate_report(), indent=2))
 
 
+def audit_harness(root_dir: str = None) -> dict:
+    from core.utils import path_manager
+    target_root = root_dir or os.getenv("WORKSPACE_ROOT", path_manager.get_root())
+    return ZenithAuditor(target_root).generate_report()
+
+
 # 🚀 ASYNC EXECUTOR ADAPTER (Z-SOS SOTA COMPLIANT)
 import asyncio
 
 async def execute(**kwargs):
-    loop = asyncio.get_event_loop()
-    # Tìm hàm chính trong module
-    for fn_name in ['run', 'main', 'audit', 'scan', 'solve', 'soan_thao_word', 'xuat_bao_cao_excel', 'doc_du_lieu_van_phong']:
+    loop = asyncio.get_running_loop()
+    for fn_name in ['audit_harness', 'run', 'main', 'audit', 'scan', 'solve']:
         if fn_name in globals() and callable(globals()[fn_name]):
             fn = globals()[fn_name]
             if asyncio.iscoroutinefunction(fn):
                 return await fn(**kwargs)
             return await loop.run_in_executor(None, lambda: fn(**kwargs))
-    return {'status': 'success', 'msg': 'Executed successfully'}
+    return {'status': 'error', 'msg': 'No matching entrypoint found'}

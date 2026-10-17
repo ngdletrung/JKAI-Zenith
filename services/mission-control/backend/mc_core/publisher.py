@@ -1,5 +1,5 @@
 import json
-from core.redis_client import redis_safe
+from mc_core.redis_client import redis_safe
 
 def publish_event(socketio, event, data):
     """Phát sự kiện tới Dashboard qua SocketIO và lưu vào Redis log."""

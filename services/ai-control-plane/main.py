@@ -181,6 +181,9 @@ async def submit_task(payload: dict):
         payload["task_id"] = raw_tid
 
     task_id = str(raw_tid) if raw_tid and str(raw_tid) not in ["null", "undefined", "None"] else f"task_{int(time.time())}"
+    # Case 16/10: luôn ghi task_id đã chốt vào payload — nếu không, worker hạ nguồn
+    # mặc định thành "man" gây nhiễm chéo checkpoint + rớt lịch sử mission.
+    payload["task_id"] = task_id
     
     raw_trid = payload.get("trace_id")
     trace_id = str(raw_trid) if raw_trid and str(raw_trid) not in ["null", "undefined", "None"] else f"gen_{int(time.time())}"

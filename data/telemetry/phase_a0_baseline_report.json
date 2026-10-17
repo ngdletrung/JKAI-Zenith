@@ -1,0 +1,45 @@
+{
+  "phase": "A0_BASELINE_AND_FEATURE_FREEZE",
+  "established_at": "2026-10-15T20:25:00+07:00",
+  "hardware_profile": {
+    "gpu": "AMD Radeon RX 6600 (8GB VRAM)",
+    "ram_system": "128GB",
+    "topology": "1 GPU Model (Primary Q4 3B-4B) + 1 CPU Model (Secondary/Fallback)",
+    "vram_budget_hard_cap_mb": 7680,
+    "max_concurrent_models": 1
+  },
+  "baseline_metrics": {
+    "exam_run_id": "weekly_exam_run_A_1791977914",
+    "capability_status": "LIVE_EVALUATED",
+    "accuracy_tcr": 0.45,
+    "total_tasks": 20,
+    "passed_tasks": 9,
+    "failed_tasks": 11,
+    "wilson_95_ci": {
+      "centre": 0.4581,
+      "lower": 0.2582,
+      "upper": 0.6579
+    },
+    "duration_seconds": 69.742,
+    "avg_task_latency_s": 3.487,
+    "group_breakdown": {
+      "A_MATH_FIDELITY": { "total": 4, "passed": 1, "rate": 0.25 },
+      "B_ANAPHORA_GROUNDING": { "total": 4, "passed": 2, "rate": 0.50 },
+      "C_RETRIEVAL_CITATION": { "total": 4, "passed": 1, "rate": 0.25 },
+      "D_TOOL_AND_FILEOPS": { "total": 4, "passed": 2, "rate": 0.50 },
+      "E_MASTER_COMMUNICATION": { "total": 4, "passed": 3, "rate": 0.75 }
+    }
+  },
+  "failure_root_cause_attribution": {
+    "early_stopping_or_incomplete_scope": 0.45,
+    "tool_argument_syntax_mismatch": 0.27,
+    "reasoning_and_planning_gap": 0.28
+  },
+  "governance_and_freeze_rules": {
+    "feature_freeze_active": true,
+    "zero_new_modules_allowed": true,
+    "training_data_quarantine": "sealed_C and holdout OOD tasks are strictly blocklisted from training",
+    "minimum_gold_samples_for_lora": 100,
+    "promotion_gate_rule": "LoRA candidate must exceed baseline TCR (0.45) on unseen OOD tasks with zero severe safety regressions"
+  }
+}

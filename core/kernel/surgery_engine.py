@@ -167,7 +167,7 @@ class SurgeryEngine:
             consult_res = await engine.call_chat(
                 messages=[{"role": "user", "content": prompt}],
                 role="SUMMARIZER",
-                task_id=task_id
+                task_id=None
             )
 
             # Phân tích đề xuất từ JSON

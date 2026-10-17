@@ -4,7 +4,7 @@ import time
 from core.utils.engine import engine
 from core.utils import path_manager
 
-def neural_audit(task_id: str, mission_goal: str, execution_log: str) -> dict:
+async def neural_audit(task_id: str, mission_goal: str, execution_log: str) -> dict:
     """
     🧠 [NEURAL AUDIT]: Giao thức Thẩm định Nơ-ron và Tiến hóa Chiến lược.
     Phân tích kết quả nhiệm vụ và trích xuất "Neural DNA" cho các lần thực thi sau.
@@ -27,7 +27,7 @@ def neural_audit(task_id: str, mission_goal: str, execution_log: str) -> dict:
     """
     
     # Chúng ta dùng Planner để phân tích lại quá trình của chính nó
-    report = engine.call_chat(
+    report = await engine.call_chat(
         messages=[{"role": "user", "content": audit_prompt}],
         role="CRITIC",
         task_id=task_id
@@ -57,12 +57,11 @@ def neural_audit(task_id: str, mission_goal: str, execution_log: str) -> dict:
 import asyncio
 
 async def execute(**kwargs):
-    loop = asyncio.get_event_loop()
-    # Tìm hàm chính trong module
-    for fn_name in ['run', 'main', 'audit', 'scan', 'solve', 'soan_thao_word', 'xuat_bao_cao_excel', 'doc_du_lieu_van_phong']:
+    loop = asyncio.get_running_loop()
+    for fn_name in ['neural_audit', 'run', 'main', 'audit', 'scan', 'solve']:
         if fn_name in globals() and callable(globals()[fn_name]):
             fn = globals()[fn_name]
             if asyncio.iscoroutinefunction(fn):
                 return await fn(**kwargs)
             return await loop.run_in_executor(None, lambda: fn(**kwargs))
-    return {'status': 'success', 'msg': 'Executed successfully'}
+    return {'status': 'error', 'msg': 'No matching entrypoint found'}

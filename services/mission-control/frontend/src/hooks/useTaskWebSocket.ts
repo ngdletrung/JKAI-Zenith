@@ -313,10 +313,13 @@ export function useTaskWebSocket(onNewLog?: (log: TaskLog) => void) {
     let logBuffer: TaskLog[] = [];
     let pendingNodeUpdates: NodeUpdate[] = [];
 
+    let lastDagFlush = 0;
     const flushBuffers = () => {
-      if (pendingNodeUpdates.length > 0) {
+      const now = Date.now();
+      if (pendingNodeUpdates.length > 0 && (now - lastDagFlush >= 250)) {
         const updates = [...pendingNodeUpdates];
         pendingNodeUpdates = [];
+        lastDagFlush = now;
         setDagNodes(nodes => applyAnatomyLayout(nodes, updates));
       }
       if (logBuffer.length > 0) {
@@ -326,7 +329,7 @@ export function useTaskWebSocket(onNewLog?: (log: TaskLog) => void) {
       }
     };
 
-    // ⚡ [SMOOTH STREAMING]: Xả đệm UI mỗi 60ms (xấp xỉ 16 FPS) để chat bubble cuộn mượt không giật lag
+    // ⚡ [SMOOTH STREAMING]: Xả đệm UI mỗi 60ms cho luồng chat, 250ms cho 3D Boardroom để nhẹ tải GPU
     const throttleTimer = setInterval(flushBuffers, 60);
 
     // ── onLog ────────────────────────────────────────────────────────────────
@@ -412,8 +415,8 @@ export function useTaskWebSocket(onNewLog?: (log: TaskLog) => void) {
       }
       if (nextStatus && nextStatus !== currentStatus) setStatus(nextStatus as any);
 
-      // ── DAG node updates — vào pendingNodeUpdates (flushed mỗi 80 ms) ─────
-      const shortMsg = truncate(msg);
+      // ── DAG node updates — vào pendingNodeUpdates (cho phép nội dung dài tới 280 ký tự) ─────
+      const shortMsg = truncate(msg, 280);
 
       const upperTag = String(tag || '').toUpperCase();
 
