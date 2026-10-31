@@ -19,12 +19,11 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")
 from core.sanitizer.state_sanitizer import StateSanitizer
 
 
-def test_fix_a_max_state_bytes_hard_cap():
-    """Fix a: Ensure canonical JSON string never exceeds 65536 bytes."""
+def test_fix_a_oversized_state_is_rejected_without_invalid_json():
+    """Oversized canonical state fails closed instead of returning broken JSON."""
     huge_data = {"key": "x" * 100000}
-    canonical = StateSanitizer.canonical_json(huge_data)
-    encoded = canonical.encode("utf-8")
-    assert len(encoded) <= StateSanitizer.MAX_STATE_BYTES
+    with pytest.raises(ValueError):
+        StateSanitizer.canonical_json(huge_data)
     assert StateSanitizer.MAX_STATE_BYTES == 65536
 
 

@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "EvidenceRecord",
+  "type": "object",
+  "required": [
+    "task_id",
+    "agent_id",
+    "submitted_at",
+    "artifacts",
+    "test_verification"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string"
+    },
+    "agent_id": {
+      "type": "string"
+    },
+    "submitted_at": {
+      "type": "string"
+    },
+    "artifacts": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "test_verification": {
+      "type": "object"
+    }
+  }
+}

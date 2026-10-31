@@ -63,7 +63,23 @@ export const useAgentController = () => {
 
       // 📎 [FILE-PREPARATION]
       console.log('📎 [JKAI] Preparing files...');
+      let effectiveGoal = finalGoal;
       const uploadedFiles = await Promise.all(state.attachedFiles.map(readFileAsBase64));
+      
+      if (state.attachedFiles.length > 0) {
+        try {
+          const uploadResults = await Promise.all(
+            state.attachedFiles.map(f => ZenithService.uploadFile(f))
+          );
+          const serverPaths = uploadResults.filter(r => r?.ok && r?.path).map(r => r.path);
+          if (serverPaths.length > 0) {
+            effectiveGoal += `\n[Tệp tin đính kèm từ Master: ${serverPaths.join(', ')}]`;
+            toast.success(`Đã đồng bộ ${serverPaths.length} tệp lên không gian làm việc.`, { id: 'FILE_UPLOAD', icon: '📁' });
+          }
+        } catch (uploadErr) {
+          console.warn('Physical upload non-fatal warning:', uploadErr);
+        }
+      }
       setFiles([]);
 
       // 🔱 [HITL-SHORTCUT]
@@ -88,7 +104,7 @@ export const useAgentController = () => {
       console.log('📡 [JKAI] Dispatching task via Fetch...');
       toast.loading('📡 Đang phát hỏa mệnh lệnh...', { id: 'ZENITH_PULSE' });
       
-      const res = await state.socketActions.submitTask(finalGoal, state.cognitiveMode, isAppend, { files: uploadedFiles });
+      const res = await state.socketActions.submitTask(effectiveGoal, state.cognitiveMode, isAppend, { files: uploadedFiles });
       
       console.log('✅ [JKAI] Server Response:', res);
       if (!res?.ok) throw new Error(res?.error || 'Uplink failure.');

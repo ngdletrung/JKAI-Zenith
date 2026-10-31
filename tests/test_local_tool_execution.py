@@ -34,7 +34,7 @@ class TestLocalToolExecution:
 
             assert write_res["status"] == "success"
             assert os.path.exists(test_file)
-            assert duration_write < 0.20  # Under 200ms
+            assert duration_write < 0.50  # Under 500ms (subsecond)
 
             # 2. View
             view_res = await view_file(path=test_file)

@@ -1,0 +1,37 @@
+{
+  "locked_at_utc": "2026-10-18T00:18:04.476011+00:00",
+  "task_id": "TASK-003",
+  "rubric_version": "1.2.0",
+  "rubric_sha256": "sha256:186289bff4512269fab5d5d804bb5ebbfa7c573223db813e7cbf0e7f16e0996b",
+  "env_manifest_hash": "sha256:25263974defee75e7ba9114a053fcfd99e3dbf690eec31126a8e3e489a770b7e",
+  "env_manifest": {
+    "model_version": "ollama/qwen3.5:4b+qwen2.5-coder:3b",
+    "active_gpu_models": [
+      "all-minilm:latest",
+      "qwen2.5-coder:3b",
+      "qwen3.5:4b"
+    ],
+    "runtime_os": "JKAI ZENITH OS v42.5",
+    "controller_version": "git:7c317fa43c288e4e09e68396536acd38237f2d74",
+    "gpu_driver": "AMD Radeon RX 6600",
+    "interface_endpoint": "http://localhost:9999/"
+  },
+  "rubric": {
+    "task_id": "TASK-003",
+    "rubric_version": "1.2.0",
+    "question_text": "[TASK-003 | Canary: NP6-VERIF-20261018-7D9A2F8C] Hãy thực thi kiểm toán kỹ thuật trực tiếp trên workspace đối với 2 tệp thẩm định cốt lõi: core/verification/failure_classifier.py và core/verification/hybrid_verifier.py. Yêu cầu bắt buộc:\n1. Đọc trực tiếp 2 tệp trên (không suy đoán) và báo cáo chính xác: (a) tổng số dòng (line count) và mã băm SHA-256 (16 ký tự đầu) của từng tệp, (b) danh sách các Class định nghĩa trong từng tệp.\n2. Phân tích cơ chế hoạt động của FailureClassifier trong failure_classifier.py: chỉ rõ phương thức classify_failure ánh xạ các lỗi (POLICY_VIOLATION, FILE_EMPTY_ZERO_BYTES, PHYSICAL_FILE_MISSING, MODEL_HALLUCINATION, TIMEOUT) sang các RecoveryStrategy tương ứng như thế nào. Nêu rõ triết lý REPLACE, NOT ADD của HybridVerifier trong hybrid_verifier.py khi phân nhánh Code Path (Deterministic Gate) thay thế Ban Kiểm Soát LLM.\n3. Tự kiểm chứng (Self-Verification) lại các con số dòng và SHA-256 trực tiếp trên hệ thống tệp trước khi kết luận, và đính kèm nguyên văn mã Canary NP6-VERIF-20261018-7D9A2F8C ở phần kết luận báo cáo.",
+    "time_budget_remaining_s": 900,
+    "tool_calls_remaining": 50,
+    "answer_correctness_criteria": [
+      "AC-1 (CRITICAL): Báo cáo chính xác tổng số dòng (failure_classifier.py: 54 dòng, hybrid_verifier.py: 206 dòng) và 16 ký tự đầu mã băm SHA-256 (failure_classifier.py: 0f36b4d4cbb44e66, hybrid_verifier.py: 183770aed4897d4a).",
+      "AC-2 (CRITICAL): Liệt kê đúng các Class thực tế trong cả 2 tệp (failure_classifier: LegacyClassificationResult, FailureClassifier; hybrid_verifier: HybridVerifier).",
+      "AC-3 (CRITICAL): Giải thích chính xác phương thức classify_failure và bảng ánh xạ lỗi sang RecoveryStrategy, cùng triết lý REPLACE, NOT ADD của HybridVerifier cho Code Path (Deterministic Gate).",
+      "AC-4 (CRITICAL): Đính kèm chính xác chuỗi Canary NP6-VERIF-20261018-7D9A2F8C trong báo cáo kết luận."
+    ],
+    "process_compliance_criteria": [
+      "PC-1 (CRITICAL): Nhiệm vụ được nạp và thực thi thật qua giao diện http://localhost:9999/ (/api/submit_task), có log thực thi thật trong runtime.",
+      "PC-2 (MAJOR): JKAI phải thực sự gọi công cụ view_file đọc tệp thực tế trên workspace, không đoán mò.",
+      "PC-3 (MAJOR): Có bước kiểm chứng kết quả (VERIFY / self_verification) trước khi nộp, tuân thủ giới hạn tài nguyên."
+    ]
+  }
+}

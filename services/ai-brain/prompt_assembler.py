@@ -148,17 +148,20 @@ class ZenithPromptAssembler:
         skills_dna: str,
         kb_context: str,
         kb_sufficient: bool = False,
-        extra_context: Dict[str, Any] = None,
+        extra_context: Optional[Dict[str, Any]] = None,
         task_id: str = "sys",
+        memory_context: str = "",
     ) -> Tuple[str, str]:
-        if extra_context is None:
-            extra_context = {}
+        extra = extra_context if extra_context is not None else {}
+        if memory_context:
+            extra["memory_context"] = memory_context
         params = cls.get_prompt_params(goal)
 
-        extra_context["action_type"] = params.action_type
-        extra_context["max_turns"] = params.max_turns
-        extra_context["mode"] = params.mode.value
-        extra_context["task_tags"] = params.tags
+        # Preserve caller's authority-bearing parameters if already explicitly provided
+        extra.setdefault("action_type", params.action_type)
+        extra.setdefault("max_turns", params.max_turns)
+        extra.setdefault("mode", params.mode.value)
+        extra.setdefault("task_tags", params.tags)
 
         _, sys_prompt, user_prompt = prompt_core.build(
             goal=goal,
@@ -167,10 +170,12 @@ class ZenithPromptAssembler:
             skills_dna=skills_dna,
             kb_context=kb_context,
             kb_sufficient=kb_sufficient,
-            extra_context=extra_context,
+            memory_context=memory_context or extra.get("memory_context", ""),
+            extra_context=extra,
             task_id=task_id,
         )
         return sys_prompt, user_prompt
+
 
 
 prompt_assembler = ZenithPromptAssembler()

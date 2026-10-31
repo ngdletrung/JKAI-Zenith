@@ -69,19 +69,34 @@ class MissionRuntime:
         # Thiết lập callback để tự động lưu Snapshot mỗi khi có node hoàn thành
         async def wrapped_executor(node, input_ctx):
             output = await executor_func(node, input_ctx)
-            # Ghi nhận shadow telemetry an toàn
+            node_id = getattr(node, "id", None) or getattr(node, "node_id", str(node))
+            node_action = getattr(node, "capability", None) or getattr(node, "name", "node_execution")
+            
+            # [SROS v2 FAIL-CLOSED RECEIPT ENFORCEMENT]
+            # Mọi node thực thi trong MissionRuntime bắt buộc phải niêm phong ExecutionReceipt mật mã học
+            from core.kernel.execution_integrity import ExecutionIntegrityLayer
+            integrity = ExecutionIntegrityLayer(mission_id=mission_id)
+            node_args = input_ctx if isinstance(input_ctx, dict) else {"ctx": str(input_ctx)}
+            receipt = integrity.seal_execution_receipt(
+                action=node_action,
+                arguments=node_args,
+                output=output,
+                task_id=mission_id
+            )
+            if not receipt:
+                raise RuntimeError(f"MISSION_RUNTIME_RECEIPT_FAIL_CLOSED: Failed to seal cryptographic execution receipt for node {node_id}")
+
+            # Ghi nhận shadow telemetry an toàn với receipt có chữ ký HMAC
             if self.shadow_harness:
                 try:
-                    node_id = getattr(node, "id", None) or getattr(node, "node_id", str(node))
-                    node_action = getattr(node, "capability", None) or getattr(node, "name", "")
                     self.shadow_harness.record_observation(
-                        raw_state=input_ctx if isinstance(input_ctx, dict) else {"ctx": str(input_ctx)},
+                        raw_state=node_args,
                         reflex_draft={"node_id": node_id, "action": node_action},
-                        execution_receipt={"status": "COMPLETED", "output": str(output)[:1000]},
-                        metadata={"mission_id": mission_id, "source": "MissionRuntime"}
+                        execution_receipt=receipt.to_dict(),
+                        metadata={"mission_id": mission_id, "source": "MissionRuntime", "receipt_id": receipt.receipt_id}
                     )
-                except Exception:
-                    pass
+                except Exception as shadow_err:
+                    logger.debug("[SHADOW-HARNESS-ERROR] %s", shadow_err)
             # Chụp nhanh snapshot để lưu checkpoint an toàn xuống đĩa
             latest_state = self.snapshot_engine.get_latest_state(mission_id)
             # Lấy event cuối cùng vừa được ghi vào log
@@ -141,6 +156,31 @@ class MissionRuntime:
         # 2. Khởi chạy lại Scheduler với Plan đã được khôi phục
         async def wrapped_executor(node, input_ctx):
             output = await executor_func(node, input_ctx)
+            node_id = getattr(node, "id", None) or getattr(node, "node_id", str(node))
+            node_action = getattr(node, "capability", None) or getattr(node, "name", "node_execution")
+            from core.kernel.execution_integrity import ExecutionIntegrityLayer
+            integrity = ExecutionIntegrityLayer(mission_id=mission_id)
+            node_args = input_ctx if isinstance(input_ctx, dict) else {"ctx": str(input_ctx)}
+            receipt = integrity.seal_execution_receipt(
+                action=node_action,
+                arguments=node_args,
+                output=output,
+                task_id=mission_id
+            )
+            if not receipt:
+                raise RuntimeError(f"MISSION_RUNTIME_RECEIPT_FAIL_CLOSED: Failed to seal cryptographic execution receipt for node {node_id}")
+
+            if self.shadow_harness:
+                try:
+                    self.shadow_harness.record_observation(
+                        raw_state=node_args,
+                        reflex_draft={"node_id": node_id, "action": node_action},
+                        execution_receipt=receipt.to_dict(),
+                        metadata={"mission_id": mission_id, "source": "MissionRuntime", "receipt_id": receipt.receipt_id}
+                    )
+                except Exception as shadow_err:
+                    logger.debug("[SHADOW-HARNESS-ERROR] %s", shadow_err)
+
             latest_state = self.snapshot_engine.get_latest_state(mission_id)
             all_events = self.event_store.get_events(mission_id)
             if all_events:

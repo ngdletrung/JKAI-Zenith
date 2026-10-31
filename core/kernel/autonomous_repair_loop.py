@@ -56,9 +56,17 @@ class AutonomousRepairLoop:
         Chạy tệp Python script. Nếu gặp lỗi, tự động trích xuất Traceback, gọi LLM sửa code, 
         ghi đè tệp và chạy lại đến khi thành công 100% hoặc đạt max attempts (sau đó rollback).
         """
-        script_file = Path(script_path)
+        script_file = Path(script_path).resolve()
         if not script_file.exists():
             return {"status": "error", "msg": f"Tệp `{script_path}` không tồn tại."}
+
+        # [SOVEREIGN SKILL GOVERNANCE]: Cấm LLM tự ý ghi đè logic.py trong intelligence/skills
+        norm_script_str = str(script_file).replace("\\", "/").lower()
+        if "intelligence/skills/" in norm_script_str and script_file.name.lower() == "logic.py":
+            return {
+                "status": "error",
+                "msg": "GOVERNANCE_BLOCKED: Direct LLM self-healing of production skill logic.py is forbidden. Use DynamicSkillCreator proposal pipeline."
+            }
 
         from core.kernel.saga_atomic_healer import saga_atomic_healer
         from core.utils.engine import engine
@@ -124,6 +132,13 @@ class AutonomousRepairLoop:
             # Trích xuất mã Python từ codeblock ```python
             clean_code = self._extract_code_block(fixed_code_text)
             if clean_code and len(clean_code) > 10:
+                from core.kernel.dynamic_skill_creator import DynamicSkillCreator
+                from core.sanitizer.state_sanitizer import StateSanitizer
+                ast_ok, ast_errs = DynamicSkillCreator.validate_skill_ast(clean_code)
+                scan_res = StateSanitizer.scan_for_retain(clean_code, policy="block")
+                if not ast_ok or not scan_res["allowed_to_retain"]:
+                    logger.warning("[REPAIR-GOVERNANCE-BLOCKED]: Bản vá từ LLM vi phạm AST hoặc StateSanitizer: %s", ast_errs)
+                    continue
                 with open(script_file, "w", encoding="utf-8") as f:
                     f.write(clean_code)
                 logger.info("[CODE-PATCHED]: Đã áp dụng bản sửa lỗi mới cho `%s`.", script_file.name)

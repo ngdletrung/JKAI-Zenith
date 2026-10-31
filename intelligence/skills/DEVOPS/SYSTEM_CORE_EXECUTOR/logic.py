@@ -17,20 +17,19 @@ from core.utils.engine import engine
 # ⚙️ [ZENITH-SYSTEM-CORE]: Hệ vận động cốt lõi của JKAI.
 
 def _resolve_target_path(target_path: str) -> str:
-    """Chuẩn hóa và chuyển đổi đường dẫn /workspace sang đường dẫn thực tế nếu chạy ngoài container."""
+    """Chuẩn hóa và chuyển đổi đường dẫn /workspace sang đường dẫn thực tế trên Host hoặc mount trong Container (/shared/core, /intelligence, ...)."""
     if not target_path:
         return ""
+    try:
+        from core.utils.project_workspace import resolve_container_or_workspace_path
+        resolved = resolve_container_or_workspace_path(target_path)
+        if resolved:
+            return resolved
+    except Exception:
+        pass
     p = str(target_path).replace("\\", "/").strip()
-    if p.startswith("/workspace"):
-        if not os.path.exists("/workspace") or not os.path.isdir("/workspace"):
-            try:
-                from core.utils.project_workspace import get_jkai_workspace_root
-                ws_root = str(get_jkai_workspace_root()).replace("\\", "/").rstrip("/")
-                rel = p[len("/workspace"):].lstrip("/")
-                p = f"{ws_root}/{rel}" if rel else ws_root
-            except Exception:
-                pass
     return os.path.normpath(p)
+
 
 PROTECTED_PATTERNS = [
     ".env", ".git", "credential", "secrets", ".key", ".pem", "id_rsa",
@@ -136,24 +135,83 @@ def _create_backup(target_path: str) -> Optional[str]:
     return None
 
 
+def _build_trusted_file_metadata(target_path: str, raw_text: str) -> Dict[str, object]:
+    """[RC-1 FIX]: Sinh header [FILE_METADATA] tất định bằng code tin cậy (không qua model)."""
+    sha_full = _calculate_sha256(target_path)
+    sha_16 = sha_full[:16]
+    splitlines_cnt = len(raw_text.splitlines())
+    raw_lines_cnt = len(raw_text.split("\n")) if raw_text else 0
+    classes_list: List[str] = []
+    funcs_list: List[str] = []
+    if str(target_path).endswith(".py") and raw_text.strip():
+        try:
+            tree = ast.parse(raw_text)
+            for node in tree.body:
+                if isinstance(node, ast.ClassDef):
+                    classes_list.append(node.name)
+                    for sub in node.body:
+                        if isinstance(sub, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                            funcs_list.append(f"{node.name}.{sub.name}")
+                elif isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+                    funcs_list.append(node.name)
+        except Exception:
+            pass
+    parts = [
+        f"total_lines={raw_lines_cnt} (splitlines={splitlines_cnt})",
+        f"sha256_16={sha_16}",
+        f"sha256={sha_full}",
+    ]
+    if classes_list:
+        parts.append(f"classes={', '.join(classes_list)}")
+    if funcs_list:
+        parts.append(f"functions_and_methods={', '.join(funcs_list)}")
+    header = f"[FILE_METADATA: {' | '.join(parts)}]"
+    return {
+        "sha256": sha_full,
+        "sha256_16": sha_16,
+        "total_lines": raw_lines_cnt,
+        "splitlines_count": splitlines_cnt,
+        "classes": classes_list,
+        "functions_and_methods": funcs_list,
+        "header": header,
+    }
+
+
 async def list_dir(path: str = "", directory_path: str = "", DirectoryPath: str = "", task_id: str = "sys", **kwargs):
     """📂 [SCOUTING]: Liệt kê danh sách tệp tin và thư mục."""
-    target_path = _resolve_target_path(DirectoryPath or directory_path or path or kwargs.get("DirectoryPath") or kwargs.get("path") or ".")
+    raw_dir = DirectoryPath or directory_path or path or kwargs.get("DirectoryPath") or kwargs.get("path") or "."
+    target_path = _resolve_target_path(raw_dir)
     try:
         items = os.listdir(target_path)
         result = []
+        seen_names = set()
         for item in items:
             full_path = os.path.join(target_path, item)
             is_dir = os.path.isdir(full_path)
             size = os.path.getsize(full_path) if not is_dir else 0
+            seen_names.add(item)
             result.append({
                 "name": item,
                 "type": "directory" if is_dir else "file",
                 "size": size
             })
+        # Trong container, nếu liệt kê gốc /workspace, hợp nhất các mount dự án (/shared/core, /intelligence, /app, /data)
+        norm_tp = str(target_path).replace("\\", "/").rstrip("/")
+        if norm_tp == "/workspace":
+            virtual_mounts = [
+                ("core", "/shared/core"),
+                ("intelligence", "/intelligence"),
+                ("services", "/app"),
+                ("data", "/data"),
+            ]
+            for vname, vmount in virtual_mounts:
+                if vname not in seen_names and os.path.isdir(vmount):
+                    seen_names.add(vname)
+                    result.append({"name": vname, "type": "directory", "size": 0})
         return {"status": "success", "path": os.path.abspath(target_path), "items": result}
     except Exception as e:
         return {"status": "error", "msg": str(e)}
+
 
 async def view_file(
     path: str = "",
@@ -162,6 +220,7 @@ async def view_file(
     start_line: int = 1,
     end_line: int = 500,
     outline: bool = False,
+    include_metadata_header: bool = True,
     task_id: str = "sys",
     **kwargs,
 ):
@@ -178,7 +237,10 @@ async def view_file(
         with open(target_path, "r", encoding="utf-8", errors="ignore") as f:
             raw_text = f.read()
         lines = raw_text.splitlines(keepends=True)
-        total_lines = len(lines)
+        splitlines_total = len(lines)
+        meta = _build_trusted_file_metadata(target_path, raw_text)
+        meta_header = str(meta["header"])
+        reported_total_lines = int(meta["total_lines"])
 
         if want_outline:
             if target_path.endswith(".py"):
@@ -190,29 +252,41 @@ async def view_file(
                     for idx, ln in enumerate(lines, 1)
                     if ln.lstrip().startswith(("#", "def ", "class ", "function ", "export "))
                 ]
-                outline_text = "\n".join(headings[:200]) if headings else f"[L1-L{total_lines}] ({total_lines} lines)"
+                outline_text = "\n".join(headings[:200]) if headings else f"[L1-L{splitlines_total}] ({reported_total_lines} lines)"
+            out_content = f"{meta_header}\n{outline_text}" if include_metadata_header else outline_text
             return {
                 "status": "success",
                 "path": os.path.abspath(target_path),
-                "total_lines": total_lines,
+                "total_lines": reported_total_lines,
+                "splitlines_count": splitlines_total,
+                "sha256": meta["sha256"],
+                "sha256_16": meta["sha256_16"],
+                "file_metadata": meta_header,
                 "outline": outline_text,
-                "content": outline_text,
+                "content": out_content,
             }
 
         s_idx = max(1, s_line)
-        e_idx = min(total_lines, max(s_idx, e_line)) if total_lines > 0 else 0
-        content = "".join(lines[s_idx - 1 : e_idx]) if total_lines > 0 else ""
+        e_idx = min(splitlines_total, max(s_idx, e_line)) if splitlines_total > 0 else 0
+        raw_slice = "".join(lines[s_idx - 1 : e_idx]) if splitlines_total > 0 else ""
+        content_out = f"{meta_header}\n{raw_slice}" if include_metadata_header else raw_slice
         return {
             "status": "success",
             "path": os.path.abspath(target_path),
             "start_line": s_idx,
             "end_line": e_idx,
-            "total_lines": total_lines,
-            "has_more": e_idx < total_lines,
-            "content": content,
+            "total_lines": reported_total_lines,
+            "splitlines_count": splitlines_total,
+            "sha256": meta["sha256"],
+            "sha256_16": meta["sha256_16"],
+            "file_metadata": meta_header,
+            "has_more": e_idx < splitlines_total,
+            "raw_content": raw_slice,
+            "content": content_out,
         }
     except Exception as e:
         return {"status": "error", "msg": str(e)}
+
 
 
 async def view_file_outline(path: str = "", file_path: str = "", AbsolutePath: str = "", task_id: str = "sys", **kwargs):
@@ -228,10 +302,32 @@ async def view_file_outline(path: str = "", file_path: str = "", AbsolutePath: s
 
 
 async def write_to_file(path: str = "", file_path: str = "", TargetFile: str = "", target_path: str = "", content: str = "", CodeContent: str = "", target_content: str = "", overwrite: bool = True, task_id: str = "sys", **kwargs):
-    """✍️ [CREATION - M0 ATOMIC WRITE]: Kiến tạo tệp tin mới với Atomic Write, Auto-Backup, SHA-256 & ACI Diagnostics."""
+    """✍️ [CREATION - M0 ATOMIC WRITE]: Kiến tạo tệp tin mới với Atomic Write, Auto-Backup, SHA-256, Task-Scope Gate & ArtifactReceipt."""
     raw_path = target_path or path or file_path or TargetFile or kwargs.get("TargetFile") or ""
     target_path = _resolve_target_path(raw_path)
     target_content = target_content or content or CodeContent or kwargs.get("CodeContent") or ""
+    trace_id = str(kwargs.get("trace_id") or "trace_sys").strip()
+    enforce_task_scope = bool(
+        kwargs.get("enforce_task_scope", False)
+        or kwargs.get("expected_task_id")
+        or os.getenv("JKAI_ENFORCE_TASK_SCOPED_WRITE", "0") == "1"
+    )
+    expected_task_id = str(kwargs.get("expected_task_id") or "").strip()
+    clean_task_id = str(task_id or "").strip()
+
+    if enforce_task_scope:
+        if not clean_task_id or clean_task_id in ("sys", "None", "null", "system"):
+            return {
+                "status": "error",
+                "code": "MISSING_TASK_ID_SCOPE",
+                "msg": "Từ chối ghi tệp: Thiếu task_id hợp lệ trong chế độ ràng buộc phạm vi nhiệm vụ (R2.1).",
+            }
+        if expected_task_id and clean_task_id != expected_task_id:
+            return {
+                "status": "error",
+                "code": "CROSS_TASK_FILE_WRITE_REJECTED",
+                "msg": f"Từ chối ghi tệp chéo nhiệm vụ: task_id='{clean_task_id}' != expected_task_id='{expected_task_id}'.",
+            }
     try:
         guard_err = _guard_path_internal(target_path)
         if guard_err:
@@ -313,14 +409,50 @@ async def write_to_file(path: str = "", file_path: str = "", TargetFile: str = "
                 f"signature_changes={blast_impact.get('signature_changes')}."
             )
 
+        abs_target_path = os.path.abspath(target_path)
+        artifact_receipt = None
+        try:
+            from mission_state.schema import ArtifactReceipt
+            artifact_receipt = ArtifactReceipt.issue(
+                task_id=clean_task_id or "sys",
+                trace_id=trace_id or "trace_sys",
+                artifact_type="FILE_WRITE",
+                artifact_path=abs_target_path,
+                artifact_sha256=sha256_hash,
+                size_bytes=file_size,
+            ).model_dump()
+        except Exception:
+            import hmac as _hmac
+            import hashlib as _hashlib
+            from datetime import datetime as _dt, timezone as _tz
+            secret = os.getenv("JKAI_RECEIPT_SECRET", "jkai-sovereign-receipt-secret-2026").encode("utf-8")
+            canonical = f"{clean_task_id or 'sys'}|{trace_id or 'trace_sys'}|FILE_WRITE|{abs_target_path}|{sha256_hash}|{int(file_size)}||"
+            sig = _hmac.new(secret, canonical.encode("utf-8"), _hashlib.sha256).hexdigest()
+            artifact_receipt = {
+                "receipt_id": f"art_rcpt_{sha256_hash[:12]}",
+                "task_id": clean_task_id or "sys",
+                "trace_id": trace_id or "trace_sys",
+                "artifact_type": "FILE_WRITE",
+                "artifact_path": abs_target_path,
+                "artifact_sha256": sha256_hash,
+                "size_bytes": int(file_size),
+                "evidence_id": None,
+                "evidence_sha256": None,
+                "created_at": _dt.now(_tz.utc).isoformat(),
+                "hmac_signature": sig,
+            }
+
         out_payload = {
             "status": "success",
             "msg": msg,
-            "path": os.path.abspath(target_path),
+            "path": abs_target_path,
             "sha256": sha256_hash,
             "size_bytes": file_size,
             "backup_path": backup_path,
             "atomic": True,
+            "task_id": clean_task_id or "sys",
+            "trace_id": trace_id or "trace_sys",
+            "artifact_receipt": artifact_receipt,
         }
         if aci_diag is not None:
             out_payload["aci_diagnostics"] = aci_diag
@@ -347,56 +479,27 @@ async def replace_file_content(path: str = "", target: str = "", replacement: st
         with open(target_path, "r", encoding="utf-8", errors="ignore") as f:
             file_content = f.read()
             
-        # 🩹 [RESILIENT SURGERY]: So khớp đa tầng (Exact -> CRLF Normalized -> Line-stripped Fuzzy)
-        match_found = False
-        new_content = file_content
-
-        # Tầng 1: Khớp chính xác tuyệt đối
-        if tgt in file_content:
-            new_content = file_content.replace(tgt, repl, 1)
-            match_found = True
-        else:
-            # Tầng 2: Chuẩn hóa CRLF / LF (chống gãy trên Windows host)
-            file_norm = file_content.replace("\r\n", "\n")
-            tgt_norm = tgt.replace("\r\n", "\n")
-            repl_norm = repl.replace("\r\n", "\n")
-
-            if tgt_norm in file_norm:
-                new_norm = file_norm.replace(tgt_norm, repl_norm, 1)
-                if "\r\n" in file_content:
-                    new_norm = new_norm.replace("\n", "\r\n")
-                new_content = new_norm
-                match_found = True
-            else:
-                # Tầng 3: So khớp dòng bỏ qua khoảng trắng thừa và sai lệch thụt lề
-                f_lines = file_norm.split("\n")
-                t_lines = [l.strip() for l in tgt_norm.split("\n") if l.strip()]
-                if t_lines:
-                    n_t = len(t_lines)
-                    m_start = -1
-                    for idx in range(len(f_lines) - n_t + 1):
-                        window = [f_lines[idx + k].strip() for k in range(n_t)]
-                        if window == t_lines:
-                            m_start = idx
-                            break
-                    if m_start != -1:
-                        r_lines = repl_norm.split("\n")
-                        res_lines = f_lines[:m_start] + r_lines + f_lines[m_start + n_t:]
-                        res_str = "\n".join(res_lines)
-                        if "\r\n" in file_content:
-                            res_str = res_str.replace("\n", "\r\n")
-                        new_content = res_str
-                        match_found = True
-
-        if not match_found:
+        # 🩹 [RESILIENT SURGERY]: So khớp đa tầng qua SmartPatchEngine (Exact -> Whitespace Normalized -> Unified Diff)
+        from core.utils.smart_patch_engine import SmartPatchEngine
+        patch_res = SmartPatchEngine.apply_patch(
+            original_text=file_content,
+            target_content=tgt,
+            replacement_content=repl,
+            start_line=kwargs.get("start_line") or kwargs.get("StartLine"),
+            end_line=kwargs.get("end_line") or kwargs.get("EndLine"),
+            allow_multiple=kwargs.get("allow_multiple", False),
+        )
+        if not patch_res.success:
             return {
                 "status": "error",
                 "msg": (
-                    f"❌ Lỗi: Không tìm thấy TargetContent '{tgt}' trong `{target_path}`.\n"
+                    f"❌ Lỗi: {patch_res.message}\n"
+                    f"Đoạn mã mục tiêu:\n{tgt}\n\n"
                     f"Nội dung tệp thực tế:\n{file_content}\n\n"
-                    f"Vui lòng nhìn kỹ nội dung tệp ở trên và sao chép chính xác đoạn cần sửa vào TargetContent."
+                    f"Vui lòng kiểm tra lại nội dung tệp ở trên."
                 )
             }
+        new_content = patch_res.content
         
         # 🔬 [AST + SYMTABLE ACI PRE-VALIDATION]: Chặn đứng lỗi cú pháp & chẩn đoán undefined_name/broken_import (<15ms)
         aci_diag = None
@@ -551,25 +654,36 @@ async def verify_file(path: str = "", file_path: str = "", TargetFile: str = "",
         if os.path.isdir(target_path):
             return {"status": "error", "msg": f"'{target_path}' là thư mục, không phải tệp tin."}
         
-        sha = _calculate_sha256(target_path)
         size = os.path.getsize(target_path)
         with open(target_path, "r", encoding="utf-8", errors="ignore") as f:
-            line_count = sum(1 for _ in f)
+            raw_text = f.read()
+        line_count = len(raw_text.splitlines())
+        meta = _build_trusted_file_metadata(target_path, raw_text)
+        meta_header = str(meta["header"])
             
         return {
             "status": "success",
             "path": os.path.abspath(target_path),
             "exists": True,
             "is_file": True,
-            "sha256": sha,
+            "sha256": meta["sha256"],
+            "sha256_16": meta["sha256_16"],
             "size_bytes": size,
             "line_count": line_count,
+            "total_lines": meta["total_lines"],
+            "file_metadata": meta_header,
+            "content": meta_header,
+            "msg": f"{meta_header}\nFile '{target_path}' verified (size={size}B).",
         }
     except Exception as e:
         return {"status": "error", "msg": str(e)}
 
-# Alias tiện dụng cho Runtime
-read_file = view_file
+
+async def read_file(*args, **kwargs):
+    """Alias tiện dụng cho Runtime (mặc định trả raw content để tương thích M0 unit tests, vẫn kèm file_metadata trong dict)."""
+    kwargs.setdefault("include_metadata_header", False)
+    return await view_file(*args, **kwargs)
+
 
 
 # 🛡️ [M1 COMMAND POLICY GATE & HARD-DENY PATTERNS]
@@ -890,6 +1004,21 @@ async def run_command(command: str = "", CommandLine: str = "", cwd: str = "", c
         "policy_tier": policy_tier,
         "truncated": truncated,
     }
+    try:
+        from core.security.terminal_approval_ladder import TerminalApprovalLadder, TerminalAuditLedger
+        ladder_verdict = TerminalApprovalLadder.evaluate(cmd, confirm_flag=confirm)
+        TerminalAuditLedger.get_instance().record_execution(
+            task_id=task_id,
+            command=cmd,
+            verdict=ladder_verdict,
+            exit_code=exit_code,
+            duration_ms=duration_ms,
+            cwd=run_cwd_abs,
+            output_snippet=stdout_str[:500] if stdout_str else stderr_str[:500],
+        )
+    except Exception as audit_err:
+        logger.debug("Terminal audit record non-fatal: %s", audit_err)
+
     if stream_id and stream_meta:
         ret_payload["stream_id"] = stream_id
         ret_payload["total_lines"] = stream_meta["total_lines"]
@@ -1089,15 +1218,25 @@ async def read_url_content(
         else:
             # Tầng 2 Sovereign Webfetch: Chạy qua fetch_url_content (100% nội sinh, zero-trust, loại bỏ hoàn toàn r.jina.ai)
             retrieval_res = fetch_url_content(url=url)
-            if retrieval_res.status == "success":
-                full_text = retrieval_res.clean_text or ""
+            res_status = retrieval_res.get("status") if isinstance(retrieval_res, dict) else getattr(retrieval_res, "status", None)
+            if res_status == "success":
+                full_text = (
+                    retrieval_res.get("text")
+                    or retrieval_res.get("clean_text")
+                    or ""
+                ) if isinstance(retrieval_res, dict) else (getattr(retrieval_res, "clean_text", None) or "")
             else:
+                err_msg = (
+                    retrieval_res.get("error")
+                    or retrieval_res.get("msg")
+                    or "Cannot fetch URL"
+                ) if isinstance(retrieval_res, dict) else (getattr(retrieval_res, "clean_text", None) or "Cannot fetch URL")
                 return {
                     "status": "unavailable",
                     "is_simulated": False,
-                    "reason": f"FETCH_FAILED_{retrieval_res.status}",
+                    "reason": f"FETCH_FAILED_{res_status}",
                     "url": url,
-                    "msg": f"Webfetch error: {retrieval_res.clean_text or 'Cannot fetch URL'}",
+                    "msg": f"Webfetch error: {err_msg}",
                 }
 
         if len(full_text) <= MAX_URL_PREVIEW_CHARS:

@@ -1,10 +1,11 @@
 import React, { memo, useState, useEffect, useCallback, useMemo, useRef } from 'react';
 import { motion } from 'framer-motion';
-import { Database, RefreshCw, Loader2, FolderOpen, Folder, FolderPlus, Plus, Trash2, FileCode2, ChevronRight, Terminal, Radio, ScrollText, FileText, Code2, Maximize2, GitBranch, CircuitBoard, X, Brain, ShieldCheck, Zap, Settings, AlertTriangle, Radar, Sparkles, Activity, ClipboardList, HardDrive, Cloud, Globe, Link2, ExternalLink, Upload, Share2 } from 'lucide-react';
+import { Database, RefreshCw, Loader2, FolderOpen, Folder, FolderPlus, Plus, Trash2, FileCode2, ChevronRight, Terminal, Radio, ScrollText, FileText, Code2, Maximize2, GitBranch, CircuitBoard, X, Brain, ShieldCheck, Zap, Settings, AlertTriangle, Radar, Sparkles, Activity, ClipboardList, HardDrive, Cloud, Globe, Link2, ExternalLink, Upload, Share2, ZoomIn, ZoomOut, RotateCw, Download, FileSpreadsheet } from 'lucide-react';
 import { useZenithStore, Dictionary } from '../store/zenithStore';
 import { ZenithService } from '../services/ZenithService';
 import { MarkdownRenderer } from './zenith/MarkdownRenderer';
 import { SurgicalDiff } from './zenith/LogElements';
+import { FileChangesCard } from './zenith/FileChangesCard';
 import { SovereignFileLab } from './SovereignFileLab';
 import { MissionHistory } from './zenith/MissionHistory';
 import { ProposalPlanTab } from './zenith/ProposalPlanTab';
@@ -184,7 +185,11 @@ export const NeuralExplorer = memo(() => {
 
   const handleInspect = (path: string) => {
     if (activeDrive === 'local') {
-      ZenithService.readFile(path).then(r => r?.content != null && setInspectedFile({ path, content: r.content, connId: 'local' }));
+      ZenithService.readFile(path).then(r => {
+        if (r?.ok || r?.content != null) {
+          setInspectedFile({ path, content: r.content || '', connId: 'local', type: r.type, raw_url: r.raw_url });
+        }
+      });
     } else {
       const params: Record<string,string> = { path };
       if (activeSiteDriveId) params['drive_id'] = activeSiteDriveId;
@@ -706,6 +711,30 @@ export const ArtifactGallery = memo(({ content, type }: { content: string, type:
 
 // ─── FILE PREVIEW (INSPECTOR) ────────────────────────────────────────────────
 
+const getCodeLang = (ext: string): string => {
+  const map: Record<string, string> = {
+    ts: 'typescript',
+    tsx: 'tsx',
+    js: 'javascript',
+    jsx: 'jsx',
+    py: 'python',
+    sh: 'bash',
+    bash: 'bash',
+    json: 'json',
+    yml: 'yaml',
+    yaml: 'yaml',
+    md: 'markdown',
+    sql: 'sql',
+    html: 'html',
+    css: 'css',
+    rust: 'rust',
+    go: 'go',
+    c: 'c',
+    cpp: 'cpp',
+  };
+  return map[ext] || 'typescript';
+};
+
 export const FilePreview = memo(() => {
   const inspectedFile = useZenithStore(s => s.inspectedFile);
   const setInspectedFile = useZenithStore(s => s.setInspectedFile);
@@ -714,16 +743,38 @@ export const FilePreview = memo(() => {
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState('');
   const [saving, setSaving] = useState(false);
+  const [zoom, setZoom] = useState(1);
+  const [rotation, setRotation] = useState(0);
   
   useEffect(() => {
     if (inspectedFile) {
-      setEditedContent(inspectedFile.content);
+      setEditedContent(inspectedFile.content || '');
       setIsEditing(false);
+      setZoom(1);
+      setRotation(0);
     }
   }, [inspectedFile]);
 
   if (!inspectedFile) return null;
   const dict = Dictionary[language as keyof typeof Dictionary] || Dictionary.en;
+
+  const fileName = inspectedFile.path.split('/').pop() || inspectedFile.path;
+  const ext = fileName.split('.').pop()?.toLowerCase() || '';
+  const isImage = inspectedFile.type === 'image' || ['png', 'jpg', 'jpeg', 'webp', 'svg', 'gif', 'bmp', 'ico'].includes(ext);
+  const isTable = inspectedFile.type === 'table' || ['csv', 'tsv'].includes(ext);
+  const isMarkdown = ext === 'md' || ext === 'markdown';
+  const rawUrl = inspectedFile.raw_url || `/api/system/raw_file?path=${encodeURIComponent(inspectedFile.path)}`;
+
+  const parsedTable = useMemo(() => {
+    if (!isTable || !inspectedFile?.content) return null;
+    const lines = inspectedFile.content.trim().split('\n').map(l => l.split(','));
+    if (lines.length === 0) return null;
+    return {
+      headers: lines[0],
+      rows: lines.slice(1, 100),
+      totalRows: lines.length - 1
+    };
+  }, [isTable, inspectedFile?.content]);
 
   const handleSave = async () => {
     setSaving(true);
@@ -754,12 +805,45 @@ export const FilePreview = memo(() => {
   return (
     <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="absolute inset-0 z-50 bg-[#060910] flex flex-col min-h-0 overflow-hidden">
       <div className="shrink-0 p-4 border-b border-white/5 flex items-center justify-between bg-black/40">
-        <div className="flex items-center gap-3">
-          <FileCode2 className="w-4 h-4 text-sky-400" />
-          <span className="text-[11px] font-black uppercase tracking-widest text-white/90 truncate max-w-[200px]">{inspectedFile.path.split('/').pop()}</span>
+        <div className="flex items-center gap-3 min-w-0">
+          {isImage ? (
+            <FileText className="w-4 h-4 text-emerald-400 shrink-0" />
+          ) : isTable ? (
+            <FileSpreadsheet className="w-4 h-4 text-emerald-400 shrink-0" />
+          ) : (
+            <FileCode2 className="w-4 h-4 text-sky-400 shrink-0" />
+          )}
+          <span className="text-[11px] font-black uppercase tracking-widest text-white/90 truncate max-w-[200px]" title={fileName}>
+            {fileName}
+          </span>
+          <span className="px-1.5 py-0.5 rounded text-[9px] font-mono uppercase bg-white/5 text-white/40 shrink-0">
+            {isImage ? 'IMAGE' : isTable ? 'TABLE' : ext || 'TXT'}
+          </span>
         </div>
         <div className="flex items-center gap-2">
-          {isEditing ? (
+          {isImage ? (
+            <>
+              <a 
+                href={rawUrl} 
+                download={fileName} 
+                className="px-2.5 py-1 rounded-lg bg-emerald-500/20 border border-emerald-500/35 text-emerald-400 text-[10px] font-bold uppercase tracking-wider hover:bg-emerald-500/30 transition-all flex items-center gap-1.5"
+                title="Tải xuống tệp gốc"
+              >
+                <Download className="w-3 h-3" />
+                Tải về
+              </a>
+              <a 
+                href={rawUrl} 
+                target="_blank" 
+                rel="noreferrer" 
+                className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white/60 text-[10px] font-bold uppercase tracking-wider hover:bg-white/10 transition-all flex items-center gap-1"
+                title="Mở trong tab mới"
+              >
+                <ExternalLink className="w-3 h-3" />
+                Cửa sổ mới
+              </a>
+            </>
+          ) : isEditing ? (
             <>
               <button 
                 onClick={handleSave} 
@@ -770,19 +854,29 @@ export const FilePreview = memo(() => {
                 Lưu
               </button>
               <button 
-                onClick={() => { setIsEditing(false); setEditedContent(inspectedFile.content); }}
+                onClick={() => { setIsEditing(false); setEditedContent(inspectedFile.content || ''); }}
                 className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/10 text-white/40 text-[10px] font-bold uppercase tracking-wider hover:bg-white/10 transition-all"
               >
                 Hủy
               </button>
             </>
           ) : (
-            <button 
-              onClick={() => setIsEditing(true)}
-              className="px-2.5 py-1 rounded-lg bg-sky-500/20 border border-sky-500/35 text-sky-400 text-[10px] font-bold uppercase tracking-wider hover:bg-sky-500/30 transition-all"
-            >
-              Sửa
-            </button>
+            <>
+              <button 
+                onClick={() => setIsEditing(true)}
+                className="px-2.5 py-1 rounded-lg bg-sky-500/20 border border-sky-500/35 text-sky-400 text-[10px] font-bold uppercase tracking-wider hover:bg-sky-500/30 transition-all"
+              >
+                Sửa
+              </button>
+              <a 
+                href={rawUrl} 
+                download={fileName} 
+                className="p-1.5 text-white/40 hover:text-white/80 transition-colors"
+                title="Tải tệp"
+              >
+                <Download className="w-3.5 h-3.5" />
+              </a>
+            </>
           )}
           <button onClick={() => setInspectedFile(null)} className="p-2 text-white/20 hover:text-rose-400 transition-colors"><X className="w-4 h-4" /></button>
         </div>
@@ -794,9 +888,72 @@ export const FilePreview = memo(() => {
             onChange={e => setEditedContent(e.target.value)}
             className="flex-1 w-full bg-[#030509] text-white/90 font-mono text-[12px] p-4 border border-white/5 rounded-xl focus:outline-none focus:border-sky-500/40 transition-all custom-scroll resize-none leading-relaxed"
           />
+        ) : isImage ? (
+          <div className="flex-1 min-h-0 relative flex flex-col items-center justify-center p-2 overflow-hidden bg-[#030509]/80 rounded-xl border border-white/5">
+            {/* Visual Control bar */}
+            <div className="absolute top-3 right-3 z-20 flex items-center gap-1 p-1 rounded-xl bg-black/70 backdrop-blur-md border border-white/10 shadow-2xl">
+              <button onClick={() => setZoom(z => Math.max(0.2, +(z - 0.2).toFixed(1)))} className="p-1.5 text-white/60 hover:text-white rounded-lg hover:bg-white/10" title="Thu nhỏ">
+                <ZoomOut className="w-3.5 h-3.5" />
+              </button>
+              <span className="text-[10px] font-mono text-cyan-400 font-bold px-1.5">{Math.round(zoom * 100)}%</span>
+              <button onClick={() => setZoom(z => Math.min(4, +(z + 0.2).toFixed(1)))} className="p-1.5 text-white/60 hover:text-white rounded-lg hover:bg-white/10" title="Phóng to">
+                <ZoomIn className="w-3.5 h-3.5" />
+              </button>
+              <button onClick={() => setRotation(r => (r + 90) % 360)} className="p-1.5 text-white/60 hover:text-white rounded-lg hover:bg-white/10" title="Xoay 90°">
+                <RotateCw className="w-3.5 h-3.5" />
+              </button>
+              <button onClick={() => { setZoom(1); setRotation(0); }} className="p-1.5 text-white/60 hover:text-white rounded-lg hover:bg-white/10" title="Khôi phục gốc">
+                <RefreshCw className="w-3 h-3" />
+              </button>
+            </div>
+
+            {/* Image Preview Canvas */}
+            <div className="flex-1 w-full h-full flex items-center justify-center overflow-auto custom-scroll p-4 select-none">
+              <img 
+                src={rawUrl} 
+                alt={fileName}
+                style={{
+                  transform: `scale(${zoom}) rotate(${rotation}deg)`,
+                  transition: 'transform 0.15s ease-out'
+                }}
+                className="max-h-[85%] max-w-[95%] object-contain rounded-lg shadow-2xl border border-white/10 cursor-grab active:cursor-grabbing"
+              />
+            </div>
+
+            {/* Bottom Meta Bar */}
+            <div className="shrink-0 pt-2 px-2 w-full flex items-center justify-between text-[10px] text-white/40 font-mono">
+              <span className="truncate max-w-[70%]">{inspectedFile.path}</span>
+              <span className="text-cyan-400/80 font-bold">RGB Stream • GPU Accelerated</span>
+            </div>
+          </div>
+        ) : isTable && parsedTable ? (
+          <div className="flex-1 min-h-0 overflow-auto custom-scroll rounded-xl border border-white/5 bg-[#030509]">
+            <table className="w-full text-left border-collapse text-[11px] font-mono">
+              <thead className="sticky top-0 bg-black/80 backdrop-blur-md border-b border-white/10 text-cyan-400">
+                <tr>
+                  {parsedTable.headers.map((h, i) => (
+                    <th key={i} className="p-2.5 font-bold tracking-wider">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-white/5">
+                {parsedTable.rows.map((row, ri) => (
+                  <tr key={ri} className="hover:bg-white/[0.02]">
+                    {row.map((cell, ci) => (
+                      <td key={ci} className="p-2.5 text-white/80">{cell}</td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : isMarkdown ? (
+          <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden custom-scroll p-4 rounded-xl border border-white/5 bg-[#030509]">
+            <MarkdownRenderer content={inspectedFile.content || ''} />
+          </div>
         ) : (
           <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden custom-scroll">
-            <MarkdownRenderer content={`\`\`\`typescript\n${inspectedFile.content}\n\`\`\``} />
+            <MarkdownRenderer content={`\`\`\`${getCodeLang(ext)}\n${inspectedFile.content || ''}\n\`\`\``} />
           </div>
         )}
       </div>
@@ -1111,31 +1268,53 @@ export const TabContent = memo(() => {
             <div className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden custom-scroll p-4 space-y-4">
             {fileEdits.length === 0 && modifiedFiles.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center gap-3 px-6 text-center opacity-40">
-                <CircuitBoard className="w-12 h-12" />
-                <p className="text-[11px] leading-relaxed max-w-xs">
-                  Chưa có thay đổi file. Khi JKAI sửa code (agent loop / patch), diff sẽ hiện tại đây qua sự kiện file_edit.
+                <CircuitBoard className="w-12 h-12 text-cyan-400" />
+                <p className="text-[11px] leading-relaxed max-w-xs text-white/50">
+                  {language === 'vi' 
+                    ? 'Chưa có thay đổi tệp tin. Khi JKAI can thiệp hoặc sửa code, danh sách tệp và diff sẽ xuất hiện trực quan tại đây.' 
+                    : 'Zero file mutations detected yet.'}
                 </p>
               </div>
             ) : (
               <>
-                {fileEdits.map((e, i) => (
-                  <div key={`${e.path}-${e.ts}-${i}`} className="rounded-xl border border-white/10 bg-white/[0.02] overflow-hidden">
-                    <button
-                      type="button"
-                      onClick={() => ZenithService.readFile(e.path).then(r => r?.content && setInspectedFile({ path: e.path, content: r.content }))}
-                      className="w-full px-4 py-3 flex items-center justify-between hover:bg-sky-500/10 text-left border-b border-white/5"
-                    >
-                      <span className="text-[12px] font-bold text-sky-300 truncate">{e.path}</span>
-                      <span className="text-[9px] uppercase text-white/30 shrink-0 ml-2">Mở tab</span>
-                    </button>
-                    {e.diff ? <SurgicalDiff diff={e.diff} /> : null}
+                <FileChangesCard
+                  files={[
+                    ...fileEdits.map(e => ({ 
+                      path: e.path, 
+                      added: (e as any).added, 
+                      removed: (e as any).removed 
+                    })),
+                    ...modifiedFiles.filter(p => !fileEdits.some(e => e.path === p)).map(p => ({ path: p }))
+                  ]}
+                  title={language === 'vi' ? 'Tổng hợp tệp tin đã thay đổi' : 'Summary of Changed Files'}
+                />
+
+                <div className="pt-2">
+                  <div className="flex items-center gap-2 mb-3">
+                    <span className="text-[11px] font-mono uppercase tracking-wider text-white/40 font-bold">
+                      {language === 'vi' ? 'Chi tiết khác biệt (Surgical Diffs)' : 'Detailed Surgical Diffs'}
+                    </span>
+                    <div className="flex-1 h-px bg-white/5" />
                   </div>
-                ))}
-                {modifiedFiles.filter(p => !fileEdits.some(e => e.path === p)).map(path => (
-                  <button key={path} type="button" onClick={() => ZenithService.readFile(path).then(r => r?.content && setInspectedFile({ path, content: r.content }))} className="w-full p-4 rounded-xl bg-white/[0.02] border border-white/5 hover:bg-sky-500/10 text-left truncate">
-                    <span className="text-[12px] font-bold text-white/80">{path.split('/').pop()}</span>
-                  </button>
-                ))}
+
+                  <div className="space-y-3">
+                    {fileEdits.map((e, i) => (
+                      <div key={`${e.path}-${e.ts}-${i}`} className="rounded-2xl border border-white/10 bg-[#070a12]/80 backdrop-blur-md overflow-hidden shadow-xl">
+                        <button
+                          type="button"
+                          onClick={() => ZenithService.readFile(e.path).then(r => (r?.ok || r?.content != null) && setInspectedFile({ path: e.path, content: r.content || '', type: r.type, raw_url: r.raw_url }))}
+                          className="w-full px-4 py-3 flex items-center justify-between hover:bg-cyan-500/[0.08] text-left border-b border-white/5 transition-colors group"
+                        >
+                          <span className="text-[12px] font-bold text-cyan-300 group-hover:text-cyan-200 truncate">{e.path}</span>
+                          <span className="text-[10px] font-mono uppercase font-bold text-cyan-400/80 bg-cyan-500/10 px-2 py-0.5 rounded border border-cyan-500/20 shrink-0 ml-2">
+                            Mở xem tệp
+                          </span>
+                        </button>
+                        {e.diff ? <SurgicalDiff diff={e.diff} /> : null}
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </>
             )}
             </div>

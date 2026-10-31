@@ -97,14 +97,8 @@ class MasterPromptArchitect:
 
         # 2. BIẾN THỂ MID (~300-450 tokens) - TỐI ƯU HOÀN HẢO CHO MODEL 3B-4B TRÊN GPU
         if prompt_variant == "MID":
-            mid_p = self._build_mid_prompt(role, task_tags)
-            parts_mid = []
-            if identity_block:
-                parts_mid.append(identity_block)
-            if compiled_cognition:
-                parts_mid.append(compiled_cognition)
-            parts_mid.append(mid_p)
-            return self.truncate_to_limit("\n\n".join(parts_mid), max_tokens=max_tokens_limit)
+            mid_p = self._build_mid_prompt(role, task_tags, identity_block=identity_block)
+            return self.truncate_to_limit(mid_p, max_tokens=max_tokens_limit)
 
         # 3. BIẾN THỂ FULL (~1200 tokens) - Dành cho Deep Reasoner MoE 30B trên CPU
         from prompt_engine.sop_protocol_catalog import get_role_sop
@@ -196,17 +190,16 @@ class MasterPromptArchitect:
                     "[RUNTIME TOOLS] No external tools available this turn — respond from knowledge only."
                 )
 
-        # Honesty mandate: forbid fabricated security excuses
+        # Honesty mandate: chỉ kích hoạt khi Master hỏi về danh tính/công cụ
         lines.append(
-            "[IDENTITY HONESTY MANDATE] You MUST truthfully report your version, model name, and tool list when asked. "
-            "Do NOT claim 'security constraints' or 'ràng buộc bảo mật' unless a specific governance rule "
-            "explicitly prohibits the action. "
-            "Fabricating restrictions when none exist is a critical honesty violation."
+            "[IDENTITY DIRECTIVE] Only when the user explicitly asks about system identity, version, model, or tools, report them truthfully. "
+            "Otherwise, focus 100% on answering the user's task goal directly without dumping metadata. "
+            "Do NOT claim 'security constraints' or 'ràng buộc bảo mật' unless a specific governance rule explicitly prohibits the action."
         )
 
         return "\n".join(lines) if lines else ""
 
-    def _build_mid_prompt(self, role: str, task_tags: List[str]) -> str:
+    def _build_mid_prompt(self, role: str, task_tags: List[str], identity_block: str = "") -> str:
         """
         MID variant (~300–450 tokens): Giữ vững Identity, Time Anchor, Core Guidelines rút gọn & Task Instruction.
         Triệt tiêu 70% SOP cồng kềnh, tối ưu độ tập trung của GPU Model 3B-4B.
@@ -220,15 +213,18 @@ class MasterPromptArchitect:
         if any(t in ["REASONING", "CODING", "DEEP_PLAN", "OFFICE", "ANALYSIS"] for t in task_tags):
             cot_block = (
                 "\n[COGNITIVE REASONING DIRECTIVE]:\n"
-                "Trước khi kết luận, hãy tự lập luận ngắn gọn trong khối <thinking>...</thinking>:\n"
                 "1. Trích xuất đầy đủ các điều kiện và ràng buộc trong yêu cầu.\n"
-                "2. Kiểm định tính khả thi, đối chiếu mâu thuẫn nội tại hoặc thiếu dữ kiện: Nếu các điều kiện xung đột, bất khả thi hoặc thiếu dữ liệu đầu vào cần thiết, TUYỆT ĐỐI KHÔNG ngụy tạo hay suy đoán số liệu giả định.\n"
-                "3. Kỷ luật số học: Khi tính toán thời gian, tiền bạc, số lượng, phải tính rõ ràng từng bước (VD: 7:30 + 1h20p = 8:50), cấm cộng dồn cảm tính hay ước lượng thiếu căn cứ.\n"
-                "4. Trình bày đáp án trực diện: Nêu rõ từng bước tính toán có căn cứ; đối với phần thiếu dữ liệu hoặc mâu thuẫn, từ chối đưa ra kết luận giả định và chỉ rõ thông tin cần làm rõ để xin ý kiến chỉ đạo."
+                "2. Kiểm định tính khả thi: TUYỆT ĐỐI KHÔNG ngụy tạo hay suy đoán số liệu giả định.\n"
+                "3. Kỷ luật số học: Khi tính toán thời gian, tiền bạc, số lượng, phải tính rõ ràng từng bước có căn cứ.\n"
+                "4. Trình bày đáp án trực diện bằng văn bản Markdown chuẩn mực, TUYỆT ĐỐI KHÔNG bọc trong JSON hay nhét toàn bộ nội dung vào thuộc tính thinking."
             )
 
+        identity_header = f"# IDENTITY: JKAI Zenith Autonomous OS {sys_ver} (Role: {role.upper()})\n"
+        if identity_block:
+            identity_header += f"{identity_block}\n"
+
         return (
-            f"# IDENTITY: JKAI Zenith Autonomous OS {sys_ver} (Role: {role.upper()})\n"
+            f"{identity_header}"
             f"[LIVE TIME ANCHOR]: {time_anchor}\n"
             f"[TIÊU CHUẨN PHẢN HỒI CỐT LÕI (5 NGUYÊN TẮC VẬN HÀNH)]:\n"
             f"1. Đi thẳng vào vấn đề: Bắt đầu trực tiếp bằng nội dung trả lời chính thay vì mở đầu bằng các câu chào hỏi rập khuôn hay diễn giải dài dòng.\n"
@@ -296,9 +292,12 @@ class MasterPromptArchitect:
             instructions.append("Plan first, identify target files, implement cleanly without placeholders, verify with exit code 0.")
         if "ANALYSIS" in task_tags:
             instructions.append(
-                "Phân tích hệ thống và kiểm định tính khả thi: Rà soát nghiêm ngặt mọi ràng buộc dữ kiện. "
-                "Nếu phát hiện mâu thuẫn nội tại, phải nêu rõ từng mâu thuẫn, tuyệt đối không tạo phương án giả định, "
-                "đề xuất các hướng giải quyết thực tế và xin ý kiến chỉ đạo."
+                "Khung giải pháp phân tích và lập kế hoạch toàn diện (Comprehensive Analytical & Strategic Scaffolding):\n" \
+                "  1. Phân rã đa chiều (Deconstruction): Nhận diện chuẩn xác mục tiêu cốt lõi, đối tượng thụ hưởng, các ràng buộc cứng (ngân sách, thời hạn, định mức tài nguyên) và điều kiện biên.\n" \
+                "  2. Căn cứ thực tiễn & Hybrid Grounding: Phân biệt rõ giữa dữ liệu thực nghiệm đã kiểm chứng (giá thị trường, thông số kỹ thuật, dữ liệu truy xuất) và suy luận logic. Tuyệt đối không giả định phi thực tế hoặc bịa đặt số liệu không thể kiểm chứng.\n" \
+                "  3. Kỷ luật số học & Bảo toàn tài nguyên: Mọi hạng mục định lượng/chi phí phải được tính toán minh bạch từng bước (Số lượng/Định lượng * Đơn giá = Thành tiền). Tổng giá trị không được vượt quá ngân sách hay hạn mức quy định.\n" \
+                "  4. Phân kỳ thực thi khả thi: Chia tiến trình thành các giai đoạn rõ ràng (Chuẩn bị/Sơ chế -> Thi công/Thực thi đồng thời -> Hoàn thiện/Bàn giao); phân bổ tải hợp lý trên tài nguyên sẵn có (tuần tự hoặc song song).\n" \
+                "  5. Trình bày chuẩn mực quốc tế: Xuất dữ liệu qua bảng biểu Markdown sắc nét, rõ ràng, gạch đầu dòng mạch lạc; văn phong chuyên nghiệp, trực diện, không dài dòng sáo rỗng."
             )
         if "OFFICE" in task_tags:
             instructions.append(

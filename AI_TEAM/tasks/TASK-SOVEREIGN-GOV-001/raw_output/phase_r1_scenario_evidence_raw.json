@@ -1,0 +1,108 @@
+{
+  "all_r0_hardening_and_r1_invariants_passed": true,
+  "R0_Blocker_1_clean_rollback": {
+    "snapshots_initialized": [
+      0,
+      1
+    ],
+    "rollback_step_1_returned": true,
+    "rollback_err_emitted": false,
+    "passed": true
+  },
+  "R0_Blocker_2_cross_process_dedup_real_subprocesses": {
+    "process_1": {
+      "pid": 14556,
+      "acquired": true,
+      "holder_id": "trace_subproc_1:14556:31ec06ee",
+      "has_token": true
+    },
+    "process_2": {
+      "pid": 18344,
+      "acquired": false,
+      "holder_id": null,
+      "has_token": false
+    },
+    "distinct_os_pids": true,
+    "exactly_one_process_acquired": true,
+    "lease_exception_fail_closed_rejected": true,
+    "passed": true
+  },
+  "R0_Blocker_3_malformed_critic_fail_closed": {
+    "non_json_verdict": "FAIL",
+    "non_json_passed": false,
+    "non_json_reason_code": "MALFORMED_CRITIC_RESPONSE",
+    "missing_verdict_key_verdict": "FAIL",
+    "missing_verdict_key_passed": false,
+    "never_downgraded_to_partial": true,
+    "passed": true
+  },
+  "R1_1_to_R1_3_browser_evidence_and_binding": {
+    "valid_evidence_integrity": {
+      "valid": true,
+      "status": "VERIFIED",
+      "reason": "BrowserEvidence verified.",
+      "evidence_id": "bev_proof_001",
+      "screenshot_sha256": "5635f5d8627069c544519a80ba98562ffbc853d9df495ac78218a37c45b7e5c6",
+      "headlines_count": 2
+    },
+    "mismatched_task_id_integrity": {
+      "valid": false,
+      "status": "BLOCKED",
+      "reason": "EVIDENCE_TASK_ID_MISMATCH: expected 'ZENITH_OTHER_TASK', got 'ZENITH_R1_PROOF_TASK'"
+    },
+    "mismatched_sha256_integrity": {
+      "valid": false,
+      "status": "BLOCKED",
+      "reason": "EVIDENCE_SCREENSHOT_HASH_MISMATCH: expected 0000000000000000000000000000000000000000000000000000000000000000, computed 5635f5d8627069c544519a80ba98562ffbc853d9df495ac78218a37c45b7e5c6"
+    },
+    "deep_pipeline_missing_artifact_status": "BLOCKED",
+    "deep_pipeline_missing_artifact_summary_published": false,
+    "passed": true
+  },
+  "R1_4_and_R1_5_kernel_temporal_and_critic_classification": {
+    "kernel_temporal_context": {
+      "kernel_now_utc": "2026-10-28T15:00:00+00:00",
+      "kernel_now_local": "2026-10-28T22:00:00+07:00",
+      "kernel_year": 2026,
+      "kernel_date_iso": "2026-10-28",
+      "timezone": "UTC+07:00",
+      "authority_source": "OS_KERNEL_CLOCK",
+      "truth_horizon_policy": "EVIDENCE_GROUNDED_ONLY",
+      "forbid_model_cutoff_override": true
+    },
+    "temporal_gate_accepts_2026": {
+      "ok": true,
+      "years": [
+        "2026"
+      ],
+      "kernel_year": 2026,
+      "reason": ""
+    },
+    "temporal_gate_rejects_unlabelled_2099": {
+      "ok": false,
+      "years": [
+        "2099"
+      ],
+      "kernel_year": 2026,
+      "reason": "Phát hiện năm tương lai 2099 (vượt quá kernel_year=2026) không có nhãn [future]."
+    },
+    "critic_cutoff_hallucination_normalized": {
+      "verdict": "UNVERIFIED",
+      "claim_classification": "UNVERIFIED",
+      "accuracy_score": 0.1,
+      "feedback": "Năm 2026 là năm tương lai bất khả thi (FALSE).",
+      "passed": false,
+      "malformed_critic": false,
+      "reason_code": "CUTOFF_TEMPORAL_HALLUCINATION_TO_UNVERIFIED"
+    },
+    "passed": true
+  },
+  "R1_6_fast_single_url_visual_read_contract": {
+    "is_single_url_visual_read": true,
+    "resolved_pipeline": "fast",
+    "fast_missing_evidence_status": "BLOCKED",
+    "fast_missing_evidence_summary_published": false,
+    "fast_escalate_on_missing_evidence_status": "ESCALATE_TO_DEEP",
+    "passed": true
+  }
+}

@@ -76,9 +76,19 @@ class ContextStage(PlanningStage):
                     logger.warning("[ContextStage] smart_retrieve failed (non-fatal): %s", kb_err)
                     return {}
 
-            neural_context, kb_intel = await _asyncio.gather(
+            async def _safe_memory_recall():
+                try:
+                    from context.memory_runtime_adapter import get_memory_runtime_adapter
+                    adapter = get_memory_runtime_adapter()
+                    return await adapter.recall_for_goal(goal)
+                except Exception as mem_err:
+                    logger.debug("[ContextStage] Sovereign memory recall failed (non-fatal): %s", mem_err)
+                    return ""
+
+            neural_context, kb_intel, sovereign_mem = await _asyncio.gather(
                 planner._prepare_neural_context(goal, task_id, complexity),
                 _safe_kb_retrieve(),
+                _safe_memory_recall(),
             )
 
             # Gắn KB data vào neural_context để ForgeStage dùng
@@ -113,6 +123,13 @@ class ContextStage(PlanningStage):
                     "BRAIN", "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
                     task_id, trace_id, stealth=True
                 )
+            neural_context["memory_context"] = sovereign_mem or ""
+            if sovereign_mem:
+                engine.publish_mission_log(
+                    "BRAIN",
+                    f"[SOVEREIGN-MEMORY] Đã nạp thành công tri thức & kinh nghiệm thực chứng từ Sovereign Store.",
+                    task_id, trace_id, stealth=True
+                )
 
             state["neural_context"] = neural_context
             return state
@@ -136,11 +153,17 @@ class ForgeStage(PlanningStage):
         skill_dna = state.get("skill_dna", "[SKILL DNA]: Auto web search enabled.")
         neural_context = state.get("neural_context", {})
 
-        # [SMART-GATE]: KB sufficient + LOOKUP/CHAT → skip LLM forge, use web search directly
+        # 🧭 [DETERMINISTIC-TOOL-ARBITER]: Phân xử ranh giới Bộ Ngũ công cụ xác định (SDS v28.26.0)
+        from core.kernel.tool_arbiter import DeterministicToolArbiter, ToolDomain
+        verdict = DeterministicToolArbiter.arbitrate(goal, context)
+        state["arbiter_verdict"] = verdict
+        arbiter_guidance = DeterministicToolArbiter.generate_planner_guidance(verdict)
+
+        # [SMART-GATE]: KB sufficient + LOOKUP/CHAT (CHỈ kích hoạt cho SearchWeb/General, CẤM Browser/File/Terminal)
         nc = neural_context if isinstance(neural_context, dict) else {}
         kb_sufficient = nc.get("kb_sufficient", False)
         kb_context = nc.get("kb_context", "").strip()
-        if kb_sufficient and kb_context:
+        if kb_sufficient and kb_context and (verdict.is_search_web() or verdict.primary_domain == ToolDomain.GENERAL):
             from prompt_assembler import ZenithPromptAssembler
             task_type = ZenithPromptAssembler.classify_task(goal)
             if task_type in ("LOOKUP", "CHAT"):
@@ -195,13 +218,16 @@ class ForgeStage(PlanningStage):
         kb_sufficient = nc.get("kb_sufficient", False)
         kb_hq_count = nc.get("kb_high_quality_count", 0)
         
+        mem_ctx = nc.get("memory_context", "").strip()
+
         # 1. Sinh cấu trúc prompt & goal từ Assembler
         assembled_sys, enriched_goal = ZenithPromptAssembler.assemble_prompt(
             goal=goal,
             manifesto=nc.get("manifesto", ""),
             skills_dna=skill_dna,
             kb_context=kb_ctx,
-            kb_sufficient=kb_sufficient
+            kb_sufficient=kb_sufficient,
+            memory_context=mem_ctx
         )
         
         # 2. Xây dựng specialist prompt nền của Planner
@@ -214,7 +240,7 @@ class ForgeStage(PlanningStage):
             False,
             "",
         )
-        
+
         # 3. Hợp nhất kiến trúc: Antigravity Sovereign Lean Skeleton (Khung xương Nơ-ron Đẳng cấp Antigravity)
         system_prompt = (
             f"<sovereign_identity>\nYou are JKAI Zenith Sovereign Planner (Antigravity Architecture), engineered by Master LeeTrung. Your focus is architecting precise, lean execution steps.\n</sovereign_identity>\n\n"
@@ -223,6 +249,7 @@ class ForgeStage(PlanningStage):
             f"CRITICAL INSTRUCTION 1: Ưu tiên tuyệt đối tốc độ phản xạ và sự rõ ràng kiến trúc! Mọi trường JSON (description, expert_mindset, verification) BẮT BUỘC súc tích dưới 25 từ.\n"
             f"CRITICAL INSTRUCTION 2: Sinh tối đa 3-5 bước milestone chiến lược trong checklist động (task.md), không lan man dư thừa.\n"
             f"CRITICAL INSTRUCTION 3: CHỈ sử dụng các công cụ trong danh sách hợp lệ: SEARCH_WEB_GLOBAL, OFFICE_SUITE_MASTER, WRITE_TO_FILE, VIEW_FILE, BROWSER_CONTROL, OMNI_SEARCH_ENGINE, CODE_EXECUTION, READ_FILE, REWRITE_FILE, PYTHON_REPL, SYSTEM_CMD, FILESYSTEM, DOCKER, LLM_ANALYSIS, BASH, EXECUTE_COMMAND.\n"
+            f"{arbiter_guidance}"
             f"</antigravity_orientation>"
         )
 
@@ -342,6 +369,16 @@ class ForgeStage(PlanningStage):
                             "'rationale', 'failure_speculation', 'ambiguous'."
                         )
 
+                if isinstance(parsed_json, dict) and ("tool" in parsed_json or "action" in parsed_json) and "steps" not in parsed_json:
+                    logger.warning("[FORGE-NORMALIZE]: Model trả Dict một bước đơn lẻ. Tự bọc thành Blueprint dict.")
+                    parsed_json = {
+                        "thought": parsed_json.get("thought", "Auto-normalized from single step response."),
+                        "steps": [parsed_json],
+                        "rationale": parsed_json.get("rationale", "Single step execution."),
+                        "failure_speculation": "",
+                        "ambiguous": False,
+                    }
+
                 if not isinstance(parsed_json, dict):
                     raise ValueError(
                         "Response must be a JSON OBJECT, not an array or primitive. "
@@ -355,7 +392,12 @@ class ForgeStage(PlanningStage):
                     parsed_json["clarification_question"] = ""
                 
                 if "steps" not in parsed_json or not isinstance(parsed_json["steps"], list):
-                    parsed_json["steps"] = []
+                    for _alt_key in ("plan", "actions", "tasks", "subtasks"):
+                        if _alt_key in parsed_json and isinstance(parsed_json[_alt_key], list):
+                            parsed_json["steps"] = parsed_json[_alt_key]
+                            break
+                    else:
+                        parsed_json["steps"] = []
                     
                 if "thought" not in parsed_json or not isinstance(parsed_json["thought"], str):
                     parsed_json["thought"] = "Tự động khôi phục luồng tư duy."
@@ -438,25 +480,18 @@ class ForgeStage(PlanningStage):
                     blueprint, context.get("agent_role") if isinstance(context, dict) else None
                 )
                 
-                # 🛡️ [EMPTY-PLAN-SHIELD]: Nếu không có bước nào và kế hoạch không yêu cầu làm rõ, tự phục hồi thông minh
+                # 🛡️ [EMPTY-PLAN-SHIELD]: Nếu không có bước nào và kế hoạch không yêu cầu làm rõ, tự phục hồi thông minh dựa trên Arbiter
                 if not blueprint.steps and not blueprint.ambiguous:
                     from planner import PlanStep, HardwareTarget
                     g_low = goal.lower()
                     
-                    is_code_goal = any(kw in g_low for kw in ["tạo web", "trang web", "website", "lập trình", "viết code", "viết app", "tạo app", "backend", "frontend", "flask", "fastapi", "react", "html", "css", "python", "script", "database", "api"])
+                    is_browser_goal = any(kw in g_low for kw in ["mở", "xem", "truy cập", "duyệt", "screenshot", "chụp ảnh", "chụp màn hình"]) and any(kw in g_low for kw in ["http://", "https://", "trang web", "website", "url", "vnexpress", "vietnamnet", "dantri"])
                     is_office_goal = any(kw in g_low for kw in ["excel", "xlsx", "word", "docx", "bảng tính", "tính lương", "báo cáo tài chính", "báo cáo tiến độ", "vẽ biểu đồ"])
+                    is_code_goal = not is_browser_goal and any(kw in g_low for kw in ["tạo web", "lập trình", "viết code", "viết app", "tạo app", "backend", "frontend", "flask", "fastapi", "react", "html", "css", "python", "script", "database", "api"])
 
-                    if is_code_goal:
-                        blueprint.steps = [PlanStep(
-                            id="auto_code_01",
-                            tool="CODE_EXECUTION",
-                            args={"code": f"# Auto-generated solution scaffold for goal\n# {goal}\nprint('Triển khai giải pháp cho yêu cầu: {goal}')"},
-                            description=f"Auto-recovery: Khởi tạo mã nguồn và cấu trúc giải pháp cho: {goal[:80]}",
-                            assigned_agent="agent_executor_alpha.md",
-                            hardware_target=HardwareTarget.ALPHA,
-                            expert_mindset="Triển khai mã nguồn trực tiếp, chuẩn xác và không dùng placeholder.",
-                            verification="Mã nguồn được thực thi và tạo file thành công."
-                        )]
+                    if is_browser_goal:
+                        recovery_step = DeterministicToolArbiter.generate_resilient_recovery_step(verdict, goal)
+                        blueprint.steps = [recovery_step]
                     elif is_office_goal:
                         blueprint.steps = [PlanStep(
                             id="auto_office_01",
@@ -468,17 +503,21 @@ class ForgeStage(PlanningStage):
                             expert_mindset="Tạo tệp tin văn phòng hoàn chỉnh kèm số liệu thực tế.",
                             verification="Tệp tin xuất hiện trên đĩa hệ thống."
                         )]
-                    else:
+                    elif is_code_goal:
                         blueprint.steps = [PlanStep(
-                            id="auto_recovery_01",
-                            tool="SEARCH_WEB_GLOBAL",
-                            args={"query": goal},
-                            description=f"Auto-recovery: search web for: {goal}",
-                            assigned_agent="agent_executor_beta.md",
-                            hardware_target=HardwareTarget.BETA,
-                            expert_mindset="Execute immediately using the best available search source.",
-                            verification="Search results obtained from at least one source."
+                            id="auto_code_01",
+                            tool="CODE_EXECUTION",
+                            args={"code": f"# Auto-generated solution scaffold for goal\n# {goal}\nprint('Triển khai giải pháp cho yêu cầu: {goal}')"},
+                            description=f"Auto-recovery: Khởi tạo mã nguồn và cấu trúc giải pháp cho: {goal[:80]}",
+                            assigned_agent="agent_executor_alpha.md",
+                            hardware_target=HardwareTarget.ALPHA,
+                            expert_mindset="Triển khai mã nguồn trực tiếp, chuẩn xác và không dùng placeholder.",
+                            verification="Mã nguồn được thực thi và tạo file thành công."
                         )]
+                    else:
+                        # 🧭 Phục hồi xác định theo đúng Miền Công Cụ (Browser, File, Terminal, SearchWeb)
+                        recovery_step = DeterministicToolArbiter.generate_resilient_recovery_step(verdict, goal)
+                        blueprint.steps = [recovery_step]
 
                 state["blueprint_obj"] = blueprint
                 state["raw_blueprint"] = blueprint.model_dump()
@@ -524,12 +563,7 @@ class DAGOptimizerStage(PlanningStage):
                             q.append(s_id)
             
             if visited != len(steps) and len(steps) > 1:
-                engine.publish_mission_log("WARN", "[DAG-FAULT] Phát hiện đồ thị vòng lặp vô tận (Deadlock). Đang bẻ gãy liên kết...", task_id, trace_id)
-                for i in range(1, len(steps)):
-                    steps[i].depends_on = [steps[i-1].id]
-                    steps[i].parallel = False
-                steps[0].depends_on = []
-                steps[0].parallel = False
+                raise ValueError("[DAG-FAULT] Invalid dependency graph: cycle or unknown dependency.")
 
             # 2. Race Condition Prevention (CRDT Pre-flight)
             write_tools = {"WRITE_TO_FILE", "REPLACE_FILE_CONTENT", "MULTI_REPLACE_FILE_CONTENT", "FILE_WARDEN", "PYTHON_REPL"}
@@ -580,16 +614,20 @@ class PolicyStage(PlanningStage):
             engine.publish_progress(80, "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...", "policy", task_id, trace_id)
             final_plan = await planner._attach_policies(blueprint_dict, context, task_id)
             
-            # 2. Inject Prevention Steps
+            # 2. Pre-flight Warnings Advisory (R2.2: Không tự động tiêm thêm bước ẩn sau khi DAGOptimizerStage
+            # đã khóa execution_waves, đảm bảo planned_steps == admitted_steps == executed_steps)
             if "pre_flight" in state:
-                from planner import Blueprint
                 from core.utils.failure_memory import PreFlightWarning
                 pre_flight_data = state["pre_flight"]
                 if isinstance(pre_flight_data, PreFlightWarning):
                     pre_flight_data = pre_flight_data.warnings
-                temp_obj = Blueprint.model_validate(final_plan)
-                final_obj = planner._inject_prevention_steps(temp_obj, pre_flight_data)
-                final_plan = final_obj.model_dump()
+                if pre_flight_data:
+                    final_plan["pre_flight_warnings"] = pre_flight_data
+                    if state.get("inject_prevention_steps_explicit") is True:
+                        from planner import Blueprint
+                        temp_obj = Blueprint.model_validate(final_plan)
+                        final_obj = planner._inject_prevention_steps(temp_obj, pre_flight_data)
+                        final_plan = final_obj.model_dump()
                 
             state["final_plan"] = final_plan
             return state
@@ -671,20 +709,30 @@ class PlanningPipeline:
                         logger.error("[STAGE-FAULT] Stage %s failed: %s", stage.__class__.__name__, e)
                     
         # Chạy các stage còn lại tuần tự với State Checkpointing (SOTA 2026)
+        attempt_idx = int(state.get("attempt", 0) or 0)
+        critic_rejected = bool(state.get("critic_rejected_previous", False))
+        if attempt_idx > 0 or critic_rejected:
+            try:
+                from core.utils.state_checkpoint import clear_checkpoints
+                clear_checkpoints(state.get("task_id", "sys"))
+            except Exception:
+                pass
+
         for stage in remaining_stages:
             stage_name = stage.__class__.__name__
             task_id = state.get("task_id", "sys")
 
-            # 📦 [CHECKPOINT-RESUME]: Kiểm tra xem stage này đã được thực thi và lưu checkpoint trước đó chưa
-            try:
-                from core.utils.state_checkpoint import load_checkpoint, save_checkpoint
-                cached_state = load_checkpoint(task_id, stage_name)
-                if cached_state and ("raw_blueprint" in cached_state or "final_plan" in cached_state):
-                    logger.info("[CHECKPOINT-RESUME] Task %s nạp lại kết quả stage %s từ disk, bỏ qua LLM call.", task_id, stage_name)
-                    state.update(cached_state)
-                    continue
-            except Exception as ckpt_err:
-                logger.debug("[CHECKPOINT-CHECK] %s: %s", stage_name, ckpt_err)
+            # 📦 [CHECKPOINT-RESUME]: Chỉ nạp lại checkpoint khi attempt == 0 và chưa bị Critic bác bỏ (R2.2)
+            if attempt_idx == 0 and not critic_rejected:
+                try:
+                    from core.utils.state_checkpoint import load_checkpoint, save_checkpoint
+                    cached_state = load_checkpoint(task_id, stage_name)
+                    if cached_state and ("raw_blueprint" in cached_state or "final_plan" in cached_state):
+                        logger.info("[CHECKPOINT-RESUME] Task %s nạp lại kết quả stage %s từ disk, bỏ qua LLM call.", task_id, stage_name)
+                        state.update(cached_state)
+                        continue
+                except Exception as ckpt_err:
+                    logger.debug("[CHECKPOINT-CHECK] %s: %s", stage_name, ckpt_err)
 
             logger.info("[STAGE] %s starting...", stage_name)
             try:

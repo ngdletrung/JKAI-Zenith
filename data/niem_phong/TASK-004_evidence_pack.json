@@ -1,0 +1,847 @@
+{
+  "task_id": "TASK-004",
+  "rubric_version": "v1.2",
+  "rubric_sha256": "0adecc970f1adae50d53172e9b0e1d6d8c71a8bdb8c5930175d2d2fde05cd2f5",
+  "env_manifest_hash": "9fdb46524c9fca1bc05d4838961478bb40703cf1b843ecfc9fffeedf0d784911",
+  "attempt_count": 11,
+  "inconclusive_count": 0,
+  "attempts": [
+    {
+      "attempt_id": "attempt_1",
+      "ui_observed": {
+        "path": "data/niem_phong/TASK-004_attempt_1_ui.json",
+        "sha256": "0bd5c6c6ab9b61e976c3b9cbdd4ecc17a1c1a83f03cb30d820d3da2c53e73429"
+      },
+      "runtime_trace": {
+        "path": "data/niem_phong/TASK-004_attempt_1_trace.json",
+        "sha256": "08f1364fa2ce5398f385ba8edac6a9a5a5e7f03c4c1a9a6b44928956d343705b",
+        "schema_valid": true
+      },
+      "antigravity_analysis": {
+        "path": "data/niem_phong/TASK-004_attempt_1_analysis.md",
+        "sha256": "00b516fc80f5fbf37232005a5cd2f69781bb119483bed7a1f3004748b683553a"
+      },
+      "opencode_audit": {
+        "turn_id": 62,
+        "round_type": "ROUND_SUBSTANTIVE",
+        "verdict": "FAIL",
+        "auditor": "Opencode",
+        "frozen_at": "2026-10-29T08:00:00+07:00"
+      },
+      "answer_correctness": "FAIL",
+      "process_compliance": "FAIL",
+      "severity_findings": [
+        {
+          "severity": "CRITICAL",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Sườn bò 1kg được định giá 40.000đ; giá không khả thi, làm hỏng ngân sách và feasibility claim.",
+          "evidence": "TASK-004_attempt_1_trace.json final_answer; TASK-004_attempt_1_analysis.md lines 59-64"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Canh hầm xương ghi 45 phút tổng cộng, không đáp ứng yêu cầu dưới 45 phút.",
+          "evidence": "TASK-004_attempt_1_analysis.md lines 107-110"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Claim đủ chất không có định lượng khẩu phần hoặc kiểm chứng dinh dưỡng độc lập.",
+          "evidence": "TASK-004_attempt_1_analysis.md lines 44-57, 120-123"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "VERIFY/self_verification báo PASS trái với lỗi giá và thời gian; AQV score=1.00 không đáng tin.",
+          "evidence": "TASK-004_attempt_1_trace.json lines 24-28, 32-34; TASK-004_attempt_1_ui.json lines 123-134"
+        },
+        {
+          "severity": "MINOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "UI có log hệ thống/AQV lặp; cần phân loại duplicate trước khi dùng làm process evidence.",
+          "evidence": "TASK-004_attempt_1_ui.json lines 123-150"
+        }
+      ],
+      "evidence_limitations": [
+        "Không có receipt độc lập cho giá thị trường tại thời điểm chạy.",
+        "Không có raw nutrition validation cho claim đủ chất.",
+        "Không đủ bằng chứng để chứng minh duplicate UI logs làm thay đổi kết quả runtime."
+      ],
+      "regression_check": {
+        "executed": true,
+        "passed": true,
+        "suite_size": 0
+      },
+      "metrics": {
+        "wall_s": 137.78,
+        "tool_calls": 0,
+        "retries": 0,
+        "tokens_out": 882
+      }
+    },
+    {
+      "attempt_id": "attempt_2",
+      "ui_observed": {
+        "path": "data/niem_phong/TASK-004_attempt_2_ui.json",
+        "sha256": "18f7a0b271ffa3464f272eb3f9bfd455a87acf16ca9a89c7d1635cc4bece91d1"
+      },
+      "runtime_trace": {
+        "path": "data/niem_phong/TASK-004_attempt_2_trace.json",
+        "sha256": "a3eaa075e98a217e3ea7f14242abe498c3c362645909ff8b24bcb14ebbebde4d",
+        "schema_valid": true
+      },
+      "antigravity_analysis": {
+        "path": "data/niem_phong/TASK-004_attempt_2_analysis.md",
+        "sha256": "e64bc28aa80f8308d92d73f448d5faaa71fc494991e2bc65c535138fb2421b27"
+      },
+      "opencode_audit": {
+        "turn_id": 64,
+        "round_type": "ROUND_SUBSTANTIVE",
+        "verdict": "FAIL",
+        "auditor": "Opencode",
+        "frozen_at": "2026-10-29T08:10:00+07:00"
+      },
+      "answer_correctness": "FAIL",
+      "process_compliance": "FAIL",
+      "severity_findings": [
+        {
+          "severity": "MAJOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Bài trả lời không khóa được thực đơn 3 món: món canh và món rau dùng chồng rau muống, nhiều đoạn gọi món rau là tùy chọn; không có cấu hình cuối duy nhất.",
+          "evidence": "TASK-004_attempt_2_trace.json final_answer reply"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Chi phí mâu thuẫn trong cùng câu trả lời: tổng ~254.000đ, bảng đầu ~306.000đ, bảng tối ưu ~265.000đ. Chỉ bảng cuối đạt ngân sách.",
+          "evidence": "TASK-004_attempt_2_trace.json final_answer reply"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Mốc 35–40 phút có điều kiện dùng sẵn nước dùng; nếu chưa có, hướng dẫn thêm 10 phút nhưng không có lịch song song hoàn chỉnh chứng minh vẫn dưới 45 phút.",
+          "evidence": "TASK-004_attempt_2_analysis.md lines 20-26; trace final_answer"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "Auto-continue ghép hai JSON reply; parser rơi vào raw fallback. Đây là lỗi format/evidence chain, không phải cosmetic.",
+          "evidence": "TASK-004_attempt_2_analysis.md lines 33-34; trace final_answer"
+        },
+        {
+          "severity": "MINOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "UI có log gateway/system/planner lặp và runtime 259.95s cho task FAST đơn giản; không làm đúng answer.",
+          "evidence": "TASK-004_attempt_2_ui.json lines 25-106, 117-180"
+        }
+      ],
+      "evidence_limitations": [
+        "Không có receipt giá độc lập tại thời điểm chạy; giá bò chỉ là claim trong output.",
+        "Không có định lượng khẩu phần năng lượng/vi chất độc lập để kết luận đủ chất.",
+        "Không có timeline start/end từng bước chứng minh tổng thời gian dưới 45 phút trong cả hai điều kiện có/không có nước dùng."
+      ],
+      "regression_check": {
+        "executed": true,
+        "passed": true,
+        "suite_size": 0
+      },
+      "metrics": {
+        "wall_s": 259.95,
+        "tool_calls": 0,
+        "retries": 0,
+        "tokens_out": 1802
+      }
+    },
+    {
+      "attempt_id": "attempt_3",
+      "ui_observed": {
+        "path": "data/niem_phong/TASK-004_attempt_3_ui.json",
+        "sha256": "919af58fd53d6d24bf143c949330d2716eec685176516758b6bfd330ebc9906d"
+      },
+      "runtime_trace": {
+        "path": "data/niem_phong/TASK-004_attempt_3_trace.json",
+        "sha256": "4497684faa6676622da187dd8274a1f52e9a6366583fbe8b7333c2ed68655277",
+        "schema_valid": true
+      },
+      "antigravity_analysis": {
+        "path": "data/niem_phong/TASK-004_attempt_3_analysis.md",
+        "sha256": "e0eff66502b57fea70f0ae23a344ab782c6e8664f775aca703fe4e5fe985c7a9"
+      },
+      "opencode_audit": {
+        "turn_id": 66,
+        "round_type": "ROUND_SUBSTANTIVE",
+        "verdict": "FAIL",
+        "auditor": "Opencode",
+        "frozen_at": "2026-10-29T08:55:00+07:00"
+      },
+      "answer_correctness": "FAIL",
+      "process_compliance": "FAIL",
+      "severity_findings": [
+        {
+          "severity": "CRITICAL",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Bảng giá không tự nhất quán: 350g bò x 28.000đ/kg không thể ra 98.000đ; 28.000đ/kg cũng được thừa nhận là typo của 280.000đ/kg.",
+          "evidence": "TASK-004_attempt_3_trace.json final_answer; TASK-004_attempt_3_analysis.md lines 121-123"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Các dòng rau củ sai đơn vị/toán học: 400g x 6.000đ/kg không ra 24.000đ; 150g x 8.000đ/kg không ra 12.000đ; 600g x 7.000đ/kg không ra 42.000đ. Tổng 218.000đ vì thế không đáng tin.",
+          "evidence": "TASK-004_attempt_3_trace.json final_answer table"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Claim đủ chất không được chứng minh; câu '120kcal/kg' sai ngữ cảnh và không có khẩu phần năng lượng, tinh bột hoặc định lượng cho từng người.",
+          "evidence": "TASK-004_attempt_3_trace.json final_answer; TASK-004_attempt_3_analysis.md lines 56-58"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "Self-verification và AQV score=1.00 bỏ sót lỗi giá hiển nhiên, lỗi đơn vị và nội dung món bị lỗi chữ ('MÓN SẮC', 'CÁI BÓ HOA XOÀI'). Không được chấp nhận PASS.",
+          "evidence": "TASK-004_attempt_3_trace.json; TASK-004_attempt_3_ui.json; TASK-004_attempt_3_analysis.md lines 28-31"
+        },
+        {
+          "severity": "MINOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "Gateway/system logs vẫn lặp; runtime FAST 131.43s cho task đơn giản, nhưng đây không phải blocker chính.",
+          "evidence": "TASK-004_attempt_3_ui.json lines 25-79"
+        }
+      ],
+      "evidence_limitations": [
+        "Không có receipt giá độc lập tại thời điểm chạy.",
+        "Không có validation dinh dưỡng độc lập.",
+        "Không có kiểm tra máy tính hóa đối với từng phép nhân số lượng x đơn giá trước khi AQV PASS."
+      ],
+      "regression_check": {
+        "executed": true,
+        "passed": true,
+        "suite_size": 0
+      },
+      "metrics": {
+        "wall_s": 131.43,
+        "tool_calls": 0,
+        "retries": 0,
+        "tokens_out": 1050
+      }
+    },
+    {
+      "attempt_id": "attempt_4",
+      "ui_observed": {
+        "path": "data/niem_phong/TASK-004_attempt_4_ui.json",
+        "sha256": "c22e1993d43abf4fa14f650a9ae3a1d0a934ed69db74d17dd86779fff678c89e"
+      },
+      "runtime_trace": {
+        "path": "data/niem_phong/TASK-004_attempt_4_trace.json",
+        "sha256": "f92fe5b2876517814a16441eb5b6fb8a74883994d8c3c167482bde61d59cb641",
+        "schema_valid": true
+      },
+      "antigravity_analysis": {
+        "path": "data/niem_phong/TASK-004_attempt_4_analysis.md",
+        "sha256": "754e985a05d6afa05a29ee976405baf48aedc6f8b253aa8fbc77f361dfea1179"
+      },
+      "opencode_audit": {
+        "turn_id": 68,
+        "round_type": "ROUND_SUBSTANTIVE",
+        "verdict": "FAIL",
+        "auditor": "Opencode",
+        "frozen_at": "2026-10-29T09:05:00+07:00"
+      },
+      "answer_correctness": "FAIL",
+      "process_compliance": "FAIL",
+      "severity_findings": [
+        {
+          "severity": "CRITICAL",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Thời gian tự mâu thuẫn: tiêu đề ghi 32 phút và kết luận ghi 32 phút, nhưng timeline 08:45-09:25 là 40 phút; các giai đoạn 18 + 15 + 7 = 40 phút. Không thể xác nhận claim 32 phút.",
+          "evidence": "TASK-004_attempt_4_trace.json final_answer; TASK-004_attempt_4_analysis.md lines 25, 44"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Claim đủ chất không đủ căn cứ: thực đơn không nêu khẩu phần tinh bột; câu 'tinh bột nhẹ (cà rốt/đậu phụ)' sai phân loại dinh dưỡng.",
+          "evidence": "TASK-004_attempt_4_trace.json final_answer"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Bảng giá không hoàn toàn tái lập được: đậu phụ ghi 3 bìa = 10.000đ và dầu/gia vị 15.000đ nhưng không có đơn giá/định lượng; đây là khoản gộp không kiểm tra được bằng quy tắc từng dòng.",
+          "evidence": "TASK-004_attempt_4_trace.json final_answer table"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "AQV score=1.00 và self-verification bỏ sót chênh lệch 32/40 phút và claim dinh dưỡng sai; kiểm tra table math chưa bao phủ time/nutrition gates.",
+          "evidence": "TASK-004_attempt_4_analysis.md lines 28-31; TASK-004_attempt_4_trace.json final_answer"
+        },
+        {
+          "severity": "MINOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "Gateway/system/TRACE logs lặp; FAST runtime 136.42s cho task đơn giản.",
+          "evidence": "TASK-004_attempt_4_ui.json lines 25-100"
+        }
+      ],
+      "evidence_limitations": [
+        "Không có receipt giá độc lập tại thời điểm chạy.",
+        "Không có validation dinh dưỡng độc lập hoặc khẩu phần tinh bột.",
+        "Không có phép kiểm tự động đối chiếu tổng thời gian từ timeline với claim 32 phút.",
+        "Không có raw test artifact cho test_07 ngoài claim trong báo cáo."
+      ],
+      "regression_check": {
+        "executed": true,
+        "passed": true,
+        "suite_size": 0
+      },
+      "metrics": {
+        "wall_s": 136.42,
+        "tool_calls": 0,
+        "retries": 0,
+        "tokens_out": 980
+      }
+    },
+    {
+      "attempt_id": "attempt_5",
+      "ui_observed": {
+        "path": "data/niem_phong/TASK-004_attempt_5_ui.json",
+        "sha256": "ee9894c0a81364781a5718a244b567aeccfb88828f9d93513c8f675c36664016"
+      },
+      "runtime_trace": {
+        "path": "data/niem_phong/TASK-004_attempt_5_trace.json",
+        "sha256": "0aec967689585b87ba7119059b2475d08ec2e5a7690294724a8f6a985fb5864d",
+        "schema_valid": true
+      },
+      "antigravity_analysis": {
+        "path": "data/niem_phong/TASK-004_attempt_5_analysis.md",
+        "sha256": "3b5bd83eab47c8b095959d0c0a9062bb12fd22c0b200dfd0b9cc3096f9e25eb3"
+      },
+      "aqv_test_artifact": {
+        "path": "tests/reports/test_aqv_run.json",
+        "sha256": "a716e130b9e7a4e4300c414c9a1ab4555f987f4a0d33c15f2e5593012b361b1a",
+        "passed": true,
+        "suite_size": 9
+      },
+      "opencode_audit": {
+        "turn_id": 70,
+        "round_type": "ROUND_SUBSTANTIVE",
+        "verdict": "FAIL",
+        "auditor": "Opencode",
+        "frozen_at": "2026-10-29T09:20:00+07:00"
+      },
+      "answer_correctness": "FAIL",
+      "process_compliance": "FAIL",
+      "severity_findings": [
+        {
+          "severity": "MAJOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Lộ trình 35 phút mâu thuẫn với hướng dẫn 'Hầm nhẹ 20 phút' trong Giai đoạn 1 kéo dài 15 phút; nếu thực sự hầm/ướp 20 phút, timeline không khép kín.",
+          "evidence": "TASK-004_attempt_5_trace.json final_answer; TASK-004_attempt_5_analysis.md lines 25-32"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "AQV test time_consistency chỉ kiểm tra fixture tổng quát; không chứng minh đã bắt cụm 'Hầm nhẹ 20 phút' mâu thuẫn với stage 15 phút trong artifact live.",
+          "evidence": "tests/reports/test_aqv_run.json; TASK-004_attempt_5_trace.json final_answer"
+        },
+        {
+          "severity": "MINOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Dầu ăn & gia vị có khối lượng nhưng vẫn ghi Trọn gói, thiếu đơn giá thành phần để tái lập hoàn toàn.",
+          "evidence": "TASK-004_attempt_5_trace.json final_answer table"
+        },
+        {
+          "severity": "MINOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "UI có gateway/goal/system log lặp; runtime 90.87s vẫn cao cho task FAST đơn giản.",
+          "evidence": "TASK-004_attempt_5_ui.json lines 25-90"
+        }
+      ],
+      "evidence_limitations": [
+        "Không có receipt giá độc lập tại thời điểm chạy.",
+        "Không có raw assertion chứng minh live answer đã được kiểm tra semantic contradiction ngoài suite 9 fixture tests.",
+        "Không có định lượng đơn giá riêng cho 50ml dầu và 30g gia vị."
+      ],
+      "regression_check": {
+        "executed": true,
+        "passed": true,
+        "suite_size": 9
+      },
+      "metrics": {
+        "wall_s": 90.87,
+        "tool_calls": 0,
+        "retries": 0,
+        "tokens_out": 850
+      }
+    },
+    {
+      "attempt_id": "attempt_6",
+      "ui_observed": {
+        "path": "data/niem_phong/TASK-004_attempt_6_ui.json",
+        "sha256": "048915d72214b45a9d5c10a5ddceb4be3f872a5c02939c1ef55a56785dd4e92b"
+      },
+      "runtime_trace": {
+        "path": "data/niem_phong/TASK-004_attempt_6_trace.json",
+        "sha256": "e2d7610782416eeaa117bfddd0759b9c421f65ee0eff7a9c396ca5f78acbc034",
+        "schema_valid": true
+      },
+      "antigravity_analysis": {
+        "path": "data/niem_phong/TASK-004_attempt_6_analysis.md",
+        "sha256": "26ac3ebb5bb008b6e4fb0d6af43665f8610fee53815a1583024f862a09ef820f"
+      },
+      "aqv_test_artifact": {
+        "path": "tests/reports/test_aqv_run.json",
+        "sha256": "ac454ca35d9cf02d839af743eec805ae6a36f25cb4a793a84d633dc2f49f1a7e",
+        "passed": true,
+        "suite_size": 10
+      },
+      "opencode_audit": {
+        "turn_id": 72,
+        "round_type": "ROUND_SUBSTANTIVE",
+        "verdict": "FAIL",
+        "auditor": "Opencode",
+        "frozen_at": "2026-10-29T09:35:00+07:00"
+      },
+      "answer_correctness": "FAIL",
+      "process_compliance": "FAIL",
+      "severity_findings": [
+        {
+          "severity": "MAJOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Output tuyên bố dinh dưỡng đầy đủ/4 nhóm chất nhưng kết luận live chỉ nêu 3 nhóm chất chính; chất béo không được định lượng trong bảng và không được phân loại rõ.",
+          "evidence": "TASK-004_attempt_6_trace.json final_answer"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Dòng Dầu ăn & Gia vị vẫn không có số lượng trong bảng, cột ghi 'Định lượng' thay vì đơn giá; trái claim đã khóa định lượng 50ml dầu + 30g gia vị và trái yêu cầu tái lập.",
+          "evidence": "TASK-004_attempt_6_trace.json final_answer table lines 5906-5907; report lines 5858"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "Lộ trình ghi '2 bếp' nhưng thực tế có Bếp 1, Bếp 2 và Bếp phụ; chưa chứng minh gia đình có 3 vùng nấu hoặc lịch chuyển chảo cho Bếp phụ trong 15 phút.",
+          "evidence": "TASK-004_attempt_6_trace.json final_answer timeline"
+        },
+        {
+          "severity": "MINOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Hướng dẫn 'đun nóng dầu... để lấy nước mỡ ra khỏi thịt' không phù hợp với thao tác ướp thịt và làm mơ hồ an toàn thực phẩm.",
+          "evidence": "TASK-004_attempt_6_trace.json final_answer phase 1"
+        },
+        {
+          "severity": "MINOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "UI logs gateway/goal/system vẫn lặp; FAST runtime 96.01s cho task đơn giản.",
+          "evidence": "TASK-004_attempt_6_ui.json"
+        }
+      ],
+      "evidence_limitations": [
+        "Không có receipt giá độc lập tại thời điểm chạy.",
+        "Không có raw proof hash thực tế được tính lại trong lượt audit này.",
+        "Không có bằng chứng thiết bị chứng minh 3 vùng nấu hoặc lịch chuyển chảo.",
+        "Không có validation dinh dưỡng độc lập."
+      ],
+      "regression_check": {
+        "executed": true,
+        "passed": true,
+        "suite_size": 10
+      },
+      "metrics": {
+        "wall_s": 96.01,
+        "tool_calls": 0,
+        "retries": 0,
+        "tokens_out": 850
+      }
+    },
+    {
+      "attempt_id": "attempt_7",
+      "ui_observed": {
+        "path": "data/niem_phong/TASK-004_attempt_7_ui.json",
+        "sha256": "230036f310ab9296adf23bf0cdec766772c50246a23ad0ac01df1767fc3246a8"
+      },
+      "runtime_trace": {
+        "path": "data/niem_phong/TASK-004_attempt_7_trace.json",
+        "sha256": "64c0889f8ba4b53a65ddd1608b58b35ed4baaf723688ef4f17eb03b1a12a02bf",
+        "schema_valid": true
+      },
+      "antigravity_analysis": {
+        "path": "data/niem_phong/TASK-004_attempt_7_analysis.md",
+        "sha256": "ca121e33f2a6308a03e35fda252d9349f27dcca9118f7ffbc40864e8beef67ba"
+      },
+      "aqv_test_artifact": {
+        "path": "tests/reports/test_aqv_run.json",
+        "sha256": "64cd81966643e42370816d7d5ee9b046efbe48127211c08e9fcceacb82511f97",
+        "passed": true,
+        "suite_size": 12
+      },
+      "opencode_audit": {
+        "turn_id": 74,
+        "round_type": "ROUND_SUBSTANTIVE",
+        "verdict": "FAIL",
+        "auditor": "Opencode",
+        "frozen_at": "2026-10-29T09:50:00+07:00"
+      },
+      "answer_correctness": "FAIL",
+      "process_compliance": "FAIL",
+      "severity_findings": [
+        {
+          "severity": "CRITICAL",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Cơm được cắm lúc 08:45 nhưng output khẳng định cơm đã chín lúc 09:15/09:20; không có bằng chứng thiết bị hoặc thời lượng nấu chứng minh 400g gạo chín trong 30–35 phút. Kế hoạch không khả thi từ nguyên liệu tươi.",
+          "evidence": "TASK-004_attempt_7_trace.json final_answer lines 6116-6117, 6137-6139"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Tổng thời gian bị mô tả mâu thuẫn: các giai đoạn là 15 + 15 + 5 = 35 phút, nhưng kết luận ghi '30 phút chuẩn bị + 5 phút nấu song song = 35 phút'; Giai đoạn 2 thực tế có 15 phút nấu.",
+          "evidence": "TASK-004_attempt_7_trace.json final_answer lines 6126-6137, 6141"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Bước dùng dầu ướp thịt không được nối với dòng chi phí khi bảng chỉ ghi nhóm dầu/gia vị; phân bổ 50ml dầu cho 3 thao tác chưa đủ tái lập.",
+          "evidence": "TASK-004_attempt_7_trace.json final_answer lines 6108, 6122-6124"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "AQV 12 tests chỉ chứng minh fixture; không có raw live assertion bắt mâu thuẫn thời gian nấu cơm và câu kết luận 30+5.",
+          "evidence": "tests/reports/test_aqv_run.json; TASK-004_attempt_7_trace.json final_answer"
+        },
+        {
+          "severity": "MINOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "UI/system log lặp; runtime FAST 176.79s cho task đơn giản.",
+          "evidence": "TASK-004_attempt_7_ui.json"
+        }
+      ],
+      "evidence_limitations": [
+        "Không có receipt giá độc lập tại thời điểm chạy.",
+        "Không có bằng chứng thiết bị hoặc timestamp chứng minh cơm chín trong timeline.",
+        "Không có raw proof hash được tính lại độc lập trong lượt audit.",
+        "Không có live semantic assertion cho toàn bộ timeline."
+      ],
+      "regression_check": {
+        "executed": true,
+        "passed": true,
+        "suite_size": 12
+      },
+      "metrics": {
+        "wall_s": 176.79,
+        "tool_calls": 0,
+        "retries": 0,
+        "tokens_out": 850
+      }
+    },
+    {
+      "attempt_id": "attempt_8",
+      "ui_observed": {
+        "path": "data/niem_phong/TASK-004_attempt_8_ui.json",
+        "sha256": "6c4ea8f7042e19aad9b0c3b0f7d8838264c4782563418544f9fbe1dd9239b0ba"
+      },
+      "runtime_trace": {
+        "path": "data/niem_phong/TASK-004_attempt_8_trace.json",
+        "sha256": "cf38dfe29b1b27a27761a3c12a26f698f91b6bbc03bc2912e62e1b6f444989d5",
+        "schema_valid": true
+      },
+      "antigravity_analysis": {
+        "path": "data/niem_phong/TASK-004_attempt_8_analysis.md",
+        "sha256": "3afaa108cd94ee9b688fec9ff870e4121480ab41fd8acaeaa504e3fddd71b592"
+      },
+      "aqv_test_artifact": {
+        "path": "tests/reports/test_aqv_run.json",
+        "sha256": "2e63b6b98f30bb785669294d576d4e4a89498bed06d961d3ebf48c8533209e66",
+        "passed": true,
+        "suite_size": 14
+      },
+      "opencode_audit": {
+        "turn_id": 76,
+        "round_type": "ROUND_SUBSTANTIVE",
+        "verdict": "FAIL",
+        "auditor": "Opencode",
+        "frozen_at": "2026-10-29T10:05:00+07:00"
+      },
+      "answer_correctness": "FAIL",
+      "process_compliance": "FAIL",
+      "severity_findings": [
+        {
+          "severity": "MAJOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Claim cơm Quick Cook 400g chín đúng 09:15–09:20 là tiền đề bắt buộc của timeline nhưng chỉ là claim mô hình; không có receipt thiết bị, manual/model, hoặc timestamp thực nghiệm.",
+          "evidence": "TASK-004_attempt_8_trace.json final_answer; TASK-004_attempt_8_analysis.md lines 75-100"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "14 AQV tests là fixture regression, không phải chứng cứ live device feasibility; test artifact không chứa execution evidence cho nồi cơm cụ thể.",
+          "evidence": "tests/reports/test_aqv_run.json; TASK-004_attempt_8_analysis.md lines 15-19"
+        },
+        {
+          "severity": "MINOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Output gọi món chính có tinh bột từ rau củ, trong khi bảng phân loại đúng tinh bột là cơm; claim dinh dưỡng nội dung không nhất quán.",
+          "evidence": "TASK-004_attempt_8_trace.json final_answer"
+        },
+        {
+          "severity": "MINOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Ghi 30g gia vị tương đương ~48kcal nhưng không nêu thành phần; con số không kiểm chứng và không cần cho yêu cầu.",
+          "evidence": "TASK-004_attempt_8_analysis.md lines 66-67"
+        },
+        {
+          "severity": "MINOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "Runtime FAST 146.64s vẫn cao; log duplication chưa được giải quyết.",
+          "evidence": "TASK-004_attempt_8_trace.json; TASK-004_attempt_8_ui.json"
+        }
+      ],
+      "evidence_limitations": [
+        "Không có receipt giá độc lập tại thời điểm chạy.",
+        "Không có bằng chứng thực nghiệm nồi cơm Quick Cook chín trong 25–30 phút.",
+        "Không có raw live semantic assertion chứng minh toàn bộ claim thiết bị.",
+        "Không có hash được tính lại độc lập trong lượt audit."
+      ],
+      "regression_check": {
+        "executed": true,
+        "passed": true,
+        "suite_size": 14
+      },
+      "metrics": {
+        "wall_s": 146.64,
+        "tool_calls": 0,
+        "retries": 0,
+        "tokens_out": 850
+      }
+    },
+    {
+      "attempt_id": "attempt_9",
+      "ui_observed": {
+        "path": "data/niem_phong/TASK-004_attempt_9_ui.json",
+        "sha256": "676b175af77860e7d6967defce57ad9257ed661ac0ac4d924d8218e3285e83bb"
+      },
+      "runtime_trace": {
+        "path": "data/niem_phong/TASK-004_attempt_9_trace.json",
+        "sha256": "083ee2165ab3f30c27d1ffb2cbdf59619edfe0b47bc3df123595f0c71ad1f548",
+        "schema_valid": true
+      },
+      "antigravity_analysis": {
+        "path": "data/niem_phong/TASK-004_attempt_9_analysis.md",
+        "sha256": "f2b47c7544a26af629c8d2e8f0dc93326bf738eb7ad64d8dc9dc27eefb0b8525"
+      },
+      "aqv_test_artifact": {
+        "path": "tests/reports/test_aqv_run.json",
+        "sha256": "430eaecb0aa890f53858ca08c6619628f9a33f78133c8b00dcaf1c74f80712f8",
+        "passed": true,
+        "suite_size": 15
+      },
+      "opencode_audit": {
+        "turn_id": 78,
+        "round_type": "ROUND_SUBSTANTIVE",
+        "verdict": "FAIL",
+        "auditor": "Opencode",
+        "frozen_at": "2026-10-29T10:20:00+07:00"
+      },
+      "answer_correctness": "FAIL",
+      "process_compliance": "FAIL",
+      "severity_findings": [
+        {
+          "severity": "CRITICAL",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Timeline vẫn phụ thuộc điều kiện ẩn: cơm phải nấu sẵn hoặc cắm điện tự động. Không có một cấu hình thực thi duy nhất và không có bằng chứng cơm sẵn; vì vậy claim hoàn thành bữa tối từ nguyên liệu tươi trong 35 phút chưa được chứng minh.",
+          "evidence": "TASK-004_attempt_9_trace.json final_answer; TASK-004_attempt_9_analysis.md lines 54-73"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "Attempt 9 bỏ claim Quick Cook nhưng vẫn đưa cơm vào kết quả 09:15–09:20 qua điều kiện 'nấu sẵn hoặc cắm điện tự động'; AQV 15 tests không có live assertion buộc một tiền đề duy nhất.",
+          "evidence": "tests/reports/test_aqv_run.json; TASK-004_attempt_9_trace.json final_answer"
+        },
+        {
+          "severity": "MINOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Tiêu đề giai đoạn ghi 'ƯỚP GIẤU', lỗi văn bản làm giảm chất lượng output dù không đổi phép tính.",
+          "evidence": "TASK-004_attempt_9_analysis.md line 57"
+        },
+        {
+          "severity": "MINOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "FAST runtime 116.17s vẫn cao; duplicate UI/system logs chưa được xử lý.",
+          "evidence": "TASK-004_attempt_9_trace.json; TASK-004_attempt_9_ui.json"
+        }
+      ],
+      "evidence_limitations": [
+        "Không có receipt giá độc lập tại thời điểm chạy.",
+        "Không có bằng chứng cơm đã nấu sẵn hoặc hệ thống cắm điện tự động trong runtime.",
+        "Không có live assertion buộc một cấu hình tiền đề duy nhất cho cơm.",
+        "Không có hash được tính lại độc lập trong lượt audit."
+      ],
+      "regression_check": {
+        "executed": true,
+        "passed": true,
+        "suite_size": 15
+      },
+      "metrics": {
+        "wall_s": 116.17,
+        "tool_calls": 0,
+        "retries": 0,
+        "tokens_out": 850
+      }
+    },
+    {
+      "attempt_id": "attempt_10",
+      "ui_observed": {
+        "path": "data/niem_phong/TASK-004_attempt_10_ui.json",
+        "sha256": "b2253f46a3a3c9ccce00ab4078e112c8e1ad4f71b852f1b00bc9eb53c69ce455"
+      },
+      "runtime_trace": {
+        "path": "data/niem_phong/TASK-004_attempt_10_trace.json",
+        "sha256": "38f099590f083a0c845ebb1f9b7dc7dd6c270ef656fd84261351d84759b0ab1c",
+        "schema_valid": true
+      },
+      "antigravity_analysis": {
+        "path": "data/niem_phong/TASK-004_attempt_10_analysis.md",
+        "sha256": "e4c87f609e8c49f4bde097aeb1ee4cbbff5305fa2b7078663d3fd2425b8f60fe"
+      },
+      "aqv_test_artifact": {
+        "path": "tests/reports/test_aqv_run.json",
+        "sha256": "c28e3c225287fc40cced09d95dd11c330b71930048ba81cabcf6b9ddbabfa5ff",
+        "passed": true,
+        "suite_size": 16
+      },
+      "opencode_audit": {
+        "turn_id": 80,
+        "round_type": "ROUND_SUBSTANTIVE",
+        "verdict": "FAIL",
+        "auditor": "Opencode",
+        "frozen_at": "2026-10-29T10:35:00+07:00"
+      },
+      "answer_correctness": "FAIL",
+      "process_compliance": "FAIL",
+      "severity_findings": [
+        {
+          "severity": "CRITICAL",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Khoai tây 400g được tuyên bố chín bở trong 10 phút nhưng không có evidence thực nghiệm, kích thước cắt, trạng thái nước sôi hoặc timestamp; đây là dependency feasibility mới chưa được chứng minh.",
+          "evidence": "TASK-004_attempt_10_trace.json final_answer; TASK-004_attempt_10_analysis.md lines 66-70"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Output claim 100% nguyên liệu tươi nhưng đậu phụ là thực phẩm chế biến sẵn; claim cần sửa hoặc nêu rõ 'nguyên liệu không nấu sẵn'.",
+          "evidence": "TASK-004_attempt_10_trace.json final_answer; report Lượt 79 lines 6569-6571"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "AQV 16 tests chỉ là fixture regression; chưa có live assertion bắt feasibility của khoai tây trong 15 phút.",
+          "evidence": "tests/reports/test_aqv_run.json; TASK-004_attempt_10_analysis.md lines 15-19"
+        },
+        {
+          "severity": "MINOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Claim khoai tây là tinh bột phức hợp là khẳng định dinh dưỡng rộng, không cần cho nhiệm vụ và không có nguồn.",
+          "evidence": "TASK-004_attempt_10_trace.json final_answer"
+        },
+        {
+          "severity": "MINOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "FAST runtime 126.33s; chưa có bằng chứng xử lý duplicate log.",
+          "evidence": "TASK-004_attempt_10_trace.json; TASK-004_attempt_10_ui.json"
+        }
+      ],
+      "evidence_limitations": [
+        "Không có receipt giá độc lập tại thời điểm chạy.",
+        "Không có evidence thực nghiệm khoai tây chín trong 10 phút.",
+        "Không có raw live semantic assertion cho nguyên liệu chế biến sẵn và feasibility khoai tây.",
+        "Không có hash được tính lại độc lập trong lượt audit."
+      ],
+      "regression_check": {
+        "executed": true,
+        "passed": true,
+        "suite_size": 16
+      },
+      "metrics": {
+        "wall_s": 126.33,
+        "tool_calls": 0,
+        "retries": 0,
+        "tokens_out": 850
+      }
+    },
+    {
+      "attempt_id": "attempt_11",
+      "ui_observed": {
+        "path": "data/niem_phong/TASK-004_attempt_11_ui.json",
+        "sha256": "e286339592c21019a77c4093340d66e70270de23785c35e54771f6bb161c0ea3"
+      },
+      "runtime_trace": {
+        "path": "data/niem_phong/TASK-004_attempt_11_trace.json",
+        "sha256": "0b96f2c4386676fe77335226c72d4530196b79f2caf982f56b67c23c25cae8d8",
+        "schema_valid": true
+      },
+      "antigravity_analysis": {
+        "path": "data/niem_phong/TASK-004_attempt_11_analysis.md",
+        "sha256": "0844dc33661e94456809ac427d57322969d12917bbd38cf5c5538e3c9bf0e727"
+      },
+      "aqv_test_artifact": {
+        "path": "tests/reports/test_aqv_run.json",
+        "sha256": "995abb1d2f95c853c970c1176aeb874b6c8cf5555a585f74b421dcb0c871df4e",
+        "passed": true,
+        "suite_size": 17
+      },
+      "opencode_audit": {
+        "turn_id": 82,
+        "round_type": "ROUND_SUBSTANTIVE",
+        "verdict": "FAIL",
+        "auditor": "Opencode",
+        "frozen_at": "2026-10-29T11:00:00+07:00"
+      },
+      "answer_correctness": "FAIL",
+      "process_compliance": "FAIL",
+      "severity_findings": [
+        {
+          "severity": "CRITICAL",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Khoai tây 400g thái 2–3mm được tuyên bố chín bở trong 8–10 phút, nhưng evidence pack chỉ có output và self-analysis; không có raw experiment record, timestamp bắt đầu/kết thúc, thiết bị/nồi, thể tích nước, trạng thái sôi hoặc quan sát độ mềm. Feasibility vẫn assertion-only.",
+          "evidence": "TASK-004_attempt_11_trace.json final_answer; TASK-004_attempt_11_analysis.md lines 60–65; không có artifact thực nghiệm riêng"
+        },
+        {
+          "severity": "MAJOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "AQV 17/17 là fixture regression; không chứng minh live feasibility của khoai tây hoặc việc lịch 09:00–09:15 thực thi được trên Bếp 1.",
+          "evidence": "tests/reports/test_aqv_run.json; TASK-004_attempt_11_analysis.md lines 15–19"
+        },
+        {
+          "severity": "MINOR",
+          "category": "ANSWER_CORRECTNESS",
+          "finding": "Bảng giá và phép tính đúng: 81.000 + 27.000 + 10.000 + 7.500 + 9.000 + 5.000 + 10.000 + 8.000 + 15.000 = 172.500đ; không có receipt giá độc lập nên đây là estimate, không phải giá đã xác minh.",
+          "evidence": "TASK-004_attempt_11_trace.json final_answer"
+        },
+        {
+          "severity": "MINOR",
+          "category": "PROCESS_COMPLIANCE",
+          "finding": "Runtime FAST 131.46s và duplicate UI/GATEWAY/SYSTEM logs vẫn xuất hiện; chưa có bằng chứng reconciliation hoặc xử lý duplication.",
+          "evidence": "TASK-004_attempt_11_trace.json; TASK-004_attempt_11_ui.json lines 8–36"
+        }
+      ],
+      "evidence_limitations": [
+        "Không có receipt giá độc lập tại thời điểm chạy.",
+        "Không có raw experiment artifact chứng minh khoai tây chín bở trong 8–10 phút.",
+        "Không có timestamp/device/pot/water-volume/boiling-state record cho phép thử.",
+        "Không có live semantic assertion chứng minh feasibility full timeline.",
+        "Hash SHA-256 đã tính lại khớp 4 artifact được khai báo; việc khớp hash không tạo ra bằng chứng thực nghiệm bị thiếu."
+      ],
+      "regression_check": {
+        "executed": true,
+        "passed": true,
+        "suite_size": 17
+      },
+      "metrics": {
+        "wall_s": 131.46,
+        "tool_calls": 0,
+        "retries": 0,
+        "tokens_out": 850
+      }
+    }
+  ],
+  "final_verdict": "REJECTED_ATTEMPT_11",
+  "frozen_at": "2026-10-29T11:00:00+07:00"
+}

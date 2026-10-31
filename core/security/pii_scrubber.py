@@ -15,6 +15,7 @@ class PIIScrubber:
         (r'\b(?:10\.\d{1,3}\.\d{1,3}\.\d{1,3}|192\.168\.\d{1,3}\.\d{1,3}|172\.(?:1[6-9]|2\d|3[0-1])\.\d{1,3}\.\d{1,3}|127\.0\.0\.1|localhost)\b', '[INTERNAL_HOST]'),
 
         # Cloud Provider API Keys
+        (r'\beyJ[a-zA-Z0-9_-]{8,}\.[a-zA-Z0-9_-]{8,}\.[a-zA-Z0-9_-]{8,}\b', '[MASKED_JWT]'),
         (r'sk-[a-zA-Z0-9_\-]{20,}', '[MASKED_OPENAI_API_KEY]'),
         (r'tvly-[a-zA-Z0-9_\-]{16,}', '[MASKED_TAVILY_KEY]'),
         (r'xai-[a-zA-Z0-9_\-]{16,}', '[MASKED_XAI_KEY]'),

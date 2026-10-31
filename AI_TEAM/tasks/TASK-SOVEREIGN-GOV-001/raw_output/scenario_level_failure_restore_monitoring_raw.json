@@ -1,0 +1,70 @@
+{
+  "generated_at": "2026-10-28T14:59:55Z",
+  "all_10_failure_injections_passed": true,
+  "failure_injection_scenarios": {
+    "01_receipt_seal_failure": {
+      "passed": true,
+      "action": "DENY_FAIL_CLOSED",
+      "detail": "FAIL-CLOSED: Execution completed on substrate but cryptographic receipt sealing failed: ENCLAVE_SEAL_ERROR"
+    },
+    "02_unknown_or_revoked_key_id": {
+      "passed": true,
+      "errors": [
+        "REPLAY_ERROR: Unknown key ID k_revoked_old!"
+      ]
+    },
+    "03_tampered_receipt": {
+      "passed": true,
+      "verified": false
+    },
+    "04_expired_lease_takeover": {
+      "passed": true
+    },
+    "05_stale_fencing_token": {
+      "passed": true,
+      "stale_accepted": false
+    },
+    "06_partial_ledger_write_recovery": {
+      "passed": true,
+      "recovered_prev_sha256": "35999556b894b32786fdecb80b45af1640679b649cfdaf729c12ca6982491250"
+    },
+    "07_corrupt_checkpoint_fail_closed": {
+      "passed": true,
+      "detail": "CORRUPT_CHECKPOINT: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)"
+    },
+    "08_missing_production_secret": {
+      "passed": true,
+      "exit_code": 1
+    },
+    "09_executor_timeout_no_false_receipt": {
+      "passed": true
+    },
+    "10_partial_publish_crash_and_rollback": {
+      "passed": true,
+      "receipt_id": "rcpt_bd9e641e52ed_4"
+    }
+  },
+  "restore_drill": {
+    "passed": true,
+    "baseline_sha256": "cdd62e82f1e1acf81426be51cb9d3974de3b612982319bc69ceae8f125c73821",
+    "restored_disk_sha256": "cdd62e82f1e1acf81426be51cb9d3974de3b612982319bc69ceae8f125c73821",
+    "hash_match": true,
+    "checkpoint_id": "ckpt_core_restore_drill_skill_1793199595255",
+    "rollback_receipt_id": "rcpt_bd9e641e52ed_4",
+    "rollback_receipt_hmac": "dbf86049938240e94fe8ecf507871720d46764badc6014d95ea820faeb9b355d"
+  },
+  "live_monitoring_endpoints": {
+    "ai_brain_8001": {
+      "status_code": 200,
+      "healthy": true
+    },
+    "ai_executor_8002": {
+      "status_code": 200,
+      "healthy": true
+    },
+    "mission_control_9999": {
+      "status_code": 200,
+      "healthy": true
+    }
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "real_time": {
+    "timestamp_utc_plus_7": "20:38",
+    "date_str": "Thứ Bảy, ngày 19/10/2026"
+  },
+  "system_version": "v28.4.0 (SSoT: CHANGELOG.md)",
+  "identity_role": "RECEPTIONIST",
+  "task_status": {
+    "objective_met": true,
+    "constraints_verified": [
+      "Ngân sách <= 300.000đ",
+      "Số lượng người ăn = 4 (2 lớn, 2 trẻ)",
+      "Thực đơn: Món mặn + Canh + Rau xào",
+      "Nguyên liệu không chồng chéo",
+      "Thời gian chế biến < 45 phút"
+    ]
+  },
+  "response_payload": {
+    "menu_plan": [
+      {
+        "dish_name": "Bò Kho Tộ (Món Mặn)",
+        "description": "Thịt bò kho mềm, thấm gia vị với cà rốt và hành tây. Phù hợp cho cả trẻ em.",
+        "ingredients_list": [
+          {
+            "item": "Thịt bò tươi",
+            "quantity_kg": 1.2,
+            "unit_price_range_min": 250000,
+            "unit_price_range_max": 280000,
+            "estimated_cost_low": 300000,
+            "estimated_cost_high": 336000
+          },
+          {
+            "item": "Cà rốt",
+            "quantity_kg": 400,
+            "unit_price_range_min": 15000,
+            "unit_price_range_max": 25000,
+            "estimated_cost_low": 6000,
+            "estimated_cost_high": 10000
+          },
+          {
+            "item": "Hành tây",
+            "quantity_kg": 300,
+            "unit_price_range_min": 18000,
+            "unit_price_range_max": 25000,
+            "estimated_cost_low": 5400,
+            "estimated_cost_high": 7500
+          },
+          {
+            "item": "Gia vị (muối, đường, nước tương)",
+            "quantity_kg": null,
+            "unit_price_range_min": null,
+            "unit_price_range_max": null,
+            "estimated_cost_low": 15000,
+            "estimated_cost_high": 25000
+          }
+        ],
+        "preparation_steps": [
+          "Làm sạch thịt bò thái miếng vừa ăn (khoảng 3-4cm).",
+          "Xay cà rốt và hành tây thành từng khúc nhỏ.",
+          "Đun sôi nước, cho thịt vào luộc sơ qua khoảng 2 phút để làm sạch máu.",
+          "Cho thịt đã luộc ra đĩa, ướp với muối, đường, hạt tiêu trong 15 phút.",
+          "Dùng chảo chống dính xào thơm dầu ăn, hành tây và cà rốt đến khi mềm vàng.",
+          "Thêm thịt bò vào đảo đều, nêm nếm lại gia vị cho vừa miệng (đường giúp ngọt tự nhiên).",
+          "Đun nhỏ lửa khoảng 20-30 phút để thịt mềm烂."
+        ],
+        "estimated_cost": {
+          "min_total": 351400,
+          "max_total": 386900
+        }
+      },
+      {
+        "dish_name": "Canh Thịt Heo Xay Rau Củ (Món Canh)",
+        "description": "Ngon mát, bổ dưỡng với thịt heo xay và nhiều loại rau củ.",
+        "ingredients_list": [
+          {
+            "item": "Thịt heo xay",
+            "quantity_kg": 0.5,
+            "unit_price_range_min": 120000,
+            "unit_price_range_max": 140000,
+            "estimated_cost_low": 60000,
+            "estimated_cost_high": 70000
+          },
+          {
+            "item": "Cà chua",
+            "quantity_kg": 300,
+            "unit_price_range_min": 25000,
+            "unit_price_range_max": 40000,
+            "estimated_cost_low": 7500,
+            "estimated_cost_high": 12000
+          },
+          {
+            "item": "Đậu phụ xanh",
+            "quantity_kg": 300,
+            "unit_price_range_min": 28000,
+            "unit_price_range_max": 40000,
+            "estimated_cost_low": 8400,
+            "estimated_cost_high": 12000
+          },
+          {
+            "item": "Rau muống",
+            "quantity_kg": 300,
+            "unit_price_range_min": 15000,
+            "unit_price_range_max": 25000,
+            "estimated_cost_low": 4500,
+            "estimated_cost_high": 7500
+          },
+          {
+            "item": "Gia vị (muối, hành tây thái lát)",
+            "quantity_kg": null,
+            "unit_price_range_min": null,
+            "unit_price_range_max": null,
+            "estimated_cost_low": 10000,
+            "estimated_cost_high": 20000
+          }
+        ],
+        "preparation_steps": [
+          "Làm sạch thịt heo xay và ướp với chút muối.",
+          "Xay cà chua nhuyễn hoặc thái nhỏ.",
+          "Đun sôi nước dùng (hoặc đun riêng nếu không có), cho hành tây vào xào thơm.",
+          "Cho thịt heo xay vào đảo đều, nêm nếm gia vị.",
+          "Thêm cà chua và đậu phụ xanh vào nấu cùng khoảng 5 phút đến khi chín mềm.",
+          "Rau muống rửa sạch thái nhỏ, thả vào cuối cùng để giữ màu xanh tươi."
+        ],
+        "estimated_cost": {
+          "min_total": 90400,
+          "max_total": 123800
+        }
+      },
+      {
+        "dish_name": "Rau Muống Xào Thịt Bò (Món Rau)",
+        "description": "Kết hợp thịt bò và rau muống tạo món ăn bổ dưỡng.",
+        "ingredients_list": [
+          {
+            "item": "Thịt bò",
+            "quantity_kg": 0.3,
+            "unit_price_range_min": 250000,
+            "unit_price_range_max": 280000,
+            "estimated_cost_low": 75000,
+            "estimated_cost_high": 84000
+          },
+          {
+            "item": "Rau muống",
+            "quantity_kg": 300,
+            "unit_price_range_min": 15000,
+            "unit_price_range_max": 25000,
+            "estimated_cost_low": 4500,
+            "estimated_cost_high": 7500
+          },
+          {
+            "item": "Gia vị (dầu ăn, muối)",
+            "quantity_kg": null,
+            "unit_price_range_min": null,
+            "unit_price_range_max": null,
+            "estimated_cost_low": 10000,
+            "estimated_cost_high": 20000
+          }
+        ],
+        "preparation_steps": [
+          "Thịt bò thái sợi mỏng.",
+          "Rau muống rửa sạch, cắt bỏ phần già để lại lá non và thân mềm.",
+          "Đun nóng dầu ăn trong chảo chống dính.",
+          "Xào thịt bò nhanh tay đến khi chín khoảng 2 phút (không cần xào quá lâu).",
+          "Thêm rau muống vào đảo đều cho vừa tắt lửa."
+        ],
+        "estimated_cost": {
+          "min_total": 89500,
+          "max_total": 113400
+        }
+      }
+    ]
+  },
+  "financial_summary": {
+    "total_budget_allocated": 300000,
+    "calculated_min_cost": 531300,
+    "calculated_max_cost": 624100,
+    "budget_status": "VIOLATION",
+    "violation_reason": "Chi phí tối thiểu (531.300đ) vượt quá ngân sách cho phép (300.000đ). Nguyên nhân chính là do giá thịt bò tươi cao (>250k/kg), không thể dùng đủ lượng cần thiết cho 4 người mà vẫn đảm bảo chất lượng.",
+    "recommended_actions": [
+      "Thay thế món Bò Kho Tộ bằng Món Gà Kho hoặc Thịt Cừu kho (giá rẻ hơn).",
+      "Giảm lượng thịt bò trong món xào xuống còn 150g để tiết kiệm chi phí."
+    ]
+  },
+  "time_management": {
+    "estimated_total_time_minutes": 38,
+    "parallel_cooking_strategy": [
+      "Bước 1 (Đồng thời): Luộc sơ thịt bò + Xào thơm hành tây/cà rốt.",
+      "Bước 2 (Song song): Nấu nước dùng cho canh + Ướp thịt heo xay."
+    ]
+  }
+}

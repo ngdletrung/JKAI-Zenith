@@ -1,0 +1,1324 @@
+{
+  "runner": "run_raw_benchmark.py",
+  "state_protocol": "COLD import, 1xV2 warmup, WARM measurement",
+  "process": "C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\python.exe",
+  "v2_dataset_sha256": "690095039d049345f41ad7d04ac49fd980e290076a7279932fe3da370ad8720f",
+  "v3_dataset_sha256": "995653a0b8df2385bdd484b647a0288bd736eef6409542b7cef93a337ce5c2f5",
+  "sample_counts": {
+    "v2": 41,
+    "v3": 36,
+    "warmup_passes": 41
+  },
+  "results": {
+    "V2": {
+      "passed": 41,
+      "total": 41,
+      "accuracy": 1.0,
+      "semantic_hits": 12,
+      "latency_ms": {
+        "p50": 0.2133,
+        "p95": 1.0838,
+        "p99": 1.1553,
+        "max": 1.1553
+      }
+    },
+    "V3": {
+      "passed": 36,
+      "total": 36,
+      "accuracy": 1.0,
+      "semantic_hits": 10,
+      "latency_ms": {
+        "p50": 0.2047,
+        "p95": 1.3741,
+        "p99": 1.4158,
+        "max": 1.4158
+      }
+    }
+  },
+  "thresholds": {
+    "V2_min": 1.0,
+    "V3_min": 0.85,
+    "diff_max": 0.1,
+    "v3_sem_hits_min": 10,
+    "sem_hits_total_min": 10,
+    "ram_mb_max": 50.0,
+    "latency_p95_max_ms": 5.0
+  },
+  "all_thresholds_met": true,
+  "ram_peak_mb": 0.062,
+  "raw_cases": {
+    "V2": [
+      {
+        "id": "V1-1",
+        "input": "Hãy tính 25 * 4 rồi tìm kiếm thông tin về thủ đô Hà Nội",
+        "expected": [
+          "MATH",
+          "REALTIME"
+        ],
+        "got": [
+          "MATH",
+          "REALTIME"
+        ],
+        "is_compound": true,
+        "pass": true,
+        "route_paths": [
+          "RULE",
+          "RULE"
+        ],
+        "latency_ms": 0.3238
+      },
+      {
+        "id": "V1-2",
+        "input": "Viết code Python sắp xếp mảng và giải thích thuật toán",
+        "expected": [
+          "CODING"
+        ],
+        "got": [
+          "CODING",
+          "CODING"
+        ],
+        "is_compound": true,
+        "pass": true,
+        "route_paths": [
+          "RULE",
+          "RULE"
+        ],
+        "latency_ms": 0.3133
+      },
+      {
+        "id": "V1-3",
+        "input": "Xin chào buổi sáng, hôm nay thời tiết thế nào?",
+        "expected": [
+          "SOCIAL",
+          "REALTIME"
+        ],
+        "got": [
+          "SOCIAL",
+          "REALTIME"
+        ],
+        "is_compound": true,
+        "pass": true,
+        "route_paths": [
+          "RULE",
+          "RULE"
+        ],
+        "latency_ms": 0.1648
+      },
+      {
+        "id": "V1-4",
+        "input": "Tính căn bậc hai của 144",
+        "expected": [
+          "MATH"
+        ],
+        "got": [
+          "MATH"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1793
+      },
+      {
+        "id": "V1-5",
+        "input": "Soạn thảo văn bản báo cáo tài chính quý 3",
+        "expected": [
+          "OFFICE"
+        ],
+        "got": [
+          "OFFICE"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1532
+      },
+      {
+        "id": "V2-01",
+        "input": "(12 + 8) / 4 bằng bao nhiêu",
+        "expected": [
+          "MATH"
+        ],
+        "got": [
+          "MATH"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.2344
+      },
+      {
+        "id": "V2-02",
+        "input": "căn bậc hai của 81 là mấy",
+        "expected": [
+          "MATH"
+        ],
+        "got": [
+          "MATH"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1732
+      },
+      {
+        "id": "V2-03",
+        "input": "sqrt(225)",
+        "expected": [
+          "MATH"
+        ],
+        "got": [
+          "MATH"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1219
+      },
+      {
+        "id": "V2-04",
+        "input": "tính 15% của 300000",
+        "expected": [
+          "MATH"
+        ],
+        "got": [
+          "MATH"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1175
+      },
+      {
+        "id": "V2-05",
+        "input": "chào buổi tối JKAI",
+        "expected": [
+          "SOCIAL"
+        ],
+        "got": [
+          "SOCIAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.0948
+      },
+      {
+        "id": "V2-06",
+        "input": "cảm ơn bạn nhiều nhé",
+        "expected": [
+          "SOCIAL"
+        ],
+        "got": [
+          "SOCIAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1534
+      },
+      {
+        "id": "V2-07",
+        "input": "rất vui được gặp bạn",
+        "expected": [
+          "SOCIAL"
+        ],
+        "got": [
+          "SOCIAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 0.6917
+      },
+      {
+        "id": "V2-08",
+        "input": "dạo này bạn sống ra sao",
+        "expected": [
+          "SOCIAL"
+        ],
+        "got": [
+          "SOCIAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 0.7502
+      },
+      {
+        "id": "V2-09",
+        "input": "tạo file word đơn xin nghỉ phép 3 ngày",
+        "expected": [
+          "OFFICE"
+        ],
+        "got": [
+          "OFFICE"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1233
+      },
+      {
+        "id": "V2-10",
+        "input": "xuất pdf hợp đồng lao động cho nhân viên mới",
+        "expected": [
+          "OFFICE"
+        ],
+        "got": [
+          "OFFICE"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1478
+      },
+      {
+        "id": "V2-11",
+        "input": "soạn giúp tôi lá thư xin phép vắng mặt gửi trưởng phòng",
+        "expected": [
+          "OFFICE"
+        ],
+        "got": [
+          "OFFICE"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 1.0903
+      },
+      {
+        "id": "V2-12",
+        "input": "làm cho tôi tài liệu trình chiếu giới thiệu sản phẩm mới",
+        "expected": [
+          "OFFICE"
+        ],
+        "got": [
+          "OFFICE"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.2282
+      },
+      {
+        "id": "V2-13",
+        "input": "viết hàm python đảo ngược chuỗi",
+        "expected": [
+          "CODING"
+        ],
+        "got": [
+          "CODING"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1369
+      },
+      {
+        "id": "V2-14",
+        "input": "sửa bug traceback KeyError trong flask",
+        "expected": [
+          "CODING"
+        ],
+        "got": [
+          "CODING"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1545
+      },
+      {
+        "id": "V2-15",
+        "input": "chương trình của tôi bị treo khi chạy vòng lặp vô hạn",
+        "expected": [
+          "CODING"
+        ],
+        "got": [
+          "CODING"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 1.1553
+      },
+      {
+        "id": "V2-16",
+        "input": "làm sao để đoạn mã chạy nhanh hơn khi xử lý mảng lớn",
+        "expected": [
+          "CODING"
+        ],
+        "got": [
+          "CODING"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 0.9655
+      },
+      {
+        "id": "V2-17",
+        "input": "giá vàng SJC hôm nay",
+        "expected": [
+          "REALTIME"
+        ],
+        "got": [
+          "REALTIME"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.093
+      },
+      {
+        "id": "V2-18",
+        "input": "tỷ giá usd chiều nay thế nào",
+        "expected": [
+          "REALTIME"
+        ],
+        "got": [
+          "REALTIME"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1147
+      },
+      {
+        "id": "V2-19",
+        "input": "một lượng vàng bây giờ bán ra bao nhiêu tiền",
+        "expected": [
+          "REALTIME"
+        ],
+        "got": [
+          "REALTIME"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 0.9483
+      },
+      {
+        "id": "V2-20",
+        "input": "đội tuyển Việt Nam tối qua thắng hay thua",
+        "expected": [
+          "REALTIME"
+        ],
+        "got": [
+          "REALTIME"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 1.0188
+      },
+      {
+        "id": "V2-21",
+        "input": "tra cứu bộ nhớ xem lần trước tôi nói gì",
+        "expected": [
+          "INTERNAL"
+        ],
+        "got": [
+          "INTERNAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1593
+      },
+      {
+        "id": "V2-22",
+        "input": "đọc file cấu hình hệ thống đã lưu",
+        "expected": [
+          "INTERNAL"
+        ],
+        "got": [
+          "INTERNAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1294
+      },
+      {
+        "id": "V2-23",
+        "input": "hôm qua tôi dặn bạn ghi lại điều gì",
+        "expected": [
+          "INTERNAL"
+        ],
+        "got": [
+          "INTERNAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 0.9292
+      },
+      {
+        "id": "V2-24",
+        "input": "bạn còn giữ địa chỉ máy chủ tôi gửi tuần trước không",
+        "expected": [
+          "INTERNAL"
+        ],
+        "got": [
+          "INTERNAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 0.9329
+      },
+      {
+        "id": "V2-25",
+        "input": "so sánh chi tiết ưu nhược điểm của postgres và mongo",
+        "expected": [
+          "REASONING"
+        ],
+        "got": [
+          "REASONING"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.3408
+      },
+      {
+        "id": "V2-26",
+        "input": "phân tích nguyên nhân gốc rễ khiến doanh thu giảm",
+        "expected": [
+          "REASONING"
+        ],
+        "got": [
+          "REASONING"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.2133
+      },
+      {
+        "id": "V2-27",
+        "input": "nên thuê nhà hay mua nhà trong 5 năm tới",
+        "expected": [
+          "REASONING"
+        ],
+        "got": [
+          "REASONING"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 1.0838
+      },
+      {
+        "id": "V2-28",
+        "input": "điều gì khiến khách hàng rời bỏ dịch vụ của chúng ta",
+        "expected": [
+          "REASONING"
+        ],
+        "got": [
+          "REASONING"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 0.8705
+      },
+      {
+        "id": "V2-29",
+        "input": "thủ đô của nước Úc là thành phố nào",
+        "expected": [
+          "GENERAL"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "GENERAL"
+        ],
+        "latency_ms": 0.5455
+      },
+      {
+        "id": "V2-30",
+        "input": "ai là tác giả truyện Kiều",
+        "expected": [
+          "GENERAL"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "GENERAL"
+        ],
+        "latency_ms": 0.5716
+      },
+      {
+        "id": "V2-31",
+        "input": "tính 120 * 3 rồi tạo file excel lưu kết quả",
+        "expected": [
+          "MATH",
+          "OFFICE"
+        ],
+        "got": [
+          "MATH",
+          "OFFICE"
+        ],
+        "is_compound": true,
+        "pass": true,
+        "route_paths": [
+          "RULE",
+          "RULE"
+        ],
+        "latency_ms": 0.2292
+      },
+      {
+        "id": "V2-32",
+        "input": "xem giá bitcoin và viết script python cảnh báo khi giảm",
+        "expected": [
+          "REALTIME",
+          "CODING"
+        ],
+        "got": [
+          "REALTIME",
+          "CODING"
+        ],
+        "is_compound": true,
+        "pass": true,
+        "route_paths": [
+          "RULE",
+          "RULE"
+        ],
+        "latency_ms": 0.1885
+      },
+      {
+        "id": "V2-33",
+        "input": "chào bạn, giúp tôi soạn thông báo nghỉ lễ",
+        "expected": [
+          "SOCIAL",
+          "OFFICE"
+        ],
+        "got": [
+          "SOCIAL",
+          "OFFICE"
+        ],
+        "is_compound": true,
+        "pass": true,
+        "route_paths": [
+          "RULE",
+          "RULE"
+        ],
+        "latency_ms": 0.1547
+      },
+      {
+        "id": "V2-34",
+        "input": "đọc log hệ thống rồi phân tích nguyên nhân lỗi",
+        "expected": [
+          "INTERNAL",
+          "REASONING"
+        ],
+        "got": [
+          "INTERNAL",
+          "REASONING"
+        ],
+        "is_compound": true,
+        "pass": true,
+        "route_paths": [
+          "RULE",
+          "RULE"
+        ],
+        "latency_ms": 0.172
+      },
+      {
+        "id": "V2-35",
+        "input": "tin tức hôm nay có gì mới, sau đó lập bảng tính tổng hợp",
+        "expected": [
+          "REALTIME",
+          "OFFICE"
+        ],
+        "got": [
+          "REALTIME",
+          "OFFICE"
+        ],
+        "is_compound": true,
+        "pass": true,
+        "route_paths": [
+          "RULE",
+          "RULE"
+        ],
+        "latency_ms": 0.1832
+      },
+      {
+        "id": "V2-36",
+        "input": "viết code sắp xếp mảng và giải thích độ phức tạp",
+        "expected": [
+          "CODING"
+        ],
+        "got": [
+          "CODING",
+          "CODING"
+        ],
+        "is_compound": true,
+        "pass": true,
+        "route_paths": [
+          "RULE",
+          "SEMANTIC"
+        ],
+        "latency_ms": 0.2339
+      }
+    ],
+    "V3": [
+      {
+        "id": "V3-01",
+        "input": "Tính giúp mình 245 nhân 37 bằng bao nhiêu?",
+        "expected": [
+          "MATH"
+        ],
+        "got": [
+          "MATH"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.213
+      },
+      {
+        "id": "V3-02",
+        "input": "Căn bậc hai của 1764 là mấy?",
+        "expected": [
+          "MATH"
+        ],
+        "got": [
+          "MATH"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.2404
+      },
+      {
+        "id": "V3-03",
+        "input": "Lương 18 triệu mà bị trừ 10,5% bảo hiểm thì cầm về còn lại bao nhiêu?",
+        "expected": [
+          "MATH"
+        ],
+        "got": [
+          "MATH"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.2244
+      },
+      {
+        "id": "V3-04",
+        "input": "Chia đều 1.350.000 đồng cho 6 người thì mỗi người phải góp bao nhiêu?",
+        "expected": [
+          "MATH"
+        ],
+        "got": [
+          "MATH"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.2711
+      },
+      {
+        "id": "V3-05",
+        "input": "Chào buổi sáng nhé!",
+        "expected": [
+          "SOCIAL"
+        ],
+        "got": [
+          "SOCIAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1293
+      },
+      {
+        "id": "V3-06",
+        "input": "Cảm ơn bạn nhiều, nhờ bạn mà mình đỡ vất vả quá trời.",
+        "expected": [
+          "SOCIAL"
+        ],
+        "got": [
+          "SOCIAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.2014
+      },
+      {
+        "id": "V3-07",
+        "input": "Làm việc với mình cả ngày rồi, bạn có thấy mệt không đó?",
+        "expected": [
+          "SOCIAL"
+        ],
+        "got": [
+          "SOCIAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 1.4158
+      },
+      {
+        "id": "V3-08",
+        "input": "Lâu lắm rồi mới quay lại tám với bạn nè, dạo này ổn chứ?",
+        "expected": [
+          "SOCIAL"
+        ],
+        "got": [
+          "SOCIAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 0.825
+      },
+      {
+        "id": "V3-09",
+        "input": "Soạn giúp tôi một hợp đồng thuê nhà bằng file Word, thời hạn 12 tháng.",
+        "expected": [
+          "OFFICE"
+        ],
+        "got": [
+          "OFFICE"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.2529
+      },
+      {
+        "id": "V3-10",
+        "input": "Tạo bảng tính Excel theo dõi chi tiêu hàng tháng, có thêm biểu đồ cột.",
+        "expected": [
+          "OFFICE"
+        ],
+        "got": [
+          "OFFICE"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.2343
+      },
+      {
+        "id": "V3-11",
+        "input": "Làm giùm mình mấy trang trình chiếu giới thiệu sản phẩm mới cho buổi họp sáng thứ Hai.",
+        "expected": [
+          "OFFICE"
+        ],
+        "got": [
+          "OFFICE"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1931
+      },
+      {
+        "id": "V3-12",
+        "input": "Mình cần một mẫu đơn xin nghỉ phép để in ra nộp cho phòng nhân sự.",
+        "expected": [
+          "OFFICE"
+        ],
+        "got": [
+          "OFFICE"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1296
+      },
+      {
+        "id": "V3-13",
+        "input": "Viết hàm Python đảo ngược một chuỗi ký tự.",
+        "expected": [
+          "CODING"
+        ],
+        "got": [
+          "CODING"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.0807
+      },
+      {
+        "id": "V3-14",
+        "input": "Code JavaScript của tôi báo lỗi 'undefined is not a function', sửa giúp với.",
+        "expected": [
+          "CODING"
+        ],
+        "got": [
+          "CODING"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1351
+      },
+      {
+        "id": "V3-15",
+        "input": "Câu truy vấn lấy 10 khách hàng mua nhiều nhất chạy chậm quá, làm sao cho nó nhanh hơn?",
+        "expected": [
+          "CODING"
+        ],
+        "got": [
+          "CODING"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 1.374
+      },
+      {
+        "id": "V3-16",
+        "input": "Cái container cứ khởi động xong là tự tắt, log ghi exit code 137, xử lý thế nào đây?",
+        "expected": [
+          "CODING"
+        ],
+        "got": [
+          "CODING"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.2824
+      },
+      {
+        "id": "V3-17",
+        "input": "Giá vàng SJC hôm nay bao nhiêu một lượng?",
+        "expected": [
+          "REALTIME"
+        ],
+        "got": [
+          "REALTIME"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1943
+      },
+      {
+        "id": "V3-18",
+        "input": "Tìm trên mạng giúp tôi tin tức mới nhất về việc sáp nhập tỉnh.",
+        "expected": [
+          "REALTIME"
+        ],
+        "got": [
+          "REALTIME"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.2047
+      },
+      {
+        "id": "V3-19",
+        "input": "Chiều nay ở Đà Nẵng có mưa không, mình định ra biển tắm.",
+        "expected": [
+          "REALTIME"
+        ],
+        "got": [
+          "REALTIME"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 0.8865
+      },
+      {
+        "id": "V3-20",
+        "input": "Tối qua Việt Nam đá với Thái Lan tỉ số mấy vậy?",
+        "expected": [
+          "REALTIME"
+        ],
+        "got": [
+          "REALTIME"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 0.7113
+      },
+      {
+        "id": "V3-21",
+        "input": "Lần trước tôi đã dặn bạn điều gì về lịch họp nhỉ?",
+        "expected": [
+          "INTERNAL"
+        ],
+        "got": [
+          "INTERNAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1624
+      },
+      {
+        "id": "V3-22",
+        "input": "Địa chỉ IP máy chủ mà tôi đã lưu hôm trước là gì?",
+        "expected": [
+          "INTERNAL"
+        ],
+        "got": [
+          "INTERNAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1663
+      },
+      {
+        "id": "V3-23",
+        "input": "Nhắc lại giúp mình mấy món ăn mình từng kể là mình thích với.",
+        "expected": [
+          "INTERNAL"
+        ],
+        "got": [
+          "INTERNAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 0.8978
+      },
+      {
+        "id": "V3-24",
+        "input": "Mật khẩu wifi văn phòng mình gửi bạn giữ hộ hồi tuần trước ấy, đọc lại xem.",
+        "expected": [
+          "INTERNAL"
+        ],
+        "got": [
+          "INTERNAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 1.3456
+      },
+      {
+        "id": "V3-25",
+        "input": "So sánh ưu nhược điểm giữa thuê nhà và mua nhà trả góp cho người mới đi làm.",
+        "expected": [
+          "REASONING"
+        ],
+        "got": [
+          "REASONING"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.2968
+      },
+      {
+        "id": "V3-26",
+        "input": "Phân tích nguyên nhân vì sao doanh số quý này giảm mạnh dù chi phí quảng cáo tăng.",
+        "expected": [
+          "REASONING"
+        ],
+        "got": [
+          "REASONING"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "RULE"
+        ],
+        "latency_ms": 0.1972
+      },
+      {
+        "id": "V3-27",
+        "input": "Mình đang phân vân giữa nhận offer lương cao ở startup hay ở lại công ty lớn ổn định, nên chọn bên nào?",
+        "expected": [
+          "REASONING"
+        ],
+        "got": [
+          "REASONING"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 1.3741
+      },
+      {
+        "id": "V3-28",
+        "input": "Quán cà phê của mình buổi chiều vắng hoe, có cách nào kéo khách vào không?",
+        "expected": [
+          "REASONING"
+        ],
+        "got": [
+          "REASONING"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "SEMANTIC"
+        ],
+        "latency_ms": 1.2198
+      },
+      {
+        "id": "V3-29",
+        "input": "Chiến thắng Điện Biên Phủ diễn ra vào năm nào?",
+        "expected": [
+          "GENERAL"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "GENERAL"
+        ],
+        "latency_ms": 0.1749
+      },
+      {
+        "id": "V3-30",
+        "input": "Ai là tác giả của Truyện Kiều?",
+        "expected": [
+          "GENERAL"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "GENERAL"
+        ],
+        "latency_ms": 0.1352
+      },
+      {
+        "id": "V3-31",
+        "input": "Con sông dài nhất thế giới chảy qua những nước nào?",
+        "expected": [
+          "GENERAL"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "GENERAL"
+        ],
+        "latency_ms": 0.1701
+      },
+      {
+        "id": "V3-32",
+        "input": "Sao lá cây lại có màu xanh nhỉ?",
+        "expected": [
+          "GENERAL"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "is_compound": false,
+        "pass": true,
+        "route_paths": [
+          "GENERAL"
+        ],
+        "latency_ms": 0.1085
+      },
+      {
+        "id": "V3-33",
+        "input": "Chào bạn, cho mình hỏi giá bitcoin hiện tại là bao nhiêu?",
+        "expected": [
+          "SOCIAL",
+          "REALTIME"
+        ],
+        "got": [
+          "SOCIAL",
+          "REALTIME"
+        ],
+        "is_compound": true,
+        "pass": true,
+        "route_paths": [
+          "RULE",
+          "RULE"
+        ],
+        "latency_ms": 0.1837
+      },
+      {
+        "id": "V3-34",
+        "input": "Tính 15% của 2.400.000 rồi đưa kết quả vào bảng tính chi phí giúp mình.",
+        "expected": [
+          "MATH",
+          "OFFICE"
+        ],
+        "got": [
+          "MATH",
+          "OFFICE"
+        ],
+        "is_compound": true,
+        "pass": true,
+        "route_paths": [
+          "RULE",
+          "RULE"
+        ],
+        "latency_ms": 0.1609
+      },
+      {
+        "id": "V3-35",
+        "input": "Viết script Python đọc file CSV, sau đó phân tích giúp mình nên dùng pandas hay polars thì hợp lý hơn.",
+        "expected": [
+          "CODING",
+          "REASONING"
+        ],
+        "got": [
+          "CODING",
+          "REASONING"
+        ],
+        "is_compound": true,
+        "pass": true,
+        "route_paths": [
+          "RULE",
+          "RULE"
+        ],
+        "latency_ms": 0.1893
+      },
+      {
+        "id": "V3-36",
+        "input": "Nhắc lại IP server tôi đã lưu và xem giúp hôm nay Hà Nội có bão không.",
+        "expected": [
+          "INTERNAL",
+          "REALTIME"
+        ],
+        "got": [
+          "INTERNAL",
+          "REALTIME"
+        ],
+        "is_compound": true,
+        "pass": true,
+        "route_paths": [
+          "RULE",
+          "SEMANTIC"
+        ],
+        "latency_ms": 0.2454
+      }
+    ]
+  }
+}

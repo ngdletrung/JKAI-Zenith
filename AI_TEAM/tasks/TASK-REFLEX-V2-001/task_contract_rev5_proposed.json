@@ -1,0 +1,158 @@
+{
+  "task_id": "TASK-REFLEX-V2-001",
+  "revision": 5,
+  "protocol_version": "11.1",
+  "sop_version": "10.0",
+  "phase": "REFLEX_V2_MULTI_TASK_ROUTING",
+  "orchestrator_agent_id": "antigravity",
+  "assigned_agent_id": "antigravity",
+  "reviewer_agent_id": "opencode",
+  "git_baseline_commit": "766107595fd3bac7483b0843b04f34e7ced98967",
+  "workspace_reconciliation": {
+    "build_strategy": "ISOLATED_CLEAN_WORKTREE",
+    "build_worktree_path": "AI_TEAM/tasks/TASK-REFLEX-V2-001/workspaces/build_worktree",
+    "build_worktree_commit": "766107595fd3bac7483b0843b04f34e7ced98967",
+    "root_workspace_patch_provenance": {
+      "patch_file": "AI_TEAM/tasks/TASK-REFLEX-V2-001/patches/pre_existing_routing.patch",
+      "byte_sha256": "4c78add38646bff74ac2c851e53b9e2f8f9a639fc24f087bd876a2d1dd2a6148",
+      "classification": "PRE_EXISTING_DETERMINISTIC_BROWSER_ARBITER_INTEGRATION",
+      "creation_context": "Created prior to TASK-REFLEX-V2-001 during Session 23 Phase Visual Web Navigation. Fully frozen and isolated from build_worktree.",
+      "original_capture_encoding": "UTF-16LE+BOM, CRLF, git UTF-8 mis-decoded as cp437 (PowerShell 5 redirection)",
+      "canonical_patch_file": "AI_TEAM/tasks/TASK-REFLEX-V2-001/patches/pre_existing_routing.canonical_utf8.patch",
+      "canonical_byte_sha256": "fe4067307a9a052fdddb5d4a70d306a92501b792c97230b115b4448511488a1c",
+      "canonicalization": "decode('utf-16') -> CRLF->LF -> encode('cp437') -> decode('utf-8') -> encode('utf-8')"
+    }
+  },
+  "owned_paths": [
+    "core/os/routing/intent_router.py",
+    "core/os/routing/compound_parser.py",
+    "core/os/routing/semantic_fallback.py",
+    "core/os/routing/lexicons/office.yaml",
+    "core/os/routing/lexicons/realtime.yaml",
+    "tests/test_central_intent_router.py"
+  ],
+  "read_only_paths": [
+    "core/cognitive_bus/reflex_hub.py",
+    "core/memory/base.py",
+    "tests/test_sovereign_reflex_hub.py"
+  ],
+  "evidence_artifacts": {
+    "compound_benchmark_dataset": {
+      "path": "tasks/TASK-REFLEX-V2-001/benchmarks/compound_benchmark_dataset.json",
+      "byte_sha256": "60db82dd62eaebc756c6aa3cb891b87ffaf88b6db15bfcb964ff9acccbe1b2d3",
+      "total_cases": 5
+    },
+    "route_decision_schema": {
+      "path": "tasks/TASK-REFLEX-V2-001/schemas/route_decision_snapshot.json",
+      "byte_sha256": "b4105a888bc192e71883bc6568440c8703581b871fa2276385ebecf224c37263"
+    },
+    "baseline_raw_test_receipt": {
+      "path": "tasks/TASK-REFLEX-V2-001/raw_output/baseline_raw_tests.json",
+      "byte_sha256": "c5a05fafed36d7c2a3d0cc3e518e046cae37381fcbaf3df16a61b1d1565231f0"
+    },
+    "clean_worktree_baseline_receipt": {
+      "path": "tasks/TASK-REFLEX-V2-001/raw_output/clean_worktree_baseline_receipt.json",
+      "byte_sha256": "a4e87b9ad9d1375fcfa5fa8c643cd370d69d6978837aa61219aa5e7eaebad27b",
+      "tests_passed": "37/37"
+    },
+    "compound_benchmark_dataset_v2": {
+      "path": "tasks/TASK-REFLEX-V2-001/benchmarks/compound_benchmark_dataset_v2.json",
+      "byte_sha256": "690095039d049345f41ad7d04ac49fd980e290076a7279932fe3da370ad8720f",
+      "total_cases": 41,
+      "lexicon_free_cases": 19,
+      "lexicon_free_non_math_cases": 13,
+      "locked_before_build": true
+    },
+    "heldout_v3_dataset": {
+      "path": "tasks/TASK-REFLEX-V2-001/benchmarks/heldout_v3_dataset.json",
+      "byte_sha256": "995653a0b8df2385bdd484b647a0288bd736eef6409542b7cef93a337ce5c2f5",
+      "total_cases": 36,
+      "author": "blind-subagent",
+      "authoring_constraints": "written without access to repository, router code, lexicons, or other datasets",
+      "locked_before_build": true
+    },
+    "semantic_prototype_corpus_v1": {
+      "path": "tasks/TASK-REFLEX-V2-001/benchmarks/semantic_prototype_corpus_v1.json",
+      "byte_sha256": "cf4d0140c6d16ecfc668a5fcd07162bb61379b7949867cefbb42d10ed5b8435e",
+      "total_prototypes": 150,
+      "modes": 6,
+      "prototypes_per_mode": 25,
+      "author": "blind-subagent",
+      "authoring_constraints": "written without access to repository, router code, lexicons, or any evaluation dataset",
+      "locked_before_build": true
+    },
+    "root_incident_receipt": {
+      "path": "tasks/TASK-REFLEX-V2-001/raw_output/root_incident_receipt.json",
+      "byte_sha256": "33a1a6e6d23219871497198497a46a0796e66094c9048ed237fc1fafadf71f69"
+    },
+    "rev4_build_changes_patch": {
+      "path": "tasks/TASK-REFLEX-V2-001/patches/rev4_build_changes.patch",
+      "byte_sha256": "b89f52c24d1bec058b6e9c2586602bb81f19fd831cec5a58f44b04f0e65dbce6"
+    }
+  },
+  "acceptance_criteria": [
+    "Zero regression: all central intent router tests PASS (50/50 from Rev4 + additions)",
+    "Zero regression: all 27 sovereign reflex hub tests PASS",
+    "Compound benchmark v2 (41 cases, locked hash) accuracy >= 95% (>= 39/41)",
+    "Held-out benchmark v3 (36 cases, locked hash) accuracy >= 85% (difference from v2 <= 10 percentage points)",
+    "At least 10 real SEMANTIC route_path samples verified in benchmark execution",
+    "Latency p95 < 50ms for RULE path, < 500ms for SEMANTIC path (internal performance target <= 5ms)",
+    "RAM memory footprint <= 50MB measured via tracemalloc on isolated benchmark process",
+    "Negative tests: prompt injection, unsafe AST, unknown intent, empty input",
+    "RouteDecision backward compatibility preserved (additive only, default values for all new fields)"
+  ],
+  "rollback_plan": "git -C AI_TEAM/tasks/TASK-REFLEX-V2-001/workspaces/build_worktree checkout 766107595fd3bac7483b0843b04f34e7ced98967 -- core/os/routing/ tests/test_central_intent_router.py",
+  "last_updated_at": "2026-10-20T17:55:00+07:00",
+  "status": "PROPOSED_PENDING_OPENCODE_APPROVAL",
+  "previous_revision": {
+    "revision": 4,
+    "byte_sha256": "96908d23b76b6e3b2cc6d093ec8b2d2d8e8e7e718b390840252a3f3852408922"
+  },
+  "schema_changes": {
+    "RouteDecision": [
+      {
+        "field": "latency_ms",
+        "type": "float",
+        "default": 0.0,
+        "status": "BUILT_IN_REV3_SCOPE"
+      },
+      {
+        "field": "route_path",
+        "type": "str",
+        "default": "\"RULE\"",
+        "allowed": [
+          "RULE",
+          "SEMANTIC",
+          "GENERAL"
+        ],
+        "status": "BUILT_IN_REV4_SCOPE"
+      }
+    ],
+    "policy": "additive only, appended at end, all with defaults"
+  },
+  "planned_changes": {
+    "S1": "core/os/routing/semantic_fallback.py: Prototype expansion with locked corpus (150 blind samples) + Char 3-4 gram TF-IDF / Subword Cosine (stdlib only, zero new external dependencies, zero Ollama calls, zero network egress)",
+    "S2": "core/os/routing/compound_parser.py: context-aware clause splitting (only split 'và' / 'and' when followed by an active verb/predicate; inherit intent context for dependent phrases)",
+    "S3": "tests/test_central_intent_router.py: Negative & safety tests (prompt injection strings, unsafe AST attempts, unknown intent handling, empty input)"
+  },
+  "acceptance_manifest": {
+    "test_scope": [
+      "tests/test_central_intent_router.py",
+      "tests/test_sovereign_reflex_hub.py"
+    ],
+    "full_collection_command": "python -m pytest --collect-only -q --ignore=files",
+    "pre_existing_collection_errors_at_baseline_7661075": [
+      "Thao luan AI/test_regex_signature.py",
+      "core/kernel/test_agi_substrate.py",
+      "core/test_run.py",
+      "core/utils/test_hlc.py",
+      "tests/test_decision_cases_and_eval_harness.py",
+      "tests/test_slice_2_1_live_repomap_and_blast_radius_guard.py"
+    ],
+    "ignored_paths": {
+      "files/": "files/laya-main/research/eval/test_laya_eval.py calls sys.exit() at import -> pytest INTERNALERROR"
+    },
+    "baseline_collection_raw_sha256": "27c10e02c00c69b1779ed569ebc692b4c06bd291f2b3b9c96fce609ebebea446",
+    "rule": "collection error set must remain identical to baseline; full regression NOT claimed green"
+  }
+}

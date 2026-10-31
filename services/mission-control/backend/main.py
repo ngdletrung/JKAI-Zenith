@@ -829,7 +829,7 @@ def task_progress(task_id):
                 obj_task = obj.get("task_id", "") or obj.get("trace_id", "")
                 obj_ts = float(obj.get("ts", 0) or 0)
                 # Lọc theo task_id và since_ts
-                if (task_id in obj_task or obj_task in task_id) and obj_ts > since_ts:
+                if obj_task and (task_id in obj_task or obj_task in task_id) and obj_ts > since_ts:
                     matching.append(obj)
             except Exception:
                 pass
@@ -1069,19 +1069,235 @@ def system_digest():
     except Exception as e:
         return jsonify({"status": "error", "msg": str(e)})
 
+
+def _safe_resolve_path(raw_path: str) -> tuple[bool, str, str]:
+    """
+    [PENTAD-FILE-GUARD] Thẩm tra an toàn đường dẫn tệp tin chống Path Traversal và rò rỉ bí mật.
+    Tuân thủ OpenCode Guardrail 1 (SDS v28.27.0).
+    Trả về: (is_valid, resolved_path_or_err, file_kind)
+    file_kind: 'browser_screenshot' | 'local_file'
+    """
+    if not raw_path or not isinstance(raw_path, str):
+        return False, "Thiếu đường dẫn tệp tin", "error"
+
+    raw_clean = raw_path.strip().replace('\\', '/')
+    base_name = os.path.basename(raw_clean)
+
+    # 1. Blacklist cấm tuyệt đối các tệp nhạy cảm (OpenCode Guardrail 1)
+    forbidden_patterns = [".key", ".env", "credentials", "id_rsa", ".git/", ".git\\"]
+    if any(p in raw_clean.lower() for p in forbidden_patterns) or (base_name.startswith(".") and not base_name.endswith(".png")):
+        return False, "Truy cập tệp tin bị từ chối do chính sách bảo mật (403 Forbidden)", "forbidden"
+
+    # 2. Xử lý ảnh chụp màn hình từ Vệ tinh Trình duyệt
+    if base_name.startswith("eye_") and base_name.endswith(".png"):
+        return True, base_name, "browser_screenshot"
+
+    # 3. Chuẩn hóa đường dẫn
+    if not os.path.isabs(raw_clean):
+        if raw_clean.startswith("outputs/"):
+            resolved = os.path.join(OUTPUTS_DIR, raw_clean.replace("outputs/", "", 1))
+        elif raw_clean.startswith("exports/"):
+            resolved = os.path.join(EXPORTS_DIR, raw_clean.replace("exports/", "", 1))
+        else:
+            resolved = os.path.join("/workspace", raw_clean)
+    else:
+        resolved = raw_clean
+
+    try:
+        resolved = os.path.realpath(resolved)
+    except Exception:
+        pass
+
+    # 4. Whitelist kiểm tra phạm vi cho phép
+    allowed_roots = [
+        os.path.realpath("/workspace"),
+        os.path.realpath("/storage"),
+        os.path.realpath(OUTPUTS_DIR),
+        os.path.realpath(EXPORTS_DIR),
+        os.path.realpath("/app/screenshots") if os.path.exists("/app/screenshots") else None,
+    ]
+    allowed_roots = [r for r in allowed_roots if r is not None]
+
+    is_allowed = any(resolved.startswith(root) for root in allowed_roots)
+    if not is_allowed and not resolved.startswith("d:\\Docker\\JKAI"):
+        return False, "Đường dẫn nằm ngoài phạm vi không gian làm việc an toàn", "forbidden"
+
+    return True, resolved, "local_file"
+
+
+@app.route('/api/system/raw_file')
+def serve_raw_file():
+    """
+    [RAW-FILE-STREAMING]: Phục vụ tệp nhị phân trực tiếp (ảnh, pdf, v.v.) với đúng MIME type.
+    """
+    from flask import request, Response, send_file
+    import mimetypes, requests
+
+    path = request.args.get('path', '')
+    as_attachment = request.args.get('download', 'false').lower() == 'true'
+
+    is_valid, resolved, kind = _safe_resolve_path(path)
+    if not is_valid:
+        status_code = 403 if kind == "forbidden" else 400
+        return jsonify({"error": resolved, "ok": False}), status_code
+
+    # Trường hợp 1: Ảnh chụp màn hình từ ai-browser
+    if kind == "browser_screenshot":
+        try:
+            browser_url = os.getenv("AI_BROWSER_URL", "http://ai-browser:8000")
+            target_url = f"{browser_url.rstrip('/')}/screenshots/{resolved}"
+            resp = requests.get(target_url, timeout=10.0)
+            if resp.status_code == 200:
+                headers = {
+                    "Content-Type": "image/png",
+                    "Content-Disposition": f"{'attachment' if as_attachment else 'inline'}; filename={resolved}",
+                    "Cache-Control": "public, max-age=86400"
+                }
+                return Response(resp.content, headers=headers, status=200)
+        except Exception:
+            pass
+        # Fallback thử tìm trong /workspace hoặc OUTPUTS_DIR
+        for cand_dir in (OUTPUTS_DIR, "/workspace", "/workspace/outputs", "/app/screenshots"):
+            cand = os.path.join(cand_dir, resolved)
+            if os.path.exists(cand):
+                return send_file(cand, mimetype="image/png", as_attachment=as_attachment)
+
+    # Trường hợp 2: Tệp tin trên hệ thống cục bộ
+    if not os.path.exists(resolved):
+        return jsonify({"error": f"Tệp tin không tồn tại: {path}", "ok": False}), 404
+
+    mime, _ = mimetypes.guess_type(resolved)
+    mime = mime or "application/octet-stream"
+
+    return send_file(
+        resolved,
+        mimetype=mime,
+        as_attachment=as_attachment,
+        download_name=os.path.basename(resolved)
+    )
+
+
 @app.route('/api/system/read_file')
 def read_file_content():
+    """
+    [RICH-FILE-READER]: Trả về nội dung tệp phong phú hỗ trợ Text, Image, PDF, Excel Table.
+    """
     from flask import request
+
     path = request.args.get('path', '')
-    if not path: return jsonify({"error": "Missing path"}), 400
-    if not path.startswith('/') and not path.startswith('d:\\'):
-        path = os.path.join('/workspace', path)
+    is_valid, resolved, kind = _safe_resolve_path(path)
+    if not is_valid:
+        return jsonify({"error": resolved, "ok": False}), 403 if kind == "forbidden" else 400
+
+    filename = os.path.basename(resolved)
+    ext = os.path.splitext(filename)[1].lower()
+    raw_url = f"/api/system/raw_file?path={path}"
+
+    # 1. Ảnh
+    if ext in ('.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg', '.ico') or kind == "browser_screenshot":
+        return jsonify({
+            "ok": True,
+            "type": "image",
+            "path": path,
+            "filename": filename,
+            "raw_url": raw_url,
+            "ext": ext or ".png"
+        })
+
+    # 2. PDF
+    if ext == '.pdf':
+        return jsonify({
+            "ok": True,
+            "type": "pdf",
+            "path": path,
+            "filename": filename,
+            "raw_url": raw_url,
+            "ext": ext
+        })
+
+    # 3. Excel & Bảng tính
+    if ext in ('.xlsx', '.xls', '.csv'):
+        content = parse_document_content(resolved, ext)
+        return jsonify({
+            "ok": True,
+            "type": "table",
+            "path": path,
+            "filename": filename,
+            "content": content,
+            "raw_url": raw_url,
+            "ext": ext
+        })
+
+    # 4. Văn bản / Mã nguồn
     try:
-        ext = os.path.splitext(path)[1].lower()
-        content = parse_document_content(path, ext)
-        return jsonify({"content": content, "path": path})
+        content = parse_document_content(resolved, ext)
+        is_md = ext in ('.md', '.markdown')
+        return jsonify({
+            "ok": True,
+            "type": "markdown" if is_md else "text",
+            "path": path,
+            "filename": filename,
+            "content": content,
+            "raw_url": raw_url,
+            "ext": ext
+        })
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": str(e), "ok": False}), 500
+
+
+@app.route('/api/system/upload_file', methods=['POST'])
+def upload_file_endpoint():
+    """
+    [CHAT-FILE-INGESTION]: Tiếp nhận tệp tải lên từ Master để đính kèm vào phiên xử lý của JKAI.
+    Tuân thủ OpenCode Guardrail 3 (SDS v28.27.0).
+    """
+    from flask import request
+    from werkzeug.utils import secure_filename
+
+    if 'file' not in request.files:
+        return jsonify({"error": "Không tìm thấy tệp đính kèm trong yêu cầu", "ok": False}), 400
+
+    file = request.files['file']
+    if not file or not file.filename:
+        return jsonify({"error": "Tên tệp không hợp lệ", "ok": False}), 400
+
+    raw_name = file.filename
+    clean_name = secure_filename(raw_name) or f"upload_{int(time.time())}"
+    ext = os.path.splitext(clean_name)[1].lower()
+
+    # OpenCode Guardrail 3: Blocklist tệp thực thi nguy hiểm
+    dangerous_exts = ('.exe', '.bat', '.cmd', '.sh', '.vbs', '.msi', '.ps1', '.scr', '.pif')
+    if ext in dangerous_exts:
+        return jsonify({"error": f"Định dạng tệp '{ext}' bị từ chối vì lý do an toàn bảo mật hệ thống", "ok": False}), 400
+
+    # Kiểm tra kích thước (< 50MB)
+    file.seek(0, os.SEEK_END)
+    size_bytes = file.tell()
+    file.seek(0)
+    if size_bytes > 50 * 1024 * 1024:
+        return jsonify({"error": "Dung lượng tệp vượt quá giới hạn cho phép (Tối đa 50MB)", "ok": False}), 400
+
+    uploads_dir = os.path.join("/workspace", "uploads")
+    try:
+        os.makedirs(uploads_dir, exist_ok=True)
+    except Exception:
+        uploads_dir = OUTPUTS_DIR
+
+    timestamp_prefix = time.strftime("%Y%m%d_%H%M%S")
+    final_filename = f"{timestamp_prefix}_{clean_name}"
+    save_path = os.path.join(uploads_dir, final_filename)
+
+    file.save(save_path)
+    rel_path = f"uploads/{final_filename}"
+
+    return jsonify({
+        "ok": True,
+        "filename": final_filename,
+        "path": rel_path,
+        "full_path": save_path,
+        "size_bytes": size_bytes,
+        "raw_url": f"/api/system/raw_file?path={rel_path}"
+    })
 
 @app.route('/api/system/explorer')
 def project_explorer():

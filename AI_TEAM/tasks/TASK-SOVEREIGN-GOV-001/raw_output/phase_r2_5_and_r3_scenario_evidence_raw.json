@@ -1,0 +1,186 @@
+{
+  "R2_1_TASK_SCOPED_FILE_WRITES_AND_TEST_ISOLATION": {
+    "missing_task_id_rejected": {
+      "status": "error",
+      "code": "MISSING_TASK_ID_SCOPE",
+      "msg": "Từ chối ghi tệp: Thiếu task_id hợp lệ trong chế độ ràng buộc phạm vi nhiệm vụ (R2.1)."
+    },
+    "cross_task_write_rejected": {
+      "status": "error",
+      "code": "CROSS_TASK_FILE_WRITE_REJECTED",
+      "msg": "Từ chối ghi tệp chéo nhiệm vụ: task_id='ZENITH_FOREIGN_TASK_999' != expected_task_id='ZENITH_R2_TASK_001'."
+    },
+    "valid_scoped_write": {
+      "status": "success",
+      "task_id": "ZENITH_R2_TASK_001",
+      "trace_id": "trace_R2_001",
+      "sha256": "3644a0986a69e173e1f2daed7912fa1570d5ded9afd9ce78511de0e498091f04",
+      "artifact_receipt": {
+        "receipt_id": "rcpt_082a0c9b6665",
+        "task_id": "ZENITH_R2_TASK_001",
+        "trace_id": "trace_R2_001",
+        "artifact_type": "FILE_WRITE",
+        "artifact_path": "C:\\Users\\ADMINP~1\\AppData\\Local\\Temp\\tmpldy9juve\\r2_1_test_scoped.py",
+        "artifact_sha256": "3644a0986a69e173e1f2daed7912fa1570d5ded9afd9ce78511de0e498091f04",
+        "size_bytes": 16,
+        "evidence_id": "",
+        "evidence_sha256": "",
+        "created_at": "2026-10-29T00:13:30.776991+00:00",
+        "hmac_signature": "1cd93edc7c5da138d05c225fb7990c97078af75639d747e0bf26d59f74dc2dc8"
+      },
+      "artifact_receipt_hmac_verified": true
+    },
+    "redis_publish_calls_in_jkai_test_mode": 0,
+    "passed": true
+  },
+  "R2_2_STEP_METRICS_RECONCILIATION": {
+    "step_metrics": {
+      "planned_steps": 1,
+      "admitted_steps": 1,
+      "rejected_steps": 0,
+      "executed_steps": 1,
+      "restored_steps": 0,
+      "skipped_steps": 0,
+      "reconciled": true
+    },
+    "pre_flight_warnings_preserved_without_step_drift": [
+      "Warn A",
+      "Warn B"
+    ],
+    "passed": true
+  },
+  "R2_3_TO_R2_6_RECEIPTS_SSRF_REDIRECT_HEADLINE_BINDING_AND_CONTAMINATION_BLOCK": {
+    "ssrf_integrity_check": {
+      "valid": false,
+      "status": "BLOCKED",
+      "reason": "EVIDENCE_SSRF_BLOCKED: internal or loopback host forbidden in source_url='http://127.0.0.1:8000/internal' or final_url='http://127.0.0.1:8000/internal'."
+    },
+    "redirect_mismatch_integrity_check": {
+      "valid": false,
+      "status": "BLOCKED",
+      "reason": "EVIDENCE_REDIRECT_DOMAIN_MISMATCH: source domain 'vietnamnet.vn' redirected to untrusted domain 'phishing-attacker.com'."
+    },
+    "llms_txt_wrapper_contamination_check": {
+      "valid": false,
+      "status": "BLOCKED",
+      "reason": "EVIDENCE_METADATA_OR_UNTRUSTED_WRAPPER_CONTAMINATION: marker 'giấy phép hoạt động số' detected."
+    },
+    "headline_article_domain_mismatch_check": {
+      "valid": false,
+      "status": "BLOCKED",
+      "reason": "EVIDENCE_HEADLINE_ARTICLE_DOMAIN_MISMATCH: article domain 'attacker-domain.org' does not match source domain 'vietnamnet.vn'"
+    },
+    "summary_policy_leak_contamination_check": {
+      "valid": false,
+      "reason": "SUMMARY_CONTAMINATED: EVIDENCE_INSTRUCTION_OR_POLICY_CONTAMINATION: marker 'truth policy:' detected."
+    },
+    "deep_summary_receipt_verified": true,
+    "passed": true
+  },
+  "R3_1_AND_R3_2_DYNAMIC_SKILL_SANDBOX_AND_VERSIONED_ROLLBACK": {
+    "runtime_crash_rejected_at_sandbox_gate": {
+      "status": "rejected",
+      "reason": "SANDBOX_RUNTIME_CRASH (exit=1): recent call last):\n  File \"C:\\Users\\ADMINP~1\\AppData\\Local\\Temp\\tmp2v_ly1qx\\sandbox_runner.py\", line 47, in <module>\n    res = fn()\n  File \"C:\\Users\\ADMINP~1\\AppData\\Local\\Temp\\tmp2v_ly1qx\\candidate_logic.py\", line 2, in run_crash\n    return x / 0\n           ~~^~~\nZeroDivisionError: division by zero",
+      "sandbox_report": {
+        "ok": false,
+        "reason": "SANDBOX_RUNTIME_CRASH (exit=1): recent call last):\n  File \"C:\\Users\\ADMINP~1\\AppData\\Local\\Temp\\tmp2v_ly1qx\\sandbox_runner.py\", line 47, in <module>\n    res = fn()\n  File \"C:\\Users\\ADMINP~1\\AppData\\Local\\Temp\\tmp2v_ly1qx\\candidate_logic.py\", line 2, in run_crash\n    return x / 0\n           ~~^~~\nZeroDivisionError: division by zero"
+      },
+      "proposal_id": "cand_runtime_crash_skill_b7fbd1a123",
+      "stage": "SANDBOX_EXECUTION_GATE"
+    },
+    "adversarial_sandbox_blocks": {
+      "network_blocked": true,
+      "process_spawn_blocked": true,
+      "fs_escape_blocked": true
+    },
+    "checkpoint_hmac_tampering_rejected": true,
+    "v1_code_sha256": "96d581232d09c8d1869c5c3a331f16063a82032ded6ca8cd318166f5498aeaf3",
+    "v2_code_sha256": "f3ee95d700106b2d419ad316b88b0ef779a42c5e3ce8ef015f871cccb89e5fd5",
+    "rollback_to_v1_result": {
+      "status": "rolled_back",
+      "checkpoint_id": "ckpt_finance_vat_calc_skill_1793232818554",
+      "restored_logic_sha256": "96d581232d09c8d1869c5c3a331f16063a82032ded6ca8cd318166f5498aeaf3",
+      "expected_logic_sha256": "96d581232d09c8d1869c5c3a331f16063a82032ded6ca8cd318166f5498aeaf3",
+      "receipt": {
+        "receipt_id": "rcpt_8c3be15bbc87_3",
+        "task_id": "ZENITH_R3_SKILL_ROLLBACK",
+        "action": "rollback_skill",
+        "risk_tier": "YELLOW",
+        "args_hash": "26335d94de0acd9e8c64b0cbbca8e0bada677ecb40f4271d4ecb62f035ffa4c9",
+        "pre_state_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "post_state_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+        "output_hash": "5a2979e970628220f9010caae74bdd39210eb67382019ec6cd1e9f18ef48b83c",
+        "lds_legal": true,
+        "timestamp_utc": "2026-10-29T00:13:39Z",
+        "monotonic_seq": 3,
+        "key_id": "k_default_2026",
+        "hmac_signature": "0498fbd338113828fdac4466fe7eac60014e1fc0fb94812fd7651e9dee52526b"
+      }
+    },
+    "passed": true
+  },
+  "R3_3_AND_R3_4_SHADOW_HARNESS_TOOL_OUTPUTS_HASH_AND_DPO_EXPORT": {
+    "expected_tool_outputs_sha256": "1a0ba1b5ae021b16c5a3111d2708cc68bf8879fab327f151b6976b7ced574bcf",
+    "good_record_outcome": "GOOD",
+    "tampered_record_outcome": "BAD",
+    "dpo_export_manifest": {
+      "pairs_count": 1,
+      "output_path": "data\\dpo\\contrastive_pairs.jsonl",
+      "dataset_sha256": "4321dbfb618ce0d2ecb72187a268f3190fae1db19304d71e7253cd7c72e8b6e1",
+      "pairs": [
+        {
+          "pair_id": "dpo_57e3265269",
+          "group_key": "vnnet_summary_r3",
+          "state_fingerprint": "cab88ad3538e9c471d57c118b8e20d7f9d829705240c40aed4743c516ebb4a61",
+          "prompt_state": {
+            "goal": "Tổng hợp tiêu điểm trang chủ Vietnamnet",
+            "tool_outputs": [
+              {
+                "tool": "BROWSER_CONTROL",
+                "headline": "Hạ tầng AI quốc gia bứt phá năm 2026"
+              }
+            ]
+          },
+          "chosen": {
+            "record_id": "sh_3dbdde842ab3",
+            "reflex_draft": {
+              "answer": "Bản tin hạ tầng AI quốc gia bứt phá [hl_01]."
+            },
+            "execution_receipt_id": "rcpt_good_r3",
+            "tool_outputs_sha256": "1a0ba1b5ae021b16c5a3111d2708cc68bf8879fab327f151b6976b7ced574bcf",
+            "outcome_class": "GOOD"
+          },
+          "rejected": {
+            "record_id": "sh_859a7a426b9d",
+            "reflex_draft": {
+              "answer": "Bản tin sai lệch do tool_outputs bị giả mạo."
+            },
+            "outcome_class": "BAD"
+          }
+        }
+      ],
+      "receipt": {
+        "receipt_id": "rcpt_6cca0152b367",
+        "task_id": "ZENITH_R3_DPO",
+        "trace_id": "trace_r3_dpo",
+        "artifact_type": "DPO_CONTRASTIVE_DATASET",
+        "artifact_path": "data\\dpo\\contrastive_pairs.jsonl",
+        "artifact_sha256": "4321dbfb618ce0d2ecb72187a268f3190fae1db19304d71e7253cd7c72e8b6e1",
+        "size_bytes": 783,
+        "evidence_id": "",
+        "evidence_sha256": "",
+        "created_at": "2026-10-29T00:13:43.025020+00:00",
+        "hmac_signature": "ee9b25f083f2668fe2dcc71a6840ad6b1b6f1ebc9bd5d1aa1a793049619904a5"
+      },
+      "retention_policy": {
+        "retention_days": 30,
+        "max_dataset_mb": 100,
+        "pii_redacted": true,
+        "skill_instructions_stripped": true,
+        "valid_until": "2026-11-28T00:13:43Z"
+      }
+    },
+    "passed": true
+  },
+  "all_r2_and_r3_invariants_passed": true
+}

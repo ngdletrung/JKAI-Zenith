@@ -1,0 +1,316 @@
+diff --git a/core/os/routing/compound_parser.py b/core/os/routing/compound_parser.py
+index 56261e4..599782b 100644
+--- a/core/os/routing/compound_parser.py
++++ b/core/os/routing/compound_parser.py
+@@ -1,26 +1,28 @@
+ # -*- coding: utf-8 -*-
+ """
+ ╔══════════════════════════════════════════════════════════════════╗
+-║   JKAI ZENITH — COMPOUND INTENT PARSER v1.0                      ║
++║   JKAI ZENITH — COMPOUND INTENT PARSER v2.0 (REFLEX CENTER V2)   ║
+ ║   Phân Tách Mệnh Đề Đa Mục Tiêu & Nhận Diện Intent Phức Hợp      ║
+ ╚══════════════════════════════════════════════════════════════════╝
+ *Kiến Trúc Sư Trưởng Chủ Động Xử Lý Đa Nhiệm Vụ Trong Một Câu Lệnh. 🧩🧠⚡*
+ """
+ 
+ import re
+-from typing import List, Tuple
++from typing import List, Tuple, Dict, Any, Optional
+ 
+ 
+ class CompoundIntentParser:
+     """
+     🧩 Phân tách câu phức của Master thành các mệnh đề thành phần để gán nhãn đa tác vụ.
++    Reflex Center V2: Hỗ trợ nhận diện câu lệnh ghép, tách vế chính xác và gắn nhãn intent đa thành phần.
+     """
+ 
+     # Các liên từ kết nối mệnh đề phức hợp
+-    _CONJUNCTIONS = (
+-        r"\b(?:và|đồng thời|sau đó|kết hợp|cùng với|kèm theo|song song|rồi|and|then|also)\b",
++    _CONJUNCTIONS = [
++        r"\b(?:đồng thời|sau đó|kết hợp|cùng với|kèm theo|song song|rồi|then|after that)\b",
++        r"\b(?:và|and)\b",
+         r"[,;\+&]"
+-    )
++    ]
+ 
+     @classmethod
+     def split_clauses(cls, goal: str) -> List[str]:
+@@ -31,15 +33,49 @@ class CompoundIntentParser:
+         # Tách theo liên từ
+         pattern = "|".join(cls._CONJUNCTIONS)
+         raw_parts = re.split(pattern, goal, flags=re.IGNORECASE)
+-        clauses = [p.strip() for p in raw_parts if len(p.strip()) >= 5]
+-        
++        clauses = []
++        for p in raw_parts:
++            p_strip = p.strip()
++            # Giữ lại các vế có nghĩa (ít nhất 4 ký tự)
++            if len(p_strip) >= 4:
++                clauses.append(p_strip)
++
+         return clauses if len(clauses) > 1 else [goal.strip()]
+ 
+     @classmethod
+     def is_compound_intent(cls, goal: str) -> bool:
+         """Kiểm tra xem câu hỏi có phải là câu lệnh phức hợp hay không."""
+-        clauses = cls.split_clauses(goal)
++        if not goal:
++            return False
++        g_strip = goal.strip()
++        # Loại trừ các câu toán học thuần túy có dấu + hoặc & hoặc , trong biểu thức
++        if re.match(r'^(?:tính|tinh|calculate|compute)?\s*[\d\.\s\+\-\*\/\(\)\%\^]+$', g_strip, re.IGNORECASE):
++            return False
++        clauses = cls.split_clauses(g_strip)
+         return len(clauses) > 1
+ 
++    @classmethod
++    def parse_compound_intents(cls, goal: str, router=None) -> Dict[str, Any]:
++        """
++        Phân tách và định tuyến từng mệnh đề con để xây dựng cấu trúc đa tác vụ.
++        """
++        is_compound = cls.is_compound_intent(goal)
++        clauses = cls.split_clauses(goal)
++        
++        clause_modes = []
++        if router and is_compound and len(clauses) > 1:
++            for clause in clauses:
++                sub_dec = router.route_clause(clause)
++                clause_modes.append(sub_dec.mode.value)
++        elif router:
++            single_dec = router.route_clause(goal)
++            clause_modes.append(single_dec.mode.value)
++
++        return {
++            "is_compound": is_compound,
++            "clauses": clauses,
++            "clause_modes": clause_modes
++        }
++
+ 
+ compound_intent_parser = CompoundIntentParser()
+diff --git a/core/os/routing/intent_router.py b/core/os/routing/intent_router.py
+index f577fd0..f2e3387 100644
+--- a/core/os/routing/intent_router.py
++++ b/core/os/routing/intent_router.py
+@@ -13,6 +13,8 @@ import ast
+ import yaml
+ import operator
+ import logging
++import math
++import time
+ from enum import Enum
+ from dataclasses import dataclass, field
+ from typing import Optional, List, Dict, Any, Set, Tuple
+@@ -23,6 +25,12 @@ from core.os.routing.active_learner import active_learning_engine
+ 
+ logger = logging.getLogger("JKAI.IntentRouter")
+ 
++# F1 (Rev4): hàm toán học duy nhất được phép gọi trong evaluate_math.
++_MATH_FUNC_WHITELIST = {"sqrt": math.sqrt}
++
++# F2 (Rev4): semantic fallback INTERNAL dưới ngưỡng này không được thắng (rơi xuống GENERAL).
++_SEMANTIC_INTERNAL_MIN_SCORE = 0.30
++
+ 
+ class IntentMode(str, Enum):
+     MATH = "MATH"
+@@ -65,6 +73,8 @@ class RouteDecision:
+     is_meta_introspection: bool = False      # Kích hoạt SelfInspectionMode
+     scope: str = "QUERY_OR_GENERAL"          # P0.4: MULTI_RESOURCE | SINGLE_RESOURCE | QUERY_OR_GENERAL
+     target_files: List[str] = field(default_factory=list)
++    latency_ms: float = 0.0  # Routing latency (ms), measured in route()
++    route_path: str = "RULE"  # Rev4: RULE | SEMANTIC | GENERAL — nhánh thực tế đã quyết định
+ 
+ 
+ class CentralIntentRouter:
+@@ -166,14 +176,18 @@ class CentralIntentRouter:
+             for lp in lead_patterns:
+                 clean_text = re.sub(rf'(?i){lp}\s*[:=]?', ' ', clean_text)
+ 
++            # F1 (Rev4): chuẩn hóa "căn bậc hai" / "√" -> sqrt(...). Chỉ math.sqrt được whitelist trong _eval.
++            clean_text = re.sub(r'(?i)(?:căn\s+bậc\s+hai|can\s+bac\s+hai|√)\s*(?:của|cua|of)?\s*', ' sqrt ', clean_text)
++            clean_text = re.sub(r'(?i)\bsqrt\s*\(?\s*(\d+(?:\.\d+)?)\s*\)?', r'sqrt(\1)', clean_text)
++
+             # 2. Trích xuất toàn bộ cụm biểu thức số học
+-            cand_matches = re.findall(r'[\d\.\s\+\-\*\/\(\)\%\^]+', clean_text)
++            cand_matches = re.findall(r'(?:sqrt|[\d\.\s\+\-\*\/\(\)\%\^])+', clean_text)
+             valid_exprs = []
+             for m in cand_matches:
+                 m_clean = m.strip()
+-                # Phải có ít nhất 1 chữ số và 1 toán tử
+-                if re.search(r'\d', m_clean) and re.search(r'[\+\-\*\/\%\^]', m_clean):
+-                    if re.match(r'^[0-9\s\+\-\*\/\.\(\)\%\^]+$', m_clean):
++                # Phải có ít nhất 1 chữ số và 1 toán tử (hoặc hàm sqrt)
++                if re.search(r'\d', m_clean) and (re.search(r'[\+\-\*\/\%\^]', m_clean) or 'sqrt' in m_clean):
++                    if re.match(r'^(?:sqrt|[0-9\s\+\-\*\/\.\(\)\%\^])+$', m_clean):
+                         valid_exprs.append(m_clean)
+ 
+             if not valid_exprs:
+@@ -204,6 +218,17 @@ class CentralIntentRouter:
+                     operand = _eval(n.operand)
+                     if isinstance(n.op, ast.USub): return -operand
+                     if isinstance(n.op, ast.UAdd): return operand
++                elif isinstance(n, ast.Call):
++                    # F1 (Rev4) whitelist: chỉ sqrt(<1 đối số>), không keyword, không attribute.
++                    if (isinstance(n.func, ast.Name) and n.func.id in _MATH_FUNC_WHITELIST
++                            and len(n.args) == 1 and not n.keywords):
++                        arg = _eval(n.args[0])
++                        if isinstance(arg, (int, float)) and arg >= 0:
++                            return _MATH_FUNC_WHITELIST[n.func.id](arg)
++                        return None
++                    raise ValueError("Call ngoài whitelist bị từ chối")
++                elif isinstance(n, (ast.Name, ast.Attribute)):
++                    raise ValueError("Name/Attribute ngoài whitelist bị từ chối")
+                 return None
+ 
+             res = _eval(node)
+@@ -220,6 +245,7 @@ class CentralIntentRouter:
+         Quyết định lộ trình xử lý kết hợp Compound Intent Parsing & Semantic Fallback.
+         P0.4: Tích hợp IngressEntityExtractor để khẳng định Scope (MULTI_RESOURCE / SINGLE_RESOURCE).
+         """
++        start_time = time.perf_counter()
+         decision = self._route_inner(goal, is_office_task=is_office_task, history=history)
+         if goal and goal.strip():
+             try:
+@@ -233,6 +259,7 @@ class CentralIntentRouter:
+                         decision.tags.append("MULTI_RESOURCE")
+             except Exception:
+                 pass
++        decision.latency_ms = (time.perf_counter() - start_time) * 1000
+         return decision
+ 
+     def _route_inner(self, goal: str, is_office_task: bool = False, history: list = None) -> RouteDecision:
+@@ -242,7 +269,8 @@ class CentralIntentRouter:
+                 role="RECEPTIONIST",
+                 reason="Empty goal",
+                 tags=["CHAT"],
+-                max_turns=1
++                max_turns=1,
++                route_path="GENERAL"
+             )
+ 
+         g_strip = goal.strip()
+@@ -437,6 +465,11 @@ class CentralIntentRouter:
+         semantic_match = semantic_fallback_engine.classify_semantic(g_strip, threshold=0.25)
+         if semantic_match:
+             s_mode_str, s_score = semantic_match
++            if s_mode_str == "INTERNAL" and s_score < _SEMANTIC_INTERNAL_MIN_SCORE:
++                # F2 (Rev4): INTERNAL yếu không được thắng -> rơi xuống GENERAL (deterministic).
++                logger.info(f"[SEMANTIC-FALLBACK-REJECT]: INTERNAL {s_score:.2f} < {_SEMANTIC_INTERNAL_MIN_SCORE}")
++                semantic_match = None
++        if semantic_match:
+             try:
+                 s_mode = IntentMode[s_mode_str]
+                 role = "CODE_EXECUTOR" if s_mode in (IntentMode.OFFICE, IntentMode.CODING) else ("PLANNER" if s_mode == IntentMode.REASONING else "RECEPTIONIST")
+@@ -449,7 +482,8 @@ class CentralIntentRouter:
+                     reason=f"Semantic fallback similarity match ({s_score:.2f}).",
+                     tags=[s_mode.value],
+                     max_turns=3,
+-                    is_compound=is_compound
++                    is_compound=is_compound,
++                    route_path="SEMANTIC"
+                 )
+                 active_learning_engine.record_query(g_strip, s_mode.value, s_score, [s_mode.value])
+                 return decision
+@@ -469,7 +503,8 @@ class CentralIntentRouter:
+             tags=tags or ["CHAT"],
+             max_turns=2,
+             kb_top_k=3,
+-            is_compound=is_compound
++            is_compound=is_compound,
++            route_path="GENERAL"
+         )
+         active_learning_engine.record_query(g_strip, "GENERAL", 0.75, tags or ["CHAT"])
+         return decision
+diff --git a/core/os/routing/lexicons/realtime.yaml b/core/os/routing/lexicons/realtime.yaml
+index 61191a8..d055893 100644
+--- a/core/os/routing/lexicons/realtime.yaml
++++ b/core/os/routing/lexicons/realtime.yaml
+@@ -74,3 +74,10 @@ keywords:
+   - "champions league"
+   - "bảng xếp hạng"
+   - "world cup"
++  # Rev4 F2: yêu cầu tra cứu web tường minh (explicit web search intent)
++  - "tìm kiếm thông tin"
++  - "tìm trên mạng"
++  - "tra trên mạng"
++  - "tìm kiếm trên internet"
++  - "search web"
++  - "search google"
+diff --git a/tests/test_central_intent_router.py b/tests/test_central_intent_router.py
+index e9ee5fb..6d7c23a 100644
+--- a/tests/test_central_intent_router.py
++++ b/tests/test_central_intent_router.py
+@@ -67,3 +67,71 @@ class TestCentralIntentRouterV4:
+         assert len(intent_router.lexicons) >= 6
+         assert "social" in intent_router.lexicons
+         assert "office" in intent_router.lexicons
++
++
++class TestRouteLatencyBudget:
++    """TASK-REFLEX-V2-001: latency_ms được đo và nằm trong ngân sách."""
++
++    RULE_QUERIES = ["15 + 35 bằng mấy ?", "Tạo file excel báo cáo doanh thu tháng 8", "bạn thấy hôm nay thế nào ?"]
++    SEMANTIC_QUERIES = ["lập trang tính bảng lương nhân viên chi tiết"]
++
++    def test_latency_field_populated(self):
++        d = intent_router.route("tính (3 + 5) * 2")
++        assert d.latency_ms > 0.0
++
++    def test_rule_match_under_50ms(self):
++        intent_router.route("warmup")
++        for q in self.RULE_QUERIES:
++            assert intent_router.route(q).latency_ms < 50.0, q
++
++    def test_semantic_fallback_under_500ms(self):
++        for q in self.SEMANTIC_QUERIES:
++            assert intent_router.route(q).latency_ms < 500.0, q
++
++
++class TestRev4MathWhitelistAndRoutePath:
++    """TASK-REFLEX-V2-001 Rev4: F1 sqrt whitelist, F2 INTERNAL threshold policy, F3 route_path."""
++
++    def test_sqrt_vietnamese(self):
++        d = intent_router.route("căn bậc hai của 81 là mấy")
++        assert d.mode == IntentMode.MATH
++        assert "9" in d.math_result
++
++    def test_sqrt_function_syntax(self):
++        d = intent_router.route("sqrt(225)")
++        assert d.mode == IntentMode.MATH
++        assert "15" in d.math_result
++
++    def test_sqrt_rejects_negative(self):
++        assert CentralIntentRouter.evaluate_math("sqrt(-4)") is None
++
++    def test_whitelist_rejects_other_calls(self):
++        assert CentralIntentRouter.evaluate_math("__import__('os').system('x') + 1") is None
++        assert CentralIntentRouter.evaluate_math("pow(2, 10) + 1") is None
++
++    def test_route_path_rule(self):
++        assert intent_router.route("15 + 35 bằng mấy ?").route_path == "RULE"
++
++    def test_route_path_general(self):
++        assert intent_router.route("").route_path == "GENERAL"
++
++    def test_route_path_semantic_consistent_with_reason(self):
++        d = intent_router.route("hôm qua tôi dặn bạn ghi lại điều gì")
++        assert (d.route_path == "SEMANTIC") == d.reason.startswith("Semantic fallback")
++
++    def test_weak_internal_semantic_rejected(self, monkeypatch):
++        monkeypatch.setattr(semantic_fallback_engine, "classify_semantic",
++                            lambda *a, **k: ("INTERNAL", 0.27))
++        d = intent_router.route("zzqx một câu không có từ khóa nào")
++        assert d.mode == IntentMode.GENERAL
++        assert d.route_path == "GENERAL"
++
++    def test_strong_internal_semantic_accepted(self, monkeypatch):
++        monkeypatch.setattr(semantic_fallback_engine, "classify_semantic",
++                            lambda *a, **k: ("INTERNAL", 0.45))
++        d = intent_router.route("zzqx một câu không có từ khóa nào")
++        assert d.mode == IntentMode.INTERNAL
++        assert d.route_path == "SEMANTIC"
++
++    def test_explicit_web_search_is_realtime(self):
++        assert intent_router.route("tìm kiếm thông tin về thủ đô Hà Nội").mode == IntentMode.REALTIME

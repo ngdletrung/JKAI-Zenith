@@ -31,14 +31,17 @@ class TestDAGRunner(unittest.TestCase):
         # Wave 1 has step_03
         self.assertEqual([s["id"] for s in waves[1]], ["step_03"])
 
-    def test_cycle_fallback(self):
+    def test_invalid_cycle_fails_closed(self):
         steps = [
             {"id": "step_01", "depends_on": ["step_02"]},
             {"id": "step_02", "depends_on": ["step_01"]}
         ]
-        waves = build_dag_waves(steps)
-        self.assertEqual(len(waves), 1)
-        self.assertEqual(len(waves[0]), 2)
+        with self.assertRaises(ValueError):
+            build_dag_waves(steps)
+
+    def test_unknown_dependency_fails_closed(self):
+        with self.assertRaises(ValueError):
+            build_dag_waves([{"id": "step_01", "depends_on": ["missing"]}])
 
 if __name__ == "__main__":
     unittest.main()

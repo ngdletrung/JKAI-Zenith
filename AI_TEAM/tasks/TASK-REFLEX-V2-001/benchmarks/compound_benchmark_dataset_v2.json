@@ -1,0 +1,611 @@
+{
+  "version": "2.0",
+  "task_id": "TASK-REFLEX-V2-001",
+  "supersedes": "1.0",
+  "v1_sha256": "60db82dd62eaebc756c6aa3cb891b87ffaf88b6db15bfcb964ff9acccbe1b2d3",
+  "labeling_policy": "Labels by human intent, written before any router run on these inputs. semantic_candidate = no lexicon keyword substring in input (computed, not hand-set).",
+  "scoring_rule": "correct iff is_compound flag matches AND set(clause modes) == set(expected_modes); threshold 0.95",
+  "total_cases": 41,
+  "semantic_candidate_count": 19,
+  "test_cases": [
+    {
+      "id": "V1-1",
+      "input": "Hãy tính 25 * 4 rồi tìm kiếm thông tin về thủ đô Hà Nội",
+      "expected_modes": [
+        "MATH",
+        "REALTIME"
+      ],
+      "is_compound": true,
+      "note": "v1 original",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V1-2",
+      "input": "Viết code Python sắp xếp mảng và giải thích thuật toán",
+      "expected_modes": [
+        "CODING"
+      ],
+      "is_compound": true,
+      "note": "v1 case 2 RELABEL PROPOSED: [CODING, GENERAL] -> [CODING] (explaining an algorithm in a coding request is coding intent). Pending OpenCode decision.",
+      "lexicon_hits": {
+        "coding": [
+          "code",
+          "viết code",
+          "python",
+          "thuật toán"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V1-3",
+      "input": "Xin chào buổi sáng, hôm nay thời tiết thế nào?",
+      "expected_modes": [
+        "SOCIAL",
+        "REALTIME"
+      ],
+      "is_compound": true,
+      "note": "v1 original",
+      "lexicon_hits": {
+        "realtime": [
+          "thời tiết"
+        ],
+        "social": [
+          "chào buổi",
+          "chào buổi sáng",
+          "xin chào"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V1-4",
+      "input": "Tính căn bậc hai của 144",
+      "expected_modes": [
+        "MATH"
+      ],
+      "is_compound": false,
+      "note": "v1 original",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V1-5",
+      "input": "Soạn thảo văn bản báo cáo tài chính quý 3",
+      "expected_modes": [
+        "OFFICE"
+      ],
+      "is_compound": false,
+      "note": "v1 original",
+      "lexicon_hits": {
+        "office": [
+          "báo cáo tài chính",
+          "soạn thảo văn bản",
+          "báo cáo tài chính"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-01",
+      "input": "(12 + 8) / 4 bằng bao nhiêu",
+      "expected_modes": [
+        "MATH"
+      ],
+      "is_compound": false,
+      "note": "",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V2-02",
+      "input": "căn bậc hai của 81 là mấy",
+      "expected_modes": [
+        "MATH"
+      ],
+      "is_compound": false,
+      "note": "F1",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V2-03",
+      "input": "sqrt(225)",
+      "expected_modes": [
+        "MATH"
+      ],
+      "is_compound": false,
+      "note": "F1",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V2-04",
+      "input": "tính 15% của 300000",
+      "expected_modes": [
+        "MATH"
+      ],
+      "is_compound": false,
+      "note": "",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V2-05",
+      "input": "chào buổi tối JKAI",
+      "expected_modes": [
+        "SOCIAL"
+      ],
+      "is_compound": false,
+      "note": "",
+      "lexicon_hits": {
+        "social": [
+          "chào buổi",
+          "chào buổi tối"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-06",
+      "input": "cảm ơn bạn nhiều nhé",
+      "expected_modes": [
+        "SOCIAL"
+      ],
+      "is_compound": false,
+      "note": "",
+      "lexicon_hits": {
+        "social": [
+          "cảm ơn",
+          "cảm ơn bạn"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-07",
+      "input": "rất vui được gặp bạn",
+      "expected_modes": [
+        "SOCIAL"
+      ],
+      "is_compound": false,
+      "note": "semantic-intended",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V2-08",
+      "input": "dạo này bạn sống ra sao",
+      "expected_modes": [
+        "SOCIAL"
+      ],
+      "is_compound": false,
+      "note": "semantic-intended",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V2-09",
+      "input": "tạo file word đơn xin nghỉ phép 3 ngày",
+      "expected_modes": [
+        "OFFICE"
+      ],
+      "is_compound": false,
+      "note": "",
+      "lexicon_hits": {
+        "office": [
+          "word",
+          "file word",
+          "đơn xin",
+          "đơn xin nghỉ"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-10",
+      "input": "xuất pdf hợp đồng lao động cho nhân viên mới",
+      "expected_modes": [
+        "OFFICE"
+      ],
+      "is_compound": false,
+      "note": "",
+      "lexicon_hits": {
+        "office": [
+          "hợp đồng",
+          "hợp đồng lao động",
+          "pdf",
+          "xuất pdf"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-11",
+      "input": "soạn giúp tôi lá thư xin phép vắng mặt gửi trưởng phòng",
+      "expected_modes": [
+        "OFFICE"
+      ],
+      "is_compound": false,
+      "note": "semantic-intended",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V2-12",
+      "input": "làm cho tôi tài liệu trình chiếu giới thiệu sản phẩm mới",
+      "expected_modes": [
+        "OFFICE"
+      ],
+      "is_compound": false,
+      "note": "semantic-intended",
+      "lexicon_hits": {
+        "office": [
+          "trình chiếu"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-13",
+      "input": "viết hàm python đảo ngược chuỗi",
+      "expected_modes": [
+        "CODING"
+      ],
+      "is_compound": false,
+      "note": "",
+      "lexicon_hits": {
+        "coding": [
+          "python",
+          "viết hàm",
+          "hàm"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-14",
+      "input": "sửa bug traceback KeyError trong flask",
+      "expected_modes": [
+        "CODING"
+      ],
+      "is_compound": false,
+      "note": "",
+      "lexicon_hits": {
+        "coding": [
+          "sửa bug",
+          "traceback",
+          "keyerror",
+          "flask"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-15",
+      "input": "chương trình của tôi bị treo khi chạy vòng lặp vô hạn",
+      "expected_modes": [
+        "CODING"
+      ],
+      "is_compound": false,
+      "note": "semantic-intended",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V2-16",
+      "input": "làm sao để đoạn mã chạy nhanh hơn khi xử lý mảng lớn",
+      "expected_modes": [
+        "CODING"
+      ],
+      "is_compound": false,
+      "note": "semantic-intended",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V2-17",
+      "input": "giá vàng SJC hôm nay",
+      "expected_modes": [
+        "REALTIME"
+      ],
+      "is_compound": false,
+      "note": "",
+      "lexicon_hits": {
+        "realtime": [
+          "giá vàng",
+          "giá vàng sjc"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-18",
+      "input": "tỷ giá usd chiều nay thế nào",
+      "expected_modes": [
+        "REALTIME"
+      ],
+      "is_compound": false,
+      "note": "",
+      "lexicon_hits": {
+        "realtime": [
+          "tỷ giá",
+          "tỷ giá usd"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-19",
+      "input": "một lượng vàng bây giờ bán ra bao nhiêu tiền",
+      "expected_modes": [
+        "REALTIME"
+      ],
+      "is_compound": false,
+      "note": "semantic-intended",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V2-20",
+      "input": "đội tuyển Việt Nam tối qua thắng hay thua",
+      "expected_modes": [
+        "REALTIME"
+      ],
+      "is_compound": false,
+      "note": "semantic-intended",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V2-21",
+      "input": "tra cứu bộ nhớ xem lần trước tôi nói gì",
+      "expected_modes": [
+        "INTERNAL"
+      ],
+      "is_compound": false,
+      "note": "",
+      "lexicon_hits": {
+        "internal": [
+          "tra cứu bộ nhớ",
+          "lần trước"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-22",
+      "input": "đọc file cấu hình hệ thống đã lưu",
+      "expected_modes": [
+        "INTERNAL"
+      ],
+      "is_compound": false,
+      "note": "",
+      "lexicon_hits": {
+        "internal": [
+          "đã lưu",
+          "cấu hình hệ thống",
+          "file cấu hình"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-23",
+      "input": "hôm qua tôi dặn bạn ghi lại điều gì",
+      "expected_modes": [
+        "INTERNAL"
+      ],
+      "is_compound": false,
+      "note": "semantic-intended",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V2-24",
+      "input": "bạn còn giữ địa chỉ máy chủ tôi gửi tuần trước không",
+      "expected_modes": [
+        "INTERNAL"
+      ],
+      "is_compound": false,
+      "note": "semantic-intended",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V2-25",
+      "input": "so sánh chi tiết ưu nhược điểm của postgres và mongo",
+      "expected_modes": [
+        "REASONING"
+      ],
+      "is_compound": false,
+      "note": "may collide with coding lexicon",
+      "lexicon_hits": {
+        "reasoning": [
+          "so sánh",
+          "so sánh chi tiết",
+          "ưu nhược điểm"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-26",
+      "input": "phân tích nguyên nhân gốc rễ khiến doanh thu giảm",
+      "expected_modes": [
+        "REASONING"
+      ],
+      "is_compound": false,
+      "note": "",
+      "lexicon_hits": {
+        "reasoning": [
+          "phân tích",
+          "nguyên nhân",
+          "nguyên nhân gốc rễ"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-27",
+      "input": "nên thuê nhà hay mua nhà trong 5 năm tới",
+      "expected_modes": [
+        "REASONING"
+      ],
+      "is_compound": false,
+      "note": "semantic-intended",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V2-28",
+      "input": "điều gì khiến khách hàng rời bỏ dịch vụ của chúng ta",
+      "expected_modes": [
+        "REASONING"
+      ],
+      "is_compound": false,
+      "note": "semantic-intended",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V2-29",
+      "input": "thủ đô của nước Úc là thành phố nào",
+      "expected_modes": [
+        "GENERAL"
+      ],
+      "is_compound": false,
+      "note": "semantic-intended; no GENERAL prototype exists",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V2-30",
+      "input": "ai là tác giả truyện Kiều",
+      "expected_modes": [
+        "GENERAL"
+      ],
+      "is_compound": false,
+      "note": "semantic-intended",
+      "lexicon_hits": {},
+      "semantic_candidate": true
+    },
+    {
+      "id": "V2-31",
+      "input": "tính 120 * 3 rồi tạo file excel lưu kết quả",
+      "expected_modes": [
+        "MATH",
+        "OFFICE"
+      ],
+      "is_compound": true,
+      "note": "",
+      "lexicon_hits": {
+        "office": [
+          "excel",
+          "file excel"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-32",
+      "input": "xem giá bitcoin và viết script python cảnh báo khi giảm",
+      "expected_modes": [
+        "REALTIME",
+        "CODING"
+      ],
+      "is_compound": true,
+      "note": "",
+      "lexicon_hits": {
+        "coding": [
+          "python",
+          "viết script"
+        ],
+        "realtime": [
+          "bitcoin"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-33",
+      "input": "chào bạn, giúp tôi soạn thông báo nghỉ lễ",
+      "expected_modes": [
+        "SOCIAL",
+        "OFFICE"
+      ],
+      "is_compound": true,
+      "note": "",
+      "lexicon_hits": {
+        "office": [
+          "thông báo"
+        ],
+        "social": [
+          "chào bạn"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-34",
+      "input": "đọc log hệ thống rồi phân tích nguyên nhân lỗi",
+      "expected_modes": [
+        "INTERNAL",
+        "REASONING"
+      ],
+      "is_compound": true,
+      "note": "",
+      "lexicon_hits": {
+        "internal": [
+          "log hệ thống"
+        ],
+        "reasoning": [
+          "phân tích",
+          "nguyên nhân"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-35",
+      "input": "tin tức hôm nay có gì mới, sau đó lập bảng tính tổng hợp",
+      "expected_modes": [
+        "REALTIME",
+        "OFFICE"
+      ],
+      "is_compound": true,
+      "note": "",
+      "lexicon_hits": {
+        "office": [
+          "bảng tính",
+          "lập bảng tính"
+        ],
+        "realtime": [
+          "tin tức",
+          "có gì mới"
+        ],
+        "reasoning": [
+          "tổng hợp"
+        ]
+      },
+      "semantic_candidate": false
+    },
+    {
+      "id": "V2-36",
+      "input": "viết code sắp xếp mảng và giải thích độ phức tạp",
+      "expected_modes": [
+        "CODING"
+      ],
+      "is_compound": true,
+      "note": "same policy as v1 case 2 relabel",
+      "lexicon_hits": {
+        "coding": [
+          "code",
+          "viết code"
+        ]
+      },
+      "semantic_candidate": false
+    }
+  ]
+}

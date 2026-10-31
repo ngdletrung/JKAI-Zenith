@@ -1,0 +1,13 @@
+{
+  "task_id": "TASK-SOVEREIGN-GOV-001",
+  "full_regression_execution": {
+    "command": "-m pytest tests/test_lds_risk_governance.py tests/test_dynamic_skill_creator.py tests/test_shadow_harness_integration.py tests/behavioral/test_no_governance_bypass.py tests/test_execution_integrity.py tests/test_central_intent_router.py tests/test_slice_6_1_weekly_exam_suite.py tests/test_local_tool_execution.py tests/test_phase_a6_paraphrase_and_weekly_audit.py -q",
+    "total_tests": 112,
+    "passed": 112,
+    "failed": 0,
+    "warnings": 0,
+    "pass_rate_pct": 100.0,
+    "duration_seconds": 13.329,
+    "raw_evidence_file": "AI_TEAM/tasks/TASK-SOVEREIGN-GOV-001/raw_output/regression_112_tests_raw.txt"
+  }
+}

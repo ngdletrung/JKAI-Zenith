@@ -1,0 +1,25 @@
+{
+  "task_id": "TASK-SOVEREIGN-GOV-001",
+  "timestamp_utc": "2026-10-28T13:30:00Z",
+  "files_created": [
+    "core/kernel/lds_risk_governance.py",
+    "tests/test_lds_risk_governance.py",
+    "AI_TEAM/tasks/TASK-SOVEREIGN-GOV-001/task_contract.json",
+    "AI_TEAM/tasks/TASK-SOVEREIGN-GOV-001/manifest_diff.json",
+    "AI_TEAM/tasks/TASK-SOVEREIGN-GOV-001/evidence.json",
+    "AI_TEAM/tasks/TASK-SOVEREIGN-GOV-001/patches/sovereign_governance.patch"
+  ],
+  "files_modified": [
+    "core/kernel/execution_integrity.py",
+    "services/ai-brain/receptionist/executor_gateway.py"
+  ],
+  "ownership_boundary": {
+    "module": "Enterprise Sovereign Runtime Governance (LDS, Risk, Receipts, Leases)",
+    "layer": "Runtime Kernel Execution Boundary",
+    "untouched_domains": [
+      "services/ai-browser/**",
+      "services/mission-control/frontend/**",
+      "core/os/routing/**"
+    ]
+  }
+}

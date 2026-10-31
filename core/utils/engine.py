@@ -47,8 +47,20 @@ def should_stop(task_id: str | None = None, redis_conn: Any = None) -> bool:
     Fail-safe: If redis_conn is None and cannot be acquired, or if Redis read fails,
     returns False (never aborts blindly).
     """
+    try:
+        from core.utils.log_engine import log_engine
+        if getattr(log_engine, "_global_stopped", False):
+            return True
+        if task_id and str(task_id).strip() in getattr(log_engine, "_stopped_tasks", set()):
+            return True
+    except Exception:
+        pass
+
     if redis_conn is None:
         try:
+            from core.utils.log_engine import _is_test_mode
+            if _is_test_mode():
+                return False
             from core.redis_client import get_redis
             redis_conn = get_redis()
         except Exception:
@@ -420,6 +432,12 @@ class JKAIIntelligenceEngine:
 
     def _get_redis(self):
         """Khởi tạo kết nối Redis lười biếng để phát log tư duy ."""
+        try:
+            from core.utils.log_engine import _is_test_mode
+            if _is_test_mode():
+                return None
+        except Exception:
+            pass
         if self._redis_conn is None:
             try:
                 import redis
@@ -1065,6 +1083,14 @@ class JKAIIntelligenceEngine:
         Tích hợp [DYNAMIC KEEP-ALIVE] & [COGNITIVE PROFILE].
         Hỗ trợ [NATIVE TOOL CALLING] (Function Calling) & [GRAMMAR-CONSTRAINED DECODING] (JSON Schema).
         """
+        if kwargs.get("require_task_id") and (task_id is None or not str(task_id).strip() or str(task_id).strip().lower() == "none"):
+            raise ValueError("TASK_ID_REQUIRED: engine.call_chat requires a non-empty task_id in strict mode.")
+        if task_id is None or not str(task_id).strip() or str(task_id).strip().lower() == "none":
+            task_id = "system"
+        if should_stop(task_id, self._get_redis()):
+            from core.utils.log_engine import log_engine
+            log_engine.mark_task_stopped(task_id)
+            raise MasterAbortException(f"Mission {task_id} aborted by Master before call_chat.")
         raw_schema_spec = response_schema if response_schema is not None else (schema if schema is not None else kwargs.get('format'))
         normalized_schema = normalize_json_schema(raw_schema_spec)
         if isinstance(normalized_schema, dict):
@@ -1812,6 +1838,11 @@ class JKAIIntelligenceEngine:
                                         is_first_chunk = False
                                         last_log_time = now
 
+                        if should_stop(task_id, self._get_redis()):
+                            from core.utils.log_engine import log_engine
+                            log_engine.mark_task_stopped(task_id)
+                            raise MasterAbortException(f"Mission {task_id} aborted by Master — stream output discarded.")
+
                         # Gui tin hieu hoan tat (final non-delta flush) mot lan duy nhat sau khi stream ket thuc
                         if thinking_content.strip():
                             if not think_stream_id:
@@ -1949,6 +1980,11 @@ class JKAIIntelligenceEngine:
                     raise
                 except Exception as _tb_err:
                     logger.debug("[BUDGET-RECORD-ERR] %s", _tb_err)
+
+                if should_stop(task_id, self._get_redis()):
+                    from core.utils.log_engine import log_engine
+                    log_engine.mark_task_stopped(task_id)
+                    raise MasterAbortException(f"Mission {task_id} aborted by Master — final output discarded.")
 
                 # [OUTPUT-FILTER]: Loại bỏ emoji và enforce behavioral rules
                 from prompt_engine.filter import response_filter

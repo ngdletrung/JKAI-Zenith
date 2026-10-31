@@ -302,6 +302,13 @@ class StatePipeline:
                 from experience_distiller import distiller
                 asyncio.create_task(distiller.distill_task(task_id, mission_state.goal))
                 engine.publish_mission_log("BRAIN", "[PERSISTENT-MASTERY] Kích hoạt ExperienceDistiller cô đặc bài học tự sửa chữa vào vùng nhớ dài hạn.", task_id, trace_id)
+            elif not all_completed:
+                # [FAILURE-DISTILLATION]: Đúc kết bài học thất bại vào Failure Memory khi có bước lỗi
+                from core.kernel.failure_memory import record_critic_finding
+                failed_steps = [f"{s.step_id}: {s.error or 'Bị từ chối hoặc lỗi bước'}" for s in exec_plan.steps if s.status == "failed"]
+                if failed_steps:
+                    record_critic_finding(task_id, failed_steps, details={"goal": mission_state.goal, "type": "step_execution_failure"})
+                    engine.publish_mission_log("BRAIN", f"⚠️ [FAILURE-DISTILLATION] Đã lưu {len(failed_steps)} bài học thất bại vào Failure Memory.", task_id, trace_id)
         except Exception:
             pass
 

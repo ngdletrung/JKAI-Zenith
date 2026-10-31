@@ -460,37 +460,65 @@ class AMGBootstrap:
         configs: Dict[str, dict] = {}
         if not hw_path.exists():
             return configs
+        header_map: Dict[str, int] = {}
         try:
             with hw_path.open(encoding="utf-8") as f:
                 for line in f:
                     s = line.strip()
-                    if not s.startswith("|") or s.startswith("| Role") or s.startswith("| :"):
+                    if not s.startswith("|") or s.startswith("| :"):
                         continue
-                    cols = [c.strip().strip("*") for c in s.split("|")[1:-1]]
-                    if len(cols) >= 10:
-                        role_name = cols[0].upper()
+                    cols = [c.strip().strip("*").strip() for c in s.split("|")[1:-1]]
+                    if not cols:
+                        continue
+                    if s.lower().startswith("| role") or "active model" in s.lower():
+                        header_map = {col.lower().replace(" ", "_"): i for i, col in enumerate(cols)}
+                        continue
+
+                    if len(cols) >= 3:
+                        def get_col(field_names: list, default_idx: int, default_val=""):
+                            for fn in field_names:
+                                if fn in header_map and header_map[fn] < len(cols):
+                                    return cols[header_map[fn]]
+                            if default_idx < len(cols):
+                                return cols[default_idx]
+                            return default_val
+
+                        role_name = get_col(["role"], 0).upper()
+                        if not role_name or role_name.startswith("-"):
+                            continue
+
+                        raw_ctx = get_col(["num_ctx", "ctx"], 3, "4096")
                         try:
-                            num_ctx = int(cols[3])
+                            num_ctx = int(raw_ctx)
                         except Exception:
                             num_ctx = 4096
+
+                        raw_gpu = get_col(["num_gpu", "gpu"], 6, None)
                         try:
-                            num_gpu = int(cols[5])
+                            num_gpu = int(raw_gpu) if raw_gpu is not None else None
                         except Exception:
                             num_gpu = None
+
+                        raw_thread = get_col(["num_thread", "thread", "threads"], 7, None)
                         try:
-                            num_thread = int(cols[6])
+                            num_thread = int(raw_thread) if raw_thread is not None else None
                         except Exception:
                             num_thread = None
+
+                        raw_quality = get_col(["quality"], 13, "medium").lower()
+                        if raw_quality not in ("high", "medium", "low"):
+                            raw_quality = "medium"
+
                         configs[role_name] = {
                             "role": role_name,
-                            "model": cols[1],
-                            "hardware": cols[2],
+                            "model": get_col(["active_model", "model"], 1),
+                            "hardware": get_col(["hardware", "hw"], 2),
                             "num_ctx": num_ctx,
                             "num_gpu": num_gpu,
                             "num_thread": num_thread,
-                            "keep_alive": cols[9],
-                            "capability": cols[11] if len(cols) > 11 else "",
-                            "quality": cols[12] if len(cols) > 12 and cols[12] else "medium",
+                            "keep_alive": get_col(["keep_alive"], 10, "0"),
+                            "capability": get_col(["capability", "capabilities"], 12, ""),
+                            "quality": raw_quality,
                         }
         except Exception:
             pass

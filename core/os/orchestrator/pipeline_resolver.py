@@ -7,6 +7,7 @@ Nguồn sự thật duy nhất (Single Source of Truth) quyết định pipeline
 from __future__ import annotations
 
 import logging
+import re
 from typing import Any, Tuple
 
 from core.os.cognition.execution_governor import ExecutionTopology, ExecutionPolicy
@@ -17,6 +18,38 @@ logger = logging.getLogger("jkai.os.orchestrator.resolver")
 
 class PipelineResolver:
     """Bộ giải quyết lộ trình thực thi tối cao của JKAI AI OS."""
+
+    _URL_RE = re.compile(r'https?://[^\s",\'\}]+', re.IGNORECASE)
+    _VISUAL_READ_KW = (
+        "mở trực quan",
+        "mo truc quan",
+        "chụp màn hình",
+        "chup man hinh",
+        "chụp ảnh",
+        "screenshot",
+        "mở trang",
+        "mo trang",
+        "xem trang",
+        "tin tiêu điểm",
+        "tin tieu diem",
+        "tổng hợp các tin",
+        "tong hop cac tin",
+    )
+
+    @classmethod
+    def is_single_url_visual_read(cls, goal: str) -> bool:
+        """
+        Phase R1.6: Detect deterministic single-URL visual read/screenshot + summary tasks.
+        These default to FAST pipeline unless explicitly forced to DEEP via /deep or force_deep.
+        """
+        text = str(goal or "").strip()
+        if not text:
+            return False
+        urls = cls._URL_RE.findall(text)
+        if len(urls) != 1:
+            return False
+        lowered = text.lower()
+        return any(kw in lowered for kw in cls._VISUAL_READ_KW)
 
     @staticmethod
     def resolve(
@@ -75,6 +108,22 @@ class PipelineResolver:
             use_deep_full = False
             if log_event:
                 log_telemetry(plan, "ZENITH", "⚡ [PIPELINE-RESOLVER]: Phản xạ tức thì FAST (Social/Math/Meta Reflex).", stealth=True)
+            return pipeline, is_fast, is_deep, use_deep_full
+
+        # 1.5 Phase R1.6 FAST Route Contract: Single-URL visual read defaults to FAST unless /deep or force_deep
+        goal_text = str(getattr(plan, "goal", "") or "")
+        kw_patch = getattr(plan, "kwargs_patch", {}) or {}
+        explicit_slash_deep = "/deep" in goal_text.lower() or bool(kw_patch.get("force_deep"))
+        if PipelineResolver.is_single_url_visual_read(goal_text) and not is_high_risk and not explicit_slash_deep:
+            pipeline = "fast"
+            is_fast = True
+            is_deep = False
+            use_deep_full = False
+            if log_event:
+                log_telemetry(
+                    plan, "ZENITH",
+                    "⚡ [PIPELINE-RESOLVER]: Single-URL visual read contract (R1.6) — định tuyến mặc định sang FAST.",
+                )
             return pipeline, is_fast, is_deep, use_deep_full
 
         # 2. Nhóm Tư Duy Chiến Lược Sâu (Deep Multi-Agent): Lập trình lớn, Kiến trúc, Phản biện đa chiều

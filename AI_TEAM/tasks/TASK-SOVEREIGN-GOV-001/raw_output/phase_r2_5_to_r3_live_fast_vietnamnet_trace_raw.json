@@ -1,0 +1,225 @@
+{
+  "goal": "Hãy mở trực quan trang https://vietnamnet.vn/ , chụp màn hình và tổng hợp các tin tiêu điểm",
+  "task_id": "ZENITH_2810_LIVE_FAST_VNNET_R25",
+  "trace_id": "trace_2810_live_fast_vnnet_r25",
+  "pipeline_resolver_is_single_url_visual_read": true,
+  "pipeline": "fast",
+  "status": "SUCCESS",
+  "summary_published": true,
+  "latency_ms": 57557.31,
+  "stage_latencies_ms": {
+    "browser_load_and_screenshot_ms": 17093.87,
+    "browser_read_probe_ms": 324.18,
+    "browser_crawl_ms": 7805.34,
+    "dom_extraction_ms": 8336.12,
+    "evidence_validation_ms": 22.05,
+    "stage_1_adaptive_fork": 55941.05,
+    "stage_2_join_verify": 0.01,
+    "llm_synthesis_ms": 0.61,
+    "grounding_validation_ms": 0.16,
+    "stage_3_one_pass_synthesis": 1570.56,
+    "total_execution_time": 57514.62,
+    "receipt_issuance_ms": 17.47
+  },
+  "screenshot_file_exists_on_host": true,
+  "screenshot_size_bytes": 4769877,
+  "browser_evidence_integrity_check": {
+    "valid": true,
+    "status": "VERIFIED",
+    "reason": "BrowserEvidence verified.",
+    "evidence_id": "ev_2b1d55b537de",
+    "screenshot_sha256": "918d9cb8ee3d3ac7e0de61272e6b1da00475978337b68ba1a5f3b3b2e32ffdac",
+    "headline_records_count": 12
+  },
+  "summary_grounding_check": {
+    "valid": true,
+    "cited_evidence_refs": [
+      "hl_04",
+      "hl_06",
+      "hl_07",
+      "hl_08",
+      "hl_09",
+      "hl_10",
+      "hl_11",
+      "hl_12"
+    ]
+  },
+  "summary_receipt_hmac_verified": true,
+  "browser_evidence": {
+    "evidence_id": "ev_2b1d55b537de",
+    "task_id": "ZENITH_2810_LIVE_FAST_VNNET_R25",
+    "trace_id": "trace_2810_live_fast_vnnet_r25",
+    "source_url": "https://vietnamnet.vn/",
+    "final_url": "https://vietnamnet.vn/",
+    "captured_at": "2026-10-29T00:14:38.955865+00:00",
+    "screenshot_path": "D:\\Docker\\JKAI\\outputs\\eye_43160.png",
+    "screenshot_sha256": "918d9cb8ee3d3ac7e0de61272e6b1da00475978337b68ba1a5f3b3b2e32ffdac",
+    "headlines": [
+      "[hl_01] Công nghệ số và truyền thông",
+      "[hl_02] Kỷ nguyên mới của dân tộc",
+      "[hl_03] LHP châu Á Đà Nẵng - DANAFF",
+      "[hl_04] Chuyện của những dòng sông",
+      "[hl_05] Dân tộc thiểu số và miền núi",
+      "[hl_06] “Cổng trời” vùng biên Thanh Hóa, nơi mớ rau rừng cũng ra tiền",
+      "[hl_07] Giáo sư người Việt được bầu làm viện sĩ chính thức Viện Hàn lâm châu Âu",
+      "[hl_08] Gửi lại tuổi 19 nơi chiến trường, người lính trở về quê nhà sau gần nửa thế kỷ",
+      "[hl_09] Giả thuyết mới hé lộ khả năng người ngoài hành tinh tồn tại khắp vũ trụ",
+      "[hl_10] Chung cư sát đại lộ Thăng Long sau 1 thập kỷ: Mở bán từ 2,4 tỷ, nay rao 7,8-13 tỷ",
+      "[hl_11] Cuộc đời mới của người đàn ông từng nhận vòng hoa viếng khi còn sống",
+      "[hl_12] Khi khoa học tiếp nối sứ mệnh với Tổ quốc: Cuộc trở về bắt đầu từ những mẫu ADN"
+    ],
+    "headline_records": [
+      {
+        "evidence_ref": "hl_01",
+        "title": "Công nghệ số và truyền thông",
+        "article_url": "https://vietnamnet.vn/cong-nghe-so-truyen-thong",
+        "source_url": "https://vietnamnet.vn/",
+        "record_type": "CATEGORY",
+        "dom_selector": "nav.vnn-menu a",
+        "dom_snippet": "<a href=\"https://vietnamnet.vn/cong-nghe-so-truyen-thong\" data-type=\"CATEGORY\">Công nghệ số và truyền thông</a>"
+      },
+      {
+        "evidence_ref": "hl_02",
+        "title": "Kỷ nguyên mới của dân tộc",
+        "article_url": "https://vietnamnet.vn/chinh-tri/ky-nguyen-moi-cua-dan-toc",
+        "source_url": "https://vietnamnet.vn/",
+        "record_type": "CATEGORY",
+        "dom_selector": "nav.vnn-menu a",
+        "dom_snippet": "<a href=\"https://vietnamnet.vn/chinh-tri/ky-nguyen-moi-cua-dan-toc\" data-type=\"CATEGORY\">Kỷ nguyên mới của dân tộc</a>"
+      },
+      {
+        "evidence_ref": "hl_03",
+        "title": "LHP châu Á Đà Nẵng - DANAFF",
+        "article_url": "https://vietnamnet.vn/van-hoa-giai-tri/danaff",
+        "source_url": "https://vietnamnet.vn/",
+        "record_type": "CATEGORY",
+        "dom_selector": "nav.vnn-menu a",
+        "dom_snippet": "<a href=\"https://vietnamnet.vn/van-hoa-giai-tri/danaff\" data-type=\"CATEGORY\">LHP châu Á Đà Nẵng - DANAFF</a>"
+      },
+      {
+        "evidence_ref": "hl_04",
+        "title": "Chuyện của những dòng sông",
+        "article_url": "https://vietnamnet.vn/du-lich/chuyen-cua-nhung-dong-song-sk0008F1.html",
+        "source_url": "https://vietnamnet.vn/",
+        "record_type": "ARTICLE",
+        "dom_selector": "article.vnn-title a",
+        "dom_snippet": "<a href=\"https://vietnamnet.vn/du-lich/chuyen-cua-nhung-dong-song-sk0008F1.html\" data-type=\"ARTICLE\">Chuyện của những dòng sông</a>"
+      },
+      {
+        "evidence_ref": "hl_05",
+        "title": "Dân tộc thiểu số và miền núi",
+        "article_url": "https://vietnamnet.vn/dan-toc-thieu-so-va-mien-nui",
+        "source_url": "https://vietnamnet.vn/",
+        "record_type": "CATEGORY",
+        "dom_selector": "nav.vnn-menu a",
+        "dom_snippet": "<a href=\"https://vietnamnet.vn/dan-toc-thieu-so-va-mien-nui\" data-type=\"CATEGORY\">Dân tộc thiểu số và miền núi</a>"
+      },
+      {
+        "evidence_ref": "hl_06",
+        "title": "“Cổng trời” vùng biên Thanh Hóa, nơi mớ rau rừng cũng ra tiền",
+        "article_url": "https://vietnamnet.vn/cong-troi-vung-bien-thanh-hoa-noi-mo-rau-rung-cung-ra-tien-2565672.html",
+        "source_url": "https://vietnamnet.vn/",
+        "record_type": "ARTICLE",
+        "dom_selector": "article.vnn-title a",
+        "dom_snippet": "<a href=\"https://vietnamnet.vn/cong-troi-vung-bien-thanh-hoa-noi-mo-rau-rung-cung-ra-tien-2565672.html\" data-type=\"ARTICLE\">“Cổng trời” vùng biên Thanh Hóa, nơi mớ rau rừng cũng ra tiền</a>"
+      },
+      {
+        "evidence_ref": "hl_07",
+        "title": "Giáo sư người Việt được bầu làm viện sĩ chính thức Viện Hàn lâm châu Âu",
+        "article_url": "https://vietnamnet.vn/giao-su-nguoi-viet-duoc-bau-lam-vien-si-chinh-thuc-vien-han-lam-chau-au-2569355.html",
+        "source_url": "https://vietnamnet.vn/",
+        "record_type": "ARTICLE",
+        "dom_selector": "article.vnn-title a",
+        "dom_snippet": "<a href=\"https://vietnamnet.vn/giao-su-nguoi-viet-duoc-bau-lam-vien-si-chinh-thuc-vien-han-lam-chau-au-2569355.html\" data-type=\"ARTICLE\">Giáo sư người Việt được bầu làm viện sĩ chính thức Viện Hàn lâm châu Âu</a>"
+      },
+      {
+        "evidence_ref": "hl_08",
+        "title": "Gửi lại tuổi 19 nơi chiến trường, người lính trở về quê nhà sau gần nửa thế kỷ",
+        "article_url": "https://vietnamnet.vn/gui-lai-tuoi-19-noi-chien-truong-nguoi-linh-tro-ve-que-huong-sau-gan-nua-the-ky-2569226.html",
+        "source_url": "https://vietnamnet.vn/",
+        "record_type": "ARTICLE",
+        "dom_selector": "article.vnn-title a",
+        "dom_snippet": "<a href=\"https://vietnamnet.vn/gui-lai-tuoi-19-noi-chien-truong-nguoi-linh-tro-ve-que-huong-sau-gan-nua-the-ky-2569226.html\" data-type=\"ARTICLE\">Gửi lại tuổi 19 nơi chiến trường, người lính trở về quê nhà sau gần nửa thế kỷ</a>"
+      },
+      {
+        "evidence_ref": "hl_09",
+        "title": "Giả thuyết mới hé lộ khả năng người ngoài hành tinh tồn tại khắp vũ trụ",
+        "article_url": "https://vietnamnet.vn/gia-thuyet-moi-he-lo-kha-nang-nguoi-ngoai-hanh-tinh-ton-tai-khap-vu-tru-2568851.html",
+        "source_url": "https://vietnamnet.vn/",
+        "record_type": "ARTICLE",
+        "dom_selector": "article.vnn-title a",
+        "dom_snippet": "<a href=\"https://vietnamnet.vn/gia-thuyet-moi-he-lo-kha-nang-nguoi-ngoai-hanh-tinh-ton-tai-khap-vu-tru-2568851.html\" data-type=\"ARTICLE\">Giả thuyết mới hé lộ khả năng người ngoài hành tinh tồn tại khắp vũ trụ</a>"
+      },
+      {
+        "evidence_ref": "hl_10",
+        "title": "Chung cư sát đại lộ Thăng Long sau 1 thập kỷ: Mở bán từ 2,4 tỷ, nay rao 7,8-13 tỷ",
+        "article_url": "https://vietnamnet.vn/chung-cu-sat-dai-lo-thang-long-gia-mo-ban-tu-2-4-ty-nay-rao-7-8-13-ty-2569078.html",
+        "source_url": "https://vietnamnet.vn/",
+        "record_type": "ARTICLE",
+        "dom_selector": "article.vnn-title a",
+        "dom_snippet": "<a href=\"https://vietnamnet.vn/chung-cu-sat-dai-lo-thang-long-gia-mo-ban-tu-2-4-ty-nay-rao-7-8-13-ty-2569078.html\" data-type=\"ARTICLE\">Chung cư sát đại lộ Thăng Long sau 1 thập kỷ: Mở bán từ 2,4 tỷ, nay rao 7,8-13 tỷ</a>"
+      },
+      {
+        "evidence_ref": "hl_11",
+        "title": "Cuộc đời mới của người đàn ông từng nhận vòng hoa viếng khi còn sống",
+        "article_url": "https://vietnamnet.vn/cuoc-doi-moi-cua-nguoi-dan-ong-nhiem-hiv-tung-nhan-vong-hoa-vieng-khi-con-song-2569276.html",
+        "source_url": "https://vietnamnet.vn/",
+        "record_type": "ARTICLE",
+        "dom_selector": "article.vnn-title a",
+        "dom_snippet": "<a href=\"https://vietnamnet.vn/cuoc-doi-moi-cua-nguoi-dan-ong-nhiem-hiv-tung-nhan-vong-hoa-vieng-khi-con-song-2569276.html\" data-type=\"ARTICLE\">Cuộc đời mới của người đàn ông từng nhận vòng hoa viếng khi còn sống</a>"
+      },
+      {
+        "evidence_ref": "hl_12",
+        "title": "Khi khoa học tiếp nối sứ mệnh với Tổ quốc: Cuộc trở về bắt đầu từ những mẫu ADN",
+        "article_url": "https://vietnamnet.vn/khi-khoa-hoc-tiep-noi-su-menh-voi-to-quoc-cuoc-tro-ve-bat-dau-tu-nhung-mau-adn-2569394.html",
+        "source_url": "https://vietnamnet.vn/",
+        "record_type": "ARTICLE",
+        "dom_selector": "article.vnn-title a",
+        "dom_snippet": "<a href=\"https://vietnamnet.vn/khi-khoa-hoc-tiep-noi-su-menh-voi-to-quoc-cuoc-tro-ve-bat-dau-tu-nhung-mau-adn-2569394.html\" data-type=\"ARTICLE\">Khi khoa học tiếp nối sứ mệnh với Tổ quốc: Cuộc trở về bắt đầu từ những mẫu ADN</a>"
+      }
+    ],
+    "dom_excerpt": "Thứ năm, 29/10/2026  [ Xem lịch vạn niên ](/lich-van-nien)\n\n#  [ ![VietNamNet](https://static.vnncdn.net/v1/logo/logoVietnamNet.svg) ](/ \"vietnamnet\")\n\nThứ năm, 29/10/2026  [ Xem lịch vạn niên ](/lich-van-nien)\n\n  * [Tuần Việt Nam](/tuan-viet-nam \"Tuần Việt Nam\")\n  * [ ![Vietnamnet global](https://static.vnncdn.net/v1/icon/VietnamNet_bridge.svg) ](/en \"Vietnamnet global\")\n  * Đăng nhập ![login vietnamnet](https://static.vnncdn.net/v1/icon/login.svg)\n\n\n\n![search icon](https://static.vnncdn.net/v1/icon/icon-search.svg)\n\n  * [ ](/ \"VietNamNet\")\n  * [ Chính trị ](/chinh-tri \"Chính trị\")\n    * [Sự kiện](/chinh-tri/su-kien \"Sự kiện\")\n    * [Xây dựng đảng](/chinh-tri/xay-dung-dang \"Xây dựng đảng\")\n    * [Đối ngoại](/chinh-tri/doi-ngoai \"Đối ngoại\")\n    * [Bàn luận](/chinh-tri/ban-luan \"Bàn luận\")\n    * [Kỷ nguyên mới của dân tộc](/chinh-tri/ky-nguyen-moi-cua-dan-toc \"Kỷ nguyên mới của dân tộc\")\n    * [Quốc phòng](/chinh-tri/quoc-phong \"Quốc phòng\")\n    * [Quốc hội](/chinh-tri/quoc-hoi-khoa-xvi \"Quốc hội\")\n    * [Nghị quyết 57](/nghi-quyet-57 \"Nghị quyết 57\")\n  * [ Thời sự ](/thoi-su \"Thời sự\")\n    * [Dân sinh](/thoi-su/dan-sinh \"Dân sinh\")\n    * [Giao thông](/thoi-su/giao-thong \"Giao thông\")\n    * [Tin nóng](/thoi-su/tin-nong \"Tin nóng\")\n    * [Đô thị](/thoi-su/do-thi \"Đô thị\")\n    * [Pháp luật](/thoi-su/phap-luat \"Pháp luật\")\n  * [ Kinh doanh ](/kinh-doanh \"Kinh doanh\")\n    * [Net Zero](/net-zero \"Net Zero\")\n    * [Tài chính](/kinh-doanh/tai-chinh \"Tài chính\")\n    * [Đầu tư](/kinh-doanh/dau-tu \"Đầu tư\")\n    * [Thị trường](/kinh-doanh/thi-truong \"Thị trường\")\n    * [Doanh nhân](/kinh-doanh/doanh-nhan \"Doanh nhân\")\n    * [Tư vấn tài chính](/kinh-doanh/tu-van-tai-chinh \"Tư vấn tài chính\")\n  * [ Dân tộc và Tôn giáo ](/dan-toc-ton-giao \"Dân tộc và Tôn giáo\")\n    * [Tin tức](/dan-toc-ton-giao/tin-tuc \"Tin tức\")\n    * [Sắc màu Việt Nam](/dan-toc-ton-giao/sac-mau-viet-nam \"Sắc màu Việt Nam\")\n    * [Chính sách phát triển](/dan-toc-ton-giao/chinh-sach-phat-trien \"Chính sách phát tr"
+  },
+  "summary_receipt": {
+    "receipt_id": "rcpt_b84a5a921f83",
+    "task_id": "ZENITH_2810_LIVE_FAST_VNNET_R25",
+    "trace_id": "trace_2810_live_fast_vnnet_r25",
+    "artifact_type": "SUMMARY_RECEIPT",
+    "artifact_path": "memory://fast_summary/ZENITH_2810_LIVE_FAST_VNNET_R25",
+    "artifact_sha256": "df0115188d6f18ea26221753b162a92b16b2276f5b255e3f57b27f7c47240dfb",
+    "size_bytes": 2378,
+    "evidence_id": "ev_2b1d55b537de",
+    "evidence_sha256": "918d9cb8ee3d3ac7e0de61272e6b1da00475978337b68ba1a5f3b3b2e32ffdac",
+    "created_at": "2026-10-29T00:14:40.609039+00:00",
+    "hmac_signature": "7ad1a6c33b75e9bb13dcbe2a58cd76f4d027624ffb92c611d3e701dc2e713ce4"
+  },
+  "artifact_receipts": [
+    {
+      "receipt_id": "rcpt_f08137c63b67",
+      "task_id": "ZENITH_2810_LIVE_FAST_VNNET_R25",
+      "trace_id": "trace_2810_live_fast_vnnet_r25",
+      "artifact_type": "BROWSER_SCREENSHOT_ARTIFACT",
+      "artifact_path": "D:\\Docker\\JKAI\\outputs\\eye_43160.png",
+      "artifact_sha256": "918d9cb8ee3d3ac7e0de61272e6b1da00475978337b68ba1a5f3b3b2e32ffdac",
+      "size_bytes": 4769877,
+      "evidence_id": "ev_2b1d55b537de",
+      "evidence_sha256": "918d9cb8ee3d3ac7e0de61272e6b1da00475978337b68ba1a5f3b3b2e32ffdac",
+      "created_at": "2026-10-29T00:14:40.608519+00:00",
+      "hmac_signature": "7ad7ded971c7de4ecadfe7543471430886b68457a07a28380ed91da550688d05"
+    },
+    {
+      "receipt_id": "rcpt_b84a5a921f83",
+      "task_id": "ZENITH_2810_LIVE_FAST_VNNET_R25",
+      "trace_id": "trace_2810_live_fast_vnnet_r25",
+      "artifact_type": "SUMMARY_RECEIPT",
+      "artifact_path": "memory://fast_summary/ZENITH_2810_LIVE_FAST_VNNET_R25",
+      "artifact_sha256": "df0115188d6f18ea26221753b162a92b16b2276f5b255e3f57b27f7c47240dfb",
+      "size_bytes": 2378,
+      "evidence_id": "ev_2b1d55b537de",
+      "evidence_sha256": "918d9cb8ee3d3ac7e0de61272e6b1da00475978337b68ba1a5f3b3b2e32ffdac",
+      "created_at": "2026-10-29T00:14:40.609039+00:00",
+      "hmac_signature": "7ad1a6c33b75e9bb13dcbe2a58cd76f4d027624ffb92c611d3e701dc2e713ce4"
+    }
+  ],
+  "answer": "### 🌐 Quan Sát Trực Quan: [vietnamnet.vn](https://vietnamnet.vn/)\n\n- **Trạng thái**: ✅ Đã truy cập thành công và chụp trọn vẹn toàn bộ chiều dài trang web (`evidence_id=ev_2b1d55b537de`).\n- **Ảnh chụp thực địa toàn trang**: `D:\\Docker\\JKAI\\outputs\\eye_43160.png` *(SHA256: `918d9cb8ee3d3ac7...`)*\n\n#### 📰 Tổng Hợp Các Tin Tiêu Điểm Thực Tế Từ DOM Trang Chủ (Kèm Trích Dẫn `evidence_ref`):\n- **[hl_04]** Chuyện của những dòng sông — [Đọc bài viết gốc](https://vietnamnet.vn/du-lich/chuyen-cua-nhung-dong-song-sk0008F1.html)\n- **[hl_06]** “Cổng trời” vùng biên Thanh Hóa, nơi mớ rau rừng cũng ra tiền — [Đọc bài viết gốc](https://vietnamnet.vn/cong-troi-vung-bien-thanh-hoa-noi-mo-rau-rung-cung-ra-tien-2565672.html)\n- **[hl_07]** Giáo sư người Việt được bầu làm viện sĩ chính thức Viện Hàn lâm châu Âu — [Đọc bài viết gốc](https://vietnamnet.vn/giao-su-nguoi-viet-duoc-bau-lam-vien-si-chinh-thuc-vien-han-lam-chau-au-2569355.html)\n- **[hl_08]** Gửi lại tuổi 19 nơi chiến trường, người lính trở về quê nhà sau gần nửa thế kỷ — [Đọc bài viết gốc](https://vietnamnet.vn/gui-lai-tuoi-19-noi-chien-truong-nguoi-linh-tro-ve-que-huong-sau-gan-nua-the-ky-2569226.html)\n- **[hl_09]** Giả thuyết mới hé lộ khả năng người ngoài hành tinh tồn tại khắp vũ trụ — [Đọc bài viết gốc](https://vietnamnet.vn/gia-thuyet-moi-he-lo-kha-nang-nguoi-ngoai-hanh-tinh-ton-tai-khap-vu-tru-2568851.html)\n- **[hl_10]** Chung cư sát đại lộ Thăng Long sau 1 thập kỷ: Mở bán từ 2,4 tỷ, nay rao 7,8-13 tỷ — [Đọc bài viết gốc](https://vietnamnet.vn/chung-cu-sat-dai-lo-thang-long-gia-mo-ban-tu-2-4-ty-nay-rao-7-8-13-ty-2569078.html)\n- **[hl_11]** Cuộc đời mới của người đàn ông từng nhận vòng hoa viếng khi còn sống — [Đọc bài viết gốc](https://vietnamnet.vn/cuoc-doi-moi-cua-nguoi-dan-ong-nhiem-hiv-tung-nhan-vong-hoa-vieng-khi-con-song-2569276.html)\n- **[hl_12]** Khi khoa học tiếp nối sứ mệnh với Tổ quốc: Cuộc trở về bắt đầu từ những mẫu ADN — [Đọc bài viết gốc](https://vietnamnet.vn/khi-khoa-hoc-tiep-noi-su-menh-voi-to-quoc-cuoc-tro-ve-bat-dau-tu-nhung-mau-adn-2569394.html)"
+}

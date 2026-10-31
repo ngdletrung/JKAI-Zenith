@@ -506,8 +506,32 @@ class Planner:
         errors = []
         steps = plan.get("steps", [])
         
+        # 0. Blueprint shape validation before any tool/schema work.
+        if not isinstance(steps, list) or not steps:
+            errors.append("Blueprint steps must be a non-empty list.")
+            return errors
+        step_ids = [s.get("id") for s in steps if isinstance(s, dict)]
+        if len(step_ids) != len(set(step_ids)):
+            errors.append("Duplicate step id detected.")
+        known_ids = set(step_ids)
+        for step in steps:
+            if not isinstance(step, dict):
+                errors.append("Each blueprint step must be an object.")
+                continue
+            deps = step.get("depends_on", [])
+            if not isinstance(deps, list) or any(not isinstance(dep, str) for dep in deps):
+                errors.append(f"Step '{step.get('id')}' has malformed depends_on; expected list[str].")
+            elif step.get("id") in deps:
+                errors.append(f"Step '{step.get('id')}' cannot depend on itself.")
+            else:
+                unknown = sorted(set(deps) - known_ids)
+                if unknown:
+                    errors.append(f"Step '{step.get('id')}' references unknown dependencies: {unknown}.")
+
         # 1. Signature & Ghost Tool Validation
         for step in steps:
+            if not isinstance(step, dict):
+                continue
             tool = step.get("tool")
             if not tool:
                 errors.append("Missing tool field.")
@@ -787,16 +811,34 @@ Vì bạn là Trí tuệ Trung tâm (AI OS) của JKAI, hãy tự động nhận
         #  [GHOST-TOOL-SHIELD]: Nhúng danh sách ID hợp lệ trực tiếp vào system_prompt để Pydantic/LLM không bao giờ bịa tool
         valid_ids_block = "AVAILABLE SKILL IDs (ONLY use these exact IDs in 'tool' field):\n" + "\n".join(f"  - {sid}" for sid in all_valid_skill_ids[:80])
         system_prompt = self._build_system_prompt(manifesto or "", specialist_prompt, skill_dna or clean_skills_summary, complexity_level, step_budget, bool(cached_blueprint), reasoning_str)
-        team_pattern_block = ""
+        failure_block = ""
         try:
-            from core.utils.team_patterns import pattern_prompt_block
+            from core.kernel.failure_memory import load_known_gaps_summary, get_failure_awareness_prompt
+            gaps_summary = load_known_gaps_summary()
+            awareness = get_failure_awareness_prompt(task_id)
+            if gaps_summary:
+                failure_block += f"\n\n<KNOWN_SYSTEM_GAPS_AND_DEFECTS>\n{gaps_summary}\n</KNOWN_SYSTEM_GAPS_AND_DEFECTS>"
+            if awareness:
+                failure_block += f"\n\n<PAST_FAILURE_CRITIC_AWARENESS>\n{awareness}\n</PAST_FAILURE_CRITIC_AWARENESS>"
+        except Exception as e:
+            logger.warning("Failed to inject failure memory into planner: %s", e)
 
-            team_pattern_block = "\n\n" + pattern_prompt_block(team_pat, goal)
-        except Exception:
-            pass
+        verified_mem_block = ""
+        try:
+            from core.os.cognition.verified_memory_store import get_verified_memory_store
+            v_store = get_verified_memory_store()
+            v_recalled = v_store.purposeful_retrieval(goal, limit=3)
+            if v_recalled:
+                v_text = "\n".join(f"- [{m.memory_id}] {m.title}: {m.guidance_rule}" for m in v_recalled)
+                verified_mem_block = f"\n\n<VERIFIED_EXPERIENCE_RECALL>\n{v_text}\n</VERIFIED_EXPERIENCE_RECALL>"
+        except Exception as e:
+            logger.debug("VerifiedMemoryStore recall in planner: %s", e)
+
         system_prompt = (
             system_prompt
             + team_pattern_block
+            + failure_block
+            + verified_mem_block
             + f"\n\n<SKILL_REGISTRY>\n{valid_ids_block}\n</SKILL_REGISTRY>"
             + f"\n\n{self._format_agent_registry(agent_role)}"
             + f"\n\n<FEW_SHOT>\n{_FEW_SHOT_EXAMPLES}\n</FEW_SHOT>"

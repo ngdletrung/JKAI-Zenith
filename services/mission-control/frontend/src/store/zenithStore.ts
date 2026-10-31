@@ -249,7 +249,7 @@ export interface ZenithState {
   operationalLogs: AgentLog[];
   progressLogs: AgentLog[];
   rightTab: RightTab;
-  inspectedFile: { path: string; content: string; connId?: string } | null;
+  inspectedFile: { path: string; content?: string; connId?: string; type?: string; raw_url?: string } | null;
   thinkingPhrase: string;
   showReasoning: boolean;
   streamView: StreamView;
@@ -305,7 +305,7 @@ export interface ZenithState {
   addLog: (log: AgentLog, target?: 'operational' | 'progress') => void;
   addLogs: (logs: AgentLog[], target?: 'operational' | 'progress') => void;
   setTab: (tab: RightTab) => void;
-  setInspectedFile: (file: { path: string; content: string; connId?: string } | null) => void;
+  setInspectedFile: (file: { path: string; content?: string; connId?: string; type?: string; raw_url?: string } | null) => void;
   addModifiedFile: (path: string) => void;
   registerFileEdit: (edit: FileEditEvent, openPreview?: boolean) => void;
   setThinkingPhrase: (phrase: string) => void;
@@ -852,26 +852,29 @@ export const useZenithStore = create<ZenithState>()(
           ...s,
           pendingProposals: s.pendingProposals.filter(p => p.id !== id)
         })),
-        reset: () => set(s => ({
-          ...s,
-          goal: '',
-          attachedFiles: [],
-          status: 'idle',
-          debateCount: 0,
-          operationalLogs: [{
-            id: 'zenith_welcome_msg',
-            tag: 'JKAI',
-            msg: '⚡Chào mừng Master LeeTrung quay trở lại JKAI ZENITH ! 💎🫡🦾🚀🌌',
-            ts: Date.now()
-          }],
-          progressLogs: [],
-          modifiedFiles: [],
-        fileEdits: [],
-          currentMissionId: null,
-          activeAgent: null,
-          activeSkills: [],
-          missionGoal: ''
-        })),
+        reset: () => set(s => {
+          s.socketActions?.resetDAG?.();
+          return {
+            ...s,
+            goal: '',
+            attachedFiles: [],
+            status: 'idle',
+            debateCount: 0,
+            operationalLogs: [{
+              id: 'zenith_welcome_msg',
+              tag: 'JKAI',
+              msg: '⚡Chào mừng Master LeeTrung quay trở lại JKAI ZENITH ! 💎🫡🦾🚀🌌',
+              ts: Date.now()
+            }],
+            progressLogs: [],
+            modifiedFiles: [],
+            fileEdits: [],
+            currentMissionId: null,
+            activeAgent: null,
+            activeSkills: [],
+            missionGoal: ''
+          };
+        }),
         setMissionId: (currentMissionId: string | null) => set(s => ({ ...s, currentMissionId })),
         setSessionId: (sessionId: string) => set(s => ({ ...s, sessionId })),
         setHistory: (history: any[]) => set(s => ({ ...s, history })),

@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import List, Dict, Any, Optional
 from pydantic import BaseModel, Field
-from datetime import datetime
+from datetime import datetime, timezone
 import uuid
 
 class MissionNodeState(str, Enum):
@@ -91,7 +91,7 @@ class MissionEvent(BaseModel):
     """
     event_id: str = Field(default_factory=lambda: str(uuid.uuid4()), description="ID duy nhất của Event")
     mission_id: str = Field(..., description="ID của Mission tương ứng")
-    timestamp: datetime = Field(default_factory=datetime.utcnow, description="Thời điểm xảy ra sự kiện (UTC)")
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="Thời điểm xảy ra sự kiện (UTC)")
     event_type: EventType = Field(..., description="Loại sự kiện")
     payload: Dict[str, Any] = Field(default_factory=dict, description="Dữ liệu payload đi kèm sự kiện")
     metadata: Dict[str, Any] = Field(default_factory=dict, description="Metadata bổ sung")

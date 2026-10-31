@@ -17,7 +17,10 @@ class CacheEngine:
             '/intelligence', '/intelligence/identity', '/intelligence/context',
             '/intelligence/agents', '/intelligence/rules', '/intelligence/skills',
             intel_dir, os.path.join(intel_dir, 'identity'),
-            os.path.join(intel_dir, 'context')
+            os.path.join(intel_dir, 'context'),
+            os.path.join(intel_dir, 'agents'),
+            os.path.join(intel_dir, 'rules'),
+            os.path.join(intel_dir, 'skills'),
         ]
         clean_name = filename[2:] if filename.startswith('./') else filename
         for bp in base_paths:

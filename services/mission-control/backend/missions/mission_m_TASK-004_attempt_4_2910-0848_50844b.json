@@ -1,0 +1,112 @@
+{
+  "id": "m_TASK-004_attempt_4_2910-0848_50844b",
+  "title": "Hôm nay tôi có ngân sách 300.000đ để nấu bữa tối thịnh soạn cho gia đì",
+  "goal": "Hôm nay tôi có ngân sách 300.000đ để nấu bữa tối thịnh soạn cho gia đình 4 người (gồm 2 người lớn, 2 trẻ em). Hãy gợi ý thực đơn 3 món đủ chất (món mặn, món canh, món xào/rau) kèm bảng ước tính chi phí chi tiết từng nguyên liệu và cách chế biến nhanh gọn dưới 45 phút.",
+  "status": "completed",
+  "ts": 1793238621.6846774,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "Hôm nay tôi có ngân sách 300.000đ để nấu bữa tối thịnh soạn cho gia đình 4 người (gồm 2 người lớn, 2 trẻ em). Hãy gợi ý thực đơn 3 món đủ chất (món mặn, món canh, món xào/rau) kèm bảng ước tính chi phí chi tiết từng nguyên liệu và cách chế biến nhanh gọn dưới 45 phút.",
+      "ts": 1793238490.3018713,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_4_2910-0848_50844b"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `TASK-004_attempt_4_2910-0848_50844b` initialized | Trace: `trace_50844b`. Runtime ready.",
+      "ts": 1793238490.3047655,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_4_2910-0848_50844b"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=268 | preview='Hôm nay tôi có ngân sách 300.000đ để nấu bữa tối thịnh soạn cho gia đình 4 người (gồm 2 người lớn, 2 trẻ em). Hãy gợi ý thực đơn 3 món đủ chất (món mặn, món canh, món xào/rau) kèm bảng ước tính chi ph' | hash=48764462aed81d3c | task_id=TASK-004_attempt_4_2910-0848_50844b | trace_id=trace_50844b",
+      "ts": 1793238499.1188173,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_4_2910-0848_50844b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: [] | Policy Topology: SINGLE_AGENT (FAST)",
+      "ts": 1793238499.1220195,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_4_2910-0848_50844b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [PIPELINE-RESOLVER]: Master Fast Sovereignty — giữ nguyên FAST theo yêu cầu.",
+      "ts": 1793238499.1254694,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_4_2910-0848_50844b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=reasoning pipeline=fast mode=fast tags=ANALYSIS",
+      "ts": 1793238499.1290317,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_4_2910-0848_50844b"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1793238499.134863,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_4_2910-0848_50844b"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-10-29T01:48:20.395384] [PLANNER] [Task: TASK-004_attempt_4_2910-0848_50844b] Initializing execution stream with model qwen3.5:4b... (Context: 8192)",
+      "ts": 1793238500.3954134,
+      "source": "PLANNER",
+      "task_id": "TASK-004_attempt_4_2910-0848_50844b"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-10-29T01:48:38.644169] [PLANNER] [Task: TASK-004_attempt_4_2910-0848_50844b] [STATUS]: Streaming tokens initialized.",
+      "ts": 1793238518.644194,
+      "source": "PLANNER",
+      "task_id": "TASK-004_attempt_4_2910-0848_50844b"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-10-29T01:50:21.158445] [PLANNER] [Task: TASK-004_attempt_4_2910-0848_50844b] # THỰC ĐƠN & KẾ HOẠCH NẤU BỮA TỐI - NGÂN SÁCH 300.000Đ (Tối ưu hóa cho 2 người lớn, 2 trẻ em)\n\n## I. TỔNG QUAN CHI PHÍ VÀ AN TOÀN\n*   **Ngân sách dự kiến:** 300.000đ\n*   **Chi phí thực tế tính toán:** 164.500đ (Đã bao gồm dầu ăn, gia vị và nguyên liệu tươi sống)\n*   **Số dư an toàn:** 135.500đ (Dành cho nước dùng, rau phụ hoặc dự phòng giá biến động nhẹ).\n\n## II. BẢNG ƯU TIẾN CHI TIẾT TỪNG NGUYÊN LIỆU\n*(Định dạng: Quantity x Unit Price = Total)*\n\n| STT | Món ăn chính | Nguyên liệu cần thiết | Đơn vị tính | Số lượng thực tế | Giá/kg/đơn | Tổng chi phí (VNĐ) | Ghi chú chế biến |\n| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n| 1 | **Món mặn chính**<br>Bò xào hành tây cà chua | Thịt bò tươi | kg | 0.3kg (300g) | 270.000đ/kg | **81.000đ** | Cắt miếng vừa ăn, ướp gia vị trước khi nấu. |\n| 2 | **Món canh**<br>Canh thịt heo xay cà rốt đậu phụ | Thịt heo xay | kg | 0.2kg (200g) | 135.000đ/kg | **27.000đ** | Nấu chín kỹ để trẻ em ăn ngon miệng, dễ tiêu hóa. |\n| 3 | **Món xào/rau**<br>Rau muống xào tỏi | Rau muống tươi | kg | 0.4kg (400g) | 25.000đ/kg | **10.000đ** | Rửa sạch, thái nhỏ để nấu nhanh dưới 30 phút. |\n| 4 | Món ăn chính | Cà rốt tươi | kg | 0.3kg (300g) | 25.000đ/kg | **7.500đ** | Cắt khúc vừa phải cho canh và xào nếu cần. |\n| 5 | Món ăn chính | Cà chua tươi | kg | 0.3kg (300g) | 30.000đ/kg | **9.000đ** | Dùng để làm nước sốt bò, tăng vị ngọt tự nhiên. |\n| 6 | Món ăn chính | Hành tây | kg | 0.2kg (200g) | 25.000đ/kg | **5.000đ** | Cắt lát mỏng hoặc sợi vừa phải để xào nhanh. |\n| 7 | Món canh | Đậu phụ | bìa | 3 bìa (~300g) | - | **10.000đ** | Chọn loại mềm, dễ nhai cho trẻ em. |\n| 8 | Tổng cộng (Dầu ăn & Gia vị) | Dầu ăn, muối, tiêu... | - | - | - | **15.000đ** | Lượng vừa đủ cho 3 món xào/nấu. |\n| **-** | **TỔNG CHI PHÍ** | | | | | **164.500đ** | **Đã nằm trong ngân sách.** |\n\n## III. LỘ TRÌNH NẤU BỮA TỐI (CHẠM 32 PHÚT)\n*Mục tiêu: Hoàn thành trước giờ ăn tối, đảm bảo an toàn thực phẩm và dinh dưỡng cân bằng.*\n\n### Giai đoạn 1: Sơ chế đồng loạt (08:45 - 09:03 | Tổng thời gian: 18 phút)\n*   **Hành động:** Rửa sạch rau muống; thái thịt bò thành miếng vừa ăn, ướp với chút muối và tiêu trong 2-3 phút để giữ độ mềm. Cắt cà rốt làm khúc nhỏ (dùng cho canh). Thái hành tây lát mỏng hoặc sợi (cho món xào). Xay nhuyễn thịt heo xay sẵn sàng nấu.\n*   **Lưu ý:** Chuẩn bị nước lạnh ấm riêng cho từng loại rau/sản phẩm để sơ chế nhanh nhất.\n\n### Giai đoạn 2: Nấu song song trên 2 bếp (09:03 - 09:18 | Tổng thời gian: 15 phút)\n*   **Bếp A (Canh):** Đun sôi nước, cho thịt heo xay vào xào sơ rồi đổ ra. Thêm cà rốt và đậu phụ cắt miếng vừa phải. Nêm nếm gia vị theo khẩu vị gia đình. *Thời gian nấu khoảng 7-8 phút.*\n*   **Bếp B (Món xào chính & Rau):** Phi thơm tỏi trên chảo dầu nóng, cho hành tây vào xào nhanh đến khi trong suốt. Thêm thịt bò đã ướp và cà chua thái múi cau, đảo đều để tạo nước sốt tự nhiên. Sau đó chuyển sang món rau muống: Cho rau vào xào cùng với chút dầu mỡ còn lại của chảo (hoặc thêm ít dầu mới) cho đến khi rau mềm nhưng vẫn giữ màu xanh tươi. *Thời gian nấu khoảng 5-6 phút.*\n\n### Giai đoạn 3: Hoàn thiện và Trình bày (09:18 - 09:25 | Tổng thời gian: 7 phút)\n*   **Hành động:** Nêm nếm lại canh thịt heo để đảm bảo vị mặn vừa miệng. Đổ các món ra đĩa, trang trí thêm vài lát hành tây hoặc rau thơm nếu còn dư.\n*   **Kết quả:** Bữa ăn hoàn chỉnh với đủ chất đạm (thịt bò, thịt heo), tinh bột nhẹ (cà rốt/đậu phụ) và vitamin từ rau xanh.\n\n## IV. LỜI KHUYÊN DINH DƯỠNG CHO GIA ĐÌNH 4 NGƯỜI\n*   **Đối với trẻ em:** Ưu tiên món canh thịt heo xay vì dễ tiêu hóa, bổ sung đạm động vật mềm mại. Rau muống xào tỏi cung cấp vitamin A và C cần thiết cho phát triển chiều cao.\n*   **Đối với người lớn:** Thịt bò xào cà chua giúp tăng cường sắt trong cơ thể; hành tây hỗ trợ hệ tim mạch.\n*   **An toàn thực phẩm:** Đảm bảo thịt heo xay được nấu chín kỹ để loại bỏ vi khuẩn, rau muống phải sơ chế sạch sẽ trước khi đưa vào chảo dầu nóng.\n\n---\n**TỔNG KẾT:** Kế hoạch đã được thiết kế tối ưu chi phí (164.500đ < 300.000đ) và thời gian (chỉ cần chuẩn bị trong vòng 20 phút đầu, nấu song song hoàn thành dưới 32 phút). Bạn có thể bắt tay vào thực hiện ngay bây giờ để bữa tối gia đình thêm ấm áp!",
+      "ts": 1793238621.158525,
+      "source": "PLANNER",
+      "task_id": "TASK-004_attempt_4_2910-0848_50844b"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-10-29T01:50:21.160066] [PLANNER] [Task: TASK-004_attempt_4_2910-0848_50844b] Hoàn tất trong 120.76s. (Size: 4146 chars)",
+      "ts": 1793238621.1600838,
+      "source": "PLANNER",
+      "task_id": "TASK-004_attempt_4_2910-0848_50844b"
+    },
+    {
+      "tag": "EPISTEMIC_AUDIT",
+      "msg": "[FULFILLED] Confidence: 0.92 | Rationale: Bài toán số học: đơn vị và kết quả khớp với đề bài.",
+      "ts": 1793238621.5167768,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_4_2910-0848_50844b"
+    },
+    {
+      "tag": "ANSWER_QUALITY_AUDIT",
+      "msg": "[AQV-PASS] ✅DUNG | ✅TRUNG | ✅DU | score=1.00 | score=1.00",
+      "ts": 1793238621.5696287,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_4_2910-0848_50844b"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "# THỰC ĐƠN & KẾ HOẠCH NẤU BỮA TỐI - NGÂN SÁCH 300.000Đ (Tối ưu hóa cho 2 người lớn, 2 trẻ em)\n\n## I. TỔNG QUAN CHI PHÍ VÀ AN TOÀN\n*   **Ngân sách dự kiến:** 300.000đ\n*   **Chi phí thực tế tính toán:** 164.500đ (Đã bao gồm dầu ăn, gia vị và nguyên liệu tươi sống)\n*   **Số dư an toàn:** 135.500đ (Dành cho nước dùng, rau phụ hoặc dự phòng giá biến động nhẹ).\n\n## II. BẢNG ƯU TIẾN CHI TIẾT TỪNG NGUYÊN LIỆU\n*(Định dạng: Quantity x Unit Price = Total)*\n\n| STT | Món ăn chính | Nguyên liệu cần thiết | Đơn vị tính | Số lượng thực tế | Giá/kg/đơn | Tổng chi phí (VNĐ) | Ghi chú chế biến |\n| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n| 1 | **Món mặn chính**<br>Bò xào hành tây cà chua | Thịt bò tươi | kg | 0.3kg (300g) | 270.000đ/kg | **81.000đ** | Cắt miếng vừa ăn, ướp gia vị trước khi nấu. |\n| 2 | **Món canh**<br>Canh thịt heo xay cà rốt đậu phụ | Thịt heo xay | kg | 0.2kg (200g) | 135.000đ/kg | **27.000đ** | Nấu chín kỹ để trẻ em ăn ngon miệng, dễ tiêu hóa. |\n| 3 | **Món xào/rau**<br>Rau muống xào tỏi | Rau muống tươi | kg | 0.4kg (400g) | 25.000đ/kg | **10.000đ** | Rửa sạch, thái nhỏ để nấu nhanh dưới 30 phút. |\n| 4 | Món ăn chính | Cà rốt tươi | kg | 0.3kg (300g) | 25.000đ/kg | **7.500đ** | Cắt khúc vừa phải cho canh và xào nếu cần. |\n| 5 | Món ăn chính | Cà chua tươi | kg | 0.3kg (300g) | 30.000đ/kg | **9.000đ** | Dùng để làm nước sốt bò, tăng vị ngọt tự nhiên. |\n| 6 | Món ăn chính | Hành tây | kg | 0.2kg (200g) | 25.000đ/kg | **5.000đ** | Cắt lát mỏng hoặc sợi vừa phải để xào nhanh. |\n| 7 | Món canh | Đậu phụ | bìa | 3 bìa (~300g) | - | **10.000đ** | Chọn loại mềm, dễ nhai cho trẻ em. |\n| 8 | Tổng cộng (Dầu ăn & Gia vị) | Dầu ăn, muối, tiêu... | - | - | - | **15.000đ** | Lượng vừa đủ cho 3 món xào/nấu. |\n| **-** | **TỔNG CHI PHÍ** | | | | | **164.500đ** | **Đã nằm trong ngân sách.** |\n\n## III. LỘ TRÌNH NẤU BỮA TỐI (CHẠM 32 PHÚT)\n*Mục tiêu: Hoàn thành trước giờ ăn tối, đảm bảo an toàn thực phẩm và dinh dưỡng cân bằng.*\n\n### Giai đoạn 1: Sơ chế đồng loạt (08:45 - 09:03 | Tổng thời gian: 18 phút)\n*   **Hành động:** Rửa sạch rau muống; thái thịt bò thành miếng vừa ăn, ướp với chút muối và tiêu trong 2-3 phút để giữ độ mềm. Cắt cà rốt làm khúc nhỏ (dùng cho canh). Thái hành tây lát mỏng hoặc sợi (cho món xào). Xay nhuyễn thịt heo xay sẵn sàng nấu.\n*   **Lưu ý:** Chuẩn bị nước lạnh ấm riêng cho từng loại rau/sản phẩm để sơ chế nhanh nhất.\n\n### Giai đoạn 2: Nấu song song trên 2 bếp (09:03 - 09:18 | Tổng thời gian: 15 phút)\n*   **Bếp A (Canh):** Đun sôi nước, cho thịt heo xay vào xào sơ rồi đổ ra. Thêm cà rốt và đậu phụ cắt miếng vừa phải. Nêm nếm gia vị theo khẩu vị gia đình. *Thời gian nấu khoảng 7-8 phút.*\n*   **Bếp B (Món xào chính & Rau):** Phi thơm tỏi trên chảo dầu nóng, cho hành tây vào xào nhanh đến khi trong suốt. Thêm thịt bò đã ướp và cà chua thái múi cau, đảo đều để tạo nước sốt tự nhiên. Sau đó chuyển sang món rau muống: Cho rau vào xào cùng với chút dầu mỡ còn lại của chảo (hoặc thêm ít dầu mới) cho đến khi rau mềm nhưng vẫn giữ màu xanh tươi. *Thời gian nấu khoảng 5-6 phút.*\n\n### Giai đoạn 3: Hoàn thiện và Trình bày (09:18 - 09:25 | Tổng thời gian: 7 phút)\n*   **Hành động:** Nêm nếm lại canh thịt heo để đảm bảo vị mặn vừa miệng. Đổ các món ra đĩa, trang trí thêm vài lát hành tây hoặc rau thơm nếu còn dư.\n*   **Kết quả:** Bữa ăn hoàn chỉnh với đủ chất đạm (thịt bò, thịt heo), tinh bột nhẹ (cà rốt/đậu phụ) và vitamin từ rau xanh.\n\n## IV. LỜI KHUYÊN DINH DƯỠNG CHO GIA ĐÌNH 4 NGƯỜI\n*   **Đối với trẻ em:** Ưu tiên món canh thịt heo xay vì dễ tiêu hóa, bổ sung đạm động vật mềm mại. Rau muống xào tỏi cung cấp vitamin A và C cần thiết cho phát triển chiều cao.\n*   **Đối với người lớn:** Thịt bò xào cà chua giúp tăng cường sắt trong cơ thể; hành tây hỗ trợ hệ tim mạch.\n*   **An toàn thực phẩm:** Đảm bảo thịt heo xay được nấu chín kỹ để loại bỏ vi khuẩn, rau muống phải sơ chế sạch sẽ trước khi đưa vào chảo dầu nóng.\n\n---\n**TỔNG KẾT:** Kế hoạch đã được thiết kế tối ưu chi phí (164.500đ < 300.000đ) và thời gian (chỉ cần chuẩn bị trong vòng 20 phút đầu, nấu song song hoàn thành dưới 32 phút). Bạn có thể bắt tay vào thực hiện ngay bây giờ để bữa tối gia đình thêm ấm áp!",
+      "ts": 1793238621.6472654,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_4_2910-0848_50844b"
+    }
+  ],
+  "artifacts": {
+    "plan": "Hôm nay tôi có ngân sách 300.000đ để nấu bữa tối thịnh soạn cho gia đình 4 người (gồm 2 người lớn, 2 trẻ em). Hãy gợi ý thực đơn 3 món đủ chất (món mặn, món canh, món xào/rau) kèm bảng ước tính chi phí chi tiết từng nguyên liệu và cách chế biến nhanh gọn dưới 45 phút.",
+    "walkthrough": "# THỰC ĐƠN & KẾ HOẠCH NẤU BỮA TỐI - NGÂN SÁCH 300.000Đ (Tối ưu hóa cho 2 người lớn, 2 trẻ em)\n\n## I. TỔNG QUAN CHI PHÍ VÀ AN TOÀN\n*   **Ngân sách dự kiến:** 300.000đ\n*   **Chi phí thực tế tính toán:** 164.500đ (Đã bao gồm dầu ăn, gia vị và nguyên liệu tươi sống)\n*   **Số dư an toàn:** 135.500đ (Dành cho nước dùng, rau phụ hoặc dự phòng giá biến động nhẹ).\n\n## II. BẢNG ƯU TIẾN CHI TIẾT TỪNG NGUYÊN LIỆU\n*(Định dạng: Quantity x Unit Price = Total)*\n\n| STT | Món ăn chính | Nguyên liệu cần thiết | Đơn vị tính | Số lượng thực tế | Giá/kg/đơn | Tổng chi phí (VNĐ) | Ghi chú chế biến |\n| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |\n| 1 | **Món mặn chính**<br>Bò xào hành tây cà chua | Thịt bò tươi | kg | 0.3kg (300g) | 270.000đ/kg | **81.000đ** | Cắt miếng vừa ăn, ướp gia vị trước khi nấu. |\n| 2 | **Món canh**<br>Canh thịt heo xay cà rốt đậu phụ | Thịt heo xay | kg | 0.2kg (200g) | 135.000đ/kg | **27.000đ** | Nấu chín kỹ để trẻ em ăn ngon miệng, dễ tiêu hóa. |\n| 3 | **Món xào/rau**<br>Rau muống xào tỏi | Rau muống tươi | kg | 0.4kg (400g) | 25.000đ/kg | **10.000đ** | Rửa sạch, thái nhỏ để nấu nhanh dưới 30 phút. |\n| 4 | Món ăn chính | Cà rốt tươi | kg | 0.3kg (300g) | 25.000đ/kg | **7.500đ** | Cắt khúc vừa phải cho canh và xào nếu cần. |\n| 5 | Món ăn chính | Cà chua tươi | kg | 0.3kg (300g) | 30.000đ/kg | **9.000đ** | Dùng để làm nước sốt bò, tăng vị ngọt tự nhiên. |\n| 6 | Món ăn chính | Hành tây | kg | 0.2kg (200g) | 25.000đ/kg | **5.000đ** | Cắt lát mỏng hoặc sợi vừa phải để xào nhanh. |\n| 7 | Món canh | Đậu phụ | bìa | 3 bìa (~300g) | - | **10.000đ** | Chọn loại mềm, dễ nhai cho trẻ em. |\n| 8 | Tổng cộng (Dầu ăn & Gia vị) | Dầu ăn, muối, tiêu... | - | - | - | **15.000đ** | Lượng vừa đủ cho 3 món xào/nấu. |\n| **-** | **TỔNG CHI PHÍ** | | | | | **164.500đ** | **Đã nằm trong ngân sách.** |\n\n## III. LỘ TRÌNH NẤU BỮA TỐI (CHẠM 32 PHÚT)\n*Mục tiêu: Hoàn thành trước giờ ăn tối, đảm bảo an toàn thực phẩm và dinh dưỡng cân bằng.*\n\n### Giai đoạn 1: Sơ chế đồng loạt (08:45 - 09:03 | Tổng thời gian: 18 phút)\n*   **Hành động:** Rửa sạch rau muống; thái thịt bò thành miếng vừa ăn, ướp với chút muối và tiêu trong 2-3 phút để giữ độ mềm. Cắt cà rốt làm khúc nhỏ (dùng cho canh). Thái hành tây lát mỏng hoặc sợi (cho món xào). Xay nhuyễn thịt heo xay sẵn sàng nấu.\n*   **Lưu ý:** Chuẩn bị nước lạnh ấm riêng cho từng loại rau/sản phẩm để sơ chế nhanh nhất.\n\n### Giai đoạn 2: Nấu song song trên 2 bếp (09:03 - 09:18 | Tổng thời gian: 15 phút)\n*   **Bếp A (Canh):** Đun sôi nước, cho thịt heo xay vào xào sơ rồi đổ ra. Thêm cà rốt và đậu phụ cắt miếng vừa phải. Nêm nếm gia vị theo khẩu vị gia đình. *Thời gian nấu khoảng 7-8 phút.*\n*   **Bếp B (Món xào chính & Rau):** Phi thơm tỏi trên chảo dầu nóng, cho hành tây vào xào nhanh đến khi trong suốt. Thêm thịt bò đã ướp và cà chua thái múi cau, đảo đều để tạo nước sốt tự nhiên. Sau đó chuyển sang món rau muống: Cho rau vào xào cùng với chút dầu mỡ còn lại của chảo (hoặc thêm ít dầu mới) cho đến khi rau mềm nhưng vẫn giữ màu xanh tươi. *Thời gian nấu khoảng 5-6 phút.*\n\n### Giai đoạn 3: Hoàn thiện và Trình bày (09:18 - 09:25 | Tổng thời gian: 7 phút)\n*   **Hành động:** Nêm nếm lại canh thịt heo để đảm bảo vị mặn vừa miệng. Đổ các món ra đĩa, trang trí thêm vài lát hành tây hoặc rau thơm nếu còn dư.\n*   **Kết quả:** Bữa ăn hoàn chỉnh với đủ chất đạm (thịt bò, thịt heo), tinh bột nhẹ (cà rốt/đậu phụ) và vitamin từ rau xanh.\n\n## IV. LỜI KHUYÊN DINH DƯỠNG CHO GIA ĐÌNH 4 NGƯỜI\n*   **Đối với trẻ em:** Ưu tiên món canh thịt heo xay vì dễ tiêu hóa, bổ sung đạm động vật mềm mại. Rau muống xào tỏi cung cấp vitamin A và C cần thiết cho phát triển chiều cao.\n*   **Đối với người lớn:** Thịt bò xào cà chua giúp tăng cường sắt trong cơ thể; hành tây hỗ trợ hệ tim mạch.\n*   **An toàn thực phẩm:** Đảm bảo thịt heo xay được nấu chín kỹ để loại bỏ vi khuẩn, rau muống phải sơ chế sạch sẽ trước khi đưa vào chảo dầu nóng.\n\n---\n**TỔNG KẾT:** Kế hoạch đã được thiết kế tối ưu chi phí (164.500đ < 300.000đ) và thời gian (chỉ cần chuẩn bị trong vòng 20 phút đầu, nấu song song hoàn thành dưới 32 phút). Bạn có thể bắt tay vào thực hiện ngay bây giờ để bữa tối gia đình thêm ấm áp!",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

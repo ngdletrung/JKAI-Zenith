@@ -1,0 +1,26 @@
+{
+  "task_id": "TASK-CONTROLLED-PILOT-FINAL-SEAL-002",
+  "timestamp": "2026-10-19T12:43:20+0700",
+  "hash_semantics": "byte_sha256",
+  "file_byte_hashes": {
+    "TRANG_THAI.json": "86ff19a01d89e4c241ea029e873de5014be4bc3ef63f863d1036da34ca65174e",
+    "agents_registry.json": "c5a51fd4a5797dc7fd7317678e49cde2a8e991c1f48b7fb5435f6db290b028b2",
+    "TASK_CURRENT.md": "109b1c8c3d8f1b9d869a786d090b7fb13b28346dace3cc1782a27b0dd9eca28c",
+    "stop_receipt": "4b045a6dfe8c84b6b73b863c510622a5679bdc3da04c7f37c4b5baecf2643cc0",
+    "heartbeat_antigravity.json": "496020a49e36560aabdfffed0a3eeef7a3192dcc947def60a397aae769147879",
+    "bootstrap_manifest.json": "1bde185b447fe480c53afc9e5c99ee218349f16c1f67b78f86780622fd599174"
+  },
+  "manifest_self_verification": {
+    "manifest_path": "D:\\Docker\\JKAI\\AI_TEAM\\system\\bootstrap_manifest.json",
+    "manifest_file_byte_sha256": "1bde185b447fe480c53afc9e5c99ee218349f16c1f67b78f86780622fd599174",
+    "manifest_content_hash": "229f54da864ceea96a814d40cee18ec0345f87c9df7632d31e70c6c4e78fe32c",
+    "rule": "manifest_content_hash matches sha256(sorted state_hashes)",
+    "verified": true
+  },
+  "cursor_status": {
+    "agent_id": "cursor",
+    "status": "MANUAL_SYNC_AWAITING_CURSOR_REPLY",
+    "mode": "MANUAL_SYNC_REQUIRED",
+    "two_way_dispatch_verified": true
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "protocol_version": "11.1",
+  "session_id": "SESSION-001",
+  "orchestrator_agent_id": "antigravity",
+  "agents": [
+    {
+      "agent_id": "cursor",
+      "display_name": "Cursor",
+      "allowed_roles": [
+        "ORCHESTRATOR",
+        "VERIFIER",
+        "BUILDER",
+        "REVIEWER"
+      ],
+      "watch_mode": "session_poll",
+      "wake_method": "human_or_session",
+      "can_write_project_src": false,
+      "status": "UNKNOWN",
+      "last_probe_at": null
+    },
+    {
+      "agent_id": "antigravity",
+      "display_name": "Antigravity",
+      "allowed_roles": [
+        "ORCHESTRATOR",
+        "BUILDER",
+        "ANALYST"
+      ],
+      "watch_mode": "autonomous_daemon",
+      "wake_method": "daemon_or_cli",
+      "can_write_project_src": true,
+      "status": "UNKNOWN",
+      "last_probe_at": null
+    },
+    {
+      "agent_id": "opencode",
+      "display_name": "OpenCode",
+      "allowed_roles": [
+        "REVIEWER",
+        "AUDITOR",
+        "BUILDER"
+      ],
+      "watch_mode": "session_poll",
+      "wake_method": "rest_api",
+      "can_write_project_src": false,
+      "status": "READY",
+      "last_probe_at": "2026-10-19T12:28:54+0700"
+    }
+  ]
+}

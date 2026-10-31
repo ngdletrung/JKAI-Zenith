@@ -1,5 +1,6 @@
 import React, { memo, useState, useEffect, useRef, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useZenithStore } from '../store/zenithStore';
 
 // ─── 💬 ELITE STRATEGIC MESSAGE FLOW (v66.0 - Full Action-Purpose Dictionary) ───────────
 // Tới phiên Ban nào thao tác gì thì tóm lược ngắn gọn, rõ ràng mục đích của thao tác đó.
@@ -543,7 +544,7 @@ export const Zenith3DMission = memo(({ nodes = [] }: any) => {
   const DEBUG_CALIBRATION = false;
   const DEBUG_POSTURE = 'AUTO';
 
-  const isMeeting = safeNodes.length > 0 || DEBUG_CALIBRATION;
+  const storeStatus = useZenithStore(s => s.status);
 
   // 🚀 [FAST-INDEXING-MAP]: Tạo bản đồ chỉ mục tìm kiếm O(1)
   const nodeLookupMap = useMemo(() => {
@@ -630,6 +631,21 @@ export const Zenith3DMission = memo(({ nodes = [] }: any) => {
   speakerRef.current = speaker;
   const lastSpeakerSwitchRef = useRef<number>(0);
   const holdTimerRef = useRef<any>(null);
+
+  // Cuộc họp chỉ diễn ra khi đang chạy, hoặc đang có phát biểu, hoặc có node đang chạy
+  const isMeeting = (storeStatus === 'running') || (speaker !== null) || (safeNodes.length > 0 && safeNodes.some((n: any) => n.data?.status === 'RUNNING' || n.data?.status === 'EXECUTING')) || DEBUG_CALIBRATION;
+
+  useEffect(() => {
+    if (storeStatus === 'idle' && (safeNodes.length === 0 || !safeNodes.some((n: any) => n.data?.status === 'RUNNING' || n.data?.status === 'EXECUTING'))) {
+      if (safeNodes.length === 0) {
+        setSpeaker(null);
+        if (holdTimerRef.current) {
+          clearTimeout(holdTimerRef.current);
+          holdTimerRef.current = null;
+        }
+      }
+    }
+  }, [storeStatus, safeNodes]);
 
   useEffect(() => {
     const candidates: Array<{ seat: typeof SEATS[0]; status: string; message: string; ts: number }> = [];

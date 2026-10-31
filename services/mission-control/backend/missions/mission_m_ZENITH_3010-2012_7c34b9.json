@@ -1,0 +1,175 @@
+{
+  "id": "m_ZENITH_3010-2012_7c34b9",
+  "title": "hãy mở trang web và click đại vài nút tôi xem",
+  "goal": "hãy mở trang web và click đại vài nút tôi xem",
+  "status": "failed",
+  "ts": 1793366121.9636748,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "hãy mở trang web và click đại vài nút tôi xem",
+      "ts": 1793365925.7479868,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_3010-2012_7c34b9` initialized | Trace: `trace_7c34b9`. Runtime ready.",
+      "ts": 1793365925.750363,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=45 | preview='hãy mở trang web và click đại vài nút tôi xem' | hash=a57ea2d216ee4d93 | task_id=ZENITH_3010-2012_7c34b9 | trace_id=trace_7c34b9",
+      "ts": 1793365930.9520562,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: ['READ_ONLY_INSPECTION'] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1793365930.956355,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [PIPELINE-RESOLVER]: Chế độ DEEP tự động kích hoạt (Reason: Master explicitly requested DEEP (Multi-Agent Ensemble Mode).).",
+      "ts": 1793365930.9590907,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=coding pipeline=deep mode=deep tags=CODING",
+      "ts": 1793365930.9612176,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1793365930.9656768,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "DeepPipeline T2–T6 (full)",
+      "ts": 1793365930.9681618,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "✅ [PREFLIGHT-OK] Available executors: http://ai-executor-1:8000, http://ai-executor-2:8000",
+      "ts": 1793365930.9932444,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1793365931.0247574,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1793365931.0286489,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1793365931.0381734,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1793365931.139681,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1793365931.1460648,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `deepseek-r1:latest` @ GPU/VRAM)...",
+      "ts": 1793365931.251778,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-10-30T13:12:11.358095] [PLANNER] [Task: ZENITH_3010-2012_7c34b9] Initializing execution stream with model deepseek-r1:latest... (Context: 8192)",
+      "ts": 1793365931.3581123,
+      "source": "PLANNER",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-10-30T13:12:30.198299] [PLANNER] [Task: ZENITH_3010-2012_7c34b9] [STATUS]: Streaming tokens initialized.",
+      "ts": 1793365950.1983323,
+      "source": "PLANNER",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-10-30T13:14:36.507574] [PLANNER] [Task: ZENITH_3010-2012_7c34b9] Hoàn tất trong 145.15s. (Size: 0 chars)",
+      "ts": 1793366076.507599,
+      "source": "PLANNER",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[ERROR] [2026-10-30T13:14:36.510525] [PLANNER] [Task: ZENITH_3010-2012_7c34b9] Lỗi parse JSON. Trả về text thô.",
+      "ts": 1793366076.5105445,
+      "source": "PLANNER",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 145.26s.",
+      "ts": 1793366076.512875,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-2]: Đang đúc kết chiến lược bằng vai trò `RESERVE_AGENT` (Mô hình: `deepseek-r1:latest` @ GPU/VRAM)...",
+      "ts": 1793366076.520422,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "RESERVE_AGENT",
+      "msg": "[INFO] [2026-10-30T13:14:36.560745] [RESERVE_AGENT] [Task: ZENITH_3010-2012_7c34b9] Initializing execution stream with model deepseek-r1:latest... (Context: 8192)",
+      "ts": 1793366076.5607607,
+      "source": "RESERVE_AGENT",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    },
+    {
+      "tag": "RESERVE_AGENT",
+      "msg": "[INFO] [2026-10-30T13:14:40.875320] [RESERVE_AGENT] [Task: ZENITH_3010-2012_7c34b9] [STATUS]: Streaming tokens initialized.",
+      "ts": 1793366080.8753393,
+      "source": "RESERVE_AGENT",
+      "task_id": "ZENITH_3010-2012_7c34b9"
+    }
+  ],
+  "artifacts": {
+    "plan": "hãy mở trang web và click đại vài nút tôi xem",
+    "walkthrough": "Nhiệm vụ failed. Xem Nhật ký Điều hành (giữa) và tab Tiến trình (phải).",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

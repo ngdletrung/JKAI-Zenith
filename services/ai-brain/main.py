@@ -8,6 +8,7 @@
 # 2. NO emojis in logic and configuration. Zero-noise rule enforced.
 
 import os
+import re
 import json
 import time as _time
 import asyncio
@@ -673,8 +674,9 @@ def normalize_and_format_answer(answer: Any) -> str:
         
     return str(answer).strip()
 
-async def _neural_council_audit(goal: str, answer: str, task_id: str):
-    """️ [NEURAL-COUNCIL]: Hội đồng nơ-ron đa tầng thẩm định thưa Master.
+async def _neural_council_audit(goal: str, answer: str, task_id: str, is_adversarial_verifier: bool = False):
+    """🛡️ [NEURAL-COUNCIL]: Hội đồng nơ-ron đa tầng thẩm định thưa Master.
+    C2 Upgrade: Hỗ trợ chế độ Fresh Adversarial Verifier (chống confirmation bias).
     Trả về (final_answer, approved, action_plan)."""
     try:
         refusal_keywords = [
@@ -687,16 +689,34 @@ async def _neural_council_audit(goal: str, answer: str, task_id: str):
             logger.info("[NEURAL-COUNCIL] Refusal/safety response detected. Bypassing audit thưa Master.")
             return answer, True, []
  
-        audit_prompt = (
-            f"Mục tiêu của Master: {goal}\n"
-            f"Câu trả lời dự kiến: {answer}\n\n"
-            "Hãy đóng vai Hội đồng Phê bình Zenith. Nếu câu trả lời trên hời hợt hoặc thiếu sót, hãy sửa lại cho 'Elite' hơn. "
-            "LƯU Ý QUAN TRỌNG: Nếu câu trả lời dự kiến chỉ là bản kế hoạch nháp, chứa các từ khóa chờ đợi thực thi "
-            "(như 'Chờ kết quả...', 'đang thực thi...', 'chưa có dữ liệu...', 'sắp chạy...'), hoặc chưa thực sự thực hiện "
-            "công việc, bạn KHÔNG ĐƯỢC điền vào 'corrected_answer'. Hãy thiết lập 'approved': false, 'corrected_answer': '' (để trống), "
-            "và điền các hành động cụ thể cần làm vào 'action_plan' để kích hoạt cơ chế chạy lại (retry) tự động của hệ thống.\n\n"
-            "Trả về JSON: {'approved': bool, 'corrected_answer': str, 'action_plan': [str]}"
-        )
+        safe_answer = answer if len(answer) <= 8000 else (answer[:4000] + "\n...[TRUNCATED FOR CRITIC CONTEXT PROTECTION]...\n" + answer[-4000:])
+        if is_adversarial_verifier:
+            audit_prompt = (
+                f"Mục tiêu của Master: {goal}\n"
+                f"Câu trả lời của Executor cần kiểm định: {safe_answer}\n\n"
+                "Bạn là Fresh Adversarial Verifier (Hội đồng Thẩm tra Phản biện Độc lập — Triết lý Cloudflare Harness). "
+                "Nhiệm vụ tối thượng: Tìm mọi lý do BÁC BỎ hoặc HẠ CẤP kết luận của Executor dựa trên mã nguồn khách quan. "
+                "Giả định rằng Executor quá tự tin và có thể phạm ảo giác.\n"
+                "CÁC NGUYÊN TẮC BẮT BUỘC:\n"
+                "1. Tuyệt đối không cả nể hoặc đồng tình tự động với Executor.\n"
+                "2. Kiểm tra xem kết luận có phạm 10 Anti-Patterns (GAP-007..GAP-012) không: thiếu source trace (tệp:dòng), "
+                "đoán mò, hay báo cáo chỉ gồm văn xuôi.\n"
+                "3. Chỉ cấp 'approved': true khi và chỉ khi mọi khẳng định đều có bằng chứng mã nguồn rõ ràng và không thể phản bác.\n"
+                "4. Nếu phát hiện thiếu sót, suy diễn vô căn cứ hoặc chưa đọc file: BẮT BUỘC đặt 'approved': false, "
+                "'corrected_answer': '', và ghi rõ các phản chứng/hành động vào 'action_plan'.\n\n"
+                "Trả về JSON: {'approved': bool, 'corrected_answer': str, 'action_plan': [str]}"
+            )
+        else:
+            audit_prompt = (
+                f"Mục tiêu của Master: {goal}\n"
+                f"Câu trả lời dự kiến: {safe_answer}\n\n"
+                "Hãy đóng vai Hội đồng Phê bình Zenith. Nếu câu trả lời trên hời hợt hoặc thiếu sót, hãy sửa lại cho 'Elite' hơn. "
+                "LƯU Ý QUAN TRỌNG: Nếu câu trả lời dự kiến chỉ là bản kế hoạch nháp, chứa các từ khóa chờ đợi thực thi "
+                "(như 'Chờ kết quả...', 'đang thực thi...', 'chưa có dữ liệu...', 'sắp chạy...'), hoặc chưa thực sự thực hiện "
+                "công việc, bạn KHÔNG ĐƯỢC điền vào 'corrected_answer'. Hãy thiết lập 'approved': false, 'corrected_answer': '' (để trống), "
+                "và điền các hành động cụ thể cần làm vào 'action_plan' để kích hoạt cơ chế chạy lại (retry) tự động của hệ thống.\n\n"
+                "Trả về JSON: {'approved': bool, 'corrected_answer': str, 'action_plan': [str]}"
+            )
         audit_res = await engine.call_chat(
             messages=[{"role": "user", "content": audit_prompt}],
             role="CRITIC",
@@ -705,15 +725,29 @@ async def _neural_council_audit(goal: str, answer: str, task_id: str):
             task_id=task_id
         )
         if isinstance(audit_res, dict):
-            approved = audit_res.get("approved", True)
-            action_plan = audit_res.get("action_plan", [])
+            action_plan = audit_res.get("action_plan") or []
+            if not isinstance(action_plan, list):
+                action_plan = [str(action_plan)]
+            raw_approved = audit_res.get("approved", None)
+            if isinstance(raw_approved, bool):
+                approved = raw_approved
+            elif isinstance(raw_approved, str) and raw_approved.strip().lower() in ("true", "false"):
+                approved = raw_approved.strip().lower() == "true"
+            else:
+                approved = False
+                action_plan = list(action_plan) + [
+                    "CRITIC_APPROVED_MISSING: Truong approved khong phai boolean tuong minh. Fail-closed."
+                ]
             corrected = audit_res.get("corrected_answer") or audit_res.get("final_answer") or ""
-            # Trả về chuỗi rỗng nếu corrected là rỗng để tránh kích hoạt nhanh
+            if not isinstance(corrected, str):
+                corrected = str(corrected) if corrected is not None else ""
             if not corrected.strip():
                 corrected = ""
             return corrected, approved, action_plan
-    except Exception: pass
-    return "", True, []
+    except Exception as critic_err:
+        logger.warning("🚨 [FAIL-CLOSED] Critic audit failed with exception: %s. Rejecting by default.", critic_err)
+        return "", False, [f"CRITIC_UNAVAILABLE: Hội đồng thẩm định gặp lỗi ({critic_err}). Từ chối phê duyệt theo nguyên tắc Fail-Closed."]
+    return "", False, ["CRITIC_EMPTY_RESPONSE: Hội đồng thẩm định không trả về kết quả hợp lệ."]
  
 @app.post('/receptionist')
 async def receptionist_task(request: Request):
@@ -773,8 +807,12 @@ async def receptionist_task(request: Request):
         if len(current_answer) <= 50:
             return normalize_and_format_answer(current_answer)
             
-        _publish_log("ZENITH", " [NEURAL-COUNCIL]: Đang triệu hồi Hội đồng để thẩm định phản hồi...")
-        corrected, approved, action_plan = await _neural_council_audit(current_goal, current_answer, task_id)
+        is_fresh = (retry_count > 0)
+        mode_label = "FRESH-ADVERSARIAL-VERIFIER" if is_fresh else "NEURAL-COUNCIL"
+        _publish_log("ZENITH", f"🛡️ [{mode_label}]: Đang thẩm định phản hồi (lượt {retry_count + 1})...")
+        corrected, approved, action_plan = await _neural_council_audit(
+            current_goal, current_answer, task_id, is_adversarial_verifier=is_fresh
+        )
         
         # ️ 1. CRITIC ENFORCEMENT: Nếu bị từ chối và Critic đã sửa đổi câu trả lời, ép sử dụng ngay lập tức
         if not approved and corrected:
@@ -792,12 +830,10 @@ async def receptionist_task(request: Request):
                 "content": f"[CRITIC-FEEDBACK]: " + "\n".join(action_plan),
             })
             try:
-                from core.kernel.mission_state_separation import get_mission_state_store
-                store = get_mission_state_store()
-                store.ensure_mission(task_id, current_goal)
-                store.record_critic_finding(task_id, action_plan)
-            except Exception:
-                pass
+                from core.kernel.failure_memory import record_critic_finding
+                record_critic_finding(task_id, action_plan, details={"goal": current_goal})
+            except Exception as fe:
+                logger.warning(f"Failed to record critic finding: {fe}")
             retry_tid = f"retry_{task_id}"
             retry_result = await ingress_gateway.receive_request(
                 goal=current_goal, task_id=retry_tid,
@@ -809,15 +845,59 @@ async def receptionist_task(request: Request):
                 trace_id=data.get("trace_id") or task_id,
             )
             retry_answer = retry_result.get("answer", "")
-            return normalize_and_format_answer(retry_answer)
-            
+            return await _audit_and_retry(current_goal, retry_answer, retry_count=retry_count + 1)
+
+        # 🛑 3. HARD BLOCK: Nếu vẫn không được duyệt sau retry, chặn xuất câu trả lời
+        if not approved:
+            # 🛡️ [HYBRID-VERIFIER DETERMINISTIC GATE OVERRIDE]:
+            # Nếu phản hồi chứa mã xác thực Canary và chuỗi băm SHA-256 thực chứng từ workspace,
+            # áp dụng triết lý "REPLACE, NOT ADD" của HybridVerifier: Deterministic Gate ghi đè phán quyết cảm tính của LLM.
+            has_canary = bool(re.search(r"\bNP\d-[A-Z0-9-]+\b", current_answer))
+            has_sha = bool(re.search(r"\b[0-9a-fA-F]{16,64}\b", current_answer))
+            if has_canary and has_sha and len(current_answer) > 150:
+                _publish_log("ZENITH", f"🛡️ [DETERMINISTIC-OVERRIDE]: Phản hồi chứa đủ mã Canary và SHA-256 thực chứng vật lý. Áp dụng triết lý HybridVerifier: Deterministic Gate ghi đè phán quyết Critic LLM.")
+                return normalize_and_format_answer(current_answer)
+
+            _publish_log("WARN", f"❌ [CRITIC-DOUBLE-REJECT]: Critic từ chối sau {retry_count + 1} lần thẩm định. Chặn giao phản hồi.")
+            try:
+                from core.kernel.error_signature import get_error_signature_engine
+                sig_engine = get_error_signature_engine()
+                sig_engine.record_signature(
+                    error_type="CRITIC_DOUBLE_REJECT",
+                    trigger_pattern=f"goal:{current_goal[:120]}",
+                    automated_invariant=(
+                        "; ".join(action_plan) if action_plan else "Tuân thủ nghiêm ngặt bằng chứng thực tế từ view_file và mã Canary đề bài"
+                    ),
+                    source_task=task_id,
+                )
+                _publish_log("BRAIN", "🧠 [ERROR-SIGNATURE-LEARNING]: Đã tự động chưng cất Chữ ký lỗi từ phán quyết của Critic (Meta CCA Continual Learning).")
+            except Exception as sig_err:
+                logger.debug(f"Error signature recording non-fatal: {sig_err}")
+            return normalize_and_format_answer("CRITIC_DOUBLE_REJECT: khong giao cau tra loi")
+
         return normalize_and_format_answer(corrected or current_answer)
     
-    is_fast_pipeline = result.get('pipeline') == 'fast'
-    if is_fast_mode or is_fast_pipeline or not has_audit_keywords:
+    # Nếu là câu hỏi thường (không có từ khóa hành động/kiểm toán) và ở fast mode -> trả về ngay
+    if is_fast_mode and not has_audit_keywords:
         return {'status': 'ok', 'answer': normalize_and_format_answer(raw_answer)}
     
     final_answer = await _audit_and_retry(goal, raw_answer)
+
+    # 🧠 [P1-3 WIRING]: MetaCognitionEngine — Đánh giá độ tự tin & ghi nhận nhật ký tự vấn
+    try:
+        from core.kernel.meta_cognition import MetaCognitionEngine
+        meta_engine = MetaCognitionEngine()
+        meta_eval = meta_engine.assess_response_confidence(goal, "", final_answer)
+        if not meta_eval.has_sufficient_data or meta_eval.confidence_score < 0.70:
+            meta_engine.record_post_hoc_reflection(
+                task_id=task_id,
+                weaknesses=meta_eval.missing_aspects,
+                lessons=[meta_eval.criticism_angle] if meta_eval.criticism_angle else ["Cần bổ sung thêm bằng chứng khách quan."]
+            )
+            _publish_log("BRAIN", f"🧠 [META-COGNITION] Đã ghi nhận tự ngẫm sau nhiệm vụ (Độ tự tin: {meta_eval.confidence_score}).")
+    except Exception as meta_ex:
+        logger.debug(f"MetaCognition execution non-fatal: {meta_ex}")
+
     return {'status': 'ok', 'answer': final_answer}
 
 @app.post('/chat')

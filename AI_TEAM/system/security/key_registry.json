@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0",
+  "algorithm": "HMAC-SHA256",
+  "keys": [
+    {
+      "key_id": "KEY-JKAI-SWARM-001",
+      "key_version": "v1.0-hmac-sha256",
+      "owner": "JKAI_SWARM_SECURITY_AUTHORITY",
+      "purpose": "INTER_AGENT_WEBHOOK_AUTHENTICATION",
+      "algorithm": "HMAC-SHA256",
+      "fingerprint_sha256": "5d1923ff33797dcf3b60cdbef7ff01068dcd59f2137c3cdb12c2e34ef2ace9c8",
+      "created_at": "2026-10-19T12:00:00+07:00",
+      "status": "ACTIVE"
+    }
+  ],
+  "verifier_trust_root": "JKAI_CORE_SECURITY_ENCLAVE",
+  "secret_storage": "ENVIRONMENT_VARIABLE_OR_SECURE_VAULT_ONLY"
+}

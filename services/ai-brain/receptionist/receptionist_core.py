@@ -97,13 +97,25 @@ class Receptionist:
                 mc = ctx_mgr.get_or_create(task_id, goal=goal)
                 prev_mission_id = ctx_mgr.get_linked_mission("default")
                 if prev_mission_id and prev_mission_id != task_id:
-                    # Nếu mission mới (không có last_subject), clear context cũ
-                    if not mc.conversation.get("last_subject"):
-                        ctx_mgr.clear(prev_mission_id)
-                        prev_mission_id = None
-                    else:
-                        prev_mc = ctx_mgr.get_or_create(prev_mission_id)
-                        resolved_goal = ent_resolver.resolve(goal, last_subject=prev_mc.conversation.get("last_subject", ""), last_query=prev_mc.conversation.get("last_query", ""))
+                    prev_mc = ctx_mgr.get_or_create(prev_mission_id)
+                    prev_last_answer = prev_mc.conversation.get("last_answer", "")
+                    prev_last_query = prev_mc.conversation.get("last_query", "")
+                    prev_last_subject = prev_mc.conversation.get("last_subject", "")
+                    
+                    is_cont_cue = any(
+                        goal.strip().lower().startswith(c)
+                        for c in ["tiếp tục", "tiếp", "tiep tuc", "tiep", "continue", "nói tiếp", "viết tiếp", "làm tiếp", "chạy tiếp"]
+                    )
+                    
+                    if is_cont_cue and (prev_last_query or prev_last_answer):
+                        # Giữ vững liên kết ngữ cảnh tiếp nối
+                        mc.conversation["last_query"] = prev_last_query
+                        mc.conversation["last_answer"] = prev_last_answer
+                        mc.conversation["last_subject"] = prev_last_subject
+                        mc.conversation["is_continuation"] = True
+                        self._log("BRAIN", f"[CONTEXT] Continuation linked to prev mission '{prev_mission_id}'", task_id)
+                    elif prev_last_subject:
+                        resolved_goal = ent_resolver.resolve(goal, last_subject=prev_last_subject, last_query=prev_last_query)
                         if resolved_goal != goal:
                             self._log("BRAIN", f"[CONTEXT] Anaphora resolved: '{goal}' -> '{resolved_goal}'", task_id)
                             goal = resolved_goal
@@ -133,7 +145,8 @@ class Receptionist:
                         kwargs.get("jkai_project_mode", "audit"),
                     )
                     trace_id = kwargs.get("trace_id") or task_id
-                    answer = await agent.run(goal, task_id, trace_id=trace_id)
+                    history = kwargs.get("history")
+                    answer = await agent.run(goal, task_id, trace_id=trace_id, history=history)
                     return {
                         "answer": answer,
                         "task_id": task_id,
@@ -364,7 +377,33 @@ class Receptionist:
 
         force_synthesis = False
 
-        if is_realtime_need:
+        # [BROWSER-PRE-ROUTING]: Nếu Master yêu cầu mở trực quan URL / chụp màn hình
+        try:
+            from core.kernel.tool_arbiter import tool_arbiter, ToolDomain
+            arbiter_v = tool_arbiter.arbitrate(step_goal)
+            if arbiter_v.primary_domain in (ToolDomain.BROWSER, ToolDomain.FAST_DOC):
+                target_url = arbiter_v.primary_target or (arbiter_v.extracted_urls[0] if arbiter_v.extracted_urls else "https://vietnamnet.vn/")
+                self._log("ZENITH", f"Pre-routing: Browser navigation detected ({target_url}). Executing BROWSER_CONTROL directly...", task_id, trace_id=trace_id)
+                tool_calls = [{
+                    "function": {
+                        "name": "BROWSER_CONTROL",
+                        "arguments": json.dumps({"url": target_url, "action": "load_page", "take_screenshot": True, "objective": step_goal})
+                    }
+                }]
+                obs = await self._run_skills_in_parallel(tool_calls, task_id, **kwargs)
+                context = [
+                    {"role": "user", "content": (
+                        f"{step_goal}\n\n"
+                        f"[SYSTEM-FORCE-SYNTHESIS]: Trang web {target_url} đã được mở trực quan và chụp màn hình thành công bởi Vệ tinh Trình duyệt JKAI. "
+                        f"Dưới đây là kết quả quan sát thực địa thu được từ trình duyệt:\n\n{obs}\n\n"
+                        f"Hãy tổng hợp câu trả lời tiếng Việt kính cẩn cho Master: xác nhận đã mở trang web và chụp ảnh màn hình thành công, trích dẫn đường dẫn file ảnh chụp (nếu có trong dữ liệu quan sát) và tóm tắt các thông tin chính quan sát được. Tuyệt đối KHÔNG từ chối hoặc nói rằng bạn không thể truy cập internet."
+                    )}
+                ]
+                force_synthesis = True
+        except Exception as arb_err:
+            logger.debug("[RECEPTIONIST-PRE-ROUTING] Arbiter browser check error: %s", arb_err)
+
+        if not force_synthesis and is_realtime_need:
             self._log("ZENITH", "Pre-routing/Intent-Forcing: Real-time query detected. Executing search directly thưa Master.", task_id, trace_id=trace_id)
             tool_calls = [{
                 "function": {

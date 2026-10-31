@@ -1,0 +1,127 @@
+[FILE_METADATA: total_lines=127 (splitlines=126) | sha256_16=2f368f58f7166028 | sha256=2f368f58f71660283ffbf62507c51894bdba9ba0241ac2eb436d0bf8566415e4 | classes=MasterSecurityAlert, DataLeakGuard | functions_and_methods=DataLeakGuard.__init__, DataLeakGuard.inspect_cloud_response, DataLeakGuard.has_active_alert, DataLeakGuard.clear_alerts, DataLeakGuard.format_master_alert_banner]
+# -*- coding: utf-8 -*-
+"""
+JKAI Data Leak Guard & Reverse Solicitation Defense.
+Enforces the Invariant:
+1. Detects attempts by cloud models to solicit secrets, raw source code, or internal configs.
+2. Hard-blocks any outbound leakage.
+3. Immediately emits high-priority MasterSecurityAlert.
+"""
+
+import re
+from dataclasses import dataclass, field
+from datetime import datetime, timezone
+from typing import List, Optional
+
+
+@dataclass
+class MasterSecurityAlert:
+    timestamp: str
+    level: str  # "WARNING", "CRITICAL"
+    source_model: str
+    threat_type: str
+    solicited_items: List[str]
+    description: str
+    blocked: bool = True
+    mission_id: str = "default_mission"
+
+
+class DataLeakGuard:
+    """
+    Deterministic guardian against reverse prompt probing and data exfiltration.
+    Zero LLMs involved in gating logic.
+    """
+
+    SOLICITATION_PATTERNS = [
+        (
+            r"\b(send|share|provide|give|show|paste|upload|need|require)\b.*"
+            r"\b(source code|raw code|entire file|full script|all code|repo|repository)\b",
+            "source_code_solicitation",
+        ),
+        (
+            r"\b(api[-_ ]?key|secret|password|private[-_ ]?key|token|credential|connection[-_ ]?string|db[-_ ]?url)\b",
+            "credentials_solicitation",
+        ),
+        (
+            r"\b(\.env|config\.json|id_rsa|private_key\.pem|database\.yml)\b",
+            "sensitive_file_solicitation",
+        ),
+        (
+            r"\b(internal ip|server ip|root password|ssh key|sudo access)\b",
+            "infrastructure_solicitation",
+        ),
+    ]
+
+    def __init__(self):
+        self.alert_history: List[MasterSecurityAlert] = []
+
+    def inspect_cloud_response(
+        self,
+        response_text: str,
+        model_name: str,
+        mission_id: str = "default_mission",
+    ) -> Optional[MasterSecurityAlert]:
+        """
+        Scans response received from cloud model to check if it is attempting
+        to solicit confidential or sensitive internal data.
+        """
+        if not response_text:
+            return None
+
+        detected_threats = []
+        lowered = response_text.lower()
+
+        for pattern, threat_type in self.SOLICITATION_PATTERNS:
+            if re.search(pattern, lowered):
+                detected_threats.append(threat_type)
+
+        if detected_threats:
+            alert = MasterSecurityAlert(
+                timestamp=datetime.now(timezone.utc).isoformat(),
+                level="CRITICAL",
+                source_model=model_name,
+                threat_type=",".join(detected_threats),
+                solicited_items=detected_threats,
+                description=(
+                    f"Model '{model_name}' attempted to solicit confidential internal data "
+                    f"({', '.join(detected_threats)}). Egress gate strictly blocks follow-up leaks."
+                ),
+                blocked=True,
+                mission_id=mission_id,
+            )
+            self.alert_history.append(alert)
+            return alert
+
+        return None
+
+    def has_active_alert(self, mission_id: Optional[str] = None) -> bool:
+        """Checks if any blocking security alert was triggered for the given mission."""
+        if not self.alert_history:
+            return False
+        if mission_id is None:
+            return any(a.blocked for a in self.alert_history)
+        return any(a.blocked and a.mission_id == mission_id for a in self.alert_history)
+
+    def clear_alerts(self, mission_id: Optional[str] = None) -> None:
+        """Clears recorded alerts (all or scoped to a specific mission_id)."""
+        if mission_id is None:
+            self.alert_history.clear()
+        else:
+            self.alert_history = [a for a in self.alert_history if a.mission_id != mission_id]
+
+    def format_master_alert_banner(self, alert: MasterSecurityAlert) -> str:
+        """Formats an immediate, unmissable alert for Master."""
+        return (
+            f"\n🚨 [CẢNH BÁO AN NINH JKAI — MASTER SECURITY ALERT] 🚨\n"
+            f"---------------------------------------------------------------------------------\n"
+            f"• Thời gian     : {alert.timestamp}\n"
+            f"• Mission ID    : {alert.mission_id}\n"
+            f"• Model vi phạm : {alert.source_model}\n"
+            f"• Mối đe dọa   : {alert.threat_type}\n"
+            f"• Chi tiết      : {alert.description}\n"
+            f"• Hành động JKAI: ĐÃ CHẶN ĐỨNG HOÀN TOÀN (Blocked 100% - Zero Byte Egress)\n"
+            f"---------------------------------------------------------------------------------\n"
+        )
+
+
+data_leak_guard = DataLeakGuard()

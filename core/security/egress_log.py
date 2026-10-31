@@ -34,7 +34,7 @@ class EgressLogLedger:
 
     def __init__(self, ledger_path: Optional[str] = None):
         self.ledger_path = (
-            ledger_path or "data/telemetry/egress_hash_chain.jsonl"
+            ledger_path or os.getenv("JKAI_EGRESS_LEDGER_PATH") or "data/telemetry/egress_hash_chain.jsonl"
         )
         self.entries: List[EgressLogEntry] = []
         self._load_or_init()
@@ -128,6 +128,31 @@ class EgressLogLedger:
             expected_prev_hash = entry.entry_hash
 
         return True
+
+    def rotate_ledger(self, reason: str = "ARCHIVE") -> str:
+        """
+        Safely rotates current ledger to a backup file without data loss.
+        Preserves chain of custody: records a tombstone rotation entry in old file,
+        renames to .bak.<ts>, and re-initializes an empty active ledger.
+        """
+        import shutil
+        import time
+        if not os.path.exists(self.ledger_path):
+            return self.ledger_path
+
+        ts = int(time.time())
+        backup_path = f"{self.ledger_path}.bak.{ts}"
+        if self.entries:
+            self.record_egress(
+                mission_id="ROTATION_TOMBSTONE",
+                model="SYSTEM",
+                sanitized_payload=f"ROTATION_REASON: {reason} | BACKUP: {backup_path}",
+                token_count=0,
+            )
+
+        shutil.move(self.ledger_path, backup_path)
+        self.entries = []
+        return backup_path
 
 
 egress_ledger = EgressLogLedger()

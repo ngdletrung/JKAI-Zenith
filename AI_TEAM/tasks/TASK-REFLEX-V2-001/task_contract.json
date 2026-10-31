@@ -1,0 +1,61 @@
+{
+  "task_id": "TASK-REFLEX-V2-001",
+  "revision": 3,
+  "protocol_version": "11.1",
+  "sop_version": "10.0",
+  "phase": "REFLEX_V2_MULTI_TASK_ROUTING",
+  "orchestrator_agent_id": "antigravity",
+  "assigned_agent_id": "antigravity",
+  "reviewer_agent_id": "opencode",
+  "git_baseline_commit": "766107595fd3bac7483b0843b04f34e7ced98967",
+  "workspace_reconciliation": {
+    "build_strategy": "ISOLATED_CLEAN_WORKTREE",
+    "build_worktree_path": "AI_TEAM/tasks/TASK-REFLEX-V2-001/workspaces/build_worktree",
+    "build_worktree_commit": "766107595fd3bac7483b0843b04f34e7ced98967",
+    "root_workspace_patch_provenance": {
+      "patch_file": "AI_TEAM/tasks/TASK-REFLEX-V2-001/patches/pre_existing_routing.patch",
+      "byte_sha256": "4c78add38646bff74ac2c851e53b9e2f8f9a639fc24f087bd876a2d1dd2a6148",
+      "classification": "PRE_EXISTING_DETERMINISTIC_BROWSER_ARBITER_INTEGRATION",
+      "creation_context": "Created prior to TASK-REFLEX-V2-001 during Session 23 Phase Visual Web Navigation. Fully frozen and isolated from build_worktree."
+    }
+  },
+  "owned_paths": [
+    "core/os/routing/intent_router.py",
+    "core/os/routing/compound_parser.py",
+    "core/os/routing/lexicons/office.yaml",
+    "tests/test_central_intent_router.py"
+  ],
+  "read_only_paths": [
+    "core/cognitive_bus/reflex_hub.py",
+    "core/memory/base.py",
+    "tests/test_sovereign_reflex_hub.py"
+  ],
+  "evidence_artifacts": {
+    "compound_benchmark_dataset": {
+      "path": "tasks/TASK-REFLEX-V2-001/benchmarks/compound_benchmark_dataset.json",
+      "byte_sha256": "60db82dd62eaebc756c6aa3cb891b87ffaf88b6db15bfcb964ff9acccbe1b2d3"
+    },
+    "route_decision_schema": {
+      "path": "tasks/TASK-REFLEX-V2-001/schemas/route_decision_snapshot.json",
+      "byte_sha256": "b4105a888bc192e71883bc6568440c8703581b871fa2276385ebecf224c37263"
+    },
+    "baseline_raw_test_receipt": {
+      "path": "tasks/TASK-REFLEX-V2-001/raw_output/baseline_raw_tests.json",
+      "byte_sha256": "c5a05fafed36d7c2a3d0cc3e518e046cae37381fcbaf3df16a61b1d1565231f0"
+    },
+    "clean_worktree_baseline_receipt": {
+      "path": "tasks/TASK-REFLEX-V2-001/raw_output/clean_worktree_baseline_receipt.json",
+      "byte_sha256": "a4e87b9ad9d1375fcfa5fa8c643cd370d69d6978837aa61219aa5e7eaebad27b",
+      "tests_passed": "37/37"
+    }
+  },
+  "acceptance_criteria": [
+    "Zero regression: all 10 existing central intent router tests PASS",
+    "Zero regression: all 27 sovereign reflex hub tests PASS",
+    "Compound multi-intent parsing accuracy >= 95% on compound benchmark",
+    "Sub-second reflex routing latency (< 50ms rule match, < 500ms semantic)",
+    "RouteDecision contract preservation with zero downstream breakages"
+  ],
+  "rollback_plan": "git -C AI_TEAM/tasks/TASK-REFLEX-V2-001/workspaces/build_worktree checkout 766107595fd3bac7483b0843b04f34e7ced98967 -- core/os/routing/ tests/test_central_intent_router.py",
+  "last_updated_at": "2026-10-19T20:24:30+0700"
+}

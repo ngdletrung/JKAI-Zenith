@@ -114,3 +114,56 @@ def test_shadow_harness_two_phase_pairing():
         assert stats["unpaired_records"] == 0
         assert stats["pairing_rate_pct"] == 100.0
 
+
+def test_shadow_harness_dpo_export_with_receipt_and_retention():
+    """Phase R3.4 & R4: Verifies DPO dataset export with HMAC receipt and retention policy."""
+    with tempfile.TemporaryDirectory() as tmp_dir:
+        harness = ShadowHarness(telemetry_dir=tmp_dir)
+
+        # Record GOOD observation (requires valid receipt with receipt_id, hmac_signature, lds_legal)
+        good_receipt = {
+            "receipt_id": "rcpt_test_good_001",
+            "status": "SUCCESS",
+            "exit_code": 0,
+            "lds_legal": True,
+            "hmac_signature": "a" * 64,
+        }
+        harness.record_observation(
+            raw_state={"goal": "test_goal", "tool": "BROWSER"},
+            reflex_draft={"answer": "Good response"},
+            execution_receipt=good_receipt,
+            metadata={"task_key": "goal_1"},
+        )
+
+        # Record BAD observation
+        bad_receipt = {
+            "receipt_id": "rcpt_test_bad_002",
+            "status": "FAILED",
+            "exit_code": 1,
+            "lds_legal": False,
+            "hmac_signature": "b" * 64,
+        }
+        harness.record_observation(
+            raw_state={"goal": "test_goal", "tool": "BROWSER"},
+            reflex_draft={"answer": "Hallucinated response"},
+            execution_receipt=bad_receipt,
+            metadata={"task_key": "goal_1"},
+        )
+
+        export_out = Path(tmp_dir) / "dpo_export.jsonl"
+        res = harness.export_contrastive_pairs(
+            output_path=str(export_out),
+            task_id="t_dpo_test",
+            retention_days=14,
+        )
+
+        assert res["pairs_count"] == 1
+        assert res["output_path"] == str(export_out)
+        assert len(res["dataset_sha256"]) == 64
+        assert res["receipt"] is not None
+        assert res["receipt"]["artifact_type"] == "DPO_CONTRASTIVE_DATASET"
+        assert len(res["receipt"]["hmac_signature"]) == 64
+        assert res["retention_policy"]["retention_days"] == 14
+        assert res["retention_policy"]["pii_redacted"] is True
+
+

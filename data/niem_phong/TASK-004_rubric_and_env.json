@@ -1,0 +1,35 @@
+{
+  "task_id": "TASK-004",
+  "rubric_version": "v1.2",
+  "rubric": {
+    "task_id": "TASK-004",
+    "rubric_version": "v1.2",
+    "goal": "Hôm nay tôi có ngân sách 300.000đ để nấu bữa tối thịnh soạn cho gia đình 4 người (gồm 2 người lớn, 2 trẻ em). Hãy gợi ý thực đơn 3 món đủ chất (món mặn, món canh, món xào/rau) kèm bảng ước tính chi phí chi tiết từng nguyên liệu và cách chế biến nhanh gọn dưới 45 phút.",
+    "criteria": {
+      "answer_correctness": [
+        "Đủ 3 món dinh dưỡng cân đối: món mặn, món canh, món xào/rau.",
+        "Bảng ước tính chi phí chi tiết từng thành phần/nguyên liệu thực phẩm.",
+        "Tổng chi phí hợp lý không vượt quá 300.000đ.",
+        "Lộ trình các bước nấu kết hợp song song/nhanh gọn dưới 45 phút.",
+        "Văn phong trực tiếp, rõ ràng, không vòng vo hay lộ từ ngữ nội bộ."
+      ],
+      "process_compliance": [
+        "Chạy trên giao diện thực tế http://localhost:9999/ với mission_id cô lập.",
+        "Thu nhận kết quả hoàn tất với tag == 'JKAI'.",
+        "MTS trace đầy đủ các bước với self_verification.",
+        "0 lỗi vi phạm sandbox, 0 vi phạm an toàn."
+      ]
+    }
+  },
+  "rubric_sha256": "0adecc970f1adae50d53172e9b0e1d6d8c71a8bdb8c5930175d2d2fde05cd2f5",
+  "env_manifest": {
+    "active_model": "qwen3.5:4b",
+    "ollama_status": "Online",
+    "brain_status": "Optimal",
+    "executor_status": "Ready",
+    "gpu_name": "AMD Radeon RX 6600",
+    "timestamp_utc": "2026-10-29T01:12:16.367867+00:00"
+  },
+  "env_manifest_hash": "9fdb46524c9fca1bc05d4838961478bb40703cf1b843ecfc9fffeedf0d784911",
+  "created_at": "2026-10-29T01:12:16.368078+00:00"
+}

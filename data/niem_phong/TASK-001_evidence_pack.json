@@ -1,0 +1,42 @@
+{
+  "task_id": "TASK-001",
+  "rubric_version": "v1.2",
+  "rubric_sha256": "sha256:265d1bef086f8d338bc46aad243448f6ea87e17bbfbf22d3b9525f3c842d4ca8",
+  "env_manifest_hash": "sha256:63055a1587cd30aa9db64cde66b963d469de26d2fabd7cc32bdf0a64b62ff3c5",
+  "attempt_count": 4,
+  "inconclusive_count": 0,
+  "attempts": [
+    {
+      "attempt_id": "attempt_4",
+      "ui_observed": {
+        "path": "data/niem_phong/TASK-001_attempt_4_ui.json",
+        "sha256": "sha256:54f5712243b90b1351081accebc94b39df80b18123124cb76327803fdcae5a9f"
+      },
+      "runtime_trace": {
+        "path": "data/niem_phong/TASK-001_attempt_4_trace.json",
+        "sha256": "sha256:79229890d7c09736f401acd143f335128da1bd88c09fa19fef27499a41356b8f",
+        "schema_valid": true
+      },
+      "antigravity_analysis": {
+        "path": "data/niem_phong/TASK-001_attempt_4_analysis.md",
+        "sha256": "sha256:bc393446046b39fa5e7875b8d297c84eee3c624ee1808e17d8f2f1ec42507781"
+      },
+      "answer_correctness": "PASS",
+      "process_compliance": "PASS",
+      "severity_findings": [],
+      "evidence_limitations": [],
+      "regression_check": {
+        "executed": true,
+        "passed": true,
+        "suite_size": 36
+      },
+      "metrics": {
+        "steps": 4,
+        "retries": 0,
+        "canary": "NP4-SEC-20261017-FINALPASS04B"
+      }
+    }
+  ],
+  "final_verdict": "PASSED",
+  "frozen_at": "2026-10-18T00:25:00Z"
+}

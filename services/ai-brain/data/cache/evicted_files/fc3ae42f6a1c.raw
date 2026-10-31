@@ -1,0 +1,152 @@
+[FILE_METADATA: total_lines=152 (splitlines=151) | sha256_16=56c019ddf07b8de0 | sha256=56c019ddf07b8de08069d8e87865f38d73674fcd77b61ca7a37c21ee7801507e | classes=RiskLevel, MosaicInspectionResult, ContextCanary | functions_and_methods=ContextCanary.__init__, ContextCanary.extract_entities_rulebased, ContextCanary.check_accumulation]
+# -*- coding: utf-8 -*-
+"""
+JKAI Context Canary (Active Mosaic Attack Prevention).
+100% deterministic rule-based implementation using Regex, Architecture Gazetteer,
+and Jaccard token overlap metrics. ZERO LLM calls in the gating logic.
+"""
+
+import re
+from dataclasses import dataclass, field
+from enum import Enum
+from typing import Dict, List, Set
+
+
+class RiskLevel(str, Enum):
+    NORMAL = "NORMAL"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"  # Hard block
+
+
+@dataclass
+class MosaicInspectionResult:
+    risk_level: RiskLevel
+    overlap_score: float
+    accumulated_terms: int
+    novel_terms_count: int
+    flagged_terms: List[str] = field(default_factory=list)
+    reason: str = "ok"
+
+
+class ContextCanary:
+    """
+    Prevents mosaic attacks where an adversary or multi-round session reconstructs
+    internal architecture piece-by-piece across multiple seemingly benign prompts.
+    """
+
+    # Gazetteer of protected architecture concepts & internal component names
+    ARCHITECTURE_GAZETTEER = {
+        "adaptivecontroller",
+        "missioncompletiongate",
+        "decisionlora",
+        "verifiedmemorystore",
+        "fullchaintracer",
+        "recoverydrillharness",
+        "tainttrackingwarden",
+        "ssrfresolvepinguard",
+        "dualstageactionfirewall",
+        "delphiprotocol",
+        "qdrant",
+        "rx6600",
+        "sovereigncascade",
+        "rss_poller",
+        "searxng",
+        "kernelregistry",
+        "hardwarepulse",
+        "hypothesistracker",
+    }
+
+    # Thresholds
+    MOSAIC_OVERLAP_THRESHOLD = 0.65
+    MAX_ACCUMULATED_GAZETTEER_TERMS = 8
+
+    def __init__(self):
+        # Maps mission_id -> Set of normalized architectural terms seen so far
+        self._history: Dict[str, Set[str]] = {}
+
+    def extract_entities_rulebased(self, text: str) -> Set[str]:
+        """Extracts technical identifiers, paths, and gazetteer matches deterministically."""
+        if not text:
+            return set()
+
+        entities = set()
+        lowered = text.lower()
+
+        # 1. Match against known Architecture Gazetteer
+        for term in self.ARCHITECTURE_GAZETTEER:
+            if term in lowered:
+                entities.add(term)
+
+        # 2. Extract code identifiers (snake_case or camelCase)
+        code_tokens = re.findall(r"\b[a-z0-9]+(?:_[a-z0-9]+)+\b", lowered)
+        entities.update(code_tokens)
+
+        # 3. Extract module-like dotted notation (e.g. core.os.cognition)
+        dotted_tokens = re.findall(
+            r"\b[a-z0-9]+(?:\.[a-z0-9]+)+\b", lowered
+        )
+        entities.update(dotted_tokens)
+
+        return entities
+
+    def check_accumulation(
+        self, mission_id: str, new_prompt: str
+    ) -> MosaicInspectionResult:
+        """
+        Calculates information gain & semantic overlap deterministically.
+        Hard-blocks if cumulative information density threatens architectural leakage.
+        """
+        history_entities = self._history.setdefault(mission_id, set())
+        new_entities = self.extract_entities_rulebased(new_prompt)
+
+        # Jaccard overlap calculation
+        if not history_entities or not new_entities:
+            overlap = 0.0
+        else:
+            intersection = history_entities.intersection(new_entities)
+            union = history_entities.union(new_entities)
+            overlap = len(intersection) / len(union) if union else 0.0
+
+        novel_entities = new_entities - history_entities
+        flagged = list(new_entities.intersection(self.ARCHITECTURE_GAZETTEER))
+
+        # Check total cumulative density of protected architecture terms
+        total_gazetteer_seen = len(
+            history_entities.union(new_entities).intersection(
+                self.ARCHITECTURE_GAZETTEER
+            )
+        )
+
+        # Active Hard Block Condition
+        if (
+            overlap >= self.MOSAIC_OVERLAP_THRESHOLD
+            and len(history_entities) >= 5
+        ) or total_gazetteer_seen >= self.MAX_ACCUMULATED_GAZETTEER_TERMS:
+            return MosaicInspectionResult(
+                risk_level=RiskLevel.HIGH,
+                overlap_score=overlap,
+                accumulated_terms=len(history_entities),
+                novel_terms_count=len(novel_entities),
+                flagged_terms=flagged,
+                reason="mosaic_accumulation_limit_exceeded",
+            )
+
+        # Update historical state for this mission
+        history_entities.update(new_entities)
+
+        risk = (
+            RiskLevel.MEDIUM
+            if len(flagged) >= 3 or overlap > 0.40
+            else RiskLevel.NORMAL
+        )
+        return MosaicInspectionResult(
+            risk_level=risk,
+            overlap_score=overlap,
+            accumulated_terms=len(history_entities),
+            novel_terms_count=len(novel_entities),
+            flagged_terms=flagged,
+            reason="accumulation_within_limits",
+        )
+
+
+context_canary = ContextCanary()

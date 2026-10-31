@@ -1,0 +1,1 @@
+Hãy mở trực quan trang web https://vietnamnet.vn/ và chụp ảnh màn hình trang chủ

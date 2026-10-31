@@ -50,7 +50,8 @@ CPU_OMP_NUM_THREADS=20
 | `qwen3:0.6b` (Tier2 reflex) | 40960 | 8192 | GPU/VRAM | Prompt Tier2 nhỏ, KV không đáng kể |
 | `qwen2.5-coder:3b` (Executor) | 32768 | 8192 | GPU/VRAM | Đã soak thực tế trên RX 6600 8GB, giữ nguyên |
 | `qwen2.5-coder:14b` | 32768 | 8192 khi resident GPU / 32768 khi offload CPU | CPU/RAM | CPU 64GB gánh được KV lớn; mức CPU chưa soak, mặc định an toàn 8192 |
-| `qwen3.5:4b` (Planner/Critic/Deep) | 262144 | 8192 | GPU/VRAM | Native 262K để dành cho offload CPU đọc sâu về sau, chưa bật |
+| `qwen3.5:4b` (Receptionist/Summarizer/Fast) | 262144 | 8192 | GPU/VRAM | Tối ưu phản xạ nhanh và tổng hợp văn bản |
+| `deepseek-r1:latest` (Dual-Role Deep Reasoning) | 65536 | 8192 | GPU/VRAM | Chuyên gia suy luận sâu CoT kép (PLANNER + CRITIC), thường trực VRAM |
 | `nomic-embed-text` | 2048 | 2048 | CPU/RAM | Embedding, không sinh token |
 | `moondream` (Vision) | 2048 | 2048 | CPU/RAM | Vision, không sinh token dài |
 
@@ -59,15 +60,15 @@ CPU_OMP_NUM_THREADS=20
 ## 🕹️ 3. Active Role Mapping
 | Role | Active Model | Hardware | num_ctx | num_predict | Temp | num_gpu | num_thread | top_p | repeat_penalty | KEEP_ALIVE | Active Profile | Capability | Quality |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
-| **RECEPTIONIST** | qwen3.5:4b | **GPU/VRAM** | 8192 | 2048 | 0.20 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general,reasoning,tool_use | medium |
-| **CHAT** | qwen3.5:4b | **GPU/VRAM** | 8192 | 2048 | 0.20 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general,reasoning | medium |
-| **PLANNER** | qwen3.5:4b | **GPU/VRAM** | 8192 | 2048 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | reasoning,planning | high |
-| **CRITIC** | qwen3.5:4b | **GPU/VRAM** | 8192 | 2048 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | reasoning | high |
-| **EXECUTOR** | qwen2.5-coder:3b | **GPU/VRAM** | 8192 | 2048 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
-| **EXECUTOR_ALPHA** | qwen2.5-coder:3b | **GPU/VRAM** | 8192 | 2048 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
-| **EXECUTOR_BETA** | qwen2.5-coder:3b | **GPU/VRAM** | 8192 | 2048 | 0.00 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
-| **DEEP_REASONER** | qwen3.5:4b | **GPU/VRAM** | 8192 | 4096 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | reasoning | high |
-| **SUMMARIZER** | qwen3.5:4b | **GPU/VRAM** | 8192 | 2048 | 0.10 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general,reasoning,tool_use | medium |
+| **RECEPTIONIST** | deepseek-r1:latest | **GPU/VRAM** | 8192 | 4096 | 0.60 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general,reasoning,tool_use | high |
+| **CHAT** | deepseek-r1:latest | **GPU/VRAM** | 8192 | 4096 | 0.60 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general,reasoning | high |
+| **PLANNER** | deepseek-r1:latest | **GPU/VRAM** | 8192 | 4096 | 0.60 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | reasoning,planning | high |
+| **CRITIC** | deepseek-r1:latest | **GPU/VRAM** | 8192 | 4096 | 0.20 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | reasoning | high |
+| **EXECUTOR** | deepseek-r1:latest | **GPU/VRAM** | 8192 | 4096 | 0.10 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
+| **EXECUTOR_ALPHA** | deepseek-r1:latest | **GPU/VRAM** | 8192 | 4096 | 0.10 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
+| **EXECUTOR_BETA** | deepseek-r1:latest | **GPU/VRAM** | 8192 | 4096 | 0.10 | 100 | 20 | 0.85 | 1.05 | **-1** | FAST_RESPONSE | coding,tool_use | high |
+| **DEEP_REASONER** | deepseek-r1:latest | **GPU/VRAM** | 8192 | 4096 | 0.60 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | reasoning | high |
+| **SUMMARIZER** | deepseek-r1:latest | **GPU/VRAM** | 8192 | 4096 | 0.20 | 100 | 20 | 0.90 | 1.10 | **-1** | FAST_RESPONSE | general,reasoning,tool_use | high |
 | **EMBEDDER** | nomic-embed-text:latest | **CPU/RAM** | 2048 | 0 | 0.00 | 0 | 20 | 1.00 | 1.00 | **-1** | STABLE_SYNC | embedding | medium |
 | **GRAPHIC_MASTER** | SDXL-Turbo-ROCm | **GPU/VRAM** | 0 | 0 | 0.00 | 100 | 0 | -1 | -1 | **0** | ULTRA_ART | | |
 | **VISION** | moondream:latest | **CPU/RAM** | 2048 | 512 | 0.10 | 0 | 20 | 0.90 | 1.10 | **0** | RAM_OPTIMIZED | vision | medium |

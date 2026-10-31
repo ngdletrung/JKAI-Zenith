@@ -1,0 +1,112 @@
+[FILE_METADATA: total_lines=508 (splitlines=507) | sha256_16=43f6ededd9effb55 | sha256=43f6ededd9effb553d629d34f738bff7377267905c8be91d26f009d9cffb32ec | classes=StepContext, ToolInvocationContext, ToolResultContext, AgentLifecycleHook, LifecycleManager, StepPreparationHook, ActionValidationHook, CircuitBreakerHook, ScopeLockAndCoverageCompletionHook, TransactionalMutationHook, CoverageAndWorkingMemoryHook, TracebackDistillerHook, NoFabricationGuardHook, MultiFileCoverageGuardHook, PreSubmissionReflexionHook, TddVerificationHook | functions_and_methods=AgentLifecycleHook.on_step_start, AgentLifecycleHook.before_tool_dispatch, AgentLifecycleHook.after_tool_executed, AgentLifecycleHook.before_submission, LifecycleManager.__init__, LifecycleManager.register_hook, LifecycleManager.run_on_step_start, LifecycleManager.run_before_tool_dispatch, LifecycleManager.run_after_tool_executed, LifecycleManager.run_before_submission, StepPreparationHook.on_step_start, ActionValidationHook.__init__, ActionValidationHook.before_tool_dispatch, CircuitBreakerHook.before_tool_dispatch, ScopeLockAndCoverageCompletionHook.before_tool_dispatch, TransactionalMutationHook.before_tool_dispatch, TransactionalMutationHook.after_tool_executed, CoverageAndWorkingMemoryHook.after_tool_executed, TracebackDistillerHook.after_tool_executed, NoFabricationGuardHook.before_submission, MultiFileCoverageGuardHook.before_submission, PreSubmissionReflexionHook.before_submission, TddVerificationHook.before_submission]
+"""
+core/kernel/agent_lifecycle.py
+==============================
+Hệ thống Lifecycle Interceptors / Hooks theo kiến trúc Finite State Machine (FSM)
+lấy cảm hứng từ DeepSeek-Harness và Meta CCA.
+
+Tách rời hoàn toàn các quy tắc kiểm soát biên (Action Validation, Circuit Breaker,
+Transaction Snapshot & Rollback, Coverage Tracking, Pre-Submission Reflexion)
+ra khỏi lõi vòng lặp Agent Loop, triệt tiêu mã nguồn Spaghetti Monolith.
+"""
+
+from __future__ import annotations
+
+import json
+import logging
+import re
+from abc import ABC, abstractmethod
+from dataclasses import dataclass, field
+from pathlib import Path
+from typing import Any, Dict, List, Optional, Set, Tuple
+
+logger = logging.getLogger("jkai.agent_lifecycle")
+
+
+@dataclass
+class StepContext:
+    """Bối cảnh trạng thái tại mỗi bước của vòng lặp Agent Loop."""
+    task_id: str
+    goal: str
+    mode: str  # 'audit' hoặc 'fix'
+    step: int
+    max_steps: int
+    messages: List[Dict[str, Any]]
+    trace_id: str = "sys"
+    scope_rel: str = ""
+    last_obs: str = ""
+    touched_files: List[str] = field(default_factory=list)
+    viewed_files: Set[str] = field(default_factory=set)
+    has_successful_view_file: bool = False
+    guard_blocked_count: int = 0
+    coverage_ledger: Any = None
+    budget: Any = None
+    tx_manager: Any = None
+
+
+... [ĐÃ CẮT BỚT LOG DO QUÁ DÀI ĐỂ BẢO VỆ NGỮ CẢNH] ...
+
+ ==============================================================================
+# CÁC INTERCEPTOR CHUYÊN BIỆT (SPECIALIZED HOOKS)
+# ==============================================================================
+
+class StepPreparationHook(AgentLifecycleHook):
+    """Quản lý bối cảnh & Cắt tỉa ngữ cảnh bảo vệ Token Budget ở đầu mỗi bước."""
+
+    async def on_step_start(self, ctx: StepContext) -> None:
+        from core.kernel.context_manager import context_manager
+        ctx.messages = context_manager.prune_messages(ctx.messages, session_id=ctx.task_id)
+
+
+class ActionValidationHook(AgentLifecycleHook):
+    """Xác thực định dạng công cụ và tham số tại biên trước khi điều phối."""
+
+    def __init__(self, known_tools: Set[str]):
+        self.known_tools = known_tools
+
+    async def before_tool_dispatch(
+        self, step_ctx: StepContext, tool_ctx: ToolInvocationContext
+    ) -> None:
+        from core.kernel.action_validator import validate_action, ActionDecision
+
+        verdict = validate_action(tool_ctx.tool, tool_ctx.params, known_tools=self.known_tools)
+        if verdict.decision in (ActionDecision.UNKNOWN_TOOL, ActionDecision.SCHEMA_INVALID):
+            tool_ctx.is_intercepted = True
+            tool_ctx.interception_observation = (
+                f"[OBSERVATION]\n🚧 Action không hợp lệ: {verdict.reason}\n"
+                f"Các tool hợp lệ: {', '.join(sorted(self.known_tools))}\n"
+                "Hãy phát hành lại JSON với tool hợp lệ và params đúng dạng object."
+            )
+        elif verdict.normalized_tool:
+            tool_ctx.tool = verdict.normalized_tool
+
+
+class CircuitBreakerHook(AgentLifecycleHook):
+    """Chặn dao động lặp vô nghĩa (Circuit Breaker) và cung cấp Recovery Guidance."""
+
+    async def before_tool_dispatch(
+        self, step_ctx: StepContext, tool_ctx: ToolInvocationContext
+    ) -> None:
+        if tool_ctx.is_intercepted:
+            return
+
+        budget = step_ctx.budget
+        if not budget:
+            return
+
+        sig = budget._signature(str(tool_ctx.tool), tool_ctx.params)
+        rep_count = budget.history.count(sig)
+
+        if tool_ctx.tool == "view_file" and rep_count >= 2:
+            tool_ctx.is_intercepted = True
+            step_ctx.guard_blocked_count += 1
+
+            if step_ctx.guard_blocked_count >= 2:
+                # Force finalization theo cơ chế RECOVERY-AFTER-GUARD
+                cov_ledger = step_ctx.coverage_ledger
+                if cov_ledger:
+                    cov = cov_ledger.evaluate_coverage()
+                    read_files = list(cov_ledger.read_files) if hasattr(cov_ledger, "read_files") else []
+                    if read_files:
+                        partial = f"PARTIAL_REPORT: Da doc {read_files}. Coverage: {cov.get('coverage_percent', 0)}%"
+                    else:

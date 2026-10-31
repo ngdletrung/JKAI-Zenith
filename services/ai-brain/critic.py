@@ -150,6 +150,16 @@ class Critic:
                 f"Thẩm định Goal: {goal}"
             )
 
+        critic_gaps_block = ""
+        try:
+            from core.kernel.failure_memory import load_known_gaps_summary
+            gaps_sum = load_known_gaps_summary()
+            if gaps_sum:
+                critic_gaps_block = f"\n\n<KNOWN_SYSTEM_GAPS_AND_DEFECTS_FOR_AUDIT>\n{gaps_sum}\n</KNOWN_SYSTEM_GAPS_AND_DEFECTS_FOR_AUDIT>"
+        except Exception:
+            pass
+
+        system_prompt += critic_gaps_block
         messages = [
             {"role": "system", "content": system_prompt}
         ]

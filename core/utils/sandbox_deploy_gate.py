@@ -204,15 +204,45 @@ def promote_candidate_to_production(
     candidate_path: Path,
     production_path: Path,
     invalidate_cache: bool = True,
+    approved: Optional[bool] = None,
+    approver_id: str = "sandbox_deploy_gate",
+    regression_passed: bool = True,
 ) -> Tuple[bool, str]:
     """
-    Bước 3: Chỉ sau sandbox PASS — copy file thử → logic.py production.
+    Bước 3: Chỉ sau sandbox PASS + AST Allowlist + StateSanitizer + Approval Gate — copy file thử → logic.py production.
     """
     if not candidate_path.is_file():
         return False, f"Thiếu file thử: {candidate_path}"
+    from core.kernel.dynamic_skill_creator import DynamicSkillCreator
+    from core.sanitizer.state_sanitizer import StateSanitizer
+    from core.kernel.execution_integrity import ExecutionIntegrityLayer
+
+    code_text = candidate_path.read_text(encoding="utf-8", errors="replace")
+    ast_ok, ast_errs = DynamicSkillCreator.validate_skill_ast(code_text)
+    if not ast_ok:
+        return False, f"GOVERNANCE_AST_REJECTED: {'; '.join(ast_errs)}"
+    scan_res = StateSanitizer.scan_for_retain(code_text, policy="block")
+    if not scan_res["allowed_to_retain"]:
+        return False, f"GOVERNANCE_SANITIZER_REJECTED: {scan_res['matched_pattern_ids']}"
+    if not regression_passed:
+        return False, "GOVERNANCE_REGRESSION_REJECTED: Candidate must pass 100% regression."
+    is_prod = DynamicSkillCreator._is_production_env()
+    effective_approved = approved if approved is not None else (not is_prod)
+    if not effective_approved or approver_id.lower() in ("llm", "unapproved", "self"):
+        return False, "GOVERNANCE_APPROVAL_REQUIRED: Production promotion requires explicit human/policy approval."
+
     production_path = Path(production_path)
     production_path.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(candidate_path, production_path)
+    integrity = ExecutionIntegrityLayer(mission_id="promote_candidate")
+    rcpt = integrity.seal_execution_receipt(
+        action="promote_candidate_to_production",
+        arguments={"candidate": str(candidate_path), "production": str(production_path), "approver_id": approver_id},
+        output="promoted",
+        task_id="promote_candidate",
+    )
+    if rcpt is None:
+        return False, "GOVERNANCE_RECEIPT_FAIL_CLOSED: Failed to seal promotion receipt." 
     manifest_path = candidate_path.parent / "manifest.json"
     if manifest_path.is_file():
         try:

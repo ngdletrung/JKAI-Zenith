@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "updated_at": "2026-09-29 19:33:37",
+  "updated_at": "2026-10-17 21:24:44",
   "tasks": {
     "NET_MIKROTIK": {
       "name": "Mạng MikroTik (DHCP, NAT, firewall RouterOS)",
@@ -171,22 +171,6 @@
         "tạm biệt"
       ]
     },
-    "NET_FORTINET": {
-      "name": "Tường lửa Fortinet / FortiGate (FortiOS, VDOM, Policy)",
-      "subs": [
-        "VDOM",
-        "HA",
-        "FIREWALL_POLICY",
-        "IPSEC"
-      ],
-      "keywords": [
-        "fortinet",
-        "fortigate",
-        "fortios",
-        "vdom",
-        "firewall policy"
-      ]
-    },
     "LOGIC_REASONING": {
       "name": "Suy luận Logic tổng quát (Diễn dịch, Nhân quả, Ràng buộc, Occam, Phản sự thực)",
       "subs": [
@@ -214,6 +198,22 @@
         "deadlock",
         "phản sự thực"
       ]
+    },
+    "NET_FORTINET": {
+      "name": "Tường lửa Fortinet / FortiGate (FortiOS, VDOM, Policy)",
+      "subs": [
+        "VDOM",
+        "HA",
+        "FIREWALL_POLICY",
+        "IPSEC"
+      ],
+      "keywords": [
+        "fortinet",
+        "fortigate",
+        "fortios",
+        "vdom",
+        "firewall policy"
+      ]
     }
   },
   "aliases": {
@@ -223,8 +223,6 @@
     "OFFICE_FINANCE": "OFFICE_DOC",
     "ANAPHORA": "COMM",
     "EPISTEMIC": "COMM",
-    "FORTIGATE": "NET_FORTINET",
-    "FORTIOS": "NET_FORTINET",
     "LOGIC_DEDUCTION": "LOGIC_REASONING",
     "LOGIC_CONTRADICTION": "LOGIC_REASONING",
     "LOGIC_CAUSAL": "LOGIC_REASONING",
@@ -242,6 +240,8 @@
     "LOGIC_TOT_SEARCH": "LOGIC_REASONING",
     "LOGIC_FORMAL_VERIFICATION": "LOGIC_REASONING",
     "LOGIC_BAYESIAN_OCCAM": "LOGIC_REASONING",
-    "LOGIC_GAME_THEORY": "LOGIC_REASONING"
+    "LOGIC_GAME_THEORY": "LOGIC_REASONING",
+    "FORTIGATE": "NET_FORTINET",
+    "FORTIOS": "NET_FORTINET"
   }
-}
+}

@@ -222,9 +222,26 @@ Yêu cầu trả về JSON định dạng chuẩn xác:
             except SyntaxError as se:
                 return {"success": False, "error": f"Bản vá chứa lỗi cú pháp: {se}"}
                 
-            # Ghi đè mã nguồn mới
-            with open(logic_path, "w", encoding="utf-8") as f:
-                f.write(new_code)
+            # [SOVEREIGN SKILL GOVERNANCE]: Không cho LLM ghi đè logic.py trực tiếp!
+            # Bắt buộc đẩy qua DynamicSkillCreator.propose_skill (staging candidate + AST + StateSanitizer)
+            from core.kernel.dynamic_skill_creator import dynamic_skill_creator
+            prop_res = dynamic_skill_creator.propose_skill(
+                skill_name=skill_id,
+                description=f"Self-healing candidate: {solution}",
+                python_code=new_code,
+                category=skill_dir.parent.name,
+            )
+            if prop_res.get("status") != "proposed":
+                return {"success": False, "error": f"Bản vá bị từ chối bởi Skill Governance: {prop_res.get('reason')}"}
+            return {
+                "success": False,
+                "status": "staged_proposal",
+                "proposal_id": prop_res.get("proposal_id"),
+                "candidate_file": prop_res.get("candidate_file"),
+                "root_cause": root_cause,
+                "solution": solution,
+                "error": "GOVERNANCE_STAGED: LLM self-healing patch staged as candidate; requires regression 100% and explicit approval before publishing to logic.py."
+            }
                 
             # Cập nhật SKILL.md
             if skill_md_path.exists():

@@ -347,6 +347,10 @@ class VerifiedMemoryStore:
         scored.sort(key=lambda x: (x[0], x[1].revision), reverse=True)
         return [item[1] for item in scored[:top_k]]
 
+    def purposeful_retrieval(self, goal: str, limit: int = 2) -> List[MemoryEntry]:
+        """Alias cho Dynamic Purposeful Retrieval."""
+        return self.retrieve_for_task(goal, top_k=limit)
+
     def build_memory_augmented_system_prompt(
         self,
         base_system_prompt: str,
@@ -791,5 +795,17 @@ def run_phase_a4_memory_benchmark(
     report_bytes = (json.dumps(report, indent=2, ensure_ascii=False) + "\n").encode("utf-8")
     report_path.write_bytes(report_bytes)
     return report
+
+
+_GLOBAL_VERIFIED_STORE: Optional[VerifiedMemoryStore] = None
+
+
+def get_verified_memory_store(store_path: Optional[Path] = None) -> VerifiedMemoryStore:
+    """Trả về singleton instance của VerifiedMemoryStore cho toàn hệ thống."""
+    global _GLOBAL_VERIFIED_STORE
+    if _GLOBAL_VERIFIED_STORE is None or store_path is not None:
+        _GLOBAL_VERIFIED_STORE = VerifiedMemoryStore(store_path=store_path or DEFAULT_MEMORY_STORE_PATH)
+    return _GLOBAL_VERIFIED_STORE
+
 
 

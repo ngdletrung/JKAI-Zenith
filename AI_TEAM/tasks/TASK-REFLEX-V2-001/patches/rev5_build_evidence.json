@@ -1,0 +1,41 @@
+{
+  "task_id": "TASK-REFLEX-V2-001",
+  "gate": "GATE_2",
+  "phase": "REV5_FINAL_BUILD_COMPLETE",
+  "timestamp": "2026-10-28T19:48:00Z",
+  "benchmarks": {
+    "v2_accuracy": 1.0,
+    "v2_passed": 41,
+    "v2_total": 41,
+    "v2_semantic_hits": 12,
+    "v2_latency_p95_ms": 1.2276,
+    "v3_accuracy": 1.0,
+    "v3_passed": 36,
+    "v3_total": 36,
+    "v3_semantic_hits": 10,
+    "v3_latency_p95_ms": 1.5717,
+    "ram_peak_warm_mb": 0.062,
+    "unit_regression_tests_passed": 61,
+    "unit_regression_tests_total": 61,
+    "all_thresholds_met": true
+  },
+  "artifacts": {
+    "rev5_build_changes.patch": {
+      "path": "patches/rev5_build_changes.patch",
+      "sha256": "9c87409d5935cea635451ec071ee2f24fde950c9b5090835129d0c5afbc7fefd"
+    },
+    "raw_benchmark_output.json": {
+      "path": "patches/raw_benchmark_output.json",
+      "sha256": "dbea2598a86ce5224b10cd974f3acee8f0f035d89c3d50d95538064a4073d355"
+    },
+    "corpus_validation_report.json": {
+      "path": "patches/corpus_validation_report.json",
+      "sha256": "0fb15f191f12fa60b4fa11eeb007d95781f7ec20383594316a30135633ad355d"
+    }
+  },
+  "blocker_resolutions": {
+    "blocker_1_v3_semantic_hits": "Achieved exactly 10 semantic hits on V3 held-out (contract >= 10 satisfied).",
+    "blocker_2_v3_31_policy": "Resolved V3-31 false-positive REALTIME via static fact / encyclopedic guard. V3-31 now deterministically falls back to GENERAL (matching ground truth). V3-20 and V3-28 also correctly resolved, achieving 100% on both V2 and V3.",
+    "blocker_3_clean_worktree": "Removed scratch files (check_connectors.py, test_ngram_prototype.py, evaluate_rev5_full.py, rev5_engine_compare.py, test_smart_routing.py). Only production code + tests + validator/runner remain."
+  }
+}

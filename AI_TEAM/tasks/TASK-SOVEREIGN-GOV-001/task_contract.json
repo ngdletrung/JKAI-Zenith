@@ -1,0 +1,30 @@
+{
+  "task_id": "TASK-SOVEREIGN-GOV-001",
+  "name": "Enterprise Sovereign Runtime Governance & Audit Verification",
+  "status": "READY_FOR_AUDIT",
+  "owner": "Antigravity",
+  "reviewer": "OpenCode",
+  "triad_arbiter": "Master LeeTrung",
+  "scope": {
+    "pillars": [
+      "Nhóm 1 (Sovereign OS): SROS v2 Cryptographic Receipts, Meru OS Integer States",
+      "Nhóm 2 (Separation of Reasoning & Execution): DIR 5-Pillar LDS, Cognithor 4-Tier Risk",
+      "Nhóm 3 (Agent Execution Layers): Ouroboros Replayable Contracts, AGH Cross-Process Leases"
+    ],
+    "target_files": [
+      "core/kernel/lds_risk_governance.py",
+      "core/kernel/execution_integrity.py",
+      "services/ai-brain/receptionist/executor_gateway.py",
+      "tests/test_lds_risk_governance.py"
+    ]
+  },
+  "acceptance_criteria": [
+    "AC1: LDS 5-Pillar evaluation (Authority, Context, Time, Integrity, Evidence) blocks illegal operations fail-closed",
+    "AC2: Cognithor 4-tier risk classification correctly separates GREEN, YELLOW, ORANGE, RED",
+    "AC3: SROS v2 HMAC-SHA256 ExecutionReceipt sealed on all successful tool execution paths",
+    "AC4: Receipt tampering or absence detected deterministically without calling LLM (Ouroboros audit)",
+    "AC5: Secret management fail-closed when JKAI_ENV=production and secret missing; supports environment injection",
+    "AC6: AGH ResourceLeaseManager implements cross-process file-backed mutual exclusion with atomic TTL takeover",
+    "AC7: 100% pass on targeted test suite with zero regression on root routing (34/34 reflex tests PASS)"
+  ]
+}

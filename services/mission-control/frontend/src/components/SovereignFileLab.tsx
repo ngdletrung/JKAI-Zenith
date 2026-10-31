@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { 
   Folder, File, ChevronRight, ChevronDown, Save, Trash2, 
-  RefreshCcw, FileText, Code, Settings, Plus, X, Lock
+  RefreshCcw, FileText, Code, Settings, Plus, X, Lock,
+  Download, ZoomIn, ZoomOut, RotateCw, ExternalLink, Image as ImageIcon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -17,6 +18,10 @@ export const SovereignFileLab: React.FC = () => {
   const [tree, setTree] = useState<FileNode | null>(null);
   const [selectedFile, setSelectedFile] = useState<string | null>(null);
   const [fileContent, setFileContent] = useState<string>('');
+  const [fileType, setFileType] = useState<string>('text');
+  const [rawUrl, setRawUrl] = useState<string>('');
+  const [zoom, setZoom] = useState(1);
+  const [rotation, setRotation] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
   const [expandedNodes, setExpandedNodes] = useState<Set<string>>(new Set(['.']));
 
@@ -50,7 +55,11 @@ export const SovereignFileLab: React.FC = () => {
       const res = await fetch(`/api/system/read_file?path=${encodeURIComponent(path)}`);
       const data = await res.json();
       setSelectedFile(path);
+      setFileType(data.type || 'text');
+      setRawUrl(data.raw_url || `/api/system/raw_file?path=${encodeURIComponent(path)}`);
       setFileContent(data.content || '');
+      setZoom(1);
+      setRotation(0);
     } catch (err) {
       console.error("Failed to read file", err);
     } finally {
@@ -194,16 +203,43 @@ export const SovereignFileLab: React.FC = () => {
           <>
             <div className="shrink-0 h-12 border-b border-white/10 flex items-center px-4 bg-black/20 justify-between">
               <div className="flex items-center gap-2 truncate">
-                <FileText size={16} className="text-blue-400" />
+                {fileType === 'image' ? (
+                  <ImageIcon size={16} className="text-emerald-400" />
+                ) : (
+                  <FileText size={16} className="text-blue-400" />
+                )}
                 <span className="text-xs font-mono text-gray-400 truncate">{selectedFile}</span>
+                <span className="px-1.5 py-0.5 rounded text-[9px] font-mono uppercase bg-white/5 text-white/40">
+                  {fileType === 'image' ? 'IMAGE' : 'CODE'}
+                </span>
               </div>
               <div className="flex items-center gap-2">
-                <button 
-                  onClick={saveFile}
-                  className="flex items-center gap-2 px-3 py-1 bg-blue-600 hover:bg-blue-500 rounded text-xs font-bold transition-all shadow-lg shadow-blue-900/20"
-                >
-                  <Save size={14} /> SAVE
-                </button>
+                {fileType === 'image' ? (
+                  <>
+                    <a 
+                      href={rawUrl} 
+                      download={selectedFile.split('/').pop()} 
+                      className="flex items-center gap-1.5 px-3 py-1 bg-emerald-600/30 hover:bg-emerald-600/40 border border-emerald-500/40 rounded text-xs font-bold text-emerald-400 transition-all"
+                    >
+                      <Download size={14} /> TẢI VỀ
+                    </a>
+                    <a 
+                      href={rawUrl} 
+                      target="_blank" 
+                      rel="noreferrer"
+                      className="flex items-center gap-1.5 px-3 py-1 bg-white/10 hover:bg-white/20 border border-white/15 rounded text-xs font-bold text-white/80 transition-all"
+                    >
+                      <ExternalLink size={14} /> MỞ TAB MỚI
+                    </a>
+                  </>
+                ) : (
+                  <button 
+                    onClick={saveFile}
+                    className="flex items-center gap-2 px-3 py-1 bg-blue-600 hover:bg-blue-500 rounded text-xs font-bold transition-all shadow-lg shadow-blue-900/20"
+                  >
+                    <Save size={14} /> SAVE
+                  </button>
+                )}
               </div>
             </div>
             <div className="flex-1 min-h-0 relative overflow-hidden">
@@ -212,12 +248,43 @@ export const SovereignFileLab: React.FC = () => {
                   <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                 </div>
               ) : null}
-              <textarea
-                value={fileContent}
-                onChange={(e) => setFileContent(e.target.value)}
-                className="w-full h-full p-6 bg-transparent font-mono text-sm resize-none focus:outline-none text-gray-200 leading-relaxed scrollbar-thin scrollbar-thumb-white/10"
-                spellCheck={false}
-              />
+              {fileType === 'image' ? (
+                <div className="w-full h-full relative flex flex-col items-center justify-center p-4 overflow-hidden bg-black/40">
+                  <div className="absolute top-4 right-4 z-20 flex items-center gap-1.5 p-1 rounded-xl bg-black/80 backdrop-blur-md border border-white/10 shadow-2xl">
+                    <button onClick={() => setZoom(z => Math.max(0.2, +(z - 0.2).toFixed(1)))} className="p-1.5 text-white/60 hover:text-white rounded hover:bg-white/10" title="Thu nhỏ">
+                      <ZoomOut size={16} />
+                    </button>
+                    <span className="text-xs font-mono text-cyan-400 font-bold px-2">{Math.round(zoom * 100)}%</span>
+                    <button onClick={() => setZoom(z => Math.min(4, +(z + 0.2).toFixed(1)))} className="p-1.5 text-white/60 hover:text-white rounded hover:bg-white/10" title="Phóng to">
+                      <ZoomIn size={16} />
+                    </button>
+                    <button onClick={() => setRotation(r => (r + 90) % 360)} className="p-1.5 text-white/60 hover:text-white rounded hover:bg-white/10" title="Xoay">
+                      <RotateCw size={16} />
+                    </button>
+                    <button onClick={() => { setZoom(1); setRotation(0); }} className="p-1.5 text-white/60 hover:text-white rounded hover:bg-white/10" title="Khôi phục">
+                      <RefreshCcw size={14} />
+                    </button>
+                  </div>
+                  <div className="flex-1 w-full h-full flex items-center justify-center overflow-auto p-4">
+                    <img
+                      src={rawUrl}
+                      alt={selectedFile}
+                      style={{
+                        transform: `scale(${zoom}) rotate(${rotation}deg)`,
+                        transition: 'transform 0.15s ease-out'
+                      }}
+                      className="max-h-[85%] max-w-[95%] object-contain rounded-lg shadow-2xl border border-white/10 cursor-grab active:cursor-grabbing"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <textarea
+                  value={fileContent}
+                  onChange={(e) => setFileContent(e.target.value)}
+                  className="w-full h-full p-6 bg-transparent font-mono text-sm resize-none focus:outline-none text-gray-200 leading-relaxed scrollbar-thin scrollbar-thumb-white/10"
+                  spellCheck={false}
+                />
+              )}
             </div>
           </>
         ) : (

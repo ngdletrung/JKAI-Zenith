@@ -129,9 +129,11 @@ def test_condition_4_runner_budget_and_chained_ledger(tmp_path):
     report_a = runner.run_weekly_exam("A", dry_run=True)
     assert report_a["duration_seconds"] < 1.0  # Rất nhẹ, phù hợp CI/CD
     assert report_a["total_tasks"] == 20
-    assert report_a["accuracy"] >= 0.90
+    assert report_a["accuracy"] is None  # Dry-run tuyệt đối không tạo điểm giả
+    assert report_a["capability_score"] is None
+    assert report_a["plumbing_accuracy"] == 1.0
     assert report_a["capability_status"] == "PLUMBING_ONLY"  # Khẳng định rõ chỉ đo hạ tầng
-    assert "wilson_95_ci" in report_a
+    assert report_a["wilson_95_ci"] is None
     assert all(k in report_a["group_breakdown"] for k in (
         "A_MATH_FIDELITY", "B_ANAPHORA_GROUNDING", "C_RETRIEVAL_CITATION",
         "D_TOOL_AND_FILEOPS", "E_MASTER_COMMUNICATION"

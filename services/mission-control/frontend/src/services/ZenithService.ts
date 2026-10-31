@@ -31,6 +31,20 @@ export const ZenithService = {
       return { ok: false };
     }
   },
+  async uploadFile(file: File): Promise<{ ok: boolean; path?: string; filename?: string; size?: number; error?: string }> {
+    try {
+      const formData = new FormData();
+      formData.append('file', file);
+      const r = await fetch(`${API_BASE}/api/system/upload_file`, {
+        method: 'POST',
+        body: formData,
+      });
+      return r.ok ? r.json() : { ok: false, error: 'Upload thất bại' };
+    } catch (e: any) {
+      console.error('Upload file error:', e);
+      return { ok: false, error: e?.message || 'Network error' };
+    }
+  },
   async triggerAction(action: string) {
     return fetch(`${API_BASE}/api/action`, {
       method: 'POST',

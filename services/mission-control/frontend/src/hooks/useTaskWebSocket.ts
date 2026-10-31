@@ -93,7 +93,7 @@ const ARTIFACT_FILE_MAP: Record<string, string> = {
 };
 
 const BASE_NODES = [
-  { id: 'brain', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'ZENITH CORE', status: 'RUNNING', icon: 'brain', msg: 'Đang khởi động Não bộ...' } },
+  { id: 'brain', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'ZENITH CORE', status: 'IDLE', icon: 'brain' } },
   { id: 'planner', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'NEURAL PLANNER', status: 'IDLE', icon: 'planner' } },
   { id: 'critic', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'Ban Kiểm Soát', status: 'IDLE', icon: 'critic' } },
   { id: 'executor', type: 'custom', position: { x: 0, y: 0 }, data: { label: 'Ban Thực Thi Alpha', status: 'IDLE', icon: 'executor' } },
@@ -255,7 +255,7 @@ function applyAnatomyLayout(nodes: any[], updates: NodeUpdate[]): any[] {
 // ─── HOOK ─────────────────────────────────────────────────────────────────────
 
 export function useTaskWebSocket(onNewLog?: (log: TaskLog) => void) {
-  const [dagNodes, setDagNodes] = useState<any[]>(() => applyAnatomyLayout([...BASE_NODES], []));
+  const [dagNodes, setDagNodes] = useState<any[]>(() => []);
   const [dagEdges, setDagEdges] = useState<any[]>([...BASE_EDGES]);
   const isConnected = useZenithStore(s => s.isConnected);
   const setIsConnected = useZenithStore(s => s.setIsConnected);
@@ -460,15 +460,18 @@ export function useTaskWebSocket(onNewLog?: (log: TaskLog) => void) {
 
       // ── Terminal — RESULT / DONE ───────────────────────────────────────────
       if (RESULT_TAGS.has(tag)) {
-        const isMissionResult = tag === TAG.MISSION_RESULT || tag === TAG.DONE || tag === TAG.RESULT;
+        const isMissionResult = tag === TAG.MISSION_RESULT || tag === TAG.DONE || tag === TAG.RESULT || tag === TAG.JKAI;
         if (isMissionResult) {
-          pendingNodeUpdates.push({ id: 'brain', status: 'DONE', msg: msg || 'Hoàn tất tác vụ' });
-          toast.success('Nhiệm vụ hoàn tất.', { id: 'ZENITH_PULSE', icon: '💎' });
+          pendingNodeUpdates.push({ id: 'brain', status: 'IDLE', msg: null });
+          if (tag !== TAG.JKAI) {
+            toast.success('Nhiệm vụ hoàn tất.', { id: 'ZENITH_PULSE', icon: '💎' });
+          }
         }
         if (msg && msg.length > 80) {
           useZenithStore.getState().updateArtifact('walkthrough', msg);
         }
-        SIDE_NODE_IDS.forEach(id => pendingNodeUpdates.push({ id, status: 'DONE', msg: null }));
+        SIDE_NODE_IDS.forEach(id => pendingNodeUpdates.push({ id, status: 'IDLE', msg: null }));
+        useZenithStore.getState().setStatus('idle');
       }
 
       if (tag === TAG.JKAI && msg && msg.length > 120 && !msg.includes('💎🫡 [ZENITH]')) {

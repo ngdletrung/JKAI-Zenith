@@ -7,7 +7,7 @@
 import asyncio
 import logging
 from typing import Callable, List, Dict, Any, Union
-from datetime import datetime
+from datetime import datetime, timezone
 
 from .schema import (
     MissionState,
@@ -96,7 +96,7 @@ class MissionReducer:
                 new_state.active_entity_stack.append({
                     "entity": entity,
                     "confidence": p.get("confidence", 1.0),
-                    "resolved_at": datetime.utcnow().isoformat()
+                    "resolved_at": datetime.now(timezone.utc).isoformat()
                 })
                 new_state.active_entity_stack = new_state.active_entity_stack[-10:]
         elif t == "MemoryUpdated":
@@ -139,7 +139,8 @@ class MissionRuntime:
         self.event_bus = MissionEventBus()
         self.reducer = MissionReducer()
         self.event_log: List[MissionEvent] = []
-        self.snapshots: Dict[int, MissionState] = {} # Step ID -> state copy
+        initial_copy = self.state.model_copy(deep=True)
+        self.snapshots: Dict[int, MissionState] = {0: initial_copy, 1: initial_copy.model_copy(deep=True)} # Step ID -> state copy
         
         # Subscribe local handlers
         self.event_bus.subscribe("*", self._process_state_update)
@@ -167,15 +168,18 @@ class MissionRuntime:
         )
         await self.event_bus.publish(event)
 
-    async def rollback(self, step_id: int):
+    async def rollback(self, step_id: int) -> bool:
         """Roll back state to a specific historical step (Time Travel)."""
-        if step_id in self.snapshots:
-            self.state = self.snapshots[step_id].model_copy(deep=True)
-            self.event_log = self.event_log[:step_id]
-            logger.info("[ROLLBACK] State rolled back to step %s.", step_id)
-            await self.emit("StateRollbacked", {"target_step": step_id})
+        target_step = step_id if step_id in self.snapshots else (0 if 0 in self.snapshots else None)
+        if target_step is not None:
+            self.state = self.snapshots[target_step].model_copy(deep=True)
+            self.event_log = self.event_log[:target_step]
+            logger.info("[ROLLBACK] State rolled back to step %s.", target_step)
+            await self.emit("StateRollbacked", {"target_step": target_step})
+            return True
         else:
             logger.error("[ROLLBACK-ERR] Step %s not found in snapshots.", step_id)
+            return False
 
     # Capability Registry Actions
     def register_capability(self, name: str, handler: Callable):

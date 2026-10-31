@@ -68,7 +68,11 @@ class ModelOutputParser:
         # 6. Fallback: Nếu không phát hiện tool call hợp lệ
         final_answer = None
         upper_text = text.upper()
-        if "FINAL_ANSWER" in upper_text or "FINAL ANSWER" in upper_text or "KẾT QUẢ:" in upper_text:
+        final_keywords = (
+            "FINAL_ANSWER", "FINAL ANSWER", "KẾT QUẢ:", "KẾT LUẬN:",
+            "BÁO CÁO", "NGHIỆM THU", "HOÀN THÀNH", "KÍNH GỬI MASTER", "KÍNH THƯA MASTER"
+        )
+        if any(k in upper_text for k in final_keywords):
             final_answer = text
 
         return {
@@ -221,6 +225,16 @@ class ModelOutputParser:
             return json.loads(s_escaped)
         except json.JSONDecodeError:
             pass
+
+        # 3. Phục hồi dạng Python dict / Single quotes (rất phổ biến ở mô hình nhỏ như Phi, Qwen)
+        if (s.startswith("{") and s.endswith("}")) or (s.startswith("[") and s.endswith("]")):
+            try:
+                import ast
+                val = ast.literal_eval(s)
+                if isinstance(val, (dict, list)):
+                    return val
+            except Exception:
+                pass
 
         return None
 

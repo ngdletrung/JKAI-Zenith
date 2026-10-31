@@ -85,7 +85,11 @@ JKAI Zenith is built upon the integration of world-class open-source technologie
 | **TypeSafe Jev** | TypeSafe AI / PJ Burnhill | Proprietary Ref / Terms | Fast System One Semantic Judgment / Phán đoán ngữ nghĩa System One |
 | **Laya concepts** | NandhaKishorM / Convai Innovations | Apache 2.0 | Non-autoregressive typed decisions, clean-room reference only, no endorsement / Khái niệm quyết định 1-lượt, tham khảo phòng sạch, không bảo trợ |
 | **Quyet 1.0 concepts** | Chinh Nguyen (`chinhnc`) | Apache 2.0 | Option-count bucketed calibration, smart state-only truncation & compact JSON state, clean-room reference only / Hiệu chuẩn theo bucket số phương án & cắt tỉa state thông minh, tham khảo phòng sạch |
-
+| **Agent-Browser concepts** | Vercel Labs | Apache 2.0 | Ref-based A11y Tree indexing (@e1..@eN), llms.txt fast path, clean-room reference only / Đánh chỉ mục A11y Ref & đọc llms.txt siêu tốc, tham khảo phòng sạch |
+| **Stagehand concepts** | Browserbase | MIT | Semantic observe-act-extract triad, credential masking & 3-tier self-healing, clean-room reference only / Bộ ba nguyên thủy ngữ nghĩa & che giấu credentials, tham khảo phòng sạch |
+| **TerminAI concepts** | TerminAI Community | MIT | 4-tier deterministic terminal approval ladder & chained JSONL audit ledger, clean-room reference only / Thang phê duyệt terminal 4 nấc & sổ cái kiểm toán JSONL nối chuỗi SHA-256, tham khảo phòng sạch |
+| **aider concepts** | Paul Gauthier / aider | Apache 2.0 | Multi-format code surgery (exact match, indent-normalized line matching, unified diff), clean-room reference only / Phẫu thuật code đa định dạng & so khớp dòng chuẩn hóa thụt lề, tham khảo phòng sạch |
+| **Cortex concepts** | Cortex Community | Apache 2.0 | Scoped directory workspace & container-aware sandbox routing, clean-room reference only / Không gian làm việc giới hạn thư mục & điều hướng sandbox vùng chứa, tham khảo phòng sạch |
 
 ---
 

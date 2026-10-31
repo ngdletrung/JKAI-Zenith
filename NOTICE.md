@@ -149,6 +149,41 @@ This project incorporates components from several third-party projects. Full lic
 - **Assimilation scope**: Only the engineering techniques — option-count bucketed temperature calibration (`choice:2`, `choice:3-5`, `choice:6-10`, `boolean:2`, `score:3-5`), compact JSON state serialization (`prompt_version: 2`), state-only smart truncation (keeping most recent turns for conversation lists and head for other states), and option criteria descriptions — are studied and clean-room implemented in JKAI's `ReflexEngineBackend` and `ReflexEvolutionManager`. No `quyet` package or identifier is used in JKAI code or runtime manifests, and zero remote connections are made at runtime.
 - **Lưu ý**: Chỉ học hỏi kỹ thuật hiệu chuẩn nhiệt độ theo bucket số lượng phương án, nén JSON state gọn nhẹ và cắt tỉa thông minh phần state. Mã JKAI triển khai phòng sạch 100% nội bộ, không dùng tên thương hiệu bên thứ ba trong code/manifest và không kết nối ra ngoài.
 
+### Agent-Browser: Browser Automation CLI for AI Agents (Apache License 2.0 / Vercel Labs)
+- **Project**: [agent-browser](https://github.com/vercel-labs/agent-browser)
+- **License**: [Apache-2.0.txt](file:///d:/Docker/JKAI/LICENSES/Apache-2.0.txt)
+- **Notice**: Copyright (c) 2026 Vercel, Inc. Licensed under the Apache License 2.0.
+- **Assimilation scope**: The architectural principles — Ref-based Accessibility Tree indexing (`@e1`, `@e2`), ancestor `llms.txt` discovery, compact heading outline extraction, and untrusted reference framing — are studied as research references and clean-room implemented in Python within `services/ai-browser/fast_web_reader.py` and `services/ai-browser/semantic_actuator.py`. No third-party trademarks are used as code identifiers, and runtime execution is 100% local and sovereign.
+- **Lưu ý**: Bản quyền thuộc về Vercel, Inc. Cấp phép theo Apache License 2.0. Các nguyên lý kiến trúc đánh chỉ mục cây trợ năng Ref (`@e1`), tìm kiếm `llms.txt` và trích xuất tài liệu siêu tốc được đồng hóa và triển khai phòng sạch bằng Python trong hệ thống `ai-browser` của JKAI, đảm bảo vận hành cục bộ 100%.
+
+### Stagehand: Browser Agent SDK (MIT License / Browserbase)
+- **Project**: [stagehand](https://github.com/browserbase/stagehand)
+- **License**: [MIT.txt](file:///d:/Docker/JKAI/LICENSES/MIT.txt)
+- **Notice**: Copyright (c) 2024-2026 Browserbase, Inc. Licensed under the MIT License.
+- **Assimilation scope**: The high-level semantic action triad (`observe`, `act`, `extract`), credential masking pattern (filling credentials directly via locator without LLM prompt exposure), and 3-tier self-healing resolver are studied and clean-room implemented in `services/ai-browser/semantic_actuator.py`. No external cloud SDK or proprietary services are required.
+- **Lưu ý**: Bản quyền thuộc về Browserbase, Inc. Cấp phép theo MIT License. Bộ ba nguyên thủy ngữ nghĩa (`observe`, `act`, `extract`), cơ chế che giấu mật khẩu tuyệt đối và tự phục hồi tương tác 3 tầng được đồng hóa và triển khai phòng sạch vào bộ điều khiển ngữ nghĩa của JKAI.
+
+### TerminAI: Terminal Agent Framework (MIT License / TerminAI Community)
+- **Project**: [terminai](https://github.com/terminai/terminai)
+- **License**: [MIT.txt](file:///d:/Docker/JKAI/LICENSES/MIT.txt)
+- **Notice**: Copyright (c) 2025-2026 TerminAI Contributors. Licensed under the MIT License.
+- **Assimilation scope**: The 4-tier deterministic approval ladder concept (`READ_ONLY`, `REVERSIBLE`, `IRREVERSIBLE`, `PRIVILEGED`) and chained cryptographic JSONL audit ledger pattern (`prev_hash -> entry_hash`) are studied as architectural reference and clean-room implemented in `core/security/terminal_approval_ladder.py` and `data/telemetry/terminal_audit.jsonl`. No runtime daemon or external dependency from TerminAI is bundled.
+- **Lưu ý**: Bản quyền thuộc về các tác giả đóng góp TerminAI. Cấp phép theo MIT License. Khái niệm thang phê duyệt terminal xác định 4 nấc và mẫu hình sổ cái kiểm toán JSONL nối chuỗi băm mật mã SHA-256 được nghiên cứu và triển khai độc lập (clean-room) vào hệ thống bảo mật terminal của JKAI, không kèm phụ thuộc ngoại vi.
+
+### aider: AI Pair Programmer (Apache License 2.0 / Paul Gauthier)
+- **Project**: [aider](https://github.com/paul-gauthier/aider)
+- **License**: [Apache-2.0.txt](file:///d:/Docker/JKAI/LICENSES/Apache-2.0.txt)
+- **Notice**: Copyright (c) 2023-2026 Paul Gauthier. Licensed under the Apache License 2.0.
+- **Assimilation scope**: Multi-format code surgery techniques — specifically exact string matching, indentation-normalized line matching (analyzing leading whitespace deltas and reconstructing target file indentation without corrupting AST), and unified diff parsing — are studied as research references and clean-room implemented in `core/utils/smart_patch_engine.py`. No trademark from upstream is used as runtime identifier, and zero cloud calls are made.
+- **Lưu ý**: Bản quyền thuộc về Paul Gauthier. Cấp phép theo Apache License 2.0. Các kỹ thuật phẫu thuật mã nguồn đa định dạng (so khớp chuỗi chính xác, so khớp dòng chuẩn hóa thụt lề bảo toàn AST, và phân tích Unified Diff) được nghiên cứu và triển khai phòng sạch độc lập vào `smart_patch_engine.py` của JKAI Zenith.
+
+### Cortex: Scoped Execution Workspace (Apache License 2.0 / Cortex Community)
+- **Project**: [cortex](https://github.com/cortexlabs/cortex)
+- **License**: [Apache-2.0.txt](file:///d:/Docker/JKAI/LICENSES/Apache-2.0.txt)
+- **Notice**: Copyright (c) Cortex Contributors. Licensed under the Apache License 2.0.
+- **Assimilation scope**: The scoped workspace directory pattern (restricting file operations strictly within authorized roots and container-aware sandbox routing) is studied and assimilated into JKAI's tool contracts (`core/kernel/tool_contracts.py`) and executor policies.
+- **Lưu ý**: Bản quyền thuộc về các tác giả Cortex. Cấp phép theo Apache License 2.0. Mẫu hình không gian làm việc giới hạn thư mục nghiêm ngặt và điều hướng sandbox được nghiên cứu và đồng hóa vào giao ước công cụ của JKAI.
+
 ---
 
 ## 🧠 3. ARTIFICIAL INTELLIGENCE & DATA / TRÍ TUỆ NHÂN TẠO & DỮ LIỆU

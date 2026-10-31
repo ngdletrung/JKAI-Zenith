@@ -1,0 +1,112 @@
+{
+  "id": "m_TASK-004_attempt_9_2910-0950_f83697",
+  "title": "Hôm nay tôi có ngân sách 300.000đ để nấu bữa tối thịnh soạn cho gia đì",
+  "goal": "Hôm nay tôi có ngân sách 300.000đ để nấu bữa tối thịnh soạn cho gia đình 4 người (gồm 2 người lớn, 2 trẻ em). Hãy gợi ý thực đơn 3 món đủ chất (món mặn, món canh, món xào/rau) kèm bảng ước tính chi phí chi tiết từng nguyên liệu và cách chế biến nhanh gọn dưới 45 phút.",
+  "status": "completed",
+  "ts": 1793242332.2582016,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "Hôm nay tôi có ngân sách 300.000đ để nấu bữa tối thịnh soạn cho gia đình 4 người (gồm 2 người lớn, 2 trẻ em). Hãy gợi ý thực đơn 3 món đủ chất (món mặn, món canh, món xào/rau) kèm bảng ước tính chi phí chi tiết từng nguyên liệu và cách chế biến nhanh gọn dưới 45 phút.",
+      "ts": 1793242208.2288966,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_9_2910-0950_f83697"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `TASK-004_attempt_9_2910-0950_f83697` initialized | Trace: `trace_f83697`. Runtime ready.",
+      "ts": 1793242208.232367,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_9_2910-0950_f83697"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=268 | preview='Hôm nay tôi có ngân sách 300.000đ để nấu bữa tối thịnh soạn cho gia đình 4 người (gồm 2 người lớn, 2 trẻ em). Hãy gợi ý thực đơn 3 món đủ chất (món mặn, món canh, món xào/rau) kèm bảng ước tính chi ph' | hash=48764462aed81d3c | task_id=TASK-004_attempt_9_2910-0950_f83697 | trace_id=trace_f83697",
+      "ts": 1793242214.1784825,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_9_2910-0950_f83697"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: [] | Policy Topology: SINGLE_AGENT (FAST)",
+      "ts": 1793242214.182279,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_9_2910-0950_f83697"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [PIPELINE-RESOLVER]: Master Fast Sovereignty — giữ nguyên FAST theo yêu cầu.",
+      "ts": 1793242214.1858919,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_9_2910-0950_f83697"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=reasoning pipeline=fast mode=fast tags=ANALYSIS",
+      "ts": 1793242214.1888902,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_9_2910-0950_f83697"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1793242214.193753,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_9_2910-0950_f83697"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-10-29T02:50:15.458931] [PLANNER] [Task: TASK-004_attempt_9_2910-0950_f83697] Initializing execution stream with model qwen3.5:4b... (Context: 8192)",
+      "ts": 1793242215.458977,
+      "source": "PLANNER",
+      "task_id": "TASK-004_attempt_9_2910-0950_f83697"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-10-29T02:50:25.752448] [PLANNER] [Task: TASK-004_attempt_9_2910-0950_f83697] [STATUS]: Streaming tokens initialized.",
+      "ts": 1793242225.7524877,
+      "source": "PLANNER",
+      "task_id": "TASK-004_attempt_9_2910-0950_f83697"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-10-29T02:52:11.692808] [PLANNER] [Task: TASK-004_attempt_9_2910-0950_f83697] # THỰC ĐƠN & LỘ TRÌNH NẤU BỮA TỐI - NGÂN SÁCH 300.000Đ (GIA ĐÌNH 4 THÀNH VIÊN)\n\n## I. GIẢI PHÁP DƯỠNG DẠNG VÀ CHI TIẾT MÓN ĂN\nThực đơn được thiết kế tối ưu dinh dưỡng với nguồn tinh bột duy nhất là cơm trắng, đảm bảo đủ 4 nhóm chất: Chất đạm (thịt bò, heo xay, đậu phụ), Tinh bột (cơm trắng - nguồn duy nhất), Chất xơ & Vitamin (rau muống, cà rốt, cà chua, hành tây) và Chất béo.\n\n### A. MÓN CHÍNH (Món mặn): Thịt bò xào hành tây cà chua\n*   **Thành phần:** 300g thịt bò tươi, 200g hành tây, 300g cà chua.\n*   **Dinh dưỡng chính:** Cung cấp chất đạm cao từ thịt bò và vitamin phong phú từ rau củ quả (Tuyệt đối không sử dụng tinh bột trong món này).\n\n### B. MÓN CANH: Canh thịt heo xay nấu cà rốt đậu phụ\n*   **Thành phần:** 200g thịt heo xay, 3 bìa đậu phụ (~300g), 300g cà rốt.\n*   **Dinh dưỡng chính:** Bổ sung đạm mềm và vitamin từ rau củ (Tuyệt đối không sử dụng tinh bột trong món này).\n\n### C. MÓN XÀO/RAU: Rau muống xào tỏi\n*   **Thành phần:** 400g rau muống, tỏi phi thơm.\n*   **Dinh dưỡng chính:** Cung cấp chất xơ và vitamin (Tuyệt đối không sử dụng tinh bột trong món này).\n\n### D. NGUỒN TINH BỘT ĐÚNG: Cơm trắng dẻo thơm\n*   **Thành phần:** 400g gạo tẻ nấu thành cơm trắng.\n*   **Lưu ý quan trọng:** Đây là nguồn tinh bột duy nhất của bữa ăn, tuyệt đối cấm tuyên bố có tinh bột từ rau củ quả hay các món khác.\n\n---\n\n## II. BẢNG ƯU TIẾN CHI PHÍ (ĐƠN VỊ: ĐỒNG VIỆT NAM)\n\n| STT | Tên nguyên liệu | Số lượng | Đơn giá | Thành tiền |\n| :-- | :--- | :--- | :--- | :--- |\n| 1 | Thịt bò tươi | 300g (0.3kg) | 270.000đ/kg | 81.000đ |\n| 2 | Thịt heo xay | 200g (0.2kg) | 135.000đ/kg | 27.000đ |\n| 3 | Rau muống tươi | 400g (0.4kg) | 25.000đ/kg | 10.000đ |\n| 4 | Cà rốt tươi | 300g (0.3kg) | 25.000đ/kg | 7.500đ |\n| 5 | Cà chua tươi | 300g (0.3kg) | 30.000đ/kg | 9.000đ |\n| 6 | Hành tây | 200g (0.2kg) | 25.000đ/kg | 5.000đ |\n| 7 | Đậu phụ trắng | 3 bìa (300g) | 3.333đ/bìa | 10.000đ |\n| 8 | Gạo tẻ thơm | 400g (0.4kg) | 20.000đ/kg | 8.000đ |\n| 9 | Dầu ăn & Gia vị | 50ml dầu + 30g gia vị | 15.000đ/phần | 15.000đ |\n| **TỔNG** | **CHI PHÍ TÍNH TOÁN** | **-** | **-** | **172.500đ** |\n\n> **Chú thích phân bổ nguyên liệu:**\n> *   **Dầu ăn (Tổng 50ml):** 10ml ướp bò, 20ml xào bò, 20ml xào rau muống. Chi phí tính theo tổng mức đã ghi trong bảng trên.\n> *   **Gia vị (Tổng 30g):** 10g ướp bò và heo, 10g nêm canh, 10g nêm rau.\n\n---\n\n## III. LỘ TRÌNH NẤU BỮA TỐI - CHỈ DÙNG 2 BẾP (TỔNG THỜI GIAN: 35 PHÚT)\n*Lưu ý: Cơm trắng được cắm sẵn từ trước hoặc có sẵn, không chiếm dụng bếp nấu.*\n\n### GIAI ĐOẠN 1: SƠ CHẾ VÀ ƯỚP GIẤU (08:45 - 09:00) | Thời gian: 15 phút\n*   **Hoạt động:** Nhặt rửa rau muống, thái cà rốt và hành tây.\n*   **Ướp thịt bò:** Trộn đều với 10ml dầu ăn và 5g gia vị, để nguội trong 5 phút trước khi xào.\n*   **Ướp thịt heo:** Trộn đều với 5g gia vị (không dùng dầu).\n\n### GIAI ĐOẠN 2: NẤU SONG SẮNG DÙNG 2 BẾP (09:00 - 09:15) | Thời gian: 15 phút\n*   **Bếp 1 (Nồi canh):**\n    *   09:00 - 09:15: Đun sôi nước, cho thịt heo xay, cà rốt và đậu phụ vào nấu chín mềm trong 15 phút liên tục.\n*   **Bếp 2 (Chảo xào tuần tự):**\n    *   09:00 - 09:07: Phi tỏi nhanh với thịt bò đã ướp và hành tây cà chua trong 7 phút, sau đó trút ra đĩa riêng.\n    *   09:07 - 09:14: Tắt bếp một chút để tráng chảo nóng, phi tỏi xào rau muống trong 7 phút nữa.\n    *   09:14 - 09:15: Tắt bếp hoàn toàn.\n\n### GIAI ĐOẠN 3: HOÀN THIỆN VÀ LÊN MÂM (09:15 - 09:20) | Thời gian: 5 phút\n*   **Hoạt động:** Múc canh thịt heo ra bát, bày đĩa thịt bò và rau muống đã xào lên mâm. Xới cơm trắng dẻo thơm ăn kèm để hoàn thiện bữa ăn cho gia đình 4 người.\n\n**Tổng thời gian chuẩn bị thực hiện chính xác là: 35 phút.**",
+      "ts": 1793242331.6928806,
+      "source": "PLANNER",
+      "task_id": "TASK-004_attempt_9_2910-0950_f83697"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-10-29T02:52:11.693891] [PLANNER] [Task: TASK-004_attempt_9_2910-0950_f83697] Hoàn tất trong 116.24s. (Size: 3594 chars)",
+      "ts": 1793242331.6939209,
+      "source": "PLANNER",
+      "task_id": "TASK-004_attempt_9_2910-0950_f83697"
+    },
+    {
+      "tag": "EPISTEMIC_AUDIT",
+      "msg": "[FULFILLED] Confidence: 0.92 | Rationale: Bài toán số học: đơn vị và kết quả khớp với đề bài.",
+      "ts": 1793242332.0733788,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_9_2910-0950_f83697"
+    },
+    {
+      "tag": "ANSWER_QUALITY_AUDIT",
+      "msg": "[AQV-FAIL] ❌DUNG | ✅TRUNG | ✅DU | score=0.88 | score=0.88",
+      "ts": 1793242332.1459768,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_9_2910-0950_f83697"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "# THỰC ĐƠN & LỘ TRÌNH NẤU BỮA TỐI - NGÂN SÁCH 300.000Đ (GIA ĐÌNH 4 THÀNH VIÊN)\n\n## I. GIẢI PHÁP DƯỠNG DẠNG VÀ CHI TIẾT MÓN ĂN\nThực đơn được thiết kế tối ưu dinh dưỡng với nguồn tinh bột duy nhất là cơm trắng, đảm bảo đủ 4 nhóm chất: Chất đạm (thịt bò, heo xay, đậu phụ), Tinh bột (cơm trắng - nguồn duy nhất), Chất xơ & Vitamin (rau muống, cà rốt, cà chua, hành tây) và Chất béo.\n\n### A. MÓN CHÍNH (Món mặn): Thịt bò xào hành tây cà chua\n*   **Thành phần:** 300g thịt bò tươi, 200g hành tây, 300g cà chua.\n*   **Dinh dưỡng chính:** Cung cấp chất đạm cao từ thịt bò và vitamin phong phú từ rau củ quả (Tuyệt đối không sử dụng tinh bột trong món này).\n\n### B. MÓN CANH: Canh thịt heo xay nấu cà rốt đậu phụ\n*   **Thành phần:** 200g thịt heo xay, 3 bìa đậu phụ (~300g), 300g cà rốt.\n*   **Dinh dưỡng chính:** Bổ sung đạm mềm và vitamin từ rau củ (Tuyệt đối không sử dụng tinh bột trong món này).\n\n### C. MÓN XÀO/RAU: Rau muống xào tỏi\n*   **Thành phần:** 400g rau muống, tỏi phi thơm.\n*   **Dinh dưỡng chính:** Cung cấp chất xơ và vitamin (Tuyệt đối không sử dụng tinh bột trong món này).\n\n### D. NGUỒN TINH BỘT ĐÚNG: Cơm trắng dẻo thơm\n*   **Thành phần:** 400g gạo tẻ nấu thành cơm trắng.\n*   **Lưu ý quan trọng:** Đây là nguồn tinh bột duy nhất của bữa ăn, tuyệt đối cấm tuyên bố có tinh bột từ rau củ quả hay các món khác.\n\n---\n\n## II. BẢNG ƯU TIẾN CHI PHÍ (ĐƠN VỊ: ĐỒNG VIỆT NAM)\n\n| STT | Tên nguyên liệu | Số lượng | Đơn giá | Thành tiền |\n| :-- | :--- | :--- | :--- | :--- |\n| 1 | Thịt bò tươi | 300g (0.3kg) | 270.000đ/kg | 81.000đ |\n| 2 | Thịt heo xay | 200g (0.2kg) | 135.000đ/kg | 27.000đ |\n| 3 | Rau muống tươi | 400g (0.4kg) | 25.000đ/kg | 10.000đ |\n| 4 | Cà rốt tươi | 300g (0.3kg) | 25.000đ/kg | 7.500đ |\n| 5 | Cà chua tươi | 300g (0.3kg) | 30.000đ/kg | 9.000đ |\n| 6 | Hành tây | 200g (0.2kg) | 25.000đ/kg | 5.000đ |\n| 7 | Đậu phụ trắng | 3 bìa (300g) | 3.333đ/bìa | 10.000đ |\n| 8 | Gạo tẻ thơm | 400g (0.4kg) | 20.000đ/kg | 8.000đ |\n| 9 | Dầu ăn & Gia vị | 50ml dầu + 30g gia vị | 15.000đ/phần | 15.000đ |\n| **TỔNG** | **CHI PHÍ TÍNH TOÁN** | **-** | **-** | **172.500đ** |\n\n> **Chú thích phân bổ nguyên liệu:**\n> *   **Dầu ăn (Tổng 50ml):** 10ml ướp bò, 20ml xào bò, 20ml xào rau muống. Chi phí tính theo tổng mức đã ghi trong bảng trên.\n> *   **Gia vị (Tổng 30g):** 10g ướp bò và heo, 10g nêm canh, 10g nêm rau.\n\n---\n\n## III. LỘ TRÌNH NẤU BỮA TỐI - CHỈ DÙNG 2 BẾP (TỔNG THỜI GIAN: 35 PHÚT)\n*Lưu ý: Cơm trắng được cắm sẵn từ trước hoặc có sẵn, không chiếm dụng bếp nấu.*\n\n### GIAI ĐOẠN 1: SƠ CHẾ VÀ ƯỚP GIẤU (08:45 - 09:00) | Thời gian: 15 phút\n*   **Hoạt động:** Nhặt rửa rau muống, thái cà rốt và hành tây.\n*   **Ướp thịt bò:** Trộn đều với 10ml dầu ăn và 5g gia vị, để nguội trong 5 phút trước khi xào.\n*   **Ướp thịt heo:** Trộn đều với 5g gia vị (không dùng dầu).\n\n### GIAI ĐOẠN 2: NẤU SONG SẮNG DÙNG 2 BẾP (09:00 - 09:15) | Thời gian: 15 phút\n*   **Bếp 1 (Nồi canh):**\n    *   09:00 - 09:15: Đun sôi nước, cho thịt heo xay, cà rốt và đậu phụ vào nấu chín mềm trong 15 phút liên tục.\n*   **Bếp 2 (Chảo xào tuần tự):**\n    *   09:00 - 09:07: Phi tỏi nhanh với thịt bò đã ướp và hành tây cà chua trong 7 phút, sau đó trút ra đĩa riêng.\n    *   09:07 - 09:14: Tắt bếp một chút để tráng chảo nóng, phi tỏi xào rau muống trong 7 phút nữa.\n    *   09:14 - 09:15: Tắt bếp hoàn toàn.\n\n### GIAI ĐOẠN 3: HOÀN THIỆN VÀ LÊN MÂM (09:15 - 09:20) | Thời gian: 5 phút\n*   **Hoạt động:** Múc canh thịt heo ra bát, bày đĩa thịt bò và rau muống đã xào lên mâm. Xới cơm trắng dẻo thơm ăn kèm để hoàn thiện bữa ăn cho gia đình 4 người.\n\n**Tổng thời gian chuẩn bị thực hiện chính xác là: 35 phút.**",
+      "ts": 1793242332.218635,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_9_2910-0950_f83697"
+    }
+  ],
+  "artifacts": {
+    "plan": "Hôm nay tôi có ngân sách 300.000đ để nấu bữa tối thịnh soạn cho gia đình 4 người (gồm 2 người lớn, 2 trẻ em). Hãy gợi ý thực đơn 3 món đủ chất (món mặn, món canh, món xào/rau) kèm bảng ước tính chi phí chi tiết từng nguyên liệu và cách chế biến nhanh gọn dưới 45 phút.",
+    "walkthrough": "# THỰC ĐƠN & LỘ TRÌNH NẤU BỮA TỐI - NGÂN SÁCH 300.000Đ (GIA ĐÌNH 4 THÀNH VIÊN)\n\n## I. GIẢI PHÁP DƯỠNG DẠNG VÀ CHI TIẾT MÓN ĂN\nThực đơn được thiết kế tối ưu dinh dưỡng với nguồn tinh bột duy nhất là cơm trắng, đảm bảo đủ 4 nhóm chất: Chất đạm (thịt bò, heo xay, đậu phụ), Tinh bột (cơm trắng - nguồn duy nhất), Chất xơ & Vitamin (rau muống, cà rốt, cà chua, hành tây) và Chất béo.\n\n### A. MÓN CHÍNH (Món mặn): Thịt bò xào hành tây cà chua\n*   **Thành phần:** 300g thịt bò tươi, 200g hành tây, 300g cà chua.\n*   **Dinh dưỡng chính:** Cung cấp chất đạm cao từ thịt bò và vitamin phong phú từ rau củ quả (Tuyệt đối không sử dụng tinh bột trong món này).\n\n### B. MÓN CANH: Canh thịt heo xay nấu cà rốt đậu phụ\n*   **Thành phần:** 200g thịt heo xay, 3 bìa đậu phụ (~300g), 300g cà rốt.\n*   **Dinh dưỡng chính:** Bổ sung đạm mềm và vitamin từ rau củ (Tuyệt đối không sử dụng tinh bột trong món này).\n\n### C. MÓN XÀO/RAU: Rau muống xào tỏi\n*   **Thành phần:** 400g rau muống, tỏi phi thơm.\n*   **Dinh dưỡng chính:** Cung cấp chất xơ và vitamin (Tuyệt đối không sử dụng tinh bột trong món này).\n\n### D. NGUỒN TINH BỘT ĐÚNG: Cơm trắng dẻo thơm\n*   **Thành phần:** 400g gạo tẻ nấu thành cơm trắng.\n*   **Lưu ý quan trọng:** Đây là nguồn tinh bột duy nhất của bữa ăn, tuyệt đối cấm tuyên bố có tinh bột từ rau củ quả hay các món khác.\n\n---\n\n## II. BẢNG ƯU TIẾN CHI PHÍ (ĐƠN VỊ: ĐỒNG VIỆT NAM)\n\n| STT | Tên nguyên liệu | Số lượng | Đơn giá | Thành tiền |\n| :-- | :--- | :--- | :--- | :--- |\n| 1 | Thịt bò tươi | 300g (0.3kg) | 270.000đ/kg | 81.000đ |\n| 2 | Thịt heo xay | 200g (0.2kg) | 135.000đ/kg | 27.000đ |\n| 3 | Rau muống tươi | 400g (0.4kg) | 25.000đ/kg | 10.000đ |\n| 4 | Cà rốt tươi | 300g (0.3kg) | 25.000đ/kg | 7.500đ |\n| 5 | Cà chua tươi | 300g (0.3kg) | 30.000đ/kg | 9.000đ |\n| 6 | Hành tây | 200g (0.2kg) | 25.000đ/kg | 5.000đ |\n| 7 | Đậu phụ trắng | 3 bìa (300g) | 3.333đ/bìa | 10.000đ |\n| 8 | Gạo tẻ thơm | 400g (0.4kg) | 20.000đ/kg | 8.000đ |\n| 9 | Dầu ăn & Gia vị | 50ml dầu + 30g gia vị | 15.000đ/phần | 15.000đ |\n| **TỔNG** | **CHI PHÍ TÍNH TOÁN** | **-** | **-** | **172.500đ** |\n\n> **Chú thích phân bổ nguyên liệu:**\n> *   **Dầu ăn (Tổng 50ml):** 10ml ướp bò, 20ml xào bò, 20ml xào rau muống. Chi phí tính theo tổng mức đã ghi trong bảng trên.\n> *   **Gia vị (Tổng 30g):** 10g ướp bò và heo, 10g nêm canh, 10g nêm rau.\n\n---\n\n## III. LỘ TRÌNH NẤU BỮA TỐI - CHỈ DÙNG 2 BẾP (TỔNG THỜI GIAN: 35 PHÚT)\n*Lưu ý: Cơm trắng được cắm sẵn từ trước hoặc có sẵn, không chiếm dụng bếp nấu.*\n\n### GIAI ĐOẠN 1: SƠ CHẾ VÀ ƯỚP GIẤU (08:45 - 09:00) | Thời gian: 15 phút\n*   **Hoạt động:** Nhặt rửa rau muống, thái cà rốt và hành tây.\n*   **Ướp thịt bò:** Trộn đều với 10ml dầu ăn và 5g gia vị, để nguội trong 5 phút trước khi xào.\n*   **Ướp thịt heo:** Trộn đều với 5g gia vị (không dùng dầu).\n\n### GIAI ĐOẠN 2: NẤU SONG SẮNG DÙNG 2 BẾP (09:00 - 09:15) | Thời gian: 15 phút\n*   **Bếp 1 (Nồi canh):**\n    *   09:00 - 09:15: Đun sôi nước, cho thịt heo xay, cà rốt và đậu phụ vào nấu chín mềm trong 15 phút liên tục.\n*   **Bếp 2 (Chảo xào tuần tự):**\n    *   09:00 - 09:07: Phi tỏi nhanh với thịt bò đã ướp và hành tây cà chua trong 7 phút, sau đó trút ra đĩa riêng.\n    *   09:07 - 09:14: Tắt bếp một chút để tráng chảo nóng, phi tỏi xào rau muống trong 7 phút nữa.\n    *   09:14 - 09:15: Tắt bếp hoàn toàn.\n\n### GIAI ĐOẠN 3: HOÀN THIỆN VÀ LÊN MÂM (09:15 - 09:20) | Thời gian: 5 phút\n*   **Hoạt động:** Múc canh thịt heo ra bát, bày đĩa thịt bò và rau muống đã xào lên mâm. Xới cơm trắng dẻo thơm ăn kèm để hoàn thiện bữa ăn cho gia đình 4 người.\n\n**Tổng thời gian chuẩn bị thực hiện chính xác là: 35 phút.**",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

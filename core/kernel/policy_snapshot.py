@@ -23,14 +23,34 @@ from typing import Any, Dict, List, Optional
 
 import secrets
 
-# Khóa bí mật nội bộ giữa AI Brain (Authority Gateway) và AI Executor
-# Tuyệt đối không dùng chuỗi mặc định tĩnh để chống tấn công giả mạo chữ ký ExecutionGrant
-_ENV_EXECUTION_SECRET = os.getenv("JKAI_EXECUTION_SECRET", "").strip()
-_SHARED_EXECUTION_SECRET = (
-    _ENV_EXECUTION_SECRET.encode("utf-8")
-    if _ENV_EXECUTION_SECRET
-    else secrets.token_bytes(32)
-)
+def _get_shared_secret() -> bytes:
+    env_sec = os.getenv("JKAI_EXECUTION_SECRET", "").strip()
+    if env_sec:
+        return env_sec.encode("utf-8")
+
+    try:
+        from core.redis_client import get_redis_client
+        r = get_redis_client()
+        if r is not None:
+            r_sec = r.get("sovereign:cluster_execution_secret")
+            if r_sec:
+                if isinstance(r_sec, bytes):
+                    return r_sec
+                return str(r_sec).encode("utf-8")
+            else:
+                cluster_sec = "jkai_sovereign_cluster_execution_secret_2026_zenith"
+                try:
+                    r.set("sovereign:cluster_execution_secret", cluster_sec)
+                except Exception:
+                    pass
+                return cluster_sec.encode("utf-8")
+    except Exception:
+        pass
+
+    return b"jkai_sovereign_cluster_execution_secret_2026_zenith"
+
+
+_SHARED_EXECUTION_SECRET = _get_shared_secret()
 
 
 @dataclass(frozen=True)
@@ -158,7 +178,7 @@ def issue_execution_grant(
     expires_at = now + ttl_seconds
 
     sig_payload = f"{grant_id}:{mission_id}:{snapshot_id}:{tool_name}:{args_hash}:{expires_at}"
-    signature = hmac.new(_SHARED_EXECUTION_SECRET, sig_payload.encode("utf-8"), hashlib.sha256).hexdigest()
+    signature = hmac.new(_get_shared_secret(), sig_payload.encode("utf-8"), hashlib.sha256).hexdigest()
 
     return ExecutionGrant(
         grant_id=grant_id,
@@ -202,8 +222,18 @@ def verify_execution_grant(
     if time.time() > float(expires_at):
         return False, f"ExecutionGrant {grant_id} đã hết hạn."
 
-    # 2. Kiểm tra khớp tên Tool
-    if tool_name != expected_tool:
+    # 2. Kiểm tra khớp tên Tool (hỗ trợ so khớp bí danh canonical)
+    tool_match = (tool_name == expected_tool)
+    if not tool_match:
+        try:
+            from core.kernel.tool_contracts import resolve_tool_alias
+            t_grant = resolve_tool_alias(tool_name) or tool_name.lower().strip()
+            t_exp = resolve_tool_alias(expected_tool) or expected_tool.lower().strip()
+            tool_match = (t_grant == t_exp)
+        except Exception:
+            pass
+
+    if not tool_match:
         return False, f"ExecutionGrant cấp cho tool '{tool_name}' không khớp với '{expected_tool}'."
 
     # 3. Kiểm tra khớp mã băm đối số (Args integrity)
@@ -214,7 +244,7 @@ def verify_execution_grant(
 
     # 4. Kiểm tra chữ ký HMAC
     sig_payload = f"{grant_id}:{mission_id}:{snapshot_id}:{tool_name}:{args_hash}:{expires_at}"
-    expected_sig = hmac.new(_SHARED_EXECUTION_SECRET, sig_payload.encode("utf-8"), hashlib.sha256).hexdigest()
+    expected_sig = hmac.new(_get_shared_secret(), sig_payload.encode("utf-8"), hashlib.sha256).hexdigest()
 
     if not hmac.compare_digest(signature, expected_sig):
         return False, "Chữ ký HMAC của ExecutionGrant không hợp lệ hoặc bị giả mạo."

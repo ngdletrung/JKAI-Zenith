@@ -1,0 +1,52 @@
+{
+  "generated_at_utc": "2026-10-28T15:32:35.649547+00:00",
+  "phase": "PHASE_R0",
+  "invariants": {
+    "R0.1_task_trace_propagation": {
+      "pipeline_null_task_id_rejected": true,
+      "scoped_memory_null_task_id_rejected": true,
+      "distill_deterministic_without_llm": true,
+      "digest_contains_task_and_trace": true,
+      "lessons_learned_count": 1,
+      "task_none_log_leaks": 0,
+      "digest_preview": "[task_id=ZENITH_2810-2141_b6923a trace_id=trace_b6923a] plan_01(success): VietnamNet headline verified",
+      "passed": true
+    },
+    "R0.2_stop_cancellation_discard": {
+      "status": "STOPPED",
+      "summary_published": false,
+      "discarded_after_stop": true,
+      "answer_len": 0,
+      "late_callback_dropped": true,
+      "passed": true
+    },
+    "R0.3_critic_fail_hard_gate": {
+      "final_status": "FAILED",
+      "critic_calls_count": 3,
+      "summarizer_calls_count": 0,
+      "summary_published": false,
+      "passed": true
+    },
+    "R0.4_no_stale_checkpoint_restore_after_fail": {
+      "final_status": "FAILED",
+      "t4_fresh_executions": 2,
+      "critic_calls_count_before_identical_abort": 1,
+      "abort_replan_no_new_evidence": true,
+      "planned_steps": 1,
+      "admitted_steps": 1,
+      "executed_steps": 1,
+      "restored_steps_on_retry": 0,
+      "judicial_verdict": "FAIL",
+      "passed": true
+    },
+    "R0.5_task_dedup_lock": {
+      "concurrent_statuses": [
+        "REJECTED_DUPLICATE_IN_FLIGHT",
+        "SUCCESS"
+      ],
+      "post_release_status": "SUCCESS",
+      "passed": true
+    }
+  },
+  "all_r0_invariants_passed": true
+}

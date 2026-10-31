@@ -1,0 +1,2522 @@
+{
+  "target_cycles": 50,
+  "completed_cycles": 50,
+  "successful_cycles": 50,
+  "success_rate_percent": 100.0,
+  "total_duration_seconds": 109.16,
+  "avg_cycle_latency_ms": 2132.5,
+  "min_cycle_latency_ms": 2073.91,
+  "max_cycle_latency_ms": 2189.54,
+  "total_contract_tests_executed": 850,
+  "total_contract_tests_passed": 850,
+  "live_services_monitored": [
+    "mission-control",
+    "ai-control-plane",
+    "ai-brain",
+    "ai-browser",
+    "opencode"
+  ],
+  "completed_at": "2026-10-30T11:59:36.824450+00:00",
+  "cycles": [
+    {
+      "cycle": 1,
+      "timestamp": "2026-10-30T11:57:49.858141+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2189.54,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 68.02,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 18.73,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.31,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 17.63,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2066.26,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.94
+      }
+    },
+    {
+      "cycle": 2,
+      "timestamp": "2026-10-30T11:57:52.053960+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2145.15,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 31.68,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 23.33,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 14.93,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 16.31,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2055.79,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.48
+      }
+    },
+    {
+      "cycle": 3,
+      "timestamp": "2026-10-30T11:57:54.223155+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2118.78,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 29.05,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 26.03,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.54,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.68,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2027.23,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 4.37
+      }
+    },
+    {
+      "cycle": 4,
+      "timestamp": "2026-10-30T11:57:56.401117+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2126.84,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 28.96,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 23.43,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 5.54,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 26.29,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2037.24,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 4.41
+      }
+    },
+    {
+      "cycle": 5,
+      "timestamp": "2026-10-30T11:57:58.582958+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2131.13,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 46.61,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 20.63,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.73,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.72,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2029.45,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.46
+      }
+    },
+    {
+      "cycle": 6,
+      "timestamp": "2026-10-30T11:58:00.747810+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2114.62,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 30.43,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 23.0,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 5.5,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 6.1,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2046.5,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.53
+      }
+    },
+    {
+      "cycle": 7,
+      "timestamp": "2026-10-30T11:58:02.969956+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2171.13,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 29.77,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 25.05,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.48,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.22,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2082.63,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.44
+      }
+    },
+    {
+      "cycle": 8,
+      "timestamp": "2026-10-30T11:58:05.160753+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2140.41,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 32.28,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 24.19,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 14.4,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.86,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2050.03,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.69
+      }
+    },
+    {
+      "cycle": 9,
+      "timestamp": "2026-10-30T11:58:07.361880+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2150.8,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 28.56,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 26.89,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.49,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.95,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2061.43,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.01
+      }
+    },
+    {
+      "cycle": 10,
+      "timestamp": "2026-10-30T11:58:09.576045+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2163.45,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 31.78,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 24.48,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.4,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.78,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2070.74,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 4.31
+      }
+    },
+    {
+      "cycle": 11,
+      "timestamp": "2026-10-30T11:58:11.788844+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2161.79,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 29.72,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 24.98,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 6.05,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 24.65,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2073.94,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.0
+      }
+    },
+    {
+      "cycle": 12,
+      "timestamp": "2026-10-30T11:58:13.988499+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2149.31,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 31.78,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 25.53,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 4.6,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 26.52,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2055.99,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 3.96
+      }
+    },
+    {
+      "cycle": 13,
+      "timestamp": "2026-10-30T11:58:16.156381+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2117.35,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 30.09,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 4.75,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 21.67,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 14.33,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2043.59,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.34
+      }
+    },
+    {
+      "cycle": 14,
+      "timestamp": "2026-10-30T11:58:18.357435+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2150.26,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 31.18,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 26.16,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 14.78,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 14.83,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2060.99,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 1.8
+      }
+    },
+    {
+      "cycle": 15,
+      "timestamp": "2026-10-30T11:58:20.516428+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2108.28,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 28.35,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 4.78,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 22.51,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.67,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2034.42,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.07
+      }
+    },
+    {
+      "cycle": 16,
+      "timestamp": "2026-10-30T11:58:22.672707+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2106.09,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 9.63,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 13.42,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.23,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.35,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2049.93,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.05
+      }
+    },
+    {
+      "cycle": 17,
+      "timestamp": "2026-10-30T11:58:24.865075+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2141.5,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 31.73,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 24.53,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 16.0,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 14.17,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2053.02,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 1.61
+      }
+    },
+    {
+      "cycle": 18,
+      "timestamp": "2026-10-30T11:58:27.040024+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2124.77,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 30.13,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 26.56,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 4.85,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 4.2,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2056.6,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 1.99
+      }
+    },
+    {
+      "cycle": 19,
+      "timestamp": "2026-10-30T11:58:29.242429+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2152.03,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 35.52,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 21.19,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.43,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.87,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2061.87,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 1.71
+      }
+    },
+    {
+      "cycle": 20,
+      "timestamp": "2026-10-30T11:58:31.447813+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2154.54,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 53.87,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 18.38,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.07,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.89,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2045.91,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 4.3
+      }
+    },
+    {
+      "cycle": 21,
+      "timestamp": "2026-10-30T11:58:33.594700+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2096.54,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 10.01,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 6.58,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 6.45,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.05,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2055.55,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.39
+      }
+    },
+    {
+      "cycle": 22,
+      "timestamp": "2026-10-30T11:58:35.817599+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2172.66,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 29.68,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 25.57,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.01,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.5,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2084.68,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 1.77
+      }
+    },
+    {
+      "cycle": 23,
+      "timestamp": "2026-10-30T11:58:38.002328+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2133.88,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 30.68,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 27.99,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.78,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 14.68,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2039.46,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 4.36
+      }
+    },
+    {
+      "cycle": 24,
+      "timestamp": "2026-10-30T11:58:40.196875+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2143.96,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 26.97,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 25.26,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.19,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 16.52,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2057.33,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.13
+      }
+    },
+    {
+      "cycle": 25,
+      "timestamp": "2026-10-30T11:58:42.372014+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2124.71,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 31.45,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 27.83,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 14.65,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 16.77,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2032.19,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 1.41
+      }
+    },
+    {
+      "cycle": 26,
+      "timestamp": "2026-10-30T11:58:44.533654+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2110.76,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 15.05,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 29.13,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 6.23,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 24.3,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2030.67,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 4.32
+      }
+    },
+    {
+      "cycle": 27,
+      "timestamp": "2026-10-30T11:58:46.687175+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2102.72,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 9.4,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 27.66,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 6.68,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 4.6,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2051.95,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.0
+      }
+    },
+    {
+      "cycle": 28,
+      "timestamp": "2026-10-30T11:58:48.853981+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2116.49,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 18.38,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 24.62,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 14.58,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 5.57,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2051.22,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 1.64
+      }
+    },
+    {
+      "cycle": 29,
+      "timestamp": "2026-10-30T11:58:51.033559+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2128.85,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 29.45,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 26.83,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 14.83,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.95,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2039.79,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 1.52
+      }
+    },
+    {
+      "cycle": 30,
+      "timestamp": "2026-10-30T11:58:53.212529+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2128.07,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 31.33,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 25.89,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 16.41,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.59,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2036.81,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 1.62
+      }
+    },
+    {
+      "cycle": 31,
+      "timestamp": "2026-10-30T11:58:55.392182+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2128.76,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 30.91,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 27.27,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.12,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 6.18,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2046.53,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.12
+      }
+    },
+    {
+      "cycle": 32,
+      "timestamp": "2026-10-30T11:58:57.604431+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2161.18,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 30.11,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 26.86,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.64,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.16,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2070.77,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.09
+      }
+    },
+    {
+      "cycle": 33,
+      "timestamp": "2026-10-30T11:58:59.775642+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2121.11,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 29.04,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 5.16,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 20.97,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 5.72,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2058.03,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 1.67
+      }
+    },
+    {
+      "cycle": 34,
+      "timestamp": "2026-10-30T11:59:01.975355+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2149.09,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 31.93,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 27.36,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.53,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 16.41,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2055.46,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 1.92
+      }
+    },
+    {
+      "cycle": 35,
+      "timestamp": "2026-10-30T11:59:04.185432+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2159.46,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 32.63,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 27.26,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.03,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.97,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2065.88,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.13
+      }
+    },
+    {
+      "cycle": 36,
+      "timestamp": "2026-10-30T11:59:06.373441+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2137.54,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 30.07,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 26.95,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.57,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.67,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2044.19,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 4.04
+      }
+    },
+    {
+      "cycle": 37,
+      "timestamp": "2026-10-30T11:59:08.545894+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2121.77,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 35.8,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 18.92,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 16.15,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 5.63,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2042.04,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.58
+      }
+    },
+    {
+      "cycle": 38,
+      "timestamp": "2026-10-30T11:59:10.694907+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2098.5,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 8.07,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 15.02,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 4.41,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 27.64,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2040.2,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.61
+      }
+    },
+    {
+      "cycle": 39,
+      "timestamp": "2026-10-30T11:59:12.867631+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2121.76,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 25.14,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 4.21,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 4.53,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 20.16,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2062.45,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 4.33
+      }
+    },
+    {
+      "cycle": 40,
+      "timestamp": "2026-10-30T11:59:15.056255+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2137.63,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 30.22,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 26.06,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 16.19,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.46,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2047.52,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 1.71
+      }
+    },
+    {
+      "cycle": 41,
+      "timestamp": "2026-10-30T11:59:17.234851+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2128.47,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 18.4,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 25.93,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.28,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.99,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2050.5,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 1.92
+      }
+    },
+    {
+      "cycle": 42,
+      "timestamp": "2026-10-30T11:59:19.363140+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2077.26,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 9.66,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 5.02,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 4.75,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 4.45,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2048.22,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 4.24
+      }
+    },
+    {
+      "cycle": 43,
+      "timestamp": "2026-10-30T11:59:21.541157+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2127.79,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 26.66,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 25.56,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 14.51,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.9,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2041.01,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 3.31
+      }
+    },
+    {
+      "cycle": 44,
+      "timestamp": "2026-10-30T11:59:23.743112+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2151.18,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 29.95,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 25.36,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 15.48,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 17.19,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2061.3,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 1.45
+      }
+    },
+    {
+      "cycle": 45,
+      "timestamp": "2026-10-30T11:59:25.930157+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2136.0,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 32.34,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 25.57,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 4.73,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 4.0,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2066.78,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.15
+      }
+    },
+    {
+      "cycle": 46,
+      "timestamp": "2026-10-30T11:59:28.123158+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2142.84,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 32.56,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 26.75,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 5.98,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 24.53,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2049.62,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.8
+      }
+    },
+    {
+      "cycle": 47,
+      "timestamp": "2026-10-30T11:59:30.314704+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2140.61,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 32.91,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 6.49,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 19.74,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 15.1,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2063.42,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.41
+      }
+    },
+    {
+      "cycle": 48,
+      "timestamp": "2026-10-30T11:59:32.439140+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2073.91,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 10.12,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 5.15,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 5.13,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 19.88,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2030.84,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.27
+      }
+    },
+    {
+      "cycle": 49,
+      "timestamp": "2026-10-30T11:59:34.623143+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2133.48,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 32.06,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 27.13,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 14.75,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 16.04,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2038.21,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 4.4
+      }
+    },
+    {
+      "cycle": 50,
+      "timestamp": "2026-10-30T11:59:36.773457+00:00",
+      "status": "PASS",
+      "cycle_latency_ms": 2100.01,
+      "live_services": {
+        "mission-control": {
+          "url": "http://localhost:9999/",
+          "status_code": 200,
+          "latency_ms": 10.9,
+          "ok": true,
+          "error": null
+        },
+        "ai-control-plane": {
+          "url": "http://localhost:7000/health",
+          "status_code": 200,
+          "latency_ms": 24.62,
+          "ok": true,
+          "error": null
+        },
+        "ai-brain": {
+          "url": "http://localhost:8001/health",
+          "status_code": 200,
+          "latency_ms": 6.19,
+          "ok": true,
+          "error": null
+        },
+        "ai-browser": {
+          "url": "http://localhost:8003/health",
+          "status_code": 200,
+          "latency_ms": 5.5,
+          "ok": true,
+          "error": null
+        },
+        "opencode": {
+          "url": "http://localhost:28894/session",
+          "status_code": 200,
+          "latency_ms": 2049.5,
+          "ok": true,
+          "error": null
+        }
+      },
+      "contract_tests": {
+        "total_tests": 17,
+        "failures": 0,
+        "errors": 0,
+        "ok": true,
+        "duration_ms": 2.72
+      }
+    }
+  ]
+}

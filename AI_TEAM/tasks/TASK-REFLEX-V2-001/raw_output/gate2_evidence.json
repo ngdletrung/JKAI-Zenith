@@ -1,0 +1,304 @@
+{
+  "task": "TASK-REFLEX-V2-001",
+  "generated_at": "2026-10-19T21:24:34.709412",
+  "worktree_head": "766107595fd3bac7483b0843b04f34e7ced98967",
+  "compound_benchmark": {
+    "dataset_path": "D:\\Docker\\JKAI\\AI_TEAM\\tasks\\TASK-REFLEX-V2-001/benchmarks/compound_benchmark_dataset.json",
+    "dataset_sha256": "60db82dd62eaebc756c6aa3cb891b87ffaf88b6db15bfcb964ff9acccbe1b2d3",
+    "locked_sha256": "60db82dd62eaebc756c6aa3cb891b87ffaf88b6db15bfcb964ff9acccbe1b2d3",
+    "dataset_hash_match": true,
+    "scoring_rule": "correct iff is_compound flag matches AND set(clause modes) == set(expected_modes)",
+    "total": 5,
+    "correct": 2,
+    "accuracy": 0.4,
+    "compound_flag_accuracy": 1.0,
+    "threshold": 0.95,
+    "pass": false,
+    "cases": [
+      {
+        "input": "Hãy tính 25 * 4 rồi tìm kiếm thông tin về thủ đô Hà Nội",
+        "expected_modes": [
+          "MATH",
+          "REALTIME"
+        ],
+        "got_modes": [
+          "INTERNAL",
+          "MATH"
+        ],
+        "expected_compound": true,
+        "got_compound": true,
+        "compound_flag_ok": true,
+        "modes_ok": false,
+        "correct": false,
+        "clauses": [
+          {
+            "clause": "Hãy tính 25 * 4",
+            "mode": "MATH",
+            "route_path": "RULE",
+            "reason": "Evaluated pure arithmetic expression successfully."
+          },
+          {
+            "clause": "tìm kiếm thông tin về thủ đô Hà Nội",
+            "mode": "INTERNAL",
+            "route_path": "SEMANTIC",
+            "reason": "Semantic fallback similarity match (0.27)."
+          }
+        ]
+      },
+      {
+        "input": "Viết code Python sắp xếp mảng và giải thích thuật toán",
+        "expected_modes": [
+          "CODING",
+          "GENERAL"
+        ],
+        "got_modes": [
+          "CODING"
+        ],
+        "expected_compound": true,
+        "got_compound": true,
+        "compound_flag_ok": true,
+        "modes_ok": false,
+        "correct": false,
+        "clauses": [
+          {
+            "clause": "Viết code Python sắp xếp mảng",
+            "mode": "CODING",
+            "route_path": "RULE",
+            "reason": "Software engineering, debugging, or scripting intent."
+          },
+          {
+            "clause": "giải thích thuật toán",
+            "mode": "CODING",
+            "route_path": "RULE",
+            "reason": "Software engineering, debugging, or scripting intent."
+          }
+        ]
+      },
+      {
+        "input": "Xin chào buổi sáng, hôm nay thời tiết thế nào?",
+        "expected_modes": [
+          "REALTIME",
+          "SOCIAL"
+        ],
+        "got_modes": [
+          "REALTIME",
+          "SOCIAL"
+        ],
+        "expected_compound": true,
+        "got_compound": true,
+        "compound_flag_ok": true,
+        "modes_ok": true,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "Xin chào buổi sáng",
+            "mode": "SOCIAL",
+            "route_path": "RULE",
+            "reason": "Social query / greeting detected. Direct LLM reflex."
+          },
+          {
+            "clause": "hôm nay thời tiết thế nào?",
+            "mode": "REALTIME",
+            "route_path": "RULE",
+            "reason": "Real-time news, market prices, or current event query."
+          }
+        ]
+      },
+      {
+        "input": "Tính căn bậc hai của 144",
+        "expected_modes": [
+          "MATH"
+        ],
+        "got_modes": [
+          "GENERAL"
+        ],
+        "expected_compound": false,
+        "got_compound": false,
+        "compound_flag_ok": true,
+        "modes_ok": false,
+        "correct": false,
+        "clauses": [
+          {
+            "clause": "Tính căn bậc hai của 144",
+            "mode": "GENERAL",
+            "route_path": "GENERAL",
+            "reason": "General knowledge query or conversational task."
+          }
+        ]
+      },
+      {
+        "input": "Soạn thảo văn bản báo cáo tài chính quý 3",
+        "expected_modes": [
+          "OFFICE"
+        ],
+        "got_modes": [
+          "OFFICE"
+        ],
+        "expected_compound": false,
+        "got_compound": false,
+        "compound_flag_ok": true,
+        "modes_ok": true,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "Soạn thảo văn bản báo cáo tài chính quý 3",
+            "mode": "OFFICE",
+            "route_path": "RULE",
+            "reason": "Office document request (CREATE Word/Excel/PDF)."
+          }
+        ]
+      }
+    ]
+  },
+  "route_path_trace": {
+    "method": "spy on semantic_fallback_engine.classify_semantic + branch reason",
+    "iterations": 50,
+    "results": [
+      {
+        "query": "15 + 35 bằng mấy ?",
+        "mode": "MATH",
+        "route_path": "RULE",
+        "trace": {
+          "semantic_called": false,
+          "semantic_return": null
+        },
+        "reason": "Evaluated pure arithmetic expression successfully.",
+        "p50_ms": 0.161,
+        "p95_ms": 0.265,
+        "budget_ms": 50.0,
+        "pass": true
+      },
+      {
+        "query": "Tạo file excel báo cáo doanh thu",
+        "mode": "OFFICE",
+        "route_path": "RULE",
+        "trace": {
+          "semantic_called": false,
+          "semantic_return": null
+        },
+        "reason": "Office document request (CREATE Word/Excel/PDF).",
+        "p50_ms": 0.147,
+        "p95_ms": 0.193,
+        "budget_ms": 50.0,
+        "pass": true
+      },
+      {
+        "query": "bạn thấy hôm nay thế nào ?",
+        "mode": "SOCIAL",
+        "route_path": "RULE",
+        "trace": {
+          "semantic_called": false,
+          "semantic_return": null
+        },
+        "reason": "Social query / greeting detected. Direct LLM reflex.",
+        "p50_ms": 0.209,
+        "p95_ms": 0.258,
+        "budget_ms": 50.0,
+        "pass": true
+      },
+      {
+        "query": "sửa lỗi python script",
+        "mode": "CODING",
+        "route_path": "RULE",
+        "trace": {
+          "semantic_called": false,
+          "semantic_return": null
+        },
+        "reason": "Software engineering, debugging, or scripting intent.",
+        "p50_ms": 0.115,
+        "p95_ms": 0.139,
+        "budget_ms": 50.0,
+        "pass": true
+      },
+      {
+        "query": "giá vàng hôm nay",
+        "mode": "REALTIME",
+        "route_path": "RULE",
+        "trace": {
+          "semantic_called": false,
+          "semantic_return": null
+        },
+        "reason": "Real-time news, market prices, or current event query.",
+        "p50_ms": 0.114,
+        "p95_ms": 0.201,
+        "budget_ms": 50.0,
+        "pass": true
+      },
+      {
+        "query": "Tạo file excel doanh thu và phân tích so sánh chi tiết",
+        "mode": "OFFICE",
+        "route_path": "RULE",
+        "trace": {
+          "semantic_called": false,
+          "semantic_return": null
+        },
+        "reason": "Office document request (CREATE Word/Excel/PDF).",
+        "p50_ms": 0.161,
+        "p95_ms": 0.256,
+        "budget_ms": 50.0,
+        "pass": true
+      },
+      {
+        "query": "lập trang tính bảng lương nhân viên chi tiết",
+        "mode": "OFFICE",
+        "route_path": "RULE",
+        "trace": {
+          "semantic_called": false,
+          "semantic_return": null
+        },
+        "reason": "Office document request (CREATE Word/Excel/PDF).",
+        "p50_ms": 0.197,
+        "p95_ms": 0.277,
+        "budget_ms": 50.0,
+        "pass": true
+      },
+      {
+        "query": "tìm kiếm thông tin về thủ đô Hà Nội",
+        "mode": "INTERNAL",
+        "route_path": "SEMANTIC",
+        "trace": {
+          "semantic_called": true,
+          "semantic_return": [
+            "INTERNAL",
+            0.26927866886687735
+          ]
+        },
+        "reason": "Semantic fallback similarity match (0.27).",
+        "p50_ms": 5.366,
+        "p95_ms": 6.545,
+        "budget_ms": 500.0,
+        "pass": true
+      }
+    ],
+    "counts": {
+      "RULE": 7,
+      "SEMANTIC": 1,
+      "GENERAL": 0
+    }
+  },
+  "schema_compare": {
+    "baseline_commit": "766107595fd3bac7483b0843b04f34e7ced98967",
+    "before_field_count": 19,
+    "after_field_count": 20,
+    "added": [
+      {
+        "name": "latency_ms",
+        "type": "float",
+        "default": "0.0"
+      }
+    ],
+    "removed": [],
+    "changed": [],
+    "order_preserved_for_existing": true,
+    "snapshot_required_fields_present": true,
+    "snapshot_fields_present": true,
+    "positional_ctor_safe": true
+  },
+  "full_collection": {
+    "command": "python -m pytest --collect-only -q",
+    "returncode": 3,
+    "collection_error_files": [],
+    "stdout_tail": "95, in _collect_one_node\nINTERNALERROR>     rep = collect_one_node(node)\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\_pytest\\runner.py\", line 589, in collect_one_node\nINTERNALERROR>     rep: CollectReport = ihook.pytest_make_collect_report(collector=collector)\nINTERNALERROR>                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\pluggy\\_hooks.py\", line 512, in __call__\nINTERNALERROR>     return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)\nINTERNALERROR>            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\pluggy\\_manager.py\", line 120, in _hookexec\nINTERNALERROR>     return self._inner_hookexec(hook_name, methods, kwargs, firstresult)\nINTERNALERROR>            ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\pluggy\\_callers.py\", line 167, in _multicall\nINTERNALERROR>     raise exception\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\pluggy\\_callers.py\", line 139, in _multicall\nINTERNALERROR>     teardown.throw(exception)\nINTERNALERROR>     ~~~~~~~~~~~~~~^^^^^^^^^^^\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\_pytest\\fixtures.py\", line 1798, in pytest_make_collect_report\nINTERNALERROR>     result = yield\nINTERNALERROR>              ^^^^^\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\pluggy\\_callers.py\", line 139, in _multicall\nINTERNALERROR>     teardown.throw(exception)\nINTERNALERROR>     ~~~~~~~~~~~~~~^^^^^^^^^^^\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\_pytest\\capture.py\", line 880, in pytest_make_collect_report\nINTERNALERROR>     rep = yield\nINTERNALERROR>           ^^^^^\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\pluggy\\_callers.py\", line 121, in _multicall\nINTERNALERROR>     res = hook_impl.function(*args)\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\_pytest\\runner.py\", line 408, in pytest_make_collect_report\nINTERNALERROR>     call = CallInfo.from_call(\nINTERNALERROR>         collect, \"collect\", reraise=(KeyboardInterrupt, SystemExit)\nINTERNALERROR>     )\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\_pytest\\runner.py\", line 361, in from_call\nINTERNALERROR>     result: TResult | None = func()\nINTERNALERROR>                              ~~~~^^\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\_pytest\\runner.py\", line 406, in collect\nINTERNALERROR>     return list(collector.collect())\nINTERNALERROR>                 ~~~~~~~~~~~~~~~~~^^\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\_pytest\\python.py\", line 564, in collect\nINTERNALERROR>     self._register_setup_module_fixture()\nINTERNALERROR>     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\_pytest\\python.py\", line 577, in _register_setup_module_fixture\nINTERNALERROR>     self.obj, (\"setUpModule\", \"setup_module\")\nINTERNALERROR>     ^^^^^^^^\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\_pytest\\python.py\", line 290, in obj\nINTERNALERROR>     self._obj = obj = self._getobj()\nINTERNALERROR>                       ~~~~~~~~~~~~^^\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\_pytest\\python.py\", line 561, in _getobj\nINTERNALERROR>     return importtestmodule(self.path, self.config)\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\_pytest\\python.py\", line 508, in importtestmodule\nINTERNALERROR>     mod = import_path(\nINTERNALERROR>         path,\nINTERNALERROR>     ...<2 lines>...\nINTERNALERROR>         consider_namespace_packages=config.getini(\"consider_namespace_packages\"),\nINTERNALERROR>     )\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\_pytest\\pathlib.py\", line 596, in import_path\nINTERNALERROR>     importlib.import_module(module_name)\nINTERNALERROR>     ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\importlib\\__init__.py\", line 88, in import_module\nINTERNALERROR>     return _bootstrap._gcd_import(name[level:], package, level)\nINTERNALERROR>            ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nINTERNALERROR>   File \"<frozen importlib._bootstrap>\", line 1406, in _gcd_import\nINTERNALERROR>   File \"<frozen importlib._bootstrap>\", line 1371, in _find_and_load\nINTERNALERROR>   File \"<frozen importlib._bootstrap>\", line 1342, in _find_and_load_unlocked\nINTERNALERROR>   File \"<frozen importlib._bootstrap>\", line 938, in _load_unlocked\nINTERNALERROR>   File \"C:\\Users\\AdminPC-MMO\\AppData\\Local\\Python\\pythoncore-3.14-64\\Lib\\site-packages\\_pytest\\assertion\\rewrite.py\", line 188, in exec_module\nINTERNALERROR>     exec(co, module.__dict__)\nINTERNALERROR>     ~~~~^^^^^^^^^^^^^^^^^^^^^\nINTERNALERROR>   File \"D:\\Docker\\JKAI\\AI_TEAM\\tasks\\TASK-REFLEX-V2-001\\workspaces\\build_worktree\\files\\laya-main\\research\\eval\\test_laya_eval.py\", line 250, in <module>\nINTERNALERROR>     sys.exit(1 if FAIL else 0)\nINTERNALERROR>     ~~~~~~~~^^^^^^^^^^^^^^^^^^\nINTERNALERROR> SystemExit: 0\n\n99 tests collected, 5 errors in 6.01s\n",
+    "stderr_tail": "mainloop: caught unexpected SystemExit!\n"
+  }
+}

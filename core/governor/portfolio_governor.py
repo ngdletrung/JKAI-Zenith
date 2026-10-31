@@ -222,6 +222,13 @@ class PortfolioGovernor:
         quality_degraded = False
         current_quality = quality
 
+        # Sanitize and normalize quality to valid ladder step
+        norm_quality = str(quality).lower().strip() if quality else "medium"
+        if norm_quality not in _QUALITY_LADDER:
+            logger.warning(f"[AMG-GOVERNOR] Unknown quality '{quality}', defaulting to 'medium'")
+            norm_quality = "medium"
+        quality = norm_quality
+
         for attempt_quality in _QUALITY_LADDER[_QUALITY_LADDER.index(quality):]:
             viable = [s for s in scored if s.meets_minimum and s.final_score > 0.0]
             if viable:

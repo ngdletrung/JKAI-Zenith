@@ -126,17 +126,22 @@ def recover_state(
                 "Dùng --force nếu bạn chắc chắn tiến trình OpenCode đã dừng để cho phép kích hoạt lại lượt hiện tại."
             )
 
-        state.setdefault("turn", {})
-        state["turn"]["current_turn"] = actual_turn
-        state["turn"]["expected_next_turn"] = actual_turn + 1
-        state["turn"]["last_speaker"] = actual_speaker
-        # Only allow re-triggering the current un-replied Antigravity turn (never reset blindly to 0)
-        if actual_speaker.lower() == "antigravity":
-            state["turn"]["last_triggered_turn"] = max(0, actual_turn - 1)
-            state["status"] = "READY_TO_TRIGGER"
+        if not isinstance(state.get("turn"), dict):
+            state["turn"] = {
+                "current_turn": actual_turn,
+                "expected_next_turn": actual_turn + 1,
+                "last_speaker": actual_speaker,
+                "last_triggered_turn": max(0, actual_turn - 1) if actual_speaker.lower() == "antigravity" else actual_turn
+            }
         else:
-            state["turn"]["last_triggered_turn"] = actual_turn
-            state["status"] = "WAITING_FOR_ANTIGRAVITY"
+            state["turn"]["current_turn"] = actual_turn
+            state["turn"]["expected_next_turn"] = actual_turn + 1
+            state["turn"]["last_speaker"] = actual_speaker
+            if actual_speaker.lower() == "antigravity":
+                state["turn"]["last_triggered_turn"] = max(0, actual_turn - 1)
+            else:
+                state["turn"]["last_triggered_turn"] = actual_turn
+        state["status"] = "READY_TO_TRIGGER" if actual_speaker.lower() == "antigravity" else "WAITING_FOR_ANTIGRAVITY"
 
         if actual_session:
             state.setdefault("session", {})
@@ -167,10 +172,11 @@ def update_state_after_trigger(current_turn: int, opencode_session_id: str):
             except Exception:
                 pass
 
-        if "turn" in state:
+        if "turn" in state and isinstance(state["turn"], dict):
             state["turn"]["last_speaker"] = "Antigravity"
             state["turn"]["last_triggered_turn"] = current_turn
         else:
+            state["speaker"] = "Antigravity"
             state["last_signer"] = "Antigravity"
             state["last_triggered_turn"] = current_turn
 
@@ -216,6 +222,13 @@ def get_opencode_password():
         except Exception:
             pass
     return None
+
+
+def get_opencode_auth_header():
+    pwd = get_opencode_password()
+    if not pwd:
+        raise RuntimeError("Không tìm thấy mật khẩu OpenCode tại ~/.config/opencode/service.json")
+    return base64.b64encode(f"opencode:{pwd}".encode("utf-8")).decode("utf-8")
 
 
 def find_opencode_port():
@@ -291,28 +304,20 @@ def get_active_session_id(port, auth_header, explicit_session=None):
                             )
                         break
 
+            if candidate_obj is not None:
+                # Respect candidate session configured in state.json unless deleted
+                return candidate_session
+
             if target_items:
-                # Sort by created time descending first, then updated time descending
-                sorted_by_created = sorted(
+                sorted_by_updated = sorted(
                     target_items,
                     key=lambda x: (
-                        x.get("time", {}).get("created", 0),
                         x.get("time", {}).get("updated", 0),
+                        x.get("time", {}).get("created", 0),
                     ),
                     reverse=True,
                 )
-                newest_root = sorted_by_created[0]
-                if candidate_obj is not None:
-                    cand_created = candidate_obj.get("time", {}).get("created", 0)
-                    newest_created = newest_root.get("time", {}).get("created", 0)
-                    if newest_root.get("id") != candidate_session and newest_created > cand_created:
-                        print(
-                            f"[SESSION AUTO-SWITCH] Phát hiện Master đã mở session mới hơn '{newest_root.get('id')}' "
-                            f"('{newest_root.get('title')}') thay cho session cũ '{candidate_session}'!"
-                        )
-                        return newest_root["id"]
-                    return candidate_session
-
+                newest_root = sorted_by_updated[0]
                 discovered_id = newest_root["id"]
                 print(f"[DISCOVERY] Tìm thấy session phù hợp mới nhất: {discovered_id} (workspace: {ws_dir})")
                 return discovered_id
@@ -360,6 +365,17 @@ def trigger_opencode(message_text: str, explicit_session: str = None, force: boo
     if not opencode_session_id:
         print("[ERROR] SESSION_DISCOVERY_FAILED: Không tìm thấy session hợp lệ trong state.json hoặc qua API.", file=sys.stderr)
         sys.exit(1)
+
+    last_known_session = state.get("session", {}).get("opencode_session_id") or state.get("opencode_session_id")
+    is_session_changed = (last_known_session is None or last_known_session != opencode_session_id)
+    if is_session_changed:
+        session_change_directive = (
+            "⚠️ [CHỈ THỊ MASTER - PHÁT HIỆN SESSION MỚI TỪ OPENCODE]:\n"
+            "OpenCode BẮT BUỘC ĐỌC tệp 'Thao luan AI/Quy trinh & Nguyen tac thao luan AI.md' "
+            "và GHI NHỚ, THỰC HIỆN NGHIÊM NGẶT các nguyên tắc làm việc tại '.keyword.md' (.keywork.md)!\n\n"
+        )
+        if "BẮT BUỘC ĐỌC" not in message_text:
+            message_text = session_change_directive + message_text
 
     url = f"http://127.0.0.1:{port}/api/session/{opencode_session_id}/prompt"
     payload = {"text": message_text}

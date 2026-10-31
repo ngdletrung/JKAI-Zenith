@@ -44,6 +44,8 @@ class ExecutionDecision(BaseModel):
     requires_human_gate: bool = False
     interrupt_id: Optional[str] = None
     grant: Optional[Dict[str, Any]] = None   # Serialized ExecutionGrant if ALLOW
+    risk_tier: Optional[str] = None
+    lds_verdict: Optional[Dict[str, Any]] = None
 
 
 class ExecutionResult(BaseModel):
@@ -62,6 +64,9 @@ class ExecutionResult(BaseModel):
     reason: str = ""
     interrupt_id: Optional[str] = None
     action: str = ""
+    receipt: Optional[Dict[str, Any]] = None
+    risk_tier: Optional[str] = None
+    lds_verdict: Optional[Dict[str, Any]] = None
 
     def __str__(self) -> str:
         """Backward-compatible string form — returns tool output or denial message."""
@@ -96,6 +101,7 @@ class ExecutionIntegrityLayer:
     OBSERVATION_TOOL_PREFIXES = [
         "search_web", "search_web_global", "web_search", "websearch", "read_url", "fetch_url", "view_file",
         "search_memory", "execute_skill", "search", "read", "fetch", "lookup",
+        "web_read", "browser_observe", "browser_act", "browser_extract", "browser_action", "browser_control",
     ]
 
     # Word-boundary destructive intent (fixes "rm" matching "form"/"performance").
@@ -142,10 +148,7 @@ class ExecutionIntegrityLayer:
         act_lower = (action or "").lower()
         args_str = str(args).lower()
 
-        # [FIX-41310c-1] Canonical tool guard BEFORE any destructive-keyword scan.
-        # Planner hallucination ("Define site architecture: ...", "auto_code_01",
-        # "CODE_EXECUTION" raw) must return CONTRACT_VIOLATION with actionable hint,
-        # NOT a misleading "forbids file deletion" denial.
+        raw_action = action
         try:
             from core.kernel.tool_contracts import (
                 ToolContractRegistry, is_known_tool, looks_like_sentence_tool,
@@ -343,10 +346,37 @@ class ExecutionIntegrityLayer:
                 )
 
         # ---------------------------------------------------------------------
-        # 4. RISK ASSESSMENT & HUMAN APPROVAL GATE INTERRUPT
+        # 4. LEGAL DECISION STATE (DIR LDS) & COGNITHOR RISK TIERING
         # ---------------------------------------------------------------------
+        try:
+            from core.kernel.lds_risk_governance import enterprise_governance, RiskTier, AgentStateCode
+            lds_v = enterprise_governance.evaluate_lds(
+                action=raw_action or action,
+                arguments=args,
+                task_contract=task_contract,
+                policy=effective_snapshot,
+                task_id=self.mission_id
+            )
+        except Exception as lds_err:
+            logger.debug("[LDS-EVAL] Fallback: %s", lds_err)
+            lds_v = None
+
+        if lds_v is not None and not lds_v.is_legal:
+            fail_msg = "; ".join(lds_v.failure_reasons)
+            logger.warning(f"[LDS-DENIED] Action '{action}' failed LDS verification: {fail_msg}")
+            return ExecutionDecision(
+                outcome=DecisionOutcome.DENY,
+                reason=f"LEGAL_DECISION_STATE_DENIAL: {fail_msg}",
+                action=action,
+                risk_tier=lds_v.risk_tier.name,
+                lds_verdict=lds_v.to_dict()
+            )
+
         target_path = args.get("file_path", args.get("TargetFile", args.get("path", "")))
         requires_approval, gate_reason = eval_tool_risk(action, args)
+        if lds_v is not None and lds_v.risk_tier == RiskTier.RED:
+            requires_approval = True
+            gate_reason = gate_reason or f"COGNITHOR_RED_GATE: Critical risk action '{action}' requires explicit human authorization." 
 
         if requires_approval:
             interrupt_id = str(uuid.uuid4())
@@ -371,7 +401,9 @@ class ExecutionIntegrityLayer:
                 action=action,
                 target=target_path,
                 requires_human_gate=True,
-                interrupt_id=interrupt_id
+                interrupt_id=interrupt_id,
+                risk_tier=lds_v.risk_tier.name if lds_v else None,
+                lds_verdict=lds_v.to_dict() if lds_v else None
             )
 
         # ---------------------------------------------------------------------
@@ -381,13 +413,13 @@ class ExecutionIntegrityLayer:
         grant = issue_execution_grant(
             mission_id=self.mission_id,
             snapshot_id=snap_id,
-            tool_name=action,
+            tool_name=raw_action or action,
             tool_args=args,
             ttl_seconds=300.0
         )
         log_structured_event(
             message="Execution authorized by Execution Integrity Layer with signed grant.",
-            tool_name=action,
+            tool_name=raw_action or action,
             authority_decision="ALLOW",
             trace_id=self.fsm.trace_id,
             extra={"grant_id": getattr(grant, "grant_id", "")}
@@ -395,6 +427,64 @@ class ExecutionIntegrityLayer:
         return ExecutionDecision(
             outcome=DecisionOutcome.ALLOW,
             reason="Execution authorized by Execution Integrity Layer with signed grant.",
-            action=action,
-            grant=grant.to_dict()
+            action=raw_action or action,
+            grant=grant.to_dict(),
+            risk_tier=lds_v.risk_tier.name if lds_v else None,
+            lds_verdict=lds_v.to_dict() if lds_v else None
         )
+
+    def seal_execution_receipt(
+        self,
+        action: str,
+        arguments: Dict[str, Any],
+        output: Any,
+        lds_verdict: Optional[Any] = None,
+        task_id: Optional[str] = None,
+        pre_state_hash: str = "0" * 64,
+        post_state_hash: str = "0" * 64
+    ) -> Any:
+        """
+        [SROS v2 / Sovereign Enterprise Governance]
+        Niêm phong biên nhận mật mã học (ExecutionReceipt) sau khi hành động đã thực thi trên substrate.
+        """
+        try:
+            from core.kernel.lds_risk_governance import enterprise_governance, LDSVerdict, RiskTier
+            eff_task_id = task_id or self.mission_id
+            verdict = lds_verdict
+            if verdict is None:
+                verdict = enterprise_governance.evaluate_lds(
+                    action=action,
+                    arguments=arguments,
+                    task_id=eff_task_id
+                )
+            elif isinstance(verdict, dict):
+                risk_tier_name = verdict.get("risk_tier", "YELLOW")
+                try:
+                    rt = RiskTier[risk_tier_name]
+                except KeyError:
+                    rt = RiskTier.YELLOW
+                verdict = LDSVerdict(
+                    is_legal=verdict.get("is_legal", True),
+                    authority_ok=verdict.get("authority_ok", True),
+                    context_ok=verdict.get("context_ok", True),
+                    time_ok=verdict.get("time_ok", True),
+                    integrity_ok=verdict.get("integrity_ok", True),
+                    evidence_ok=verdict.get("evidence_ok", True),
+                    risk_tier=rt,
+                    failure_reasons=verdict.get("failure_reasons", []),
+                    metadata=verdict.get("metadata", {})
+                )
+
+            receipt = enterprise_governance.seal_receipt(
+                task_id=eff_task_id,
+                action=action,
+                arguments=arguments,
+                output_result=output,
+                lds_verdict=verdict,
+                pre_state_hash=pre_state_hash,
+                post_state_hash=post_state_hash
+            )
+            return receipt
+        except Exception as e:
+            logger.error("[RECEIPT-SEAL-ERROR] Failed to seal execution receipt: %s", e)
+            raise RuntimeError("FAIL-CLOSED: execution receipt sealing failed") from e

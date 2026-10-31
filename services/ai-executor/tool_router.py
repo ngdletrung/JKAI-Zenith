@@ -43,6 +43,8 @@ class ToolRouter:
 
     def _find_tool_in_module(self, module, tool_name):
         """🧠 Định vị hàm bằng công nghệ Quét Sâu (Deep Scan)"""
+        if not tool_name or not isinstance(tool_name, str):
+            return None
         # 1. Tìm ở cấp độ module (exact match)
         if hasattr(module, tool_name):
             attr = getattr(module, tool_name)
@@ -248,17 +250,28 @@ class ToolRouter:
                         break
             
             if not skill_info:
+                t_upper = str(resolved_tool_name or "").upper()
+                if t_upper in ("BROWSER_CONTROL", "AUTO_BROWSER", "AUTO_BROWSER_01", "BROWSER_ACTION", "BROWSER_INTERACT", "WEB_BROWSER", "VISUAL_ACI_GATEWAY", "VISUAL_COMPUTER_USE", "SOM_BROWSER_CLICK", "BROWSER_ACT"):
+                    resolved_tool_name = "BROWSER_VISION_OPS"
+                    skill_info = all_skills.get("BROWSER_VISION_OPS")
+                    if skill_info:
+                        print(f"[ROUTER-BROWSER-ALIAS] '{tool_name}' → 'BROWSER_VISION_OPS'")
+
+                if not skill_info and t_upper in ("OMNI_SEARCH_ENGINE", "WEB_SEARCH", "SEARCH_WEB"):
+                    resolved_tool_name = "SEARCH_WEB_GLOBAL"
+                    skill_info = all_skills.get("SEARCH_WEB_GLOBAL")
+                    if skill_info:
+                        print(f"[ROUTER-SEARCH-ALIAS] '{tool_name}' → 'SEARCH_WEB_GLOBAL'")
+
+            if not skill_info:
                 # 📡 [AUTO-SYNC-PROTOCOL]: Nếu không thấy, tự động tái thiết bản đồ nơ-ron
                 print(f"[ROUTER-SYNC] Kỹ năng '{resolved_tool_name}' chưa có trong bản đồ. Đang tự động đồng bộ...")
-                all_skills_full = await orchestrator.sync_sovereign_registry()
-                all_skills = all_skills_full.get("skills", {})
-                skill_info = all_skills.get(resolved_tool_name) or all_skills.get(resolved_tool_name.upper())
-                # 🛡️ [SYSTEMIC-REBUILD]: Tái cấu trúc bản đồ nơ-ron động ngay lập tức để cập nhật các hàm mới
-            if not skill_info and str(resolved_tool_name or "").upper() in ("OMNI_SEARCH_ENGINE", "WEB_SEARCH", "SEARCH_WEB"):
-                resolved_tool_name = "SEARCH_WEB_GLOBAL"
-                skill_info = all_skills.get("SEARCH_WEB_GLOBAL")
-                if skill_info:
-                    print(f"[ROUTER-SEARCH-ALIAS] '{tool_name}' → 'SEARCH_WEB_GLOBAL'")
+                try:
+                    all_skills_full = await orchestrator.sync_sovereign_registry()
+                    all_skills = all_skills_full.get("skills", {})
+                    skill_info = all_skills.get(resolved_tool_name) or all_skills.get(resolved_tool_name.upper())
+                except Exception as sync_err:
+                    print(f"[ROUTER-SYNC-WARN] Không thể sync registry ({sync_err}). Tiếp tục với bản đồ hiện tại.")
 
             if not skill_info:
                 clean_num = str(resolved_tool_name or "").strip().lstrip("#")
@@ -375,8 +388,12 @@ class ToolRouter:
                 module = self._module_cache[cache_key]
                 target_func = (
                     self._find_tool_in_module(module, tool_name) or
+                    self._find_tool_in_module(module, resolved_tool_name) or
                     self._find_tool_in_module(module, kwargs.get("action")) or
-                    self._find_tool_in_module(module, kwargs.get("method"))
+                    self._find_tool_in_module(module, kwargs.get("method")) or
+                    self._find_tool_in_module(module, "execute") or
+                    self._find_tool_in_module(module, "run") or
+                    self._find_tool_in_module(module, "main")
                 )
             
             if not target_func:
@@ -387,8 +404,12 @@ class ToolRouter:
                 self._module_cache[cache_key] = module
                 target_func = (
                     self._find_tool_in_module(module, tool_name) or
+                    self._find_tool_in_module(module, resolved_tool_name) or
                     self._find_tool_in_module(module, kwargs.get("action")) or
-                    self._find_tool_in_module(module, kwargs.get("method"))
+                    self._find_tool_in_module(module, kwargs.get("method")) or
+                    self._find_tool_in_module(module, "execute") or
+                    self._find_tool_in_module(module, "run") or
+                    self._find_tool_in_module(module, "main")
                 )
 
             if not target_func:
@@ -420,8 +441,11 @@ class ToolRouter:
                         print(f"[ROUTER-AUTO-HEAL] Tự động ánh xạ tham số '{synonym}' -> 'query'.")
                         break
             
-            # [GENERIC-FALLBACK]: Nếu chỉ có duy nhất 1 tham số bắt buộc, và kwargs chứa 1 tham số không khớp tên, tự động map
-            if len(required_params) == 1 and required_params[0] not in kwargs:
+            # [GENERIC-FALLBACK]: Nếu chỉ có duy nhất 1 tham số bắt buộc dạng dict (params, payload...)
+            if len(required_params) == 1 and required_params[0] in ("params", "payload", "data", "inputs") and required_params[0] not in kwargs:
+                kwargs = {required_params[0]: dict(kwargs)}
+                print(f"[ROUTER-AUTO-HEAL] Gom toàn bộ kwargs vào dict '{required_params[0]}'.")
+            elif len(required_params) == 1 and required_params[0] not in kwargs:
                 other_keys = [k for k in kwargs.keys() if k not in ["task_id", "trace_id", "session_id"]]
                 if len(other_keys) == 1:
                     single_key = other_keys[0]

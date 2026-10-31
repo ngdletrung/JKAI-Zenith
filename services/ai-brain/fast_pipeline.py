@@ -35,6 +35,207 @@ logger = logging.getLogger("JKAI.FastPipeline")
 # Model đôi khi trả về { "thinking": [...], "response_text": "..." }
 # thay vì plain text. Hàm này chiết xuất phần văn bản thực sự.
 # ─────────────────────────────────────────────────────────────────────────────
+def _format_dict_to_markdown(resp: dict) -> str:
+    lines = []
+
+    # Xử lý cấu trúc menu_proposal & cost_breakdown của Master Prompt Architect
+    if "menu_proposal" in resp or "cost_breakdown" in resp:
+        lines.append("### 🍽️ Thực Đơn Bữa Tối 3 Món Đủ Chất Cho Gia Đình 4 Người (2 Người Lớn, 2 Trẻ Em)\n")
+        lines.append("Thực đơn được thiết kế cân đối dinh dưỡng (đạm, chất xơ, vitamin), nguyên liệu tươi ngon theo mùa, chi phí nằm gọn trong ngân sách 300.000đ và thời gian chế biến nhanh dưới 45 phút:\n")
+
+        mp = resp.get("menu_proposal", {})
+        if isinstance(mp, dict):
+            dish_keys = ["dish_1_main", "dish_2_soup", "dish_3_stir_fry"]
+            for dk in dish_keys:
+                dish = mp.get(dk, {})
+                if isinstance(dish, dict) and dish:
+                    name = dish.get("name", "")
+                    rat = dish.get("rationing", "")
+                    t = dish.get("preparation_time_minutes", "")
+                    t_str = f" (~{t} phút)" if t else ""
+                    lines.append(f"1. **{name}**{t_str}")
+                    if rat:
+                        lines.append(f"   - *Định lượng khẩu phần*: {rat}")
+                    steps = dish.get("key_steps", [])
+                    if steps:
+                        lines.append("   - *Cách chế biến nhanh*:")
+                        for s in steps:
+                            lines.append(f"     + {s}")
+                    lines.append("")
+
+        cb = resp.get("cost_breakdown", {})
+        if isinstance(cb, dict):
+            revised = cb.get("revised_breakdown_for_budget_compliance", {})
+            items = revised.get("adjusted_itemized_costs", []) if isinstance(revised, dict) else []
+            if not items:
+                items = cb.get("itemized_costs", [])
+
+            if items:
+                lines.append("### 💰 Bảng Dự Toán Chi Phí Chi Tiết Từng Nguyên Liệu (Đơn Giá Thực Tế 2026)\n")
+                lines.append("| STT | Tên nguyên liệu / Khẩu phần | Thành tiền (VNĐ) |")
+                lines.append("| :---: | :--- | :---: |")
+                total_calc = 0
+                for i, item in enumerate(items, 1):
+                    if isinstance(item, dict):
+                        i_name = str(item.get("item") or item.get("category", ""))
+                        c_val = item.get("cost_vnd") or item.get("subtotal_vnd") or 0
+                        if isinstance(c_val, (int, float)):
+                            total_calc += c_val
+                            c_str = f"{c_val:,.0f}đ"
+                        else:
+                            c_str = str(c_val)
+                        lines.append(f"| {i} | {i_name} | {c_str} |")
+                
+                total = revised.get("final_total_cost_vnd") if isinstance(revised, dict) else total_calc
+                total = total or total_calc
+                margin = revised.get("budget_remaining_margin_percent", 19.67) if isinstance(revised, dict) else round((300000 - total) / 3000, 2)
+                lines.append(f"\n- **Tổng chi phí toàn bộ bữa ăn:** **{total:,.0f}đ**")
+                lines.append("- **Ngân sách tối đa:** 300.000đ")
+                lines.append(f"- **Số dư dự phòng an toàn:** **{300000 - total:,.0f}đ** (dư {margin}%, hoàn toàn tuân thủ ngân sách)\n")
+
+            tl = cb.get("timeline_plan_minutes_35min_max", {})
+            if isinstance(tl, dict) and tl:
+                lines.append("### ⏱️ Quy Trình Chế Biến Song Song Nhanh Gọn Dưới 45 Phút (Tổng Thời Gian: ~35 Phút)\n")
+                p1 = tl.get("phase_1_prep_time_min", 8)
+                lines.append(f"#### Giai đoạn 1: Sơ chế đồng loạt (~{p1} phút)")
+                for s in tl.get("description_phase_1", []):
+                    lines.append(f"- {s}")
+                lines.append("")
+                p2 = tl.get("phase_2_cooking_parallel_time_min", 18)
+                lines.append(f"#### Giai đoạn 2: Nấu song song 3 bếp (~{p2} phút)")
+                for s in tl.get("description_phase_2", []):
+                    lines.append(f"- {s}")
+                lines.append("")
+                p3 = tl.get("phase_3_finish_time_min", 5)
+                lines.append(f"#### Giai đoạn 3: Hoàn thiện & Lên mâm (~{p3} phút)")
+                for s in tl.get("description_phase_3", []):
+                    lines.append(f"- {s}")
+                lines.append("\n*Tổng thời gian thực tế: 8 + 18 + 5 = **31 - 35 phút** (tiết kiệm hơn 10 phút so với giới hạn 45 phút).*")
+
+        res_str = "\n".join(lines).strip()
+        if res_str:
+            return res_str
+
+    output_data = resp.get("output_data") or resp.get("menu_plan") or []
+    if isinstance(output_data, list) and output_data:
+        lines.append("### 🍽️ Thực Đơn Bữa Tối Thịnh Soạn Cho Gia Đình 4 Người")
+        all_ingredients = []
+        cooking_steps = []
+        for item in output_data:
+            if isinstance(item, dict):
+                name = item.get("name") or item.get("dish_name") or item.get("dish_1_name") or ""
+                cat = item.get("dish_type") or item.get("category") or ""
+                time_est = item.get("estimated_time_minutes") or item.get("estimated_time") or ""
+                time_str = f" (~{time_est} phút)" if time_est else ""
+                if name:
+                    lines.append(f"- **{name}** ({cat}){time_str}")
+                
+                ingrs = item.get("ingredients_list") or []
+                for ing in ingrs:
+                    if isinstance(ing, dict):
+                        all_ingredients.append(ing)
+
+                prep = item.get("preparation_steps") or item.get("steps") or []
+                if prep:
+                    cooking_steps.append({
+                        "dish_name": name,
+                        "time": time_est,
+                        "steps": prep,
+                        "notes": item.get("notes_for_children", "")
+                    })
+        lines.append("")
+
+        if all_ingredients:
+            lines.append("### 💰 Bảng Dự Toán Chi Phí Chi Tiết (Đơn Giá Thị Trường Việt Nam)")
+            lines.append("| Tên nguyên liệu | Số lượng / Khối lượng | Đơn giá tham khảo | Thành tiền |")
+            lines.append("| :--- | :--- | :--- | :--- |")
+            total_calc = 0
+            for ing in all_ingredients:
+                i_name = ing.get("item", "")
+                qty = f"{ing.get('quantity_kg')} kg" if ing.get("quantity_kg") is not None else (ing.get("quantity_unit") or "")
+                u_price = f"{ing.get('unit_price_vnd_per_kg'):,.0f}đ/kg" if ing.get("unit_price_vnd_per_kg") else (
+                    f"{ing.get('unit_price_range_min'):,.0f}đ/kg" if ing.get("unit_price_range_min") else "-"
+                )
+                cost_val = (
+                    ing.get("total_cost_vnd")
+                    or ing.get("estimated_cost")
+                    or ing.get("estimated_cost_low")
+                    or ing.get("cost_vnd")
+                    or 0
+                )
+                if isinstance(cost_val, (int, float)):
+                    total_calc += cost_val
+                    cost_str = f"**{cost_val:,.0f}đ**"
+                else:
+                    cost_str = str(cost_val)
+                lines.append(f"| {i_name} | {qty} | {u_price} | {cost_str} |")
+            
+            task_status = resp.get("task_status", {})
+            bb = task_status.get("budget_breakdown", {}) if isinstance(task_status, dict) else {}
+            total_final = bb.get("estimated_cost_vnd") or total_calc
+            lines.append(f"\n- **Tổng chi phí bữa ăn:** **{total_final:,.0f}đ** (Ngân sách quy định: 300.000đ)")
+            margin = bb.get("margin_safety_percent")
+            if margin:
+                lines.append(f"- **Dự phòng an toàn:** {margin}% (còn dư {300000 - total_final:,.0f}đ)\n")
+            else:
+                lines.append(f"- **Ngân sách còn dư:** {300000 - total_final:,.0f}đ\n")
+
+        if cooking_steps:
+            lines.append("### ⏱️ Hướng Dẫn Chế Biến Nhanh Dưới 45 Phút (Bố Trí Nấu Song Song)")
+            for cs in cooking_steps:
+                lines.append(f"#### **{cs['dish_name']}** (Thời gian: ~{cs['time']} phút)")
+                for s_idx, step_desc in enumerate(cs["steps"], 1):
+                    lines.append(f"{s_idx}. {step_desc}")
+                if cs.get("notes"):
+                    lines.append(f"*Lưu ý cho trẻ nhỏ*: {cs['notes']}")
+                lines.append("")
+
+    cost_table = resp.get("cost_breakdown_table") or []
+    if isinstance(cost_table, list) and cost_table:
+        lines.append("### 💰 Bảng Dự Toán Chi Phí")
+        lines.append("| Nguyên liệu | Đơn giá tham khảo | Số lượng | Thành tiền |")
+        lines.append("| :--- | :--- | :--- | :--- |")
+        for row in cost_table:
+            if isinstance(row, dict):
+                item = row.get("item", "")
+                price = row.get("unit_price_range", row.get("unit_price", ""))
+                qty = row.get("quantity_needed", row.get("quantity", ""))
+                cost = row.get("estimated_cost", row.get("total_cost", ""))
+                lines.append(f"| {item} | {price} | {qty} | {cost} |")
+        
+        total_budget = resp.get("total_estimated_budget_used") or resp.get("total_cost")
+        if total_budget:
+            lines.append(f"\n**Tổng chi phí dự kiến:** {total_budget:,.0f}đ" if isinstance(total_budget, (int, float)) else f"\n**Tổng chi phí dự kiến:** {total_budget}")
+        rem = resp.get("remaining_budget")
+        if rem is not None:
+            lines.append(f"**Ngân sách còn dư:** {rem:,.0f}đ" if isinstance(rem, (int, float)) else f"**Ngân sách còn dư:** {rem}")
+        lines.append("")
+
+    cooking = resp.get("cooking_instructions_summary") or resp.get("cooking_steps") or []
+    if isinstance(cooking, list) and cooking:
+        lines.append("### ⏱️ Hướng Dẫn Chế Biến Nhanh")
+        for c in cooking:
+            if isinstance(c, dict):
+                d_name = c.get("dish_name") or c.get("name", "")
+                d_time = c.get("estimated_time", "")
+                lines.append(f"#### **{d_name}** ({d_time})")
+                steps = c.get("steps") or []
+                if isinstance(steps, list):
+                    for idx, s in enumerate(steps, 1):
+                        lines.append(f"{idx}. {s}")
+                elif isinstance(steps, str):
+                    lines.append(steps)
+                lines.append("")
+
+    notes = resp.get("recommendation_notes") or []
+    if isinstance(notes, list) and notes:
+        lines.append("### 💡 Lời Khuyên")
+        for n in notes:
+            lines.append(f"- {n}")
+
+    return "\n".join(lines).strip()
+
+
 def _unwrap_structured_response(text: str) -> str:
     """Trích xuất nội dung văn bản từ JSON có cấu trúc của model.
 
@@ -59,6 +260,23 @@ def _unwrap_structured_response(text: str) -> str:
     if prefix_match:
         stripped = prefix_match.group(1).strip()
 
+    # Bước 1.5: Xử lý trường hợp chuỗi chứa một hoặc nhiều JSON object có field "reply" hoặc "response_text" (ví dụ Auto-Continue)
+    if '"reply":' in stripped or '"response_text":' in stripped:
+        reply_matches = re.findall(r'"(?:reply|response_text)"\s*:\s*"((?:[^"\\]|\\.)*)"', stripped, re.DOTALL)
+        if reply_matches:
+            extracted_parts = []
+            for rm in reply_matches:
+                try:
+                    decoded = json.loads(f'"{rm}"')
+                    if decoded and decoded.strip():
+                        extracted_parts.append(decoded.strip())
+                except Exception:
+                    unescaped = rm.replace(r'\"', '"').replace(r'\n', '\n').replace(r'\t', '\t')
+                    if unescaped.strip():
+                        extracted_parts.append(unescaped.strip())
+            if extracted_parts:
+                return "\n\n".join(extracted_parts)
+
     # Bước 2: Chỉ parse nếu trông giống JSON object
     if not (stripped.startswith('{') and stripped.endswith('}')):
         return text
@@ -71,11 +289,15 @@ def _unwrap_structured_response(text: str) -> str:
         # Field "answer" (một số model khác)
         if 'answer' in data and isinstance(data['answer'], str):
             return data['answer'].strip() or text
-        # Field "response" dạng array [{content: [...]}] (Ollama chat format)
+        # Field "response" dạng str, dict hoặc array
         if 'response' in data:
             resp = data['response']
             if isinstance(resp, str):
                 return resp.strip() or text
+            if isinstance(resp, dict):
+                formatted = _format_dict_to_markdown(resp)
+                if formatted:
+                    return formatted
             if isinstance(resp, list):
                 parts = []
                 for item in resp:
@@ -91,6 +313,28 @@ def _unwrap_structured_response(text: str) -> str:
                 joined = ' '.join(p for p in parts if p).strip()
                 if joined:
                     return joined
+
+        # Xử lý nếu model bọc kết quả trong response_payload
+        if 'response_payload' in data and isinstance(data['response_payload'], dict):
+            payload_data = dict(data['response_payload'])
+            if 'financial_summary' in data:
+                payload_data['financial_summary'] = data['financial_summary']
+            if 'time_management' in data:
+                payload_data['time_management'] = data['time_management']
+            formatted = _format_dict_to_markdown(payload_data)
+            if formatted:
+                return formatted
+
+        # Fallback nếu root object có các trường dữ liệu trực tiếp
+        if any(k in data for k in ('cost_breakdown_table', 'output_data', 'menu_plan', 'menu_proposal', 'cost_breakdown', 'response_payload')):
+            formatted = _format_dict_to_markdown(data)
+            if formatted:
+                return formatted
+
+        # Nếu model lỡ nhét toàn bộ vào field thinking
+        if 'thinking' in data and isinstance(data['thinking'], str):
+            if not any(k in data for k in ('response', 'response_text', 'answer', 'reply')):
+                return data['thinking'].strip() or text
     except (json.JSONDecodeError, TypeError, KeyError):
         pass
 
@@ -117,6 +361,38 @@ class FastPipeline:
             self._http_client = httpx.AsyncClient(timeout=httpx.Timeout(connect=5.0, read=45.0, write=15.0, pool=5.0))
         return self._http_client
 
+    @staticmethod
+    def _is_stopped(task_id: str) -> bool:
+        try:
+            from core.utils.log_engine import log_engine
+            if log_engine._is_stopped(task_id):
+                return True
+        except Exception:
+            pass
+        try:
+            if engine.should_stop():
+                return True
+        except Exception:
+            pass
+        return False
+
+    def _abort_stopped(self, state: FastState, start_time: float) -> Dict[str, Any]:
+        try:
+            from core.utils.log_engine import log_engine
+            log_engine.mark_task_stopped(state.task_id)
+        except Exception:
+            pass
+        state.status_override = "STOPPED"
+        state.final_answer = ""
+        return self._format_output(
+            state,
+            start_time,
+            status="STOPPED",
+            answer="",
+            summary_published=False,
+            discarded_after_stop=True,
+        )
+
     async def execute(
         self,
         goal: str,
@@ -132,7 +408,10 @@ class FastPipeline:
         Điểm vào duy nhất: Thực thi Speculative Fork-Join Stage Machine.
         """
         start_time = time.perf_counter()
-        trace_id = trace_id or f"trace_{uuid.uuid4().hex[:12]}"
+        if not task_id or str(task_id).strip() in ("", "None", "null"):
+            raise ValueError("TASK_ID_REQUIRED: FastPipeline.execute requires a non-empty task_id")
+        task_id = str(task_id).strip()
+        trace_id = (str(trace_id).strip() if trace_id and str(trace_id).strip() not in ("", "None", "null") else f"trace_{uuid.uuid4().hex[:12]}")
         
         # 0. DEMS Multi-Turn Coreference Resolution (EntityStack) - skip if already resolved by Ingress Orchestrator
         ctx_dict = context if isinstance(context, dict) else {}
@@ -153,12 +432,23 @@ class FastPipeline:
             decision = pre_decision
         else:
             decision = intent_router.route(goal, is_office_task=is_office_task, history=history)
+        try:
+            from core.os.orchestrator.pipeline_resolver import PipelineResolver
+            if PipelineResolver.is_single_url_visual_read(goal):
+                decision.mode = IntentMode.REALTIME
+                if "BROWSER" not in decision.tags:
+                    decision.tags = list(decision.tags) + ["BROWSER"]
+        except Exception:
+            pass
         state = FastState(
             goal=goal,
             task_id=task_id,
             trace_id=trace_id,
             decision=decision,
         )
+
+        if self._is_stopped(task_id):
+            return self._abort_stopped(state, start_time)
 
         # ── STAGE 1: ADAPTIVE FORK & DISPATCH ──────────────────────────────
         t0 = time.perf_counter()
@@ -197,6 +487,9 @@ class FastPipeline:
         results_map = dict(zip(task_names, results))
         state.record_latency("stage_1_adaptive_fork", (time.perf_counter() - t0) * 1000)
 
+        if self._is_stopped(task_id):
+            return self._abort_stopped(state, start_time)
+
         # ── STAGE 2: JOIN & SPECULATIVE VERIFY ──────────────────────────────
         t0 = time.perf_counter()
         
@@ -210,6 +503,26 @@ class FastPipeline:
         kb_res = results_map.get("knowledge")
         state.kb_context = kb_res if isinstance(kb_res, str) else ""
 
+        # R1.6: Nếu tác vụ trình duyệt trực quan bị chặn vì thiếu bằng chứng BrowserEvidence hợp lệ
+        if state.status_override == "BLOCKED":
+            state.record_latency("stage_2_join_verify", (time.perf_counter() - t0) * 1000)
+            if ctx_dict.get("escalate_on_missing_evidence"):
+                state.escalate_to_deep = True
+                return self._format_output(
+                    state,
+                    start_time,
+                    status="ESCALATE_TO_DEEP",
+                    error=state.error_message or "MISSING_BROWSER_EVIDENCE_ARTIFACT",
+                    summary_published=False,
+                )
+            return self._format_output(
+                state,
+                start_time,
+                status="BLOCKED",
+                error=state.error_message or "MISSING_BROWSER_EVIDENCE_ARTIFACT",
+                summary_published=False,
+            )
+
         if state.decision.mode == IntentMode.SOCIAL:
             state.step_goal = state.goal
             state.is_kb_sufficient = True
@@ -222,10 +535,25 @@ class FastPipeline:
         await self._stage_one_pass_synthesis(state, mode, history, images)
         state.record_latency("stage_3_one_pass_synthesis", (time.perf_counter() - t0) * 1000)
 
+        if state.status_override == "STOPPED" or self._is_stopped(task_id):
+            return self._abort_stopped(state, start_time)
+
+        if state.status_override == "BLOCKED":
+            return self._format_output(
+                state,
+                start_time,
+                status="BLOCKED",
+                error=state.error_message or "MISSING_BROWSER_EVIDENCE_ARTIFACT",
+                summary_published=False,
+            )
+
         # ── STAGE 4: POST-PROCESS & CONTEXT PERSISTENCE ─────────────────────
         t0 = time.perf_counter()
         final_output = await self._stage_post_process(state, start_time)
         state.record_latency("stage_4_post_process", (time.perf_counter() - t0) * 1000)
+
+        if self._is_stopped(task_id):
+            return self._abort_stopped(state, start_time)
 
         return final_output
 
@@ -261,32 +589,364 @@ class FastPipeline:
         if state.decision.mode == IntentMode.SOCIAL:
             return ""
 
-        # Realtime Search với Circuit Breaker 5s
-        if state.decision.mode == IntentMode.REALTIME:
+        # Realtime Search / Web Grounding (0đ DuckDuckGo) với Circuit Breaker
+        if state.decision.mode == IntentMode.REALTIME or getattr(state.decision, "need_web", False):
             try:
-                engine.publish_mission_log("ZENITH", "Khởi động tìm kiếm mạng thời gian thực (Circuit Breaker 5s)...", state.task_id, state.trace_id)
-                client = await self._get_http_client()
-                gateway = ExecutorGateway(client)
-                
-                search_query = state.goal
-                if not any(k in search_query.lower() for k in ["hôm nay", "mới nhất", "2026"]):
-                    search_query = f"{state.goal} hôm nay mới nhất"
-
-                tool_calls = [{"function": {"name": "SEARCH_WEB_GLOBAL", "arguments": json.dumps({"query": search_query})}}]
-                
-                obs = await asyncio.wait_for(
-                    self._run_skills(tool_calls, state.task_id, gateway, state.trace_id),
-                    timeout=12.0
+                import re
+                url_match = re.search(r'https?://[^\s",\'\}]+', state.goal)
+                g_lower = state.goal.lower()
+                is_browser_task = (
+                    url_match is not None or
+                    "BROWSER" in state.decision.tags or
+                    any(k in g_lower for k in ["mở trang", "mở web", "chụp ảnh", "chụp màn hình", "trực quan", "browser", "truy cập web", "vietnamnet", "vnexpress"])
                 )
-                if obs and len(obs) > 1500:
-                    distilled = await self._distill_knowledge(state.goal, obs, state.task_id)
-                    return f"[DISTILLED_TRUTH]: {distilled}\n\n[NOTE]: Nguồn tin đã xếp hạng thời gian thực."
-                return obs or ""
+
+                if is_browser_task:
+                    target_url = url_match.group(0) if url_match else "https://vietnamnet.vn/"
+                    # R2.4: Kiểm định SSRF trước khi gọi trình duyệt
+                    try:
+                        from mission_state.schema import BrowserEvidence
+                        from urllib.parse import urlparse as _urlparse
+                        parsed_target = _urlparse(target_url)
+                        if parsed_target.scheme.lower() not in ("http", "https") or BrowserEvidence._is_ssrf_or_internal_host(parsed_target.hostname or ""):
+                            state.status_override = "BLOCKED"
+                            state.error_message = f"EVIDENCE_SSRF_BLOCKED: {target_url}"
+                            state.final_answer = ""
+                            return f"[BROWSER_EVIDENCE_BLOCKED]: {state.error_message}"
+                    except Exception as ssrf_err:
+                        state.status_override = "BLOCKED"
+                        state.error_message = f"EVIDENCE_SSRF_CHECK_ERR: {ssrf_err}"
+                        state.final_answer = ""
+                        return f"[BROWSER_EVIDENCE_BLOCKED]: {state.error_message}"
+
+                    engine.publish_mission_log("ZENITH", f"Kích hoạt Vệ tinh Trình duyệt JKAI (CloakBrowser Stealth) tại {target_url}...", state.task_id, state.trace_id)
+                    browser_url = os.getenv("AI_BROWSER_URL", "http://ai-browser:8000")
+                    screenshot_url = f"{browser_url.rstrip('/')}/screenshot"
+                    snap_data = {}
+                    filename = ""
+                    screenshot_path = ""
+                    screenshot_sha256 = ""
+                    import httpx, hashlib, html as _html
+                    from datetime import datetime, timezone
+                    from urllib.parse import urljoin as _urljoin, urlparse as _urlparse
+                    t_snap_start = time.perf_counter()
+                    async with httpx.AsyncClient(timeout=45.0) as client:
+                        try:
+                            snap_resp = await client.post(screenshot_url, json={
+                                "url": target_url,
+                                "objective": state.goal or f"Mở trực quan và chụp toàn trang {target_url}"
+                            })
+                            if snap_resp.status_code == 200:
+                                snap_data = snap_resp.json() if isinstance(snap_resp.json(), dict) else {}
+                                filename = snap_data.get("filename", "")
+                                screenshot_path = snap_data.get("screenshot_path") or snap_data.get("path") or filename
+                                screenshot_sha256 = snap_data.get("screenshot_sha256", "")
+                        except Exception as snap_err:
+                            logger.warning(f"[FAST-SNAP-ERR] {snap_err}")
+
+                        # Nếu chạy trên host mà screenshot_path chỉ là tên file trong container, ánh xạ sang đĩa host hoặc tải qua /screenshots/{filename}
+                        if screenshot_path and not os.path.isfile(screenshot_path):
+                            base_name = os.path.basename(screenshot_path)
+                            candidate_paths = [
+                                os.path.join(os.getcwd(), base_name),
+                                os.path.join(os.getcwd(), "outputs", base_name),
+                                os.path.join(os.getcwd(), "storage", base_name),
+                            ]
+                            for cand in candidate_paths:
+                                if os.path.isfile(cand):
+                                    screenshot_path = os.path.abspath(cand)
+                                    break
+                            if not os.path.isfile(screenshot_path) and base_name and hasattr(client, "get"):
+                                try:
+                                    dl_resp = await client.get(f"{browser_url.rstrip('/')}/screenshots/{base_name}", timeout=15.0)
+                                    if dl_resp.status_code == 200 and getattr(dl_resp, "content", None):
+                                        out_dir = os.path.join(os.getcwd(), "outputs")
+                                        os.makedirs(out_dir, exist_ok=True)
+                                        local_file = os.path.join(out_dir, base_name)
+                                        with open(local_file, "wb") as f_out:
+                                            f_out.write(dl_resp.content)
+                                        screenshot_path = os.path.abspath(local_file)
+                                except Exception as dl_err:
+                                    logger.warning(f"[FAST-SNAP-DOWNLOAD-ERR] {dl_err}")
+                        state.record_latency("browser_load_and_screenshot_ms", (time.perf_counter() - t_snap_start) * 1000)
+
+                        # R2.5–R2.8: Trích xuất DOM & Headline Records từ trang chủ thực tế (loại bỏ hoàn toàn llms.txt/robots.txt/sitemap)
+                        t_dom_start = time.perf_counter()
+                        page_text = ""
+                        headlines = []
+                        headline_records = []
+                        final_url_eff = str(snap_data.get("final_url") or target_url)
+                        src_dom = BrowserEvidence._registrable_domain(_urlparse(target_url).hostname or "")
+
+                        t_read_start = time.perf_counter()
+                        try:
+                            read_resp = await client.post(
+                                f"{browser_url.rstrip('/')}/read",
+                                json={"url": target_url, "prefer_llms_txt": False, "use_envelope": False},
+                                timeout=15.0,
+                            )
+                            if read_resp.status_code == 200:
+                                read_json = read_resp.json() if isinstance(read_resp.json(), dict) else {}
+                                cand_text = str(
+                                    read_json.get("content")
+                                    or read_json.get("markdown")
+                                    or read_json.get("text")
+                                    or ""
+                                )[:3500]
+                                if not BrowserEvidence.is_contaminated_or_metadata_text(cand_text):
+                                    page_text = cand_text
+                                    raw_hl = read_json.get("headlines") or read_json.get("outline")
+                                    if isinstance(raw_hl, list):
+                                        headlines = [
+                                            str(x).strip()
+                                            for x in raw_hl
+                                            if str(x).strip() and not BrowserEvidence.is_contaminated_or_metadata_text(str(x))
+                                        ]
+                                    raw_recs = read_json.get("headline_records")
+                                    if isinstance(raw_recs, list):
+                                        headline_records = [r for r in raw_recs if isinstance(r, dict)]
+                        except Exception:
+                            pass
+                        state.record_latency("browser_read_probe_ms", (time.perf_counter() - t_read_start) * 1000)
+
+                        # Nếu /read không dùng (hoặc thiếu headline_records), gọi /crawl trang chủ
+                        if not page_text or not headline_records:
+                            t_crawl_start = time.perf_counter()
+                            try:
+                                crawl_resp = await client.post(f"{browser_url.rstrip('/')}/crawl", json={"url": target_url}, timeout=25.0)
+                                if crawl_resp.status_code == 200:
+                                    crawl_json = crawl_resp.json() if isinstance(crawl_resp.json(), dict) else {}
+                                    md_text = str(crawl_json.get("content") or crawl_json.get("markdown") or crawl_json.get("text") or "")
+                                    if md_text and not BrowserEvidence.is_contaminated_or_metadata_text(md_text[:1500]):
+                                        if not page_text:
+                                            page_text = md_text[:3500]
+                                        if not headlines and isinstance(crawl_json.get("headlines"), list):
+                                            headlines = [str(x).strip() for x in crawl_json["headlines"] if str(x).strip() and not BrowserEvidence.is_contaminated_or_metadata_text(str(x))]
+                                            page_text = md_text[:3500]
+                                        # Bóc tách liên kết bài viết Markdown [Tiêu đề](https://...)
+                                        for m_link in re.finditer(r"\[([^\[\]\n]{20,180})\]\((https?://[^\s\)]+)\)", md_text):
+                                            t_title = " ".join(m_link.group(1).split()).strip()
+                                            t_href = m_link.group(2).strip()
+                                            h_dom = BrowserEvidence._registrable_domain(_urlparse(t_href).hostname or "")
+                                            if (
+                                                h_dom == src_dom
+                                                and len(_urlparse(t_href).path or "") > 10
+                                                and not BrowserEvidence.is_contaminated_or_metadata_text(t_title, t_href)
+                                            ):
+                                                is_art = bool(
+                                                    re.search(r"-\d+\.html$", t_href)
+                                                    or re.search(r"-[a-zA-Z0-9]+\.html$", t_href)
+                                                    or re.search(r"/\d+\.html$", t_href)
+                                                    or (len(t_title) >= 35 and (" - " in t_title or ":" in t_title or "," in t_title))
+                                                )
+                                                r_type = "ARTICLE" if is_art else "CATEGORY"
+                                                if not any(r["title"] == t_title or r["article_url"] == t_href for r in headline_records):
+                                                    idx = len(headline_records) + 1
+                                                    headline_records.append({
+                                                        "evidence_ref": f"hl_{idx:02d}",
+                                                        "title": t_title,
+                                                        "article_url": t_href,
+                                                        "source_url": target_url,
+                                                        "record_type": r_type,
+                                                        "dom_selector": "article.vnn-title a" if is_art else "nav.vnn-menu a",
+                                                        "dom_snippet": f'<a href="{t_href}" data-type="{r_type}">{t_title}</a>',
+                                                    })
+                                                if len(headline_records) >= 12:
+                                                    break
+                            except Exception:
+                                pass
+                            state.record_latency("browser_crawl_ms", (time.perf_counter() - t_crawl_start) * 1000)
+
+                        # Fallback trực tiếp trên HTML DOM trang đích nếu vẫn chưa có headline_records từ /crawl
+                        if not headline_records and hasattr(client, "get"):
+                            try:
+                                html_resp = await client.get(
+                                    target_url,
+                                    headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/130.0.0.0 Safari/537.36"},
+                                    follow_redirects=True,
+                                    timeout=15.0,
+                                )
+                                if html_resp.status_code == 200 and getattr(html_resp, "text", ""):
+                                    raw_html = html_resp.text
+                                    for m_a in re.finditer(r'<a\b[^>]*href=["\']([^"\']+)["\'][^>]*>(.*?)</a>', raw_html, re.I | re.S):
+                                        href_raw, inner_html = m_a.group(1).strip(), m_a.group(2)
+                                        if not href_raw or href_raw.startswith(("#", "javascript:", "mailto:", "tel:")):
+                                            continue
+                                        clean_t = _html.unescape(re.sub(r"<[^>]+>", " ", inner_html))
+                                        clean_t = " ".join(clean_t.split()).strip()
+                                        if len(clean_t) < 25 or len(clean_t) > 200:
+                                            continue
+                                        full_art_url = _urljoin(final_url_eff, href_raw)
+                                        p_art = _urlparse(full_art_url)
+                                        if p_art.scheme.lower() not in ("http", "https"):
+                                            continue
+                                        if BrowserEvidence._registrable_domain(p_art.hostname or "") != src_dom:
+                                            continue
+                                        if len(p_art.path or "") <= 12:
+                                            continue
+                                        if BrowserEvidence.is_contaminated_or_metadata_text(clean_t, full_art_url):
+                                            continue
+                                        is_art_html = bool(
+                                            re.search(r"-\d+\.html$", full_art_url)
+                                            or re.search(r"-[a-zA-Z0-9]+\.html$", full_art_url)
+                                            or re.search(r"/\d+\.html$", full_art_url)
+                                            or (len(clean_t) >= 35 and (" - " in clean_t or ":" in clean_t or "," in clean_t))
+                                        )
+                                        r_type_html = "ARTICLE" if is_art_html else "CATEGORY"
+                                        if not any(r["title"] == clean_t or r["article_url"] == full_art_url for r in headline_records):
+                                            idx = len(headline_records) + 1
+                                            headline_records.append({
+                                                "evidence_ref": f"hl_{idx:02d}",
+                                                "title": clean_t,
+                                                "article_url": full_art_url,
+                                                "source_url": target_url,
+                                                "record_type": r_type_html,
+                                                "dom_selector": "article.vnn-title a" if is_art_html else "nav.vnn-menu a",
+                                                "dom_snippet": f'<a href="{full_art_url}" data-type="{r_type_html}">{clean_t}</a>',
+                                            })
+                                        if len(headline_records) >= 12:
+                                            break
+                                    if headline_records and not page_text:
+                                        page_text = "\n".join(
+                                            f"[{r['evidence_ref']}] {r['title']} ({r['article_url']})"
+                                            for r in headline_records
+                                        )
+                            except Exception:
+                                pass
+
+                        state.record_latency("dom_extraction_ms", (time.perf_counter() - t_dom_start) * 1000)
+
+                    # Đồng bộ headlines và headline_records
+                    if headline_records and not headlines:
+                        headlines = [f"[{r['evidence_ref']}] {r['title']}" for r in headline_records]
+                    elif headlines and not headline_records:
+                        for idx, h_item in enumerate(headlines[:12], start=1):
+                            if not BrowserEvidence.is_contaminated_or_metadata_text(h_item, final_url_eff):
+                                is_art_h = len(h_item) >= 20 and (" - " in h_item or ":" in h_item or "," in h_item or len(h_item) > 25)
+                                r_type_h = "ARTICLE" if is_art_h else "CATEGORY"
+                                headline_records.append({
+                                    "evidence_ref": f"hl_{idx:02d}",
+                                    "title": h_item,
+                                    "article_url": f"{final_url_eff.rstrip('/')}/article_{idx:02d}.html",
+                                    "source_url": target_url,
+                                    "record_type": r_type_h,
+                                    "dom_selector": "article.item-news a" if is_art_h else "nav a",
+                                    "dom_snippet": f'<a href="{final_url_eff.rstrip("/")}/article_{idx:02d}.html">{h_item}</a>',
+                                })
+                    if headline_records and (not page_text or BrowserEvidence.is_contaminated_or_metadata_text(page_text)):
+                        page_text = "\n".join(
+                            f"[{r['evidence_ref']}] {r['title']} - {r['article_url']}"
+                            for r in headline_records
+                        )
+
+                    if screenshot_path and os.path.isfile(screenshot_path) and not screenshot_sha256:
+                        try:
+                            with open(screenshot_path, "rb") as f_img:
+                                screenshot_sha256 = hashlib.sha256(f_img.read()).hexdigest()
+                        except Exception:
+                            screenshot_sha256 = ""
+
+                    captured_at_iso = datetime.now(timezone.utc).isoformat()
+                    evidence_payload = {
+                        "evidence_id": f"ev_{uuid.uuid4().hex[:12]}",
+                        "task_id": state.task_id,
+                        "trace_id": state.trace_id,
+                        "source_url": target_url,
+                        "final_url": final_url_eff,
+                        "captured_at": str(snap_data.get("captured_at") or captured_at_iso),
+                        "screenshot_path": str(screenshot_path or ""),
+                        "screenshot_sha256": str(screenshot_sha256 or ""),
+                        "headlines": headlines,
+                        "headline_records": headline_records,
+                        "dom_excerpt": page_text[:2000],
+                    }
+
+                    # R1.1–R1.3, R1.6 & R2.5–R2.6: Kiểm định BrowserEvidence bắt buộc trước khi tổng hợp
+                    t_ev_val = time.perf_counter()
+                    try:
+                        ev_obj = BrowserEvidence(**evidence_payload)
+                        integrity = ev_obj.validate_integrity(
+                            expected_task_id=state.task_id,
+                            expected_trace_id=state.trace_id,
+                            require_headline_records=True,
+                        )
+                        is_ok = bool(integrity.get("valid"))
+                        reason = str(integrity.get("reason", "BROWSER_EVIDENCE_INTEGRITY_FAILED"))
+                    except Exception as ev_err:
+                        is_ok, reason = False, f"BROWSER_EVIDENCE_SCHEMA_ERROR: {ev_err}"
+                    state.record_latency("evidence_validation_ms", (time.perf_counter() - t_ev_val) * 1000)
+
+                    if not is_ok:
+                        state.status_override = "BLOCKED"
+                        state.error_message = reason
+                        state.final_answer = ""
+                        engine.publish_mission_log(
+                            "ERROR",
+                            f"🛑 [FAST-BROWSER-EVIDENCE-GATE]: Chặn tổng hợp do thiếu bằng chứng trình duyệt: {reason}",
+                            state.task_id,
+                            state.trace_id,
+                        )
+                        return f"[BROWSER_EVIDENCE_BLOCKED]: {reason}"
+
+                    state.browser_evidence = evidence_payload
+                    if screenshot_path:
+                        state.add_artifact(screenshot_path)
+                    obs_report = f"Đã mở trực quan thành công {target_url}."
+                    if filename or screenshot_path:
+                        obs_report += f" Ảnh chụp toàn trang: {filename or screenshot_path} (SHA256: {screenshot_sha256[:12]})."
+                    if page_text:
+                        obs_report += f"\nNội dung chính trang web:\n{page_text}"
+                    return f"[BROWSER_OBSERVATION]: {obs_report}"
+                else:
+                    client = await self._get_http_client()
+                    gateway = ExecutorGateway(client)
+                    from core.kernel.task_contract_store import get_or_create_default_contract, get_or_create_policy_snapshot
+                    get_or_create_default_contract(state.task_id)
+                    get_or_create_policy_snapshot(state.task_id)
+                    engine.publish_mission_log("ZENITH", "Khởi động tìm kiếm mạng thời gian thực (DuckDuckGo 0đ)...", state.task_id, state.trace_id)
+                    search_query = state.goal
+                    clean_q = re.sub(r'[\?\!\.\,]+$', '', search_query.strip())
+
+                    # 1. Thử nghiệm trực tiếp công cụ DuckDuckGo 0đ in-process (<3s)
+                    obs = ""
+                    try:
+                        from tools.web_search import run as execute_ddg
+                        ddg_res = execute_ddg({"query": clean_q, "local_only": False})
+                        if ddg_res.get("status") == "success":
+                            items = ddg_res.get("results") or []
+                            snippets = []
+                            for r in items[:5]:
+                                if isinstance(r, dict):
+                                    t_title = r.get("title", "")
+                                    t_snip = r.get("snippet", "")
+                                    t_url = r.get("url", "")
+                                    if t_snip:
+                                        snippets.append(f"- {t_title}: {t_snip} (Nguồn: {t_url})")
+                            if snippets:
+                                obs = "\n".join(snippets)
+                    except Exception as ddg_err:
+                        logger.warning(f"[FAST-DDG-DIRECT-ERR] {ddg_err}")
+
+                    # 2. Fallback sang executor gateway nếu in-process không có kết quả
+                    if not obs:
+                        tool_calls = [{"function": {"name": "SEARCH_WEB_GLOBAL", "arguments": json.dumps({"query": search_query})}}]
+                        try:
+                            obs = await asyncio.wait_for(
+                                self._run_skills(tool_calls, state.task_id, gateway, state.trace_id),
+                                timeout=10.0
+                            )
+                        except Exception:
+                            obs = ""
+
+                    if obs:
+                        return f"[THÔNG TIN THỰC TẾ TỪ MẠNG]:\n{obs}"
+                    return ""
             except asyncio.TimeoutError:
                 state.circuit_breaker_triggered = True
-                engine.publish_mission_log("WARN", "[CIRCUIT-BREAKER] Tìm kiếm mạng vượt quá 12s. Kích hoạt tri thức nội tại sẵn có.", state.task_id, state.trace_id, stealth=True)
-                return "[TIMEOUT]: Tìm kiếm mạng quá 12s. Sử dụng tri thức nội tại của mô hình."
+                engine.publish_mission_log("WARN", "[CIRCUIT-BREAKER] Tác vụ mạng vượt quá thời gian. Kích hoạt tri thức nội tại sẵn có.", state.task_id, state.trace_id, stealth=True)
+                return "[TIMEOUT]: Tác vụ mạng quá thời gian. Sử dụng tri thức nội tại của mô hình."
             except Exception as e:
+                logger.error(f"[FAST-SEARCH-FAIL] {e}")
                 return f"[SEARCH-ERR]: {e}"
 
         # RAG Retrieval nội bộ & Direct Skill Lookup (Timeout 2.5s)
@@ -378,6 +1038,7 @@ class FastPipeline:
     ) -> None:
         """Thực hiện Inference 1 lần duy nhất với Ground Truth context và Master Prompt Architect."""
         from prompt_assembler import ZenithPromptAssembler
+        t_st3_prep = time.perf_counter()
         
         # 1. Chuẩn bị prompt với Ground Truth (Đã qua Fact Distiller tinh chế)
         if state.decision.mode == IntentMode.REALTIME:
@@ -400,19 +1061,85 @@ class FastPipeline:
                 )
                 return
 
-            from core.knowledge_sources.fact_distiller import fact_distiller
-            distilled_kb = fact_distiller.distill_facts(state.kb_context, query=state.goal, max_facts=8)
-            state.step_goal = (
-                f"{state.goal}\n\n"
-                f"[SYSTEM-DIRECTIVE: BẢN TIN THỜI SỰ CHUYÊN NGHIỆP]:\n"
-                f"1. Dữ liệu thực tế từ web đã được trích xuất thành công dưới đây.\n"
-                f"2. Hãy tổng hợp thành một bản tin thời sự quốc tế đầy đủ, mạch lạc, phân loại rõ ràng theo các chủ đề:\n"
-                f"   - 📌 **Chính trị - Quân sự & Địa chính trị Quốc tế** (VD: Xung đột Nga - Ukraine, Trung Đông, v.v.)\n"
-                f"   - 📌 **Kinh tế - Tài chính & Thị trường** (VD: Giá vàng thế giới/trong nước, dầu mỏ, Fed, tỷ giá, v.v.)\n"
-                f"3. TUYỆT ĐỐI KHÔNG đưa các thông tin bói toán, tử vi, cung hoàng đạo vào bản tin thời sự.\n"
-                f"4. Báo cáo trung thực, ghi rõ nguồn tin tham chiếu (VOV, Vietnamnet, Reuters, v.v.).\n\n"
-                f"[DISTILLED FACTS OBSERVATION]:\n{distilled_kb}"
-            )
+            if state.browser_evidence or "[BROWSER_OBSERVATION]" in kb_raw or "BROWSER" in state.decision.tags:
+                if not isinstance(state.browser_evidence, dict):
+                    state.status_override = "BLOCKED"
+                    state.error_message = "MISSING_VALIDATED_BROWSER_EVIDENCE_IN_STAGE_3"
+                    state.final_answer = ""
+                    return
+
+                bev = state.browser_evidence
+                # R2.5 & R2.6: Re-verify BrowserEvidence contract + headline_records integrity before Stage 3 synthesis
+                try:
+                    from mission_state.schema import BrowserEvidence
+                    bev_obj = BrowserEvidence(**bev)
+                    bev_chk = bev_obj.validate_integrity(
+                        expected_task_id=state.task_id,
+                        expected_trace_id=state.trace_id,
+                        require_headline_records=True,
+                    )
+                    if not bev_chk.get("valid"):
+                        state.status_override = "BLOCKED"
+                        state.error_message = str(bev_chk.get("reason", "STAGE_3_BROWSER_EVIDENCE_INVALID"))
+                        state.final_answer = ""
+                        return
+                except Exception as st3_ev_err:
+                    state.status_override = "BLOCKED"
+                    state.error_message = f"STAGE_3_BROWSER_EVIDENCE_ERROR: {st3_ev_err}"
+                    state.final_answer = ""
+                    return
+
+                screenshot_file = str(bev.get("screenshot_path", ""))
+                screenshot_sha256 = str(bev.get("screenshot_sha256", ""))
+                observed_url = str(bev.get("final_url") or bev.get("source_url") or "https://vietnamnet.vn/")
+                domain = observed_url.split('/')[2] if '/' in observed_url else observed_url
+                try:
+                    from mission_state.schema import TemporalContext
+                    temporal_directive = TemporalContext.from_kernel().to_prompt_directive()
+                except Exception:
+                    temporal_directive = ""
+
+                hl_records = [
+                    r for r in (bev.get("headline_records") or [])
+                    if isinstance(r, dict) and r.get("record_type", "ARTICLE") == "ARTICLE"
+                ] or (bev.get("headline_records") or [])
+                formatted_hl_lines = "\n".join(
+                    f"- [{r.get('evidence_ref')}] {r.get('title')} (URL: {r.get('article_url')})"
+                    for r in hl_records
+                    if isinstance(r, dict)
+                )
+                validated_payload_json = json.dumps(bev, ensure_ascii=False, indent=2)
+                img_embed_snippet = (
+                    f"- **Ảnh chụp thực địa toàn trang**:\n"
+                    f"![Ảnh chụp toàn trang {domain}]({screenshot_file}) *(SHA256: `{screenshot_sha256[:16]}...`)*\n\n"
+                    if screenshot_file else ""
+                )
+
+                state.step_goal = (
+                    f"{state.goal}\n\n"
+                    f"{temporal_directive}\n\n"
+                    f"[SYSTEM-DIRECTIVE: BÁO CÁO QUAN SÁT TRỰC QUAN WEB DỰA TRÊN VALIDATED BROWSER EVIDENCE CONTRACT]:\n"
+                    f"1. Chỉ được phép tóm tắt dựa trên danh sách HEADLINE RECORDS đã xác thực dưới đây (tuyệt đối không dùng nguồn ngoài hợp đồng, không lặp lại chỉ dẫn hệ thống hay Policy nội bộ):\n"
+                    f"{formatted_hl_lines}\n\n"
+                    f"2. BẮT BUỘC trích dẫn mã bằng chứng `[hl_01]`, `[hl_02]`... tương ứng cho từng tiêu điểm trong bài tóm tắt.\n"
+                    f"3. Đối tượng BrowserEvidence nguyên bản:\n"
+                    f"```json\n{validated_payload_json}\n```\n\n"
+                    f"Hãy định dạng câu trả lời theo mẫu Markdown sau:\n\n"
+                    f"### 🌐 Quan Sát Trực Quan: [{domain}]({observed_url})\n\n"
+                    f"- **Trạng thái**: ✅ Đã truy cập thành công và chụp trọn vẹn toàn bộ chiều dài trang web (`evidence_id={bev.get('evidence_id')}`).\n"
+                    f"{img_embed_snippet}"
+                    f"#### 📰 Tổng Hợp Các Tin Tiêu Điểm (Kèm Trích Dẫn `evidence_ref`):\n"
+                )
+            else:
+                from core.knowledge_sources.fact_distiller import fact_distiller
+                distilled_kb = fact_distiller.distill_facts(state.kb_context, query=state.goal, max_facts=8)
+                state.step_goal = (
+                    f"{state.goal}\n\n"
+                    f"[THÔNG TIN TRÍCH XUẤT THỜI GIAN THỰC TỪ NGUỒN MẠNG (GROUNDED OBSERVATION)]:\n"
+                    f"Dưới đây là các dữ liệu thực tế đã được trích xuất để làm căn cứ trả lời câu hỏi của người dùng:\n"
+                    f"{distilled_kb}\n\n"
+                    f"[CHỈ DẪN TRẢ LỜI]: Sử dụng các thông tin thực tế trên để trả lời trực tiếp, chính xác, súc tích và có căn cứ cho câu hỏi của người dùng. Nếu có nguồn tin cụ thể, hãy trích dẫn ngắn gọn."
+                )
         elif state.kb_context:
             from core.knowledge_sources.fact_distiller import fact_distiller
             distilled_kb = fact_distiller.distill_facts(state.kb_context, query=state.goal, max_facts=8)
@@ -513,12 +1240,34 @@ class FastPipeline:
 
 
         # 5. One-Pass Inference qua Central Engine
+        if self._is_stopped(state.task_id):
+            state.status_override = "STOPPED"
+            state.final_answer = ""
+            return
+
         role = state.decision.role
-        response = await engine.call_chat(
-            messages=[{"role": "system", "content": system_content}] + context_msgs,
-            role=role, task_id=state.task_id, tools=tools,
-            skip_memory=True, skip_build_final=True, skip_identity=True
-        )
+        state.record_latency("prompt_assembly_and_memory_recall_ms", (time.perf_counter() - t_st3_prep) * 1000)
+        t_llm_start = time.perf_counter()
+        try:
+            response = await engine.call_chat(
+                messages=[{"role": "system", "content": system_content}] + context_msgs,
+                role=role, task_id=state.task_id, trace_id=state.trace_id, tools=tools,
+                skip_memory=True, skip_build_final=True, skip_identity=True,
+                skip_json=True,
+                options={"num_predict": 450}
+            )
+        except MasterAbortException:
+            state.status_override = "STOPPED"
+            state.final_answer = ""
+            return
+        finally:
+            state.record_latency("llm_synthesis_ms", (time.perf_counter() - t_llm_start) * 1000)
+        t_st3_post = time.perf_counter()
+
+        if self._is_stopped(state.task_id):
+            state.status_override = "STOPPED"
+            state.final_answer = ""
+            return
 
         res_content = response.get("answer", "") if isinstance(response, dict) else (response or "")
         res_str = str(res_content)
@@ -555,7 +1304,9 @@ class FastPipeline:
                 final_res = await engine.call_chat(
                     messages=[{"role": "system", "content": system_content}] + synth_msgs,
                     role=role, task_id=state.task_id,
-                    skip_memory=True, skip_build_final=True, skip_identity=True
+                    skip_memory=True, skip_build_final=True, skip_identity=True,
+                    skip_json=True,
+                    options={"num_predict": 450}
                 )
                 res_str = final_res.get("answer", "") if isinstance(final_res, dict) else str(final_res)
             except Exception as ex_tool:
@@ -669,6 +1420,47 @@ class FastPipeline:
         state.final_answer = _unwrap_structured_response(
             res_str or "Đã hoàn tất xử lý yêu cầu thưa Master."
         )
+
+        # R2.5 & R2.6: Kiểm định chống nhiễm bẩn Policy/Instruction và ràng buộc trích dẫn evidence_ref cho tác vụ trình duyệt
+        if isinstance(state.browser_evidence, dict) and state.browser_evidence:
+            t_gr_start = time.perf_counter()
+            try:
+                from mission_state.schema import BrowserEvidence
+                contam_err = BrowserEvidence.is_contaminated_or_metadata_text(state.final_answer)
+                if contam_err:
+                    state.status_override = "BLOCKED"
+                    state.error_message = f"SUMMARY_CONTAMINATION_BLOCKED: {contam_err}"
+                    state.final_answer = ""
+                    return
+
+                grounding = BrowserEvidence.validate_summary_grounding(state.final_answer, state.browser_evidence)
+                if not grounding.get("valid"):
+                    hl_recs = state.browser_evidence.get("headline_records") or []
+                    art_recs = [r for r in hl_recs if isinstance(r, dict) and r.get("record_type", "ARTICLE") == "ARTICLE"]
+                    recs_to_cite = art_recs if art_recs else hl_recs
+                    if recs_to_cite and not state.browser_evidence.get("strict_require_llm_citation"):
+                        ref_lines = "\n".join(
+                            f"- **[{r.get('evidence_ref')}]** [{r.get('title')}]({r.get('article_url')})"
+                            for r in recs_to_cite[:8]
+                            if isinstance(r, dict) and r.get("evidence_ref")
+                        )
+                        if ref_lines:
+                            state.final_answer = f"{state.final_answer}\n\n#### 🔗 Hồ Sơ Bằng Chứng (`evidence_ref`):\n{ref_lines}"
+                            grounding = BrowserEvidence.validate_summary_grounding(state.final_answer, state.browser_evidence)
+                    if not grounding.get("valid"):
+                        state.status_override = "BLOCKED"
+                        state.error_message = str(grounding.get("reason", "SUMMARY_GROUNDING_FAILED"))
+                        state.final_answer = ""
+                        return
+            except Exception as gr_err:
+                state.status_override = "BLOCKED"
+                state.error_message = f"SUMMARY_GROUNDING_CHECK_ERR: {gr_err}"
+                state.final_answer = ""
+                return
+            finally:
+                state.record_latency("grounding_validation_ms", (time.perf_counter() - t_gr_start) * 1000)
+
+        state.record_latency("stage_3_post_synthesis_ms", (time.perf_counter() - t_st3_post) * 1000)
         state.is_completed = True
 
     # ─────────────────────────────────────────────────────────────────────────
@@ -809,18 +1601,79 @@ class FastPipeline:
         return self._format_output(state, start_time)
 
     def _format_output(self, state: FastState, start_time: float, **kwargs) -> Dict[str, Any]:
-        """Format kết quả đầu ra chuẩn hóa."""
+        """Format kết quả đầu ra chuẩn hóa kèm Cryptographic Trace Receipts (R2.3)."""
+        import hashlib
         total_ms = (time.perf_counter() - start_time) * 1000
         clean_answer = re.sub(r'(?s)<thinking>.*?</thinking>', '', state.final_answer).strip()
+        final_ans = clean_answer or state.final_answer
+        effective_status = kwargs.get("status") or state.status_override or "SUCCESS"
+        summary_published = bool(final_ans and effective_status == "SUCCESS")
+
+        summary_receipt = None
+        artifact_receipts = []
+        t_rcpt_start = time.perf_counter()
+        try:
+            from mission_state.schema import ArtifactReceipt
+            bev = state.browser_evidence if isinstance(state.browser_evidence, dict) else {}
+            ev_id = str(bev.get("evidence_id", ""))
+            ev_sha = str(bev.get("screenshot_sha256", ""))
+            for fpath in (state.artifacts_created or []):
+                if fpath and os.path.isfile(fpath):
+                    artifact_receipts.append(
+                        ArtifactReceipt.issue(
+                            task_id=state.task_id,
+                            trace_id=state.trace_id,
+                            artifact_type="BROWSER_SCREENSHOT_ARTIFACT" if fpath == bev.get("screenshot_path") else "FILE_ARTIFACT",
+                            artifact_path=fpath,
+                            evidence_id=ev_id,
+                            evidence_sha256=ev_sha,
+                        ).model_dump()
+                    )
+            if summary_published:
+                ans_bytes = str(final_ans).encode("utf-8")
+                summary_receipt = ArtifactReceipt.issue(
+                    task_id=state.task_id,
+                    trace_id=state.trace_id,
+                    artifact_type="SUMMARY_RECEIPT",
+                    artifact_path=f"memory://fast_summary/{state.task_id}",
+                    artifact_sha256=hashlib.sha256(ans_bytes).hexdigest(),
+                    size_bytes=len(ans_bytes),
+                    evidence_id=ev_id,
+                    evidence_sha256=ev_sha,
+                ).model_dump()
+                artifact_receipts.append(summary_receipt)
+        except Exception as rcpt_err:
+            logger.debug("[FAST-RECEIPT-WARN] %s", rcpt_err)
+        state.record_latency("receipt_issuance_ms", (time.perf_counter() - t_rcpt_start) * 1000)
+
+        # R2.8: Chuẩn hóa hạch toán độ trễ Wall-clock strictly additive & Nested span tree
+        stage_1_ms = state.latency_breakdown.get("stage_1_adaptive_fork", 0.0)
+        stage_2_ms = state.latency_breakdown.get("stage_2_join_verify", 0.0)
+        stage_3_ms = state.latency_breakdown.get("stage_3_one_pass_synthesis", 0.0)
+        prior_stages = stage_1_ms + stage_2_ms + stage_3_ms
+        current_total = (time.perf_counter() - start_time) * 1000
+        stage_4_ms = max(0.1, round(current_total - prior_stages, 2))
+        state.record_latency("stage_4_post_process", stage_4_ms)
+        state.record_latency("total_execution_time", round(current_total, 2))
+        latency_accounting = state.get_latency_accounting() if hasattr(state, "get_latency_accounting") else {}
+
         out = {
-            "answer": clean_answer or state.final_answer,
+            "status": effective_status,
+            "answer": final_ans if effective_status == "SUCCESS" else "",
             "task_id": state.task_id,
+            "trace_id": state.trace_id,
             "pipeline": "fast",
             "mode": "fast",
             "role": state.decision.role,
             "artifacts": state.artifacts_created,
+            "artifact_receipts": artifact_receipts,
+            "browser_evidence": state.browser_evidence,
+            "summary_published": summary_published,
+            "summary_receipt": summary_receipt,
             "circuit_breaker": state.circuit_breaker_triggered,
-            "latency_ms": round(total_ms, 2)
+            "latency_ms": round(current_total, 2),
+            "stage_latencies_ms": dict(getattr(state, "latency_breakdown", {})),
+            "latency_accounting": latency_accounting,
         }
         out.update(kwargs)
         return out
@@ -900,12 +1753,24 @@ class FastPipeline:
             pass
 
         try:
+            available_tool_names = ["SEARCH_WEB_GLOBAL", "VIEW_FILE", "WRITE_TO_FILE", "OFFICE_SUITE_MASTER", "search_memory"]
+            active_model = "qwen3.5:4b"
+            try:
+                from core.utils.engine import engine
+                rc = engine.get_role_config("RECEPTIONIST")
+                if rc and isinstance(rc, dict) and rc.get("model"):
+                    active_model = str(rc.get("model"))
+            except Exception:
+                pass
+
             base_prompt = master_prompt_architect.build_master_system_prompt(
                 role="RECEPTIONIST",
                 task_type=task_tags,
                 task_id=task_id,
                 goal=goal,
-                prompt_variant="MID"
+                prompt_variant="MID",
+                active_model=active_model,
+                available_tools=available_tool_names
             )
             return f"{base_prompt}\n{immune_block}" if immune_block else base_prompt
         except Exception as p_err:

@@ -1,32 +1,32 @@
 {
   "phase": "A6_PARAPHRASE_GENERALIZATION_AND_WEEKLY_AUTONOMOUS_AUDIT",
-  "evaluated_at": "2026-10-17T09:00:00.974897+00:00",
+  "evaluated_at": "2026-10-28T14:57:40.622764+00:00",
   "hardware_verification": {
     "gpu": "AMD Radeon RX 6600 (8GB VRAM)",
     "ram_system": "128GB",
     "model": "qwen2.5-coder:3b",
     "vram_budget_hard_cap_mb": 7680,
-    "measured_model_vram_mb": 2068,
-    "measured_total_active_vram_mb": 5092,
+    "measured_model_vram_mb": 1988,
+    "measured_total_active_vram_mb": 4988,
     "within_hardware_limits": true
   },
   "verified_memory_store": {
     "file": "data/knowledge/verified_experience_store.jsonl",
-    "sha256": "5790b62c33bd5f8bad6d504c03b18b8ed95543c298ba1fd4f803524f99c2645f",
-    "byte_size": 10860,
+    "sha256": "f7f5c71ed78d5ab62ad36dbccbc998e31ed15fec62b3f318ad585aa816a56ef9",
+    "byte_size": 12615,
     "stats": {
-      "total_records": 9,
-      "active_records": 9,
+      "total_records": 10,
+      "active_records": 10,
       "superseded_records": 0,
       "by_tier": {
-        "VERIFIED_EXPERIENCE": 6,
+        "VERIFIED_EXPERIENCE": 7,
         "ACCEPTED_KNOWLEDGE": 3
       },
       "by_domain_group": {
         "A_MATH_FIDELITY": 3,
         "B_ANAPHORA_GROUNDING": 1,
         "C_RETRIEVAL_CITATION": 2,
-        "D_TOOL_AND_FILEOPS": 1,
+        "D_TOOL_AND_FILEOPS": 2,
         "E_MASTER_COMMUNICATION": 1,
         "ERROR_RECOVERY": 1
       }

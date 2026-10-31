@@ -59,7 +59,7 @@ Unlike conventional agentic frameworks that delegate entire execution chains to 
   ┌────────────────────────────────────────────────────────────────────────────────────────┐
   │                         SOVEREIGN HARDWARE AFFINITY RUNTIME                            │
   │  • AMD Radeon RX 6600 (8GB VRAM ROCm / Vulkan) • Dual Intel Xeon E5-2699 v4 (128GB RAM)│
-  │  • 100% On-Premise, Zero-Egress Network Isolation (JKAI_LOCAL_ONLY=1 Killswitch)       │
+  │  • Default-Deny Egress with Scoped Audit (JKAI_LOCAL_ONLY=1 Killswitch)             │
   └────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -105,11 +105,11 @@ JKAI Zenith is anchored upon non-negotiable operational laws enforced at compile
 1. **NEVER System 1 in FSM**: Finite State Machine state transitions are strictly deterministic. No probabilistic model can trigger, alter, or synthesize state transitions.
 2. **NEVER System 1 in Policy Gate**: Access control, security boundaries, and action authorization through the Dual-Stage Action Firewall are 100% deterministic and zero-trust.
 
-### 4. 100% Zero-Egress Sovereign Guarantee & Sovereign Cloud Discuss Gate
-- Hardened by the `SOVEREIGN-NO-CLOUD-KILLSWITCH` (`JKAI_LOCAL_ONLY=1`) as an immutable baseline.
+### 4. Default-Deny Egress with Scoped Audit & Sovereign External Actuation Gate
+- Hardened by the `SOVEREIGN-NO-CLOUD-KILLSWITCH` (`JKAI_LOCAL_ONLY=1`) as an immutable baseline (Default-Deny).
 - Completely rejects unsolicited external commercial cloud APIs, preventing proprietary telemetry leakage, vendor lock-in, and unpredictable latency.
 - Full cognitive stack operates strictly on local hardware (Dual Xeon E5-2699 v4 + AMD RX 6600).
-- **Sovereign Multi-Agent Cloud Discussion Boundary (v28.19.0)**: External consultation is exclusively activated upon explicit, intentional Master command (`master_cli`, `master_ui`, `master_voice`). It operates under dual-killswitch control (`JKAI_DISCUSS_ALLOWED=1` scoped to execution lifecycle), pre-send sanitization (scrubbing internal paths, IPs, and keys), zero organizational metadata exposure, reverse solicitation defense, active context mosaic defense, and chained cryptographic egress logging.
+- **Scoped External Actuation & Sovereign Consultation Boundary**: External network actuation (e.g., visual web browsing, search engines, or multi-agent consultation) is exclusively activated upon explicit, intentional Master command (`master_cli`, `master_ui`, `master_voice`). It operates under dual-killswitch control (`JKAI_DISCUSS_ALLOWED=1` scoped to execution lifecycle), pre-send sanitization (scrubbing internal paths, IPs, and keys), zero organizational metadata exposure, reverse solicitation defense, active context mosaic defense, and chained cryptographic egress logging.
 
 ---
 

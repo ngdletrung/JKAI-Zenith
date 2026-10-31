@@ -1,0 +1,112 @@
+{
+  "id": "m_TASK-004_attempt_3_2910-0838_e21e1a",
+  "title": "Hôm nay tôi có ngân sách 300.000đ để nấu bữa tối thịnh soạn cho gia đì",
+  "goal": "Hôm nay tôi có ngân sách 300.000đ để nấu bữa tối thịnh soạn cho gia đình 4 người (gồm 2 người lớn, 2 trẻ em). Hãy gợi ý thực đơn 3 món đủ chất (món mặn, món canh, món xào/rau) kèm bảng ước tính chi phí chi tiết từng nguyên liệu và cách chế biến nhanh gọn dưới 45 phút.",
+  "status": "completed",
+  "ts": 1793238053.0764217,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "Hôm nay tôi có ngân sách 300.000đ để nấu bữa tối thịnh soạn cho gia đình 4 người (gồm 2 người lớn, 2 trẻ em). Hãy gợi ý thực đơn 3 món đủ chất (món mặn, món canh, món xào/rau) kèm bảng ước tính chi phí chi tiết từng nguyên liệu và cách chế biến nhanh gọn dưới 45 phút.",
+      "ts": 1793237922.5953913,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_3_2910-0838_e21e1a"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `TASK-004_attempt_3_2910-0838_e21e1a` initialized | Trace: `trace_e21e1a`. Runtime ready.",
+      "ts": 1793237922.5972524,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_3_2910-0838_e21e1a"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=268 | preview='Hôm nay tôi có ngân sách 300.000đ để nấu bữa tối thịnh soạn cho gia đình 4 người (gồm 2 người lớn, 2 trẻ em). Hãy gợi ý thực đơn 3 món đủ chất (món mặn, món canh, món xào/rau) kèm bảng ước tính chi ph' | hash=48764462aed81d3c | task_id=TASK-004_attempt_3_2910-0838_e21e1a | trace_id=trace_e21e1a",
+      "ts": 1793237930.4108016,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_3_2910-0838_e21e1a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: [] | Policy Topology: SINGLE_AGENT (FAST)",
+      "ts": 1793237930.415078,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_3_2910-0838_e21e1a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "⚡ [PIPELINE-RESOLVER]: Master Fast Sovereignty — giữ nguyên FAST theo yêu cầu.",
+      "ts": 1793237930.4173594,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_3_2910-0838_e21e1a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=reasoning pipeline=fast mode=fast tags=ANALYSIS",
+      "ts": 1793237930.4195645,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_3_2910-0838_e21e1a"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: FAST_PIPELINE (ReAct loop)",
+      "ts": 1793237930.4235954,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_3_2910-0838_e21e1a"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-10-29T01:38:51.756653] [PLANNER] [Task: TASK-004_attempt_3_2910-0838_e21e1a] Initializing execution stream with model qwen3.5:4b... (Context: 8192)",
+      "ts": 1793237931.756675,
+      "source": "PLANNER",
+      "task_id": "TASK-004_attempt_3_2910-0838_e21e1a"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-10-29T01:39:08.049230] [PLANNER] [Task: TASK-004_attempt_3_2910-0838_e21e1a] [STATUS]: Streaming tokens initialized.",
+      "ts": 1793237948.0494294,
+      "source": "PLANNER",
+      "task_id": "TASK-004_attempt_3_2910-0838_e21e1a"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-10-29T01:40:52.494624] [PLANNER] [Task: TASK-004_attempt_3_2910-0838_e21e1a] # THỰC ĐƠN BỮA TỐI: TIỆN ÍCH - DUY TRÌ SỨC KHỎE - TRONG NGÂN SÁCH 300K\n\n## I. GIẢI PHÁP TỔNG QUAN & CHIẾN LƯỢC NẤU BÁN\n*   **Mục tiêu:** Cung cấp đủ đạm (thịt), chất béo, vitamin và khoáng chất cho gia đình 4 người trong vòng <45 phút.\n*   **Chiến lược thời gian:** Sử dụng phương pháp \"Song song tối đa\". Khi thịt bò đang xào thì hầm canh; khi rau củ luộc xong là lúc hoàn thiện món ăn chính.\n*   **Phân bổ khẩu phần:** Đảm bảo tổng lượng đạm từ 300g - 450g (tương đương ~120kcal/kg), phù hợp tiêu chuẩn dinh dưỡng cho trẻ em và người lớn, không vượt quá ngân sách an toàn (~280-290K).\n\n---\n\n## II. THỰC ĐƠN CHI TIẾT & PHƯƠNG ÁN CHẾ BIẾN\n\n### 1. MÓN SẮC: BÒ XAY CẢI QUẢ (Món chính - Nguồn đạm chủ lực)\n*   **Nguyên liệu:** Thịt bò xay (300g), Cải bó xôi hoặc cải xanh, Hành tây thái lát mỏng, Gia vị tiêu, dầu ăn.\n*   **Cách chế biến (<25 phút):**\n    1.  Làm nóng chảo với chút dầu ăn, xào thơm hành tây cho đến khi vàng giòn.\n    2.  Đổ thịt bò xay vào đảo nhanh tay (không cần chiên kỹ vì đã được thái nhỏ) trong 3-4 phút để săn lại và chín đều.\n    3.  Thêm rau xanh vào cùng lúc với gia vị, xào thêm 1 phút nữa cho vừa ăn là xong.\n\n### 2. MÓN CANH: CANH BÒ XAY CẢI ĐỎ (Món bổ sung đạm & Vitamin)\n*   **Nguyên liệu:** Thịt bò xay còn lại (~50g), Cà rốt thái sợi nhỏ, Củ cải đường thái lát mỏng, Tỏi băm, Gia vị nạm nước dùng.\n*   **Cách chế biến (<20 phút):**\n    1.  Đun sôi nồi nước (hoặc dùng nước hầm xương nếu có sẵn).\n    2.  Cho cà rốt và củ cải vào đun mềm trong 5-7 phút.\n    3.  Thêm thịt bò xay đã ướp gia vị, đảo đều cho thấm hương vị.\n    4.  Đun thêm 10 phút nữa để nước sánh nhẹ (không cần quá đặc) là có thể tắt bếp.\n\n### 3. MÓN XÀO: CÁI BÓ HOA XOÀI DƯỚI RỪNG (Món rau xanh - Cân bằng chất xơ)\n*   **Nguyên liệu:** Cải bó hoa, Hành lá thái nhỏ, Gia vị tiêu, Dầu ăn.\n*   **Cách chế biến (<15 phút):**\n    1.  Làm nóng chảo với dầu ăn và hành lá băm.\n    2.  Cho cải bó vào xào nhanh tay trong vòng 3-4 phút để giữ độ giòn ngọt tự nhiên của rau xanh.\n\n---\n\n## III. BẢNG ƯU TIẾN CHI PHÍ TỪNG NGUYÊN LIỆU (ƯU ĐẤY)\n\n| STT | Tên Nguyên Liệu | Số Lượng Cho Gia Đình 4 Người | Đơn Giá Dự Kiến | Tổng Chi Phí (ĐỒNG) | Ghi Chú Chế Biến |\n| :---: | :--- | :---: | :---: | :---: | :--- |\n| **1** | Thịt bò xay | ~350g | 28.000đ/kg | **98.000đ** | Dùng làm món chính + canh (tối ưu giá) |\n| **2** | Cà rốt tươi | ~400g | 6.000đ/kg | **24.000đ** | Món canh, dễ nấu nhanh |\n| **3** | Củ cải đường | ~150g | 8.000đ/kg | **12.000đ** | Món canh, tăng vị ngọt tự nhiên |\n| **4** | Cải bó xôi/hoa xanh | ~600g | 7.000đ/kg | **42.000đ** | Món xào chính + rau phụ (tối ưu giá) |\n| **5** | Hành tây, hành lá | ~100g | 8.000đ/kg | **8.000đ** | Hỗn hợp gia vị & món ăn |\n| **6** | Dầu ăn, Gia vị | - | - | **24.000đ** | Tiêu chuẩn cho bữa tối thịnh soạn |\n| **-** | **Tổng Chi Phí Dự Kiến** | | | **~218.000đ** | **Dư ngân sách: ~82.000đ (An toàn)** |\n\n> *Lưu ý:* Bảng trên đã tính toán theo khối lượng thực tế cần thiết cho 4 người, đảm bảo đủ đạm (~350g thịt) nhưng không lãng phí tiền bạc vào số lượng phi lý như yêu cầu \"1kg-2kg\". Dư ngân sách được dùng để mua thêm rau củ tươi hoặc bù đắp giá cả biến động.\n\n---\n\n## IV. LỘ TRÌNH NẤU BÁN TỐI ĐẠT (THỜI GIAN <45 PHÚT)\n\n| Thời Gian | Hoạt Động Chính | Ghi Chú Quan Trọng |\n| :---: | :---: | :---: |\n| **0-10 phút** | Chuẩn bị nguyên liệu, ướp thịt bò với gia vị. Cắt cà rốt/củ cải thành sợi nhỏ để nhanh chín trong canh. | Ướp thịt 5 phút giúp thấm hương vị hơn. |\n| **10-20 phút** | **Song song:** <br>1. Xào món chính (Bò + Cải xanh).<br>2. Đun nước cho món Canh, bỏ rau củ vào hầm mềm. | Sử dụng cùng một chảo để xào thịt và hành tây giúp tiết kiệm thời gian. |\n| **20-35 phút** | Hoàn thiện: <br>- Thêm gia vị vào canh.<br>- Xào nhanh cải bó hoa với dầu mỡ riêng biệt (hoặc chung nếu đã có sẵn).<br>- Trang trí bàn ăn. | Kiểm tra độ chín của thịt bò trong món chính, đảm bảo không còn sống khi trẻ em ăn. |\n| **35-40 phút** | Trình bày: Rưới nước dùng lên đĩa canh, xếp rau xào bên cạnh. Chuẩn bị đồ uống (nước lọc/trà) nếu cần. | Đảm bảo nhiệt độ thực phẩm an toàn trước khi đưa ra bàn ăn. |\n\n---\n\n## V. LỜI KHUYÊN DUY TRÌ SỨC KHỎE\n*   **Đối với trẻ em:** Ưu tiên món canh bò để dễ tiêu hóa, bổ sung đạm mềm mại; rau xào giúp cung cấp vitamin cần thiết cho sự phát triển.\n*   **Về dinh dưỡng:** Thực đơn này đảm bảo tỷ lệ cân bằng giữa đạm động vật (thịt) và thực vật (rau củ), đồng thời kiểm soát tốt lượng calo nhờ việc sử dụng dầu ăn vừa đủ và hạn chế đường tinh luyện trong quá trình nấu nướng.",
+      "ts": 1793238052.4948068,
+      "source": "PLANNER",
+      "task_id": "TASK-004_attempt_3_2910-0838_e21e1a"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[INFO] [2026-10-29T01:40:52.497609] [PLANNER] [Task: TASK-004_attempt_3_2910-0838_e21e1a] Hoàn tất trong 120.74s. (Size: 4451 chars)",
+      "ts": 1793238052.4977777,
+      "source": "PLANNER",
+      "task_id": "TASK-004_attempt_3_2910-0838_e21e1a"
+    },
+    {
+      "tag": "EPISTEMIC_AUDIT",
+      "msg": "[FULFILLED] Confidence: 0.92 | Rationale: Bài toán số học: đơn vị và kết quả khớp với đề bài.",
+      "ts": 1793238052.9052794,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_3_2910-0838_e21e1a"
+    },
+    {
+      "tag": "ANSWER_QUALITY_AUDIT",
+      "msg": "[AQV-PASS] ✅DUNG | ✅TRUNG | ✅DU | score=1.00 | score=1.00",
+      "ts": 1793238052.959604,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_3_2910-0838_e21e1a"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "# THỰC ĐƠN BỮA TỐI: TIỆN ÍCH - DUY TRÌ SỨC KHỎE - TRONG NGÂN SÁCH 300K\n\n## I. GIẢI PHÁP TỔNG QUAN & CHIẾN LƯỢC NẤU BÁN\n*   **Mục tiêu:** Cung cấp đủ đạm (thịt), chất béo, vitamin và khoáng chất cho gia đình 4 người trong vòng <45 phút.\n*   **Chiến lược thời gian:** Sử dụng phương pháp \"Song song tối đa\". Khi thịt bò đang xào thì hầm canh; khi rau củ luộc xong là lúc hoàn thiện món ăn chính.\n*   **Phân bổ khẩu phần:** Đảm bảo tổng lượng đạm từ 300g - 450g (tương đương ~120kcal/kg), phù hợp tiêu chuẩn dinh dưỡng cho trẻ em và người lớn, không vượt quá ngân sách an toàn (~280-290K).\n\n---\n\n## II. THỰC ĐƠN CHI TIẾT & PHƯƠNG ÁN CHẾ BIẾN\n\n### 1. MÓN SẮC: BÒ XAY CẢI QUẢ (Món chính - Nguồn đạm chủ lực)\n*   **Nguyên liệu:** Thịt bò xay (300g), Cải bó xôi hoặc cải xanh, Hành tây thái lát mỏng, Gia vị tiêu, dầu ăn.\n*   **Cách chế biến (<25 phút):**\n    1.  Làm nóng chảo với chút dầu ăn, xào thơm hành tây cho đến khi vàng giòn.\n    2.  Đổ thịt bò xay vào đảo nhanh tay (không cần chiên kỹ vì đã được thái nhỏ) trong 3-4 phút để săn lại và chín đều.\n    3.  Thêm rau xanh vào cùng lúc với gia vị, xào thêm 1 phút nữa cho vừa ăn là xong.\n\n### 2. MÓN CANH: CANH BÒ XAY CẢI ĐỎ (Món bổ sung đạm & Vitamin)\n*   **Nguyên liệu:** Thịt bò xay còn lại (~50g), Cà rốt thái sợi nhỏ, Củ cải đường thái lát mỏng, Tỏi băm, Gia vị nạm nước dùng.\n*   **Cách chế biến (<20 phút):**\n    1.  Đun sôi nồi nước (hoặc dùng nước hầm xương nếu có sẵn).\n    2.  Cho cà rốt và củ cải vào đun mềm trong 5-7 phút.\n    3.  Thêm thịt bò xay đã ướp gia vị, đảo đều cho thấm hương vị.\n    4.  Đun thêm 10 phút nữa để nước sánh nhẹ (không cần quá đặc) là có thể tắt bếp.\n\n### 3. MÓN XÀO: CÁI BÓ HOA XOÀI DƯỚI RỪNG (Món rau xanh - Cân bằng chất xơ)\n*   **Nguyên liệu:** Cải bó hoa, Hành lá thái nhỏ, Gia vị tiêu, Dầu ăn.\n*   **Cách chế biến (<15 phút):**\n    1.  Làm nóng chảo với dầu ăn và hành lá băm.\n    2.  Cho cải bó vào xào nhanh tay trong vòng 3-4 phút để giữ độ giòn ngọt tự nhiên của rau xanh.\n\n---\n\n## III. BẢNG ƯU TIẾN CHI PHÍ TỪNG NGUYÊN LIỆU (ƯU ĐẤY)\n\n| STT | Tên Nguyên Liệu | Số Lượng Cho Gia Đình 4 Người | Đơn Giá Dự Kiến | Tổng Chi Phí (ĐỒNG) | Ghi Chú Chế Biến |\n| :---: | :--- | :---: | :---: | :---: | :--- |\n| **1** | Thịt bò xay | ~350g | 28.000đ/kg | **98.000đ** | Dùng làm món chính + canh (tối ưu giá) |\n| **2** | Cà rốt tươi | ~400g | 6.000đ/kg | **24.000đ** | Món canh, dễ nấu nhanh |\n| **3** | Củ cải đường | ~150g | 8.000đ/kg | **12.000đ** | Món canh, tăng vị ngọt tự nhiên |\n| **4** | Cải bó xôi/hoa xanh | ~600g | 7.000đ/kg | **42.000đ** | Món xào chính + rau phụ (tối ưu giá) |\n| **5** | Hành tây, hành lá | ~100g | 8.000đ/kg | **8.000đ** | Hỗn hợp gia vị & món ăn |\n| **6** | Dầu ăn, Gia vị | - | - | **24.000đ** | Tiêu chuẩn cho bữa tối thịnh soạn |\n| **-** | **Tổng Chi Phí Dự Kiến** | | | **~218.000đ** | **Dư ngân sách: ~82.000đ (An toàn)** |\n\n> *Lưu ý:* Bảng trên đã tính toán theo khối lượng thực tế cần thiết cho 4 người, đảm bảo đủ đạm (~350g thịt) nhưng không lãng phí tiền bạc vào số lượng phi lý như yêu cầu \"1kg-2kg\". Dư ngân sách được dùng để mua thêm rau củ tươi hoặc bù đắp giá cả biến động.\n\n---\n\n## IV. LỘ TRÌNH NẤU BÁN TỐI ĐẠT (THỜI GIAN <45 PHÚT)\n\n| Thời Gian | Hoạt Động Chính | Ghi Chú Quan Trọng |\n| :---: | :---: | :---: |\n| **0-10 phút** | Chuẩn bị nguyên liệu, ướp thịt bò với gia vị. Cắt cà rốt/củ cải thành sợi nhỏ để nhanh chín trong canh. | Ướp thịt 5 phút giúp thấm hương vị hơn. |\n| **10-20 phút** | **Song song:** <br>1. Xào món chính (Bò + Cải xanh).<br>2. Đun nước cho món Canh, bỏ rau củ vào hầm mềm. | Sử dụng cùng một chảo để xào thịt và hành tây giúp tiết kiệm thời gian. |\n| **20-35 phút** | Hoàn thiện: <br>- Thêm gia vị vào canh.<br>- Xào nhanh cải bó hoa với dầu mỡ riêng biệt (hoặc chung nếu đã có sẵn).<br>- Trang trí bàn ăn. | Kiểm tra độ chín của thịt bò trong món chính, đảm bảo không còn sống khi trẻ em ăn. |\n| **35-40 phút** | Trình bày: Rưới nước dùng lên đĩa canh, xếp rau xào bên cạnh. Chuẩn bị đồ uống (nước lọc/trà) nếu cần. | Đảm bảo nhiệt độ thực phẩm an toàn trước khi đưa ra bàn ăn. |\n\n---\n\n## V. LỜI KHUYÊN DUY TRÌ SỨC KHỎE\n*   **Đối với trẻ em:** Ưu tiên món canh bò để dễ tiêu hóa, bổ sung đạm mềm mại; rau xào giúp cung cấp vitamin cần thiết cho sự phát triển.\n*   **Về dinh dưỡng:** Thực đơn này đảm bảo tỷ lệ cân bằng giữa đạm động vật (thịt) và thực vật (rau củ), đồng thời kiểm soát tốt lượng calo nhờ việc sử dụng dầu ăn vừa đủ và hạn chế đường tinh luyện trong quá trình nấu nướng.",
+      "ts": 1793238053.0343895,
+      "source": "SYSTEM",
+      "task_id": "TASK-004_attempt_3_2910-0838_e21e1a"
+    }
+  ],
+  "artifacts": {
+    "plan": "Hôm nay tôi có ngân sách 300.000đ để nấu bữa tối thịnh soạn cho gia đình 4 người (gồm 2 người lớn, 2 trẻ em). Hãy gợi ý thực đơn 3 món đủ chất (món mặn, món canh, món xào/rau) kèm bảng ước tính chi phí chi tiết từng nguyên liệu và cách chế biến nhanh gọn dưới 45 phút.",
+    "walkthrough": "# THỰC ĐƠN BỮA TỐI: TIỆN ÍCH - DUY TRÌ SỨC KHỎE - TRONG NGÂN SÁCH 300K\n\n## I. GIẢI PHÁP TỔNG QUAN & CHIẾN LƯỢC NẤU BÁN\n*   **Mục tiêu:** Cung cấp đủ đạm (thịt), chất béo, vitamin và khoáng chất cho gia đình 4 người trong vòng <45 phút.\n*   **Chiến lược thời gian:** Sử dụng phương pháp \"Song song tối đa\". Khi thịt bò đang xào thì hầm canh; khi rau củ luộc xong là lúc hoàn thiện món ăn chính.\n*   **Phân bổ khẩu phần:** Đảm bảo tổng lượng đạm từ 300g - 450g (tương đương ~120kcal/kg), phù hợp tiêu chuẩn dinh dưỡng cho trẻ em và người lớn, không vượt quá ngân sách an toàn (~280-290K).\n\n---\n\n## II. THỰC ĐƠN CHI TIẾT & PHƯƠNG ÁN CHẾ BIẾN\n\n### 1. MÓN SẮC: BÒ XAY CẢI QUẢ (Món chính - Nguồn đạm chủ lực)\n*   **Nguyên liệu:** Thịt bò xay (300g), Cải bó xôi hoặc cải xanh, Hành tây thái lát mỏng, Gia vị tiêu, dầu ăn.\n*   **Cách chế biến (<25 phút):**\n    1.  Làm nóng chảo với chút dầu ăn, xào thơm hành tây cho đến khi vàng giòn.\n    2.  Đổ thịt bò xay vào đảo nhanh tay (không cần chiên kỹ vì đã được thái nhỏ) trong 3-4 phút để săn lại và chín đều.\n    3.  Thêm rau xanh vào cùng lúc với gia vị, xào thêm 1 phút nữa cho vừa ăn là xong.\n\n### 2. MÓN CANH: CANH BÒ XAY CẢI ĐỎ (Món bổ sung đạm & Vitamin)\n*   **Nguyên liệu:** Thịt bò xay còn lại (~50g), Cà rốt thái sợi nhỏ, Củ cải đường thái lát mỏng, Tỏi băm, Gia vị nạm nước dùng.\n*   **Cách chế biến (<20 phút):**\n    1.  Đun sôi nồi nước (hoặc dùng nước hầm xương nếu có sẵn).\n    2.  Cho cà rốt và củ cải vào đun mềm trong 5-7 phút.\n    3.  Thêm thịt bò xay đã ướp gia vị, đảo đều cho thấm hương vị.\n    4.  Đun thêm 10 phút nữa để nước sánh nhẹ (không cần quá đặc) là có thể tắt bếp.\n\n### 3. MÓN XÀO: CÁI BÓ HOA XOÀI DƯỚI RỪNG (Món rau xanh - Cân bằng chất xơ)\n*   **Nguyên liệu:** Cải bó hoa, Hành lá thái nhỏ, Gia vị tiêu, Dầu ăn.\n*   **Cách chế biến (<15 phút):**\n    1.  Làm nóng chảo với dầu ăn và hành lá băm.\n    2.  Cho cải bó vào xào nhanh tay trong vòng 3-4 phút để giữ độ giòn ngọt tự nhiên của rau xanh.\n\n---\n\n## III. BẢNG ƯU TIẾN CHI PHÍ TỪNG NGUYÊN LIỆU (ƯU ĐẤY)\n\n| STT | Tên Nguyên Liệu | Số Lượng Cho Gia Đình 4 Người | Đơn Giá Dự Kiến | Tổng Chi Phí (ĐỒNG) | Ghi Chú Chế Biến |\n| :---: | :--- | :---: | :---: | :---: | :--- |\n| **1** | Thịt bò xay | ~350g | 28.000đ/kg | **98.000đ** | Dùng làm món chính + canh (tối ưu giá) |\n| **2** | Cà rốt tươi | ~400g | 6.000đ/kg | **24.000đ** | Món canh, dễ nấu nhanh |\n| **3** | Củ cải đường | ~150g | 8.000đ/kg | **12.000đ** | Món canh, tăng vị ngọt tự nhiên |\n| **4** | Cải bó xôi/hoa xanh | ~600g | 7.000đ/kg | **42.000đ** | Món xào chính + rau phụ (tối ưu giá) |\n| **5** | Hành tây, hành lá | ~100g | 8.000đ/kg | **8.000đ** | Hỗn hợp gia vị & món ăn |\n| **6** | Dầu ăn, Gia vị | - | - | **24.000đ** | Tiêu chuẩn cho bữa tối thịnh soạn |\n| **-** | **Tổng Chi Phí Dự Kiến** | | | **~218.000đ** | **Dư ngân sách: ~82.000đ (An toàn)** |\n\n> *Lưu ý:* Bảng trên đã tính toán theo khối lượng thực tế cần thiết cho 4 người, đảm bảo đủ đạm (~350g thịt) nhưng không lãng phí tiền bạc vào số lượng phi lý như yêu cầu \"1kg-2kg\". Dư ngân sách được dùng để mua thêm rau củ tươi hoặc bù đắp giá cả biến động.\n\n---\n\n## IV. LỘ TRÌNH NẤU BÁN TỐI ĐẠT (THỜI GIAN <45 PHÚT)\n\n| Thời Gian | Hoạt Động Chính | Ghi Chú Quan Trọng |\n| :---: | :---: | :---: |\n| **0-10 phút** | Chuẩn bị nguyên liệu, ướp thịt bò với gia vị. Cắt cà rốt/củ cải thành sợi nhỏ để nhanh chín trong canh. | Ướp thịt 5 phút giúp thấm hương vị hơn. |\n| **10-20 phút** | **Song song:** <br>1. Xào món chính (Bò + Cải xanh).<br>2. Đun nước cho món Canh, bỏ rau củ vào hầm mềm. | Sử dụng cùng một chảo để xào thịt và hành tây giúp tiết kiệm thời gian. |\n| **20-35 phút** | Hoàn thiện: <br>- Thêm gia vị vào canh.<br>- Xào nhanh cải bó hoa với dầu mỡ riêng biệt (hoặc chung nếu đã có sẵn).<br>- Trang trí bàn ăn. | Kiểm tra độ chín của thịt bò trong món chính, đảm bảo không còn sống khi trẻ em ăn. |\n| **35-40 phút** | Trình bày: Rưới nước dùng lên đĩa canh, xếp rau xào bên cạnh. Chuẩn bị đồ uống (nước lọc/trà) nếu cần. | Đảm bảo nhiệt độ thực phẩm an toàn trước khi đưa ra bàn ăn. |\n\n---\n\n## V. LỜI KHUYÊN DUY TRÌ SỨC KHỎE\n*   **Đối với trẻ em:** Ưu tiên món canh bò để dễ tiêu hóa, bổ sung đạm mềm mại; rau xào giúp cung cấp vitamin cần thiết cho sự phát triển.\n*   **Về dinh dưỡng:** Thực đơn này đảm bảo tỷ lệ cân bằng giữa đạm động vật (thịt) và thực vật (rau củ), đồng thời kiểm soát tốt lượng calo nhờ việc sử dụng dầu ăn vừa đủ và hạn chế đường tinh luyện trong quá trình nấu nướng.",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

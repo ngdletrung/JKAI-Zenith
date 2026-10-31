@@ -1,0 +1,770 @@
+{
+  "id": "m_ZENITH_1810-1620_4a9840",
+  "title": "Hãy mở trực quan trang https://vietnamnet.vn/",
+  "goal": "Hãy mở trực quan trang https://vietnamnet.vn/\n, chụp màn hình và tổng hợp các tin tiêu điểm",
+  "status": "completed",
+  "ts": 1792316261.6823344,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "Hãy mở trực quan trang https://vietnamnet.vn/\n, chụp màn hình và tổng hợp các tin tiêu điểm",
+      "ts": 1792315207.9856534,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `ZENITH_1810-1620_4a9840` initialized | Trace: `trace_4a9840`. Runtime ready.",
+      "ts": 1792315207.9876769,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=91 | preview='Hãy mở trực quan trang https://vietnamnet.vn/\\n, chụp màn hình và tổng hợp các tin tiêu điểm' | hash=221b2a38c25b6e30 | task_id=ZENITH_1810-1620_4a9840 | trace_id=trace_4a9840",
+      "ts": 1792315212.6757452,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: [] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1792315212.6803834,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [PIPELINE-RESOLVER]: Chế độ DEEP tự động kích hoạt (Reason: Master explicitly requested DEEP (Multi-Agent Ensemble Mode).).",
+      "ts": 1792315212.6844363,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=realtime pipeline=deep mode=deep tags=BROWSER,VISUAL",
+      "ts": 1792315212.6882107,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1792315212.6941175,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "DeepPipeline T2–T6 (full)",
+      "ts": 1792315212.6977642,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "✅ [PREFLIGHT-OK] Available executors: http://ai-executor-1:8000, http://ai-executor-2:8000",
+      "ts": 1792315212.7496274,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792315212.7757137,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792315212.7794144,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792315212.7858872,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792315212.8291025,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792315212.837338,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792315212.946809,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 35.54s.",
+      "ts": 1792315248.4881172,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792315248.5137737,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1792315248.5147495,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792315248.529321,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_browser_01 (BROWSER_CONTROL)**: Auto-recovery: Mở trực quan trang web https://vietnamnet.vn/ và chụp ảnh màn hình.",
+      "ts": 1792315248.5624297,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792315248.5700133,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TRIỂN KHAI BƯỚC] Đang khởi chạy thực thi song song: `[/]` **auto_browser_01**",
+      "ts": 1792315248.5727377,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'BROWSER_CONTROL' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792315248.5759346,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: BROWSER_CONTROL(...) - TraceID: trace_4a9840",
+      "ts": 1792315248.5792332,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "🌐 [LOCAL-BROWSER-EXEC] Executing 'BROWSER_CONTROL' (browser_action) via Sovereign Browser Subsystem.",
+      "ts": 1792315248.6405249,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[BROWSER_CONTROL] ✅ Browser interaction succeeded",
+      "ts": 1792315249.0438364,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[TIẾN ĐỘ THỰC THI BƯỚC] Hoàn tất: `[x]` **auto_browser_01**",
+      "ts": 1792315249.0490127,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1792315249.0628617,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792315345.4255335,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — FAIL (Score: 0.20)",
+      "ts": 1792315416.270242,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[TEMPORAL-GATE] Bằng chứng lẫn các năm ['1997', '2025', '2026', '2027'] không nhãn độ tươi — hạ chuẩn xác minh.",
+      "ts": 1792315416.2756321,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "[T6] Ban Thư Ký đang soạn Báo cáo...",
+      "ts": 1792315416.2777221,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "[T6] Báo cáo đã soạn thảo hoàn tất.",
+      "ts": 1792315503.3025682,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[REPLAN-ATTEMPT] Critic không phê duyệt. Lập kế hoạch lại. Attempt 2/3",
+      "ts": 1792315503.3294528,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792315503.3367412,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792315503.3430452,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792315503.356843,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792315503.7212358,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792315503.899113,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792315504.0163195,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 83.0s.",
+      "ts": 1792315587.0197072,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792315587.0460806,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1792315587.0470085,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792315587.0606341,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_browser_01 (BROWSER_CONTROL)**: Auto-recovery: Mở trực quan trang web https://vietnamnet.vn/ và chụp ảnh màn hình.",
+      "ts": 1792315587.0867856,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CHECKPOINT] Đã khôi phục 1 bước SUCCESS trước đó.",
+      "ts": 1792315587.095098,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792315587.097526,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1792315587.1153715,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792315641.6606064,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — FAIL (Score: 0.20)",
+      "ts": 1792315662.2492187,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[TEMPORAL-GATE] Bằng chứng lẫn các năm ['1997', '2025', '2026', '2027'] không nhãn độ tươi — hạ chuẩn xác minh.",
+      "ts": 1792315662.2575204,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "[T6] Ban Thư Ký đang soạn Báo cáo...",
+      "ts": 1792315662.2607324,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "[T6] Báo cáo đã soạn thảo hoàn tất.",
+      "ts": 1792315802.6024995,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[REPLAN-ATTEMPT] Critic không phê duyệt. Lập kế hoạch lại. Attempt 3/3",
+      "ts": 1792315802.6104362,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792315802.6151483,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792315802.618558,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792315802.6263108,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792315802.6858215,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792315802.695268,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792315802.8391933,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=91 | preview='Hãy mở trực quan trang https://vietnamnet.vn/\\n, chụp màn hình và tổng hợp các tin tiêu điểm' | hash=221b2a38c25b6e30 | task_id=ZENITH_1810-1620_4a9840 | trace_id=trace_4a9840",
+      "ts": 1792315813.2309663,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: [] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1792315813.2341094,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [PIPELINE-RESOLVER]: Chế độ DEEP tự động kích hoạt (Reason: Master explicitly requested DEEP (Multi-Agent Ensemble Mode).).",
+      "ts": 1792315813.236198,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=realtime pipeline=deep mode=deep tags=BROWSER,VISUAL",
+      "ts": 1792315813.2383003,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Khởi chạy lộ trình: DEEP_PIPELINE",
+      "ts": 1792315813.2432442,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "DeepPipeline T2–T6 (full)",
+      "ts": 1792315813.2449465,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "✅ [PREFLIGHT-OK] Available executors: http://ai-executor-1:8000, http://ai-executor-2:8000",
+      "ts": 1792315813.2715392,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "[EXPERIENCE-STORE] Đã truy xuất 2 bài học thất bại từ quá khứ để phòng ngừa.",
+      "ts": 1792315813.2960136,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792315813.2981281,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792315813.301364,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792315813.315473,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792315813.854144,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792315813.8635416,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792315813.9892094,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 63.94s.",
+      "ts": 1792315866.7832592,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792315866.8081274,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1792315866.8094206,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792315866.8294725,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_browser_01 (BROWSER_CONTROL)**: Auto-recovery: Mở trực quan trang web https://vietnamnet.vn/ và chụp ảnh màn hình.",
+      "ts": 1792315866.8571134,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CHECKPOINT] Đã khôi phục 1 bước SUCCESS trước đó.",
+      "ts": 1792315866.8635046,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792315866.86543,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1792315866.8675377,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "LATENCY",
+      "msg": "[FORGE-ATTEMPT-1] Model `PLANNER` response time: 135.14s.",
+      "ts": 1792315949.1338584,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🕸️ [T3: DAG] Đang kiểm duyệt & tối ưu đồ thị phụ thuộc...",
+      "ts": 1792315949.160222,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "INFO",
+      "msg": "[DAG-WAVES] Đã phân tầng 1 sóng thực thi song song cho 1 bước.",
+      "ts": 1792315949.1611857,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚖️ [T3: FORGE] Đang áp chế chính sách thực thi...",
+      "ts": 1792315949.176596,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PLANNER",
+      "msg": "🎯 **PHÊ CHÍNH KẾ HOẠCH HÀNH ĐỘNG (1 BƯỚC):**\n\n📋 **LỘ TRÌNH TRIỂN KHAI CHIẾN LƯỢC (AGENTIC WORKFLOW):**\n\n  • `[ ]` **auto_browser_01 (BROWSER_CONTROL)**: Auto-recovery: Mở trực quan trang web https://vietnamnet.vn/ và chụp ảnh màn hình.",
+      "ts": 1792315949.2084727,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[CHECKPOINT] Đã khôi phục 1 bước SUCCESS trước đó.",
+      "ts": 1792315949.2142606,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Khởi động DAG Parallel Executor...",
+      "ts": 1792315949.216685,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[T4] Thực thi DAG hoàn tất — 1 kết quả.",
+      "ts": 1792315949.2201338,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792316013.0805645,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Khởi động phiên Thẩm định Tư pháp (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792316065.5591702,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — FAIL (Score: 0.20)",
+      "ts": 1792316085.2695022,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[TEMPORAL-GATE] Bằng chứng lẫn các năm ['1997', '2025', '2026', '2027'] không nhãn độ tươi — hạ chuẩn xác minh.",
+      "ts": 1792316085.2749193,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "[T6] Ban Thư Ký đang soạn Báo cáo...",
+      "ts": 1792316085.277738,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[T5] Phán quyết — FAIL (Score: 0.20)",
+      "ts": 1792316105.7465615,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "CRITIC",
+      "msg": "[TEMPORAL-GATE] Bằng chứng lẫn các năm ['1997', '2025', '2026', '2027'] không nhãn độ tươi — hạ chuẩn xác minh.",
+      "ts": 1792316105.7513463,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "[T6] Ban Thư Ký đang soạn Báo cáo...",
+      "ts": 1792316105.7544668,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "🛑 [MISSION-TIMEOUT] Sứ mệnh ZENITH_1810-1620_4a9840 vượt quá giới hạn an toàn 900s (15 phút). Kích hoạt ngắt khẩn cấp và hủy toàn bộ tác vụ con thưa Master.",
+      "ts": 1792316112.629379,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "[T6] Báo cáo đã soạn thảo hoàn tất.",
+      "ts": 1792316261.3302994,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[REPLAN-ATTEMPT] Critic không phê duyệt. Lập kế hoạch lại. Attempt 2/3",
+      "ts": 1792316261.3384082,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[DEEP-PIPELINE] Khởi động luồng chiến lược 5 tầng (T2→T6).",
+      "ts": 1792316261.3430352,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🔍 [T2: CONTEXT] Đang trinh sát thực địa và kỹ năng...",
+      "ts": 1792316261.3463368,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "🌌 [T2: CONTEXT] Đang đồng hóa tri thức, bối cảnh và KB Qdrant...",
+      "ts": 1792316261.3538327,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "BRAIN",
+      "msg": "[KB-EMPTY] Không tìm thấy tài liệu liên quan trong Qdrant.",
+      "ts": 1792316261.4333794,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "PROGRESS",
+      "msg": "⚒️ [T3: FORGE] Đang đúc kết Blueprint chiến lược...",
+      "ts": 1792316261.4407752,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "INFO",
+      "msg": "🧠 [PLANNER-ATTEMPT-1]: Đang đúc kết chiến lược bằng vai trò `PLANNER` (Mô hình: `qwen3.5:4b` @ GPU/VRAM)...",
+      "ts": 1792316261.592915,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "Giao thức dừng đã được kích hoạt. Toàn bộ Đặc vụ đã dừng theo lệnh của Master.",
+      "ts": 1792316261.6464078,
+      "source": "SYSTEM",
+      "task_id": "ZENITH_1810-1620_4a9840"
+    }
+  ],
+  "artifacts": {
+    "plan": "Hãy mở trực quan trang https://vietnamnet.vn/",
+    "walkthrough": "Giao thức dừng đã được kích hoạt. Toàn bộ Đặc vụ đã dừng theo lệnh của Master.",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

@@ -1,0 +1,163 @@
+COMMAND: C:\Users\AdminPC-MMO\AppData\Local\Python\pythoncore-3.14-64\python.exe -m pytest tests/test_pipeline_cache_and_timeout.py tests/test_dynamic_skill_creator.py tests/test_shadow_harness.py tests/test_evidence_temporal_gate.py tests/test_realtime_freshness.py tests/test_mission_history_integrity.py tests/test_h3_instant_fail_exclusion.py -vv -rA
+EXIT_CODE: 0
+================================================================================
+============================= test session starts =============================
+platform win32 -- Python 3.14.4, pytest-9.1.1, pluggy-1.6.0 -- C:\Users\AdminPC-MMO\AppData\Local\Python\pythoncore-3.14-64\python.exe
+cachedir: .pytest_cache
+rootdir: d:\Docker\JKAI
+configfile: pyproject.toml
+plugins: anyio-4.13.0, asyncio-1.4.0, timeout-2.4.0
+asyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function
+collecting ... collected 63 items
+
+tests/test_pipeline_cache_and_timeout.py::test_is_error_response_detection PASSED [  1%]
+tests/test_pipeline_cache_and_timeout.py::test_is_cacheable_result_validation PASSED [  3%]
+tests/test_pipeline_cache_and_timeout.py::test_pipeline_cache_set_and_get PASSED [  4%]
+tests/test_pipeline_cache_and_timeout.py::test_deep_pipeline_hard_timeout_fires_and_records_checkpoint PASSED [  6%]
+tests/test_pipeline_cache_and_timeout.py::test_r0_1_task_id_trace_id_propagation_and_no_task_none PASSED [  7%]
+tests/test_pipeline_cache_and_timeout.py::test_r0_2_stop_token_discards_late_summary_and_callbacks PASSED [  9%]
+tests/test_pipeline_cache_and_timeout.py::test_r0_3_critic_fail_hard_gate_exits_before_t6_no_published_summary PASSED [ 11%]
+tests/test_pipeline_cache_and_timeout.py::test_r0_4_no_checkpoint_restore_after_critic_fail_and_abort_on_identical_evidence PASSED [ 12%]
+tests/test_pipeline_cache_and_timeout.py::test_r0_5_task_dedup_lock_blocks_concurrent_same_task_id PASSED [ 14%]
+tests/test_pipeline_cache_and_timeout.py::test_r0_blocker_1_rollback_step_1_no_error PASSED [ 15%]
+tests/test_pipeline_cache_and_timeout.py::test_r0_blocker_2_cross_process_dedup_two_real_subprocesses_and_lease_fail_closed PASSED [ 17%]
+tests/test_pipeline_cache_and_timeout.py::test_r0_blocker_3_malformed_critic_fail_closed PASSED [ 19%]
+tests/test_pipeline_cache_and_timeout.py::test_r1_1_to_r1_3_browser_evidence_schema_and_summary_binding PASSED [ 20%]
+tests/test_pipeline_cache_and_timeout.py::test_r1_4_and_r1_5_kernel_temporal_context_and_critic_unverified PASSED [ 22%]
+tests/test_pipeline_cache_and_timeout.py::test_r1_6_fast_single_url_visual_read_routing_and_evidence_gate PASSED [ 23%]
+tests/test_pipeline_cache_and_timeout.py::test_r2_1_task_scoped_file_write_and_test_stream_isolation PASSED [ 25%]
+tests/test_pipeline_cache_and_timeout.py::test_r2_2_step_metrics_reconciliation_planned_admitted_executed PASSED [ 26%]
+tests/test_pipeline_cache_and_timeout.py::test_r2_3_and_r2_4_artifact_receipts_ssrf_redirect_and_fast_stop PASSED [ 28%]
+tests/test_pipeline_cache_and_timeout.py::test_r2_5_to_r2_8_headline_source_binding_contamination_block_and_stage_latencies PASSED [ 30%]
+tests/test_pipeline_cache_and_timeout.py::test_r3_1_and_r3_2_dynamic_skill_creator_sandbox_verification_and_versioned_rollback PASSED [ 31%]
+tests/test_pipeline_cache_and_timeout.py::test_r3_3_and_r3_4_shadow_harness_tool_outputs_sha256_and_dpo_contrastive_export PASSED [ 33%]
+tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_blocks_dangerous_ast_imports_and_calls PASSED [ 34%]
+tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_blocks_failed_regression_100_gate PASSED [ 36%]
+tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_blocks_path_traversal_in_name_and_category PASSED [ 38%]
+tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_blocks_secrets_and_prompt_injection_via_state_sanitizer PASSED [ 39%]
+tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_create_dynamic_skill PASSED [ 41%]
+tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_hot_reload_failure_triggers_rollback_when_strict PASSED [ 42%]
+tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_other_callers_cannot_bypass_skill_governance PASSED [ 44%]
+tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_production_requires_explicit_approval_and_blocks_llm_self_approval PASSED [ 46%]
+tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_proposal_only_does_not_write_production_logic_py PASSED [ 47%]
+tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_restore_drill_checkpoint_partial_crash_rollback_and_sha256_verify PASSED [ 49%]
+tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_rollback_hmac_tampering_and_symlink_defense PASSED [ 50%]
+tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_sandbox_capability_blocks_network_and_spawn_and_fs_escape PASSED [ 52%]
+tests/test_shadow_harness.py::test_shadow_harness_schema_and_persistence PASSED [ 53%]
+tests/test_shadow_harness.py::test_shadow_harness_64kb_cap_enforcement PASSED [ 55%]
+tests/test_shadow_harness.py::test_shadow_harness_disabled_mode PASSED   [ 57%]
+tests/test_shadow_harness.py::test_shadow_harness_two_phase_pairing PASSED [ 58%]
+tests/test_shadow_harness.py::test_shadow_harness_dpo_export_with_receipt_and_retention PASSED [ 60%]
+tests/test_evidence_temporal_gate.py::test_future_year_blocks_unlabelled_evidence PASSED [ 61%]
+tests/test_evidence_temporal_gate.py::test_labelled_future_year_allowed_for_review PASSED [ 63%]
+tests/test_evidence_temporal_gate.py::test_mixed_years_block_without_freshness_label PASSED [ 65%]
+tests/test_realtime_freshness.py::test_realtime_query_gets_after_injected PASSED [ 66%]
+tests/test_realtime_freshness.py::test_query_with_date_not_double_injected PASSED [ 68%]
+tests/test_realtime_freshness.py::test_non_realtime_query_untouched PASSED [ 69%]
+tests/test_realtime_freshness.py::test_extract_published_at_sources PASSED [ 71%]
+tests/test_realtime_freshness.py::test_freshness_label_and_stale_demotion PASSED [ 73%]
+tests/test_realtime_freshness.py::test_temporal_gate_flags_mixed_years PASSED [ 74%]
+tests/test_realtime_freshness.py::test_html_to_clean_text_strips_danger PASSED [ 76%]
+tests/test_realtime_freshness.py::test_fetch_url_content_blocks_ssrf PASSED [ 77%]
+tests/test_realtime_freshness.py::test_fetch_url_content_success_with_date PASSED [ 79%]
+tests/test_realtime_freshness.py::test_multi_query_no_longer_uses_jina PASSED [ 80%]
+tests/test_realtime_freshness.py::test_checkpoint_restore_skips_failed_steps PASSED [ 82%]
+tests/test_mission_history_integrity.py::test_task_id_never_defaults_to_man PASSED [ 84%]
+tests/test_mission_history_integrity.py::test_consistency_gate_flags_false_refusal PASSED [ 85%]
+tests/test_mission_history_integrity.py::test_consistency_gate_passes_honest_cases PASSED [ 87%]
+tests/test_h3_instant_fail_exclusion.py::TestH3InstantFailExclusion::test_httpx_connect_error_does_not_consume_attempt PASSED [ 88%]
+tests/test_h3_instant_fail_exclusion.py::TestH3InstantFailExclusion::test_httpx_timeout_does_not_consume_attempt PASSED [ 90%]
+tests/test_h3_instant_fail_exclusion.py::TestH3InstantFailExclusion::test_max_attempts_still_respected_for_real_failures PASSED [ 92%]
+tests/test_h3_instant_fail_exclusion.py::TestH3InstantFailExclusion::test_normal_exception_does_consume_attempt PASSED [ 93%]
+tests/test_h3_instant_fail_exclusion.py::TestH3InstantFailExclusion::test_read_timeout_does_not_consume_attempt PASSED [ 95%]
+tests/test_h3_instant_fail_exclusion.py::TestH3InstantFailExclusion::test_three_infra_failures_then_success_uses_only_one_attempt PASSED [ 96%]
+tests/test_h3_instant_fail_exclusion.py::TestH3InstantFailExclusion::test_zero_05s_ollama_fail_does_not_burn_quota PASSED [ 98%]
+tests/test_h3_instant_fail_exclusion.py::TestH3LogMessaging::test_infra_fail_log_contains_keyword PASSED [100%]
+
+=================================== PASSES ====================================
+_______________________ test_pipeline_cache_set_and_get _______________________
+------------------------------ Captured log call ------------------------------
+WARNING  PipelineCache:pipeline_cache.py:158 [CACHE-SKIP] Non-successful, fallback, or error response not cached key=pipeline:cache:da616f0a44bd57ba goal=T\xednh t\u1ed5ng hai s\u1ed1 5 v\xe0 10
+____ test_r0_3_critic_fail_hard_gate_exits_before_t6_no_published_summary _____
+------------------------------ Captured log call ------------------------------
+WARNING  UIE:engine.py:425 [LOOP-AWARE-POOL] Event loop \u0111\u1ed5i/t\xe1i t\u1ea1o \u2014 thay client HTTP pool c\u0169 (nguy\xean nh\xe2n g\u1ed1c 'Event loop is closed').
+_ test_r0_4_no_checkpoint_restore_after_critic_fail_and_abort_on_identical_evidence _
+------------------------------ Captured log call ------------------------------
+WARNING  UIE:engine.py:425 [LOOP-AWARE-POOL] Event loop \u0111\u1ed5i/t\xe1i t\u1ea1o \u2014 thay client HTTP pool c\u0169 (nguy\xean nh\xe2n g\u1ed1c 'Event loop is closed').
+_ test_r0_blocker_2_cross_process_dedup_two_real_subprocesses_and_lease_fail_closed _
+------------------------------ Captured log call ------------------------------
+ERROR    JKAI.DeepPipeline:deep_pipeline.py:364 [TASK-DEDUP-LEASE-ERR] Fail-closed: cannot acquire cross-process lease for ZENITH_FAIL_CLOSED_001: Simulated lease storage failure
+_______________ test_r0_blocker_3_malformed_critic_fail_closed ________________
+------------------------------ Captured log call ------------------------------
+WARNING  UIE:engine.py:425 [LOOP-AWARE-POOL] Event loop \u0111\u1ed5i/t\xe1i t\u1ea1o \u2014 thay client HTTP pool c\u0169 (nguy\xean nh\xe2n g\u1ed1c 'Event loop is closed').
+________ test_r1_1_to_r1_3_browser_evidence_schema_and_summary_binding ________
+------------------------------ Captured log call ------------------------------
+WARNING  UIE:engine.py:425 [LOOP-AWARE-POOL] Event loop \u0111\u1ed5i/t\xe1i t\u1ea1o \u2014 thay client HTTP pool c\u0169 (nguy\xean nh\xe2n g\u1ed1c 'Event loop is closed').
+_______ test_r2_2_step_metrics_reconciliation_planned_admitted_executed _______
+------------------------------ Captured log call ------------------------------
+WARNING  UIE:engine.py:425 [LOOP-AWARE-POOL] Event loop \u0111\u1ed5i/t\xe1i t\u1ea1o \u2014 thay client HTTP pool c\u0169 (nguy\xean nh\xe2n g\u1ed1c 'Event loop is closed').
+=========================== short test summary info ===========================
+PASSED tests/test_pipeline_cache_and_timeout.py::test_is_error_response_detection
+PASSED tests/test_pipeline_cache_and_timeout.py::test_is_cacheable_result_validation
+PASSED tests/test_pipeline_cache_and_timeout.py::test_pipeline_cache_set_and_get
+PASSED tests/test_pipeline_cache_and_timeout.py::test_deep_pipeline_hard_timeout_fires_and_records_checkpoint
+PASSED tests/test_pipeline_cache_and_timeout.py::test_r0_1_task_id_trace_id_propagation_and_no_task_none
+PASSED tests/test_pipeline_cache_and_timeout.py::test_r0_2_stop_token_discards_late_summary_and_callbacks
+PASSED tests/test_pipeline_cache_and_timeout.py::test_r0_3_critic_fail_hard_gate_exits_before_t6_no_published_summary
+PASSED tests/test_pipeline_cache_and_timeout.py::test_r0_4_no_checkpoint_restore_after_critic_fail_and_abort_on_identical_evidence
+PASSED tests/test_pipeline_cache_and_timeout.py::test_r0_5_task_dedup_lock_blocks_concurrent_same_task_id
+PASSED tests/test_pipeline_cache_and_timeout.py::test_r0_blocker_1_rollback_step_1_no_error
+PASSED tests/test_pipeline_cache_and_timeout.py::test_r0_blocker_2_cross_process_dedup_two_real_subprocesses_and_lease_fail_closed
+PASSED tests/test_pipeline_cache_and_timeout.py::test_r0_blocker_3_malformed_critic_fail_closed
+PASSED tests/test_pipeline_cache_and_timeout.py::test_r1_1_to_r1_3_browser_evidence_schema_and_summary_binding
+PASSED tests/test_pipeline_cache_and_timeout.py::test_r1_4_and_r1_5_kernel_temporal_context_and_critic_unverified
+PASSED tests/test_pipeline_cache_and_timeout.py::test_r1_6_fast_single_url_visual_read_routing_and_evidence_gate
+PASSED tests/test_pipeline_cache_and_timeout.py::test_r2_1_task_scoped_file_write_and_test_stream_isolation
+PASSED tests/test_pipeline_cache_and_timeout.py::test_r2_2_step_metrics_reconciliation_planned_admitted_executed
+PASSED tests/test_pipeline_cache_and_timeout.py::test_r2_3_and_r2_4_artifact_receipts_ssrf_redirect_and_fast_stop
+PASSED tests/test_pipeline_cache_and_timeout.py::test_r2_5_to_r2_8_headline_source_binding_contamination_block_and_stage_latencies
+PASSED tests/test_pipeline_cache_and_timeout.py::test_r3_1_and_r3_2_dynamic_skill_creator_sandbox_verification_and_versioned_rollback
+PASSED tests/test_pipeline_cache_and_timeout.py::test_r3_3_and_r3_4_shadow_harness_tool_outputs_sha256_and_dpo_contrastive_export
+PASSED tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_blocks_dangerous_ast_imports_and_calls
+PASSED tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_blocks_failed_regression_100_gate
+PASSED tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_blocks_path_traversal_in_name_and_category
+PASSED tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_blocks_secrets_and_prompt_injection_via_state_sanitizer
+PASSED tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_create_dynamic_skill
+PASSED tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_hot_reload_failure_triggers_rollback_when_strict
+PASSED tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_other_callers_cannot_bypass_skill_governance
+PASSED tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_production_requires_explicit_approval_and_blocks_llm_self_approval
+PASSED tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_proposal_only_does_not_write_production_logic_py
+PASSED tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_restore_drill_checkpoint_partial_crash_rollback_and_sha256_verify
+PASSED tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_rollback_hmac_tampering_and_symlink_defense
+PASSED tests/test_dynamic_skill_creator.py::TestDynamicSkillCreator::test_sandbox_capability_blocks_network_and_spawn_and_fs_escape
+PASSED tests/test_shadow_harness.py::test_shadow_harness_schema_and_persistence
+PASSED tests/test_shadow_harness.py::test_shadow_harness_64kb_cap_enforcement
+PASSED tests/test_shadow_harness.py::test_shadow_harness_disabled_mode
+PASSED tests/test_shadow_harness.py::test_shadow_harness_two_phase_pairing
+PASSED tests/test_shadow_harness.py::test_shadow_harness_dpo_export_with_receipt_and_retention
+PASSED tests/test_evidence_temporal_gate.py::test_future_year_blocks_unlabelled_evidence
+PASSED tests/test_evidence_temporal_gate.py::test_labelled_future_year_allowed_for_review
+PASSED tests/test_evidence_temporal_gate.py::test_mixed_years_block_without_freshness_label
+PASSED tests/test_realtime_freshness.py::test_realtime_query_gets_after_injected
+PASSED tests/test_realtime_freshness.py::test_query_with_date_not_double_injected
+PASSED tests/test_realtime_freshness.py::test_non_realtime_query_untouched
+PASSED tests/test_realtime_freshness.py::test_extract_published_at_sources
+PASSED tests/test_realtime_freshness.py::test_freshness_label_and_stale_demotion
+PASSED tests/test_realtime_freshness.py::test_temporal_gate_flags_mixed_years
+PASSED tests/test_realtime_freshness.py::test_html_to_clean_text_strips_danger
+PASSED tests/test_realtime_freshness.py::test_fetch_url_content_blocks_ssrf
+PASSED tests/test_realtime_freshness.py::test_fetch_url_content_success_with_date
+PASSED tests/test_realtime_freshness.py::test_multi_query_no_longer_uses_jina
+PASSED tests/test_realtime_freshness.py::test_checkpoint_restore_skips_failed_steps
+PASSED tests/test_mission_history_integrity.py::test_task_id_never_defaults_to_man
+PASSED tests/test_mission_history_integrity.py::test_consistency_gate_flags_false_refusal
+PASSED tests/test_mission_history_integrity.py::test_consistency_gate_passes_honest_cases
+PASSED tests/test_h3_instant_fail_exclusion.py::TestH3InstantFailExclusion::test_httpx_connect_error_does_not_consume_attempt
+PASSED tests/test_h3_instant_fail_exclusion.py::TestH3InstantFailExclusion::test_httpx_timeout_does_not_consume_attempt
+PASSED tests/test_h3_instant_fail_exclusion.py::TestH3InstantFailExclusion::test_max_attempts_still_respected_for_real_failures
+PASSED tests/test_h3_instant_fail_exclusion.py::TestH3InstantFailExclusion::test_normal_exception_does_consume_attempt
+PASSED tests/test_h3_instant_fail_exclusion.py::TestH3InstantFailExclusion::test_read_timeout_does_not_consume_attempt
+PASSED tests/test_h3_instant_fail_exclusion.py::TestH3InstantFailExclusion::test_three_infra_failures_then_success_uses_only_one_attempt
+PASSED tests/test_h3_instant_fail_exclusion.py::TestH3InstantFailExclusion::test_zero_05s_ollama_fail_does_not_burn_quota
+PASSED tests/test_h3_instant_fail_exclusion.py::TestH3LogMessaging::test_infra_fail_log_contains_keyword
+======================== 63 passed in 77.53s (0:01:17) ========================

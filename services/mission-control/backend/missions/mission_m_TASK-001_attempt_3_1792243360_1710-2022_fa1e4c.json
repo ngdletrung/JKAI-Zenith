@@ -1,0 +1,959 @@
+{
+  "id": "m_TASK-001_attempt_3_1792243360_1710-2022_fa1e4c",
+  "title": "[TASK-001 | Canary: NP3-CANARY-20261017-9E4B2F81] Hãy thực thi kiểm to",
+  "goal": "[TASK-001 | Canary: NP3-CANARY-20261017-9E4B2F81] Hãy thực thi kiểm toán kỹ thuật trực tiếp trên workspace đối với 2 tệp bảo mật lõi: core/security/egress_gate.py và core/security/data_leak_guard.py. Yêu cầu bắt buộc:\n1. Đọc hoặc chạy script phân tích trực tiếp 2 tệp trên (không suy đoán) và báo cáo chính xác: (a) tổng số dòng (line count) và mã băm SHA-256 (16 ký tự đầu) của từng tệp, (b) danh sách tên tất cả các class và hàm/phương thức định nghĩa trong từng tệp.\n2. Giải thích cơ chế phối hợp giữa phương thức kiểm tra egress trong core/security/egress_gate.py và data_leak_guard.has_active_alert(mission_id) để chặn follow-up egress khi phát hiện rò rỉ dữ liệu trong cùng mission_id (chỉ rõ tên class, tên phương thức và chuỗi reason chính xác trả về trong EgressDecision(allowed=False, reason=...)).\n3. Tự kiểm chứng (Self-Verification) lại các con số dòng và SHA-256 trước khi kết luận, và đính kèm nguyên văn mã Canary NP3-CANARY-20261017-9E4B2F81 ở phần kết luận báo cáo.",
+  "status": "failed",
+  "ts": 1792243861.6456885,
+  "logs": [
+    {
+      "tag": "MASTER_WEB",
+      "msg": "[TASK-001 | Canary: NP3-CANARY-20261017-9E4B2F81] Hãy thực thi kiểm toán kỹ thuật trực tiếp trên workspace đối với 2 tệp bảo mật lõi: core/security/egress_gate.py và core/security/data_leak_guard.py. Yêu cầu bắt buộc:\n1. Đọc hoặc chạy script phân tích trực tiếp 2 tệp trên (không suy đoán) và báo cáo chính xác: (a) tổng số dòng (line count) và mã băm SHA-256 (16 ký tự đầu) của từng tệp, (b) danh sách tên tất cả các class và hàm/phương thức định nghĩa trong từng tệp.\n2. Giải thích cơ chế phối hợp giữa phương thức kiểm tra egress trong core/security/egress_gate.py và data_leak_guard.has_active_alert(mission_id) để chặn follow-up egress khi phát hiện rò rỉ dữ liệu trong cùng mission_id (chỉ rõ tên class, tên phương thức và chuỗi reason chính xác trả về trong EgressDecision(allowed=False, reason=...)).\n3. Tự kiểm chứng (Self-Verification) lại các con số dòng và SHA-256 trước khi kết luận, và đính kèm nguyên văn mã Canary NP3-CANARY-20261017-9E4B2F81 ở phần kết luận báo cáo.",
+      "ts": 1792243360.888,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "GATEWAY",
+      "msg": "📥 [GATEWAY] Mission `TASK-001_attempt_3_1792243360_1710-2022_fa1e4c` initialized | Trace: `trace_fa1e4c`. Runtime ready.",
+      "ts": 1792243360.8898928,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "WORKSPACE `core/security` (audit)",
+      "ts": 1792243367.566321,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=1328 | preview='[TASK-001 | Canary: NP3-CANARY-20261017-9E4B2F81] Hãy thực thi kiểm toán kỹ thuật trực tiếp trên workspace đối với 2 tệp bảo mật lõi: core/security/egress_gate.py và core/security/data_leak_guard.py. ' | hash=92016ef2b523a839 | task_id=TASK-001_attempt_3_1792243360_1710-2022_fa1e4c | trace_id=trace_fa1e4c",
+      "ts": 1792243367.5687773,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: ['MULTI_FILE_AUDIT_ACTION'] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1792243367.570717,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [PIPELINE-RESOLVER]: Chế độ DEEP tự động kích hoạt (Reason: Master explicitly requested DEEP (Multi-Agent Ensemble Mode).).",
+      "ts": 1792243367.5722976,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=coding pipeline=deep mode=deep tags=ANALYSIS,CODING,MULTI_RESOURCE",
+      "ts": 1792243367.5744762,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "🧠 [DYNAMIC-BUDGET] Nhận diện tác vụ kiểm toán đa tệp/phức tạp (3 tệp python). Cấp ngân sách ban đầu: 24 bước.",
+      "ts": 1792243367.5834837,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "🎯 Cursor Agent — `core/security` (audit) | Ngân sách: 24 bước",
+      "ts": 1792243367.586067,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 1/24",
+      "ts": 1792243368.3987405,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=12842.2ms | Output=4 chars",
+      "ts": 1792243381.264888,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'query_repo_map' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792243381.4987047,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: query_repo_map(...) - TraceID: trace_fa1e4c",
+      "ts": 1792243381.5135632,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'query_repo_map' via sovereign local runtime.",
+      "ts": 1792243381.5855846,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[query_repo_map] ✅ Local execution succeeded",
+      "ts": 1792243381.6670945,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "-> Tool 'query_repo_map' hoàn thành (output: 45 ký tự).",
+      "ts": 1792243381.687505,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 2/24",
+      "ts": 1792243381.715345,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=5180.8ms | Output=3 chars",
+      "ts": 1792243386.9048812,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 3/24",
+      "ts": 1792243386.9149563,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=2631.5ms | Output=4 chars",
+      "ts": 1792243389.59712,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'query_repo_map' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792243389.6215613,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: query_repo_map(...) - TraceID: trace_fa1e4c",
+      "ts": 1792243389.6256478,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'query_repo_map' via sovereign local runtime.",
+      "ts": 1792243389.6278472,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[query_repo_map] ✅ Local execution succeeded",
+      "ts": 1792243389.7053058,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "-> Tool 'query_repo_map' hoàn thành (output: 49 ký tự).",
+      "ts": 1792243389.7094913,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 4/24",
+      "ts": 1792243389.7344677,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=2643.4ms | Output=4 chars",
+      "ts": 1792243392.3851583,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 5/24",
+      "ts": 1792243392.396881,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=2851.6ms | Output=4 chars",
+      "ts": 1792243395.2968712,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'query_repo_map' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792243395.315261,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: query_repo_map(...) - TraceID: trace_fa1e4c",
+      "ts": 1792243395.3186426,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'query_repo_map' via sovereign local runtime.",
+      "ts": 1792243395.3206263,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[query_repo_map] ✅ Local execution succeeded",
+      "ts": 1792243395.392222,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "-> Tool 'query_repo_map' hoàn thành (output: 45 ký tự).",
+      "ts": 1792243395.395218,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 6/24",
+      "ts": 1792243395.4182825,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=2636.3ms | Output=4 chars",
+      "ts": 1792243398.0616443,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 7/24",
+      "ts": 1792243398.0716798,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=2795.5ms | Output=4 chars",
+      "ts": 1792243400.917022,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'query_repo_map' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792243400.942308,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: query_repo_map(...) - TraceID: trace_fa1e4c",
+      "ts": 1792243400.9458668,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'query_repo_map' via sovereign local runtime.",
+      "ts": 1792243400.9489045,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[query_repo_map] ✅ Local execution succeeded",
+      "ts": 1792243401.0333169,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "-> Tool 'query_repo_map' hoàn thành (output: 49 ký tự).",
+      "ts": 1792243401.0376525,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 8/24",
+      "ts": 1792243401.0657222,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=2775.9ms | Output=4 chars",
+      "ts": 1792243403.8488681,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 9/24",
+      "ts": 1792243403.8595712,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=3071.2ms | Output=4 chars",
+      "ts": 1792243406.978286,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "🛑 [CIRCUIT-BREAKER] Chặn lặp query_repo_map lần 3.",
+      "ts": 1792243406.9974937,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 10/24",
+      "ts": 1792243407.0208042,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=2846.4ms | Output=4 chars",
+      "ts": 1792243409.8748677,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'view_file' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792243409.904207,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: view_file(...) - TraceID: trace_fa1e4c",
+      "ts": 1792243409.90902,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'view_file' via sovereign local runtime.",
+      "ts": 1792243409.9111774,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[view_file] ✅ Local execution succeeded",
+      "ts": 1792243409.9283228,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "-> Tool 'view_file' hoàn thành (output: 5729 ký tự).",
+      "ts": 1792243409.9309914,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 11/24",
+      "ts": 1792243410.0101602,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=32095.2ms | Output=4 chars",
+      "ts": 1792243442.1083157,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 12/24",
+      "ts": 1792243442.1193764,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=17446.9ms | Output=4 chars",
+      "ts": 1792243459.615475,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "🛑 [CIRCUIT-BREAKER] Chặn lặp query_repo_map lần 3.",
+      "ts": 1792243459.6454034,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 13/24",
+      "ts": 1792243459.6801398,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=3277.3ms | Output=4 chars",
+      "ts": 1792243462.9636948,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'view_file' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792243462.9992776,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: view_file(...) - TraceID: trace_fa1e4c",
+      "ts": 1792243463.0060573,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'view_file' via sovereign local runtime.",
+      "ts": 1792243463.0085838,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[view_file] ✅ Local execution succeeded",
+      "ts": 1792243463.0261788,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "-> Tool 'view_file' hoàn thành (output: 4987 ký tự).",
+      "ts": 1792243463.0292544,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 14/24",
+      "ts": 1792243463.0689094,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=43102.8ms | Output=4 chars",
+      "ts": 1792243506.1740384,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 15/24",
+      "ts": 1792243506.1859422,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=37139.3ms | Output=4 chars",
+      "ts": 1792243543.3701272,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "🛑 [CIRCUIT-BREAKER] Chặn lặp query_repo_map lần 4.",
+      "ts": 1792243543.3950806,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 16/24",
+      "ts": 1792243543.431231,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=36943.7ms | Output=4 chars",
+      "ts": 1792243580.3792117,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'view_file' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792243580.422199,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: view_file(...) - TraceID: trace_fa1e4c",
+      "ts": 1792243580.4256315,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'view_file' via sovereign local runtime.",
+      "ts": 1792243580.427495,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[view_file] ✅ Local execution succeeded",
+      "ts": 1792243580.4421802,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "-> Tool 'view_file' hoàn thành (output: 5729 ký tự).",
+      "ts": 1792243580.444593,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 17/24",
+      "ts": 1792243580.4872377,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=39230.7ms | Output=4 chars",
+      "ts": 1792243619.717443,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 18/24",
+      "ts": 1792243619.72865,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=36580.2ms | Output=4 chars",
+      "ts": 1792243656.356562,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'query_repo_map' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792243656.3866842,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: query_repo_map(...) - TraceID: trace_fa1e4c",
+      "ts": 1792243656.3902369,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'query_repo_map' via sovereign local runtime.",
+      "ts": 1792243656.3922422,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[query_repo_map] ✅ Local execution succeeded",
+      "ts": 1792243656.4837155,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "-> Tool 'query_repo_map' hoàn thành (output: 46 ký tự).",
+      "ts": 1792243656.486748,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 19/24",
+      "ts": 1792243656.5234056,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=35688.3ms | Output=4 chars",
+      "ts": 1792243692.2162013,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'view_file' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792243692.2510974,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: view_file(...) - TraceID: trace_fa1e4c",
+      "ts": 1792243692.2545195,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'view_file' via sovereign local runtime.",
+      "ts": 1792243692.2565048,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[view_file] ✅ Local execution succeeded",
+      "ts": 1792243692.2708564,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "-> Tool 'view_file' hoàn thành (output: 2828 ký tự).",
+      "ts": 1792243692.2736907,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 20/24",
+      "ts": 1792243692.314814,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=35806.3ms | Output=4 chars",
+      "ts": 1792243728.1262276,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 21/24",
+      "ts": 1792243728.1389318,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=32255.6ms | Output=4 chars",
+      "ts": 1792243760.4427474,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "🛑 [CIRCUIT-BREAKER] Chặn lặp query_repo_map lần 4.",
+      "ts": 1792243760.4782043,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 22/24",
+      "ts": 1792243760.5132282,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=3734.1ms | Output=4 chars",
+      "ts": 1792243764.254801,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'view_file' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792243764.2947795,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: view_file(...) - TraceID: trace_fa1e4c",
+      "ts": 1792243764.2986279,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'view_file' via sovereign local runtime.",
+      "ts": 1792243764.302105,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[view_file] ✅ Local execution succeeded",
+      "ts": 1792243764.3174727,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "-> Tool 'view_file' hoàn thành (output: 4987 ký tự).",
+      "ts": 1792243764.3201852,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 23/24",
+      "ts": 1792243764.3667371,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=42369.4ms | Output=4 chars",
+      "ts": 1792243806.7375035,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "Bước 24/24",
+      "ts": 1792243806.7489047,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "[TELEMETRY] Role=EXECUTOR | Model=default | Latency=35003.7ms | Output=4 chars",
+      "ts": 1792243841.8061774,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "INTEGRITY",
+      "msg": "[ALLOW] Tool 'query_repo_map' authorized by ExecutionIntegrityLayer.",
+      "ts": 1792243841.8413503,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "Safe execution: query_repo_map(...) - TraceID: trace_fa1e4c",
+      "ts": 1792243841.8453977,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "⚡ [LOCAL-DIRECT-EXEC] Executing 'query_repo_map' via sovereign local runtime.",
+      "ts": 1792243841.8476875,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "EXECUTOR",
+      "msg": "[query_repo_map] ✅ Local execution succeeded",
+      "ts": 1792243841.9318736,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "-> Tool 'query_repo_map' hoàn thành (output: 46 ký tự).",
+      "ts": 1792243841.9353683,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "⚡ [BUDGET-EXTENSION] Phát hiện tác vụ đang tiến triển tốt (đã nạp tệp thành công). Gia hạn thêm 6 bước (Tổng ngân sách: 30 bước).",
+      "ts": 1792243841.9766521,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "WORKSPACE `core/security` (audit)",
+      "ts": 1792243848.5563436,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=1328 | preview='[TASK-001 | Canary: NP3-CANARY-20261017-9E4B2F81] Hãy thực thi kiểm toán kỹ thuật trực tiếp trên workspace đối với 2 tệp bảo mật lõi: core/security/egress_gate.py và core/security/data_leak_guard.py. ' | hash=92016ef2b523a839 | task_id=TASK-001_attempt_3_1792243360_1710-2022_fa1e4c | trace_id=trace_fa1e4c",
+      "ts": 1792243848.5599532,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: ['MULTI_FILE_AUDIT_ACTION'] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1792243848.5633144,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [PIPELINE-RESOLVER]: Chế độ DEEP tự động kích hoạt (Reason: Master explicitly requested DEEP (Multi-Agent Ensemble Mode).).",
+      "ts": 1792243848.5656786,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=coding pipeline=deep mode=deep tags=ANALYSIS,CODING,MULTI_RESOURCE",
+      "ts": 1792243848.568021,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "🧠 [DYNAMIC-BUDGET] Nhận diện tác vụ kiểm toán đa tệp/phức tạp (3 tệp python). Cấp ngân sách ban đầu: 24 bước.",
+      "ts": 1792243848.577307,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "🎯 Cursor Agent — `core/security` (audit) | Ngân sách: 24 bước",
+      "ts": 1792243848.5797238,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "🔄 [DURABLE-RECOVERY] Phục hồi từ bước COMPLETED 24 (bỏ qua các bước đã hoàn tất)...",
+      "ts": 1792243848.5857072,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "WORKSPACE `core/security` (audit)",
+      "ts": 1792243855.5820272,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "TRACE",
+      "msg": "F1 goal identity | len=1328 | preview='[TASK-001 | Canary: NP3-CANARY-20261017-9E4B2F81] Hãy thực thi kiểm toán kỹ thuật trực tiếp trên workspace đối với 2 tệp bảo mật lõi: core/security/egress_gate.py và core/security/data_leak_guard.py. ' | hash=92016ef2b523a839 | task_id=TASK-001_attempt_3_1792243360_1710-2022_fa1e4c | trace_id=trace_fa1e4c",
+      "ts": 1792243855.585577,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "Task Profile: ['MULTI_FILE_AUDIT_ACTION'] | Policy Topology: MULTI_AGENT (DEEP)",
+      "ts": 1792243855.5882633,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "🧠 [PIPELINE-RESOLVER]: Chế độ DEEP tự động kích hoạt (Reason: Master explicitly requested DEEP (Multi-Agent Ensemble Mode).).",
+      "ts": 1792243855.590606,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "SYSTEM",
+      "msg": "AI OS: intent=coding pipeline=deep mode=deep tags=ANALYSIS,CODING,MULTI_RESOURCE",
+      "ts": 1792243855.59294,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "🧠 [DYNAMIC-BUDGET] Nhận diện tác vụ kiểm toán đa tệp/phức tạp (3 tệp python). Cấp ngân sách ban đầu: 24 bước.",
+      "ts": 1792243855.6024609,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "🎯 Cursor Agent — `core/security` (audit) | Ngân sách: 24 bước",
+      "ts": 1792243855.6044295,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "CURSOR-AGENT",
+      "msg": "🔄 [DURABLE-RECOVERY] Phục hồi từ bước COMPLETED 24 (bỏ qua các bước đã hoàn tất)...",
+      "ts": 1792243855.607348,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "ERROR",
+      "msg": "[RECEPTIONIST-FAILED]: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist | manifest={\"status\": \"error\", \"error\": \"Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist\"}",
+      "ts": 1792243861.6152067,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    },
+    {
+      "tag": "JKAI",
+      "msg": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+      "ts": 1792243861.6193697,
+      "source": "SYSTEM",
+      "task_id": "TASK-001_attempt_3_1792243360_1710-2022_fa1e4c"
+    }
+  ],
+  "artifacts": {
+    "plan": "[TASK-001 | Canary: NP3-CANARY-20261017-9E4B2F81] Hãy thực thi kiểm toán kỹ thuật trực tiếp trên workspace đối với 2 tệp bảo mật lõi: core/security/egress_gate.py và core/security/data_leak_guard.py. Yêu cầu bắt buộc:",
+    "walkthrough": "[Sự Cố Xử Lý Yêu Cầu]: Ban Trợ Lý gặp lỗi khi tiếp nhận yêu cầu từ Master. Vui lòng kiểm tra dịch vụ xử lý và thử lại ạ. (Chi tiết: Receptionist error: All 3 retries failed for http://ai-brain:8000/receptionist)",
+    "tasks": "Xem tab Tiến trình để biết từng bước EXECUTOR/CURSOR-AGENT."
+  }
+}

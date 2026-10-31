@@ -9,6 +9,7 @@ import { MarkdownRenderer } from './MarkdownRenderer';
 import { NuclearApprovalPad } from './NuclearApprovalPad';
 import { LabelPad } from './LabelPad';
 import { ToolBlock, ActionBadge, ReasoningBlock, MicroscopeIcon, SurgicalDiff, FileEditRow, WorkingDots, stripLogMetadata } from './LogElements';
+import { FileChangesCard } from './FileChangesCard';
 
 export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasoning?: boolean }) => {
   const setInspectedFile = useZenithStore(s => s.setInspectedFile);
@@ -81,6 +82,39 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
     return fps;
   }, [msg, isUser, isReasoning, language, handleInspect]);
 
+  // ── [FILE-CHANGES-CARD]: Thẻ tóm tắt tệp tin thay đổi chuẩn Antigravity ──
+  if (tag === 'FILE-CHANGES' || tag === 'FILES-CHANGED' || (l as any).files) {
+    let files = (l as any).files;
+    let added = (l as any).added || 0;
+    let removed = (l as any).removed || 0;
+    if (!files && (msg.startsWith('{') || msg.startsWith('['))) {
+      try {
+        const parsed = JSON.parse(msg);
+        if (Array.isArray(parsed)) {
+          files = parsed;
+        } else if (parsed.files) {
+          files = parsed.files;
+          added = parsed.added || added;
+          removed = parsed.removed || removed;
+        }
+      } catch {
+        /* fall through */
+      }
+    }
+    if (files && Array.isArray(files) && files.length > 0) {
+      return (
+        <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} className="my-2 max-w-full">
+          <FileChangesCard 
+            files={files} 
+            addedLines={added} 
+            removedLines={removed} 
+            onReview={() => useZenithStore.getState().setTab('changes')}
+          />
+        </motion.div>
+      );
+    }
+  }
+
   if (tag === 'FILE-EDIT') {
     try {
       const data = JSON.parse(msg);
@@ -89,14 +123,20 @@ export const LogItem = memo(({ l, forceReasoning }: { l: AgentLog, forceReasonin
       const added: number = data.added ?? 0;
       const removed: number = data.removed ?? 0;
       return (
-        <FileEditRow
-          filePath={filePath}
-          fileName={fileName}
-          added={added}
-          removed={removed}
-          diff={data.diff || ''}
-          onInspect={() => handleInspect(filePath)}
-        />
+        <div className="my-2 max-w-2xl space-y-2">
+          <FileChangesCard
+            files={[{ path: filePath, name: fileName, added, removed }]}
+            addedLines={added}
+            removedLines={removed}
+            title={language === 'vi' ? '1 tệp tin đã cập nhật' : '1 file updated'}
+            onReview={() => handleInspect(filePath)}
+          />
+          {data.diff ? (
+            <div className="rounded-2xl border border-white/5 bg-black/40 overflow-hidden shadow-inner">
+              <SurgicalDiff diff={data.diff} />
+            </div>
+          ) : null}
+        </div>
       );
     } catch {
       /* fall through */

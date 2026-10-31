@@ -1,0 +1,473 @@
+{
+  "campaign_id": "CONTROL_50_CLOSED_LOOP_CAMPAIGN_001",
+  "protocol_ssot_version": "v1.2",
+  "focus_area": "COMPUTER_USE_AND_BROWSER_CONTROL",
+  "target_runs": 50,
+  "completed_runs": 50,
+  "passed_runs": 50,
+  "pass_rate_percent": 100.0,
+  "total_duration_seconds": 257.49,
+  "average_latency_ms": 5149.8,
+  "executed_at_utc": "2026-10-30T14:08:27.482775+00:00",
+  "categories_breakdown": {
+    "PHYSICAL_ACTUATION (1-10)": 10,
+    "VISUAL_HUD_VERIFICATION (11-20)": 10,
+    "DOM_A11Y_DISCOVERY (21-30)": 10,
+    "SELF_HEALING_RESILIENCE (31-40)": 10,
+    "GOVERNANCE_AND_LIVE_WEB (41-50)": 10
+  },
+  "runs": [
+    {
+      "run_id": 1,
+      "code": "CTRL-001",
+      "name": "Physical Click Button",
+      "category": "PHYSICAL_ACT",
+      "pass": true,
+      "latency_ms": 775.23,
+      "tier": "TIER_0_DIRECT"
+    },
+    {
+      "run_id": 2,
+      "code": "CTRL-002",
+      "name": "Physical Fill Username",
+      "category": "PHYSICAL_ACT",
+      "pass": true,
+      "latency_ms": 643.55,
+      "tier": "TIER_0_DIRECT"
+    },
+    {
+      "run_id": 3,
+      "code": "CTRL-003",
+      "name": "Physical Fill Password",
+      "category": "PHYSICAL_ACT",
+      "pass": true,
+      "latency_ms": 662.79,
+      "tier": "TIER_0_DIRECT"
+    },
+    {
+      "run_id": 4,
+      "code": "CTRL-004",
+      "name": "Physical Press Key",
+      "category": "PHYSICAL_ACT",
+      "pass": true,
+      "latency_ms": 656.74,
+      "tier": "TIER_0_DIRECT"
+    },
+    {
+      "run_id": 5,
+      "code": "CTRL-005",
+      "name": "Physical Hover Element",
+      "category": "PHYSICAL_ACT",
+      "pass": true,
+      "latency_ms": 685.22,
+      "tier": "TIER_0_DIRECT"
+    },
+    {
+      "run_id": 6,
+      "code": "CTRL-006",
+      "name": "Physical Check Checkbox",
+      "category": "PHYSICAL_ACT",
+      "pass": true,
+      "latency_ms": 683.53,
+      "tier": "TIER_0_DIRECT"
+    },
+    {
+      "run_id": 7,
+      "code": "CTRL-007",
+      "name": "Physical Uncheck Checkbox",
+      "category": "PHYSICAL_ACT",
+      "pass": true,
+      "latency_ms": 682.49,
+      "tier": "TIER_0_DIRECT"
+    },
+    {
+      "run_id": 8,
+      "code": "CTRL-008",
+      "name": "Physical Select Dropdown",
+      "category": "PHYSICAL_ACT",
+      "pass": true,
+      "latency_ms": 16.33,
+      "tier": "TIER_0_DIRECT"
+    },
+    {
+      "run_id": 9,
+      "code": "CTRL-009",
+      "name": "Physical Deep Scroll & Click",
+      "category": "PHYSICAL_ACT",
+      "pass": true,
+      "latency_ms": 713.11,
+      "tier": "TIER_0_DIRECT"
+    },
+    {
+      "run_id": 10,
+      "code": "CTRL-010",
+      "name": "Compound Multi-Input Form Submission",
+      "category": "PHYSICAL_ACT",
+      "pass": true,
+      "latency_ms": 717.18,
+      "tier": "TIER_0_DIRECT"
+    },
+    {
+      "run_id": 11,
+      "code": "CTRL-011",
+      "name": "Headed Desktop Mode Invariant",
+      "category": "VISUAL_HUD",
+      "pass": true,
+      "latency_ms": 0.01,
+      "tier": "INVARIANT"
+    },
+    {
+      "run_id": 12,
+      "code": "CTRL-012",
+      "name": "Live HUD Banner Injected",
+      "category": "VISUAL_HUD",
+      "pass": true,
+      "latency_ms": 2.62,
+      "tier": "DOM_INJECTION"
+    },
+    {
+      "run_id": 13,
+      "code": "CTRL-013",
+      "name": "HUD Action State Dynamic Text",
+      "category": "VISUAL_HUD",
+      "pass": true,
+      "latency_ms": 2.39,
+      "tier": "HUD_STATE"
+    },
+    {
+      "run_id": 14,
+      "code": "CTRL-014",
+      "name": "Target Glowing Bounding Highlight",
+      "category": "VISUAL_HUD",
+      "pass": true,
+      "latency_ms": 2.92,
+      "tier": "VISUAL_STYLING"
+    },
+    {
+      "run_id": 15,
+      "code": "CTRL-015",
+      "name": "Visual Pacing Human Perception Buffer",
+      "category": "VISUAL_HUD",
+      "pass": true,
+      "latency_ms": 657.42,
+      "tier": "TIMING_PACING"
+    },
+    {
+      "run_id": 16,
+      "code": "CTRL-016",
+      "name": "HUD Action Completion State",
+      "category": "VISUAL_HUD",
+      "pass": true,
+      "latency_ms": 4.5,
+      "tier": "HUD_STATE"
+    },
+    {
+      "run_id": 17,
+      "code": "CTRL-017",
+      "name": "Pre-action Screenshot Hash Integrity",
+      "category": "VISUAL_HUD",
+      "pass": true,
+      "latency_ms": 127.1,
+      "tier": "SHA256"
+    },
+    {
+      "run_id": 18,
+      "code": "CTRL-018",
+      "name": "Post-action Screenshot Hash Divergence",
+      "category": "VISUAL_HUD",
+      "pass": true,
+      "latency_ms": 785.55,
+      "tier": "SHA256"
+    },
+    {
+      "run_id": 19,
+      "code": "CTRL-019",
+      "name": "Pixel-Level Visual Diff Verification",
+      "category": "VISUAL_HUD",
+      "pass": true,
+      "latency_ms": 753.5,
+      "diff_percent": 0.39
+    },
+    {
+      "run_id": 20,
+      "code": "CTRL-020",
+      "name": "Set-of-Marks (SoM) Coordinate Overlay",
+      "category": "VISUAL_HUD",
+      "pass": true,
+      "latency_ms": 91.0,
+      "tier": "SOM_OVERLAY"
+    },
+    {
+      "run_id": 21,
+      "code": "CTRL-021",
+      "name": "Interactive Elements Extraction",
+      "category": "DOM_A11Y",
+      "pass": true,
+      "latency_ms": 11.67,
+      "elements_count": 9
+    },
+    {
+      "run_id": 22,
+      "code": "CTRL-022",
+      "name": "Ref-based A11y Tagging (@e1..@eN)",
+      "category": "DOM_A11Y",
+      "pass": true,
+      "latency_ms": 0.04,
+      "tier": "A11Y_INDEX"
+    },
+    {
+      "run_id": 23,
+      "code": "CTRL-023",
+      "name": "Compact Semantic Map Token Constraint (<500)",
+      "category": "DOM_A11Y",
+      "pass": true,
+      "latency_ms": 0.03,
+      "word_count": 77
+    },
+    {
+      "run_id": 24,
+      "code": "CTRL-024",
+      "name": "Canvas Boundary Detection Gate",
+      "category": "DOM_A11Y",
+      "pass": true,
+      "latency_ms": 0.0,
+      "canvas_count": 1
+    },
+    {
+      "run_id": 25,
+      "code": "CTRL-025",
+      "name": "Shadow DOM Root Detection Check",
+      "category": "DOM_A11Y",
+      "pass": true,
+      "latency_ms": 0.0,
+      "shadow_roots": 0
+    },
+    {
+      "run_id": 26,
+      "code": "CTRL-026",
+      "name": "A11y Quality Gate Verdict",
+      "category": "DOM_A11Y",
+      "pass": true,
+      "latency_ms": 0.0,
+      "tier": "QUALITY_GATE"
+    },
+    {
+      "run_id": 27,
+      "code": "CTRL-027",
+      "name": "Stale Snapshot Invalidation on Mutation",
+      "category": "DOM_A11Y",
+      "pass": true,
+      "latency_ms": 653.89,
+      "tier": "STATE_GUARD"
+    },
+    {
+      "run_id": 28,
+      "code": "CTRL-028",
+      "name": "Snapshot Version Monotonic Bump",
+      "category": "DOM_A11Y",
+      "pass": true,
+      "latency_ms": 8.14,
+      "versions": "1->2"
+    },
+    {
+      "run_id": 29,
+      "code": "CTRL-029",
+      "name": "Clickable Element Role Filtering",
+      "category": "DOM_A11Y",
+      "pass": true,
+      "latency_ms": 0.02,
+      "clickables": 5
+    },
+    {
+      "run_id": 30,
+      "code": "CTRL-030",
+      "name": "Structured Data Extraction Engine",
+      "category": "DOM_A11Y",
+      "pass": true,
+      "latency_ms": 4.05,
+      "extracted": {
+        "Trạng thái": "ĐÃ CLICK THÀNH CÔNG NÚT CHÍNH! ĐÃ CLICK THÀNH CÔNG NÚT CHÍNH! 1. Thao tác Nút Bấm & Tương Tác Click Me Apply Config Hover Menu Link 2. Form Nhập Liệu & Lựa Chọn Tên đăng nhập: Mật khẩu: Đồng ý với điều khoản sử dụng Chọn vai trò hệ thống: Người dùng (User) Vận hành viên (Operator) Quản trị viên (Admin) Gửi Form Dữ Liệu 3. Cuộn Trang & Dữ Liệu Dài Đỉnh trang cuộn... Nút Ở Tận Đáy Trang 4. Canvas Phức Hợp (Kiểm Thử Quality Gate) ✅ [JKAI HOÀN TẤT] Đã thực hiện: CLICK 👉 \"#btn-click-test\""
+      }
+    },
+    {
+      "run_id": 31,
+      "code": "CTRL-031",
+      "name": "Tier 0 Direct Selector Execution",
+      "category": "SELF_HEALING",
+      "pass": true,
+      "latency_ms": 651.79,
+      "tier": "TIER_0_DIRECT"
+    },
+    {
+      "run_id": 32,
+      "code": "CTRL-032",
+      "name": "Tier 1 Cache Population",
+      "category": "SELF_HEALING",
+      "pass": true,
+      "latency_ms": 0.12,
+      "tier": "CACHE_INIT"
+    },
+    {
+      "run_id": 33,
+      "code": "CTRL-033",
+      "name": "Tier 1 Instant Cache Hit (~0ms)",
+      "category": "SELF_HEALING",
+      "pass": true,
+      "latency_ms": 35090.7,
+      "tier": "TIER_1_CACHE"
+    },
+    {
+      "run_id": 34,
+      "code": "CTRL-034",
+      "name": "Tier 2 Semantic Text Matching",
+      "category": "SELF_HEALING",
+      "pass": true,
+      "latency_ms": 35104.71,
+      "tier": "TIER_2_SEMANTIC"
+    },
+    {
+      "run_id": 35,
+      "code": "CTRL-035",
+      "name": "Tier 2 Placeholder Attribute Match",
+      "category": "SELF_HEALING",
+      "pass": true,
+      "latency_ms": 35511.48,
+      "tier": "TIER_2_SEMANTIC"
+    },
+    {
+      "run_id": 36,
+      "code": "CTRL-036",
+      "name": "Tier 2 -> Tier 1 Cache Auto-Promotion",
+      "category": "SELF_HEALING",
+      "pass": true,
+      "latency_ms": 0.0,
+      "tier": "PROMOTION"
+    },
+    {
+      "run_id": 37,
+      "code": "CTRL-037",
+      "name": "Re-execution via Newly Promoted Cache",
+      "category": "SELF_HEALING",
+      "pass": true,
+      "latency_ms": 35079.61,
+      "tier": "TIER_1_CACHE"
+    },
+    {
+      "run_id": 38,
+      "code": "CTRL-038",
+      "name": "Stale Cache Purging on Target Failure",
+      "category": "SELF_HEALING",
+      "pass": true,
+      "latency_ms": 68854.62,
+      "tier": "EVICTION"
+    },
+    {
+      "run_id": 39,
+      "code": "CTRL-039",
+      "name": "Expired Ref Graceful Rejection",
+      "category": "SELF_HEALING",
+      "pass": true,
+      "latency_ms": 0.06,
+      "tier": "SAFE_REJECT"
+    },
+    {
+      "run_id": 40,
+      "code": "CTRL-040",
+      "name": "Controlled Zero-Crash Failure Reporting",
+      "category": "SELF_HEALING",
+      "pass": true,
+      "latency_ms": 34435.57,
+      "tier": "FAILED_HANDLED"
+    },
+    {
+      "run_id": 41,
+      "code": "CTRL-041",
+      "name": "Risk Classifier: Read-Only Auto-Allow",
+      "category": "GOVERNANCE",
+      "pass": true,
+      "latency_ms": 0.01,
+      "risk": "READ_ONLY"
+    },
+    {
+      "run_id": 42,
+      "code": "CTRL-042",
+      "name": "Risk Classifier: Navigation Medium Risk",
+      "category": "GOVERNANCE",
+      "pass": true,
+      "latency_ms": 0.01,
+      "risk": "MEDIUM"
+    },
+    {
+      "run_id": 43,
+      "code": "CTRL-043",
+      "name": "Risk Classifier: High Mutation Intercept",
+      "category": "GOVERNANCE",
+      "pass": true,
+      "latency_ms": 0.01,
+      "risk": "HIGH"
+    },
+    {
+      "run_id": 44,
+      "code": "CTRL-044",
+      "name": "Action Confirmation Card Generation",
+      "category": "GOVERNANCE",
+      "pass": true,
+      "latency_ms": 0.09,
+      "token": "b2459725ead27f04"
+    },
+    {
+      "run_id": 45,
+      "code": "CTRL-045",
+      "name": "HMAC Token Verification Pass",
+      "category": "GOVERNANCE",
+      "pass": true,
+      "latency_ms": 0.03,
+      "msg": "APPROVAL_VERIFIED"
+    },
+    {
+      "run_id": 46,
+      "code": "CTRL-046",
+      "name": "TOCTOU State Drift Protection",
+      "category": "GOVERNANCE",
+      "pass": true,
+      "latency_ms": 0.02,
+      "msg": "TOCTOU_STATE_DRIFT(expected=state_hash_1, current=state_DRIFTE)"
+    },
+    {
+      "run_id": 47,
+      "code": "CTRL-047",
+      "name": "Live Web Navigation & Ingress",
+      "category": "LIVE_WEB",
+      "pass": true,
+      "latency_ms": 1075.07,
+      "elements": 60
+    },
+    {
+      "run_id": 48,
+      "code": "CTRL-048",
+      "name": "Live Web Multi-Step Nav 1 ('new')",
+      "category": "LIVE_WEB",
+      "pass": true,
+      "latency_ms": 1147.46,
+      "url": "https://news.ycombinator.com/news"
+    },
+    {
+      "run_id": 49,
+      "code": "CTRL-049",
+      "name": "Live Web Multi-Step Nav 2 ('past')",
+      "category": "LIVE_WEB",
+      "pass": true,
+      "latency_ms": 992.96,
+      "url": "https://news.ycombinator.com/front"
+    },
+    {
+      "run_id": 50,
+      "code": "CTRL-050",
+      "name": "Clean Session Termination & Port Teardown",
+      "category": "GOVERNANCE",
+      "pass": true,
+      "latency_ms": 200.82,
+      "tier": "CLEANUP"
+    }
+  ]
+}

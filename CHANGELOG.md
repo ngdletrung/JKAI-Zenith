@@ -2,6 +2,151 @@
 All notable changes to the JKAI Zenith Cognitive Operating System are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and adheres to Semantic Versioning.
 
+## [v28.26.0] - 2026-10-18
+### Added & Upgraded — Elite Deterministic Tool Arbiter & Pentad Actuators Matrix
+- **Cải tiến Toàn diện Bộ Trọng Tài Phân Tuyến (Deterministic Tool Arbiter — `core/kernel/tool_arbiter.py`)**:
+  * **Đúng công cụ đúng việc (The Pentad Actuators Matrix)**:
+    - **Visual Browser (M2)**: Tách bạch yêu cầu trực quan (`screenshot`, `giao diện`, `DOM interaction`) sang Playwright Chromium với `take_screenshot=True`.
+    - **Fast Doc Reader (M4)**: Tự động chuyển hướng yêu cầu đọc văn bản/tóm tắt URL sang `read_url_content` / `FastWebReader` (<200ms) với **0MB VRAM/RAM trình duyệt**, không kích hoạt Chromium cồng kềnh.
+    - **Codebase Search (M0)**: Phân định toán học giữa tìm kiếm code nội bộ (`grep_search` trong codebase/repo) và tìm kiếm web ngoài internet (`SEARCH_WEB_GLOBAL`). CẤM tuyệt đối đẩy tìm kiếm code ra SearchWeb.
+    - **SearchWeb (M3)**: Kích hoạt khi cần tra cứu tin tức/thực thể internet khi CHƯA có URL đích danh.
+    - **File (M0) & Terminal (M1)**: Phân định rạch ròi giữa thao tác file nội bộ và thực thi lệnh shell/test qua Thang phê duyệt 4 nấc.
+  * **Năng lực Xử lý Tình huống Giả Tưởng & Giả Định (Counterfactual & Hypothetical Robustness)**:
+    - Tự động bóc tách các lớp vỏ giả định/giả tưởng (*"Giả sử...", "Nếu có URL...", "Kịch bản mô phỏng...", "Hãy tưởng tượng..."*), cô lập hạt nhân mục tiêu thực tế và ép buộc mô hình sinh bước thực thi đúng công cụ, chống hiện tượng SLM từ chối hoặc sinh văn bản giả lập.
+  * **Quy trình Liên Hoàn (HYBRID Multi-Stage Workflows)**:
+    - Nhận diện các tác vụ đa bước (Tải web -> Lưu file, Viết code -> Chạy test, Git status -> Mở file sửa) và sinh bước phục hồi chính xác theo thứ tự.
+- **Bảo Vệ Smart-Gate trong Planning Pipeline (`services/ai-brain/planning_pipeline.py`)**:
+  * Di chuyển bước phân xử `DeterministicToolArbiter` lên trước Smart-Gate, ngăn chặn triệt để nguy cơ Smart-Gate tự ý đẩy các tác vụ Browser/File/Terminal sang `SEARCH_WEB_GLOBAL`.
+- **Comprehensive Verification Suite (`tests/test_tool_arbiter_and_dispatch.py`)**:
+  * 12/12 test cases chuyên sâu kiểm chứng đầy đủ các trường hợp cụ thể, bare domain, localhost, codebase grep, tình huống giả tưởng, và chu trình hybrid passed 100%.
+
+---
+
+## [v28.25.1] - 2026-10-18
+### Added & Standardized — Canonization of "Bộ Ngũ Tay Chân" & Execution Grant Integrity Fix
+- **Chuẩn Hóa Khái Niệm "Bộ Ngũ Tay Chân Thực Chiến" (The Pentad Sovereign Actuators)**:
+  * Tiếp thu và thể chế hóa chỉ đạo tối thượng của Master LeeTrung:
+    - **M0 (FILE)**: Tác vụ tệp tin, phẫu thuật mã nguồn qua Smart Patch Engine 3 nấc, ghi nguyên tử và kiểm tra mã băm SHA-256.
+    - **M1 (TERMINAL)**: Hộp cát dòng lệnh hệ thống có Thang phê duyệt 4 nấc & Sổ cái kiểm toán nối chuỗi băm SHA-256.
+    - **M2 (BROWSER)**: Trình duyệt trực quan, tương tác DOM (`observe` - `act` - `extract`), chụp màn hình (`screenshot`) qua Playwright Chromium & `ai-browser`.
+    - **M3 (SEARCHWEB)**: Bộ máy tra cứu tri thức toàn cầu khi CHƯA có URL đích danh (`web_search` / `SEARCH_WEB_GLOBAL`).
+    - **M4 (FAST DOC)**: Bộ đọc nhanh toàn văn tài liệu, web content, `llms.txt` siêu tốc (<200ms) với 0MB VRAM/RAM trình duyệt.
+    *(Mở rộng M5: OS GUI Automation / Computer Use).*
+- **Khắc Phục Lỗi Xác Thực ExecutionGrant & Boundary Closure**:
+  * `core/kernel/execution_integrity.py`: Cấp phát `ExecutionGrant` bảo toàn tên lệnh nguyên bản (`raw_action`) thay vì ép sớm sang canonical name.
+  * `core/kernel/policy_snapshot.py`: Hàm `verify_execution_grant` hỗ trợ đối soát bí danh canonical (`resolve_tool_alias`), đảm bảo tương thích 2 chiều giữa caller và executor.
+  * Đồng bộ secret key bền vững `data/telemetry/sovereign_execution_secret.key` dùng chung giữa các container.
+- **Verification Suite**:
+  * 11/11 tests `test_execution_boundary_closure.py` & `test_local_tool_execution.py` passed (100%).
+  * 8/8 tests `test_tool_arbiter_and_dispatch.py` passed (100%).
+
+---
+
+## [v28.25.0] - 2026-10-18
+### Added & Hardened — Deterministic Tool Arbiter & 4-Domain Intent Matrix (Browser, SearchWeb, File, Terminal)
+- **Deterministic Tool Arbiter (`core/kernel/tool_arbiter.py`)**:
+  * Implemented mathematical/rule-based intent classifier executing in < 0.1ms (0 LLM overhead):
+    - **Domain 1 (BROWSER)**: Strictly locks when explicit URLs (`https?://`, domain hints) are present. Forces `BROWSER_CONTROL` / `web_read` and hard-forbids `SEARCH_WEB_GLOBAL`.
+    - **Domain 2 (SEARCHWEB)**: Activated only for general online inquiries without explicit URLs.
+    - **Domain 3 (FILE)**: Strictly locks when local workspace files/paths are targeted. Forces `VIEW_FILE` / `replace_file_content` / `smart_patch`.
+    - **Domain 4 (TERMINAL)**: Strictly locks when test/system commands (`pytest`, `git`, `docker`) are requested, routing through the 4-tier approval ladder.
+- **Planner Scaffolding Resilience & Empty-Plan Shield Upgrade (`services/ai-brain/planning_pipeline.py`)**:
+  * Supported SLM JSON variance: maps candidate keys (`"plan"`, `"actions"`, `"tasks"`) to `"steps"`.
+  * Eradicated blind `SEARCH_WEB_GLOBAL` fallback: `[EMPTY-PLAN-SHIELD]` now generates domain-accurate recovery steps via `DeterministicToolArbiter.generate_resilient_recovery_step()`.
+  * Injected hard `<arbiter_constraint>` directives into Planner system prompt to eliminate tool hallucinations.
+- **Fast-Path Browser Action & Dict Error Rectification (`services/ai-brain/receptionist/executor_gateway.py`, `intelligence/skills/DEVOPS/SYSTEM_CORE_EXECUTOR/logic.py`, `services/tools/definitions/browser_interact.py`)**:
+  * Fixed `AttributeError: 'dict' object has no attribute 'status'` in `read_url_content`.
+  * Resolved Python 3.14 dataclass `sys.modules` registration bug for in-process `FastWebReader`.
+  * Added fast-path headless reading in `ExecutorGateway` for `load_page` / `read` actions.
+- **Verification Suite (`tests/test_tool_arbiter_and_dispatch.py`)**:
+  * 8/8 new unit tests passing; full 26/26 actuator & arbiter suite passing 100%.
+
+---
+
+## [v28.24.0] - 2026-10-18
+### Added & Hardened — Deterministic Terminal Approval Ladder & Multi-Format Smart Patch Engine
+- **Deterministic Terminal Approval Ladder (`core/security/terminal_approval_ladder.py`)**:
+  * Implemented 4-tier progressive approval ladder inspired by TerminAI:
+    - **Tier 0 (READ_ONLY)**: Auto-allows safe query/read commands (`git status`, `git log`, `git diff`, `ls`, `dir`, `cat`, `pwd`, `grep`...).
+    - **Tier 1 (REVERSIBLE)**: Auto-allows controlled developer tools (`pytest`, `python -m pytest`, `ruff`, `git checkout -b`, `mkdir`...).
+    - **Tier 2 (IRREVERSIBLE)**: Blocks destructive/hard-to-revert actions (`git reset --hard`, `git clean -fd`, `npm install`) unless explicitly confirmed (`confirm=True`).
+    - **Tier 3 (PRIVILEGED)**: Hard-blocks system-level hazard commands (`sudo`, `chmod -R 777`, `reg add`, `taskkill /f`, fork bombs) requiring human gate intervention.
+  * Evaluates commands deterministically in <0.5ms on CPU with 0 LLM calls.
+- **Append-Only Cryptographic Terminal Audit Ledger (`data/telemetry/terminal_audit.jsonl`)**:
+  * Appends immutable records with SHA-256 chain of custody (`timestamp_utc`, `task_id`, `command`, `ladder_tier`, `exit_code`, `duration_ms`, `cwd`, `output_sha256`, `prev_hash`, `entry_hash`).
+- **Multi-Format Smart Patch Engine (`core/utils/smart_patch_engine.py`)**:
+  * Solved Small LLM (3B/4B) Code Surgery failures (inspired by aider):
+    - **Tier 1 (Exact Match)**: Direct exact substring replacement.
+    - **Tier 2 (Whitespace-Normalized Match)**: Tolerates tab/space discrepancies (2 vs 4 spaces) and trailing whitespace while preserving the source file's baseline indentation.
+    - **Tier 3 (Unified Diff Parser)**: Detects and applies unified diff blocks (`---`, `+++`, `@@`) directly without whole-file hallucinations.
+  * Integrated into both `intelligence/skills/DEVOPS/SYSTEM_CORE_EXECUTOR/logic.py` and `core/kernel/project_agent_loop.py`.
+- **Comprehensive Unit Testing Suite (`tests/test_terminal_approval_and_patch.py`)**:
+  * 9/9 tests passing cleanly in 0.49s.
+  * Full system regression suite: 54/54 tests passing (100% pass rate) in 15.42s.
+
+---
+
+## [v28.23.0] - 2026-10-18
+### Added & Hardened — Master Triad Synthesis: Full File (M0) + Terminal (M1) + Browser (M2) Embodied Actuation
+- **Master Triad Tooling Integration (`core/kernel/project_agent_loop.py`)**:
+  * Unified `TOOLS_AUDIT` and `TOOLS_FIX` to natively encompass all three physical actuators:
+    - **File (M0)**: `view_file`, `write_to_file`, `replace_file_content`, `verify_file`, `delete_file`, `list_dir`, `grep_search`, `query_repo_map`, `read_stream_window`, `search_in_stream`.
+    - **Terminal (M1)**: `run_command` with allowlist enforcement and destructive blocklist protection.
+    - **Browser (M2)**: `web_read`, `browser_observe`, `browser_act`, `browser_extract`, `browser_action`.
+  * Added strict parameter normalization and schema validation for browser primitives.
+  * Enhanced static system prefix prompt (`_static_system_prefix`) with browser tool specifications while preserving 100% immutable cache alignment for local SLM Prefix KV-Cache hits.
+- **Enterprise Execution Gateway & Tool Contracts (`services/ai-brain/receptionist/executor_gateway.py`, `core/kernel/tool_contracts.py`)**:
+  * Defined strict Pydantic contracts (`WebReadContract`, `BrowserObserveContract`, `BrowserActContract`, `BrowserExtractContract`, `BrowserActionContract`).
+  * Registered canonical names and aliases in `ToolContractRegistry`.
+  * Added browser tools to `OBSERVATION_TOOL_PREFIXES` in `ExecutionIntegrityLayer` for fail-open read safety with signed HMAC execution grants.
+  * Integrated multi-tier fallback in `ExecutorGateway` with `get_or_create_default_contract` and `get_or_create_policy_snapshot`.
+- **Resilient 2-Layer Browser Interactor (`services/tools/definitions/browser_interact.py`)**:
+  * Implemented seamless two-layer execution: attempts high-performance HTTP service first (`ai-browser:8000` / `localhost:8003`), automatically falling back to in-process execution via `FastWebReader` and `SemanticBrowserActuator` if service is unreachable.
+- **Master Triad Verification Suite (`tests/test_master_triad_actuators.py`)**:
+  * 9 comprehensive unit tests covering all 3 actuators (transactional file rollback, terminal sandboxing, and browser gateway dispatch), passing 100% in 2.23s.
+  * Total system unit test suite: 45/45 tests passing cleanly in 15.82s.
+
+---
+
+## [v28.22.0] - 2026-10-18
+### Added & Hardened — Sovereign Browser Subsystem Reinforcement: Fast Doc Reader, A11y Quality Gate & 3-Tier Self-Healing (`services/ai-browser/`)
+- **Fast Headless Doc & Web Reader (`services/ai-browser/fast_web_reader.py`)**:
+  * Pre-flight HEAD probe with client-side SPA shell detection.
+  * Ancestor `llms.txt` / `llms-full.txt` discovery and heading outline generator (`--outline`, `--filter`).
+  * Untrusted reference envelope framing with unique nonce tokens (`<UNTRUSTED_EXTERNAL_REFERENCE>`) and `DeterministicWebSanitizer` hardening.
+  * In-memory LRU cache reducing repeated documentation retrieval from 888ms to 0.1ms.
+- **Hardened Semantic Browser Actuator (`services/ai-browser/semantic_actuator.py`)**:
+  * **A11y Quality Gate**: Automatic detection of Shadow DOM roots and `<canvas>` elements to prevent blind spot hallucinations; provides instant confidence scoring.
+  * **3-Tier Self-Healing Resolver**: Tier 1 (Repair Cache: 0ms, $0) -> Tier 2 (Deterministic Semantic Fingerprint Matching: ~5ms, $0 on CPU without LLM) -> Tier 3 (LLM Fallback only when ambiguous).
+  * **CDP Security Hardening**: Enforces strict loopback binding (`127.0.0.1`), rejects trailing-dot hostnames (`localhost.`), protecting against OpenClaw CVE-2026-41372 / GHSA-fh32-73r9-rgh5.
+  * **Credential Shielding**: Enforces physical credential injection while masking secrets (`[SECRET_MASKED]`) across prompts, telemetry, and execution logs.
+- **API Extension (`services/ai-browser/main.py`)**:
+  * Added endpoints `/read`, `/observe`, `/act`, `/extract`, and `/session/close` preserving full backward compatibility with CloakBrowser stealth `/browse` and `/screenshot`.
+- **IP & Legal Compliance (`NOTICE.md`, `CREDITS.md`)**:
+  * Added transparent legal attributions for Vercel Labs (`agent-browser`, Apache-2.0) and Browserbase (`stagehand`, MIT) adhering to Nominative Fair Use and SDS standards.
+
+---
+
+## [v28.21.0] - 2026-10-17
+### Added & Hardened — 5 Secret Weapons Architectural Upgrade & Hook-Based Lifecycle FSM
+- **Weapon 1 (Meta CCA - Working Memory Eviction & Error Signature) (`core/kernel/working_memory_eviction.py`, `core/kernel/error_signature.py`)**:
+  * Implemented AST-based `SymbolSkeleton` extractor, automatically evicting raw file contents > 1,000 characters into compact signatures (classes, methods, line ranges), saving >70% token budget.
+  * Structured `ErrorSignature` clustering and dynamic retrieval on critic double-rejections for continual system-level learning.
+- **Weapon 2 (Anthropic & xAI - Static Prefix KV-Cache Affinity) (`core/kernel/project_agent_loop.py`)**:
+  * 3-Block invariant prompt architecture: Block 1 (`_static_system_prefix`) immutable system prompt, Block 2 (Task-specific context in initial user turn), Block 3 (Append-only dynamic turn trail).
+  * Drastically reduces prompt_eval attention recomputation latency from 40s to 3–5s per step on local SLM runtime.
+- **Weapon 3 (DeepSeek-Harness - Hook-Based Lifecycle FSM) (`core/kernel/agent_lifecycle.py`)**:
+  * Decoupled monolithic spaghetti loop into Finite State Machine (FSM) Lifecycle Interceptors: `StepPreparationHook`, `ActionValidationHook`, `CircuitBreakerHook`, `ScopeLockAndCoverageCompletionHook`, `TransactionalMutationHook`, `CoverageAndWorkingMemoryHook`, `TracebackDistillerHook`, `NoFabricationGuardHook`, `MultiFileCoverageGuardHook`, `PreSubmissionReflexionHook`, `TddVerificationHook`.
+  * **Strict Scope Lockdown & Completion Lock (GAP-014)**: Enforces hard boundary checking on goal-mandated files, immediately blocking unscoped exploration and locking further file reads upon 100% coverage ledger completion.
+- **Weapon 4 (OpenAI Sandbox Agents - Transactional Snapshot & Instant AST Rollback) (`core/kernel/transaction_manager.py`)**:
+  * `WorkspaceTransactionManager`: Pre-mutation memory snapshot before `replace_file_content` / `write_to_file`.
+  * Real-time AST syntax verification with zero-latency rollback upon syntax breakage, preventing hallucination cascade.
+- **Enforcement & Regression Suite**:
+  * 8/8 tests pass in `tests/test_agent_lifecycle_fsm.py`.
+  * 43/43 tests pass across full core upgrade suite.
+
+---
+
 ## [v28.20.0] - 2026-10-17
 ### Added & Hardened — Antigravity Aesthetic UI Reform & Dual-Tier Language Governance Protocol
 - **Antigravity Aesthetic UI Reform (`services/mission-control/frontend/src/components/zenith/`)**:

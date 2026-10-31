@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TaskContract",
+  "type": "object",
+  "required": [
+    "task_id",
+    "protocol_version",
+    "orchestrator_agent_id",
+    "assigned_agent_id",
+    "phase",
+    "owned_paths",
+    "acceptance_criteria"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string"
+    },
+    "protocol_version": {
+      "type": "string"
+    },
+    "orchestrator_agent_id": {
+      "type": "string"
+    },
+    "assigned_agent_id": {
+      "type": "string"
+    },
+    "phase": {
+      "type": "string"
+    },
+    "owned_paths": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "acceptance_criteria": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "baseline_hash": {
+      "type": "string"
+    }
+  }
+}

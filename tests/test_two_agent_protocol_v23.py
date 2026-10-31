@@ -229,11 +229,11 @@ class TestTwoAgentProtocolV23:
         arch = tmp_path / "archive_Phien_23_Test.md"
         man = tmp_path / "archive_manifest.json"
 
-        old_content = "# Full History\n" + "\n".join(f"Line {i}" for i in range(320))
+        old_content = "# Full History\n" + "\n".join(f"Line {i}" for i in range(820))
         disc.write_text(old_content, encoding="utf-8")
 
-        # Violating 300-line limit must raise ValueError and keep original file intact
-        too_long_pruned = "\n".join(f"Pruned {i}" for i in range(305))
+        # Violating 800-line limit must raise ValueError and keep original file intact
+        too_long_pruned = "\n".join(f"Pruned {i}" for i in range(805))
         with pytest.raises(ValueError, match="vi phạm trần"):
             verify_and_archive_discussion(
                 discussion_path=disc,
@@ -242,9 +242,9 @@ class TestTwoAgentProtocolV23:
                 turn_range="241-248",
                 manifest_path=man,
             )
-        assert len(disc.read_text(encoding="utf-8").splitlines()) == 321
+        assert len(disc.read_text(encoding="utf-8").splitlines()) == 821
 
-        # Valid pruned content (<300 lines and <40KB) archives and updates manifest with SHA-256
+        # Valid pruned content (<800 lines and <80KB) archives and updates manifest with SHA-256
         valid_pruned = "# Pruned Header\n\nSummary table\n"
         rec = verify_and_archive_discussion(
             discussion_path=disc,
@@ -281,9 +281,9 @@ class TestTwoAgentProtocolV23:
         assert len(kw1.splitlines()) >= 340
         assert len(kw2.splitlines()) >= 340
 
-        # 5. SOP v2.4 (hoac moi hon) contains mandatory first-contact briefing rule in Section II.1 and XI.1
+        # 5. SOP v3.1 (hoac v3.0/v2.4/v2.3) contains mandatory first-contact briefing rule in Section II
         sop_text = (PROTOCOL_DIR / "Quy trinh & Nguyen tac thao luan AI.md").read_text(encoding="utf-8")
-        assert "PROTOCOL V2.4" in sop_text or "PROTOCOL V2.3" in sop_text
+        assert "PROTOCOL V3.1" in sop_text or "PROTOCOL V3.0" in sop_text or "PROTOCOL V2.4" in sop_text or "PROTOCOL V2.3" in sop_text
         assert "Mandatory First-Contact Protocol Briefing" in sop_text
 
     def test_exit_code_constants_and_state_precedence_contract(self):

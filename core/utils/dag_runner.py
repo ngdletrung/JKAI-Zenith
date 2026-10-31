@@ -31,11 +31,25 @@ def build_dag_waves(steps: List[Dict[str, Any]]) -> List[List[Dict[str, Any]]]:
     if not steps:
         return []
 
-    # Map step_id -> step_dict
+    # Map step_id -> step_dict. Invalid graphs fail closed; never invent execution order.
     step_map = {}
     for s in steps:
-        s_id = s.get("id") or f"step_{len(step_map)+1:02d}"
+        s_id = s.get("id")
+        if not s_id or s_id in step_map:
+            raise ValueError("DAG requires unique non-empty step ids")
+        deps = s.get("depends_on", [])
+        if isinstance(deps, str):
+            deps = [deps]
+            s["depends_on"] = deps
+        if not isinstance(deps, list) or any(dep not in step_map and dep != s_id for dep in deps):
+            # Validate references after map construction below.
+            pass
         step_map[s_id] = s
+
+    for s_id, step in step_map.items():
+        deps = step.get("depends_on") or []
+        if not isinstance(deps, list) or s_id in deps or any(dep not in step_map for dep in deps):
+            raise ValueError(f"DAG step '{s_id}' has invalid dependencies")
 
     completed: Set[str] = set()
     remaining = set(step_map.keys())
@@ -55,11 +69,7 @@ def build_dag_waves(steps: List[Dict[str, Any]]) -> List[List[Dict[str, Any]]]:
                 current_wave.append(step)
 
         if not current_wave:
-            # Cycle detected or unreachable dependency -> fallback: execute remaining steps in current order
-            logger.warning("[DAG-RUNNER] Unresolvable dependency or cycle detected. Falling back to remaining steps sequential wave.")
-            fallback_wave = [step_map[s_id] for s_id in sorted(remaining)]
-            waves.append(fallback_wave)
-            break
+            raise ValueError("DAG contains cycle or unreachable dependency")
 
         waves.append(current_wave)
         for step in current_wave:

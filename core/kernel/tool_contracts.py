@@ -94,6 +94,37 @@ class SearchInStreamContract(BaseModel):
     limit: Optional[int] = Field(default=20, description="Pagination limit")
 
 
+class WebReadContract(BaseModel):
+    url: str = Field(..., description="Target webpage URL to read")
+    filter: Optional[str] = Field(default=None, description="Optional keyword filter")
+    outline: Optional[bool] = Field(default=False, description="Extract outline only")
+    prefer_llms_txt: Optional[bool] = Field(default=True, description="Prefer ancestor llms.txt")
+    use_envelope: Optional[bool] = Field(default=True, description="Enclose in untrusted envelope")
+
+
+class BrowserObserveContract(BaseModel):
+    url: Optional[str] = Field(default=None, description="URL to navigate before observing")
+    goal: Optional[str] = Field(default=None, description="Objective or goal for observation")
+
+
+class BrowserActContract(BaseModel):
+    element_ref: Optional[str] = Field(default=None, description="Element reference (@e1..@eN) or selector")
+    action: Optional[str] = Field(default="click", description="Action type: click, fill, scroll, hover")
+    value: Optional[str] = Field(default=None, description="Value to type or select")
+    confirm: Optional[bool] = Field(default=False, description="Confirm action")
+    force_refresh: Optional[bool] = Field(default=False, description="Force refresh snapshot")
+
+
+class BrowserExtractContract(BaseModel):
+    goal: str = Field(..., description="Extraction goal or objective")
+    schema_definition: Optional[Dict[str, Any]] = Field(default=None, description="Target JSON schema")
+
+
+class BrowserActionContract(BaseModel):
+    url: str = Field(..., description="URL to browse")
+    objective: str = Field(..., description="Objective on the webpage")
+
+
 
 # =========================================================================
 # 2. CONTRACT REGISTRY & FAIL-CLOSED VALIDATOR
@@ -257,6 +288,11 @@ ToolContractRegistry.register("python_execute", PythonExecuteContract, ["py_exec
 ToolContractRegistry.register("query_repo_map", QueryRepoMapContract, ["repo_map", "repomap", "search_symbols", "blast_radius"])
 ToolContractRegistry.register("read_stream_window", ReadStreamWindowContract, ["read_stream", "stream_window"])
 ToolContractRegistry.register("search_in_stream", SearchInStreamContract, ["search_stream", "grep_stream"])
+ToolContractRegistry.register("web_read", WebReadContract, ["fast_read", "read_doc"])
+ToolContractRegistry.register("browser_observe", BrowserObserveContract, ["observe_dom", "observe"])
+ToolContractRegistry.register("browser_act", BrowserActContract, ["act_element", "act"])
+ToolContractRegistry.register("browser_extract", BrowserExtractContract, ["extract_data", "extract"])
+ToolContractRegistry.register("browser_action", BrowserActionContract, ["browse", "web_browse", "crawl", "browser_control", "browser_vision_ops", "auto_browser", "auto_browser_01"])
 
 
 

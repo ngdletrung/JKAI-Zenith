@@ -12,8 +12,8 @@ from pathlib import Path
 LOCK_TIMEOUT = 30.0
 BUSY_MAX_AGE_SECONDS = 30.0
 POLL_INTERVAL = 0.05
-MAX_DISCUSSION_LINES = 300
-MAX_DISCUSSION_BYTES = 40 * 1024  # 40 KB
+MAX_DISCUSSION_LINES = 500
+MAX_DISCUSSION_BYTES = 50 * 1024  # 50 KB (Ngăn chặn tràn context SLM 3B/4B)
 
 _thread_local = threading.local()
 
@@ -204,7 +204,7 @@ def verify_and_archive_discussion(
     P1-8 Safe Archive & Compaction with SHA-256 verification, duplicate guard, and rollback:
     1. Writes archive_content (or full current discussion) to archive_path atomically.
     2. Verifies archive_path exists on disk and SHA-256 matches expected hash.
-    3. Verifies pruned_content obeys BOTH Hard Limits (< 300 lines AND < 40 KB) and has no incomplete blocks.
+    3. Verifies pruned_content obeys BOTH Hard Limits (< 800 lines AND < 80 KB) and has no incomplete blocks.
     4. Creates .bak of discussion_path, atomically writes pruned_content, and updates archive_manifest.json.
     5. Rolls back discussion_path from .bak if any post-write check fails.
     """

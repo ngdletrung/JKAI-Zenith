@@ -128,6 +128,10 @@ async def test_mission_runtime_shadow_recording():
         record = lines[0]
         assert record["schema_version"] == SCHEMA_VERSION
         assert record["reflex_draft"]["node_id"] == "node-1"
-        assert record["execution_receipt"]["status"] == "COMPLETED"
+        receipt = record["execution_receipt"]
+        assert receipt["task_id"] == mission_id
+        assert receipt["action"] == "read_code"
+        assert receipt["hmac_signature"]
+        assert receipt["key_id"]
         assert record["metadata"]["mission_id"] == mission_id
 

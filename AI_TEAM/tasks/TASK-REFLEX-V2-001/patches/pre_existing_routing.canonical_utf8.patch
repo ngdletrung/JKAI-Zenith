@@ -1,0 +1,58 @@
+diff --git a/core/os/routing/intent_router.py b/core/os/routing/intent_router.py
+index f577fd0..3fca7a7 100644
+--- a/core/os/routing/intent_router.py
++++ b/core/os/routing/intent_router.py
+@@ -20,6 +20,7 @@ from typing import Optional, List, Dict, Any, Set, Tuple
+ from core.os.routing.semantic_fallback import semantic_fallback_engine
+ from core.os.routing.compound_parser import compound_intent_parser
+ from core.os.routing.active_learner import active_learning_engine
++from core.kernel.tool_arbiter import tool_arbiter, ToolDomain
+ 
+ logger = logging.getLogger("JKAI.IntentRouter")
+ 
+@@ -317,6 +318,30 @@ class CentralIntentRouter:
+             active_learning_engine.record_query(g_strip, "META_INTROSPECTION", 0.99, ["META"])
+             return decision
+ 
++        # ── PRIORITY 1.8: BROWSER / VISUAL WEB / URL FETCH (DETERMINISTIC ARBITER) ──
++        try:
++            arbiter_v = tool_arbiter.arbitrate(g_strip)
++            if arbiter_v.primary_domain in (ToolDomain.BROWSER, ToolDomain.FAST_DOC):
++                decision = RouteDecision(
++                    mode=IntentMode.REALTIME,
++                    role="RECEPTIONIST",
++                    action_type=ActionType.EXECUTE,
++                    need_kb=False,
++                    need_web=True,
++                    need_tools=True,
++                    force_synthesis=True,
++                    confidence=0.99,
++                    reason=f"Deterministic Arbiter: Browser URL navigation ({arbiter_v.primary_target or 'web'}).",
++                    tags=["BROWSER", "VISUAL"] if arbiter_v.is_visual_required else ["BROWSER", "FAST_DOC"],
++                    max_turns=2,
++                    kb_top_k=0,
++                    is_compound=is_compound
++                )
++                active_learning_engine.record_query(g_strip, "BROWSER", 0.99, ["BROWSER"])
++                return decision
++        except Exception as arb_err:
++            logger.debug("[INTENT-ROUTER] Tool arbiter evaluation skipped: %s", arb_err)
++
+         # ── PRIORITY 2: SOCIAL / GREETING (<50ms) ──
+         if any(p in g_low for p in social_kws):
+             decision = RouteDecision(
+diff --git a/core/os/routing/lexicons/office.yaml b/core/os/routing/lexicons/office.yaml
+index 8199ca3..dc9e7ae 100644
+--- a/core/os/routing/lexicons/office.yaml
++++ b/core/os/routing/lexicons/office.yaml
+@@ -83,3 +83,10 @@ keywords:
+ - văn bản tài chính
+ - hồ sơ doanh nghiệp
+ - tổng kết quý
++- báo
++- cáo
++- tài
++- chính
++- doanh
++- nghiệp
++- quý

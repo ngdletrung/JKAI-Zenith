@@ -1,0 +1,45 @@
+{
+  "version": "1.0",
+  "task_id": "TASK-REFLEX-V2-001",
+  "total_cases": 5,
+  "test_cases": [
+    {
+      "input": "Hãy tính 25 * 4 rồi tìm kiếm thông tin về thủ đô Hà Nội",
+      "expected_modes": [
+        "MATH",
+        "REALTIME"
+      ],
+      "is_compound": true
+    },
+    {
+      "input": "Viết code Python sắp xếp mảng và giải thích thuật toán",
+      "expected_modes": [
+        "CODING",
+        "GENERAL"
+      ],
+      "is_compound": true
+    },
+    {
+      "input": "Xin chào buổi sáng, hôm nay thời tiết thế nào?",
+      "expected_modes": [
+        "SOCIAL",
+        "REALTIME"
+      ],
+      "is_compound": true
+    },
+    {
+      "input": "Tính căn bậc hai của 144",
+      "expected_modes": [
+        "MATH"
+      ],
+      "is_compound": false
+    },
+    {
+      "input": "Soạn thảo văn bản báo cáo tài chính quý 3",
+      "expected_modes": [
+        "OFFICE"
+      ],
+      "is_compound": false
+    }
+  ]
+}

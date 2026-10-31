@@ -1,0 +1,112 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+core/kernel/transaction_manager.py
+🛡️ Workspace Transaction Manager & Instant Rollback Engine (Weapon 4: OpenAI Sandbox Agents).
+Cung cấp cơ chế Snapshot giao dịch cho mọi thao tác ghi/sửa tệp của Agent:
+1. begin_transaction: Chụp snapshot an toàn các tệp dự kiến can thiệp.
+2. verify_transaction: Tự động quét cú pháp AST (py_compile/ast.parse) ngay sau khi ghi.
+3. rollback: Tự động hoàn tác toàn bộ tệp về trạng thái sạch nếu phát hiện gãy cú pháp.
+4. commit: Chốt giao dịch thành công khi toàn bộ kiểm định hợp lệ.
+"""
+
+import os
+import ast
+import shutil
+import logging
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+
+logger = logging.getLogger("TransactionManager")
+
+
+class WorkspaceTransactionManager:
+    """Quản trị giao dịch sửa đổi tệp trên Workspace (Transactional File Mutations)."""
+
+    def __init__(self, shadow_dir: Optional[Path] = None):
+        self.shadow_dir = shadow_dir or Path(".zenith/transactions")
+        self._active_transactions: Dict[str, Dict[str, bytes]] = {}
+
+    def begin_transaction(self, task_id: str, files_to_touch: List[str]) -> bool:
+        """Chụp snapshot nội dung ban đầu của các tệp trước khi can thiệp."""
+        snapshots: Dict[str, bytes] = {}
+        for f_path in files_to_touch:
+            p = Path(f_path)
+            if p.exists() and p.is_file():
+                try:
+                    snapshots[str(p.resolve())] = p.read_bytes()
+                except Exception as e:
+                    logger.warning("Không thể chụp snapshot tệp %s: %s", f_path, e)
+            else:
+                # Tệp chưa tồn tại (tạo mới) -> đánh dấu để rollback bằng cách xóa
+                snapshots[str(p.resolve())] = b"__FILE_DID_NOT_EXIST__"
+
+        self._active_transactions[task_id] = snapshots
+        logger.info("📸 [TX-BEGIN] Đã chụp snapshot %d tệp cho task '%s'", len(snapshots), task_id)
+        return True
+
+    def verify_transaction(self, touched_files: List[str]) -> Tuple[bool, Optional[str]]:
+        """
+        Kiểm tra tính toàn vẹn cú pháp của các tệp sau khi can thiệp.
+        Trả về (True, None) nếu hợp lệ, (False, error_msg) nếu gãy cú pháp.
+        """
+        for f_path in touched_files:
+            p = Path(f_path)
+            if not p.exists() or not p.is_file():
+                continue
+
+            if p.suffix.lower() == ".py":
+                try:
+                    content = p.read_text(encoding="utf-8", errors="replace")
+                    ast.parse(content, filename=str(p))
+                except SyntaxError as syn_err:
+                    err_msg = f"Lỗi cú pháp Python tại {p.name}:{syn_err.lineno}: {syn_err.msg}"
+                    logger.warning("❌ [TX-VERIFY-FAILED] %s", err_msg)
+                    return False, err_msg
+                except Exception as ex:
+                    err_msg = f"Lỗi đọc/phân tích tệp {p.name}: {ex}"
+                    logger.warning("❌ [TX-VERIFY-FAILED] %s", err_msg)
+                    return False, err_msg
+
+        return True, None
+
+    def rollback(self, task_id: str) -> List[str]:
+        """Tự động khôi phục toàn bộ tệp về trạng thái sạch trước giao dịch."""
+        restored_files: List[str] = []
+        snapshots = self._active_transactions.get(task_id, {})
+        if not snapshots:
+            logger.warning("⚠️ Không tìm thấy snapshot cho task '%s' để rollback", task_id)
+            return []
+
+        for f_path, original_bytes in snapshots.items():
+            p = Path(f_path)
+            try:
+                if original_bytes == b"__FILE_DID_NOT_EXIST__":
+                    if p.exists():
+                        p.unlink()
+                        restored_files.append(f"{p.name} (đã xóa tệp mới tạo lỗi)")
+                else:
+                    p.write_bytes(original_bytes)
+                    restored_files.append(f"{p.name} (đã khôi phục trạng thái cũ)")
+            except Exception as e:
+                logger.error("Lỗi khi khôi phục tệp %s: %s", f_path, e)
+
+        logger.info("⏪ [TX-ROLLBACK] Đã hoàn tác giao dịch task '%s' (%d tệp)", task_id, len(restored_files))
+        del self._active_transactions[task_id]
+        return restored_files
+
+    def commit(self, task_id: str) -> None:
+        """Chốt giao dịch thành công, giải phóng snapshot bộ nhớ."""
+        if task_id in self._active_transactions:
+            del self._active_transactions[task_id]
+            logger.info("✅ [TX-COMMIT] Đã chốt giao dịch thành công cho task '%s'", task_id)
+
+
+_global_tx_manager: Optional[WorkspaceTransactionManager] = None
+
+
+def get_transaction_manager() -> WorkspaceTransactionManager:
+    global _global_tx_manager
+    if _global_tx_manager is None:
+        _global_tx_manager = WorkspaceTransactionManager()
+    return _global_tx_manager

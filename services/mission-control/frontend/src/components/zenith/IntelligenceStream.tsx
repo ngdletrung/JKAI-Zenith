@@ -45,6 +45,7 @@ export const IntelligenceStream = memo(() => {
   const [isDragging, setIsDragging] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
   const [localGoal, setLocalGoal] = useState(goal);
+  const [isScrolledUp, setIsScrolledUp] = useState(false);
 
   // 🔄 [GOAL-SYNC]: Đồng bộ Local State với Store
   useEffect(() => {
@@ -106,6 +107,11 @@ export const IntelligenceStream = memo(() => {
              lower.includes('ongoing process involving') ||
              lower.includes('action marked step one') ||
              lower.includes('marked the beginning of an active task') ||
+             lower.includes('local mutation policy') ||
+             lower.includes('auto-code operation') ||
+             lower.includes('confirming stable performance') ||
+             lower.includes('episodic memory') ||
+             lower.includes('memory distiller') ||
              lower.includes('[t6] báo cáo đã soạn thảo hoàn tất') ||
              lower.includes('[t6] ban thư ký đang soạn báo cáo') ||
              lower.includes('báo cáo đã soạn thảo hoàn tất') ||
@@ -116,7 +122,7 @@ export const IntelligenceStream = memo(() => {
       const tag = (l.tag || '').toUpperCase();
       const msg = l.msg || '';
       if (isInternalNoiseText(msg)) return false;
-      return tag.startsWith('MASTER') || tag === 'JKAI' || tag === 'DONE' || tag === 'RESULT' || tag.includes('RECEPTIONIST') || tag === 'SUMMARIZER' || tag === 'MISSION_RESULT' || l.type === 'user';
+      return tag.startsWith('MASTER') || tag === 'JKAI' || tag === 'DONE' || tag === 'RESULT' || tag.includes('RECEPTIONIST') || tag === 'MISSION_RESULT' || l.type === 'user';
     });
 
     const actionsAndThoughts = progressLogs.filter(pl => {
@@ -271,12 +277,28 @@ export const IntelligenceStream = memo(() => {
   const userScrolledRef = useRef(false);
   const resumeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  // 🛡️ [SMOOTH-SCROLL-THROTTLE]: Tránh "giật" UI khi log về quá nhanh
+  // 🚀 [SCROLL-TO-BOTTOM]: Hàm cuộn xuống đáy mượt mà và tái kích hoạt khóa cuộn tự động
+  const scrollToBottom = useCallback(() => {
+    userScrolledRef.current = false;
+    wasAtBottom.current = true;
+    setIsScrolledUp(false);
+    if (scrollRef.current) {
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
+    }
+  }, []);
+
+  // 🛡️ [SMOOTH-SCROLL-THROTTLE]: Cuộn tự động mượt mà, không giật màn hình khi log về liên tục
   const lastScrollTime = useRef(0);
   useEffect(() => {
     const now = Date.now();
-    if (!userScrolledRef.current && now - lastScrollTime.current > 100) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    if (!userScrolledRef.current && scrollRef.current && now - lastScrollTime.current > 80) {
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: 'smooth'
+      });
       lastScrollTime.current = now;
     }
   }, [visibleLogs, technicalLogs]);
@@ -290,8 +312,9 @@ export const IntelligenceStream = memo(() => {
     const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
     setScrollProgress((scrollTop / (scrollHeight - clientHeight)) * 100);
 
-    // 🛡️ [MANUAL-SCROLL-PRIORITY]: Nếu khoảng cách tới đáy > 100px, ưu tiên Master xem log
-    const isAtBottom = scrollHeight - (scrollTop + clientHeight) < 100;
+    // 🛡️ [MANUAL-SCROLL-PRIORITY]: Nếu khoảng cách tới đáy > 120px, tôn trọng Master đọc lịch sử
+    const isAtBottom = scrollHeight - (scrollTop + clientHeight) < 120;
+    setIsScrolledUp(!isAtBottom);
     
     if (isAtBottom) {
       userScrolledRef.current = false;
@@ -304,6 +327,7 @@ export const IntelligenceStream = memo(() => {
       resumeTimerRef.current = setTimeout(() => {
         userScrolledRef.current = false;
         wasAtBottom.current = true;
+        setIsScrolledUp(false);
       }, 120_000); // 2 phút
     }
   };
@@ -445,7 +469,7 @@ export const IntelligenceStream = memo(() => {
               <div className="p-6 rounded-full bg-sky-500/20 border border-sky-500/40">
                 <Plus className="w-12 h-12 text-sky-400 animate-bounce" />
               </div>
-              <span className="text-sm font-black text-sky-400 uppercase tracking-[0.3em]">{language === 'vi' ? 'Drop Files to Assimilate' : 'Drop Files Here'}</span>
+              <span className="text-sm font-black text-sky-400 uppercase tracking-[0.3em]">{language === 'vi' ? 'Thả tệp tin vào đây để tiếp nhận' : 'Drop Files Here'}</span>
             </motion.div>
           </div>
         )}
@@ -634,6 +658,23 @@ export const IntelligenceStream = memo(() => {
 
           {/* 🌑 [FADE-OUT]: Hiệu ứng mờ dần ở đáy  */}
           <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-[#07090f] to-transparent pointer-events-none z-10" />
+
+          {/* 🚀 [FLOATING-SCROLL-TO-BOTTOM]: Nút cuộn nhanh mượt mà khi Master đọc lịch sử */}
+          <AnimatePresence>
+            {isScrolledUp && (
+              <motion.button
+                initial={{ opacity: 0, y: 10, scale: 0.9 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                onClick={scrollToBottom}
+                className="absolute bottom-6 right-8 z-30 px-3.5 py-1.5 rounded-full bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-400/40 text-cyan-300 backdrop-blur-md shadow-[0_4px_20px_rgba(6,182,212,0.25)] flex items-center gap-1.5 text-xs font-bold transition-all group"
+                title={language === 'vi' ? 'Nhấp để cuộn xuống phản hồi mới nhất' : 'Click to jump to latest response'}
+              >
+                <ChevronDown className="w-4 h-4 text-cyan-400 group-hover:translate-y-0.5 transition-transform" />
+                <span>{language === 'vi' ? 'Cuộn xuống mới nhất' : 'Jump to latest'}</span>
+              </motion.button>
+            )}
+          </AnimatePresence>
         </div>
 
         {/* Input Area */}

@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import asyncio
 import base64
+import hashlib
 import json
 import logging
 import os
@@ -46,6 +47,33 @@ if _cloak_dir not in sys.path:
 
 from core.utils.engine import engine
 from tools.web_search import validate_egress_url_ssrf_safe
+
+# ── Semantic Actuator & Fast Web Reader Modules ──
+try:
+    from fast_web_reader import FastWebReader, FastReadResult
+    from semantic_actuator import (
+        SemanticBrowserActuator,
+        ActRequest,
+        ActResponse,
+        ObserveResponse,
+        ExtractRequest,
+        ExtractResponse,
+        validate_cdp_loopback_target,
+    )
+except ImportError:
+    from services.ai_browser.fast_web_reader import FastWebReader, FastReadResult
+    from services.ai_browser.semantic_actuator import (
+        SemanticBrowserActuator,
+        ActRequest,
+        ActResponse,
+        ObserveResponse,
+        ExtractRequest,
+        ExtractResponse,
+        validate_cdp_loopback_target,
+    )
+
+fast_reader = FastWebReader()
+semantic_actuator = SemanticBrowserActuator()
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger("ai-browser")
@@ -97,7 +125,7 @@ app = FastAPI(
 
 # ─── Request Models ──────────────────────────────────────────────────
 class BrowseRequest(BaseModel):
-    objective: str
+    objective: Optional[str] = "Quan sát trực quan và chụp màn hình trang web"
     url: str = "https://www.google.com"
     headless: bool = True
     humanize: bool = False  # Reserved: enable Bézier mouse/rhythmic typing in future ver
@@ -207,16 +235,26 @@ async def browse(req: BrowseRequest):
         screenshot_filename = f"browse_{ts}.png"
         screenshot_path = f"{screenshot_dir}/{screenshot_filename}"
         
+        screenshot_sha256 = None
+        dom_path = None
+        dom_sha256 = None
+        captured_at = None
         try:
-            # v0.1.34 may have different ways to access the page, 
-            # usually via browser.get_current_page() if it's still alive
             async with await browser.new_context() as context:
                 page = await context.new_page()
                 await page.goto(req.url)
-                await page.screenshot(path=screenshot_path)
-            logger.info(f"[EYE-SNAP] Screenshot captured: {screenshot_filename}")
+                await page.screenshot(path=screenshot_path, full_page=True)
+                dom = await page.content()
+            dom_filename = f"browse_{ts}.html"
+            dom_path = os.path.join(screenshot_dir, dom_filename)
+            with open(dom_path, "w", encoding="utf-8") as dom_file:
+                dom_file.write(dom)
+            screenshot_sha256 = hashlib.sha256(open(screenshot_path, "rb").read()).hexdigest()
+            dom_sha256 = hashlib.sha256(dom.encode("utf-8")).hexdigest()
+            captured_at = _time.strftime("%Y-%m-%dT%H:%M:%SZ", _time.gmtime())
+            logger.info(f"[EVIDENCE-BUNDLE] screenshot={screenshot_filename} dom={dom_filename}")
         except Exception as snap_err:
-            logger.warning(f"[EYE-SNAP-WARN] Screenshot failed: {snap_err}")
+            logger.warning(f"[EYE-SNAP-WARN] Screenshot/evidence failed: {snap_err}")
 
         # ── 7. Release GPU ────────────────────────────────────────────────
         steward_release_url = os.getenv("STEWARD_RELEASE_URL", "http://ai-control-plane:8000/gpu/release")
@@ -233,6 +271,11 @@ async def browse(req: BrowseRequest):
             "url": req.url,
             "analysis": final_result,
             "screenshot": screenshot_filename,
+            "screenshot_sha256": screenshot_sha256,
+            "dom_path": dom_filename if dom_path else None,
+            "dom_sha256": dom_sha256,
+            "captured_at": captured_at,
+            "evidence_complete": bool(screenshot_sha256 and dom_sha256 and captured_at),
             "multimodal": True
         }
 
@@ -288,15 +331,50 @@ async def take_screenshot(req: BrowseRequest):
             )
             page = await context.new_page()
 
-            await page.goto(req.url, wait_until="networkidle", timeout=30000)
+            try:
+                await page.goto(req.url, wait_until="domcontentloaded", timeout=15000)
+            except Exception as nav_e:
+                logger.warning(f"[EYE-WARN] Navigation timeout: {nav_e}. Proceeding with screenshot...")
             await asyncio.sleep(2)
+
+            # 📜 [PRE-SCROLL-HYDRATION]: Cuộn mồi để kích hoạt toàn bộ ảnh lười (lazy-load)
+            try:
+                await page.evaluate("""async () => {
+                    await new Promise((resolve) => {
+                        let totalHeight = 0;
+                        const distance = 500;
+                        const timer = setInterval(() => {
+                            const scrollHeight = document.body.scrollHeight;
+                            window.scrollBy(0, distance);
+                            totalHeight += distance;
+                            if (totalHeight >= Math.min(scrollHeight, 10000)) {
+                                clearInterval(timer);
+                                window.scrollTo(0, 0);
+                                resolve();
+                            }
+                        }, 40);
+                    });
+                }""")
+                await asyncio.sleep(1)
+            except Exception as scroll_e:
+                logger.debug(f"[SCROLL-HYDRATE-WARN] {scroll_e}")
 
             filename = f"eye_{int(asyncio.get_event_loop().time())}.png"
             output_path = f"/app/screenshots/{filename}"
             os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-            await page.screenshot(path=output_path, full_page=False)
+            # 📸 [FULL-PAGE-CAPTURE]: Chụp trọn vẹn toàn bộ chiều dài trang web
+            await page.screenshot(path=output_path, full_page=True, timeout=20000)
             await browser.close()
+
+            # Copy to workspace and storage for direct Explorer visibility
+            import shutil
+            for shared_dir in ["/workspace", "/storage", "/workspace/outputs"]:
+                try:
+                    if os.path.exists(shared_dir):
+                        shutil.copy2(output_path, os.path.join(shared_dir, filename))
+                except Exception as cp_err:
+                    logger.debug(f"[EYE-COPY-WARN] Could not copy to {shared_dir}: {cp_err}")
 
         logger.info(f"[EYE-SNAP] Captured: {filename}")
         return {
@@ -485,6 +563,116 @@ async def crawl(req: CrawlRequest):
     except Exception as e:
         logger.error(f"[CRAWL-ERR] {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+# ═══════════════════════════════════════════════════════════════════
+# ⚡  /read — FAST HEADLESS DOCUMENT & WEB READER
+# Ultra-fast doc extraction without Chromium (< 100ms, zero GPU/VRAM).
+# ═══════════════════════════════════════════════════════════════════
+class ReadRequest(BaseModel):
+    url: str
+    filter: Optional[str] = None
+    outline: bool = False
+    prefer_llms_txt: bool = True
+    use_envelope: bool = True
+
+
+@app.post("/read")
+async def read_headless_doc(req: ReadRequest):
+    """
+    [FAST-WEB-READER] High-speed headless document reader (< 100ms, zero browser).
+    Pre-flight probes, checks ancestor llms.txt, and frames in untrusted reference envelopes.
+    """
+    res = await fast_reader.read(
+        url=req.url,
+        filter_keyword=req.filter,
+        extract_outline=req.outline,
+        prefer_llms_txt=req.prefer_llms_txt,
+        use_envelope=req.use_envelope,
+    )
+    return res
+
+
+# ═══════════════════════════════════════════════════════════════════
+# 🔍  /observe — SEMANTIC A11Y SNAPSHOT & QUALITY GATE
+# Maps interactive DOM to @e1..@eN references (cuts tokens by 85%).
+# ═══════════════════════════════════════════════════════════════════
+class ObserveReq(BaseModel):
+    url: Optional[str] = None
+    goal: Optional[str] = None
+
+
+@app.post("/observe")
+async def observe_a11y_tree(req: ObserveReq):
+    """
+    [SEMANTIC-OBSERVE] Scans DOM Accessibility Tree into @e1..@eN references.
+    Includes A11y Quality Gate (Shadow DOM & Canvas detection).
+    """
+    if req.url:
+        ssrf = validate_egress_url_ssrf_safe(req.url)
+        if not ssrf.get("allowed"):
+            raise HTTPException(status_code=403, detail=ssrf.get("msg", "SSRF blocked"))
+    try:
+        page = await semantic_actuator.get_or_create_page(req.url)
+        return await semantic_actuator.observe(page, req.goal)
+    except Exception as e:
+        logger.error(f"[OBSERVE-ERR] {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ═══════════════════════════════════════════════════════════════════
+# 🦾  /act — 3-TIER SELF-HEALING ACTION & CREDENTIAL SHIELD
+# Interacts via @eN ref or selector with Cache -> Semantic -> LLM recovery.
+# ═══════════════════════════════════════════════════════════════════
+@app.post("/act")
+async def act_element_semantic(req: ActRequest):
+    """
+    [SEMANTIC-ACT] 3-Tier Self-Healing interaction (Cache -> Semantic -> LLM).
+    Includes credential masking and fresh snapshot invalidation.
+    """
+    try:
+        page = await semantic_actuator.get_or_create_page()
+        return await semantic_actuator.act(page, req)
+    except Exception as e:
+        logger.error(f"[ACT-ERR] {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ═══════════════════════════════════════════════════════════════════
+# 📊  /extract — SCHEMA-VALIDATED STRUCTURED EXTRACTION
+# ═══════════════════════════════════════════════════════════════════
+@app.post("/extract")
+async def extract_structured_data(req: ExtractRequest):
+    """
+    [SEMANTIC-EXTRACT] Schema-validated structured extraction using Pydantic / JSON schema.
+    """
+    try:
+        page = await semantic_actuator.get_or_create_page()
+        return await semantic_actuator.extract(page, req.goal, req.schema_definition)
+    except Exception as e:
+        logger.error(f"[EXTRACT-ERR] {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# ═══════════════════════════════════════════════════════════════════
+# 🛑  /session/close — CLEAN SESSION TERMINATION
+# ═══════════════════════════════════════════════════════════════════
+@app.post("/session/close")
+async def close_browser_session():
+    """Đóng browser session và giải phóng tài nguyên."""
+    await semantic_actuator.close_session()
+    return {"status": "closed", "msg": "Session closed cleanly."}
+
+
+@app.get("/screenshots/{filename}")
+async def serve_screenshot(filename: str):
+    """Phục vụ trực tiếp ảnh chụp màn hình cho Mission Control và Web UI."""
+    from fastapi.responses import FileResponse
+    safe_name = os.path.basename(filename)
+    path = f"/app/screenshots/{safe_name}"
+    if os.path.exists(path):
+        return FileResponse(path, media_type="image/png")
+    raise HTTPException(status_code=404, detail="Screenshot not found")
 
 
 # ═══════════════════════════════════════════════════════════════════

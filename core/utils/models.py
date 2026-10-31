@@ -12,6 +12,7 @@ class ModelOptions(BaseModel):
     repeat_penalty: Optional[float] = None
     top_p: float = 0.9
     top_k: int = 40
+    num_predict: Optional[int] = 4096
 
 
 class NeuralProfile(BaseModel):

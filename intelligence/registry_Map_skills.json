@@ -1,2633 +1,2663 @@
 {
-    "skills": {
-        "SKILL_EXECUTIVE_FORGE": {
-            "aliases_vn": [
-                "skill executive forge"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_EXECUTIVE_FORGE",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_EXECUTIVE_FORGE"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill executive forge",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/BUSINESS/EXECUTIVE_PROPOSAL/SKILL.md",
-            "deck_number": "1023",
-            "command_deck_id": "#1023"
-        },
-        "OFFICE_SUITE_MASTER": {
-            "aliases_vn": [
-                "skill zenith office master",
-                "SKILL_ZENITH_OFFICE_MASTER"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "OFFICE_SUITE_MASTER",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "OFFICE_SUITE_MASTER"
-                ]
-            ],
-            "name_vn": "Kỹ năng Office Suite Master",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/BUSINESS/OFFICE_SUITE_MASTER/SKILL.md"
-        },
-        "SKILL_QUANLYVANPHONG": {
-            "aliases_vn": [
-                "skill quanlyvanphong"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_QUANLYVANPHONG",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_QUANLYVANPHONG"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill quanlyvanphong",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/BUSINESS/skill_quanlyvanphong/SKILL.md",
-            "deck_number": "1046",
-            "command_deck_id": "#1046"
-        },
-        "SKILL_STRATEGIC_WRITER": {
-            "aliases_vn": [
-                "skill strategic writer"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_STRATEGIC_WRITER",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_STRATEGIC_WRITER"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill strategic writer",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/BUSINESS/STRATEGIC_CONTENT_FORGE/SKILL.md",
-            "deck_number": "1053",
-            "command_deck_id": "#1053"
-        },
-        "PREMIUM_UI_ENGINE": {
-            "id": "PREMIUM_UI_ENGINE",
-            "name_vn": "Kiến Trúc Sư Giao Diện Cao Cấp",
-            "version": "1.0.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "CODING",
-            "intent_pairs": [
-                [
-                    "DESIGN",
-                    "UI"
-                ],
-                [
-                    "GENERATE",
-                    "FRONTEND"
-                ]
-            ],
-            "aliases_vn": [
-                "kiến trúc sư giao diện",
-                "ui engine",
-                "thiết kế web",
-                "premium ui",
-                "antigravity design"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "component_request": {
-                            "type": "string",
-                            "description": "Mô tả thành phần giao diện cần kiến tạo."
-                        }
-                    },
-                    "required": [
-                        "component_request"
-                    ]
-                }
+  "skills": {
+    "SKILL_EXECUTIVE_FORGE": {
+      "aliases_vn": [
+        "skill executive forge"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_EXECUTIVE_FORGE",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_EXECUTIVE_FORGE"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill executive forge",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/BUSINESS/EXECUTIVE_PROPOSAL/SKILL.md",
+      "deck_number": "1023",
+      "command_deck_id": "#1023"
+    },
+    "OFFICE_SUITE_MASTER": {
+      "aliases_vn": [
+        "skill zenith office master",
+        "SKILL_ZENITH_OFFICE_MASTER"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "OFFICE_SUITE_MASTER",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "OFFICE_SUITE_MASTER"
+        ]
+      ],
+      "name_vn": "Kỹ năng Office Suite Master",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/BUSINESS/OFFICE_SUITE_MASTER/SKILL.md"
+    },
+    "SKILL_QUANLYVANPHONG": {
+      "aliases_vn": [
+        "skill quanlyvanphong"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_QUANLYVANPHONG",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_QUANLYVANPHONG"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill quanlyvanphong",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/BUSINESS/skill_quanlyvanphong/SKILL.md",
+      "deck_number": "1046",
+      "command_deck_id": "#1046"
+    },
+    "SKILL_STRATEGIC_WRITER": {
+      "aliases_vn": [
+        "skill strategic writer"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_STRATEGIC_WRITER",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_STRATEGIC_WRITER"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill strategic writer",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/BUSINESS/STRATEGIC_CONTENT_FORGE/SKILL.md",
+      "deck_number": "1053",
+      "command_deck_id": "#1053"
+    },
+    "PREMIUM_UI_ENGINE": {
+      "id": "PREMIUM_UI_ENGINE",
+      "name_vn": "Kiến Trúc Sư Giao Diện Cao Cấp",
+      "version": "1.0.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "CODING",
+      "intent_pairs": [
+        [
+          "DESIGN",
+          "UI"
+        ],
+        [
+          "GENERATE",
+          "FRONTEND"
+        ]
+      ],
+      "aliases_vn": [
+        "kiến trúc sư giao diện",
+        "ui engine",
+        "thiết kế web",
+        "premium ui",
+        "antigravity design"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "component_request": {
+              "type": "string",
+              "description": "Mô tả thành phần giao diện cần kiến tạo."
+            }
+          },
+          "required": [
+            "component_request"
+          ]
+        }
+      },
+      "priority": "HIGH",
+      "related_skills": [
+        "NEURAL_VISION_AUDIT",
+        "WEB_LOGIC_FORGE"
+      ],
+      "rel_path": "skills/CODING/PREMIUM_UI_ENGINE/SKILL.md",
+      "deck_number": "3001",
+      "command_deck_id": "#3001"
+    },
+    "skill_tdd_elite": {
+      "id": "skill_tdd_elite",
+      "name_vn": "Kỹ năng TDD Tinh nhuệ",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "CODING",
+      "intent_pairs": [
+        [
+          "tdd",
+          "test driven development",
+          "unit test"
+        ]
+      ],
+      "aliases_vn": [
+        "tdd_elite",
+        "kiem_thu_truoc"
+      ],
+      "schema": {
+        "feature": "string"
+      },
+      "priority": "HIGH",
+      "related_skills": [
+        "skill_agentic_jujutsu"
+      ],
+      "rel_path": "skills/CODING/skill_tdd_elite/SKILL.md"
+    },
+    "SOVEREIGN_PRESENTER": {
+      "id": "SOVEREIGN_PRESENTER",
+      "name_vn": "Chuyên Gia Trình Diễn Chủ Quyền",
+      "version": "1.0.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "CODING",
+      "intent_pairs": [
+        [
+          "CREATE",
+          "PRESENTATION"
+        ],
+        [
+          "GENERATE",
+          "SLIDES"
+        ]
+      ],
+      "aliases_vn": [
+        "tạo slides",
+        "thuyết trình",
+        "powerpoint builder",
+        "creative presenter"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "title": {
+              "type": "string",
+              "description": "Tiêu đề chính của bài thuyết trình."
             },
-            "priority": "HIGH",
-            "related_skills": [
-                "NEURAL_VISION_AUDIT",
-                "WEB_LOGIC_FORGE"
-            ],
-            "rel_path": "skills/CODING/PREMIUM_UI_ENGINE/SKILL.md",
-            "deck_number": "3001",
-            "command_deck_id": "#3001"
-        },
-        "skill_tdd_elite": {
-            "id": "skill_tdd_elite",
-            "name_vn": "Kỹ năng TDD Tinh nhuệ",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "CODING",
-            "intent_pairs": [
-                [
-                    "tdd",
-                    "test driven development",
-                    "unit test"
-                ]
-            ],
-            "aliases_vn": [
-                "tdd_elite",
-                "kiem_thu_truoc"
-            ],
-            "schema": {
-                "feature": "string"
+            "subtitle": {
+              "type": "string",
+              "description": "Tiêu đề phụ."
             },
-            "priority": "HIGH",
-            "related_skills": [
-                "skill_agentic_jujutsu"
-            ],
-            "rel_path": "skills/CODING/skill_tdd_elite/SKILL.md"
-        },
-        "SOVEREIGN_PRESENTER": {
-            "id": "SOVEREIGN_PRESENTER",
-            "name_vn": "Chuyên Gia Trình Diễn Chủ Quyền",
-            "version": "1.0.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "CODING",
-            "intent_pairs": [
-                [
-                    "CREATE",
-                    "PRESENTATION"
-                ],
-                [
-                    "GENERATE",
-                    "SLIDES"
-                ]
-            ],
-            "aliases_vn": [
-                "tạo slides",
-                "thuyết trình",
-                "powerpoint builder",
-                "creative presenter"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "title": {
-                            "type": "string",
-                            "description": "Tiêu đề chính của bài thuyết trình."
-                        },
-                        "subtitle": {
-                            "type": "string",
-                            "description": "Tiêu đề phụ."
-                        },
-                        "slides": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "title": {
-                                        "type": "string",
-                                        "description": "Tiêu đề Slide."
-                                    },
-                                    "content": {
-                                        "type": "string",
-                                        "description": "Nội dung chi tiết Slide."
-                                    }
-                                }
-                            }
-                        },
-                        "filename": {
-                            "type": "string",
-                            "default": "Zenith_Presentation",
-                            "description": "Tên tệp tin đầu ra."
-                        }
-                    },
-                    "required": [
-                        "title",
-                        "slides"
-                    ]
-                }
-            },
-            "priority": "MEDIUM",
-            "related_skills": [
-                "QUANTUM_CODE_AUDIT",
-                "NEURAL_LINK_AGGREGATOR"
-            ],
-            "rel_path": "skills/CODING/SOVEREIGN_PRESENTER/SKILL.md",
-            "deck_number": "3002",
-            "command_deck_id": "#3002"
-        },
-        "SKILL_TOANHOCVATHUAT_TOAN": {
-            "aliases_vn": [
-                "skill toanhocvathuat toan"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_TOANHOCVATHUAT_TOAN",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_TOANHOCVATHUAT_TOAN"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill toanhocvathuat toan",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/ALGORITHMIC_QUANTUM_SOLVER/SKILL.md",
-            "deck_number": "1066",
-            "command_deck_id": "#1066"
-        },
-        "claims": {
-            "id": "claims",
-            "name_vn": "claims",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/claims/SKILL.md"
-        },
-        "CODE_GREP": {
-            "id": "CODE_GREP",
-            "name": "Code Grep",
-            "description": "Search for keywords across the codebase.",
-            "category": "CORE",
-            "domain": "CORE",
-            "rel_path": "skills/CORE/CODE_GREP/SKILL.md"
-        },
-        "COUNCIL_OF_MINDS_DEBATE": {
-            "id": "COUNCIL_OF_MINDS_DEBATE",
-            "name_vn": "Hội Đồng Nơ-ron Zenith",
-            "version": "1.0.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "CORE",
-            "intent_pairs": [
-                [
-                    "DEBATE",
-                    "COUNCIL"
-                ],
-                [
-                    "RESOLVE",
-                    "STRATEGY"
-                ]
-            ],
-            "aliases_vn": [
-                "hội đồng nơ-ron",
-                "council of minds",
-                "tranh biện nơ-ron",
-                "quyết định chiến lược"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "topic": {
-                            "type": "string",
-                            "description": "Chủ đề cần hội đồng tranh biện và đưa ra phán quyết."
-                        }
-                    },
-                    "required": [
-                        "topic"
-                    ]
-                }
-            },
-            "priority": "HIGHEST",
-            "related_skills": [
-                "OMNI_EVOLUTION_FORGE",
-                "NEURAL_LINK_AGGREGATOR"
-            ],
-            "rel_path": "skills/CORE/COUNCIL_OF_MINDS_DEBATE/SKILL.md"
-        },
-        "SKILL_DEEP_CONTEXT": {
-            "aliases_vn": [
-                "skill deep context"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_DEEP_CONTEXT",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_DEEP_CONTEXT"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill deep context",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/DEEP_CONTEXT_SCANNER/SKILL.md",
-            "deck_number": "1020",
-            "command_deck_id": "#1020"
-        },
-        "SKILL_DOSSIER_INVESTIGATOR": {
-            "aliases_vn": [
-                "skill dossier investigator"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_DOSSIER_INVESTIGATOR",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_DOSSIER_INVESTIGATOR"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill dossier investigator",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/DOSSIER_INVESTIGATOR/SKILL.md",
-            "deck_number": "1022",
-            "command_deck_id": "#1022"
-        },
-        "BROWSER_VISION_OPS": {
-            "aliases_vn": [
-                "thiên nhãn",
-                "browser vision",
-                "quan sát trình duyệt",
-                "chụp màn hình web",
-                "tương tác giao diện"
-            ],
-            "author": "Antigravity Architect",
-            "domain": "CORE",
-            "id": "BROWSER_VISION_OPS",
-            "intent_pairs": [
-                [
-                    "OBSERVE",
-                    "WEB_PAGE"
-                ],
-                [
-                    "INTERACT",
-                    "BROWSER"
-                ],
-                [
-                    "SCREENSHOT",
-                    "WEB"
-                ],
-                [
-                    "NAVIGATE",
-                    "BROWSER"
-                ]
-            ],
-            "name_vn": "Browser Vision Ops (Thiên Nhãn)",
-            "priority": "HIGH",
-            "related_skills": [
-                "SEARCH_WEB_GLOBAL",
-                "SKILL_STRATEGIC_RECON"
-            ],
-            "version": "2.1.0",
-            "rel_path": "skills/CORE/duyet_browse_zenith/SKILL.md",
-            "deck_number": "1001",
-            "command_deck_id": "#1001"
-        },
-        "FILE_VIEWER": {
-            "id": "FILE_VIEWER",
-            "name": "File Viewer",
-            "description": "Read a file directly with line numbers.",
-            "category": "CORE",
-            "domain": "CORE",
-            "rel_path": "skills/CORE/FILE_VIEWER/SKILL.md"
-        },
-        "FILE_WRITER": {
-            "id": "FILE_WRITER",
-            "name": "File Writer",
-            "description": "Create or overwrite a file.",
-            "category": "CORE",
-            "domain": "CORE",
-            "rel_path": "skills/CORE/FILE_WRITER/SKILL.md"
-        },
-        "flow-nexus-neural": {
-            "id": "flow-nexus-neural",
-            "name_vn": "flow-nexus-neural",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/flow-nexus-neural/SKILL.md"
-        },
-        "flow-nexus-platform": {
-            "id": "flow-nexus-platform",
-            "name_vn": "flow-nexus-platform",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/flow-nexus-platform/SKILL.md"
-        },
-        "flow-nexus-swarm": {
-            "id": "flow-nexus-swarm",
-            "name_vn": "flow-nexus-swarm",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/flow-nexus-swarm/SKILL.md"
-        },
-        "github-automation": {
-            "id": "github-automation",
-            "name_vn": "github-automation",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/github-automation/SKILL.md"
-        },
-        "github-code-review": {
-            "id": "github-code-review",
-            "name_vn": "github-code-review",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/github-code-review/SKILL.md"
-        },
-        "github-multi-repo": {
-            "id": "github-multi-repo",
-            "name_vn": "github-multi-repo",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/github-multi-repo/SKILL.md"
-        },
-        "github-project-management": {
-            "id": "github-project-management",
-            "name_vn": "github-project-management",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/github-project-management/SKILL.md"
-        },
-        "github-release-management": {
-            "id": "github-release-management",
-            "name_vn": "github-release-management",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/github-release-management/SKILL.md"
-        },
-        "github-workflow-automation": {
-            "id": "github-workflow-automation",
-            "name_vn": "github-workflow-automation",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/github-workflow-automation/SKILL.md"
-        },
-        "hive-mind": {
-            "id": "hive-mind",
-            "name_vn": "hive-mind",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/hive-mind/SKILL.md"
-        },
-        "hive-mind-advanced": {
-            "id": "hive-mind-advanced",
-            "name_vn": "hive-mind-advanced",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/hive-mind-advanced/SKILL.md"
-        },
-        "hooks-automation": {
-            "id": "hooks-automation",
-            "name_vn": "Hooks Automation",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/hooks-automation/SKILL.md"
-        },
-        "SKILL_HOST_CONTROL": {
-            "aliases_vn": [
-                "skill host control"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_HOST_CONTROL",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_HOST_CONTROL"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill host control",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/HOST_SATELLITE_CONTROL/SKILL.md",
-            "deck_number": "1027",
-            "command_deck_id": "#1027"
-        },
-        "SKILL_GENERATE_IMAGE": {
-            "aliases_vn": [
-                "skill generate image"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_GENERATE_IMAGE",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_GENERATE_IMAGE"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill generate image",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/IMAGE_GEN_FORGE/SKILL.md",
-            "deck_number": "1025",
-            "command_deck_id": "#1025"
-        },
-        "IMPORT_SKILL": {
-            "id": "IMPORT_SKILL",
-            "name_vn": "Nhập Khẩu Kỹ Năng Mới (Import Skill)",
-            "version": "2.1.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "CORE",
-            "intent_pairs": [
-                [
-                    "SYNC",
-                    "KNOWLEDGE"
-                ],
-                [
-                    "ASSIMILATE",
-                    "SKILLS"
-                ]
-            ],
-            "aliases_vn": [
-                "đồng bộ tri thức",
-                "knowledge sync",
-                "đồng hóa kỹ năng",
-                "import skills"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "mode": {
-                            "type": "string",
-                            "enum": [
-                                "full",
-                                "incremental"
-                            ],
-                            "description": "Chế độ đồng bộ."
-                        }
-                    },
-                    "required": []
-                }
-            },
-            "priority": "HIGH",
-            "related_skills": [
-                "SKILL_FORGE",
-                "GLOBAL_SYSTEM_CONTEXT"
-            ],
-            "rel_path": "skills/CORE/IMPORT_SKILL/SKILL.md",
-            "deck_number": "1003",
-            "command_deck_id": "#1003"
-        },
-        "memory-management": {
-            "id": "memory-management",
-            "name_vn": "memory-management",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/memory-management/SKILL.md"
-        },
-        "neural-training": {
-            "id": "neural-training",
-            "name_vn": "neural-training",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/neural-training/SKILL.md"
-        },
-        "SKILL_WARMUP": {
-            "aliases_vn": [
-                "skill warmup"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_WARMUP",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_WARMUP"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill warmup",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/NEURAL_SYSTEM_WARMUP/SKILL.md"
-        },
-        "OFFICE_AUTOMATOR": {
-            "id": "OFFICE_AUTOMATOR",
-            "name": "Office Automator",
-            "description": "Automate Office documents (Word, Excel, PowerPoint) using OfficeCLI.",
-            "category": "CORE",
-            "domain": "CORE",
-            "rel_path": "skills/CORE/OFFICE_AUTOMATOR/SKILL.md"
-        },
-        "OMNI_EVOLUTION_FORGE": {
-            "id": "OMNI_EVOLUTION_FORGE",
-            "name_vn": "Lò Đúc Tiến Hóa Vạn Vật",
-            "version": "2.0.0 (Z-SOS Integrated)",
-            "author": "JKAI ZENITH Forge",
-            "domain": "CORE",
-            "intent_pairs": [
-                [
-                    "SCAN",
-                    "EVOLUTION"
-                ],
-                [
-                    "PROPOSE",
-                    "UPGRADE"
-                ]
-            ],
-            "aliases_vn": [
-                "tự tiến hóa",
-                "omni evolution",
-                "nâng cấp hệ thống",
-                "quét công nghệ"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "focus_area": {
-                            "type": "string",
-                            "description": "Lĩnh vực công nghệ cần quét và đề xuất tiến hóa."
-                        }
-                    },
-                    "required": [
-                        "focus_area"
-                    ]
-                }
-            },
-            "priority": "HIGH",
-            "related_skills": [
-                "COUNCIL_OF_MINDS_DEBATE",
-                "SKILL_FORGE"
-            ],
-            "rel_path": "skills/CORE/OMNI_EVOLUTION_FORGE/SKILL.md",
-            "deck_number": "1005",
-            "command_deck_id": "#1005"
-        },
-        "pair-programming": {
-            "id": "pair-programming",
-            "name_vn": "Pair Programming",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/pair-programming/SKILL.md"
-        },
-        "performance-analysis": {
-            "id": "performance-analysis",
-            "name_vn": "performance-analysis",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/performance-analysis/SKILL.md"
-        },
-        "SKILL_POLYGLOT_MASTERY": {
-            "aliases_vn": [
-                "skill polyglot mastery"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_POLYGLOT_MASTERY",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_POLYGLOT_MASTERY"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill polyglot mastery",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/POLYGLOT_NEURAL_LINK/SKILL.md",
-            "deck_number": "1044",
-            "command_deck_id": "#1044"
-        },
-        "SKILL_QDRANT_QUEEN": {
-            "aliases_vn": [
-                "skill qdrant queen"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_QDRANT_QUEEN",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_QDRANT_QUEEN"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill qdrant queen",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/QDRANT_QUEEN_ORCHESTRATOR/SKILL.md",
-            "deck_number": "1045",
-            "command_deck_id": "#1045"
-        },
-        "reasoningbank-intelligence": {
-            "id": "reasoningbank-intelligence",
-            "name_vn": "\"ReasoningBank Intelligence\"",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/reasoningbank-intelligence/SKILL.md"
-        },
-        "REPO_SURGEON": {
-            "id": "REPO_SURGEON",
-            "name": "Repo Surgeon",
-            "description": "Safely apply AST-validated and test-verified code edits to files.",
-            "category": "CORE",
-            "domain": "CORE",
-            "rel_path": "skills/CORE/REPO_SURGEON/SKILL.md"
-        },
-        "SELF_HEALING_SENTINEL": {
-            "id": "SELF_HEALING_SENTINEL",
-            "name_vn": "Vệ Binh Tự Phục Hồi",
-            "version": "1.0.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "CORE",
-            "intent_pairs": [
-                [
-                    "HEAL",
-                    "SYSTEM"
-                ],
-                [
-                    "REPAIR",
-                    "ERROR"
-                ]
-            ],
-            "aliases_vn": [
-                "tự phục hồi",
-                "self healing",
-                "vá lỗi tự động",
-                "sentinel"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "error_context": {
-                            "type": "string",
-                            "description": "Bối cảnh lỗi hoặc log hệ thống cần xử lý."
-                        }
-                    },
-                    "required": [
-                        "error_context"
-                    ]
-                }
-            },
-            "priority": "HIGHEST",
-            "related_skills": [
-                "SYSTEM_XRAY_MONITOR",
-                "MULTI_LAYER_SURGERY"
-            ],
-            "rel_path": "skills/CORE/SELF_HEALING_SENTINEL/SKILL.md"
-        },
-        "SKILL_SEMANTIC_READ": {
-            "aliases_vn": [
-                "skill semantic read"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_SEMANTIC_READ",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_SEMANTIC_READ"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill semantic read",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/SEMANTIC_DEEP_READER/SKILL.md",
-            "deck_number": "1050",
-            "command_deck_id": "#1050"
-        },
-        "ANALYZE_LARGE_FILE": {
-            "aliases_vn": [
-                "skill sequential read",
-                "doc file lon",
-                "phan tich file lon"
-            ],
-            "author": "Antigravity Architect",
-            "domain": "CORE",
-            "id": "ANALYZE_LARGE_FILE",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "ANALYZE_LARGE_FILE"
-                ]
-            ],
-            "name_vn": "Kỹ năng đọc và phân tích tệp tin siêu lớn tuần tự",
-            "priority": "HIGH",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/SEQUENTIAL_FILE_READER/SKILL.md",
-            "deck_number": "1086",
-            "command_deck_id": "#1086"
-        },
-        "SHELL_EXECUTOR": {
-            "id": "SHELL_EXECUTOR",
-            "name": "Shell Executor",
-            "description": "Run shell commands.",
-            "category": "CORE",
-            "domain": "CORE",
-            "rel_path": "skills/CORE/SHELL_EXECUTOR/SKILL.md"
-        },
-        "skill-builder": {
-            "id": "skill-builder",
-            "name_vn": "\"Skill Builder\"",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/skill-builder/SKILL.md"
-        },
-        "SKILL_AGENTIC_JUJUTSU": {
-            "aliases_vn": [
-                "skill agentic jujutsu"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_AGENTIC_JUJUTSU",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_AGENTIC_JUJUTSU"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill agentic jujutsu",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/skill_agentic_jujutsu/SKILL.md",
-            "deck_number": "1010",
-            "command_deck_id": "#1010"
-        },
-        "agent-agentic-payments": {
-            "id": "agent-agentic-payments",
-            "name_vn": "agent-agentic-payments",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/skill_agentic_payments/SKILL.md"
-        },
-        "SKILL_FORGE": {
-            "id": "SKILL_FORGE",
-            "name_vn": "Lò Đúc Kỹ Năng Sovereign",
-            "version": "32.0.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "CORE",
-            "intent_pairs": [
-                [
-                    "FORGE",
-                    "SKILL"
-                ],
-                [
-                    "CREATE",
-                    "CAPABILITY"
-                ]
-            ],
-            "aliases_vn": [
-                "lò đúc",
-                "tạo kỹ năng",
-                "skill forge",
-                "kiến tạo năng lực"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "skill_description": {
-                            "type": "string",
-                            "description": "Mô tả chi tiết năng lực của kỹ năng cần kiến tạo."
-                        }
-                    },
-                    "required": [
-                        "skill_description"
-                    ]
-                }
-            },
-            "priority": "HIGHEST",
-            "related_skills": [
-                "SYNC_KNOWLEDGE",
-                "SKILL_SYSTEM_CORE"
-            ],
-            "rel_path": "skills/CORE/SKILL_FORGE/SKILL.md"
-        },
-        "SKILL_IMAGE_PROCESSING": {
-            "aliases_vn": [
-                "skill image processing"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_IMAGE_PROCESSING",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_IMAGE_PROCESSING"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill image processing",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/skill_image_processing/SKILL.md",
-            "deck_number": "1028",
-            "command_deck_id": "#1028"
-        },
-        "SKILL_KIEMTRASUCKHOE": {
-            "aliases_vn": [
-                "skill kiemtrasuckhoe"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_KIEMTRASUCKHOE",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_KIEMTRASUCKHOE"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill kiemtrasuckhoe",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/skill_kiemtrasuckhoe/SKILL.md",
-            "deck_number": "1030",
-            "command_deck_id": "#1030"
-        },
-        "SKILL_LEGACY_SOUL": {
-            "aliases_vn": [
-                "skill legacy soul"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_LEGACY_SOUL",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_LEGACY_SOUL"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill legacy soul",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/skill_legacy_soul/SKILL.md",
-            "deck_number": "1031",
-            "command_deck_id": "#1031"
-        },
-        "SKILL_NEURAL_ARCHITECT": {
-            "aliases_vn": [
-                "skill neural architect"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_NEURAL_ARCHITECT",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_NEURAL_ARCHITECT"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill neural architect",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/skill_neural_architect/SKILL.md",
-            "deck_number": "1042",
-            "command_deck_id": "#1042"
-        },
-        "SKILL_NEURAL_AUDIT": {
-            "aliases_vn": [
-                "skill neural audit"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_NEURAL_AUDIT",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_NEURAL_AUDIT"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill neural audit",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/skill_neural_audit/SKILL.md",
-            "deck_number": "1043",
-            "command_deck_id": "#1043"
-        },
-        "SKILL_QUEEN_COORDINATOR": {
-            "aliases_vn": [
-                "skill queen coordinator"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_QUEEN_COORDINATOR",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_QUEEN_COORDINATOR"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill queen coordinator",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/skill_queen_coordinator/SKILL.md",
-            "deck_number": "1048",
-            "command_deck_id": "#1048"
-        },
-        "SKILL_SANGTAOVANHANLUC": {
-            "aliases_vn": [
-                "skill sangtaovanhanluc"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_SANGTAOVANHANLUC",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_SANGTAOVANHANLUC"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill sangtaovanhanluc",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/skill_sangtaovanhanluc/SKILL.md",
-            "deck_number": "1049",
-            "command_deck_id": "#1049"
-        },
-        "SKILL_SOVEREIGN_LOGIC": {
-            "aliases_vn": [
-                "skill sovereign logic"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_SOVEREIGN_LOGIC",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_SOVEREIGN_LOGIC"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill sovereign logic",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/skill_sovereign_logic/SKILL.md",
-            "deck_number": "1051",
-            "command_deck_id": "#1051"
-        },
-        "SKILL_TAOKYNANG": {
-            "aliases_vn": [
-                "skill taokynang"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_TAOKYNANG",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_TAOKYNANG"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill taokynang",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/skill_taokynang/SKILL.md"
-        },
-        "SKILL_TEMPLATE_MIMIC": {
-            "aliases_vn": [
-                "skill template mimic"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_TEMPLATE_MIMIC",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_TEMPLATE_MIMIC"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill template mimic",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/skill_template_mimic/SKILL.md",
-            "deck_number": "1065",
-            "command_deck_id": "#1065"
-        },
-        "SKILL_TUCAITIEN": {
-            "aliases_vn": [
-                "skill tucaitien"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_TUCAITIEN",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_TUCAITIEN"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill tucaitien",
-            "priority": "NORMAL",
-            "related_skills": [
-                "OMNI_SEARCH_ENGINE",
-                "SELF_HEALING_SENTINEL",
-                "SKILL_TUSUALOI",
-                "COGNITIVE_SCHEDULER",
-                "CAPABILITY_BROKER",
-                "REPO_SURGEON",
-                "SKILL_DECK_INDEX"
-            ],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/skill_tucaitien/SKILL.md"
-        },
-        "SKILL_SPARC": {
-            "aliases_vn": [
-                "skill sparc"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_SPARC",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_SPARC"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill sparc",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/SPARC_ENGINEERING_CORE/SKILL.md"
-        },
-        "stream-chain": {
-            "id": "stream-chain",
-            "name_vn": "stream-chain",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/stream-chain/SKILL.md"
-        },
-        "swarm-advanced": {
-            "id": "swarm-advanced",
-            "name_vn": "swarm-advanced",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/swarm-advanced/SKILL.md"
-        },
-        "swarm-orchestration": {
-            "id": "swarm-orchestration",
-            "name_vn": "swarm-orchestration",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/swarm-orchestration/SKILL.md"
-        },
-        "SKILL_DONGBOTRITHUC": {
-            "aliases_vn": [
-                "skill dongbotrithuc"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_DONGBOTRITHUC",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_DONGBOTRITHUC"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill dongbotrithuc",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/CORE/SYNC_KNOWLEDGE_QUANTUM/SKILL.md",
-            "deck_number": "1021",
-            "command_deck_id": "#1021"
-        },
-        "SYSTEM_XRAY_MONITOR": {
-            "id": "SYSTEM_XRAY_MONITOR",
-            "name_vn": "Vệ Binh X-Ray Tối Thượng",
-            "version": "1.0.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "CORE",
-            "intent_pairs": [
-                [
-                    "MONITOR",
-                    "SYSTEM"
-                ],
-                [
-                    "DIAGNOSE",
-                    "INFRASTRUCTURE"
-                ]
-            ],
-            "aliases_vn": [
-                "giám sát hệ thống",
-                "x-ray monitor",
-                "chẩn đoán nơ-ron",
-                "kiểm tra sức khỏe"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "action": {
-                            "type": "string",
-                            "enum": [
-                                "get_diagnostics"
-                            ],
-                            "default": "get_diagnostics",
-                            "description": "Hành động giám sát cần thực hiện."
-                        }
-                    },
-                    "required": []
-                }
-            },
-            "priority": "HIGHEST",
-            "related_skills": [
-                "SKILL_SYSTEM_CORE",
-                "GLOBAL_SYSTEM_CONTEXT"
-            ],
-            "rel_path": "skills/CORE/SYSTEM_XRAY_MONITOR/SKILL.md"
-        },
-        "verification-quality": {
-            "id": "verification-quality",
-            "name_vn": "\"Verification & Quality Assurance\"",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/verification-quality/SKILL.md"
-        },
-        "worker-benchmarks": {
-            "id": "worker-benchmarks",
-            "name_vn": "worker-benchmarks",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/worker-benchmarks/SKILL.md"
-        },
-        "worker-integration": {
-            "id": "worker-integration",
-            "name_vn": "worker-integration",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/worker-integration/SKILL.md"
-        },
-        "workflow-automation": {
-            "id": "workflow-automation",
-            "name_vn": "workflow-automation",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/CORE/workflow-automation/SKILL.md"
-        },
-        "embeddings": {
-            "id": "embeddings",
-            "name_vn": "embeddings",
-            "version": "1.0.0",
-            "author": "Zenith Legacy",
-            "domain": "UNKNOWN",
-            "intent_pairs": [],
-            "aliases_vn": [],
-            "schema": {},
-            "priority": "NORMAL",
-            "related_skills": [],
-            "rel_path": "skills/DATA_SCIENCE/embeddings/SKILL.md"
-        },
-        "NEURAL_SANDBOX_STAGING": {
-            "id": "NEURAL_SANDBOX_STAGING",
-            "name_vn": "Phòng Thử Nghiệm Cô Lập Sandbox",
-            "version": "1.0.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "DATA_SCIENCE",
-            "intent_pairs": [
-                [
-                    "RUN",
-                    "SANDBOX"
-                ],
-                [
-                    "TEST",
-                    "CODE"
-                ]
-            ],
-            "aliases_vn": [
-                "sandbox",
-                "thử nghiệm code",
-                "môi trường cô lập",
-                "test surgery"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "code_snippet": {
-                            "type": "string",
-                            "description": "Đoạn mã cần thực thi thử nghiệm."
-                        },
-                        "action": {
-                            "type": "string",
-                            "enum": [
-                                "create",
-                                "execute",
-                                "destroy"
-                            ],
-                            "default": "execute",
-                            "description": "Hành động sandbox."
-                        }
-                    },
-                    "required": [
-                        "code_snippet"
-                    ]
-                }
-            },
-            "priority": "HIGH",
-            "related_skills": [
-                "SKILL_SYSTEM_CORE",
-                "NEURAL_LINK_AGGREGATOR"
-            ],
-            "rel_path": "skills/DATA_SCIENCE/NEURAL_SANDBOX_STAGING/SKILL.md"
-        },
-        "NEURAL_VISION_AUDIT": {
-            "id": "NEURAL_VISION_AUDIT",
-            "name_vn": "Mắt Thần Thấu Thị Giao Diện",
-            "version": "1.2.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "DATA_SCIENCE",
-            "intent_pairs": [
-                [
-                    "CAPTURE",
-                    "VISION"
-                ],
-                [
-                    "AUDIT",
-                    "INTERFACE"
-                ]
-            ],
-            "aliases_vn": [
-                "chụp ảnh màn hình",
-                "screenshot",
-                "audit giao diện",
-                "neural eye",
-                "thị giác máy tính web"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "url": {
-                            "type": "string",
-                            "description": "Địa chỉ web cần thấu thị."
-                        }
-                    },
-                    "required": [
-                        "url"
-                    ]
-                }
-            },
-            "priority": "HIGH",
-            "related_skills": [
-                "SUPER_DATA_SCIENCE",
-                "WEB_PATHFINDER"
-            ],
-            "rel_path": "skills/DATA_SCIENCE/NEURAL_VISION_AUDIT/SKILL.md",
-            "deck_number": "2002",
-            "command_deck_id": "#2002"
-        },
-        "noi_chuyen_voi_AI": {
-            "id": "noi_chuyen_voi_AI",
-            "name_vn": "Nói Chuyện Với AI",
-            "version": "1.5.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "DATA_SCIENCE",
-            "intent_pairs": [
-                [
-                    "SUMMON",
-                    "GODS"
-                ],
-                [
-                    "AGGREGATE",
-                    "INTELLIGENCE"
-                ]
-            ],
-            "aliases_vn": [
-                "neural link",
-                "hợp nhất AI",
-                "triệu hồi AI",
-                "siêu AI aggregator",
-                "nói chuyện với AI"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "goal": {
-                            "type": "string",
-                            "description": "Mục tiêu hoặc câu hỏi cần các Siêu AI giải quyết."
-                        },
-                        "preferred_provider": {
-                            "type": "string",
-                            "enum": [
-                                "openai",
-                                "anthropic",
-                                "google",
-                                "deepseek"
-                            ],
-                            "description": "Nhà cung cấp ưu tiên."
-                        }
-                    },
-                    "required": [
-                        "goal"
-                    ]
-                }
-            },
-            "priority": "HIGHEST",
-            "related_skills": [
-                "SAFLA_MEMORY_ENGINE",
-                "GLOBAL_SYSTEM_CONTEXT"
-            ],
-            "rel_path": "skills/DATA_SCIENCE/noi_chuyen_voi_AI/SKILL.md"
-        },
-        "SAFLA_MEMORY_ENGINE": {
-            "id": "SAFLA_MEMORY_ENGINE",
-            "name_vn": "Cỗ Máy Bộ Nhớ Tự Thức SAFLA",
-            "version": "4.4.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "DATA_SCIENCE",
-            "intent_pairs": [
-                [
-                    "ASSIMILATE",
-                    "MEMORY"
-                ],
-                [
-                    "RECALL",
-                    "EXPERIENCE"
-                ]
-            ],
-            "aliases_vn": [
-                "bộ nhớ tự thức",
-                "safla memory",
-                "truy hồi ký ức",
-                "ghi nhớ trải nghiệm"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "action": {
-                            "type": "string",
-                            "enum": [
-                                "assimilate",
-                                "recall",
-                                "forge_concept"
-                            ],
-                            "description": "Hành động bộ nhớ."
-                        },
-                        "text": {
-                            "type": "string",
-                            "description": "Nội dung cần ghi nhớ hoặc query truy hồi."
-                        },
-                        "tier": {
-                            "type": "string",
-                            "enum": [
-                                "episodic",
-                                "semantic"
-                            ],
-                            "default": "episodic",
-                            "description": "Tầng bộ nhớ (Sự kiện hoặc Khái niệm)."
-                        }
-                    },
-                    "required": [
-                        "action"
-                    ]
-                }
-            },
-            "priority": "HIGHEST",
-            "related_skills": [
-                "NEURAL_LINK_AGGREGATOR",
-                "GLOBAL_SYSTEM_CONTEXT"
-            ],
-            "rel_path": "skills/DATA_SCIENCE/SAFLA_MEMORY_ENGINE/SKILL.md",
-            "deck_number": "2003",
-            "command_deck_id": "#2003"
-        },
-        "SUPER_DATA_SCIENCE": {
-            "id": "SUPER_DATA_SCIENCE",
-            "name_vn": "Siêu Năng Lực Khoa Học Dữ Liệu",
-            "version": "5.0.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "DATA_SCIENCE",
-            "intent_pairs": [
-                [
-                    "ANALYZE",
-                    "DATA"
-                ],
-                [
-                    "TRAIN",
-                    "AI"
-                ]
-            ],
-            "aliases_vn": [
-                "phân tích dữ liệu",
-                "auto ml",
-                "thị giác máy tính",
-                "khoa học dữ liệu",
-                "data science elite"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "action": {
-                            "type": "string",
-                            "enum": [
-                                "phan_tich_du_lieu_elite",
-                                "huan_luyen_ai_cap_toc",
-                                "thi_giac_may_tinh"
-                            ],
-                            "description": "Hành động khoa học dữ liệu."
-                        },
-                        "data_path": {
-                            "type": "string",
-                            "description": "Đường dẫn đến tệp dữ liệu."
-                        },
-                        "image_path": {
-                            "type": "string",
-                            "description": "Đường dẫn đến tệp ảnh (cho Computer Vision)."
-                        }
-                    },
-                    "required": [
-                        "action"
-                    ]
-                }
-            },
-            "priority": "HIGH",
-            "related_skills": [
-                "NEURAL_LINK_AGGREGATOR",
-                "NEURAL_SANDBOX_STAGING"
-            ],
-            "rel_path": "skills/DATA_SCIENCE/SUPER_DATA_SCIENCE/SKILL.md",
-            "deck_number": "2004",
-            "command_deck_id": "#2004"
-        },
-        "WEB_LOGIC_FORGE": {
-            "id": "WEB_LOGIC_FORGE",
-            "name_vn": "Lò Đúc Logic Web Elite",
-            "version": "1.0.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "DATA_SCIENCE",
-            "intent_pairs": [
-                [
-                    "FORGE",
-                    "WEB_LOGIC"
-                ],
-                [
-                    "CREATE",
-                    "WEB_SKILL"
-                ]
-            ],
-            "aliases_vn": [
-                "đúc logic web",
-                "web forge",
-                "tạo kỹ năng web",
-                "neural eye forge"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "domain": {
-                            "type": "string",
-                            "description": "Phân vùng ứng dụng."
-                        },
-                        "skill_name": {
-                            "type": "string",
-                            "description": "Tên kỹ năng cần đúc."
-                        },
-                        "capability": {
-                            "type": "string",
-                            "description": "Mô tả năng lực của kỹ năng."
-                        },
-                        "code": {
-                            "type": "string",
-                            "description": "Mã nguồn Python cần đúc."
-                        }
-                    },
-                    "required": [
-                        "domain",
-                        "skill_name",
-                        "capability",
-                        "code"
-                    ]
-                }
-            },
-            "priority": "MEDIUM",
-            "related_skills": [
-                "SKILL_FORGE",
-                "NEURAL_LINK_AGGREGATOR"
-            ],
-            "rel_path": "skills/DATA_SCIENCE/WEB_LOGIC_FORGE/SKILL.md"
-        },
-        "SKILL_INSTANT_FORGE": {
-            "aliases_vn": [
-                "skill instant forge"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_INSTANT_FORGE",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_INSTANT_FORGE"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill instant forge",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/DEVOPS/MICROSERVICE_FORGE/SKILL.md",
-            "deck_number": "1029",
-            "command_deck_id": "#1029"
-        },
-        "SKILL_GIAM_SAT_HE_THONG": {
-            "aliases_vn": [
-                "skill giam sat he thong"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_GIAM_SAT_HE_THONG",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_GIAM_SAT_HE_THONG"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill giam sat he thong",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/DEVOPS/skill_giam_sat_he_thong/SKILL.md",
-            "deck_number": "1026",
-            "command_deck_id": "#1026"
-        },
-        "SKILL_QUANTRIHETHONG": {
-            "aliases_vn": [
-                "skill quantrihethong"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_QUANTRIHETHONG",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_QUANTRIHETHONG"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill quantrihethong",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/DEVOPS/skill_quantrihethong/SKILL.md",
-            "deck_number": "1047",
-            "command_deck_id": "#1047"
-        },
-        "SKILL_V3_PERFORMANCE": {
-            "aliases_vn": [
-                "skill v3 performance"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_V3_PERFORMANCE",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_V3_PERFORMANCE"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill v3 performance",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/DEVOPS/skill_v3_performance/SKILL.md",
-            "deck_number": "1068",
-            "command_deck_id": "#1068"
-        },
-        "SKILL_XRAY_MONITOR": {
-            "aliases_vn": [
-                "skill xray monitor"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_XRAY_MONITOR",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_XRAY_MONITOR"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill xray monitor",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/DEVOPS/skill_xray_monitor/SKILL.md",
-            "deck_number": "1070",
-            "command_deck_id": "#1070"
-        },
-        "SYSTEM_CORE_EXECUTOR": {
-            "id": "SYSTEM_CORE_EXECUTOR",
-            "name_vn": "Hệ Vận Động Cốt Lõi",
-            "version": "2.5.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "DEVOPS",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SYSTEM_CORE"
-                ],
-                [
-                    "MANAGE",
-                    "FILESYSTEM"
-                ]
-            ],
-            "aliases_vn": [
-                "hệ vận động",
-                "core executor",
-                "quản lý tệp tin",
-                "thực thi lệnh"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "action": {
-                            "type": "string",
-                            "enum": [
-                                "list_dir",
-                                "view_file",
-                                "write_to_file",
-                                "replace_file_content",
-                                "run_command",
-                                "grep_search"
-                            ],
-                            "description": "Hành động hệ thống cần thực thi."
-                        },
-                        "path": {
-                            "type": "string",
-                            "description": "Đường dẫn mục tiêu."
-                        }
-                    },
-                    "required": [
-                        "action"
-                    ]
-                }
-            },
-            "priority": "HIGHEST",
-            "related_skills": [
-                "MULTI_LAYER_SURGERY",
-                "SEARCH_WEB_GLOBAL"
-            ],
-            "rel_path": "skills/DEVOPS/SYSTEM_CORE_EXECUTOR/SKILL.md",
-            "deck_number": "1090",
-            "command_deck_id": "#1090"
-        },
-        "TEST_DRIVEN_DEVELOPMENT": {
-            "id": "TEST_DRIVEN_DEVELOPMENT",
-            "name_vn": "Phát triển Hướng Kiểm thử",
-            "version": "1.0.0",
-            "domain": "DEVOPS",
-            "intent_pairs": [
-                [
-                    "CREATE",
-                    "TEST"
-                ],
-                [
-                    "ANALYZE",
-                    "CODE"
-                ]
-            ],
-            "aliases_vn": [
-                "phát triển hướng kiểm thử",
-                "TDD",
-                "red green refactor"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "target": {
-                            "type": "string",
-                            "description": "Đối tượng hoặc tính năng cần triển khai kiểm thử"
-                        }
-                    },
-                    "required": [
-                        "target"
-                    ]
-                }
-            },
-            "assigned_agent": "agent_executor_alpha.md",
-            "priority": "HIGH",
-            "rel_path": "skills/DEVOPS/test-driven-development/SKILL.md",
-            "deck_number": "1080",
-            "command_deck_id": "#1080"
-        },
-        "FINANCE_CASHFLOW_DIAGNOSIS": {
-            "id": "FINANCE_CASHFLOW_DIAGNOSIS",
-            "name_vn": "Chẩn Đoán Dòng Tiền Tài Chính",
-            "version": "1.0.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "FINANCE",
-            "intent_pairs": [
-                [
-                    "DIAGNOSE",
-                    "CASHFLOW"
-                ],
-                [
-                    "ANALYZE",
-                    "FINANCE"
-                ]
-            ],
-            "aliases_vn": [
-                "chẩn đoán dòng tiền",
-                "cashflow diagnosis",
-                "phân tích tài chính"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "query": {
-                            "type": "string",
-                            "description": "Yêu cầu chẩn đoán dòng tiền hoặc nguồn dữ liệu."
-                        }
-                    },
-                    "required": [
-                        "query"
-                    ]
-                }
-            },
-            "priority": "NORMAL",
-            "related_skills": [
-                "TECH_ANALYSIS_ENGINE",
-                "WHALE_TRACKER_OSINT"
-            ],
-            "rel_path": "skills/FINANCE/FINANCE_CASHFLOW_DIAGNOSIS/SKILL.md"
-        },
-        "FIN_02_TECH_ANALYSIS": {
-            "id": "FIN_02_TECH_ANALYSIS",
-            "name_vn": "Phân Tích Kỹ Thuật Elite",
-            "version": "1.0.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "FINANCE",
-            "intent_pairs": [
-                [
-                    "ANALYZE",
-                    "TECHNICAL"
-                ],
-                [
-                    "PREDICT",
-                    "MARKET"
-                ]
-            ],
-            "aliases_vn": [
-                "phân tích kỹ thuật",
-                "tech analysis",
-                "soi kèo",
-                "dự báo thị trường"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "query": {
-                            "type": "string",
-                            "description": "Cặp giao dịch hoặc mã cổ phiếu cần phân tích (VD: BTC/USDT)."
-                        }
-                    },
-                    "required": [
-                        "query"
-                    ]
-                }
-            },
-            "priority": "NORMAL",
-            "related_skills": [
-                "FIN_01_CASHFLOW",
-                "AGENT-TRADING-PREDICTOR"
-            ],
-            "rel_path": "skills/FINANCE/TECH_ANALYSIS_ENGINE/SKILL.md"
-        },
-        "SKILL_HUEIC_TAO_SKILL_DE_XUAT_THEO_FORM": {
-            "aliases_vn": [
-                "skill Hueic tao skill de xuat theo form"
-            ],
-            "author": "Zenith Forge Auto",
-            "domain": "CORE",
-            "id": "SKILL_HUEIC_TAO_SKILL_DE_XUAT_THEO_FORM",
-            "intent_pairs": [
-                [
-                    "EXECUTE",
-                    "SKILL_HUEIC_TAO_SKILL_DE_XUAT_THEO_FORM"
-                ]
-            ],
-            "name_vn": "Kỹ năng Skill hueic tao skill de xuat theo form",
-            "priority": "NORMAL",
-            "related_skills": [],
-            "version": "1.0.0",
-            "rel_path": "skills/HUEIC_PROCESS/skill_Hueic_tao_skill_de_xuat_theo_form/SKILL.md",
-            "deck_number": "7001",
-            "command_deck_id": "#7001"
-        },
-        "AUTONOMOUS_RESEARCHER": {
-            "id": "AUTONOMOUS_RESEARCHER",
-            "name_vn": "Đặc Vụ Nghiên Cứu Tự Trị",
-            "version": "1.6.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "RESEARCH",
-            "intent_pairs": [
-                [
-                    "RESEARCH",
-                    "DEEP_DIVE"
-                ],
-                [
-                    "ANALYZE",
-                    "TOPIC"
-                ]
-            ],
-            "aliases_vn": [
-                "nghiên cứu sâu",
-                "autonomous researcher",
-                "tầm soát tri thức",
-                "báo cáo nghiên cứu"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "topic": {
-                            "type": "string",
-                            "description": "Chủ đề cần nghiên cứu chuyên sâu."
-                        }
-                    },
-                    "required": [
-                        "topic"
-                    ]
-                }
-            },
-            "priority": "HIGH",
-            "related_skills": [
-                "SEARCH_WEB_GLOBAL",
-                "SYNC_KNOWLEDGE"
-            ],
-            "rel_path": "skills/RESEARCH/AUTONOMOUS_RESEARCHER/SKILL.md",
-            "deck_number": "4001",
-            "command_deck_id": "#4001"
-        },
-        "GITHUB_SCANNER": {
-            "id": "GITHUB_SCANNER",
-            "name": "GitHub Trend Scanner",
-            "description": "Quét và phân tích xu hướng các kho lưu trữ (repositories) trên GitHub theo thời gian thực.",
-            "intent": "Tìm kiếm và tổng hợp các dự án GitHub nổi bật trong tháng 05/2026.",
-            "rel_path": "skills/RESEARCH/GITHUB_SCANNER/SKILL.md"
-        },
-        "SEARCH_WEB_GLOBAL": {
-            "id": "SEARCH_WEB_GLOBAL",
-            "name_vn": "Siêu Tìm Kiếm Zenith",
-            "version": "2.0.0",
-            "author": "Antigravity Architect",
-            "domain": "RESEARCH",
-            "intent_pairs": [
-                [
-                    "SEARCH",
-                    "NEWS"
-                ],
-                [
-                    "SEARCH",
-                    "INFO"
-                ],
-                [
-                    "RESEARCH",
-                    "TOPIC"
-                ],
-                [
-                    "ANALYZE",
-                    "DATA"
-                ]
-            ],
-            "aliases_vn": [
-                "siêu tìm kiếm",
-                "truy tìm thông tin",
-                "tìm kiếm đa kênh",
-                "trinh sát internet",
-                "hóng biến"
-            ],
-            "priority": "CRITICAL",
-            "related_skills": [
-                "SUMMARIZE_DOC_ELITE",
-                "TRANSLATE_ZENITH",
-                "DEEP_RESEARCH"
-            ],
-            "rel_path": "skills/RESEARCH/SEARCH_WEB_GLOBAL/SKILL.md"
-        },
-        "SKILL_STRATEGIC_RECON": {
-            "aliases_vn": [
-                "chiến lược trinh sát",
-                "trinh sát đệ quy",
-                "strategic recon"
-            ],
-            "author": "Antigravity Architect",
-            "domain": "RESEARCH",
-            "id": "SKILL_STRATEGIC_RECON",
-            "intent_pairs": [
-                [
-                    "STRATEGIC",
-                    "RECON"
-                ],
-                [
-                    "DEEP",
-                    "RESEARCH"
-                ]
-            ],
-            "name_vn": "Trinh Sát Chiến Lược Đa Chiều",
-            "priority": "HIGH",
-            "related_skills": [
-                "SEARCH_WEB_GLOBAL",
-                "SKILL_THITHU_THANH_DIA"
-            ],
-            "version": "2.0.0",
-            "rel_path": "skills/RESEARCH/skill_strategic_recon/SKILL.md"
-        },
-        "SPEC_DRIVEN_DEVELOPMENT": {
-            "id": "SPEC_DRIVEN_DEVELOPMENT",
-            "name_vn": "Phát triển Hướng Đặc tả",
-            "version": "1.0.0",
-            "domain": "RESEARCH",
-            "intent_pairs": [
-                [
-                    "CREATE",
-                    "SPEC"
-                ],
-                [
-                    "ANALYZE",
-                    "REQUIREMENT"
-                ]
-            ],
-            "aliases_vn": [
-                "phát triển hướng đặc tả",
-                "spec driven",
-                "viết đặc tả",
-                "tạo PRD"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "feature": {
-                            "type": "string",
-                            "description": "Mô tả tính năng hoặc yêu cầu đầu vào"
-                        }
-                    },
-                    "required": [
-                        "feature"
-                    ]
-                }
-            },
-            "assigned_agent": "agent_planner.md",
-            "priority": "HIGH",
-            "rel_path": "skills/RESEARCH/spec-driven-development/SKILL.md",
-            "deck_number": "4010",
-            "command_deck_id": "#4010"
-        },
-        "STEALTH_WEB_NAVIGATOR": {
-            "id": "STEALTH_WEB_NAVIGATOR",
-            "name_vn": "Đặc Vụ Ẩn Danh Zenith",
-            "version": "1.0.0",
-            "author": "Antigravity Architect",
-            "domain": "RESEARCH",
-            "intent_pairs": [
-                [
-                    "BROWSE",
-                    "STEALTH"
-                ],
-                [
-                    "NAVIGATE",
-                    "ANTIBOT"
-                ],
-                [
-                    "SCRAPE",
-                    "CLOUDFLARE"
-                ],
-                [
-                    "ACCESS",
-                    "PROTECTED"
-                ],
-                [
-                    "BYPASS",
-                    "CAPTCHA"
-                ],
-                [
-                    "RESEARCH",
-                    "PROTECTED_SITE"
-                ]
-            ],
-            "aliases_vn": [
-                "duyệt ẩn danh",
-                "vượt cloudflare",
-                "vượt captcha",
-                "trình duyệt ẩn",
-                "stealth browse",
-                "dò đường ẩn danh",
-                "đặc vụ web"
-            ],
-            "priority": "HIGH",
-            "related_skills": [
-                "SEARCH_WEB_GLOBAL",
-                "WEB_PATHFINDER"
-            ],
-            "hardware_role": "PLANNER",
-            "rel_path": "skills/RESEARCH/STEALTH_WEB_NAVIGATOR/SKILL.md"
-        },
-        "WEB_PATHFINDER": {
-            "id": "WEB_PATHFINDER",
-            "name_vn": "Hoa Tiêu Dẫn Đường Web",
-            "version": "3.6.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "RESEARCH",
-            "intent_pairs": [
-                [
-                    "NAVIGATE",
-                    "WEB"
-                ],
-                [
-                    "FIND",
-                    "PATH"
-                ]
-            ],
-            "aliases_vn": [
-                "dẫn đường web",
-                "web pathfinder",
-                "hoa tiêu web",
-                "semantic navigation"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "url": {
-                            "type": "string",
-                            "description": "Địa chỉ khởi đầu."
-                        },
-                        "goal": {
-                            "type": "string",
-                            "description": "Mục tiêu cần tìm hoặc hành động cần thực hiện."
-                        }
-                    },
-                    "required": [
-                        "url",
-                        "goal"
-                    ]
-                }
-            },
-            "priority": "HIGH",
-            "related_skills": [
-                "SEARCH_WEB_GLOBAL",
-                "AUTONOMOUS_RESEARCHER"
-            ],
-            "rel_path": "skills/RESEARCH/WEB_PATHFINDER/SKILL.md"
-        },
-        "CODE_REVIEW_AND_QUALITY": {
-            "id": "CODE_REVIEW_AND_QUALITY",
-            "name_vn": "Rà soát chất lượng và kiểm toán mã nguồn",
-            "version": "1.0.0",
-            "domain": "SECURITY",
-            "intent_pairs": [
-                [
-                    "ANALYZE",
-                    "CODE"
-                ],
-                [
-                    "REVIEW",
-                    "CODE"
-                ]
-            ],
-            "aliases_vn": [
-                "nghiệm thu code",
-                "code review",
-                "chất lượng code"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "target": {
-                            "type": "string",
-                            "description": "Đối tượng hoặc phạm vi mã nguồn cần review"
-                        }
-                    },
-                    "required": [
-                        "target"
-                    ]
-                }
-            },
-            "assigned_agent": "agent_critic.md",
-            "priority": "HIGH",
-            "rel_path": "skills/SECURITY/code-review-and-quality/SKILL.md",
-            "deck_number": "6015",
-            "command_deck_id": "#6015"
-        },
-        "GHOST_STEALTH_PROTOCOL": {
-            "id": "GHOST_STEALTH_PROTOCOL",
-            "name_vn": "Giao Thức Tàng Hình Ghost",
-            "version": "1.0.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "SECURITY",
-            "intent_pairs": [
-                [
-                    "ACTIVATE",
-                    "STEALTH"
-                ],
-                [
-                    "ERASE",
-                    "TRACES"
-                ]
-            ],
-            "aliases_vn": [
-                "chế độ tàng hình",
-                "xóa dấu vết",
-                "ẩn danh danh tính",
-                "ghost protocol"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "action": {
-                            "type": "string",
-                            "enum": [
-                                "erase_traces",
-                                "ghost_masking",
-                                "stealth_mode"
-                            ],
-                            "description": "Hành động tàng hình."
-                        },
-                        "query": {
-                            "type": "string",
-                            "description": "Nội dung cần ngụy trang."
-                        }
-                    },
-                    "required": [
-                        "action"
-                    ]
-                }
-            },
-            "priority": "HIGHEST",
-            "related_skills": [
-                "NEURAL_LINK_AGGREGATOR",
-                "QUANTUM_CODE_AUDIT"
-            ],
-            "rel_path": "skills/SECURITY/GHOST_STEALTH_PROTOCOL/SKILL.md",
-            "deck_number": "6001",
-            "command_deck_id": "#6001"
-        },
-        "MULTI_LAYER_SURGERY": {
-            "id": "MULTI_LAYER_SURGERY",
-            "name_vn": "Phẫu Thuật Đa Tầng Quantum",
-            "version": "31.5.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "SECURITY",
-            "intent_pairs": [
-                [
-                    "SURGERY",
-                    "MULTI_POINT"
-                ],
-                [
-                    "EDIT",
-                    "CODE_STRUCTURE"
-                ]
-            ],
-            "aliases_vn": [
-                "phẫu thuật đa tầng",
-                "quantum surgery",
-                "chỉnh sửa mã nguồn",
-                "multi-point edit"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "path": {
-                            "type": "string",
-                            "description": "Đường dẫn tuyệt đối hoặc tương đối tới tệp tin cần phẫu thuật."
-                        },
-                        "chunks": {
-                            "type": "array",
-                            "items": {
-                                "type": "object",
-                                "properties": {
-                                    "target": {
-                                        "type": "string",
-                                        "description": "Đoạn mã mục tiêu cần thay thế (phải khớp chính xác 100%)."
-                                    },
-                                    "replacement": {
-                                        "type": "string",
-                                        "description": "Đoạn mã mới sẽ được cấy ghép vào."
-                                    }
-                                },
-                                "required": [
-                                    "target",
-                                    "replacement"
-                                ]
-                            }
-                        },
-                        "validate_syntax": {
-                            "type": "boolean",
-                            "default": true,
-                            "description": "Tự động kiểm tra cú pháp Python sau khi phẫu thuật."
-                        }
-                    },
-                    "required": [
-                        "path",
-                        "chunks"
-                    ]
-                }
-            },
-            "priority": "HIGHEST",
-            "related_skills": [
-                "SKILL_SYSTEM_CORE",
-                "QUANTUM_CODE_AUDIT"
-            ],
-            "rel_path": "skills/SECURITY/MULTI_LAYER_SURGERY/SKILL.md",
-            "deck_number": "6002",
-            "command_deck_id": "#6002"
-        },
-        "QUANTUM_CODE_AUDIT": {
-            "id": "QUANTUM_CODE_AUDIT",
-            "name_vn": "Thẩm Định Mã Nguồn Quantum",
-            "version": "31.0.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "SECURITY",
-            "intent_pairs": [
-                [
-                    "AUDIT",
-                    "CODE"
-                ],
-                [
-                    "SCAN",
-                    "VULNERABILITY"
-                ]
-            ],
-            "aliases_vn": [
-                "thẩm định mã nguồn",
-                "code audit",
-                "quét lỗ hổng",
-                "quantum audit",
-                "kiểm tra code"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "file_path": {
-                            "type": "string",
-                            "description": "Đường dẫn tuyệt đối đến tệp mã nguồn cần thẩm định."
-                        }
-                    },
-                    "required": [
-                        "file_path"
-                    ]
-                }
-            },
-            "priority": "HIGHEST",
-            "related_skills": [
-                "MULTI_LAYER_SURGERY",
-                "NEURAL_SANDBOX_STAGING"
-            ],
-            "rel_path": "skills/SECURITY/QUANTUM_CODE_AUDIT/SKILL.md",
-            "deck_number": "6003",
-            "command_deck_id": "#6003"
-        },
-        "SECURITY-AUDIT": {
-            "id": "SECURITY-AUDIT",
-            "name_vn": "Thẩm định An ninh Hệ thống",
-            "version": "2.0.0",
-            "author": "JKAI ZENITH Forge",
-            "domain": "SECURITY",
-            "intent_pairs": [
-                [
-                    "AUDIT",
-                    "SECURITY"
-                ],
-                [
-                    "SCAN",
-                    "VULNERABILITY"
-                ]
-            ],
-            "aliases_vn": [
-                "kiểm tra an ninh",
-                "audit security",
-                "quét lỗ hổng"
-            ],
-            "schema": {
-                "parameters": {
-                    "type": "object",
-                    "properties": {
-                        "target_path": {
-                            "type": "string",
-                            "description": "Đường dẫn thư mục hoặc tệp tin cần thẩm định."
-                        }
-                    },
-                    "required": [
-                        "target_path"
-                    ]
-                }
-            },
-            "priority": "HIGH",
-            "related_skills": [
-                "CODE_AUDIT_ELITE",
-                "SYNC_KNOWLEDGE"
-            ],
-            "rel_path": "skills/SECURITY/security-audit/SKILL.md",
-            "deck_number": "6004",
-            "command_deck_id": "#6004"
-        },
-        "SYNC_KNOWLEDGE_QUANTUM": {
-            "name": "dong_bo_tri_thuc",
-            "description": "[SOP v15.0] Hệ thống Đồng hóa Tri thức v15.0 - Đọc, tư duy phản biện và chắt lọc tinh hoa từ kho tài liệu ngoại lai.",
-            "parameters": {
+            "slides": {
+              "type": "array",
+              "items": {
                 "type": "object",
                 "properties": {
-                    "limit": {
-                        "type": "integer",
-                        "description": "Giới hạn số lượng tệp tin xử lý (mặc định 1000).",
-                        "default": 1000
-                    },
-                    "profile": {
-                        "type": "string",
-                        "description": "Cấu hình đồng hóa (mặc định UNIFIED_ELITE).",
-                        "default": "UNIFIED_ELITE"
-                    },
-                    "task_id": {
-                        "type": "string",
-                        "description": "ID nhiệm vụ để báo cáo log lên Dashboard."
-                    }
+                  "title": {
+                    "type": "string",
+                    "description": "Tiêu đề Slide."
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "Nội dung chi tiết Slide."
+                  }
                 }
+              }
             },
-            "id": "SYNC_KNOWLEDGE_QUANTUM",
-            "rel_path": "skills/CORE/SYNC_KNOWLEDGE_QUANTUM/schema.json"
+            "filename": {
+              "type": "string",
+              "default": "Zenith_Presentation",
+              "description": "Tên tệp tin đầu ra."
+            }
+          },
+          "required": [
+            "title",
+            "slides"
+          ]
         }
+      },
+      "priority": "MEDIUM",
+      "related_skills": [
+        "QUANTUM_CODE_AUDIT",
+        "NEURAL_LINK_AGGREGATOR"
+      ],
+      "rel_path": "skills/CODING/SOVEREIGN_PRESENTER/SKILL.md",
+      "deck_number": "3002",
+      "command_deck_id": "#3002"
     },
-    "last_sync": 1791867057.7459884
+    "SKILL_TOANHOCVATHUAT_TOAN": {
+      "aliases_vn": [
+        "skill toanhocvathuat toan"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_TOANHOCVATHUAT_TOAN",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_TOANHOCVATHUAT_TOAN"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill toanhocvathuat toan",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/ALGORITHMIC_QUANTUM_SOLVER/SKILL.md",
+      "deck_number": "1066",
+      "command_deck_id": "#1066"
+    },
+    "claims": {
+      "id": "claims",
+      "name_vn": "claims",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/claims/SKILL.md"
+    },
+    "CODE_GREP": {
+      "id": "CODE_GREP",
+      "name": "Code Grep",
+      "description": "Search for keywords across the codebase.",
+      "category": "CORE",
+      "domain": "CORE",
+      "rel_path": "skills/CORE/CODE_GREP/SKILL.md"
+    },
+    "COUNCIL_OF_MINDS_DEBATE": {
+      "id": "COUNCIL_OF_MINDS_DEBATE",
+      "name_vn": "Hội Đồng Nơ-ron Zenith",
+      "version": "1.0.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "CORE",
+      "intent_pairs": [
+        [
+          "DEBATE",
+          "COUNCIL"
+        ],
+        [
+          "RESOLVE",
+          "STRATEGY"
+        ]
+      ],
+      "aliases_vn": [
+        "hội đồng nơ-ron",
+        "council of minds",
+        "tranh biện nơ-ron",
+        "quyết định chiến lược"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "topic": {
+              "type": "string",
+              "description": "Chủ đề cần hội đồng tranh biện và đưa ra phán quyết."
+            }
+          },
+          "required": [
+            "topic"
+          ]
+        }
+      },
+      "priority": "HIGHEST",
+      "related_skills": [
+        "OMNI_EVOLUTION_FORGE",
+        "NEURAL_LINK_AGGREGATOR"
+      ],
+      "rel_path": "skills/CORE/COUNCIL_OF_MINDS_DEBATE/SKILL.md"
+    },
+    "SKILL_DEEP_CONTEXT": {
+      "aliases_vn": [
+        "skill deep context"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_DEEP_CONTEXT",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_DEEP_CONTEXT"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill deep context",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/DEEP_CONTEXT_SCANNER/SKILL.md",
+      "deck_number": "1020",
+      "command_deck_id": "#1020"
+    },
+    "SKILL_DOSSIER_INVESTIGATOR": {
+      "aliases_vn": [
+        "skill dossier investigator"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_DOSSIER_INVESTIGATOR",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_DOSSIER_INVESTIGATOR"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill dossier investigator",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/DOSSIER_INVESTIGATOR/SKILL.md",
+      "deck_number": "1022",
+      "command_deck_id": "#1022"
+    },
+    "BROWSER_VISION_OPS": {
+      "aliases_vn": [
+        "thiên nhãn",
+        "browser vision",
+        "quan sát trình duyệt",
+        "chụp màn hình web",
+        "tương tác giao diện"
+      ],
+      "author": "Antigravity Architect",
+      "domain": "CORE",
+      "id": "BROWSER_VISION_OPS",
+      "intent_pairs": [
+        [
+          "OBSERVE",
+          "WEB_PAGE"
+        ],
+        [
+          "INTERACT",
+          "BROWSER"
+        ],
+        [
+          "SCREENSHOT",
+          "WEB"
+        ],
+        [
+          "NAVIGATE",
+          "BROWSER"
+        ]
+      ],
+      "name_vn": "Browser Vision Ops (Thiên Nhãn)",
+      "priority": "HIGH",
+      "related_skills": [
+        "SEARCH_WEB_GLOBAL",
+        "SKILL_STRATEGIC_RECON"
+      ],
+      "version": "2.1.0",
+      "rel_path": "skills/CORE/duyet_browse_zenith/SKILL.md",
+      "deck_number": "1001",
+      "command_deck_id": "#1001"
+    },
+    "FILE_VIEWER": {
+      "id": "FILE_VIEWER",
+      "name": "File Viewer",
+      "description": "Read a file directly with line numbers.",
+      "category": "CORE",
+      "domain": "CORE",
+      "rel_path": "skills/CORE/FILE_VIEWER/SKILL.md"
+    },
+    "FILE_WRITER": {
+      "id": "FILE_WRITER",
+      "name": "File Writer",
+      "description": "Create or overwrite a file.",
+      "category": "CORE",
+      "domain": "CORE",
+      "rel_path": "skills/CORE/FILE_WRITER/SKILL.md"
+    },
+    "flow-nexus-neural": {
+      "id": "flow-nexus-neural",
+      "name_vn": "flow-nexus-neural",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/flow-nexus-neural/SKILL.md"
+    },
+    "flow-nexus-platform": {
+      "id": "flow-nexus-platform",
+      "name_vn": "flow-nexus-platform",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/flow-nexus-platform/SKILL.md"
+    },
+    "flow-nexus-swarm": {
+      "id": "flow-nexus-swarm",
+      "name_vn": "flow-nexus-swarm",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/flow-nexus-swarm/SKILL.md"
+    },
+    "github-automation": {
+      "id": "github-automation",
+      "name_vn": "github-automation",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/github-automation/SKILL.md"
+    },
+    "github-code-review": {
+      "id": "github-code-review",
+      "name_vn": "github-code-review",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/github-code-review/SKILL.md"
+    },
+    "github-multi-repo": {
+      "id": "github-multi-repo",
+      "name_vn": "github-multi-repo",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/github-multi-repo/SKILL.md"
+    },
+    "github-project-management": {
+      "id": "github-project-management",
+      "name_vn": "github-project-management",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/github-project-management/SKILL.md"
+    },
+    "github-release-management": {
+      "id": "github-release-management",
+      "name_vn": "github-release-management",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/github-release-management/SKILL.md"
+    },
+    "github-workflow-automation": {
+      "id": "github-workflow-automation",
+      "name_vn": "github-workflow-automation",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/github-workflow-automation/SKILL.md"
+    },
+    "hive-mind": {
+      "id": "hive-mind",
+      "name_vn": "hive-mind",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/hive-mind/SKILL.md"
+    },
+    "hive-mind-advanced": {
+      "id": "hive-mind-advanced",
+      "name_vn": "hive-mind-advanced",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/hive-mind-advanced/SKILL.md"
+    },
+    "hooks-automation": {
+      "id": "hooks-automation",
+      "name_vn": "Hooks Automation",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/hooks-automation/SKILL.md"
+    },
+    "SKILL_HOST_CONTROL": {
+      "aliases_vn": [
+        "skill host control"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_HOST_CONTROL",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_HOST_CONTROL"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill host control",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/HOST_SATELLITE_CONTROL/SKILL.md",
+      "deck_number": "1027",
+      "command_deck_id": "#1027"
+    },
+    "SKILL_GENERATE_IMAGE": {
+      "aliases_vn": [
+        "skill generate image"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_GENERATE_IMAGE",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_GENERATE_IMAGE"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill generate image",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/IMAGE_GEN_FORGE/SKILL.md",
+      "deck_number": "1025",
+      "command_deck_id": "#1025"
+    },
+    "IMPORT_SKILL": {
+      "id": "IMPORT_SKILL",
+      "name_vn": "Nhập Khẩu Kỹ Năng Mới (Import Skill)",
+      "version": "2.1.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "CORE",
+      "intent_pairs": [
+        [
+          "SYNC",
+          "KNOWLEDGE"
+        ],
+        [
+          "ASSIMILATE",
+          "SKILLS"
+        ]
+      ],
+      "aliases_vn": [
+        "đồng bộ tri thức",
+        "knowledge sync",
+        "đồng hóa kỹ năng",
+        "import skills"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "mode": {
+              "type": "string",
+              "enum": [
+                "full",
+                "incremental"
+              ],
+              "description": "Chế độ đồng bộ."
+            }
+          },
+          "required": []
+        }
+      },
+      "priority": "HIGH",
+      "related_skills": [
+        "SKILL_FORGE",
+        "GLOBAL_SYSTEM_CONTEXT"
+      ],
+      "rel_path": "skills/CORE/IMPORT_SKILL/SKILL.md",
+      "deck_number": "1003",
+      "command_deck_id": "#1003"
+    },
+    "memory-management": {
+      "id": "memory-management",
+      "name_vn": "memory-management",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/memory-management/SKILL.md"
+    },
+    "neural-training": {
+      "id": "neural-training",
+      "name_vn": "neural-training",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/neural-training/SKILL.md"
+    },
+    "SKILL_WARMUP": {
+      "aliases_vn": [
+        "skill warmup"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_WARMUP",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_WARMUP"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill warmup",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/NEURAL_SYSTEM_WARMUP/SKILL.md"
+    },
+    "OFFICE_AUTOMATOR": {
+      "id": "OFFICE_AUTOMATOR",
+      "name": "Office Automator",
+      "description": "Automate Office documents (Word, Excel, PowerPoint) using OfficeCLI.",
+      "category": "CORE",
+      "domain": "CORE",
+      "rel_path": "skills/CORE/OFFICE_AUTOMATOR/SKILL.md"
+    },
+    "OMNI_EVOLUTION_FORGE": {
+      "id": "OMNI_EVOLUTION_FORGE",
+      "name_vn": "Lò Đúc Tiến Hóa Vạn Vật",
+      "version": "2.0.0 (Z-SOS Integrated)",
+      "author": "JKAI ZENITH Forge",
+      "domain": "CORE",
+      "intent_pairs": [
+        [
+          "SCAN",
+          "EVOLUTION"
+        ],
+        [
+          "PROPOSE",
+          "UPGRADE"
+        ]
+      ],
+      "aliases_vn": [
+        "tự tiến hóa",
+        "omni evolution",
+        "nâng cấp hệ thống",
+        "quét công nghệ"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "focus_area": {
+              "type": "string",
+              "description": "Lĩnh vực công nghệ cần quét và đề xuất tiến hóa."
+            }
+          },
+          "required": [
+            "focus_area"
+          ]
+        }
+      },
+      "priority": "HIGH",
+      "related_skills": [
+        "COUNCIL_OF_MINDS_DEBATE",
+        "SKILL_FORGE"
+      ],
+      "rel_path": "skills/CORE/OMNI_EVOLUTION_FORGE/SKILL.md",
+      "deck_number": "1005",
+      "command_deck_id": "#1005"
+    },
+    "pair-programming": {
+      "id": "pair-programming",
+      "name_vn": "Pair Programming",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/pair-programming/SKILL.md"
+    },
+    "performance-analysis": {
+      "id": "performance-analysis",
+      "name_vn": "performance-analysis",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/performance-analysis/SKILL.md"
+    },
+    "SKILL_POLYGLOT_MASTERY": {
+      "aliases_vn": [
+        "skill polyglot mastery"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_POLYGLOT_MASTERY",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_POLYGLOT_MASTERY"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill polyglot mastery",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/POLYGLOT_NEURAL_LINK/SKILL.md",
+      "deck_number": "1044",
+      "command_deck_id": "#1044"
+    },
+    "SKILL_QDRANT_QUEEN": {
+      "aliases_vn": [
+        "skill qdrant queen"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_QDRANT_QUEEN",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_QDRANT_QUEEN"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill qdrant queen",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/QDRANT_QUEEN_ORCHESTRATOR/SKILL.md",
+      "deck_number": "1045",
+      "command_deck_id": "#1045"
+    },
+    "reasoningbank-intelligence": {
+      "id": "reasoningbank-intelligence",
+      "name_vn": "\"ReasoningBank Intelligence\"",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/reasoningbank-intelligence/SKILL.md"
+    },
+    "REPO_SURGEON": {
+      "id": "REPO_SURGEON",
+      "name": "Repo Surgeon",
+      "description": "Safely apply AST-validated and test-verified code edits to files.",
+      "category": "CORE",
+      "domain": "CORE",
+      "rel_path": "skills/CORE/REPO_SURGEON/SKILL.md"
+    },
+    "SELF_HEALING_SENTINEL": {
+      "id": "SELF_HEALING_SENTINEL",
+      "name_vn": "Vệ Binh Tự Phục Hồi",
+      "version": "1.0.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "CORE",
+      "intent_pairs": [
+        [
+          "HEAL",
+          "SYSTEM"
+        ],
+        [
+          "REPAIR",
+          "ERROR"
+        ]
+      ],
+      "aliases_vn": [
+        "tự phục hồi",
+        "self healing",
+        "vá lỗi tự động",
+        "sentinel"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "error_context": {
+              "type": "string",
+              "description": "Bối cảnh lỗi hoặc log hệ thống cần xử lý."
+            }
+          },
+          "required": [
+            "error_context"
+          ]
+        }
+      },
+      "priority": "HIGHEST",
+      "related_skills": [
+        "SYSTEM_XRAY_MONITOR",
+        "MULTI_LAYER_SURGERY"
+      ],
+      "rel_path": "skills/CORE/SELF_HEALING_SENTINEL/SKILL.md"
+    },
+    "SKILL_SEMANTIC_READ": {
+      "aliases_vn": [
+        "skill semantic read"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_SEMANTIC_READ",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_SEMANTIC_READ"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill semantic read",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/SEMANTIC_DEEP_READER/SKILL.md",
+      "deck_number": "1050",
+      "command_deck_id": "#1050"
+    },
+    "ANALYZE_LARGE_FILE": {
+      "aliases_vn": [
+        "skill sequential read",
+        "doc file lon",
+        "phan tich file lon"
+      ],
+      "author": "Antigravity Architect",
+      "domain": "CORE",
+      "id": "ANALYZE_LARGE_FILE",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "ANALYZE_LARGE_FILE"
+        ]
+      ],
+      "name_vn": "Kỹ năng đọc và phân tích tệp tin siêu lớn tuần tự",
+      "priority": "HIGH",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/SEQUENTIAL_FILE_READER/SKILL.md",
+      "deck_number": "1086",
+      "command_deck_id": "#1086"
+    },
+    "SHELL_EXECUTOR": {
+      "id": "SHELL_EXECUTOR",
+      "name": "Shell Executor",
+      "description": "Run shell commands.",
+      "category": "CORE",
+      "domain": "CORE",
+      "rel_path": "skills/CORE/SHELL_EXECUTOR/SKILL.md"
+    },
+    "skill-builder": {
+      "id": "skill-builder",
+      "name_vn": "\"Skill Builder\"",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/skill-builder/SKILL.md"
+    },
+    "SKILL_AGENTIC_JUJUTSU": {
+      "aliases_vn": [
+        "skill agentic jujutsu"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_AGENTIC_JUJUTSU",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_AGENTIC_JUJUTSU"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill agentic jujutsu",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/skill_agentic_jujutsu/SKILL.md",
+      "deck_number": "1010",
+      "command_deck_id": "#1010"
+    },
+    "agent-agentic-payments": {
+      "id": "agent-agentic-payments",
+      "name_vn": "agent-agentic-payments",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/skill_agentic_payments/SKILL.md"
+    },
+    "SKILL_FORGE": {
+      "id": "SKILL_FORGE",
+      "name_vn": "Lò Đúc Kỹ Năng Sovereign",
+      "version": "32.0.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "CORE",
+      "intent_pairs": [
+        [
+          "FORGE",
+          "SKILL"
+        ],
+        [
+          "CREATE",
+          "CAPABILITY"
+        ]
+      ],
+      "aliases_vn": [
+        "lò đúc",
+        "tạo kỹ năng",
+        "skill forge",
+        "kiến tạo năng lực"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "skill_description": {
+              "type": "string",
+              "description": "Mô tả chi tiết năng lực của kỹ năng cần kiến tạo."
+            }
+          },
+          "required": [
+            "skill_description"
+          ]
+        }
+      },
+      "priority": "HIGHEST",
+      "related_skills": [
+        "SYNC_KNOWLEDGE",
+        "SKILL_SYSTEM_CORE"
+      ],
+      "rel_path": "skills/CORE/SKILL_FORGE/SKILL.md"
+    },
+    "SKILL_IMAGE_PROCESSING": {
+      "aliases_vn": [
+        "skill image processing"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_IMAGE_PROCESSING",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_IMAGE_PROCESSING"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill image processing",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/skill_image_processing/SKILL.md",
+      "deck_number": "1028",
+      "command_deck_id": "#1028"
+    },
+    "SKILL_KIEMTRASUCKHOE": {
+      "aliases_vn": [
+        "skill kiemtrasuckhoe"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_KIEMTRASUCKHOE",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_KIEMTRASUCKHOE"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill kiemtrasuckhoe",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/skill_kiemtrasuckhoe/SKILL.md",
+      "deck_number": "1030",
+      "command_deck_id": "#1030"
+    },
+    "SKILL_LEGACY_SOUL": {
+      "aliases_vn": [
+        "skill legacy soul"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_LEGACY_SOUL",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_LEGACY_SOUL"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill legacy soul",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/skill_legacy_soul/SKILL.md",
+      "deck_number": "1031",
+      "command_deck_id": "#1031"
+    },
+    "SKILL_NEURAL_ARCHITECT": {
+      "aliases_vn": [
+        "skill neural architect"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_NEURAL_ARCHITECT",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_NEURAL_ARCHITECT"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill neural architect",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/skill_neural_architect/SKILL.md",
+      "deck_number": "1042",
+      "command_deck_id": "#1042"
+    },
+    "SKILL_NEURAL_AUDIT": {
+      "aliases_vn": [
+        "skill neural audit"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_NEURAL_AUDIT",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_NEURAL_AUDIT"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill neural audit",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/skill_neural_audit/SKILL.md",
+      "deck_number": "1043",
+      "command_deck_id": "#1043"
+    },
+    "SKILL_QUEEN_COORDINATOR": {
+      "aliases_vn": [
+        "skill queen coordinator"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_QUEEN_COORDINATOR",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_QUEEN_COORDINATOR"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill queen coordinator",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/skill_queen_coordinator/SKILL.md",
+      "deck_number": "1048",
+      "command_deck_id": "#1048"
+    },
+    "SKILL_SANGTAOVANHANLUC": {
+      "aliases_vn": [
+        "skill sangtaovanhanluc"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_SANGTAOVANHANLUC",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_SANGTAOVANHANLUC"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill sangtaovanhanluc",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/skill_sangtaovanhanluc/SKILL.md",
+      "deck_number": "1049",
+      "command_deck_id": "#1049"
+    },
+    "SKILL_SOVEREIGN_LOGIC": {
+      "aliases_vn": [
+        "skill sovereign logic"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_SOVEREIGN_LOGIC",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_SOVEREIGN_LOGIC"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill sovereign logic",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/skill_sovereign_logic/SKILL.md",
+      "deck_number": "1051",
+      "command_deck_id": "#1051"
+    },
+    "SKILL_TAOKYNANG": {
+      "aliases_vn": [
+        "skill taokynang"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_TAOKYNANG",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_TAOKYNANG"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill taokynang",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/skill_taokynang/SKILL.md"
+    },
+    "SKILL_TEMPLATE_MIMIC": {
+      "aliases_vn": [
+        "skill template mimic"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_TEMPLATE_MIMIC",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_TEMPLATE_MIMIC"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill template mimic",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/skill_template_mimic/SKILL.md",
+      "deck_number": "1065",
+      "command_deck_id": "#1065"
+    },
+    "SKILL_TUCAITIEN": {
+      "aliases_vn": [
+        "skill tucaitien"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_TUCAITIEN",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_TUCAITIEN"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill tucaitien",
+      "priority": "NORMAL",
+      "related_skills": [
+        "OMNI_SEARCH_ENGINE",
+        "SELF_HEALING_SENTINEL",
+        "SKILL_TUSUALOI",
+        "COGNITIVE_SCHEDULER",
+        "CAPABILITY_BROKER",
+        "REPO_SURGEON",
+        "SKILL_DECK_INDEX"
+      ],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/skill_tucaitien/SKILL.md"
+    },
+    "SKILL_SPARC": {
+      "aliases_vn": [
+        "skill sparc"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_SPARC",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_SPARC"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill sparc",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/SPARC_ENGINEERING_CORE/SKILL.md"
+    },
+    "stream-chain": {
+      "id": "stream-chain",
+      "name_vn": "stream-chain",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/stream-chain/SKILL.md"
+    },
+    "swarm-advanced": {
+      "id": "swarm-advanced",
+      "name_vn": "swarm-advanced",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/swarm-advanced/SKILL.md"
+    },
+    "swarm-orchestration": {
+      "id": "swarm-orchestration",
+      "name_vn": "swarm-orchestration",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/swarm-orchestration/SKILL.md"
+    },
+    "SKILL_DONGBOTRITHUC": {
+      "aliases_vn": [
+        "skill dongbotrithuc"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_DONGBOTRITHUC",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_DONGBOTRITHUC"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill dongbotrithuc",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/CORE/SYNC_KNOWLEDGE_QUANTUM/SKILL.md",
+      "deck_number": "1021",
+      "command_deck_id": "#1021"
+    },
+    "SYSTEM_XRAY_MONITOR": {
+      "id": "SYSTEM_XRAY_MONITOR",
+      "name_vn": "Vệ Binh X-Ray Tối Thượng",
+      "version": "1.0.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "CORE",
+      "intent_pairs": [
+        [
+          "MONITOR",
+          "SYSTEM"
+        ],
+        [
+          "DIAGNOSE",
+          "INFRASTRUCTURE"
+        ]
+      ],
+      "aliases_vn": [
+        "giám sát hệ thống",
+        "x-ray monitor",
+        "chẩn đoán nơ-ron",
+        "kiểm tra sức khỏe"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "get_diagnostics"
+              ],
+              "default": "get_diagnostics",
+              "description": "Hành động giám sát cần thực hiện."
+            }
+          },
+          "required": []
+        }
+      },
+      "priority": "HIGHEST",
+      "related_skills": [
+        "SKILL_SYSTEM_CORE",
+        "GLOBAL_SYSTEM_CONTEXT"
+      ],
+      "rel_path": "skills/CORE/SYSTEM_XRAY_MONITOR/SKILL.md"
+    },
+    "verification-quality": {
+      "id": "verification-quality",
+      "name_vn": "\"Verification & Quality Assurance\"",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/verification-quality/SKILL.md"
+    },
+    "worker-benchmarks": {
+      "id": "worker-benchmarks",
+      "name_vn": "worker-benchmarks",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/worker-benchmarks/SKILL.md"
+    },
+    "worker-integration": {
+      "id": "worker-integration",
+      "name_vn": "worker-integration",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/worker-integration/SKILL.md"
+    },
+    "workflow-automation": {
+      "id": "workflow-automation",
+      "name_vn": "workflow-automation",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/CORE/workflow-automation/SKILL.md"
+    },
+    "embeddings": {
+      "id": "embeddings",
+      "name_vn": "embeddings",
+      "version": "1.0.0",
+      "author": "Zenith Legacy",
+      "domain": "UNKNOWN",
+      "intent_pairs": [],
+      "aliases_vn": [],
+      "schema": {},
+      "priority": "NORMAL",
+      "related_skills": [],
+      "rel_path": "skills/DATA_SCIENCE/embeddings/SKILL.md"
+    },
+    "NEURAL_SANDBOX_STAGING": {
+      "id": "NEURAL_SANDBOX_STAGING",
+      "name_vn": "Phòng Thử Nghiệm Cô Lập Sandbox",
+      "version": "1.0.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "DATA_SCIENCE",
+      "intent_pairs": [
+        [
+          "RUN",
+          "SANDBOX"
+        ],
+        [
+          "TEST",
+          "CODE"
+        ]
+      ],
+      "aliases_vn": [
+        "sandbox",
+        "thử nghiệm code",
+        "môi trường cô lập",
+        "test surgery"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "code_snippet": {
+              "type": "string",
+              "description": "Đoạn mã cần thực thi thử nghiệm."
+            },
+            "action": {
+              "type": "string",
+              "enum": [
+                "create",
+                "execute",
+                "destroy"
+              ],
+              "default": "execute",
+              "description": "Hành động sandbox."
+            }
+          },
+          "required": [
+            "code_snippet"
+          ]
+        }
+      },
+      "priority": "HIGH",
+      "related_skills": [
+        "SKILL_SYSTEM_CORE",
+        "NEURAL_LINK_AGGREGATOR"
+      ],
+      "rel_path": "skills/DATA_SCIENCE/NEURAL_SANDBOX_STAGING/SKILL.md"
+    },
+    "NEURAL_VISION_AUDIT": {
+      "id": "NEURAL_VISION_AUDIT",
+      "name_vn": "Mắt Thần Thấu Thị Giao Diện",
+      "version": "1.2.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "DATA_SCIENCE",
+      "intent_pairs": [
+        [
+          "CAPTURE",
+          "VISION"
+        ],
+        [
+          "AUDIT",
+          "INTERFACE"
+        ]
+      ],
+      "aliases_vn": [
+        "chụp ảnh màn hình",
+        "screenshot",
+        "audit giao diện",
+        "neural eye",
+        "thị giác máy tính web"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "Địa chỉ web cần thấu thị."
+            }
+          },
+          "required": [
+            "url"
+          ]
+        }
+      },
+      "priority": "HIGH",
+      "related_skills": [
+        "SUPER_DATA_SCIENCE",
+        "WEB_PATHFINDER"
+      ],
+      "rel_path": "skills/DATA_SCIENCE/NEURAL_VISION_AUDIT/SKILL.md",
+      "deck_number": "2002",
+      "command_deck_id": "#2002"
+    },
+    "noi_chuyen_voi_AI": {
+      "id": "noi_chuyen_voi_AI",
+      "name_vn": "Nói Chuyện Với AI",
+      "version": "1.5.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "DATA_SCIENCE",
+      "intent_pairs": [
+        [
+          "SUMMON",
+          "GODS"
+        ],
+        [
+          "AGGREGATE",
+          "INTELLIGENCE"
+        ]
+      ],
+      "aliases_vn": [
+        "neural link",
+        "hợp nhất AI",
+        "triệu hồi AI",
+        "siêu AI aggregator",
+        "nói chuyện với AI"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "goal": {
+              "type": "string",
+              "description": "Mục tiêu hoặc câu hỏi cần các Siêu AI giải quyết."
+            },
+            "preferred_provider": {
+              "type": "string",
+              "enum": [
+                "openai",
+                "anthropic",
+                "google",
+                "deepseek"
+              ],
+              "description": "Nhà cung cấp ưu tiên."
+            }
+          },
+          "required": [
+            "goal"
+          ]
+        }
+      },
+      "priority": "HIGHEST",
+      "related_skills": [
+        "SAFLA_MEMORY_ENGINE",
+        "GLOBAL_SYSTEM_CONTEXT"
+      ],
+      "rel_path": "skills/DATA_SCIENCE/noi_chuyen_voi_AI/SKILL.md"
+    },
+    "SAFLA_MEMORY_ENGINE": {
+      "id": "SAFLA_MEMORY_ENGINE",
+      "name_vn": "Cỗ Máy Bộ Nhớ Tự Thức SAFLA",
+      "version": "4.4.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "DATA_SCIENCE",
+      "intent_pairs": [
+        [
+          "ASSIMILATE",
+          "MEMORY"
+        ],
+        [
+          "RECALL",
+          "EXPERIENCE"
+        ]
+      ],
+      "aliases_vn": [
+        "bộ nhớ tự thức",
+        "safla memory",
+        "truy hồi ký ức",
+        "ghi nhớ trải nghiệm"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "assimilate",
+                "recall",
+                "forge_concept"
+              ],
+              "description": "Hành động bộ nhớ."
+            },
+            "text": {
+              "type": "string",
+              "description": "Nội dung cần ghi nhớ hoặc query truy hồi."
+            },
+            "tier": {
+              "type": "string",
+              "enum": [
+                "episodic",
+                "semantic"
+              ],
+              "default": "episodic",
+              "description": "Tầng bộ nhớ (Sự kiện hoặc Khái niệm)."
+            }
+          },
+          "required": [
+            "action"
+          ]
+        }
+      },
+      "priority": "HIGHEST",
+      "related_skills": [
+        "NEURAL_LINK_AGGREGATOR",
+        "GLOBAL_SYSTEM_CONTEXT"
+      ],
+      "rel_path": "skills/DATA_SCIENCE/SAFLA_MEMORY_ENGINE/SKILL.md",
+      "deck_number": "2003",
+      "command_deck_id": "#2003"
+    },
+    "SUPER_DATA_SCIENCE": {
+      "id": "SUPER_DATA_SCIENCE",
+      "name_vn": "Siêu Năng Lực Khoa Học Dữ Liệu",
+      "version": "5.0.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "DATA_SCIENCE",
+      "intent_pairs": [
+        [
+          "ANALYZE",
+          "DATA"
+        ],
+        [
+          "TRAIN",
+          "AI"
+        ]
+      ],
+      "aliases_vn": [
+        "phân tích dữ liệu",
+        "auto ml",
+        "thị giác máy tính",
+        "khoa học dữ liệu",
+        "data science elite"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "phan_tich_du_lieu_elite",
+                "huan_luyen_ai_cap_toc",
+                "thi_giac_may_tinh"
+              ],
+              "description": "Hành động khoa học dữ liệu."
+            },
+            "data_path": {
+              "type": "string",
+              "description": "Đường dẫn đến tệp dữ liệu."
+            },
+            "image_path": {
+              "type": "string",
+              "description": "Đường dẫn đến tệp ảnh (cho Computer Vision)."
+            }
+          },
+          "required": [
+            "action"
+          ]
+        }
+      },
+      "priority": "HIGH",
+      "related_skills": [
+        "NEURAL_LINK_AGGREGATOR",
+        "NEURAL_SANDBOX_STAGING"
+      ],
+      "rel_path": "skills/DATA_SCIENCE/SUPER_DATA_SCIENCE/SKILL.md",
+      "deck_number": "2004",
+      "command_deck_id": "#2004"
+    },
+    "WEB_LOGIC_FORGE": {
+      "id": "WEB_LOGIC_FORGE",
+      "name_vn": "Lò Đúc Logic Web Elite",
+      "version": "1.0.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "DATA_SCIENCE",
+      "intent_pairs": [
+        [
+          "FORGE",
+          "WEB_LOGIC"
+        ],
+        [
+          "CREATE",
+          "WEB_SKILL"
+        ]
+      ],
+      "aliases_vn": [
+        "đúc logic web",
+        "web forge",
+        "tạo kỹ năng web",
+        "neural eye forge"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "domain": {
+              "type": "string",
+              "description": "Phân vùng ứng dụng."
+            },
+            "skill_name": {
+              "type": "string",
+              "description": "Tên kỹ năng cần đúc."
+            },
+            "capability": {
+              "type": "string",
+              "description": "Mô tả năng lực của kỹ năng."
+            },
+            "code": {
+              "type": "string",
+              "description": "Mã nguồn Python cần đúc."
+            }
+          },
+          "required": [
+            "domain",
+            "skill_name",
+            "capability",
+            "code"
+          ]
+        }
+      },
+      "priority": "MEDIUM",
+      "related_skills": [
+        "SKILL_FORGE",
+        "NEURAL_LINK_AGGREGATOR"
+      ],
+      "rel_path": "skills/DATA_SCIENCE/WEB_LOGIC_FORGE/SKILL.md"
+    },
+    "SKILL_INSTANT_FORGE": {
+      "aliases_vn": [
+        "skill instant forge"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_INSTANT_FORGE",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_INSTANT_FORGE"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill instant forge",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/DEVOPS/MICROSERVICE_FORGE/SKILL.md",
+      "deck_number": "1029",
+      "command_deck_id": "#1029"
+    },
+    "SKILL_GIAM_SAT_HE_THONG": {
+      "aliases_vn": [
+        "skill giam sat he thong"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_GIAM_SAT_HE_THONG",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_GIAM_SAT_HE_THONG"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill giam sat he thong",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/DEVOPS/skill_giam_sat_he_thong/SKILL.md",
+      "deck_number": "1026",
+      "command_deck_id": "#1026"
+    },
+    "SKILL_QUANTRIHETHONG": {
+      "aliases_vn": [
+        "skill quantrihethong"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_QUANTRIHETHONG",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_QUANTRIHETHONG"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill quantrihethong",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/DEVOPS/skill_quantrihethong/SKILL.md",
+      "deck_number": "1047",
+      "command_deck_id": "#1047"
+    },
+    "SKILL_V3_PERFORMANCE": {
+      "aliases_vn": [
+        "skill v3 performance"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_V3_PERFORMANCE",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_V3_PERFORMANCE"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill v3 performance",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/DEVOPS/skill_v3_performance/SKILL.md",
+      "deck_number": "1068",
+      "command_deck_id": "#1068"
+    },
+    "SKILL_XRAY_MONITOR": {
+      "aliases_vn": [
+        "skill xray monitor"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_XRAY_MONITOR",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_XRAY_MONITOR"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill xray monitor",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/DEVOPS/skill_xray_monitor/SKILL.md",
+      "deck_number": "1070",
+      "command_deck_id": "#1070"
+    },
+    "SYSTEM_CORE_EXECUTOR": {
+      "id": "SYSTEM_CORE_EXECUTOR",
+      "name_vn": "Hệ Vận Động Cốt Lõi",
+      "version": "2.5.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "DEVOPS",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SYSTEM_CORE"
+        ],
+        [
+          "MANAGE",
+          "FILESYSTEM"
+        ]
+      ],
+      "aliases_vn": [
+        "hệ vận động",
+        "core executor",
+        "quản lý tệp tin",
+        "thực thi lệnh"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "list_dir",
+                "view_file",
+                "write_to_file",
+                "replace_file_content",
+                "run_command",
+                "grep_search"
+              ],
+              "description": "Hành động hệ thống cần thực thi."
+            },
+            "path": {
+              "type": "string",
+              "description": "Đường dẫn mục tiêu."
+            }
+          },
+          "required": [
+            "action"
+          ]
+        }
+      },
+      "priority": "HIGHEST",
+      "related_skills": [
+        "MULTI_LAYER_SURGERY",
+        "SEARCH_WEB_GLOBAL"
+      ],
+      "rel_path": "skills/DEVOPS/SYSTEM_CORE_EXECUTOR/SKILL.md",
+      "deck_number": "1090",
+      "command_deck_id": "#1090"
+    },
+    "TEST_DRIVEN_DEVELOPMENT": {
+      "id": "TEST_DRIVEN_DEVELOPMENT",
+      "name_vn": "Phát triển Hướng Kiểm thử",
+      "version": "1.0.0",
+      "domain": "DEVOPS",
+      "intent_pairs": [
+        [
+          "CREATE",
+          "TEST"
+        ],
+        [
+          "ANALYZE",
+          "CODE"
+        ]
+      ],
+      "aliases_vn": [
+        "phát triển hướng kiểm thử",
+        "TDD",
+        "red green refactor"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "string",
+              "description": "Đối tượng hoặc tính năng cần triển khai kiểm thử"
+            }
+          },
+          "required": [
+            "target"
+          ]
+        }
+      },
+      "assigned_agent": "agent_executor_alpha.md",
+      "priority": "HIGH",
+      "rel_path": "skills/DEVOPS/test-driven-development/SKILL.md",
+      "deck_number": "1080",
+      "command_deck_id": "#1080"
+    },
+    "FINANCE_CASHFLOW_DIAGNOSIS": {
+      "id": "FINANCE_CASHFLOW_DIAGNOSIS",
+      "name_vn": "Chẩn Đoán Dòng Tiền Tài Chính",
+      "version": "1.0.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "FINANCE",
+      "intent_pairs": [
+        [
+          "DIAGNOSE",
+          "CASHFLOW"
+        ],
+        [
+          "ANALYZE",
+          "FINANCE"
+        ]
+      ],
+      "aliases_vn": [
+        "chẩn đoán dòng tiền",
+        "cashflow diagnosis",
+        "phân tích tài chính"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Yêu cầu chẩn đoán dòng tiền hoặc nguồn dữ liệu."
+            }
+          },
+          "required": [
+            "query"
+          ]
+        }
+      },
+      "priority": "NORMAL",
+      "related_skills": [
+        "TECH_ANALYSIS_ENGINE",
+        "WHALE_TRACKER_OSINT"
+      ],
+      "rel_path": "skills/FINANCE/FINANCE_CASHFLOW_DIAGNOSIS/SKILL.md"
+    },
+    "FIN_02_TECH_ANALYSIS": {
+      "id": "FIN_02_TECH_ANALYSIS",
+      "name_vn": "Phân Tích Kỹ Thuật Elite",
+      "version": "1.0.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "FINANCE",
+      "intent_pairs": [
+        [
+          "ANALYZE",
+          "TECHNICAL"
+        ],
+        [
+          "PREDICT",
+          "MARKET"
+        ]
+      ],
+      "aliases_vn": [
+        "phân tích kỹ thuật",
+        "tech analysis",
+        "soi kèo",
+        "dự báo thị trường"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "description": "Cặp giao dịch hoặc mã cổ phiếu cần phân tích (VD: BTC/USDT)."
+            }
+          },
+          "required": [
+            "query"
+          ]
+        }
+      },
+      "priority": "NORMAL",
+      "related_skills": [
+        "FIN_01_CASHFLOW",
+        "AGENT-TRADING-PREDICTOR"
+      ],
+      "rel_path": "skills/FINANCE/TECH_ANALYSIS_ENGINE/SKILL.md"
+    },
+    "SKILL_HUEIC_TAO_SKILL_DE_XUAT_THEO_FORM": {
+      "aliases_vn": [
+        "skill Hueic tao skill de xuat theo form"
+      ],
+      "author": "Zenith Forge Auto",
+      "domain": "CORE",
+      "id": "SKILL_HUEIC_TAO_SKILL_DE_XUAT_THEO_FORM",
+      "intent_pairs": [
+        [
+          "EXECUTE",
+          "SKILL_HUEIC_TAO_SKILL_DE_XUAT_THEO_FORM"
+        ]
+      ],
+      "name_vn": "Kỹ năng Skill hueic tao skill de xuat theo form",
+      "priority": "NORMAL",
+      "related_skills": [],
+      "version": "1.0.0",
+      "rel_path": "skills/HUEIC_PROCESS/skill_Hueic_tao_skill_de_xuat_theo_form/SKILL.md",
+      "deck_number": "7001",
+      "command_deck_id": "#7001"
+    },
+    "AUTONOMOUS_RESEARCHER": {
+      "id": "AUTONOMOUS_RESEARCHER",
+      "name_vn": "Đặc Vụ Nghiên Cứu Tự Trị",
+      "version": "1.6.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "RESEARCH",
+      "intent_pairs": [
+        [
+          "RESEARCH",
+          "DEEP_DIVE"
+        ],
+        [
+          "ANALYZE",
+          "TOPIC"
+        ]
+      ],
+      "aliases_vn": [
+        "nghiên cứu sâu",
+        "autonomous researcher",
+        "tầm soát tri thức",
+        "báo cáo nghiên cứu"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "topic": {
+              "type": "string",
+              "description": "Chủ đề cần nghiên cứu chuyên sâu."
+            }
+          },
+          "required": [
+            "topic"
+          ]
+        }
+      },
+      "priority": "HIGH",
+      "related_skills": [
+        "SEARCH_WEB_GLOBAL",
+        "SYNC_KNOWLEDGE"
+      ],
+      "rel_path": "skills/RESEARCH/AUTONOMOUS_RESEARCHER/SKILL.md",
+      "deck_number": "4001",
+      "command_deck_id": "#4001"
+    },
+    "GITHUB_SCANNER": {
+      "id": "GITHUB_SCANNER",
+      "name": "GitHub Trend Scanner",
+      "description": "Quét và phân tích xu hướng các kho lưu trữ (repositories) trên GitHub theo thời gian thực.",
+      "intent": "Tìm kiếm và tổng hợp các dự án GitHub nổi bật trong tháng 05/2026.",
+      "rel_path": "skills/RESEARCH/GITHUB_SCANNER/SKILL.md"
+    },
+    "SEARCH_WEB_GLOBAL": {
+      "id": "SEARCH_WEB_GLOBAL",
+      "name_vn": "Siêu Tìm Kiếm Zenith",
+      "version": "2.0.0",
+      "author": "Antigravity Architect",
+      "domain": "RESEARCH",
+      "intent_pairs": [
+        [
+          "SEARCH",
+          "NEWS"
+        ],
+        [
+          "SEARCH",
+          "INFO"
+        ],
+        [
+          "RESEARCH",
+          "TOPIC"
+        ],
+        [
+          "ANALYZE",
+          "DATA"
+        ]
+      ],
+      "aliases_vn": [
+        "siêu tìm kiếm",
+        "truy tìm thông tin",
+        "tìm kiếm đa kênh",
+        "trinh sát internet",
+        "hóng biến"
+      ],
+      "priority": "CRITICAL",
+      "related_skills": [
+        "SUMMARIZE_DOC_ELITE",
+        "TRANSLATE_ZENITH",
+        "DEEP_RESEARCH"
+      ],
+      "rel_path": "skills/RESEARCH/SEARCH_WEB_GLOBAL/SKILL.md"
+    },
+    "SKILL_STRATEGIC_RECON": {
+      "aliases_vn": [
+        "chiến lược trinh sát",
+        "trinh sát đệ quy",
+        "strategic recon"
+      ],
+      "author": "Antigravity Architect",
+      "domain": "RESEARCH",
+      "id": "SKILL_STRATEGIC_RECON",
+      "intent_pairs": [
+        [
+          "STRATEGIC",
+          "RECON"
+        ],
+        [
+          "DEEP",
+          "RESEARCH"
+        ]
+      ],
+      "name_vn": "Trinh Sát Chiến Lược Đa Chiều",
+      "priority": "HIGH",
+      "related_skills": [
+        "SEARCH_WEB_GLOBAL",
+        "SKILL_THITHU_THANH_DIA"
+      ],
+      "version": "2.0.0",
+      "rel_path": "skills/RESEARCH/skill_strategic_recon/SKILL.md"
+    },
+    "SPEC_DRIVEN_DEVELOPMENT": {
+      "id": "SPEC_DRIVEN_DEVELOPMENT",
+      "name_vn": "Phát triển Hướng Đặc tả",
+      "version": "1.0.0",
+      "domain": "RESEARCH",
+      "intent_pairs": [
+        [
+          "CREATE",
+          "SPEC"
+        ],
+        [
+          "ANALYZE",
+          "REQUIREMENT"
+        ]
+      ],
+      "aliases_vn": [
+        "phát triển hướng đặc tả",
+        "spec driven",
+        "viết đặc tả",
+        "tạo PRD"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "feature": {
+              "type": "string",
+              "description": "Mô tả tính năng hoặc yêu cầu đầu vào"
+            }
+          },
+          "required": [
+            "feature"
+          ]
+        }
+      },
+      "assigned_agent": "agent_planner.md",
+      "priority": "HIGH",
+      "rel_path": "skills/RESEARCH/spec-driven-development/SKILL.md",
+      "deck_number": "4010",
+      "command_deck_id": "#4010"
+    },
+    "STEALTH_WEB_NAVIGATOR": {
+      "id": "STEALTH_WEB_NAVIGATOR",
+      "name_vn": "Đặc Vụ Ẩn Danh Zenith",
+      "version": "1.0.0",
+      "author": "Antigravity Architect",
+      "domain": "RESEARCH",
+      "intent_pairs": [
+        [
+          "BROWSE",
+          "STEALTH"
+        ],
+        [
+          "NAVIGATE",
+          "ANTIBOT"
+        ],
+        [
+          "SCRAPE",
+          "CLOUDFLARE"
+        ],
+        [
+          "ACCESS",
+          "PROTECTED"
+        ],
+        [
+          "BYPASS",
+          "CAPTCHA"
+        ],
+        [
+          "RESEARCH",
+          "PROTECTED_SITE"
+        ]
+      ],
+      "aliases_vn": [
+        "duyệt ẩn danh",
+        "vượt cloudflare",
+        "vượt captcha",
+        "trình duyệt ẩn",
+        "stealth browse",
+        "dò đường ẩn danh",
+        "đặc vụ web"
+      ],
+      "priority": "HIGH",
+      "related_skills": [
+        "SEARCH_WEB_GLOBAL",
+        "WEB_PATHFINDER"
+      ],
+      "hardware_role": "PLANNER",
+      "rel_path": "skills/RESEARCH/STEALTH_WEB_NAVIGATOR/SKILL.md"
+    },
+    "WEB_PATHFINDER": {
+      "id": "WEB_PATHFINDER",
+      "name_vn": "Hoa Tiêu Dẫn Đường Web",
+      "version": "3.6.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "RESEARCH",
+      "intent_pairs": [
+        [
+          "NAVIGATE",
+          "WEB"
+        ],
+        [
+          "FIND",
+          "PATH"
+        ]
+      ],
+      "aliases_vn": [
+        "dẫn đường web",
+        "web pathfinder",
+        "hoa tiêu web",
+        "semantic navigation"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "url": {
+              "type": "string",
+              "description": "Địa chỉ khởi đầu."
+            },
+            "goal": {
+              "type": "string",
+              "description": "Mục tiêu cần tìm hoặc hành động cần thực hiện."
+            }
+          },
+          "required": [
+            "url",
+            "goal"
+          ]
+        }
+      },
+      "priority": "HIGH",
+      "related_skills": [
+        "SEARCH_WEB_GLOBAL",
+        "AUTONOMOUS_RESEARCHER"
+      ],
+      "rel_path": "skills/RESEARCH/WEB_PATHFINDER/SKILL.md"
+    },
+    "CODE_REVIEW_AND_QUALITY": {
+      "id": "CODE_REVIEW_AND_QUALITY",
+      "name_vn": "Rà soát chất lượng và kiểm toán mã nguồn",
+      "version": "1.0.0",
+      "domain": "SECURITY",
+      "intent_pairs": [
+        [
+          "ANALYZE",
+          "CODE"
+        ],
+        [
+          "REVIEW",
+          "CODE"
+        ]
+      ],
+      "aliases_vn": [
+        "nghiệm thu code",
+        "code review",
+        "chất lượng code"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "target": {
+              "type": "string",
+              "description": "Đối tượng hoặc phạm vi mã nguồn cần review"
+            }
+          },
+          "required": [
+            "target"
+          ]
+        }
+      },
+      "assigned_agent": "agent_critic.md",
+      "priority": "HIGH",
+      "rel_path": "skills/SECURITY/code-review-and-quality/SKILL.md",
+      "deck_number": "6015",
+      "command_deck_id": "#6015"
+    },
+    "GHOST_STEALTH_PROTOCOL": {
+      "id": "GHOST_STEALTH_PROTOCOL",
+      "name_vn": "Giao Thức Tàng Hình Ghost",
+      "version": "1.0.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "SECURITY",
+      "intent_pairs": [
+        [
+          "ACTIVATE",
+          "STEALTH"
+        ],
+        [
+          "ERASE",
+          "TRACES"
+        ]
+      ],
+      "aliases_vn": [
+        "chế độ tàng hình",
+        "xóa dấu vết",
+        "ẩn danh danh tính",
+        "ghost protocol"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "erase_traces",
+                "ghost_masking",
+                "stealth_mode"
+              ],
+              "description": "Hành động tàng hình."
+            },
+            "query": {
+              "type": "string",
+              "description": "Nội dung cần ngụy trang."
+            }
+          },
+          "required": [
+            "action"
+          ]
+        }
+      },
+      "priority": "HIGHEST",
+      "related_skills": [
+        "NEURAL_LINK_AGGREGATOR",
+        "QUANTUM_CODE_AUDIT"
+      ],
+      "rel_path": "skills/SECURITY/GHOST_STEALTH_PROTOCOL/SKILL.md",
+      "deck_number": "6001",
+      "command_deck_id": "#6001"
+    },
+    "MULTI_LAYER_SURGERY": {
+      "id": "MULTI_LAYER_SURGERY",
+      "name_vn": "Phẫu Thuật Đa Tầng Quantum",
+      "version": "31.5.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "SECURITY",
+      "intent_pairs": [
+        [
+          "SURGERY",
+          "MULTI_POINT"
+        ],
+        [
+          "EDIT",
+          "CODE_STRUCTURE"
+        ]
+      ],
+      "aliases_vn": [
+        "phẫu thuật đa tầng",
+        "quantum surgery",
+        "chỉnh sửa mã nguồn",
+        "multi-point edit"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "path": {
+              "type": "string",
+              "description": "Đường dẫn tuyệt đối hoặc tương đối tới tệp tin cần phẫu thuật."
+            },
+            "chunks": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "target": {
+                    "type": "string",
+                    "description": "Đoạn mã mục tiêu cần thay thế (phải khớp chính xác 100%)."
+                  },
+                  "replacement": {
+                    "type": "string",
+                    "description": "Đoạn mã mới sẽ được cấy ghép vào."
+                  }
+                },
+                "required": [
+                  "target",
+                  "replacement"
+                ]
+              }
+            },
+            "validate_syntax": {
+              "type": "boolean",
+              "default": true,
+              "description": "Tự động kiểm tra cú pháp Python sau khi phẫu thuật."
+            }
+          },
+          "required": [
+            "path",
+            "chunks"
+          ]
+        }
+      },
+      "priority": "HIGHEST",
+      "related_skills": [
+        "SKILL_SYSTEM_CORE",
+        "QUANTUM_CODE_AUDIT"
+      ],
+      "rel_path": "skills/SECURITY/MULTI_LAYER_SURGERY/SKILL.md",
+      "deck_number": "6002",
+      "command_deck_id": "#6002"
+    },
+    "QUANTUM_CODE_AUDIT": {
+      "id": "QUANTUM_CODE_AUDIT",
+      "name_vn": "Thẩm Định Mã Nguồn Quantum",
+      "version": "31.0.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "SECURITY",
+      "intent_pairs": [
+        [
+          "AUDIT",
+          "CODE"
+        ],
+        [
+          "SCAN",
+          "VULNERABILITY"
+        ]
+      ],
+      "aliases_vn": [
+        "thẩm định mã nguồn",
+        "code audit",
+        "quét lỗ hổng",
+        "quantum audit",
+        "kiểm tra code"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "file_path": {
+              "type": "string",
+              "description": "Đường dẫn tuyệt đối đến tệp mã nguồn cần thẩm định."
+            }
+          },
+          "required": [
+            "file_path"
+          ]
+        }
+      },
+      "priority": "HIGHEST",
+      "related_skills": [
+        "MULTI_LAYER_SURGERY",
+        "NEURAL_SANDBOX_STAGING"
+      ],
+      "rel_path": "skills/SECURITY/QUANTUM_CODE_AUDIT/SKILL.md",
+      "deck_number": "6003",
+      "command_deck_id": "#6003"
+    },
+    "SECURITY-AUDIT": {
+      "id": "SECURITY-AUDIT",
+      "name_vn": "Thẩm định An ninh Hệ thống",
+      "version": "2.0.0",
+      "author": "JKAI ZENITH Forge",
+      "domain": "SECURITY",
+      "intent_pairs": [
+        [
+          "AUDIT",
+          "SECURITY"
+        ],
+        [
+          "SCAN",
+          "VULNERABILITY"
+        ]
+      ],
+      "aliases_vn": [
+        "kiểm tra an ninh",
+        "audit security",
+        "quét lỗ hổng"
+      ],
+      "schema": {
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "target_path": {
+              "type": "string",
+              "description": "Đường dẫn thư mục hoặc tệp tin cần thẩm định."
+            }
+          },
+          "required": [
+            "target_path"
+          ]
+        }
+      },
+      "priority": "HIGH",
+      "related_skills": [
+        "CODE_AUDIT_ELITE",
+        "SYNC_KNOWLEDGE"
+      ],
+      "rel_path": "skills/SECURITY/security-audit/SKILL.md",
+      "deck_number": "6004",
+      "command_deck_id": "#6004"
+    },
+    "SYNC_KNOWLEDGE_QUANTUM": {
+      "name": "dong_bo_tri_thuc",
+      "description": "[SOP v15.0] Hệ thống Đồng hóa Tri thức v15.0 - Đọc, tư duy phản biện và chắt lọc tinh hoa từ kho tài liệu ngoại lai.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "description": "Giới hạn số lượng tệp tin xử lý (mặc định 1000).",
+            "default": 1000
+          },
+          "profile": {
+            "type": "string",
+            "description": "Cấu hình đồng hóa (mặc định UNIFIED_ELITE).",
+            "default": "UNIFIED_ELITE"
+          },
+          "task_id": {
+            "type": "string",
+            "description": "ID nhiệm vụ để báo cáo log lên Dashboard."
+          }
+        }
+      },
+      "id": "SYNC_KNOWLEDGE_QUANTUM",
+      "rel_path": "skills/CORE/SYNC_KNOWLEDGE_QUANTUM/schema.json"
+    },
+    "SKILL_MIKROTIK_V6_EXPERT": {
+      "aliases_vn": [
+        "cau hinh mikrotik v6",
+        "mikrotik routeros v6",
+        "routeros 6 setup",
+        "quan tri mikrotik v6"
+      ],
+      "author": "JKAI Sovereign Knowledge Forge",
+      "domain": "DEVOPS",
+      "id": "SKILL_MIKROTIK_V6_EXPERT",
+      "intent_pairs": [
+        [
+          "CONFIGURE",
+          "SKILL_MIKROTIK_V6_EXPERT"
+        ],
+        [
+          "EXECUTE",
+          "SKILL_MIKROTIK_V6_EXPERT"
+        ]
+      ],
+      "name_vn": "Kỹ năng Chuyên gia Cấu hình MikroTik RouterOS v6",
+      "priority": "HIGH",
+      "related_skills": [
+        "skill_quantrihethong"
+      ],
+      "version": "1.0.0",
+      "rel_path": "skills/DEVOPS/skill_mikrotik_v6_expert/SKILL.md",
+      "deck_number": "1102",
+      "command_deck_id": "#1102"
+    }
+  },
+  "last_sync": 1792299799.8960397
 }

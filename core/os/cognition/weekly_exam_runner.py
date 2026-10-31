@@ -156,48 +156,86 @@ class WeeklyExamRunner:
         - dry_run=False: Chạy thật với trần ngân sách live_budget_seconds <= 1800s.
         """
         start_time = time.time()
+        if not dry_run and not 0 < live_budget_seconds <= 1800:
+            raise ValueError("live_budget_seconds must be between 1 and 1800")
         tasks = self.load_exam(variant)
         exam_run_id = f"weekly_exam_run_{variant.upper()}_{int(start_time)}"
 
         group_results: Dict[str, Dict[str, Any]] = {
-            "A_MATH_FIDELITY": {"total": 0, "passed": 0},
-            "B_ANAPHORA_GROUNDING": {"total": 0, "passed": 0},
-            "C_RETRIEVAL_CITATION": {"total": 0, "passed": 0},
-            "D_TOOL_AND_FILEOPS": {"total": 0, "passed": 0},
-            "E_MASTER_COMMUNICATION": {"total": 0, "passed": 0},
+            "A_MATH_FIDELITY": {"total": 0, "executed": 0, "passed": 0},
+            "B_ANAPHORA_GROUNDING": {"total": 0, "executed": 0, "passed": 0},
+            "C_RETRIEVAL_CITATION": {"total": 0, "executed": 0, "passed": 0},
+            "D_TOOL_AND_FILEOPS": {"total": 0, "executed": 0, "passed": 0},
+            "E_MASTER_COMMUNICATION": {"total": 0, "executed": 0, "passed": 0},
         }
 
         task_traces = []
         total_passed = 0
+        executed_tasks = 0
+        plumbing_passed = 0
+        budget_exceeded = False
 
         for task in tasks:
+            elapsed = time.time() - start_time
             task_id = task.get("id", "unknown")
             group = task.get("group", "UNKNOWN")
             prompt = task.get("prompt", "")
             expected = task.get("expected")
             rubric = task.get("rubric")
 
+            if group not in group_results:
+                group_results[group] = {"total": 0, "executed": 0, "passed": 0}
+            group_results[group]["total"] += 1
+
+            if not dry_run and elapsed >= live_budget_seconds:
+                budget_exceeded = True
+                task_traces.append({
+                    "exam_run_id": exam_run_id,
+                    "task_id": task_id,
+                    "group": group,
+                    "passed": False,
+                    "reason": "HARD_BUDGET_EXCEEDED",
+                })
+                continue
+
+            executed_tasks += 1
+            group_results[group]["executed"] += 1
             passed = False
             reason = "EVALUATED"
 
-            if group not in group_results:
-                group_results[group] = {"total": 0, "passed": 0}
-            group_results[group]["total"] += 1
-
             # Sinh phản hồi dựa trên chế độ dry_run hay live
             if dry_run:
-                # Simulation chuẩn xác để kiểm thử hạ tầng (PLUMBING_ONLY)
-                if rubric:
+                # Chế độ PLUMBING_ONLY: Tuyệt đối KHÔNG echo expected để tạo điểm giả.
+                # Chỉ kiểm tra schema hợp lệ của task và bộ chấm DeterministicRubricScorer.
+                schema_valid = bool(
+                    task_id != "unknown"
+                    and group != "UNKNOWN"
+                    and isinstance(prompt, str)
+                    and prompt.strip()
+                    and (expected is not None or isinstance(rubric, dict))
+                )
+                if group == "E_MASTER_COMMUNICATION" and isinstance(rubric, dict):
                     if rubric.get("require_clarification_question"):
-                        response = "Bạn có thể làm rõ cấu hình mạng cụ thể trên router nào không?"
+                        probe = "Bạn có thể làm rõ cấu hình mạng cụ thể trên router nào không?"
                     elif rubric.get("require_safety_refusal"):
-                        response = "Tôi từ chối thực hiện yêu cầu này vì vi phạm chính sách an toàn dữ liệu."
+                        probe = "Tôi từ chối thực hiện yêu cầu này vì vi phạm chính sách an toàn dữ liệu."
                     elif rubric.get("require_empirical_counts"):
-                        response = "Đã hoàn thành 100/100 tests passed trong 50.93s."
+                        probe = "Đã hoàn thành 100/100 tests passed trong 50.93s."
                     else:
-                        response = "Hệ thống vận hành ổn định, CPU 12%, bộ nhớ an toàn."
+                        probe = "Hệ thống vận hành ổn định, CPU 12%, bộ nhớ an toàn."
+                    rubric_ok, reason = DeterministicRubricScorer.score_response(task_id, probe, rubric)
+                    if schema_valid and rubric_ok:
+                        plumbing_passed += 1
+                        reason = "DRY_RUN_RUBRIC_PLUMBING_OK"
+                    else:
+                        reason = f"DRY_RUN_RUBRIC_PLUMBING_FAIL:{reason}"
                 else:
-                    response = str(expected)
+                    if schema_valid:
+                        plumbing_passed += 1
+                        reason = "DRY_RUN_UNSCORED_NO_LLM"
+                    else:
+                        reason = "DRY_RUN_INVALID_TASK_SCHEMA"
+                passed = False
             else:
                 # Live execution: Gọi Ollama model 3B thật (port 11434) với timeout 3s
                 # Tuyệt đối KHÔNG echo expected; nếu lỗi hoặc timeout thì fail + ghi lý do
@@ -221,18 +259,18 @@ class WeeklyExamRunner:
                     response = ""
                     reason = f"LIVE_ENGINE_ERROR_OR_TIMEOUT: {exc}"
 
-            # Chấm điểm
-            if not reason.startswith("LIVE_ENGINE_ERROR"):
-                if group == "E_MASTER_COMMUNICATION" and rubric:
-                    passed, reason = DeterministicRubricScorer.score_response(task_id, response, rubric)
-                else:
-                    exp_str = str(expected).lower().strip()
-                    resp_l = response.lower().strip()
-                    passed = exp_str in resp_l or resp_l in exp_str
+                # Chấm điểm thực tế cho chế độ Live
+                if not reason.startswith("LIVE_ENGINE_ERROR"):
+                    if group == "E_MASTER_COMMUNICATION" and rubric:
+                        passed, reason = DeterministicRubricScorer.score_response(task_id, response, rubric)
+                    else:
+                        exp_str = str(expected).lower().strip()
+                        resp_l = response.lower().strip()
+                        passed = bool(resp_l) and (exp_str in resp_l or resp_l in exp_str)
 
-            if passed:
-                group_results[group]["passed"] += 1
-                total_passed += 1
+                if passed:
+                    group_results[group]["passed"] += 1
+                    total_passed += 1
 
             # Trace được gắn exam_run_id bắt buộc
             task_traces.append({
@@ -245,23 +283,37 @@ class WeeklyExamRunner:
 
         duration = round(time.time() - start_time, 3)
         total_tasks = len(tasks)
-        accuracy = round(total_passed / total_tasks, 4) if total_tasks > 0 else 0.0
-        centre, lower_ci, upper_ci = calculate_wilson_score_interval(total_passed, total_tasks, 0.95)
+        live_accuracy = round(total_passed / total_tasks, 4) if (not dry_run and total_tasks > 0) else None
+        executed_accuracy = round(total_passed / executed_tasks, 4) if (not dry_run and executed_tasks > 0) else None
+        plumbing_accuracy = round(plumbing_passed / total_tasks, 4) if (dry_run and total_tasks > 0) else None
+
+        if not dry_run:
+            centre, lower_ci, upper_ci = calculate_wilson_score_interval(total_passed, total_tasks, 0.95)
+            wilson_ci: Optional[Dict[str, float]] = {
+                "centre": centre,
+                "lower": lower_ci,
+                "upper": upper_ci,
+            }
+        else:
+            wilson_ci = None
 
         report = {
             "exam_run_id": exam_run_id,
             "variant": variant.upper(),
             "dry_run": dry_run,
-            "capability_status": "PLUMBING_ONLY" if dry_run else "LIVE_EVALUATED",
+            "capability_status": "PLUMBING_ONLY" if dry_run else ("INCOMPLETE_BUDGET_EXCEEDED" if budget_exceeded else "LIVE_EVALUATED"),
+            "budget_exceeded": budget_exceeded,
+            "live_budget_seconds": live_budget_seconds,
             "duration_seconds": duration,
             "total_tasks": total_tasks,
+            "executed_tasks": executed_tasks,
             "total_passed": total_passed,
-            "accuracy": accuracy,
-            "wilson_95_ci": {
-                "centre": centre,
-                "lower": lower_ci,
-                "upper": upper_ci,
-            },
+            "accuracy": live_accuracy,
+            "executed_accuracy": executed_accuracy,
+            "capability_score": live_accuracy if (not dry_run and not budget_exceeded) else None,
+            "plumbing_passed": plumbing_passed if dry_run else None,
+            "plumbing_accuracy": plumbing_accuracy,
+            "wilson_95_ci": wilson_ci,
             "group_breakdown": group_results,
             "recorded_at": datetime.now(timezone.utc).isoformat(),
         }
@@ -271,25 +323,54 @@ class WeeklyExamRunner:
         return report
 
     def _record_to_ledger(self, report: Dict[str, Any]) -> None:
-        prev_hash = "0" * 64
-        if self.ledger_file.exists() and self.ledger_file.stat().st_size > 0:
-            with open(self.ledger_file, "r", encoding="utf-8") as f:
-                lines = [l.strip() for l in f if l.strip()]
-                if lines:
-                    last_rec = json.loads(lines[-1])
-                    prev_hash = last_rec.get("curr_sha256", prev_hash)
+        """
+        [SOVEREIGN TELEMETRY LEDGER]
+        Ghi nhận vào sổ cái liên kết chuỗi băm (SHA-256 Chained Ledger):
+        - Có process-level OS lock chống race condition.
+        - Gọi f.flush() và os.fsync() bảo toàn dữ liệu trên đĩa.
+        - Tự động phục hồi (Recovery) nếu dòng cuối bị hỏng do partial write.
+        """
+        lock_file = str(self.ledger_file) + ".lock"
+        handle = open(lock_file, "a+", encoding="utf-8")
+        try:
+            if os.name == "nt":
+                import msvcrt
+                handle.seek(0)
+                handle.write(" ")
+                handle.flush()
+                msvcrt.locking(handle.fileno(), msvcrt.LK_LOCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
 
-        curr_data = f"{prev_hash}:{report['exam_run_id']}:{report['accuracy']}:{report['recorded_at']}"
-        curr_hash = hashlib.sha256(curr_data.encode("utf-8")).hexdigest()
+            prev_hash = "0" * 64
+            if self.ledger_file.exists() and self.ledger_file.stat().st_size > 0:
+                with open(self.ledger_file, "r", encoding="utf-8") as f:
+                    lines = [l.strip() for l in f if l.strip()]
+                # Recovery sau partial write: duyệt ngược tìm dòng JSON hợp lệ gần nhất
+                for line in reversed(lines):
+                    try:
+                        last_rec = json.loads(line)
+                        prev_hash = last_rec.get("curr_sha256", prev_hash)
+                        break
+                    except Exception:
+                        continue
 
-        ledger_entry = {
-            "prev_sha256": prev_hash,
-            "curr_sha256": curr_hash,
-            "report": report,
-        }
+            curr_data = f"{prev_hash}:{report['exam_run_id']}:{report['accuracy']}:{report['recorded_at']}"
+            curr_hash = hashlib.sha256(curr_data.encode("utf-8")).hexdigest()
 
-        with open(self.ledger_file, "a", encoding="utf-8") as f:
-            f.write(json.dumps(ledger_entry, ensure_ascii=False) + "\n")
+            ledger_entry = {
+                "prev_sha256": prev_hash,
+                "curr_sha256": curr_hash,
+                "report": report,
+            }
+
+            with open(self.ledger_file, "a", encoding="utf-8") as f:
+                f.write(json.dumps(ledger_entry, ensure_ascii=False) + "\n")
+                f.flush()
+                os.fsync(f.fileno())
+        finally:
+            handle.close()
 
 
 # ==============================================================================
@@ -308,7 +389,10 @@ def evaluate_multi_week_trend(ledger_file: str = "data/telemetry/weekly_exam_led
     with open(p, "r", encoding="utf-8") as f:
         for line in f:
             if line.strip():
-                records.append(json.loads(line)["report"])
+                try:
+                    records.append(json.loads(line)["report"])
+                except Exception:
+                    continue
 
     if len(records) < 4:
         return {
@@ -319,7 +403,14 @@ def evaluate_multi_week_trend(ledger_file: str = "data/telemetry/weekly_exam_led
         }
 
     recent_4 = records[-4:]
-    accuracies = [r["accuracy"] for r in recent_4]
+    accuracies = [
+        float(
+            r["capability_score"]
+            if r.get("capability_score") is not None
+            else (r.get("accuracy") if r.get("accuracy") is not None else (r.get("plumbing_accuracy") or 0.0))
+        )
+        for r in recent_4
+    ]
     mean_acc = round(sum(accuracies) / len(accuracies), 4)
 
     return {
@@ -327,5 +418,6 @@ def evaluate_multi_week_trend(ledger_file: str = "data/telemetry/weekly_exam_led
         "weeks_evaluated": 4,
         "mean_accuracy_4w": mean_acc,
         "weekly_accuracies": accuracies,
+        "contains_dry_run_plumbing": any(bool(r.get("dry_run", False)) for r in recent_4),
         "trend": "STABLE" if max(accuracies) - min(accuracies) <= 0.10 else "DRIFTING",
     }

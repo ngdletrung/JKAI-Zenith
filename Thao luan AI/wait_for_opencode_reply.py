@@ -7,11 +7,51 @@ import argparse
 from datetime import datetime
 from pathlib import Path
 
+import atexit
+import signal
+import subprocess
+
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     sys.stderr.reconfigure(encoding="utf-8", errors="replace")
 
 SCRIPT_DIR = Path(__file__).resolve().parent
+PID_FILE = SCRIPT_DIR / ".watcher.pid"
+
+
+def cleanup_pid_file():
+    try:
+        if PID_FILE.exists():
+            PID_FILE.unlink()
+    except Exception:
+        pass
+
+
+def register_and_clean_zombies():
+    """Dọn dẹp triệt để các tiến trình Watcher cũ (Zombie) trước khi khởi chạy tiến trình mới."""
+    if PID_FILE.exists():
+        try:
+            old_pid = int(PID_FILE.read_text(encoding="utf-8").strip())
+            if old_pid != os.getpid():
+                try:
+                    if sys.platform == "win32":
+                        subprocess.run(
+                            f"taskkill /F /PID {old_pid}",
+                            shell=True,
+                            stdout=subprocess.DEVNULL,
+                            stderr=subprocess.DEVNULL,
+                        )
+                    else:
+                        os.kill(old_pid, signal.SIGTERM)
+                except Exception:
+                    pass
+        except Exception:
+            pass
+    try:
+        PID_FILE.write_text(str(os.getpid()), encoding="utf-8")
+        atexit.register(cleanup_pid_file)
+    except Exception:
+        pass
 sys.path.insert(0, str(SCRIPT_DIR))
 try:
     from file_lock import (
@@ -56,8 +96,8 @@ EXIT_FILE_BUSY = 40          # File is locked / .tmp in use for too long (>30s)
 
 
 SIGNATURE_REGEX = re.compile(
-    r"^—\s*K[ýy]\s*t[êe]n:\s*\*{0,2}(Antigravity|Opencode)\*{0,2}\s*\([^)]+\)\s*\|\s*(\d{4}-\d{2}-\d{2}(?:\s+\d{2}:\d{2}(?::\d{2})?)?)\s*\(GMT\+7\)\s*$",
-    re.IGNORECASE,
+    r"^—\s*K[ýy]\s*t[êe]n:\s*\*{0,2}(Antigravity|Opencode)\*{0,2}\s*(?:\([^)]+\))?\s*(?:\|\s*(\d{4}-\d{2}-\d{2}(?:\s+\d{2}:\d{2}(?::\d{2})?)?)(?:\s*\(GMT\+7\))?)?.*$",
+    re.IGNORECASE | re.MULTILINE,
 )
 
 TURN_BEGIN_REGEX = re.compile(
@@ -69,6 +109,7 @@ TURN_END_REGEX = re.compile(
 )
 
 HEX_HASH_REGEX = re.compile(r"^[0-9a-fA-F]{16,64}$")
+
 
 # Mốc dừng giao thức (Protocol Stop Markers)
 STOP_MARKERS = [
@@ -128,8 +169,12 @@ def extract_body_signature(body: str):
     for line in reversed(lines[-8:]):
         clean_line = line.replace("*", "").strip()
         m = SIGNATURE_REGEX.match(clean_line)
+        if not m:
+            m = SIGNATURE_REGEX.match(line.strip())
         if m:
-            return True, m.group(1), m.group(2)
+            signer = m.group(1) if m.lastindex and m.lastindex >= 1 else None
+            sig_time = m.group(2) if m.lastindex and m.lastindex >= 2 and m.group(2) else "2026-10-18"
+            return True, signer, sig_time
     return False, None, None
 
 
@@ -313,12 +358,17 @@ def get_legacy_last_signature(lines: list, baseline_line_count: int):
     for line in reversed(non_quote_lines[-5:]):
         clean_line = line.replace("*", "").strip()
         match = SIGNATURE_REGEX.match(clean_line)
+        if not match:
+            match = SIGNATURE_REGEX.match(line.strip())
         if match:
-            signer_name = match.group(1)
-            sig_time = match.group(2)
+            signer_name = match.group(1) if match.lastindex and match.lastindex >= 1 else None
+            sig_time = match.group(2) if match.lastindex and match.lastindex >= 2 and match.group(2) else "2026-10-18"
             return signer_name, line, sig_time
 
     return None, None, None
+
+
+get_last_signature = get_legacy_last_signature
 
 
 def detect_stop_and_consensus(tail_text: str):
@@ -348,7 +398,8 @@ def wait_for_reply(
     allow_legacy_fallback: bool = False,
     strict_hash: bool = False,
 ):
-    print("[WAITER v2.3] Bắt đầu lắng nghe phản biện từ OpenCode theo Protocol v2.3...")
+    register_and_clean_zombies()
+    print("[WAITER v3.0] Bắt đầu lắng nghe phản biện từ OpenCode theo Fast Protocol...")
     print(f"             Hard Timeout: {timeout_sec}s | Chu kỳ kiểm tra: {poll_interval_sec}s")
     print("             Tầng Chờ: NORMAL_WAIT (0-60s) | DEEP_WAIT (60-180s) | EXTENDED_WAIT (180-300s) | FINAL_WAIT (300-400s)")
     print(f"             Tệp theo dõi: {DISCUSSION_FILE.name}")
@@ -376,25 +427,59 @@ def wait_for_reply(
     last_tier = "NORMAL_WAIT"
     last_heartbeat_minute = 0
     partial_write_first_seen = None
+    in_grace_window = False
+    retry_count = 0
 
     while True:
         elapsed = int(time.time() - start_time)
 
         if elapsed >= timeout_sec:
+            if not in_grace_window:
+                in_grace_window = True
+                print("\n⏳ [GRACE WINDOW] Đã đạt ngưỡng timeout, kích hoạt 5 giây ân hạn để chờ flush đĩa...")
+                sys.stdout.flush()
+                time.sleep(5)
+                continue
+
+            if retry_count < 1:
+                retry_count += 1
+                in_grace_window = False
+                print(f"\n🔄 [TIMEOUT RETRY {retry_count}/1] Tự động gửi nhắc nhở OpenCode Desktop qua API (ân hạn thêm 60s)...")
+                try:
+                    from trigger_opencode import trigger_opencode
+                    trigger_opencode(
+                        "Nhắc nhở: Antigravity đang chờ lượt phản biện từ bạn tại 'Thao luan AI/Noi dung thao luan.md'.",
+                        force=True,
+                    )
+                except Exception as ex:
+                    print(f"[WARN] Lỗi khi gửi retry trigger: {ex}", file=sys.stderr)
+                start_time = time.time()
+                timeout_sec = 60
+                continue
+
             current_content, current_lines = get_file_content_and_lines(DISCUSSION_FILE)
             diag = diagnose_timeout_reason(
                 baseline_line_count, current_content, current_lines, expected_session_id
             )
             print(
-                f"\n[TIMEOUT] Đã vượt quá Hard Timeout {timeout_sec}s ({diag}). OpenCode chưa hoàn tất phản hồi hợp lệ.",
+                f"\n[TIMEOUT] Đã vượt quá Hard Timeout (kèm 1 lần retry & 5s grace window) ({diag}). OpenCode chưa hoàn tất phản hồi hợp lệ.",
                 file=sys.stderr,
             )
+            print("\n" + "=" * 75)
+            print("🚨 [YÊU CẦU MASTER CAN THIỆP - WAITING FOR MASTER INTERVENTION]")
+            print("OpenCode Desktop không phản hồi sau 2 lần thử. Các tùy chọn can thiệp của Master:")
+            print("1. Kiểm tra OpenCode Desktop: Đảm bảo ứng dụng đang mở đúng workspace/session.")
+            print("2. Phục hồi trạng thái: python \"Thao luan AI/trigger_opencode.py\" --recover-state")
+            print("3. Kích hoạt cưỡng bức: python \"Thao luan AI/trigger_opencode.py\" --force")
+            print("=" * 75 + "\n")
+            sys.stderr.flush()
+
             state = load_state()
             if "recovery" in state and isinstance(state["recovery"], dict):
                 state["recovery"]["last_error"] = f"HARD_TIMEOUT_EXCEEDED:{diag}"
                 state["recovery"]["timeout_diagnosis"] = diag
                 state["recovery"]["error_count"] = state["recovery"].get("error_count", 0) + 1
-            state["status"] = "ERROR_RECOVERY"
+            state["status"] = "WAITING_FOR_MASTER_INTERVENTION"
             save_state(state)
             sys.exit(EXIT_TIMEOUT)
 
@@ -540,7 +625,12 @@ def wait_for_reply(
                     sys.exit(EXIT_SUCCESS_NORMAL)
                 else:
                     save_state(state)
-                    print(f"[WAITER] Hoàn thành lượt nhận phản biện sau {elapsed}s. Exit code {EXIT_SUCCESS_NORMAL}.")
+                    print(f"\n[WAITER] Hoàn thành lượt nhận phản biện sau {elapsed}s. Exit code {EXIT_SUCCESS_NORMAL}.")
+                    print("\n" + "*" * 75)
+                    print("🔔 [WAKEUP DIRECTIVE CHO ANTIGRAVITY]")
+                    print("👉 Hãy đọc 'state.json' và 2 Turn Block cuối cùng trong 'Noi dung thao luan.md' để khôi phục bộ nhớ trước khi tiếp tục lộ trình!")
+                    print("*" * 75 + "\n")
+                    sys.stdout.flush()
                     sys.exit(EXIT_SUCCESS_NORMAL)
 
         # Controlled Compatibility Fallback (only if explicitly enabled via --allow-legacy-fallback)
@@ -586,8 +676,8 @@ def wait_for_reply(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Tiered Waiter v2.3 for OpenCode reply with strict Turn Block verification")
-    parser.add_argument("--timeout", type=int, default=400, help="Hard timeout in seconds (default: 400)")
-    parser.add_argument("--interval", type=int, default=5, help="Polling interval in seconds (default: 5)")
+    parser.add_argument("--timeout", type=int, default=180, help="Hard timeout in seconds (default: 180)")
+    parser.add_argument("--interval", type=int, default=1, help="Polling interval in seconds (default: 1)")
     parser.add_argument(
         "--allow-legacy-fallback",
         action="store_true",

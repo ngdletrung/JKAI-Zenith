@@ -1,0 +1,155 @@
+﻿diff --git a/core/os/routing/compound_parser.py b/core/os/routing/compound_parser.py
+index 56261e4..599782b 100644
+--- a/core/os/routing/compound_parser.py
++++ b/core/os/routing/compound_parser.py
+@@ -1,26 +1,28 @@
+ # -*- coding: utf-8 -*-
+ """
+ ΓòöΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòù
+-Γòæ   JKAI ZENITH ΓÇö COMPOUND INTENT PARSER v1.0                      Γòæ
++Γòæ   JKAI ZENITH ΓÇö COMPOUND INTENT PARSER v2.0 (REFLEX CENTER V2)   Γòæ
+ Γòæ   Ph├ón T├ích Mß╗çnh ─Éß╗ü ─Éa Mß╗Ñc Ti├¬u & Nhß║¡n Diß╗çn Intent Phß╗⌐c Hß╗úp      Γòæ
+ ΓòÜΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓòÉΓò¥
+ *Kiß║┐n Tr├║c S╞░ Tr╞░ß╗ƒng Chß╗º ─Éß╗Öng Xß╗¡ L├╜ ─Éa Nhiß╗çm Vß╗Ñ Trong Mß╗Öt C├óu Lß╗çnh. ≡ƒº⌐≡ƒºáΓÜí*
+ """
+ 
+ import re
+-from typing import List, Tuple
++from typing import List, Tuple, Dict, Any, Optional
+ 
+ 
+ class CompoundIntentParser:
+     """
+     ≡ƒº⌐ Ph├ón t├ích c├óu phß╗⌐c cß╗ºa Master th├ánh c├íc mß╗çnh ─æß╗ü th├ánh phß║ºn ─æß╗â g├ín nh├ún ─æa t├íc vß╗Ñ.
++    Reflex Center V2: Hß╗ù trß╗ú nhß║¡n diß╗çn c├óu lß╗çnh gh├⌐p, t├ích vß║┐ ch├¡nh x├íc v├á gß║»n nh├ún intent ─æa th├ánh phß║ºn.
+     """
+ 
+     # C├íc li├¬n tß╗½ kß║┐t nß╗æi mß╗çnh ─æß╗ü phß╗⌐c hß╗úp
+-    _CONJUNCTIONS = (
+-        r"\b(?:v├á|─æß╗ông thß╗¥i|sau ─æ├│|kß║┐t hß╗úp|c├╣ng vß╗¢i|k├¿m theo|song song|rß╗ôi|and|then|also)\b",
++    _CONJUNCTIONS = [
++        r"\b(?:─æß╗ông thß╗¥i|sau ─æ├│|kß║┐t hß╗úp|c├╣ng vß╗¢i|k├¿m theo|song song|rß╗ôi|then|after that)\b",
++        r"\b(?:v├á|and)\b",
+         r"[,;\+&]"
+-    )
++    ]
+ 
+     @classmethod
+     def split_clauses(cls, goal: str) -> List[str]:
+@@ -31,15 +33,49 @@ class CompoundIntentParser:
+         # T├ích theo li├¬n tß╗½
+         pattern = "|".join(cls._CONJUNCTIONS)
+         raw_parts = re.split(pattern, goal, flags=re.IGNORECASE)
+-        clauses = [p.strip() for p in raw_parts if len(p.strip()) >= 5]
+-        
++        clauses = []
++        for p in raw_parts:
++            p_strip = p.strip()
++            # Giß╗» lß║íi c├íc vß║┐ c├│ ngh─⌐a (├¡t nhß║Ñt 4 k├╜ tß╗▒)
++            if len(p_strip) >= 4:
++                clauses.append(p_strip)
++
+         return clauses if len(clauses) > 1 else [goal.strip()]
+ 
+     @classmethod
+     def is_compound_intent(cls, goal: str) -> bool:
+         """Kiß╗âm tra xem c├óu hß╗Åi c├│ phß║úi l├á c├óu lß╗çnh phß╗⌐c hß╗úp hay kh├┤ng."""
+-        clauses = cls.split_clauses(goal)
++        if not goal:
++            return False
++        g_strip = goal.strip()
++        # Loß║íi trß╗½ c├íc c├óu to├ín hß╗ìc thuß║ºn t├║y c├│ dß║Ñu + hoß║╖c & hoß║╖c , trong biß╗âu thß╗⌐c
++        if re.match(r'^(?:t├¡nh|tinh|calculate|compute)?\s*[\d\.\s\+\-\*\/\(\)\%\^]+$', g_strip, re.IGNORECASE):
++            return False
++        clauses = cls.split_clauses(g_strip)
+         return len(clauses) > 1
+ 
++    @classmethod
++    def parse_compound_intents(cls, goal: str, router=None) -> Dict[str, Any]:
++        """
++        Ph├ón t├ích v├á ─æß╗ïnh tuyß║┐n tß╗½ng mß╗çnh ─æß╗ü con ─æß╗â x├óy dß╗▒ng cß║Ñu tr├║c ─æa t├íc vß╗Ñ.
++        """
++        is_compound = cls.is_compound_intent(goal)
++        clauses = cls.split_clauses(goal)
++        
++        clause_modes = []
++        if router and is_compound and len(clauses) > 1:
++            for clause in clauses:
++                sub_dec = router.route_clause(clause)
++                clause_modes.append(sub_dec.mode.value)
++        elif router:
++            single_dec = router.route_clause(goal)
++            clause_modes.append(single_dec.mode.value)
++
++        return {
++            "is_compound": is_compound,
++            "clauses": clauses,
++            "clause_modes": clause_modes
++        }
++
+ 
+ compound_intent_parser = CompoundIntentParser()
+diff --git a/core/os/routing/intent_router.py b/core/os/routing/intent_router.py
+index f577fd0..ef9f952 100644
+--- a/core/os/routing/intent_router.py
++++ b/core/os/routing/intent_router.py
+@@ -13,6 +13,7 @@ import ast
+ import yaml
+ import operator
+ import logging
++import time
+ from enum import Enum
+ from dataclasses import dataclass, field
+ from typing import Optional, List, Dict, Any, Set, Tuple
+@@ -65,6 +66,7 @@ class RouteDecision:
+     is_meta_introspection: bool = False      # K├¡ch hoß║ít SelfInspectionMode
+     scope: str = "QUERY_OR_GENERAL"          # P0.4: MULTI_RESOURCE | SINGLE_RESOURCE | QUERY_OR_GENERAL
+     target_files: List[str] = field(default_factory=list)
++    latency_ms: float = 0.0  # Routing latency (ms), measured in route()
+ 
+ 
+ class CentralIntentRouter:
+@@ -220,6 +222,7 @@ class CentralIntentRouter:
+         Quyß║┐t ─æß╗ïnh lß╗Ö tr├¼nh xß╗¡ l├╜ kß║┐t hß╗úp Compound Intent Parsing & Semantic Fallback.
+         P0.4: T├¡ch hß╗úp IngressEntityExtractor ─æß╗â khß║│ng ─æß╗ïnh Scope (MULTI_RESOURCE / SINGLE_RESOURCE).
+         """
++        start_time = time.perf_counter()
+         decision = self._route_inner(goal, is_office_task=is_office_task, history=history)
+         if goal and goal.strip():
+             try:
+@@ -233,6 +236,7 @@ class CentralIntentRouter:
+                         decision.tags.append("MULTI_RESOURCE")
+             except Exception:
+                 pass
++        decision.latency_ms = (time.perf_counter() - start_time) * 1000
+         return decision
+ 
+     def _route_inner(self, goal: str, is_office_task: bool = False, history: list = None) -> RouteDecision:
+diff --git a/tests/test_central_intent_router.py b/tests/test_central_intent_router.py
+index e9ee5fb..fa80691 100644
+--- a/tests/test_central_intent_router.py
++++ b/tests/test_central_intent_router.py
+@@ -67,3 +67,23 @@ class TestCentralIntentRouterV4:
+         assert len(intent_router.lexicons) >= 6
+         assert "social" in intent_router.lexicons
+         assert "office" in intent_router.lexicons
++
++
++class TestRouteLatencyBudget:
++    """TASK-REFLEX-V2-001: latency_ms ─æ╞░ß╗úc ─æo v├á nß║▒m trong ng├ón s├ích."""
++
++    RULE_QUERIES = ["15 + 35 bß║▒ng mß║Ñy ?", "Tß║ío file excel b├ío c├ío doanh thu th├íng 8", "bß║ín thß║Ñy h├┤m nay thß║┐ n├áo ?"]
++    SEMANTIC_QUERIES = ["lß║¡p trang t├¡nh bß║úng l╞░╞íng nh├ón vi├¬n chi tiß║┐t"]
++
++    def test_latency_field_populated(self):
++        d = intent_router.route("t├¡nh (3 + 5) * 2")
++        assert d.latency_ms > 0.0
++
++    def test_rule_match_under_50ms(self):
++        intent_router.route("warmup")
++        for q in self.RULE_QUERIES:
++            assert intent_router.route(q).latency_ms < 50.0, q
++
++    def test_semantic_fallback_under_500ms(self):
++        for q in self.SEMANTIC_QUERIES:
++            assert intent_router.route(q).latency_ms < 500.0, q

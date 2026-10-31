@@ -1,0 +1,1128 @@
+{
+  "task": "TASK-REFLEX-V2-001",
+  "contract_revision": 4,
+  "generated_at": "2026-10-20T11:41:38.134936",
+  "worktree_head": "766107595fd3bac7483b0843b04f34e7ced98967",
+  "v1": {
+    "path": "d:/Docker/JKAI/AI_TEAM/tasks/TASK-REFLEX-V2-001/benchmarks/compound_benchmark_dataset.json",
+    "sha256": "60db82dd62eaebc756c6aa3cb891b87ffaf88b6db15bfcb964ff9acccbe1b2d3",
+    "locked_sha256": "60db82dd62eaebc756c6aa3cb891b87ffaf88b6db15bfcb964ff9acccbe1b2d3",
+    "hash_match": true,
+    "total": 5,
+    "correct": 4,
+    "accuracy": 0.8,
+    "cases": [
+      {
+        "id": null,
+        "input": "Hãy tính 25 * 4 rồi tìm kiếm thông tin về thủ đô Hà Nội",
+        "expected": [
+          "MATH",
+          "REALTIME"
+        ],
+        "got": [
+          "MATH",
+          "REALTIME"
+        ],
+        "exp_compound": true,
+        "got_compound": true,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "Hãy tính 25 * 4",
+            "mode": "MATH",
+            "route_path": "RULE",
+            "reason": "Evaluated pure arithmetic expression successfully."
+          },
+          {
+            "clause": "tìm kiếm thông tin về thủ đô Hà Nội",
+            "mode": "REALTIME",
+            "route_path": "RULE",
+            "reason": "Real-time news, market prices, or current event query."
+          }
+        ]
+      },
+      {
+        "id": null,
+        "input": "Viết code Python sắp xếp mảng và giải thích thuật toán",
+        "expected": [
+          "CODING",
+          "GENERAL"
+        ],
+        "got": [
+          "CODING"
+        ],
+        "exp_compound": true,
+        "got_compound": true,
+        "correct": false,
+        "clauses": [
+          {
+            "clause": "Viết code Python sắp xếp mảng",
+            "mode": "CODING",
+            "route_path": "RULE",
+            "reason": "Software engineering, debugging, or scripting intent."
+          },
+          {
+            "clause": "giải thích thuật toán",
+            "mode": "CODING",
+            "route_path": "RULE",
+            "reason": "Software engineering, debugging, or scripting intent."
+          }
+        ]
+      },
+      {
+        "id": null,
+        "input": "Xin chào buổi sáng, hôm nay thời tiết thế nào?",
+        "expected": [
+          "REALTIME",
+          "SOCIAL"
+        ],
+        "got": [
+          "REALTIME",
+          "SOCIAL"
+        ],
+        "exp_compound": true,
+        "got_compound": true,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "Xin chào buổi sáng",
+            "mode": "SOCIAL",
+            "route_path": "RULE",
+            "reason": "Social query / greeting detected. Direct LLM reflex."
+          },
+          {
+            "clause": "hôm nay thời tiết thế nào?",
+            "mode": "REALTIME",
+            "route_path": "RULE",
+            "reason": "Real-time news, market prices, or current event query."
+          }
+        ]
+      },
+      {
+        "id": null,
+        "input": "Tính căn bậc hai của 144",
+        "expected": [
+          "MATH"
+        ],
+        "got": [
+          "MATH"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "Tính căn bậc hai của 144",
+            "mode": "MATH",
+            "route_path": "RULE",
+            "reason": "Evaluated pure arithmetic expression successfully."
+          }
+        ]
+      },
+      {
+        "id": null,
+        "input": "Soạn thảo văn bản báo cáo tài chính quý 3",
+        "expected": [
+          "OFFICE"
+        ],
+        "got": [
+          "OFFICE"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "Soạn thảo văn bản báo cáo tài chính quý 3",
+            "mode": "OFFICE",
+            "route_path": "RULE",
+            "reason": "Office document request (CREATE Word/Excel/PDF)."
+          }
+        ]
+      }
+    ],
+    "note": "v1 original labels (case 2 = CODING,GENERAL); v2 carries the approved relabel"
+  },
+  "v2": {
+    "path": "d:/Docker/JKAI/AI_TEAM/tasks/TASK-REFLEX-V2-001/benchmarks/compound_benchmark_dataset_v2.json",
+    "sha256": "690095039d049345f41ad7d04ac49fd980e290076a7279932fe3da370ad8720f",
+    "locked_sha256": "690095039d049345f41ad7d04ac49fd980e290076a7279932fe3da370ad8720f",
+    "hash_match": true,
+    "total": 41,
+    "correct": 28,
+    "accuracy": 0.6829,
+    "cases": [
+      {
+        "id": "V1-1",
+        "input": "Hãy tính 25 * 4 rồi tìm kiếm thông tin về thủ đô Hà Nội",
+        "expected": [
+          "MATH",
+          "REALTIME"
+        ],
+        "got": [
+          "MATH",
+          "REALTIME"
+        ],
+        "exp_compound": true,
+        "got_compound": true,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "Hãy tính 25 * 4",
+            "mode": "MATH",
+            "route_path": "RULE",
+            "reason": "Evaluated pure arithmetic expression successfully."
+          },
+          {
+            "clause": "tìm kiếm thông tin về thủ đô Hà Nội",
+            "mode": "REALTIME",
+            "route_path": "RULE",
+            "reason": "Real-time news, market prices, or current event query."
+          }
+        ]
+      },
+      {
+        "id": "V1-2",
+        "input": "Viết code Python sắp xếp mảng và giải thích thuật toán",
+        "expected": [
+          "CODING"
+        ],
+        "got": [
+          "CODING"
+        ],
+        "exp_compound": true,
+        "got_compound": true,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "Viết code Python sắp xếp mảng",
+            "mode": "CODING",
+            "route_path": "RULE",
+            "reason": "Software engineering, debugging, or scripting intent."
+          },
+          {
+            "clause": "giải thích thuật toán",
+            "mode": "CODING",
+            "route_path": "RULE",
+            "reason": "Software engineering, debugging, or scripting intent."
+          }
+        ]
+      },
+      {
+        "id": "V1-3",
+        "input": "Xin chào buổi sáng, hôm nay thời tiết thế nào?",
+        "expected": [
+          "REALTIME",
+          "SOCIAL"
+        ],
+        "got": [
+          "REALTIME",
+          "SOCIAL"
+        ],
+        "exp_compound": true,
+        "got_compound": true,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "Xin chào buổi sáng",
+            "mode": "SOCIAL",
+            "route_path": "RULE",
+            "reason": "Social query / greeting detected. Direct LLM reflex."
+          },
+          {
+            "clause": "hôm nay thời tiết thế nào?",
+            "mode": "REALTIME",
+            "route_path": "RULE",
+            "reason": "Real-time news, market prices, or current event query."
+          }
+        ]
+      },
+      {
+        "id": "V1-4",
+        "input": "Tính căn bậc hai của 144",
+        "expected": [
+          "MATH"
+        ],
+        "got": [
+          "MATH"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "Tính căn bậc hai của 144",
+            "mode": "MATH",
+            "route_path": "RULE",
+            "reason": "Evaluated pure arithmetic expression successfully."
+          }
+        ]
+      },
+      {
+        "id": "V1-5",
+        "input": "Soạn thảo văn bản báo cáo tài chính quý 3",
+        "expected": [
+          "OFFICE"
+        ],
+        "got": [
+          "OFFICE"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "Soạn thảo văn bản báo cáo tài chính quý 3",
+            "mode": "OFFICE",
+            "route_path": "RULE",
+            "reason": "Office document request (CREATE Word/Excel/PDF)."
+          }
+        ]
+      },
+      {
+        "id": "V2-01",
+        "input": "(12 + 8) / 4 bằng bao nhiêu",
+        "expected": [
+          "MATH"
+        ],
+        "got": [
+          "MATH"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "(12 + 8) / 4 bằng bao nhiêu",
+            "mode": "MATH",
+            "route_path": "RULE",
+            "reason": "Evaluated pure arithmetic expression successfully."
+          }
+        ]
+      },
+      {
+        "id": "V2-02",
+        "input": "căn bậc hai của 81 là mấy",
+        "expected": [
+          "MATH"
+        ],
+        "got": [
+          "MATH"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "căn bậc hai của 81 là mấy",
+            "mode": "MATH",
+            "route_path": "RULE",
+            "reason": "Evaluated pure arithmetic expression successfully."
+          }
+        ]
+      },
+      {
+        "id": "V2-03",
+        "input": "sqrt(225)",
+        "expected": [
+          "MATH"
+        ],
+        "got": [
+          "MATH"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "sqrt(225)",
+            "mode": "MATH",
+            "route_path": "RULE",
+            "reason": "Evaluated pure arithmetic expression successfully."
+          }
+        ]
+      },
+      {
+        "id": "V2-04",
+        "input": "tính 15% của 300000",
+        "expected": [
+          "MATH"
+        ],
+        "got": [
+          "MATH"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "tính 15% của 300000",
+            "mode": "MATH",
+            "route_path": "RULE",
+            "reason": "Evaluated pure arithmetic expression successfully."
+          }
+        ]
+      },
+      {
+        "id": "V2-05",
+        "input": "chào buổi tối JKAI",
+        "expected": [
+          "SOCIAL"
+        ],
+        "got": [
+          "SOCIAL"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "chào buổi tối JKAI",
+            "mode": "SOCIAL",
+            "route_path": "RULE",
+            "reason": "Social query / greeting detected. Direct LLM reflex."
+          }
+        ]
+      },
+      {
+        "id": "V2-06",
+        "input": "cảm ơn bạn nhiều nhé",
+        "expected": [
+          "SOCIAL"
+        ],
+        "got": [
+          "SOCIAL"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "cảm ơn bạn nhiều nhé",
+            "mode": "SOCIAL",
+            "route_path": "RULE",
+            "reason": "Social query / greeting detected. Direct LLM reflex."
+          }
+        ]
+      },
+      {
+        "id": "V2-07",
+        "input": "rất vui được gặp bạn",
+        "expected": [
+          "SOCIAL"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": false,
+        "clauses": [
+          {
+            "clause": "rất vui được gặp bạn",
+            "mode": "GENERAL",
+            "route_path": "GENERAL",
+            "reason": "General knowledge query or conversational task."
+          }
+        ]
+      },
+      {
+        "id": "V2-08",
+        "input": "dạo này bạn sống ra sao",
+        "expected": [
+          "SOCIAL"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": false,
+        "clauses": [
+          {
+            "clause": "dạo này bạn sống ra sao",
+            "mode": "GENERAL",
+            "route_path": "GENERAL",
+            "reason": "General knowledge query or conversational task."
+          }
+        ]
+      },
+      {
+        "id": "V2-09",
+        "input": "tạo file word đơn xin nghỉ phép 3 ngày",
+        "expected": [
+          "OFFICE"
+        ],
+        "got": [
+          "OFFICE"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "tạo file word đơn xin nghỉ phép 3 ngày",
+            "mode": "OFFICE",
+            "route_path": "RULE",
+            "reason": "Office document request (CREATE Word/Excel/PDF)."
+          }
+        ]
+      },
+      {
+        "id": "V2-10",
+        "input": "xuất pdf hợp đồng lao động cho nhân viên mới",
+        "expected": [
+          "OFFICE"
+        ],
+        "got": [
+          "OFFICE"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "xuất pdf hợp đồng lao động cho nhân viên mới",
+            "mode": "OFFICE",
+            "route_path": "RULE",
+            "reason": "Office document request (CREATE Word/Excel/PDF)."
+          }
+        ]
+      },
+      {
+        "id": "V2-11",
+        "input": "soạn giúp tôi lá thư xin phép vắng mặt gửi trưởng phòng",
+        "expected": [
+          "OFFICE"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": false,
+        "clauses": [
+          {
+            "clause": "soạn giúp tôi lá thư xin phép vắng mặt gửi trưởng phòng",
+            "mode": "GENERAL",
+            "route_path": "GENERAL",
+            "reason": "General knowledge query or conversational task."
+          }
+        ]
+      },
+      {
+        "id": "V2-12",
+        "input": "làm cho tôi tài liệu trình chiếu giới thiệu sản phẩm mới",
+        "expected": [
+          "OFFICE"
+        ],
+        "got": [
+          "OFFICE"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "làm cho tôi tài liệu trình chiếu giới thiệu sản phẩm mới",
+            "mode": "OFFICE",
+            "route_path": "RULE",
+            "reason": "Office document request (CREATE Word/Excel/PDF)."
+          }
+        ]
+      },
+      {
+        "id": "V2-13",
+        "input": "viết hàm python đảo ngược chuỗi",
+        "expected": [
+          "CODING"
+        ],
+        "got": [
+          "CODING"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "viết hàm python đảo ngược chuỗi",
+            "mode": "CODING",
+            "route_path": "RULE",
+            "reason": "Software engineering, debugging, or scripting intent."
+          }
+        ]
+      },
+      {
+        "id": "V2-14",
+        "input": "sửa bug traceback KeyError trong flask",
+        "expected": [
+          "CODING"
+        ],
+        "got": [
+          "CODING"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "sửa bug traceback KeyError trong flask",
+            "mode": "CODING",
+            "route_path": "RULE",
+            "reason": "Software engineering, debugging, or scripting intent."
+          }
+        ]
+      },
+      {
+        "id": "V2-15",
+        "input": "chương trình của tôi bị treo khi chạy vòng lặp vô hạn",
+        "expected": [
+          "CODING"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": false,
+        "clauses": [
+          {
+            "clause": "chương trình của tôi bị treo khi chạy vòng lặp vô hạn",
+            "mode": "GENERAL",
+            "route_path": "GENERAL",
+            "reason": "General knowledge query or conversational task."
+          }
+        ]
+      },
+      {
+        "id": "V2-16",
+        "input": "làm sao để đoạn mã chạy nhanh hơn khi xử lý mảng lớn",
+        "expected": [
+          "CODING"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": false,
+        "clauses": [
+          {
+            "clause": "làm sao để đoạn mã chạy nhanh hơn khi xử lý mảng lớn",
+            "mode": "GENERAL",
+            "route_path": "GENERAL",
+            "reason": "General knowledge query or conversational task."
+          }
+        ]
+      },
+      {
+        "id": "V2-17",
+        "input": "giá vàng SJC hôm nay",
+        "expected": [
+          "REALTIME"
+        ],
+        "got": [
+          "REALTIME"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "giá vàng SJC hôm nay",
+            "mode": "REALTIME",
+            "route_path": "RULE",
+            "reason": "Real-time news, market prices, or current event query."
+          }
+        ]
+      },
+      {
+        "id": "V2-18",
+        "input": "tỷ giá usd chiều nay thế nào",
+        "expected": [
+          "REALTIME"
+        ],
+        "got": [
+          "REALTIME"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "tỷ giá usd chiều nay thế nào",
+            "mode": "REALTIME",
+            "route_path": "RULE",
+            "reason": "Real-time news, market prices, or current event query."
+          }
+        ]
+      },
+      {
+        "id": "V2-19",
+        "input": "một lượng vàng bây giờ bán ra bao nhiêu tiền",
+        "expected": [
+          "REALTIME"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": false,
+        "clauses": [
+          {
+            "clause": "một lượng vàng bây giờ bán ra bao nhiêu tiền",
+            "mode": "GENERAL",
+            "route_path": "GENERAL",
+            "reason": "General knowledge query or conversational task."
+          }
+        ]
+      },
+      {
+        "id": "V2-20",
+        "input": "đội tuyển Việt Nam tối qua thắng hay thua",
+        "expected": [
+          "REALTIME"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": false,
+        "clauses": [
+          {
+            "clause": "đội tuyển Việt Nam tối qua thắng hay thua",
+            "mode": "GENERAL",
+            "route_path": "GENERAL",
+            "reason": "General knowledge query or conversational task."
+          }
+        ]
+      },
+      {
+        "id": "V2-21",
+        "input": "tra cứu bộ nhớ xem lần trước tôi nói gì",
+        "expected": [
+          "INTERNAL"
+        ],
+        "got": [
+          "INTERNAL"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "tra cứu bộ nhớ xem lần trước tôi nói gì",
+            "mode": "INTERNAL",
+            "route_path": "RULE",
+            "reason": "Internal workspace or long-term memory query."
+          }
+        ]
+      },
+      {
+        "id": "V2-22",
+        "input": "đọc file cấu hình hệ thống đã lưu",
+        "expected": [
+          "INTERNAL"
+        ],
+        "got": [
+          "INTERNAL"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "đọc file cấu hình hệ thống đã lưu",
+            "mode": "INTERNAL",
+            "route_path": "RULE",
+            "reason": "Internal workspace or long-term memory query."
+          }
+        ]
+      },
+      {
+        "id": "V2-23",
+        "input": "hôm qua tôi dặn bạn ghi lại điều gì",
+        "expected": [
+          "INTERNAL"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": false,
+        "clauses": [
+          {
+            "clause": "hôm qua tôi dặn bạn ghi lại điều gì",
+            "mode": "GENERAL",
+            "route_path": "GENERAL",
+            "reason": "General knowledge query or conversational task."
+          }
+        ]
+      },
+      {
+        "id": "V2-24",
+        "input": "bạn còn giữ địa chỉ máy chủ tôi gửi tuần trước không",
+        "expected": [
+          "INTERNAL"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": false,
+        "clauses": [
+          {
+            "clause": "bạn còn giữ địa chỉ máy chủ tôi gửi tuần trước không",
+            "mode": "GENERAL",
+            "route_path": "GENERAL",
+            "reason": "General knowledge query or conversational task."
+          }
+        ]
+      },
+      {
+        "id": "V2-25",
+        "input": "so sánh chi tiết ưu nhược điểm của postgres và mongo",
+        "expected": [
+          "REASONING"
+        ],
+        "got": [
+          "GENERAL",
+          "REASONING"
+        ],
+        "exp_compound": false,
+        "got_compound": true,
+        "correct": false,
+        "clauses": [
+          {
+            "clause": "so sánh chi tiết ưu nhược điểm của postgres",
+            "mode": "REASONING",
+            "route_path": "RULE",
+            "reason": "Strategic analysis, comparative study, or architectural reasoning."
+          },
+          {
+            "clause": "mongo",
+            "mode": "GENERAL",
+            "route_path": "GENERAL",
+            "reason": "General knowledge query or conversational task."
+          }
+        ]
+      },
+      {
+        "id": "V2-26",
+        "input": "phân tích nguyên nhân gốc rễ khiến doanh thu giảm",
+        "expected": [
+          "REASONING"
+        ],
+        "got": [
+          "REASONING"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "phân tích nguyên nhân gốc rễ khiến doanh thu giảm",
+            "mode": "REASONING",
+            "route_path": "RULE",
+            "reason": "Strategic analysis, comparative study, or architectural reasoning."
+          }
+        ]
+      },
+      {
+        "id": "V2-27",
+        "input": "nên thuê nhà hay mua nhà trong 5 năm tới",
+        "expected": [
+          "REASONING"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": false,
+        "clauses": [
+          {
+            "clause": "nên thuê nhà hay mua nhà trong 5 năm tới",
+            "mode": "GENERAL",
+            "route_path": "GENERAL",
+            "reason": "General knowledge query or conversational task."
+          }
+        ]
+      },
+      {
+        "id": "V2-28",
+        "input": "điều gì khiến khách hàng rời bỏ dịch vụ của chúng ta",
+        "expected": [
+          "REASONING"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": false,
+        "clauses": [
+          {
+            "clause": "điều gì khiến khách hàng rời bỏ dịch vụ của chúng ta",
+            "mode": "GENERAL",
+            "route_path": "GENERAL",
+            "reason": "General knowledge query or conversational task."
+          }
+        ]
+      },
+      {
+        "id": "V2-29",
+        "input": "thủ đô của nước Úc là thành phố nào",
+        "expected": [
+          "GENERAL"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "thủ đô của nước Úc là thành phố nào",
+            "mode": "GENERAL",
+            "route_path": "GENERAL",
+            "reason": "General knowledge query or conversational task."
+          }
+        ]
+      },
+      {
+        "id": "V2-30",
+        "input": "ai là tác giả truyện Kiều",
+        "expected": [
+          "GENERAL"
+        ],
+        "got": [
+          "GENERAL"
+        ],
+        "exp_compound": false,
+        "got_compound": false,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "ai là tác giả truyện Kiều",
+            "mode": "GENERAL",
+            "route_path": "GENERAL",
+            "reason": "General knowledge query or conversational task."
+          }
+        ]
+      },
+      {
+        "id": "V2-31",
+        "input": "tính 120 * 3 rồi tạo file excel lưu kết quả",
+        "expected": [
+          "MATH",
+          "OFFICE"
+        ],
+        "got": [
+          "MATH",
+          "OFFICE"
+        ],
+        "exp_compound": true,
+        "got_compound": true,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "tính 120 * 3",
+            "mode": "MATH",
+            "route_path": "RULE",
+            "reason": "Evaluated pure arithmetic expression successfully."
+          },
+          {
+            "clause": "tạo file excel lưu kết quả",
+            "mode": "OFFICE",
+            "route_path": "RULE",
+            "reason": "Office document request (CREATE Word/Excel/PDF)."
+          }
+        ]
+      },
+      {
+        "id": "V2-32",
+        "input": "xem giá bitcoin và viết script python cảnh báo khi giảm",
+        "expected": [
+          "CODING",
+          "REALTIME"
+        ],
+        "got": [
+          "CODING",
+          "REALTIME"
+        ],
+        "exp_compound": true,
+        "got_compound": true,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "xem giá bitcoin",
+            "mode": "REALTIME",
+            "route_path": "RULE",
+            "reason": "Real-time news, market prices, or current event query."
+          },
+          {
+            "clause": "viết script python cảnh báo khi giảm",
+            "mode": "CODING",
+            "route_path": "RULE",
+            "reason": "Software engineering, debugging, or scripting intent."
+          }
+        ]
+      },
+      {
+        "id": "V2-33",
+        "input": "chào bạn, giúp tôi soạn thông báo nghỉ lễ",
+        "expected": [
+          "OFFICE",
+          "SOCIAL"
+        ],
+        "got": [
+          "OFFICE",
+          "SOCIAL"
+        ],
+        "exp_compound": true,
+        "got_compound": true,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "chào bạn",
+            "mode": "SOCIAL",
+            "route_path": "RULE",
+            "reason": "Social query / greeting detected. Direct LLM reflex."
+          },
+          {
+            "clause": "giúp tôi soạn thông báo nghỉ lễ",
+            "mode": "OFFICE",
+            "route_path": "RULE",
+            "reason": "Office document request (CREATE Word/Excel/PDF)."
+          }
+        ]
+      },
+      {
+        "id": "V2-34",
+        "input": "đọc log hệ thống rồi phân tích nguyên nhân lỗi",
+        "expected": [
+          "INTERNAL",
+          "REASONING"
+        ],
+        "got": [
+          "INTERNAL",
+          "REASONING"
+        ],
+        "exp_compound": true,
+        "got_compound": true,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "đọc log hệ thống",
+            "mode": "INTERNAL",
+            "route_path": "RULE",
+            "reason": "Internal workspace or long-term memory query."
+          },
+          {
+            "clause": "phân tích nguyên nhân lỗi",
+            "mode": "REASONING",
+            "route_path": "RULE",
+            "reason": "Strategic analysis, comparative study, or architectural reasoning."
+          }
+        ]
+      },
+      {
+        "id": "V2-35",
+        "input": "tin tức hôm nay có gì mới, sau đó lập bảng tính tổng hợp",
+        "expected": [
+          "OFFICE",
+          "REALTIME"
+        ],
+        "got": [
+          "OFFICE",
+          "REALTIME"
+        ],
+        "exp_compound": true,
+        "got_compound": true,
+        "correct": true,
+        "clauses": [
+          {
+            "clause": "tin tức hôm nay có gì mới",
+            "mode": "REALTIME",
+            "route_path": "RULE",
+            "reason": "Real-time news, market prices, or current event query."
+          },
+          {
+            "clause": "lập bảng tính tổng hợp",
+            "mode": "OFFICE",
+            "route_path": "RULE",
+            "reason": "Office document request (CREATE Word/Excel/PDF)."
+          }
+        ]
+      },
+      {
+        "id": "V2-36",
+        "input": "viết code sắp xếp mảng và giải thích độ phức tạp",
+        "expected": [
+          "CODING"
+        ],
+        "got": [
+          "CODING",
+          "GENERAL"
+        ],
+        "exp_compound": true,
+        "got_compound": true,
+        "correct": false,
+        "clauses": [
+          {
+            "clause": "viết code sắp xếp mảng",
+            "mode": "CODING",
+            "route_path": "RULE",
+            "reason": "Software engineering, debugging, or scripting intent."
+          },
+          {
+            "clause": "giải thích độ phức tạp",
+            "mode": "GENERAL",
+            "route_path": "GENERAL",
+            "reason": "General knowledge query or conversational task."
+          }
+        ]
+      }
+    ],
+    "threshold_correct": 39,
+    "pass": false
+  },
+  "latency_by_route_path": {
+    "RULE": {
+      "samples": 1080,
+      "distinct_clauses": 36,
+      "p50_ms": 0.204,
+      "p95_ms": 0.436,
+      "max_ms": 0.693,
+      "budget_ms": 50.0,
+      "pass": true
+    },
+    "GENERAL": {
+      "samples": 450,
+      "distinct_clauses": 15,
+      "p50_ms": 5.538,
+      "p95_ms": 11.031,
+      "max_ms": 11.93,
+      "budget_ms": 50.0,
+      "pass": true
+    }
+  },
+  "full_collection": {
+    "errors": [
+      "Thao luan AI/test_regex_signature.py",
+      "core/kernel/test_agi_substrate.py",
+      "core/test_run.py",
+      "core/utils/test_hlc.py",
+      "tests/test_decision_cases_and_eval_harness.py",
+      "tests/test_slice_2_1_live_repomap_and_blast_radius_guard.py"
+    ],
+    "identical_to_baseline": true,
+    "summary": "1649 tests collected, 6 errors in 26.52s"
+  }
+}

@@ -1,0 +1,53 @@
+{
+  "version": "3.0-heldout",
+  "task_id": "TASK-REFLEX-V2-001",
+  "author": "blind-subagent",
+  "authoring_constraints": "written without access to repository, router code, lexicons, or other datasets",
+  "total_cases": 36,
+  "test_cases": [
+    {"id": "V3-01", "input": "Tính giúp mình 245 nhân 37 bằng bao nhiêu?", "expected_modes": ["MATH"], "is_compound": false, "phrasing": "direct"},
+    {"id": "V3-02", "input": "Căn bậc hai của 1764 là mấy?", "expected_modes": ["MATH"], "is_compound": false, "phrasing": "direct"},
+    {"id": "V3-03", "input": "Lương 18 triệu mà bị trừ 10,5% bảo hiểm thì cầm về còn lại bao nhiêu?", "expected_modes": ["MATH"], "is_compound": false, "phrasing": "indirect"},
+    {"id": "V3-04", "input": "Chia đều 1.350.000 đồng cho 6 người thì mỗi người phải góp bao nhiêu?", "expected_modes": ["MATH"], "is_compound": false, "phrasing": "indirect"},
+
+    {"id": "V3-05", "input": "Chào buổi sáng nhé!", "expected_modes": ["SOCIAL"], "is_compound": false, "phrasing": "direct"},
+    {"id": "V3-06", "input": "Cảm ơn bạn nhiều, nhờ bạn mà mình đỡ vất vả quá trời.", "expected_modes": ["SOCIAL"], "is_compound": false, "phrasing": "direct"},
+    {"id": "V3-07", "input": "Làm việc với mình cả ngày rồi, bạn có thấy mệt không đó?", "expected_modes": ["SOCIAL"], "is_compound": false, "phrasing": "indirect"},
+    {"id": "V3-08", "input": "Lâu lắm rồi mới quay lại tám với bạn nè, dạo này ổn chứ?", "expected_modes": ["SOCIAL"], "is_compound": false, "phrasing": "indirect"},
+
+    {"id": "V3-09", "input": "Soạn giúp tôi một hợp đồng thuê nhà bằng file Word, thời hạn 12 tháng.", "expected_modes": ["OFFICE"], "is_compound": false, "phrasing": "direct"},
+    {"id": "V3-10", "input": "Tạo bảng tính Excel theo dõi chi tiêu hàng tháng, có thêm biểu đồ cột.", "expected_modes": ["OFFICE"], "is_compound": false, "phrasing": "direct"},
+    {"id": "V3-11", "input": "Làm giùm mình mấy trang trình chiếu giới thiệu sản phẩm mới cho buổi họp sáng thứ Hai.", "expected_modes": ["OFFICE"], "is_compound": false, "phrasing": "indirect"},
+    {"id": "V3-12", "input": "Mình cần một mẫu đơn xin nghỉ phép để in ra nộp cho phòng nhân sự.", "expected_modes": ["OFFICE"], "is_compound": false, "phrasing": "indirect"},
+
+    {"id": "V3-13", "input": "Viết hàm Python đảo ngược một chuỗi ký tự.", "expected_modes": ["CODING"], "is_compound": false, "phrasing": "direct"},
+    {"id": "V3-14", "input": "Code JavaScript của tôi báo lỗi 'undefined is not a function', sửa giúp với.", "expected_modes": ["CODING"], "is_compound": false, "phrasing": "direct"},
+    {"id": "V3-15", "input": "Câu truy vấn lấy 10 khách hàng mua nhiều nhất chạy chậm quá, làm sao cho nó nhanh hơn?", "expected_modes": ["CODING"], "is_compound": false, "phrasing": "indirect"},
+    {"id": "V3-16", "input": "Cái container cứ khởi động xong là tự tắt, log ghi exit code 137, xử lý thế nào đây?", "expected_modes": ["CODING"], "is_compound": false, "phrasing": "indirect"},
+
+    {"id": "V3-17", "input": "Giá vàng SJC hôm nay bao nhiêu một lượng?", "expected_modes": ["REALTIME"], "is_compound": false, "phrasing": "direct"},
+    {"id": "V3-18", "input": "Tìm trên mạng giúp tôi tin tức mới nhất về việc sáp nhập tỉnh.", "expected_modes": ["REALTIME"], "is_compound": false, "phrasing": "direct"},
+    {"id": "V3-19", "input": "Chiều nay ở Đà Nẵng có mưa không, mình định ra biển tắm.", "expected_modes": ["REALTIME"], "is_compound": false, "phrasing": "indirect"},
+    {"id": "V3-20", "input": "Tối qua Việt Nam đá với Thái Lan tỉ số mấy vậy?", "expected_modes": ["REALTIME"], "is_compound": false, "phrasing": "indirect"},
+
+    {"id": "V3-21", "input": "Lần trước tôi đã dặn bạn điều gì về lịch họp nhỉ?", "expected_modes": ["INTERNAL"], "is_compound": false, "phrasing": "direct"},
+    {"id": "V3-22", "input": "Địa chỉ IP máy chủ mà tôi đã lưu hôm trước là gì?", "expected_modes": ["INTERNAL"], "is_compound": false, "phrasing": "direct"},
+    {"id": "V3-23", "input": "Nhắc lại giúp mình mấy món ăn mình từng kể là mình thích với.", "expected_modes": ["INTERNAL"], "is_compound": false, "phrasing": "indirect"},
+    {"id": "V3-24", "input": "Mật khẩu wifi văn phòng mình gửi bạn giữ hộ hồi tuần trước ấy, đọc lại xem.", "expected_modes": ["INTERNAL"], "is_compound": false, "phrasing": "indirect"},
+
+    {"id": "V3-25", "input": "So sánh ưu nhược điểm giữa thuê nhà và mua nhà trả góp cho người mới đi làm.", "expected_modes": ["REASONING"], "is_compound": false, "phrasing": "direct"},
+    {"id": "V3-26", "input": "Phân tích nguyên nhân vì sao doanh số quý này giảm mạnh dù chi phí quảng cáo tăng.", "expected_modes": ["REASONING"], "is_compound": false, "phrasing": "direct"},
+    {"id": "V3-27", "input": "Mình đang phân vân giữa nhận offer lương cao ở startup hay ở lại công ty lớn ổn định, nên chọn bên nào?", "expected_modes": ["REASONING"], "is_compound": false, "phrasing": "indirect"},
+    {"id": "V3-28", "input": "Quán cà phê của mình buổi chiều vắng hoe, có cách nào kéo khách vào không?", "expected_modes": ["REASONING"], "is_compound": false, "phrasing": "indirect"},
+
+    {"id": "V3-29", "input": "Chiến thắng Điện Biên Phủ diễn ra vào năm nào?", "expected_modes": ["GENERAL"], "is_compound": false, "phrasing": "direct"},
+    {"id": "V3-30", "input": "Ai là tác giả của Truyện Kiều?", "expected_modes": ["GENERAL"], "is_compound": false, "phrasing": "direct"},
+    {"id": "V3-31", "input": "Con sông dài nhất thế giới chảy qua những nước nào?", "expected_modes": ["GENERAL"], "is_compound": false, "phrasing": "indirect"},
+    {"id": "V3-32", "input": "Sao lá cây lại có màu xanh nhỉ?", "expected_modes": ["GENERAL"], "is_compound": false, "phrasing": "indirect"},
+
+    {"id": "V3-33", "input": "Chào bạn, cho mình hỏi giá bitcoin hiện tại là bao nhiêu?", "expected_modes": ["SOCIAL", "REALTIME"], "is_compound": true, "phrasing": "direct"},
+    {"id": "V3-34", "input": "Tính 15% của 2.400.000 rồi đưa kết quả vào bảng tính chi phí giúp mình.", "expected_modes": ["MATH", "OFFICE"], "is_compound": true, "phrasing": "indirect"},
+    {"id": "V3-35", "input": "Viết script Python đọc file CSV, sau đó phân tích giúp mình nên dùng pandas hay polars thì hợp lý hơn.", "expected_modes": ["CODING", "REASONING"], "is_compound": true, "phrasing": "direct"},
+    {"id": "V3-36", "input": "Nhắc lại IP server tôi đã lưu và xem giúp hôm nay Hà Nội có bão không.", "expected_modes": ["INTERNAL", "REALTIME"], "is_compound": true, "phrasing": "indirect"}
+  ]
+}

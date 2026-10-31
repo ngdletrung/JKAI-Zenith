@@ -1,0 +1,96 @@
+{
+  "task": "TASK-REFLEX-V2-001",
+  "generated_at": "2026-10-19T21:17:54.693913",
+  "iterations": 50,
+  "all_pass": true,
+  "results": [
+    {
+      "query": "15 + 35 bằng mấy ?",
+      "kind": "rule",
+      "mode": "MATH",
+      "is_compound": false,
+      "p50_ms": 0.144,
+      "p95_ms": 0.171,
+      "max_ms": 0.495,
+      "budget_ms": 50.0,
+      "pass": true
+    },
+    {
+      "query": "Tạo file excel báo cáo doanh thu",
+      "kind": "rule",
+      "mode": "OFFICE",
+      "is_compound": false,
+      "p50_ms": 0.074,
+      "p95_ms": 0.091,
+      "max_ms": 0.123,
+      "budget_ms": 50.0,
+      "pass": true
+    },
+    {
+      "query": "bạn thấy hôm nay thế nào ?",
+      "kind": "rule",
+      "mode": "SOCIAL",
+      "is_compound": false,
+      "p50_ms": 0.116,
+      "p95_ms": 0.221,
+      "max_ms": 0.235,
+      "budget_ms": 50.0,
+      "pass": true
+    },
+    {
+      "query": "sửa lỗi python script",
+      "kind": "rule",
+      "mode": "CODING",
+      "is_compound": false,
+      "p50_ms": 0.057,
+      "p95_ms": 0.077,
+      "max_ms": 0.145,
+      "budget_ms": 50.0,
+      "pass": true
+    },
+    {
+      "query": "giá vàng hôm nay",
+      "kind": "rule",
+      "mode": "REALTIME",
+      "is_compound": false,
+      "p50_ms": 0.09,
+      "p95_ms": 0.116,
+      "max_ms": 0.133,
+      "budget_ms": 50.0,
+      "pass": true
+    },
+    {
+      "query": "Tạo file excel doanh thu và phân tích so sánh chi tiết",
+      "kind": "rule",
+      "mode": "OFFICE",
+      "is_compound": true,
+      "p50_ms": 0.159,
+      "p95_ms": 0.284,
+      "max_ms": 0.294,
+      "budget_ms": 50.0,
+      "pass": true
+    },
+    {
+      "query": "lập trang tính bảng lương nhân viên chi tiết",
+      "kind": "semantic",
+      "mode": "OFFICE",
+      "is_compound": false,
+      "p50_ms": 0.139,
+      "p95_ms": 0.179,
+      "max_ms": 0.235,
+      "budget_ms": 500.0,
+      "pass": true
+    },
+    {
+      "query": "tìm kiếm thông tin về thủ đô Hà Nội",
+      "kind": "semantic",
+      "mode": "INTERNAL",
+      "is_compound": false,
+      "p50_ms": 2.993,
+      "p95_ms": 4.469,
+      "max_ms": 5.209,
+      "budget_ms": 500.0,
+      "pass": true
+    }
+  ]
+}

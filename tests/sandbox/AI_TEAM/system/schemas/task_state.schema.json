@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "TaskState",
+  "type": "object",
+  "required": [
+    "task_id",
+    "status",
+    "version",
+    "updated_at",
+    "updated_by"
+  ],
+  "properties": {
+    "task_id": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "INIT",
+        "ASSIGNED",
+        "IN_PROGRESS",
+        "REVIEW",
+        "VERIFIED",
+        "INTEGRATED",
+        "DONE",
+        "STOPPED",
+        "FAILED"
+      ]
+    },
+    "version": {
+      "type": "integer"
+    },
+    "updated_at": {
+      "type": "string"
+    },
+    "updated_by": {
+      "type": "string"
+    }
+  }
+}

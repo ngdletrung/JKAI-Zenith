@@ -1,0 +1,61 @@
+{
+  "network_denied": {
+    "passed": true,
+    "policy_enforced": true,
+    "status": "BLOCKED_BY_SANDBOX_POLICY",
+    "reason": "SANDBOX_SECURITY_VIOLATION: Network access is forbidden in skills."
+  },
+  "process_spawn_denied": {
+    "passed": true,
+    "policy_enforced": true,
+    "status": "BLOCKED_BY_SANDBOX_POLICY",
+    "reason": "SANDBOX_SECURITY_VIOLATION: Process spawning is forbidden in skills."
+  },
+  "filesystem_escape_denied": {
+    "passed": true,
+    "policy_enforced": true,
+    "status": "BLOCKED_BY_SANDBOX_POLICY",
+    "reason": "SANDBOX_SECURITY_VIOLATION: Write outside sandbox is forbidden: C:/Windows/System32/drivers/etc/hosts_leak.txt"
+  },
+  "resource_exhaustion_bounded": {
+    "passed": true,
+    "policy_enforced": true,
+    "status": "TIMEOUT_RESOURCE_LIMIT_ENFORCED",
+    "reason": "SANDBOX_TIMEOUT_EXCEEDED: >1.0s"
+  },
+  "checkpoint_tamper_denied": {
+    "passed": true,
+    "status": "error",
+    "reason": "CORRUPT_OR_TAMPERED_CHECKPOINT_HMAC"
+  },
+  "symlink_denied": {
+    "passed": true,
+    "status": "error",
+    "reason": "ROLLBACK_SYMLINK_ATTACK_REJECTED: 'C:\\Users\\ADMINP~1\\AppData\\Local\\Temp\\tmpacig6rr1\\CUSTOM\\test_sym_skill\\logic.py' is a symbolic link."
+  },
+  "multi_file_crash_rollback_atomic": {
+    "passed": true,
+    "status": "rolled_back",
+    "md_restored_exact": true,
+    "py_restored_exact": true,
+    "pre_state_hash": "a87d03743434df0df4c629a6fa37f2586afba6b6ceb853874ed498aff1c37fb7",
+    "post_state_hash": "409bec4f269294ad645d5273592a116985c40c40881c450b4bec9aaf006ce74f",
+    "non_placeholder_hashes_verified": true,
+    "rollback_receipt": {
+      "receipt_id": "rcpt_65266ea9851e_1",
+      "task_id": "skill_rollback",
+      "action": "rollback_skill",
+      "risk_tier": "YELLOW",
+      "args_hash": "3b24bf768a5e16e189775d3b22653b8100c0f383528bd31f7b647947299e2d89",
+      "pre_state_hash": "a87d03743434df0df4c629a6fa37f2586afba6b6ceb853874ed498aff1c37fb7",
+      "post_state_hash": "409bec4f269294ad645d5273592a116985c40c40881c450b4bec9aaf006ce74f",
+      "output_hash": "930801cbb9cd93587ae4cf2a041379f74f99a98e1337837d8f4f5270bc27d5a4",
+      "lds_legal": true,
+      "timestamp_utc": "2026-10-29T00:39:28Z",
+      "monotonic_seq": 1,
+      "key_id": "k_default_2026",
+      "hmac_signature": "5b37bf2b9edb08dc9821ccc51c6e16177826c9b1fc5c71209c709996b559679b"
+    }
+  },
+  "all_security_scenarios_passed": true
+}

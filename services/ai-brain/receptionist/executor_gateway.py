@@ -224,6 +224,27 @@ async def preflight_check_executors(http_client: Any = None) -> tuple[bool, str,
             await http_client.aclose()
 
 
+def _seal_receipt_fail_closed(integrity, tool_name, tool_args, output, decision, task_id):
+    """
+    [SROS v2 Fail-Closed Receipt Enforcement]
+    Mọi hành vi thực thi thành công bắt buộc phải niêm phong được ExecutionReceipt.
+    Nếu seal thất bại -> FAIL-CLOSED: coi như execution thất bại hoàn toàn.
+    """
+    try:
+        rcpt = integrity.seal_execution_receipt(
+            action=tool_name,
+            arguments=dict(tool_args or {}),
+            output=output,
+            lds_verdict=decision.lds_verdict,
+            task_id=task_id
+        )
+        if not rcpt:
+            return False, None, "FAIL-CLOSED: Execution completed on substrate but receipt sealing produced empty receipt."
+        return True, rcpt.to_dict(), ""
+    except Exception as e:
+        return False, None, f"FAIL-CLOSED: Execution completed on substrate but cryptographic receipt sealing failed: {e}"
+
+
 class ExecutorGateway:
     """
     JKAI Zenith - Executor Gateway
@@ -260,6 +281,9 @@ class ExecutorGateway:
 
 
 
+
+
+
     async def execute_tool(self, request: ExecutionRequest, task_id: str) -> ExecutionResult:
         """
         [v26.2] Execution entry point with integrated security gate.
@@ -275,11 +299,17 @@ class ExecutorGateway:
         # ------------------------------------------------------------------ #
         try:
             from core.kernel.execution_integrity import ExecutionIntegrityLayer
-            from core.kernel.task_contract_store import get_active_contract, get_active_policy, get_policy_snapshot, get_or_create_policy_snapshot
+            from core.kernel.task_contract_store import (
+                get_active_contract,
+                get_active_policy,
+                get_policy_snapshot,
+                get_or_create_default_contract,
+                get_or_create_policy_snapshot,
+            )
 
-            task_contract = get_active_contract(task_id)
+            task_contract = get_active_contract(task_id) or get_or_create_default_contract(task_id)
             policy = get_active_policy(task_id)
-            snapshot = get_policy_snapshot(task_id)
+            snapshot = get_policy_snapshot(task_id) or get_or_create_policy_snapshot(task_id)
 
             integrity = ExecutionIntegrityLayer(mission_id=task_id)
             decision = integrity.authorize(
@@ -398,11 +428,27 @@ class ExecutorGateway:
                 from .openhands_provider import openhands_provider
                 res = await openhands_provider.execute_mission(request.tool_args.get("query", ""), task_id)
                 out_val = res.get("output") or res.get("message")
+                rcpt_ok, rcpt_dict, rcpt_err = _seal_receipt_fail_closed(
+                    integrity, request.tool_name, request.tool_args, out_val, decision, task_id
+                )
+                if not rcpt_ok:
+                    return ExecutionResult(
+                        outcome=DecisionOutcome.DENY,
+                        tool_executed=False,
+                        result=rcpt_err,
+                        reason=rcpt_err,
+                        action=request.tool_name,
+                        risk_tier=decision.risk_tier,
+                        lds_verdict=decision.lds_verdict
+                    )
                 return ExecutionResult(
                     outcome=DecisionOutcome.ALLOW,
                     tool_executed=True,
                     result=out_val,
-                    action=request.tool_name
+                    action=request.tool_name,
+                    receipt=rcpt_dict,
+                    risk_tier=decision.risk_tier,
+                    lds_verdict=decision.lds_verdict
                 )
 
             # 🚀 [P0-2 LOCAL-FIRST DUAL-PATH TOOL EXECUTION]
@@ -458,9 +504,22 @@ class ExecutorGateway:
                 "search_in_stream": "search_in_stream",
                 "search_stream": "search_in_stream",
                 "browser_action": "browser_action",
+                "browser_control": "browser_action",
                 "browse": "browser_action",
                 "web_browse": "browser_action",
                 "crawl": "browser_action",
+                "web_read": "web_read",
+                "fast_read": "web_read",
+                "read_doc": "web_read",
+                "browser_observe": "browser_observe",
+                "observe_dom": "browser_observe",
+                "observe": "browser_observe",
+                "browser_act": "browser_act",
+                "act_element": "browser_act",
+                "act": "browser_act",
+                "browser_extract": "browser_extract",
+                "extract_data": "browser_extract",
+                "extract": "browser_extract",
             }
 
             if norm_name in LOCAL_PRIMITIVE_MAP:
@@ -470,20 +529,121 @@ class ExecutorGateway:
                     kwargs.pop("task_id", None)
                     kwargs.pop("trace_id", None)
 
-                    if local_fn_name == "browser_action":
-                        self._log("EXECUTOR", f"🌐 [LOCAL-BROWSER-EXEC] Executing '{request.tool_name}' via CloakBrowser Visual Satellite.", task_id)
-                        from services.tools.definitions.browser_interact import browser_action
-                        b_url = kwargs.get("url") or kwargs.get("target_url") or "https://www.google.com"
-                        b_obj = kwargs.get("objective") or kwargs.get("task") or "Browse and report"
-                        local_res = await asyncio.to_thread(browser_action, url=b_url, objective=b_obj)
-                        is_ok = local_res.get("status") in ("success", "captured")
-                        out_msg = local_res.get("analysis") or local_res.get("markdown") or json.dumps(local_res, ensure_ascii=False)
-                        self._log("EXECUTOR", f"[{request.tool_name}] {'✅ Browser interaction succeeded' if is_ok else '⚠️ Browser error: ' + str(local_res.get('message', ''))}", task_id)
+                    if local_fn_name in ("browser_action", "web_read", "browser_observe", "browser_act", "browser_extract"):
+                        try:
+                            from tools.definitions import browser_interact
+                        except ImportError:
+                            try:
+                                from services.tools.definitions import browser_interact
+                            except ImportError:
+                                import browser_interact
+                        self._log("EXECUTOR", f"🌐 [LOCAL-BROWSER-EXEC] Executing '{request.tool_name}' ({local_fn_name}) via Sovereign Browser Subsystem.", task_id)
+                        b_act = kwargs.get("action", "")
+                        b_obj = kwargs.get("objective") or kwargs.get("task") or kwargs.get("goal") or ""
+                        if local_fn_name == "web_read":
+                            b_url = kwargs.get("url") or kwargs.get("target_url") or ""
+                            b_filter = kwargs.get("filter") or kwargs.get("filter_keyword")
+                            b_outline = kwargs.get("outline", False)
+                            b_prefer_llms = kwargs.get("prefer_llms_txt", True)
+                            local_res = await asyncio.to_thread(
+                                browser_interact.web_read,
+                                url=b_url,
+                                filter_keyword=b_filter,
+                                extract_outline=b_outline,
+                                prefer_llms_txt=b_prefer_llms,
+                            )
+                        elif local_fn_name == "browser_observe":
+                            b_url = kwargs.get("url") or kwargs.get("target_url")
+                            b_goal = kwargs.get("goal") or kwargs.get("objective")
+                            local_res = await asyncio.to_thread(
+                                browser_interact.browser_observe,
+                                url=b_url,
+                                goal=b_goal,
+                            )
+                        elif local_fn_name == "browser_act":
+                            b_ref = kwargs.get("element_ref") or kwargs.get("ref")
+                            b_act = kwargs.get("action", "click")
+                            b_val = kwargs.get("value")
+                            b_confirm = kwargs.get("confirm", False)
+                            b_refresh = kwargs.get("force_refresh", False)
+                            local_res = await asyncio.to_thread(
+                                browser_interact.browser_act,
+                                element_ref=b_ref,
+                                action=b_act,
+                                value=b_val,
+                                confirm=b_confirm,
+                                force_refresh=b_refresh,
+                            )
+                        elif local_fn_name == "browser_extract":
+                            b_goal = kwargs.get("goal") or kwargs.get("objective") or "Extract structured data"
+                            b_schema = kwargs.get("schema_definition") or kwargs.get("schema")
+                            local_res = await asyncio.to_thread(
+                                browser_interact.browser_extract,
+                                goal=b_goal,
+                                schema_definition=b_schema,
+                            )
+                        else:  # browser_action / browser_control
+                            b_url = kwargs.get("url") or kwargs.get("target_url") or "https://www.google.com"
+                            b_act = kwargs.get("action")
+                            b_obj = kwargs.get("objective") or kwargs.get("task") or (f"Action: {b_act}" if b_act else f"Đọc và tổng hợp nội dung từ {b_url}")
+                            
+                            # Fast-path: Nếu là load_page / read / xem trang, ưu tiên dùng FastWebReader (<100ms, 0MB VRAM)
+                            if not any(kw in f"{b_act or ''} {b_obj}".lower() for kw in ("screenshot", "chụp", "visual", "ảnh")) and (b_act in ("load_page", "read", "view", "open") or any(kw in str(b_obj).lower() for kw in ("xem trang", "đọc trang", "tổng hợp"))):
+                                fast_res = await asyncio.to_thread(browser_interact.web_read, url=b_url)
+                                if fast_res.get("status") == "success" and fast_res.get("content"):
+                                    local_res = fast_res
+                                else:
+                                    local_res = await asyncio.to_thread(browser_interact.browser_action, url=b_url, objective=b_obj)
+                            else:
+                                local_res = await asyncio.to_thread(browser_interact.browser_action, url=b_url, objective=b_obj)
+
+                        needs_evidence = any(
+                            token in f"{b_act or ''} {b_obj}".lower()
+                            for token in ("screenshot", "chụp", "visual", "ảnh")
+                        )
+                        evidence_ok = local_res.get("evidence_complete") is True
+                        is_ok = (
+                            local_res.get("status") in ("success", "captured")
+                            or local_res.get("success") is True
+                            or bool(local_res.get("content"))
+                            or bool(local_res.get("snapshot"))
+                        ) and (not needs_evidence or evidence_ok)
+                        if needs_evidence and not evidence_ok:
+                            local_res["status"] = "inconclusive"
+                            local_res["message"] = "Browser evidence incomplete: screenshot, DOM, hash, or capture time missing."
+                        out_msg = (
+                            local_res.get("content")
+                            or local_res.get("snapshot")
+                            or local_res.get("analysis")
+                            or local_res.get("markdown")
+                            or local_res.get("message")
+                            or json.dumps(local_res, ensure_ascii=False)
+                        )
+                        self._log("EXECUTOR", f"[{request.tool_name}] {'✅ Browser interaction succeeded' if is_ok else '⚠️ Browser status: ' + str(local_res.get('message', ''))}", task_id)
+                        if is_ok:
+                            rcpt_ok, rcpt_dict, rcpt_err = _seal_receipt_fail_closed(
+                                integrity, request.tool_name, request.tool_args, out_msg, decision, task_id
+                            )
+                            if not rcpt_ok:
+                                return ExecutionResult(
+                                    outcome=DecisionOutcome.DENY,
+                                    tool_executed=False,
+                                    result=rcpt_err,
+                                    reason=rcpt_err,
+                                    action=request.tool_name,
+                                    risk_tier=decision.risk_tier,
+                                    lds_verdict=decision.lds_verdict
+                                )
+                        else:
+                            rcpt_dict = None
                         return ExecutionResult(
                             outcome=DecisionOutcome.ALLOW,
                             tool_executed=is_ok,
                             result=out_msg,
-                            action=request.tool_name
+                            action=request.tool_name,
+                            receipt=rcpt_dict,
+                            risk_tier=decision.risk_tier,
+                            lds_verdict=decision.lds_verdict
                         )
 
                     import intelligence.skills.DEVOPS.SYSTEM_CORE_EXECUTOR.logic as core_exec
@@ -545,11 +705,30 @@ class ExecutorGateway:
 
                         err_detail = local_res.get('msg') or local_res.get('stderr') or (str(local_res.get('stdout', ''))[:300] if not is_ok else '')
                         self._log("EXECUTOR", f"[{request.tool_name}] {'✅ Local execution succeeded' if is_ok else '⚠️ Local execution returned error: ' + str(err_detail)}", task_id)
+                        if is_ok:
+                            rcpt_ok, rcpt_dict, rcpt_err = _seal_receipt_fail_closed(
+                                integrity, request.tool_name, request.tool_args, out_msg, decision, task_id
+                            )
+                            if not rcpt_ok:
+                                return ExecutionResult(
+                                    outcome=DecisionOutcome.DENY,
+                                    tool_executed=False,
+                                    result=rcpt_err,
+                                    reason=rcpt_err,
+                                    action=request.tool_name,
+                                    risk_tier=decision.risk_tier,
+                                    lds_verdict=decision.lds_verdict
+                                )
+                        else:
+                            rcpt_dict = None
                         return ExecutionResult(
                             outcome=DecisionOutcome.ALLOW,
                             tool_executed=is_ok,
                             result=out_msg,
-                            action=request.tool_name
+                            action=request.tool_name,
+                            receipt=rcpt_dict,
+                            risk_tier=decision.risk_tier,
+                            lds_verdict=decision.lds_verdict
                         )
                 except Exception as local_err:
                     self._log("WARN", f"[LOCAL-DIRECT-FAIL] Local execution of '{request.tool_name}' failed: {local_err}. Falling back to HTTP executor.", task_id)
@@ -637,11 +816,30 @@ class ExecutorGateway:
                             data.get("msg") or data.get("message") or data.get("detail")
                             or data.get("error") or data.get("output") or "No output."
                         )
+                    if is_success:
+                        rcpt_ok, rcpt_dict, rcpt_err = _seal_receipt_fail_closed(
+                            integrity, request.tool_name, request.tool_args, output, decision, task_id
+                        )
+                        if not rcpt_ok:
+                            return ExecutionResult(
+                                outcome=DecisionOutcome.DENY,
+                                tool_executed=False,
+                                result=rcpt_err,
+                                reason=rcpt_err,
+                                action=request.tool_name,
+                                risk_tier=decision.risk_tier,
+                                lds_verdict=decision.lds_verdict
+                            )
+                    else:
+                        rcpt_dict = None
                     return ExecutionResult(
                         outcome=DecisionOutcome.ALLOW,
                         tool_executed=is_success,
                         result=output,
-                        action=request.tool_name
+                        action=request.tool_name,
+                        receipt=rcpt_dict,
+                        risk_tier=decision.risk_tier,
+                        lds_verdict=decision.lds_verdict
                     )
 
                 except Exception as e:

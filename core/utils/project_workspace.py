@@ -17,14 +17,20 @@ from typing import Optional, Tuple
 
 from core.utils.regex import URL as _URL_RE, GIT_URL as _GIT_HOST_RE, PY_FILE as _PY_FILE_RE
 
-_BLOCK_FRAGMENTS = (
-    ".env",
-    "sovereign",
-    "credential",
-    "secret",
-    "private_key",
-    ".pem",
+_SENSITIVE_PATTERNS = (
+    re.compile(r"(^|/)\.env(\..*)?$", re.IGNORECASE),
+    re.compile(r"(^|/)credentials?\.(json|yaml|yml|ini)$", re.IGNORECASE),
+    re.compile(r".*\.(pem|key|p12|pfx)$", re.IGNORECASE),
+    re.compile(r"(^|/)id_rsa$", re.IGNORECASE),
+    re.compile(r"(^|/)sovereign_secret.*", re.IGNORECASE),
 )
+
+
+def is_sensitive_path(path_str: str) -> bool:
+    """Kiểm tra đường dẫn nhạy cảm bằng Regex chuẩn xác (tránh false positive như secret_santa.py)."""
+    norm = str(path_str).replace("\\", "/").strip().lower()
+    return any(p.search(norm) for p in _SENSITIVE_PATTERNS)
+
 
 _ROOT_ONLY_BLOCK = frozenset(
     {
@@ -160,6 +166,102 @@ def get_jkai_workspace_root() -> Path:
     return Path(".").resolve()
 
 
+_CONTAINER_MOUNT_MAP: Tuple[Tuple[str, str], ...] = (
+    ("core", "/shared/core"),
+    ("intelligence", "/intelligence"),
+    ("services/tools", "/shared/tools"),
+    ("tools", "/shared/tools"),
+    ("services/ai-brain", "/app"),
+    ("data", "/data"),
+    ("workspace", "/workspace"),
+)
+
+
+def to_workspace_rel_path(target_path: str) -> str:
+    """Chuyển đổi đường dẫn container (/workspace/..., /shared/core/..., v.v.) hoặc tuyệt đối về tương đối so với gốc JKAI."""
+    if not target_path:
+        return ""
+    p = str(target_path).replace("\\", "/").strip()
+    if p in (".", "./", "/workspace", "/workspace/"):
+        return "."
+    if p.startswith("/workspace/"):
+        return normalize_workspace_rel(p[len("/workspace/") :])
+    # [F4 FIX]: Chuẩn hóa prefix shared/ và /shared/ về đúng thư mục gốc (core, tools)
+    clean_p = p.lstrip("/")
+    if clean_p.startswith("shared/core"):
+        sub = clean_p[len("shared/core") :].lstrip("/")
+        return normalize_workspace_rel(f"core/{sub}" if sub else "core")
+    if clean_p.startswith("shared/tools"):
+        sub = clean_p[len("shared/tools") :].lstrip("/")
+        return normalize_workspace_rel(f"tools/{sub}" if sub else "tools")
+
+    for rel_prefix, mount_root in _CONTAINER_MOUNT_MAP:
+        if p == mount_root or p == mount_root + "/":
+            return rel_prefix
+        if p.startswith(mount_root + "/"):
+            sub = p[len(mount_root) + 1 :]
+            return normalize_workspace_rel(f"{rel_prefix}/{sub}")
+    try:
+        ws_root = str(get_jkai_workspace_root()).replace("\\", "/").rstrip("/")
+        if ws_root and p.lower() == ws_root.lower():
+            return "."
+        if ws_root and p.lower().startswith(ws_root.lower() + "/"):
+            return normalize_workspace_rel(p[len(ws_root) + 1 :])
+    except Exception:
+        pass
+    if not p.startswith("/") and not (len(p) >= 2 and p[1] == ":" and p[0].isalpha()):
+        return normalize_workspace_rel(p)
+    return ""
+
+
+def resolve_container_or_workspace_path(target_path: str) -> str:
+    """
+    [RC-1 FIX]: Phân giải đường dẫn thống nhất cho cả Host và Container đa mount:
+    - Nếu đường dẫn bắt đầu bằng /workspace/<rel> hoặc tương đối <rel>, tự động kiểm tra:
+      1. Đường dẫn trực tiếp trên <ws_root>/<rel> (Host hoặc /workspace/<rel> nếu có thật)
+      2. Bảng ánh xạ mount trong container (/shared/core, /intelligence, /shared/tools, /app, /data)
+    """
+    if not target_path:
+        return ""
+    p = str(target_path).replace("\\", "/").strip()
+    ws_root = get_jkai_workspace_root()
+    ws_root_str = str(ws_root).replace("\\", "/").rstrip("/")
+
+    if p in (".", "./"):
+        return os.path.normpath(ws_root_str)
+
+    # Nếu không phải /workspace/... mà đã tồn tại trực tiếp trên đĩa (ví dụ /shared/core/... hoặc D:/Docker/JKAI/...)
+    if not p.startswith("/workspace") and (p.startswith("/") or (len(p) >= 2 and p[1] == ":" and p[0].isalpha())):
+        if os.path.exists(p):
+            return os.path.normpath(p)
+
+    rel = to_workspace_rel_path(p)
+    if rel == ".":
+        if os.path.isdir("/workspace"):
+            return os.path.normpath("/workspace")
+        return os.path.normpath(ws_root_str)
+
+    if rel:
+        # 1. Kiểm tra trên ws_root/<rel> trước (ưu tiên Host hoặc file nằm thật trong /workspace)
+        cand_ws = f"{ws_root_str}/{rel}"
+        if os.path.exists(cand_ws):
+            return os.path.normpath(cand_ws)
+
+        # 2. Kiểm tra ánh xạ volume mount trong container (/shared/core, /intelligence, ...)
+        for rel_prefix, mount_root in _CONTAINER_MOUNT_MAP:
+            if rel == rel_prefix or rel.startswith(rel_prefix + "/"):
+                sub = rel[len(rel_prefix) :].lstrip("/")
+                cand_mount = f"{mount_root}/{sub}" if sub else mount_root
+                if os.path.exists(cand_mount) or os.path.isdir(mount_root):
+                    return os.path.normpath(cand_mount)
+
+        # 3. Fallback về ws_root/<rel>
+        return os.path.normpath(cand_ws)
+
+    return os.path.normpath(p)
+
+
+
 def iter_workspace_files(
     root: Path | str | None = None,
     suffixes: Optional[Tuple[str, ...]] = None,
@@ -185,7 +287,7 @@ def iter_workspace_files(
             and d.lower() != "sealed_c"
         )
         for fname in sorted(filenames):
-            if any(frag in fname.lower() for frag in _BLOCK_FRAGMENTS):
+            if is_sensitive_path(fname):
                 continue
             if "sealed_c" in dirpath.replace("\\", "/").lower():
                 continue
@@ -226,7 +328,7 @@ def is_allowed_workspace_rel(rel: str) -> bool:
         return False
     if low.endswith("/dossier") or low.endswith("/manifest") or low.endswith("/logic") or low.endswith("/skill"):
         return False
-    if any(frag in low for frag in _BLOCK_FRAGMENTS):
+    if is_sensitive_path(norm):
         return False
     if _AI_MODEL_PATH_RE.search(rel):
         return False
@@ -383,7 +485,12 @@ def goal_targets_workspace_folder(goal: str) -> bool:
 
 def workspace_task_mode(goal: str) -> str:
     g = goal or ""
+    low = g.lower()
     if _NO_FIX_RE.search(g):
+        return "audit"
+    if any(k in low for k in ["kiểm toán", "audit", "rà soát", "so sánh", "đối chiếu"]):
+        if any(k in low for k in ["hãy sửa", "hãy fix", "sửa lỗi này", "tiến hành sửa", "sửa mã", "refactor", "áp dụng bản vá"]):
+            return "fix"
         return "audit"
     if _FIX_RE.search(g):
         return "fix"
@@ -419,9 +526,9 @@ def enrich_goal_for_workspace_target(
         directive = (
             f"\n\n[JKAI WORKSPACE — {target}]\n"
             f"- Phạm vi: `{container_path}`.\n"
-            "- list_dir → đọc → chạy lệnh/test → báo lỗi (file, dòng, traceback).\n"
+            "- Dùng view_file / verify_file đọc đầy đủ từng tệp mục tiêu trong yêu cầu (lấy số liệu từ [FILE_METADATA]) → phân tích chính xác theo yêu cầu của Master.\n"
             "- Không ghi file trừ khi Master yêu cầu sửa.\n"
-            "- Bắt buộc dùng tool, không đoán.\n"
+            "- Bắt buộc dùng tool thực chứng, tuyệt đối không suy đoán hoặc bịa đặt.\n"
         )
 
     return (goal or "").strip() + directive, target, mode
@@ -432,15 +539,15 @@ def enrich_goal_for_project_workspace(goal: str) -> Tuple[str, Optional[str], st
 
 
 def workspace_scope_exists(scope_rel: str) -> bool:
-    """Thư mục scope có thật trên đĩa (tránh agent ảo web/README, com/org/repo)."""
-    # Cho phép scope "." là root workspace
+    """Thư mục scope có thật trên đĩa hoặc mount container (tránh agent ảo web/README, com/org/repo)."""
     if scope_rel == ".":
-        return get_jkai_workspace_root().is_dir()
+        return get_jkai_workspace_root().is_dir() or os.path.isdir("/workspace")
     rel = normalize_workspace_rel(scope_rel or "")
     if not rel:
         return False
     try:
-        return (get_jkai_workspace_root() / rel).is_dir()
+        resolved = resolve_container_or_workspace_path(rel)
+        return os.path.isdir(resolved)
     except OSError:
         return False
 

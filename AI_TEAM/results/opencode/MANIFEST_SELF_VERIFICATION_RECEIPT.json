@@ -1,0 +1,18 @@
+{
+  "verifier_version": "1.0.0-canonical-verifier",
+  "verifier_trust_root": "JKAI_CORE_SECURITY_ENCLAVE",
+  "verified_at": "2026-10-19T20:09:59+0700",
+  "manifest_file_byte_sha256": "bd7d5ab3e3ac808490b651f6fc718ae7e2f70ed49c5b04061b623df1e33d4681",
+  "manifest_content_hash": "ccfe5adb244e31def0370168d3586db8adcc3f208bcf263abecd5c62ca4aec46",
+  "state_hashes": {
+    "TRANG_THAI.json": "d64e87ce33853ed8719cd810de1118225c57551eb72ba7284a7f75815eacf7d7",
+    "agents_registry.json": "c5a51fd4a5797dc7fd7317678e49cde2a8e991c1f48b7fb5435f6db290b028b2",
+    "key_registry.json": "d0784394fbb50007b1e299e612e4dd49be56f3a86ddcdb22ce99fc66e203d426",
+    "TASK_CURRENT.md": "4c2a4c67fc1c5ac56333effce3a9e893e66f63ec4d4c953405af8f840354da74",
+    "E2E_WEBHOOK_PROBE_RECEIPT.json": "2bc1dd5e69ef0623cd32aeff762d74c5132c730264f8949d54eed48302c8ebdf",
+    "stop_receipt": "df394867e8ca2796b56defd7153c337ddc848f68ea313efdca15806afc4533e7",
+    "heartbeat_antigravity.json": "c6d7bee0f95fd2727a9dd50179e3576569033c5e6e3e9e8e2763e2c5fe27e95a"
+  },
+  "rule": "manifest_content_hash computes sha256 of sorted state_hashes (self-reference excluded)",
+  "verification_result": "PASS_CONSISTENT"
+}

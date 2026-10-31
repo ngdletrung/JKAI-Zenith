@@ -48,7 +48,7 @@ jobs:
       - name: Run PII Scrubber & Core Unit Tests
         run: |
           python tests/test_pii_scrubber.py
-          pytest tests/ -v || true
+          pytest tests/ -v
 
   docker-compose-validate:
     name: 🐳 Docker Compose Integrity Check

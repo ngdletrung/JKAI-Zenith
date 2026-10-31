@@ -1,0 +1,27 @@
+{
+  "schema_version": "1.0",
+  "class_name": "RouteDecision",
+  "required_fields": [
+    "mode",
+    "role",
+    "action_type",
+    "need_kb",
+    "need_web",
+    "need_tools",
+    "confidence",
+    "reason"
+  ],
+  "fields": {
+    "mode": "IntentMode (MATH|META_INTROSPECTION|SOCIAL|OFFICE|CODING|REALTIME|INTERNAL|REASONING|GENERAL)",
+    "role": "str (RECEPTIONIST|CODE_EXECUTOR|PLANNER)",
+    "action_type": "ActionType (CREATE|READ|UPDATE|DELETE|EXECUTE)",
+    "need_kb": "bool",
+    "need_web": "bool",
+    "need_tools": "bool",
+    "force_synthesis": "bool",
+    "confidence": "float",
+    "reason": "str",
+    "tags": "List[str]",
+    "is_compound": "bool"
+  }
+}

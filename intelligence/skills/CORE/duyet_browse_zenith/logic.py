@@ -10,13 +10,17 @@
 # 3. Provides unified reporting of UI and technical issues.
 # -----------------------------------------------------------------------------
 import os
+import hashlib
+import uuid
+from datetime import datetime, timezone
 import httpx
 import logging
-from typing import Dict, Any
+from typing import Dict, Any, List, Optional
 
 logger = logging.getLogger(__name__)
 
-async def execute(params: Dict[str, Any]) -> Dict[str, Any]:
+async def execute(params: Dict[str, Any] = None, **kwargs) -> Dict[str, Any]:
+    params = dict(params or kwargs)
     objective = params.get("objective", "")
     url = params.get("url", "https://www.google.com")
     use_xray = params.get("use_xray", False)
@@ -33,7 +37,9 @@ async def execute(params: Dict[str, Any]) -> Dict[str, Any]:
     results = {}
     
     # 1. Visual Layer (Standard Human-like Vision)
-    visual_result = await run_visual_observation(objective, url)
+    take_screenshot = bool(params.get("take_screenshot", False) or params.get("capture_screenshot", False))
+    action = params.get("action", "")
+    visual_result = await run_visual_observation(objective, url, take_screenshot, action)
     results["visual"] = visual_result
     
     # 2. X-Ray Layer (Optional Deep Diagnostics)
@@ -41,14 +47,45 @@ async def execute(params: Dict[str, Any]) -> Dict[str, Any]:
         xray_result = await run_deep_diagnostics(url)
         results["xray"] = xray_result
         
-    return summarize_hybrid_results(results)
+    return summarize_hybrid_results(
+        results,
+        source_url=url,
+        task_id=str(task_id),
+        trace_id=str(trace_id),
+        require_screenshot=bool(take_screenshot or action in ["screenshot", "load_page", "chup_man_hinh", "view_page"]),
+    )
 
-async def run_visual_observation(objective: str, url: str) -> Dict[str, Any]:
-    """Standard Thiên Nhãn Observation using ai-browser-use."""
-    browser_url = os.getenv("AI_BROWSER_URL", "http://ai-browser:8000/browse")
+async def run_visual_observation(objective: str, url: str, take_screenshot: bool = False, action: str = "load_page") -> Dict[str, Any]:
+    """Standard Thiên Nhãn Observation: Hỗ trợ cả /screenshot siêu tốc lẫn /browse đa tác vụ."""
+    base_browser_url = os.getenv("AI_BROWSER_URL", "http://ai-browser:8000")
+    # Nếu có cờ chụp màn hình hoặc action mở/chụp trực quan
+    if take_screenshot or action in ["screenshot", "load_page", "chup_man_hinh", "view_page"]:
+        screenshot_url = (
+            base_browser_url.replace("/browse", "") + "/screenshot"
+            if "/browse" in base_browser_url
+            else f"{base_browser_url.rstrip('/')}/screenshot"
+        )
+        try:
+            async with httpx.AsyncClient(timeout=60.0) as client:
+                resp = await client.post(screenshot_url, json={"objective": objective or f"Mở trực quan và chụp màn hình {url}", "url": url})
+                if resp.status_code == 200:
+                    snap_data = resp.json()
+                    return {
+                        "status": "success",
+                        "data": {
+                            "analysis": f"Đã mở trực quan trang {url} và chụp màn hình thành công ({snap_data.get('filename')}).",
+                            "screenshot": snap_data.get("filename"),
+                            "url": url,
+                            "raw": snap_data
+                        }
+                    }
+        except Exception as snap_err:
+            logger.warning(f"[THIÊN-NHÃN-SNAP-WARN] {snap_err}, chuyển tiếp sang /browse...")
+
+    browser_url = base_browser_url if "/browse" in base_browser_url else f"{base_browser_url.rstrip('/')}/browse"
     try:
         async with httpx.AsyncClient(timeout=300.0) as client:
-            resp = await client.post(browser_url, json={"objective": objective, "url": url})
+            resp = await client.post(browser_url, json={"objective": objective or f"Quan sát trang {url}", "url": url})
             if resp.status_code == 200:
                 return {"status": "success", "data": resp.json()}
             return {"status": "error", "msg": f"Visual satellite error: {resp.status_code}"}
@@ -80,23 +117,112 @@ async def run_deep_diagnostics(url: str) -> Dict[str, Any]:
         }
     }
 
-def summarize_hybrid_results(results: Dict[str, Any]) -> Dict[str, Any]:
+def _resolve_screenshot_file_and_sha256(screenshot_ref: Optional[str], raw_data: Optional[Dict[str, Any]] = None) -> tuple[str, str]:
+    raw_data = raw_data or {}
+    candidates = []
+    if raw_data.get("screenshot_path"):
+        candidates.append(str(raw_data["screenshot_path"]))
+    if screenshot_ref:
+        candidates.append(str(screenshot_ref))
+        fname = os.path.basename(str(screenshot_ref))
+        candidates.extend([
+            os.path.join("files", "screenshots", fname),
+            os.path.join("screenshots", fname),
+            os.path.join("/workspace", "files", "screenshots", fname),
+            os.path.join("/tmp", fname),
+        ])
+    for cand in candidates:
+        if cand and os.path.isfile(cand) and os.path.getsize(cand) > 0:
+            abs_p = os.path.abspath(cand)
+            with open(abs_p, "rb") as f:
+                sha = hashlib.sha256(f.read()).hexdigest()
+            return abs_p, sha
+    return "", ""
+
+
+def summarize_hybrid_results(
+    results: Dict[str, Any],
+    source_url: str = "",
+    task_id: str = "sys",
+    trace_id: str = "sys",
+    require_screenshot: bool = False,
+) -> Dict[str, Any]:
     visual = results.get("visual", {})
     xray = results.get("xray", {})
-    
+    if visual.get("status") != "success":
+        return {
+            "status": "BLOCKED",
+            "error": visual.get("msg", "BROWSER_VISUAL_OBSERVATION_FAILED"),
+            "evidence_complete": False,
+            "details": results,
+        }
+
+    vdata = visual.get("data", {}) if isinstance(visual.get("data"), dict) else {}
+    raw_snap = vdata.get("raw", {}) if isinstance(vdata.get("raw"), dict) else {}
+    screenshot_ref = vdata.get("screenshot") or raw_snap.get("filename") or raw_snap.get("screenshot_path")
+    screenshot_path, screenshot_sha256 = _resolve_screenshot_file_and_sha256(screenshot_ref, raw_snap)
+    if not screenshot_sha256 and raw_snap.get("screenshot_sha256") and len(str(raw_snap.get("screenshot_sha256"))) == 64:
+        if screenshot_path:
+            screenshot_sha256 = str(raw_snap["screenshot_sha256"])
+
+    headlines: List[str] = []
+    for src_list in (vdata.get("headlines"), raw_snap.get("headlines")):
+        if isinstance(src_list, list):
+            headlines.extend(str(h).strip() for h in src_list if str(h).strip())
+    dom_text = str(vdata.get("dom_excerpt") or raw_snap.get("content") or vdata.get("analysis") or "").strip()
+    if not headlines and dom_text:
+        for line in dom_text.splitlines():
+            clean_l = line.strip(" -*•\t")
+            if len(clean_l) >= 12 and not clean_l.startswith("Đã mở trực quan trang"):
+                headlines.append(clean_l[:200])
+
+    captured_at = str(raw_snap.get("captured_at") or vdata.get("captured_at") or datetime.now(timezone.utc).isoformat())
+    final_url = str(raw_snap.get("final_url") or vdata.get("final_url") or vdata.get("url") or source_url or "")
+    eff_source_url = str(source_url or final_url)
+
+    browser_evidence = {
+        "evidence_id": f"bev_{uuid.uuid4().hex[:12]}",
+        "task_id": str(task_id),
+        "trace_id": str(trace_id),
+        "source_url": eff_source_url,
+        "final_url": final_url,
+        "captured_at": captured_at,
+        "published_at": raw_snap.get("published_at") or vdata.get("published_at"),
+        "screenshot_path": screenshot_path,
+        "screenshot_sha256": screenshot_sha256,
+        "headlines": headlines[:25],
+        "dom_excerpt": dom_text[:3000],
+    }
+
+    # Phase R1.2 Hard Gate: Browser success missing mandatory artifact = BLOCKED
+    if require_screenshot and (not screenshot_path or len(screenshot_sha256) != 64 or (not headlines and len(dom_text) < 20)):
+        missing_parts = []
+        if not screenshot_path:
+            missing_parts.append("screenshot_path_on_disk")
+        if len(screenshot_sha256) != 64:
+            missing_parts.append("screenshot_sha256")
+        if not headlines and len(dom_text) < 20:
+            missing_parts.append("headlines_or_dom_records")
+        return {
+            "status": "BLOCKED",
+            "error": f"MISSING_BROWSER_EVIDENCE_ARTIFACT: {', '.join(missing_parts)}",
+            "evidence_complete": False,
+            "browser_evidence": browser_evidence,
+            "details": results,
+        }
+
     summary = "✅ [THIÊN NHÃN HYBRID REPORT]\n"
-    if visual.get("status") == "success":
-        summary += f"👁️ [Hành động Thị giác]: {visual['data'].get('analysis', 'Thành công')}\n"
-        screenshot = visual['data'].get('screenshot')
-        if screenshot:
-            summary += f"\n![Bằng chứng thị giác](http://localhost:3000/screenshots/{screenshot})\n"
-    
+    summary += f"👁️ [Hành động Thị giác]: {vdata.get('analysis', 'Thành công')}\n"
+    if screenshot_ref:
+        summary += f"\n![Bằng chứng thị giác](http://localhost:3000/screenshots/{os.path.basename(str(screenshot_ref))})\n"
     if xray:
         summary += "⚡ [Chẩn đoán X-Ray]: Hệ thống ổn định. Không phát hiện lỗi ngầm.\n"
         
     return {
         "status": "success",
         "summary": summary,
+        "evidence_complete": True,
+        "browser_evidence": browser_evidence,
         "details": results
     }
 

@@ -1,0 +1,25 @@
+{
+  "receipt_type": "INDEPENDENT_GATE_4_ISSUANCE_RECEIPT",
+  "issuer": "IndependentGateAuthority",
+  "authority_key_version": 1,
+  "certificate_id": "cert_phase_r_memory_8_controlled_pilot_seal",
+  "certificate_hash": "71da62ec745ed089cc7732b9213780a81ecec6f5b202f853478009690d5cd2fb",
+  "previous_certificate_hash": "GENESIS",
+  "ledger_integrity": {
+    "is_valid": true,
+    "error": null
+  },
+  "canonical_regression_verified": {
+    "total_passed": 121,
+    "total_failed": 0,
+    "duration_seconds": 11.76,
+    "command": "python -m pytest tests/test_memory_phase_r8_resilience.py tests/test_memory_phase_r7_telemetry.py tests/test_memory_runtime_adapter.py tests/test_planning_pipeline_memory_wiring.py tests/test_memory_phase_r5.py tests/test_memory_phase_r4.py tests/test_memory_phase_r3.py tests/test_memory_phase_r2.py tests/test_memory_phase_r1.py tests/test_sovereign_hindsight_store.py tests/test_two_agent_protocol_v23.py"
+  },
+  "ssot_inventory_status": {
+    "ssot_file": "Thao luan AI/Noi dung thao luan.md",
+    "line_count": 207,
+    "max_allowed_lines": 500,
+    "status": "PASS_WITHIN_LIMITS"
+  },
+  "issued_at": "2026-10-18T20:54:32+07:00"
+}

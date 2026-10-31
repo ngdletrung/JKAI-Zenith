@@ -1,0 +1,1939 @@
+diff --git a/core/governance/shadow_harness.py b/core/governance/shadow_harness.py
+index 100c994..c4f503c 100644
+--- a/core/governance/shadow_harness.py
++++ b/core/governance/shadow_harness.py
+@@ -63,6 +63,30 @@ class ShadowHarness:
+             self.telemetry_dir.mkdir(parents=True, exist_ok=True)
+             self._prune_expired_records()
+ 
++    @staticmethod
++    def _sanitize_and_count(payload: Any) -> tuple[Any, int]:
++        if payload is None:
++            return None, 0
++        sanitized, report = StateSanitizer.sanitize_with_report(payload)
++        cnt = report.get("redacted_count", 0) if isinstance(report, dict) else getattr(report, "redacted_keys_count", 0)
++        return sanitized, int(cnt)
++
++    @staticmethod
++    def classify_observation_outcome(execution_receipt: Optional[Dict[str, Any]], verification_passed: Optional[bool] = None) -> str:
++        """
++        [Hermes Agent Guard]: Phân loại độc lập GOOD / BAD / NEAR_MISS dựa trên biên nhận thực thi
++        mật mã học và kết quả kiểm chứng độc lập, tuyệt đối không tin vào tự đánh giá của model.
++        """
++        if not execution_receipt or not isinstance(execution_receipt, dict):
++            return "BAD"
++        if execution_receipt.get("lds_legal") is False:
++            return "BAD"
++        if not execution_receipt.get("hmac_signature") or not execution_receipt.get("receipt_id"):
++            return "BAD"
++        if verification_passed is False:
++            return "NEAR_MISS"
++        return "GOOD"
++
+     def start_observation(
+         self,
+         raw_state: Dict[str, Any],
+@@ -74,9 +98,11 @@ class ShadowHarness:
+         if not self.enabled:
+             return None
+         try:
+-            sanitized_state, report = StateSanitizer.sanitize_with_report(raw_state)
++            sanitized_state, state_redactions = self._sanitize_and_count(raw_state)
++            sanitized_draft, draft_redactions = self._sanitize_and_count(reflex_draft)
++            sanitized_meta, meta_redactions = self._sanitize_and_count(metadata or {})
+             fingerprint = StateSanitizer.compute_fingerprint(sanitized_state)
+-            redacted_count = report.get("redacted_count", 0) if isinstance(report, dict) else getattr(report, "redacted_keys_count", 0)
++            redacted_count = state_redactions + draft_redactions + meta_redactions
+             
+             cid = correlation_id or f"corr_{uuid.uuid4().hex[:12]}"
+             
+@@ -89,9 +115,9 @@ class ShadowHarness:
+                 "timestamp": time.time(),
+                 "fingerprint": fingerprint,
+                 "sanitized_state": sanitized_state,
+-                "reflex_draft": reflex_draft,
++                "reflex_draft": sanitized_draft,
+                 "redaction_count": redacted_count,
+-                "metadata": metadata or {}
++                "metadata": sanitized_meta
+             }
+             return cid
+         except Exception as e:
+@@ -109,11 +135,17 @@ class ShadowHarness:
+             return None
+         try:
+             pending = self._pending_observations.pop(correlation_id)
++            sanitized_receipt, rcpt_redactions = self._sanitize_and_count(execution_receipt)
++            sanitized_extra_meta, meta_redactions = self._sanitize_and_count(metadata or {})
+             now = time.time()
+             merged_meta = dict(pending.get("metadata", {}))
+-            if metadata:
+-                merged_meta.update(metadata)
++            if sanitized_extra_meta:
++                merged_meta.update(sanitized_extra_meta)
+             merged_meta["correlation_id"] = correlation_id
++            merged_meta["outcome_class"] = self.classify_observation_outcome(
++                sanitized_receipt,
++                verification_passed=merged_meta.get("verification_passed")
++            )
+             
+             record = ShadowRecord(
+                 schema_version=SCHEMA_VERSION,
+@@ -123,8 +155,8 @@ class ShadowHarness:
+                 state_fingerprint=pending["fingerprint"],
+                 sanitized_state=pending["sanitized_state"],
+                 reflex_draft=pending["reflex_draft"],
+-                execution_receipt=execution_receipt,
+-                redaction_count=pending["redaction_count"],
++                execution_receipt=sanitized_receipt,
++                redaction_count=int(pending["redaction_count"]) + rcpt_redactions + meta_redactions,
+                 metadata=merged_meta
+             )
+             self._persist_record(record)
+@@ -171,10 +203,21 @@ class ShadowHarness:
+             return None
+ 
+         try:
+-            # Condition 2: Enforce StateSanitizer 2.3a BEFORE storage
+-            sanitized_state, report = StateSanitizer.sanitize_with_report(raw_state)
++            # Condition 2: Enforce StateSanitizer 2.3a BEFORE storage across all 4 fields
++            sanitized_state, state_redactions = self._sanitize_and_count(raw_state)
++            sanitized_draft, draft_redactions = self._sanitize_and_count(reflex_draft)
++            sanitized_receipt, rcpt_redactions = self._sanitize_and_count(execution_receipt)
++            sanitized_metadata, meta_redactions = self._sanitize_and_count(metadata or {})
+             fingerprint = StateSanitizer.compute_fingerprint(sanitized_state)
+-            redacted_count = report.get("redacted_count", 0) if isinstance(report, dict) else getattr(report, "redacted_keys_count", 0)
++            redacted_count = state_redactions + draft_redactions + rcpt_redactions + meta_redactions
++            if isinstance(sanitized_metadata, dict):
++                sanitized_metadata.setdefault(
++                    "outcome_class",
++                    self.classify_observation_outcome(
++                        sanitized_receipt,
++                        verification_passed=sanitized_metadata.get("verification_passed")
++                    )
++                )
+ 
+             now = time.time()
+             record = ShadowRecord(
+@@ -184,10 +227,10 @@ class ShadowHarness:
+                 iso_time=time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime(now)),
+                 state_fingerprint=fingerprint,
+                 sanitized_state=sanitized_state,
+-                reflex_draft=reflex_draft,
+-                execution_receipt=execution_receipt,
++                reflex_draft=sanitized_draft,
++                execution_receipt=sanitized_receipt,
+                 redaction_count=redacted_count,
+-                metadata=metadata or {}
++                metadata=sanitized_metadata
+             )
+ 
+             self._persist_record(record)
+diff --git a/core/kernel/dynamic_skill_creator.py b/core/kernel/dynamic_skill_creator.py
+index 70dbb85..248e55e 100644
+--- a/core/kernel/dynamic_skill_creator.py
++++ b/core/kernel/dynamic_skill_creator.py
+@@ -1,65 +1,534 @@
+-import os
+-import sys
++# -*- coding: utf-8 -*-
++"""
++core/kernel/dynamic_skill_creator.py
++====================================
++JKAI-Zenith Sovereign Skill Governance Pipeline:
++PROPOSAL -> PATH VALIDATION -> AST ALLOWLIST -> StateSanitizer SCAN
++-> REGRESSION 100% -> APPROVAL -> CHECKPOINT -> ATOMIC PUBLISH
++-> EXECUTION RECEIPT -> ROLLBACK.
++
++Guarantees:
++1. LLM cannot write directly to production `logic.py` without passing AST allowlist,
++   StateSanitizer retain defense, regression check, and approval gate.
++2. Path traversal (`..`, `/`, `\\`, `:`) is strictly blocked.
++3. Dangerous AST nodes (`eval`, `exec`, `compile`, `__import__`, `subprocess`,
++   `os.system`, `shutil.rmtree`, `socket`, `pickle`, `ctypes`) are blocked.
++4. Atomic file writes (`tmp` + `os.fsync` + `os.replace`) with automatic checkpoint
++   and SHA-256 verified rollback on partial publish, receipt failure, or hot-reload failure.
++"""
++
++from __future__ import annotations
++
++import ast
++import hashlib
+ import json
+ import logging
++import os
++import re
++import shutil
++import time
++import uuid
++from pathlib import Path
++from typing import Any, Callable, Dict, List, Optional, Tuple
++
+ import httpx
+ 
++from core.kernel.execution_integrity import ExecutionIntegrityLayer
++from core.sanitizer.state_sanitizer import StateSanitizer
++
+ logger = logging.getLogger("DynamicSkillCreator")
+ 
++_SAFE_NAME_RE = re.compile(r"^[A-Za-z0-9_\- ]+$")
++_PATH_TRAVERSAL_TOKENS = ("..", "/", "\\", ":", "\x00")
++
++_BANNED_IMPORT_MODULES = {
++    "subprocess",
++    "shutil",
++    "socket",
++    "ctypes",
++    "pty",
++    "winreg",
++    "multiprocessing",
++    "pickle",
++    "marshal",
++    "builtins",
++    "importlib",
++}
++
++_BANNED_CALL_NAMES = {
++    "eval",
++    "exec",
++    "compile",
++    "__import__",
++    "open",
++    "input",
++    "breakpoint",
++}
++
++_BANNED_ATTR_CALLS = {
++    "system",
++    "popen",
++    "spawn",
++    "spawnl",
++    "spawnle",
++    "spawnlp",
++    "spawnlpe",
++    "spawnv",
++    "spawnve",
++    "spawnvp",
++    "spawnvpe",
++    "execl",
++    "execle",
++    "execlp",
++    "execlpe",
++    "execv",
++    "execve",
++    "execvp",
++    "execvpe",
++    "rmtree",
++    "unlink",
++    "remove",
++    "rmdir",
++    "kill",
++    "killpg",
++}
++
++
+ class DynamicSkillCreator:
+     """
+-    🧠 [DYNAMIC-SKILL-CREATOR]: Động cơ tự tạo Skill & Prompt động chuẩn Antigravity.
+-    Tự động đúc Kỹ năng mới (.md + logic.py) vào thư mục intelligence/skills và nạp tức thì mà không cần restart container.
++    Sovereign Skill Governance Engine:
++    Quản lý toàn bộ chu trình đề xuất, thẩm định AST/Sanitizer, kiểm thử hồi quy 100%,
++    phê duyệt, sao lưu checkpoint, xuất bản nguyên tử, ký biên nhận HMAC và hoàn tác (rollback).
+     """
++
++    def __init__(
++        self,
++        skills_root: Optional[str] = None,
++        candidates_dir: Optional[str] = None,
++        checkpoints_dir: Optional[str] = None,
++    ):
++        base_root = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
++        self.skills_root = os.path.abspath(skills_root or os.path.join(base_root, "intelligence", "skills"))
++        self.candidates_dir = os.path.abspath(candidates_dir or os.path.join(base_root, "data", "skill_candidates"))
++        self.checkpoints_dir = os.path.abspath(checkpoints_dir or os.path.join(base_root, "data", "skill_checkpoints"))
++
+     @staticmethod
+-    def create_skill(skill_name: str, description: str, python_code: str, category: str = "CUSTOM") -> dict:
+-        """Đúc một kỹ năng mới hoàn chỉnh xuống đĩa và nạp vào bản đồ nơ-ron ngay lập tức."""
+-        skill_name_clean = skill_name.lower().replace(" ", "_").replace("-", "_")
+-        target_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "intelligence", "skills", category, skill_name_clean))
+-        os.makedirs(target_dir, exist_ok=True)
++    def _is_production_env() -> bool:
++        env_val = (os.environ.get("JKAI_ENV") or os.environ.get("ENVIRONMENT") or "development").strip().lower()
++        return env_val in ("prod", "production")
++
++    def validate_and_resolve_path(self, skill_name: str, category: str) -> Tuple[bool, str, str, str]:
++        """
++        [Step 2: PATH VALIDATION]
++        Kiểm tra chống Path Traversal tuyệt đối trên `skill_name` và `category`.
++        Trả về: (ok, clean_skill_name, clean_category, target_dir_or_error)
++        """
++        if not skill_name or not isinstance(skill_name, str) or not category or not isinstance(category, str):
++            return False, "", "", "PATH_VALIDATION_ERROR: Empty skill_name or category."
++
++        for raw_val, label in ((skill_name, "skill_name"), (category, "category")):
++            if any(tok in raw_val for tok in _PATH_TRAVERSAL_TOKENS) or not _SAFE_NAME_RE.match(raw_val):
++                return False, "", "", f"PATH_TRAVERSAL_BLOCKED: Illegal characters in {label} '{raw_val}'."
+ 
++        skill_clean = skill_name.strip().lower().replace(" ", "_").replace("-", "_")
++        cat_clean = category.strip().upper().replace(" ", "_").replace("-", "_")
++        if not skill_clean or not cat_clean:
++            return False, "", "", "PATH_VALIDATION_ERROR: Normalized identifier is empty."
++
++        target_dir = os.path.abspath(os.path.join(self.skills_root, cat_clean, skill_clean))
++        try:
++            common = os.path.commonpath([self.skills_root, target_dir])
++            if os.path.normcase(common) != os.path.normcase(self.skills_root):
++                return False, "", "", "PATH_TRAVERSAL_BLOCKED: Target directory escapes skills_root."
++        except ValueError:
++            return False, "", "", "PATH_TRAVERSAL_BLOCKED: Cross-drive path traversal."
++
++        return True, skill_clean, cat_clean, target_dir
++
++    @staticmethod
++    def validate_skill_ast(python_code: str) -> Tuple[bool, List[str]]:
++        """
++        [Step 3: AST ALLOWLIST VALIDATION]
++        Phân tích cây cú pháp AST và chặn đứng mọi import/call nguy hiểm.
++        """
++        if not python_code or not isinstance(python_code, str) or not python_code.strip():
++            return False, ["AST_EMPTY_CODE: Python code must not be empty."]
++
++        try:
++            tree = ast.parse(python_code)
++        except SyntaxError as exc:
++            return False, [f"AST_SYNTAX_ERROR: {exc}"]
++
++        violations: List[str] = []
++        has_function_def = False
++
++        for node in ast.walk(tree):
++            if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
++                has_function_def = True
++            elif isinstance(node, ast.Import):
++                for alias in node.names:
++                    top_mod = alias.name.split(".")[0]
++                    if top_mod in _BANNED_IMPORT_MODULES:
++                        violations.append(f"AST_BANNED_IMPORT: Module '{alias.name}' is forbidden in skills.")
++            elif isinstance(node, ast.ImportFrom):
++                mod_name = (node.module or "").split(".")[0]
++                if mod_name in _BANNED_IMPORT_MODULES:
++                    violations.append(f"AST_BANNED_IMPORT_FROM: Module '{node.module}' is forbidden in skills.")
++                for alias in node.names:
++                    if alias.name in _BANNED_ATTR_CALLS or alias.name in _BANNED_CALL_NAMES:
++                        violations.append(f"AST_BANNED_SYMBOL_IMPORT: Symbol '{alias.name}' is forbidden.")
++            elif isinstance(node, ast.Call):
++                if isinstance(node.func, ast.Name):
++                    if node.func.id in _BANNED_CALL_NAMES:
++                        violations.append(f"AST_BANNED_CALL: Direct call to '{node.func.id}()' is forbidden.")
++                elif isinstance(node.func, ast.Attribute):
++                    if node.func.attr in _BANNED_ATTR_CALLS:
++                        violations.append(f"AST_BANNED_ATTR_CALL: Method call '.{node.func.attr}()' is forbidden.")
++
++        if not has_function_def:
++            violations.append("AST_MISSING_ENTRYPOINT: Skill code must define at least one function.")
++
++        return len(violations) == 0, violations
++
++    @staticmethod
++    def _atomic_write_text(file_path: str, content: str) -> None:
++        os.makedirs(os.path.dirname(file_path), exist_ok=True)
++        tmp_path = f"{file_path}.tmp.{uuid.uuid4().hex[:8]}"
++        with open(tmp_path, "w", encoding="utf-8", newline="\n") as f:
++            f.write(content)
++            f.flush()
++            os.fsync(f.fileno())
++        os.replace(tmp_path, file_path)
++
++    @staticmethod
++    def _sha256_text(content: str) -> str:
++        return hashlib.sha256(content.encode("utf-8")).hexdigest()
++
++    @staticmethod
++    def _sha256_file(path: str) -> Optional[str]:
++        if not os.path.exists(path):
++            return None
++        with open(path, "rb") as f:
++            return hashlib.sha256(f.read()).hexdigest()
++
++    def propose_skill(
++        self,
++        skill_name: str,
++        description: str,
++        python_code: str,
++        category: str = "CUSTOM",
++        version: str = "1.0.0",
++    ) -> Dict[str, Any]:
++        """
++        [Step 1..4: PROPOSAL -> PATH VALIDATION -> AST ALLOWLIST -> StateSanitizer SCAN]
++        Tạo hồ sơ ứng viên kỹ năng (SkillCandidate) tại vùng staging, tuyệt đối chưa ghi vào runtime.
++        """
++        path_ok, skill_clean, cat_clean, target_or_err = self.validate_and_resolve_path(skill_name, category)
++        if not path_ok:
++            return {"status": "rejected", "reason": target_or_err, "stage": "PATH_VALIDATION"}
++
++        ast_ok, ast_errors = self.validate_skill_ast(python_code)
++        if not ast_ok:
++            return {
++                "status": "rejected",
++                "reason": "; ".join(ast_errors),
++                "violations": ast_errors,
++                "stage": "AST_ALLOWLIST",
++            }
++
++        scan_code = StateSanitizer.scan_for_retain(python_code, policy="block")
++        scan_desc = StateSanitizer.scan_for_retain(description, policy="block")
++        if not scan_code["allowed_to_retain"] or not scan_desc["allowed_to_retain"]:
++            matched = scan_code["matched_pattern_ids"] + scan_desc["matched_pattern_ids"]
++            return {
++                "status": "rejected",
++                "reason": f"SANITIZER_BLOCKED: Detected sensitive or poisoning patterns {matched}",
++                "matched_patterns": matched,
++                "stage": "STATE_SANITIZER",
++            }
++
++        proposal_id = f"cand_{skill_clean}_{uuid.uuid4().hex[:10]}"
++        proposal_record = {
++            "proposal_id": proposal_id,
++            "skill_name": skill_clean,
++            "category": cat_clean,
++            "version": version,
++            "description": StateSanitizer.sanitize(description),
++            "python_code": python_code,
++            "code_sha256": self._sha256_text(python_code),
++            "target_dir": target_or_err,
++            "status": "PROPOSED",
++            "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
++        }
++        cand_file = os.path.join(self.candidates_dir, f"{proposal_id}.json")
++        self._atomic_write_text(cand_file, json.dumps(proposal_record, indent=2, ensure_ascii=False))
++        return {
++            "status": "proposed",
++            "proposal_id": proposal_id,
++            "candidate_file": cand_file,
++            "skill_name": skill_clean,
++            "category": cat_clean,
++            "code_sha256": proposal_record["code_sha256"],
++        }
++
++    def create_checkpoint(self, skill_clean: str, cat_clean: str, target_dir: str) -> Dict[str, Any]:
++        """
++        [Step 7: CHECKPOINT]
++        Sao lưu trạng thái hiện tại của skill (kèm mã băm SHA-256) trước khi ghi đè.
++        """
+         skill_md_path = os.path.join(target_dir, "SKILL.md")
+         logic_py_path = os.path.join(target_dir, "logic.py")
++        existed = os.path.exists(skill_md_path) or os.path.exists(logic_py_path)
+ 
+-        # 1. Tạo SKILL.md với metadata YAML frontmatter chuẩn
+-        skill_md_content = f"""---
+-name: {skill_name_clean}
+-description: {description}
+-category: {category}
+-version: 1.0.0
+----
++        md_content = None
++        py_content = None
++        if os.path.exists(skill_md_path):
++            with open(skill_md_path, "r", encoding="utf-8") as f:
++                md_content = f.read()
++        if os.path.exists(logic_py_path):
++            with open(logic_py_path, "r", encoding="utf-8") as f:
++                py_content = f.read()
+ 
+-# 🧠 Skill: {skill_name_clean}
++        checkpoint_id = f"ckpt_{cat_clean.lower()}_{skill_clean}_{int(time.time() * 1000)}"
++        ckpt_data = {
++            "checkpoint_id": checkpoint_id,
++            "skill_name": skill_clean,
++            "category": cat_clean,
++            "target_dir": target_dir,
++            "existed": existed,
++            "skill_md_content": md_content,
++            "skill_md_sha256": self._sha256_text(md_content) if md_content is not None else None,
++            "logic_py_content": py_content,
++            "logic_py_sha256": self._sha256_text(py_content) if py_content is not None else None,
++            "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
++        }
++        ckpt_file = os.path.join(self.checkpoints_dir, f"{checkpoint_id}.json")
++        self._atomic_write_text(ckpt_file, json.dumps(ckpt_data, indent=2, ensure_ascii=False))
++        ckpt_data["checkpoint_file"] = ckpt_file
++        return ckpt_data
+ 
+-{description}
++    def rollback_skill(self, checkpoint_file: str, task_id: str = "skill_rollback") -> Dict[str, Any]:
++        """
++        [Step 10: ROLLBACK + SHA-256 VERIFICATION + RECEIPT]
++        Khôi phục nguyên trạng kỹ năng từ tệp checkpoint, kiểm tra khớp SHA-256 và ký biên nhận Rollback.
++        """
++        if not checkpoint_file or not os.path.exists(checkpoint_file):
++            return {"status": "error", "reason": f"CHECKPOINT_NOT_FOUND: {checkpoint_file}"}
+ 
+-## Dynamic Execution Logic
+-Kỹ năng này được tự động tạo và lập trình bởi JKAI Dynamic Evolution Engine.
+-"""
+-        with open(skill_md_path, "w", encoding="utf-8") as f:
+-            f.write(skill_md_content)
++        try:
++            with open(checkpoint_file, "r", encoding="utf-8") as f:
++                ckpt = json.loads(f.read())
++        except Exception as exc:
++            return {"status": "error", "reason": f"CORRUPT_CHECKPOINT: {exc}"}
++
++        required_keys = {"checkpoint_id", "target_dir", "existed"}
++        if not isinstance(ckpt, dict) or not required_keys.issubset(ckpt.keys()):
++            return {"status": "error", "reason": "CORRUPT_CHECKPOINT_SCHEMA"}
++
++        target_dir = ckpt["target_dir"]
++        skill_md_path = os.path.join(target_dir, "SKILL.md")
++        logic_py_path = os.path.join(target_dir, "logic.py")
++
++        if not ckpt["existed"]:
++            # Nếu trước khi publish chưa từng tồn tại skill này -> xóa sạch các file mới tạo
++            for fp in (skill_md_path, logic_py_path):
++                if os.path.exists(fp):
++                    try:
++                        os.remove(fp)
++                    except Exception:
++                        pass
++            restored_py_hash = None
++        else:
++            if ckpt.get("skill_md_content") is not None:
++                self._atomic_write_text(skill_md_path, ckpt["skill_md_content"])
++                actual_md_sha = self._sha256_file(skill_md_path)
++                if actual_md_sha != ckpt.get("skill_md_sha256"):
++                    return {"status": "error", "reason": "ROLLBACK_SHA256_MISMATCH_SKILL_MD"}
++            if ckpt.get("logic_py_content") is not None:
++                self._atomic_write_text(logic_py_path, ckpt["logic_py_content"])
++                actual_py_sha = self._sha256_file(logic_py_path)
++                if actual_py_sha != ckpt.get("logic_py_sha256"):
++                    return {"status": "error", "reason": "ROLLBACK_SHA256_MISMATCH_LOGIC_PY"}
++            restored_py_hash = self._sha256_file(logic_py_path)
++
++        integrity = ExecutionIntegrityLayer(mission_id=task_id)
++        rcpt = integrity.seal_execution_receipt(
++            action="rollback_skill",
++            arguments={"checkpoint_id": ckpt["checkpoint_id"], "target_dir": target_dir},
++            output=f"restored_sha256={restored_py_hash}",
++            task_id=task_id,
++        )
++        if rcpt is None:
++            return {"status": "error", "reason": "ROLLBACK_RECEIPT_FAIL_CLOSED"}
+ 
+-        # 2. Tạo logic.py với mã nguồn Python hoàn chỉnh
+-        with open(logic_py_path, "w", encoding="utf-8") as f:
+-            f.write(python_code)
++        return {
++            "status": "rolled_back",
++            "checkpoint_id": ckpt["checkpoint_id"],
++            "restored_logic_sha256": restored_py_hash,
++            "expected_logic_sha256": ckpt.get("logic_py_sha256"),
++            "receipt": rcpt.to_dict(),
++        }
++
++    def create_skill(
++        self,
++        skill_name: str,
++        description: str,
++        python_code: str,
++        category: str = "CUSTOM",
++        version: str = "1.0.0",
++        approved: Optional[bool] = None,
++        approver_id: str = "system_policy_gate",
++        proposal_only: bool = False,
++        regression_validator: Optional[Callable[[str], bool]] = None,
++        require_hot_reload: Optional[bool] = None,
++        task_id: str = "skill_publish_task",
++        _simulate_partial_publish_crash: bool = False,
++    ) -> Dict[str, Any]:
++        """
++        Thực thi chu trình 10 bước:
++        PROPOSAL -> PATH VALIDATION -> AST ALLOWLIST -> StateSanitizer SCAN
++        -> REGRESSION 100% -> APPROVAL -> CHECKPOINT -> ATOMIC PUBLISH
++        -> EXECUTION RECEIPT -> ROLLBACK (nếu có bất kỳ lỗi nào).
++        """
++        # Steps 1..4: Proposal, Path Validation, AST Allowlist, Sanitizer Scan
++        proposal = self.propose_skill(
++            skill_name=skill_name,
++            description=description,
++            python_code=python_code,
++            category=category,
++            version=version,
++        )
++        if proposal["status"] != "proposed":
++            return proposal
++
++        if proposal_only:
++            return proposal
++
++        # Step 5: REGRESSION 100% GATE
++        if regression_validator is not None:
++            try:
++                reg_ok = bool(regression_validator(python_code))
++            except Exception as exc:
++                return {"status": "rejected", "reason": f"REGRESSION_ERROR: {exc}", "stage": "REGRESSION_100"}
++            if not reg_ok:
++                return {
++                    "status": "rejected",
++                    "reason": "REGRESSION_FAILED: Skill candidate did not achieve 100% pass rate.",
++                    "stage": "REGRESSION_100",
++                }
+ 
+-        # 3. Tái nạp cache của ToolRouter ngay lập tức (Zero-Downtime Hot Reload)
++        # Step 6: APPROVAL GATE (Mandatory in production)
++        is_prod = self._is_production_env()
++        effective_approved = approved if approved is not None else (not is_prod)
++        if not effective_approved or not approver_id or approver_id.lower() in ("llm", "unapproved", "self"):
++            return {
++                "status": "rejected",
++                "reason": "APPROVAL_REQUIRED: Direct skill publication without governance approval is forbidden.",
++                "proposal_id": proposal["proposal_id"],
++                "stage": "APPROVAL_GATE",
++            }
++
++        skill_clean = proposal["skill_name"]
++        cat_clean = proposal["category"]
++        _, _, _, target_dir = self.validate_and_resolve_path(skill_clean, cat_clean)
++
++        # Step 7: CHECKPOINT BEFORE PUBLISH
++        ckpt = self.create_checkpoint(skill_clean, cat_clean, target_dir)
++        ckpt_file = ckpt["checkpoint_file"]
++
++        skill_md_path = os.path.join(target_dir, "SKILL.md")
++        logic_py_path = os.path.join(target_dir, "logic.py")
++
++        skill_md_content = (
++            f"---\n"
++            f"name: {skill_clean}\n"
++            f"description: {StateSanitizer.sanitize(description)}\n"
++            f"category: {cat_clean}\n"
++            f"version: {version}\n"
++            f"approved_by: {approver_id}\n"
++            f"code_sha256: {proposal['code_sha256']}\n"
++            f"---\n\n"
++            f"# 🧠 Skill: {skill_clean}\n\n"
++            f"{StateSanitizer.sanitize(description)}\n"
++        )
++
++        # Step 8: ATOMIC PUBLISH (with automatic rollback on partial write or crash)
++        try:
++            os.makedirs(target_dir, exist_ok=True)
++            self._atomic_write_text(skill_md_path, skill_md_content)
++            if _simulate_partial_publish_crash:
++                raise RuntimeError("SIMULATED_PARTIAL_PUBLISH_CRASH_AFTER_SKILL_MD")
++            self._atomic_write_text(logic_py_path, python_code)
++        except Exception as pub_exc:
++            rb = self.rollback_skill(ckpt_file, task_id=task_id)
++            return {
++                "status": "rolled_back_on_error",
++                "reason": f"ATOMIC_PUBLISH_FAILED: {pub_exc}",
++                "rollback": rb,
++                "stage": "ATOMIC_PUBLISH",
++            }
++
++        # Step 9: CRYPTOGRAPHIC EXECUTION RECEIPT (Fail-Closed)
++        try:
++            integrity = ExecutionIntegrityLayer(mission_id=task_id)
++            rcpt = integrity.seal_execution_receipt(
++                action="publish_skill",
++                arguments={
++                    "skill_name": skill_clean,
++                    "category": cat_clean,
++                    "version": version,
++                    "code_sha256": proposal["code_sha256"],
++                    "approver_id": approver_id,
++                },
++                output=f"published:{target_dir}",
++                task_id=task_id,
++            )
++            if rcpt is None:
++                raise RuntimeError("SKILL_PUBLISH_RECEIPT_MISSING")
++        except Exception as rcpt_exc:
++            rb = self.rollback_skill(ckpt_file, task_id=task_id)
++            return {
++                "status": "rolled_back_on_error",
++                "reason": f"RECEIPT_FAIL_CLOSED: {rcpt_exc}",
++                "rollback": rb,
++                "stage": "EXECUTION_RECEIPT",
++            }
++
++        # Hot-reload notification
++        strict_reload = require_hot_reload if require_hot_reload is not None else is_prod
+         try:
+             from core.config import IS_DOCKER
+             executor_url = os.getenv("EXECUTOR_URL", "http://ai-executor-1:8000")
+             if not IS_DOCKER and "ai-executor-1" in executor_url:
+                 executor_url = "http://127.0.0.1:8002"
+-            with httpx.Client(timeout=5.0) as client:
+-                client.post(f"{executor_url}/invalidate_cache")
+-            logger.info(f"⚡ [SKILL-CREATOR-SUCCESS]: Đã nạp kỹ năng `{skill_name_clean}` vào bản đồ nơ-ron thực thi!")
+-        except Exception as e:
+-            logger.warning(f"⚠️ [SKILL-CREATOR-WARN] Hot-reload notification error: {e}")
++            with httpx.Client(timeout=2.0) as client:
++                resp = client.post(f"{executor_url}/invalidate_cache")
++                if strict_reload and resp.status_code >= 400:
++                    raise RuntimeError(f"Hot-reload HTTP {resp.status_code}")
++            logger.info(f"⚡ [SKILL-CREATOR-SUCCESS]: Đã nạp kỹ năng `{skill_clean}` vào bản đồ nơ-ron thực thi!")
++        except Exception as reload_exc:
++            if strict_reload:
++                rb = self.rollback_skill(ckpt_file, task_id=task_id)
++                return {
++                    "status": "rolled_back_on_error",
++                    "reason": f"HOT_RELOAD_FAILED: {reload_exc}",
++                    "rollback": rb,
++                    "stage": "HOT_RELOAD",
++                }
++            logger.warning(f"⚠️ [SKILL-CREATOR-WARN] Hot-reload notification error: {reload_exc}")
+ 
+         return {
+             "status": "success",
+-            "skill_name": skill_name_clean,
++            "skill_name": skill_clean,
++            "category": cat_clean,
++            "version": version,
+             "skill_dir": target_dir,
+-            "message": f"Kỹ năng `{skill_name_clean}` đã được tự động tạo và sẵn sàng sử dụng!"
++            "proposal_id": proposal["proposal_id"],
++            "checkpoint_file": ckpt_file,
++            "code_sha256": proposal["code_sha256"],
++            "receipt": rcpt.to_dict(),
++            "message": f"Kỹ năng `{skill_clean}` đã vượt qua 10 cổng kiểm định và sẵn sàng sử dụng!",
+         }
+ 
++
+ dynamic_skill_creator = DynamicSkillCreator()
+diff --git a/core/kernel/execution_integrity.py b/core/kernel/execution_integrity.py
+index d342d65..6cb51b2 100644
+--- a/core/kernel/execution_integrity.py
++++ b/core/kernel/execution_integrity.py
+@@ -44,6 +44,8 @@ class ExecutionDecision(BaseModel):
+     requires_human_gate: bool = False
+     interrupt_id: Optional[str] = None
+     grant: Optional[Dict[str, Any]] = None   # Serialized ExecutionGrant if ALLOW
++    risk_tier: Optional[str] = None
++    lds_verdict: Optional[Dict[str, Any]] = None
+ 
+ 
+ class ExecutionResult(BaseModel):
+@@ -62,6 +64,9 @@ class ExecutionResult(BaseModel):
+     reason: str = ""
+     interrupt_id: Optional[str] = None
+     action: str = ""
++    receipt: Optional[Dict[str, Any]] = None
++    risk_tier: Optional[str] = None
++    lds_verdict: Optional[Dict[str, Any]] = None
+ 
+     def __str__(self) -> str:
+         """Backward-compatible string form — returns tool output or denial message."""
+@@ -96,6 +101,7 @@ class ExecutionIntegrityLayer:
+     OBSERVATION_TOOL_PREFIXES = [
+         "search_web", "search_web_global", "web_search", "websearch", "read_url", "fetch_url", "view_file",
+         "search_memory", "execute_skill", "search", "read", "fetch", "lookup",
++        "web_read", "browser_observe", "browser_act", "browser_extract", "browser_action", "browser_control",
+     ]
+ 
+     # Word-boundary destructive intent (fixes "rm" matching "form"/"performance").
+@@ -142,10 +148,7 @@ class ExecutionIntegrityLayer:
+         act_lower = (action or "").lower()
+         args_str = str(args).lower()
+ 
+-        # [FIX-41310c-1] Canonical tool guard BEFORE any destructive-keyword scan.
+-        # Planner hallucination ("Define site architecture: ...", "auto_code_01",
+-        # "CODE_EXECUTION" raw) must return CONTRACT_VIOLATION with actionable hint,
+-        # NOT a misleading "forbids file deletion" denial.
++        raw_action = action
+         try:
+             from core.kernel.tool_contracts import (
+                 ToolContractRegistry, is_known_tool, looks_like_sentence_tool,
+@@ -343,10 +346,37 @@ class ExecutionIntegrityLayer:
+                 )
+ 
+         # ---------------------------------------------------------------------
+-        # 4. RISK ASSESSMENT & HUMAN APPROVAL GATE INTERRUPT
++        # 4. LEGAL DECISION STATE (DIR LDS) & COGNITHOR RISK TIERING
+         # ---------------------------------------------------------------------
++        try:
++            from core.kernel.lds_risk_governance import enterprise_governance, RiskTier, AgentStateCode
++            lds_v = enterprise_governance.evaluate_lds(
++                action=raw_action or action,
++                arguments=args,
++                task_contract=task_contract,
++                policy=effective_snapshot,
++                task_id=self.mission_id
++            )
++        except Exception as lds_err:
++            logger.debug("[LDS-EVAL] Fallback: %s", lds_err)
++            lds_v = None
++
++        if lds_v is not None and not lds_v.is_legal:
++            fail_msg = "; ".join(lds_v.failure_reasons)
++            logger.warning(f"[LDS-DENIED] Action '{action}' failed LDS verification: {fail_msg}")
++            return ExecutionDecision(
++                outcome=DecisionOutcome.DENY,
++                reason=f"LEGAL_DECISION_STATE_DENIAL: {fail_msg}",
++                action=action,
++                risk_tier=lds_v.risk_tier.name,
++                lds_verdict=lds_v.to_dict()
++            )
++
+         target_path = args.get("file_path", args.get("TargetFile", args.get("path", "")))
+         requires_approval, gate_reason = eval_tool_risk(action, args)
++        if lds_v is not None and lds_v.risk_tier == RiskTier.RED:
++            requires_approval = True
++            gate_reason = gate_reason or f"COGNITHOR_RED_GATE: Critical risk action '{action}' requires explicit human authorization." 
+ 
+         if requires_approval:
+             interrupt_id = str(uuid.uuid4())
+@@ -371,7 +401,9 @@ class ExecutionIntegrityLayer:
+                 action=action,
+                 target=target_path,
+                 requires_human_gate=True,
+-                interrupt_id=interrupt_id
++                interrupt_id=interrupt_id,
++                risk_tier=lds_v.risk_tier.name if lds_v else None,
++                lds_verdict=lds_v.to_dict() if lds_v else None
+             )
+ 
+         # ---------------------------------------------------------------------
+@@ -381,13 +413,13 @@ class ExecutionIntegrityLayer:
+         grant = issue_execution_grant(
+             mission_id=self.mission_id,
+             snapshot_id=snap_id,
+-            tool_name=action,
++            tool_name=raw_action or action,
+             tool_args=args,
+             ttl_seconds=300.0
+         )
+         log_structured_event(
+             message="Execution authorized by Execution Integrity Layer with signed grant.",
+-            tool_name=action,
++            tool_name=raw_action or action,
+             authority_decision="ALLOW",
+             trace_id=self.fsm.trace_id,
+             extra={"grant_id": getattr(grant, "grant_id", "")}
+@@ -395,6 +427,64 @@ class ExecutionIntegrityLayer:
+         return ExecutionDecision(
+             outcome=DecisionOutcome.ALLOW,
+             reason="Execution authorized by Execution Integrity Layer with signed grant.",
+-            action=action,
+-            grant=grant.to_dict()
++            action=raw_action or action,
++            grant=grant.to_dict(),
++            risk_tier=lds_v.risk_tier.name if lds_v else None,
++            lds_verdict=lds_v.to_dict() if lds_v else None
+         )
++
++    def seal_execution_receipt(
++        self,
++        action: str,
++        arguments: Dict[str, Any],
++        output: Any,
++        lds_verdict: Optional[Any] = None,
++        task_id: Optional[str] = None,
++        pre_state_hash: str = "0" * 64,
++        post_state_hash: str = "0" * 64
++    ) -> Any:
++        """
++        [SROS v2 / Sovereign Enterprise Governance]
++        Niêm phong biên nhận mật mã học (ExecutionReceipt) sau khi hành động đã thực thi trên substrate.
++        """
++        try:
++            from core.kernel.lds_risk_governance import enterprise_governance, LDSVerdict, RiskTier
++            eff_task_id = task_id or self.mission_id
++            verdict = lds_verdict
++            if verdict is None:
++                verdict = enterprise_governance.evaluate_lds(
++                    action=action,
++                    arguments=arguments,
++                    task_id=eff_task_id
++                )
++            elif isinstance(verdict, dict):
++                risk_tier_name = verdict.get("risk_tier", "YELLOW")
++                try:
++                    rt = RiskTier[risk_tier_name]
++                except KeyError:
++                    rt = RiskTier.YELLOW
++                verdict = LDSVerdict(
++                    is_legal=verdict.get("is_legal", True),
++                    authority_ok=verdict.get("authority_ok", True),
++                    context_ok=verdict.get("context_ok", True),
++                    time_ok=verdict.get("time_ok", True),
++                    integrity_ok=verdict.get("integrity_ok", True),
++                    evidence_ok=verdict.get("evidence_ok", True),
++                    risk_tier=rt,
++                    failure_reasons=verdict.get("failure_reasons", []),
++                    metadata=verdict.get("metadata", {})
++                )
++
++            receipt = enterprise_governance.seal_receipt(
++                task_id=eff_task_id,
++                action=action,
++                arguments=arguments,
++                output_result=output,
++                lds_verdict=verdict,
++                pre_state_hash=pre_state_hash,
++                post_state_hash=post_state_hash
++            )
++            return receipt
++        except Exception as e:
++            logger.error("[RECEIPT-SEAL-ERROR] Failed to seal execution receipt: %s", e)
++            raise RuntimeError("FAIL-CLOSED: execution receipt sealing failed") from e
+diff --git a/core/kernel/mission_runtime.py b/core/kernel/mission_runtime.py
+index 3bf7bc3..b762d86 100644
+--- a/core/kernel/mission_runtime.py
++++ b/core/kernel/mission_runtime.py
+@@ -69,19 +69,34 @@ class MissionRuntime:
+         # Thiết lập callback để tự động lưu Snapshot mỗi khi có node hoàn thành
+         async def wrapped_executor(node, input_ctx):
+             output = await executor_func(node, input_ctx)
+-            # Ghi nhận shadow telemetry an toàn
++            node_id = getattr(node, "id", None) or getattr(node, "node_id", str(node))
++            node_action = getattr(node, "capability", None) or getattr(node, "name", "node_execution")
++            
++            # [SROS v2 FAIL-CLOSED RECEIPT ENFORCEMENT]
++            # Mọi node thực thi trong MissionRuntime bắt buộc phải niêm phong ExecutionReceipt mật mã học
++            from core.kernel.execution_integrity import ExecutionIntegrityLayer
++            integrity = ExecutionIntegrityLayer(mission_id=mission_id)
++            node_args = input_ctx if isinstance(input_ctx, dict) else {"ctx": str(input_ctx)}
++            receipt = integrity.seal_execution_receipt(
++                action=node_action,
++                arguments=node_args,
++                output=output,
++                task_id=mission_id
++            )
++            if not receipt:
++                raise RuntimeError(f"MISSION_RUNTIME_RECEIPT_FAIL_CLOSED: Failed to seal cryptographic execution receipt for node {node_id}")
++
++            # Ghi nhận shadow telemetry an toàn với receipt có chữ ký HMAC
+             if self.shadow_harness:
+                 try:
+-                    node_id = getattr(node, "id", None) or getattr(node, "node_id", str(node))
+-                    node_action = getattr(node, "capability", None) or getattr(node, "name", "")
+                     self.shadow_harness.record_observation(
+-                        raw_state=input_ctx if isinstance(input_ctx, dict) else {"ctx": str(input_ctx)},
++                        raw_state=node_args,
+                         reflex_draft={"node_id": node_id, "action": node_action},
+-                        execution_receipt={"status": "COMPLETED", "output": str(output)[:1000]},
+-                        metadata={"mission_id": mission_id, "source": "MissionRuntime"}
++                        execution_receipt=receipt.to_dict(),
++                        metadata={"mission_id": mission_id, "source": "MissionRuntime", "receipt_id": receipt.receipt_id}
+                     )
+-                except Exception:
+-                    pass
++                except Exception as shadow_err:
++                    logger.debug("[SHADOW-HARNESS-ERROR] %s", shadow_err)
+             # Chụp nhanh snapshot để lưu checkpoint an toàn xuống đĩa
+             latest_state = self.snapshot_engine.get_latest_state(mission_id)
+             # Lấy event cuối cùng vừa được ghi vào log
+@@ -141,6 +156,31 @@ class MissionRuntime:
+         # 2. Khởi chạy lại Scheduler với Plan đã được khôi phục
+         async def wrapped_executor(node, input_ctx):
+             output = await executor_func(node, input_ctx)
++            node_id = getattr(node, "id", None) or getattr(node, "node_id", str(node))
++            node_action = getattr(node, "capability", None) or getattr(node, "name", "node_execution")
++            from core.kernel.execution_integrity import ExecutionIntegrityLayer
++            integrity = ExecutionIntegrityLayer(mission_id=mission_id)
++            node_args = input_ctx if isinstance(input_ctx, dict) else {"ctx": str(input_ctx)}
++            receipt = integrity.seal_execution_receipt(
++                action=node_action,
++                arguments=node_args,
++                output=output,
++                task_id=mission_id
++            )
++            if not receipt:
++                raise RuntimeError(f"MISSION_RUNTIME_RECEIPT_FAIL_CLOSED: Failed to seal cryptographic execution receipt for node {node_id}")
++
++            if self.shadow_harness:
++                try:
++                    self.shadow_harness.record_observation(
++                        raw_state=node_args,
++                        reflex_draft={"node_id": node_id, "action": node_action},
++                        execution_receipt=receipt.to_dict(),
++                        metadata={"mission_id": mission_id, "source": "MissionRuntime", "receipt_id": receipt.receipt_id}
++                    )
++                except Exception as shadow_err:
++                    logger.debug("[SHADOW-HARNESS-ERROR] %s", shadow_err)
++
+             latest_state = self.snapshot_engine.get_latest_state(mission_id)
+             all_events = self.event_store.get_events(mission_id)
+             if all_events:
+diff --git a/core/kernel/models.py b/core/kernel/models.py
+index e331fa2..792bae7 100644
+--- a/core/kernel/models.py
++++ b/core/kernel/models.py
+@@ -1,7 +1,7 @@
+ from enum import Enum
+ from typing import List, Dict, Any, Optional
+ from pydantic import BaseModel, Field
+-from datetime import datetime
++from datetime import datetime, timezone
+ import uuid
+ 
+ class MissionNodeState(str, Enum):
+@@ -91,7 +91,7 @@ class MissionEvent(BaseModel):
+     """
+     event_id: str = Field(default_factory=lambda: str(uuid.uuid4()), description="ID duy nhất của Event")
+     mission_id: str = Field(..., description="ID của Mission tương ứng")
+-    timestamp: datetime = Field(default_factory=datetime.utcnow, description="Thời điểm xảy ra sự kiện (UTC)")
++    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc), description="Thời điểm xảy ra sự kiện (UTC)")
+     event_type: EventType = Field(..., description="Loại sự kiện")
+     payload: Dict[str, Any] = Field(default_factory=dict, description="Dữ liệu payload đi kèm sự kiện")
+     metadata: Dict[str, Any] = Field(default_factory=dict, description="Metadata bổ sung")
+diff --git a/core/os/cognition/weekly_exam_runner.py b/core/os/cognition/weekly_exam_runner.py
+index a43fce4..c3ec93b 100644
+--- a/core/os/cognition/weekly_exam_runner.py
++++ b/core/os/cognition/weekly_exam_runner.py
+@@ -156,48 +156,86 @@ class WeeklyExamRunner:
+         - dry_run=False: Chạy thật với trần ngân sách live_budget_seconds <= 1800s.
+         """
+         start_time = time.time()
++        if not dry_run and not 0 < live_budget_seconds <= 1800:
++            raise ValueError("live_budget_seconds must be between 1 and 1800")
+         tasks = self.load_exam(variant)
+         exam_run_id = f"weekly_exam_run_{variant.upper()}_{int(start_time)}"
+ 
+         group_results: Dict[str, Dict[str, Any]] = {
+-            "A_MATH_FIDELITY": {"total": 0, "passed": 0},
+-            "B_ANAPHORA_GROUNDING": {"total": 0, "passed": 0},
+-            "C_RETRIEVAL_CITATION": {"total": 0, "passed": 0},
+-            "D_TOOL_AND_FILEOPS": {"total": 0, "passed": 0},
+-            "E_MASTER_COMMUNICATION": {"total": 0, "passed": 0},
++            "A_MATH_FIDELITY": {"total": 0, "executed": 0, "passed": 0},
++            "B_ANAPHORA_GROUNDING": {"total": 0, "executed": 0, "passed": 0},
++            "C_RETRIEVAL_CITATION": {"total": 0, "executed": 0, "passed": 0},
++            "D_TOOL_AND_FILEOPS": {"total": 0, "executed": 0, "passed": 0},
++            "E_MASTER_COMMUNICATION": {"total": 0, "executed": 0, "passed": 0},
+         }
+ 
+         task_traces = []
+         total_passed = 0
++        executed_tasks = 0
++        plumbing_passed = 0
++        budget_exceeded = False
+ 
+         for task in tasks:
++            elapsed = time.time() - start_time
+             task_id = task.get("id", "unknown")
+             group = task.get("group", "UNKNOWN")
+             prompt = task.get("prompt", "")
+             expected = task.get("expected")
+             rubric = task.get("rubric")
+ 
+-            passed = False
+-            reason = "EVALUATED"
+-
+             if group not in group_results:
+-                group_results[group] = {"total": 0, "passed": 0}
++                group_results[group] = {"total": 0, "executed": 0, "passed": 0}
+             group_results[group]["total"] += 1
+ 
++            if not dry_run and elapsed >= live_budget_seconds:
++                budget_exceeded = True
++                task_traces.append({
++                    "exam_run_id": exam_run_id,
++                    "task_id": task_id,
++                    "group": group,
++                    "passed": False,
++                    "reason": "HARD_BUDGET_EXCEEDED",
++                })
++                continue
++
++            executed_tasks += 1
++            group_results[group]["executed"] += 1
++            passed = False
++            reason = "EVALUATED"
++
+             # Sinh phản hồi dựa trên chế độ dry_run hay live
+             if dry_run:
+-                # Simulation chuẩn xác để kiểm thử hạ tầng (PLUMBING_ONLY)
+-                if rubric:
++                # Chế độ PLUMBING_ONLY: Tuyệt đối KHÔNG echo expected để tạo điểm giả.
++                # Chỉ kiểm tra schema hợp lệ của task và bộ chấm DeterministicRubricScorer.
++                schema_valid = bool(
++                    task_id != "unknown"
++                    and group != "UNKNOWN"
++                    and isinstance(prompt, str)
++                    and prompt.strip()
++                    and (expected is not None or isinstance(rubric, dict))
++                )
++                if group == "E_MASTER_COMMUNICATION" and isinstance(rubric, dict):
+                     if rubric.get("require_clarification_question"):
+-                        response = "Bạn có thể làm rõ cấu hình mạng cụ thể trên router nào không?"
++                        probe = "Bạn có thể làm rõ cấu hình mạng cụ thể trên router nào không?"
+                     elif rubric.get("require_safety_refusal"):
+-                        response = "Tôi từ chối thực hiện yêu cầu này vì vi phạm chính sách an toàn dữ liệu."
++                        probe = "Tôi từ chối thực hiện yêu cầu này vì vi phạm chính sách an toàn dữ liệu."
+                     elif rubric.get("require_empirical_counts"):
+-                        response = "Đã hoàn thành 100/100 tests passed trong 50.93s."
++                        probe = "Đã hoàn thành 100/100 tests passed trong 50.93s."
+                     else:
+-                        response = "Hệ thống vận hành ổn định, CPU 12%, bộ nhớ an toàn."
++                        probe = "Hệ thống vận hành ổn định, CPU 12%, bộ nhớ an toàn."
++                    rubric_ok, reason = DeterministicRubricScorer.score_response(task_id, probe, rubric)
++                    if schema_valid and rubric_ok:
++                        plumbing_passed += 1
++                        reason = "DRY_RUN_RUBRIC_PLUMBING_OK"
++                    else:
++                        reason = f"DRY_RUN_RUBRIC_PLUMBING_FAIL:{reason}"
+                 else:
+-                    response = str(expected)
++                    if schema_valid:
++                        plumbing_passed += 1
++                        reason = "DRY_RUN_UNSCORED_NO_LLM"
++                    else:
++                        reason = "DRY_RUN_INVALID_TASK_SCHEMA"
++                passed = False
+             else:
+                 # Live execution: Gọi Ollama model 3B thật (port 11434) với timeout 3s
+                 # Tuyệt đối KHÔNG echo expected; nếu lỗi hoặc timeout thì fail + ghi lý do
+@@ -221,18 +259,18 @@ class WeeklyExamRunner:
+                     response = ""
+                     reason = f"LIVE_ENGINE_ERROR_OR_TIMEOUT: {exc}"
+ 
+-            # Chấm điểm
+-            if not reason.startswith("LIVE_ENGINE_ERROR"):
+-                if group == "E_MASTER_COMMUNICATION" and rubric:
+-                    passed, reason = DeterministicRubricScorer.score_response(task_id, response, rubric)
+-                else:
+-                    exp_str = str(expected).lower().strip()
+-                    resp_l = response.lower().strip()
+-                    passed = exp_str in resp_l or resp_l in exp_str
++                # Chấm điểm thực tế cho chế độ Live
++                if not reason.startswith("LIVE_ENGINE_ERROR"):
++                    if group == "E_MASTER_COMMUNICATION" and rubric:
++                        passed, reason = DeterministicRubricScorer.score_response(task_id, response, rubric)
++                    else:
++                        exp_str = str(expected).lower().strip()
++                        resp_l = response.lower().strip()
++                        passed = bool(resp_l) and (exp_str in resp_l or resp_l in exp_str)
+ 
+-            if passed:
+-                group_results[group]["passed"] += 1
+-                total_passed += 1
++                if passed:
++                    group_results[group]["passed"] += 1
++                    total_passed += 1
+ 
+             # Trace được gắn exam_run_id bắt buộc
+             task_traces.append({
+@@ -245,23 +283,37 @@ class WeeklyExamRunner:
+ 
+         duration = round(time.time() - start_time, 3)
+         total_tasks = len(tasks)
+-        accuracy = round(total_passed / total_tasks, 4) if total_tasks > 0 else 0.0
+-        centre, lower_ci, upper_ci = calculate_wilson_score_interval(total_passed, total_tasks, 0.95)
++        live_accuracy = round(total_passed / total_tasks, 4) if (not dry_run and total_tasks > 0) else None
++        executed_accuracy = round(total_passed / executed_tasks, 4) if (not dry_run and executed_tasks > 0) else None
++        plumbing_accuracy = round(plumbing_passed / total_tasks, 4) if (dry_run and total_tasks > 0) else None
++
++        if not dry_run:
++            centre, lower_ci, upper_ci = calculate_wilson_score_interval(total_passed, total_tasks, 0.95)
++            wilson_ci: Optional[Dict[str, float]] = {
++                "centre": centre,
++                "lower": lower_ci,
++                "upper": upper_ci,
++            }
++        else:
++            wilson_ci = None
+ 
+         report = {
+             "exam_run_id": exam_run_id,
+             "variant": variant.upper(),
+             "dry_run": dry_run,
+-            "capability_status": "PLUMBING_ONLY" if dry_run else "LIVE_EVALUATED",
++            "capability_status": "PLUMBING_ONLY" if dry_run else ("INCOMPLETE_BUDGET_EXCEEDED" if budget_exceeded else "LIVE_EVALUATED"),
++            "budget_exceeded": budget_exceeded,
++            "live_budget_seconds": live_budget_seconds,
+             "duration_seconds": duration,
+             "total_tasks": total_tasks,
++            "executed_tasks": executed_tasks,
+             "total_passed": total_passed,
+-            "accuracy": accuracy,
+-            "wilson_95_ci": {
+-                "centre": centre,
+-                "lower": lower_ci,
+-                "upper": upper_ci,
+-            },
++            "accuracy": live_accuracy,
++            "executed_accuracy": executed_accuracy,
++            "capability_score": live_accuracy if (not dry_run and not budget_exceeded) else None,
++            "plumbing_passed": plumbing_passed if dry_run else None,
++            "plumbing_accuracy": plumbing_accuracy,
++            "wilson_95_ci": wilson_ci,
+             "group_breakdown": group_results,
+             "recorded_at": datetime.now(timezone.utc).isoformat(),
+         }
+@@ -271,25 +323,54 @@ class WeeklyExamRunner:
+         return report
+ 
+     def _record_to_ledger(self, report: Dict[str, Any]) -> None:
+-        prev_hash = "0" * 64
+-        if self.ledger_file.exists() and self.ledger_file.stat().st_size > 0:
+-            with open(self.ledger_file, "r", encoding="utf-8") as f:
+-                lines = [l.strip() for l in f if l.strip()]
+-                if lines:
+-                    last_rec = json.loads(lines[-1])
+-                    prev_hash = last_rec.get("curr_sha256", prev_hash)
+-
+-        curr_data = f"{prev_hash}:{report['exam_run_id']}:{report['accuracy']}:{report['recorded_at']}"
+-        curr_hash = hashlib.sha256(curr_data.encode("utf-8")).hexdigest()
+-
+-        ledger_entry = {
+-            "prev_sha256": prev_hash,
+-            "curr_sha256": curr_hash,
+-            "report": report,
+-        }
+-
+-        with open(self.ledger_file, "a", encoding="utf-8") as f:
+-            f.write(json.dumps(ledger_entry, ensure_ascii=False) + "\n")
++        """
++        [SOVEREIGN TELEMETRY LEDGER]
++        Ghi nhận vào sổ cái liên kết chuỗi băm (SHA-256 Chained Ledger):
++        - Có process-level OS lock chống race condition.
++        - Gọi f.flush() và os.fsync() bảo toàn dữ liệu trên đĩa.
++        - Tự động phục hồi (Recovery) nếu dòng cuối bị hỏng do partial write.
++        """
++        lock_file = str(self.ledger_file) + ".lock"
++        handle = open(lock_file, "a+", encoding="utf-8")
++        try:
++            if os.name == "nt":
++                import msvcrt
++                handle.seek(0)
++                handle.write(" ")
++                handle.flush()
++                msvcrt.locking(handle.fileno(), msvcrt.LK_LOCK, 1)
++            else:
++                import fcntl
++                fcntl.flock(handle.fileno(), fcntl.LOCK_EX)
++
++            prev_hash = "0" * 64
++            if self.ledger_file.exists() and self.ledger_file.stat().st_size > 0:
++                with open(self.ledger_file, "r", encoding="utf-8") as f:
++                    lines = [l.strip() for l in f if l.strip()]
++                # Recovery sau partial write: duyệt ngược tìm dòng JSON hợp lệ gần nhất
++                for line in reversed(lines):
++                    try:
++                        last_rec = json.loads(line)
++                        prev_hash = last_rec.get("curr_sha256", prev_hash)
++                        break
++                    except Exception:
++                        continue
++
++            curr_data = f"{prev_hash}:{report['exam_run_id']}:{report['accuracy']}:{report['recorded_at']}"
++            curr_hash = hashlib.sha256(curr_data.encode("utf-8")).hexdigest()
++
++            ledger_entry = {
++                "prev_sha256": prev_hash,
++                "curr_sha256": curr_hash,
++                "report": report,
++            }
++
++            with open(self.ledger_file, "a", encoding="utf-8") as f:
++                f.write(json.dumps(ledger_entry, ensure_ascii=False) + "\n")
++                f.flush()
++                os.fsync(f.fileno())
++        finally:
++            handle.close()
+ 
+ 
+ # ==============================================================================
+@@ -308,7 +389,10 @@ def evaluate_multi_week_trend(ledger_file: str = "data/telemetry/weekly_exam_led
+     with open(p, "r", encoding="utf-8") as f:
+         for line in f:
+             if line.strip():
+-                records.append(json.loads(line)["report"])
++                try:
++                    records.append(json.loads(line)["report"])
++                except Exception:
++                    continue
+ 
+     if len(records) < 4:
+         return {
+@@ -319,7 +403,14 @@ def evaluate_multi_week_trend(ledger_file: str = "data/telemetry/weekly_exam_led
+         }
+ 
+     recent_4 = records[-4:]
+-    accuracies = [r["accuracy"] for r in recent_4]
++    accuracies = [
++        float(
++            r["capability_score"]
++            if r.get("capability_score") is not None
++            else (r.get("accuracy") if r.get("accuracy") is not None else (r.get("plumbing_accuracy") or 0.0))
++        )
++        for r in recent_4
++    ]
+     mean_acc = round(sum(accuracies) / len(accuracies), 4)
+ 
+     return {
+@@ -327,5 +418,6 @@ def evaluate_multi_week_trend(ledger_file: str = "data/telemetry/weekly_exam_led
+         "weeks_evaluated": 4,
+         "mean_accuracy_4w": mean_acc,
+         "weekly_accuracies": accuracies,
++        "contains_dry_run_plumbing": any(bool(r.get("dry_run", False)) for r in recent_4),
+         "trend": "STABLE" if max(accuracies) - min(accuracies) <= 0.10 else "DRIFTING",
+     }
+diff --git a/core/sanitizer/state_sanitizer.py b/core/sanitizer/state_sanitizer.py
+index 884de7d..70678bc 100644
+--- a/core/sanitizer/state_sanitizer.py
++++ b/core/sanitizer/state_sanitizer.py
+@@ -91,12 +91,38 @@ class StateSanitizer:
+     SECRET_PATTERNS: List[Tuple[re.Pattern, str]] = [
+         (pat, repl) for _, pat, repl in MEMORY_DEFENSE_NAMED_PATTERNS
+     ]
++    SKILL_SCAFFOLDING_PATTERNS: List[re.Pattern] = [
++        re.compile(r"<skill_instructions>[\s\S]*?</skill_instructions>", re.IGNORECASE),
++        re.compile(r"\[SKILL_SCAFFOLDING_START\][\s\S]*?\[SKILL_SCAFFOLDING_END\]", re.IGNORECASE),
++        re.compile(r"<!--\s*SKILL_SCAFFOLDING_BEGIN\s*-->[\s\S]*?<!--\s*SKILL_SCAFFOLDING_END\s*-->", re.IGNORECASE),
++    ]
++
++    @classmethod
++    def strip_skill_scaffolding(cls, data: Any) -> Any:
++        """
++        [Hermes Agent Guard]: Loại bỏ phần hướng dẫn nội bộ của Skill (<skill_instructions>...)
++        trước khi lưu vào Episodic Memory hoặc Shadow Telemetry.
++        """
++        if isinstance(data, str):
++            cleaned = data
++            for pat in cls.SKILL_SCAFFOLDING_PATTERNS:
++                cleaned = pat.sub("", cleaned)
++            return cleaned.strip()
++        elif isinstance(data, dict):
++            return {
++                k: cls.strip_skill_scaffolding(v)
++                for k, v in data.items()
++                if k not in ("_skill_scaffolding", "skill_scaffolding_raw")
++            }
++        elif isinstance(data, list):
++            return [cls.strip_skill_scaffolding(item) for item in data]
++        return data
+ 
+     @classmethod
+     def sanitize(cls, data: Any) -> Any:
+         """Recursively cleanses arbitrary state objects while preserving UTF-8 NFC Vietnamese diacritics."""
+         if isinstance(data, str):
+-            text = unicodedata.normalize("NFC", data)
++            text = unicodedata.normalize("NFC", cls.strip_skill_scaffolding(data))
+             for pattern, repl in cls.SECRET_PATTERNS:
+                 text = pattern.sub(repl, text)
+             if len(text) > 2000:
+@@ -105,6 +131,8 @@ class StateSanitizer:
+         elif isinstance(data, dict):
+             sanitized_dict = {}
+             for k, v in data.items():
++                if k in ("_skill_scaffolding", "skill_scaffolding_raw"):
++                    continue
+                 k_lower = k.lower()
+                 if any(sec in k_lower for sec in ["password", "secret_key", "auth_token", "private_key", "api_key", "apikey"]):
+                     sanitized_dict[k] = "[REDACTED_SECRET_FIELD]"
+@@ -143,7 +171,7 @@ class StateSanitizer:
+             elif isinstance(item, dict):
+                 for k, v in item.items():
+                     k_lower = str(k).lower()
+-                    if any(sec in k_lower for sec in ["password", "secret_key", "auth_token", "private_key", "api_key", "apikey"]):
++                    if any(sec in k_lower for sec in ["password", "secret_key", "auth_token", "private_key", "api_key", "apikey", "token", "secret"]):
+                         fid = f"FIELD_SECRET:{k_lower}"
+                         if fid not in matched_ids:
+                             matched_ids.append(fid)
+@@ -181,12 +209,10 @@ class StateSanitizer:
+ 
+     @classmethod
+     def canonical_json(cls, data: Any) -> str:
+-        """Renders canonical JSON string representation."""
++        """Renders valid canonical JSON; rejects oversized payloads."""
+         raw_json = json.dumps(data, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
+-        encoded = raw_json.encode("utf-8")
+-        if len(encoded) > cls.MAX_STATE_BYTES:
+-            encoded = encoded[:cls.MAX_STATE_BYTES]
+-            raw_json = encoded.decode("utf-8", errors="ignore")
++        if len(raw_json.encode("utf-8")) > cls.MAX_STATE_BYTES:
++            raise ValueError(f"canonical state exceeds {cls.MAX_STATE_BYTES} bytes")
+         return raw_json
+ 
+     @classmethod
+@@ -197,10 +223,7 @@ class StateSanitizer:
+         """
+         canonical_str = cls.canonical_json(cls.sanitize(data))
+         normalized_str = unicodedata.normalize("NFC", canonical_str)
+-        encoded = normalized_str.encode("utf-8")
+-        if len(encoded) > cls.MAX_STATE_BYTES:
+-            encoded = encoded[:cls.MAX_STATE_BYTES]
+-        return encoded
++        return normalized_str.encode("utf-8")
+ 
+     @classmethod
+     def sanitize_with_report(cls, data: Any, is_external_provider: bool = False) -> Tuple[Any, Dict[str, Any]]:
+diff --git a/services/ai-brain/receptionist/executor_gateway.py b/services/ai-brain/receptionist/executor_gateway.py
+index a065fa3..9f34f71 100644
+--- a/services/ai-brain/receptionist/executor_gateway.py
++++ b/services/ai-brain/receptionist/executor_gateway.py
+@@ -260,6 +260,27 @@ class ExecutorGateway:
+ 
+ 
+ 
++
++def _seal_receipt_fail_closed(integrity, tool_name, tool_args, output, decision, task_id):
++    """
++    [SROS v2 Fail-Closed Receipt Enforcement]
++    Mọi hành vi thực thi thành công bắt buộc phải niêm phong được ExecutionReceipt.
++    Nếu seal thất bại -> FAIL-CLOSED: coi như execution thất bại hoàn toàn.
++    """
++    try:
++        rcpt = integrity.seal_execution_receipt(
++            action=tool_name,
++            arguments=dict(tool_args or {}),
++            output=output,
++            lds_verdict=decision.lds_verdict,
++            task_id=task_id
++        )
++        if not rcpt:
++            return False, None, "FAIL-CLOSED: Execution completed on substrate but receipt sealing produced empty receipt."
++        return True, rcpt.to_dict(), ""
++    except Exception as e:
++        return False, None, f"FAIL-CLOSED: Execution completed on substrate but cryptographic receipt sealing failed: {e}"
++
+     async def execute_tool(self, request: ExecutionRequest, task_id: str) -> ExecutionResult:
+         """
+         [v26.2] Execution entry point with integrated security gate.
+@@ -275,11 +296,17 @@ class ExecutorGateway:
+         # ------------------------------------------------------------------ #
+         try:
+             from core.kernel.execution_integrity import ExecutionIntegrityLayer
+-            from core.kernel.task_contract_store import get_active_contract, get_active_policy, get_policy_snapshot, get_or_create_policy_snapshot
++            from core.kernel.task_contract_store import (
++                get_active_contract,
++                get_active_policy,
++                get_policy_snapshot,
++                get_or_create_default_contract,
++                get_or_create_policy_snapshot,
++            )
+ 
+-            task_contract = get_active_contract(task_id)
++            task_contract = get_active_contract(task_id) or get_or_create_default_contract(task_id)
+             policy = get_active_policy(task_id)
+-            snapshot = get_policy_snapshot(task_id)
++            snapshot = get_policy_snapshot(task_id) or get_or_create_policy_snapshot(task_id)
+ 
+             integrity = ExecutionIntegrityLayer(mission_id=task_id)
+             decision = integrity.authorize(
+@@ -398,11 +425,27 @@ class ExecutorGateway:
+                 from .openhands_provider import openhands_provider
+                 res = await openhands_provider.execute_mission(request.tool_args.get("query", ""), task_id)
+                 out_val = res.get("output") or res.get("message")
++                rcpt_ok, rcpt_dict, rcpt_err = _seal_receipt_fail_closed(
++                    integrity, request.tool_name, request.tool_args, out_val, decision, task_id
++                )
++                if not rcpt_ok:
++                    return ExecutionResult(
++                        outcome=DecisionOutcome.DENY,
++                        tool_executed=False,
++                        result=rcpt_err,
++                        reason=rcpt_err,
++                        action=request.tool_name,
++                        risk_tier=decision.risk_tier,
++                        lds_verdict=decision.lds_verdict
++                    )
+                 return ExecutionResult(
+                     outcome=DecisionOutcome.ALLOW,
+                     tool_executed=True,
+                     result=out_val,
+-                    action=request.tool_name
++                    action=request.tool_name,
++                    receipt=rcpt_dict,
++                    risk_tier=decision.risk_tier,
++                    lds_verdict=decision.lds_verdict
+                 )
+ 
+             # 🚀 [P0-2 LOCAL-FIRST DUAL-PATH TOOL EXECUTION]
+@@ -458,9 +501,22 @@ class ExecutorGateway:
+                 "search_in_stream": "search_in_stream",
+                 "search_stream": "search_in_stream",
+                 "browser_action": "browser_action",
++                "browser_control": "browser_action",
+                 "browse": "browser_action",
+                 "web_browse": "browser_action",
+                 "crawl": "browser_action",
++                "web_read": "web_read",
++                "fast_read": "web_read",
++                "read_doc": "web_read",
++                "browser_observe": "browser_observe",
++                "observe_dom": "browser_observe",
++                "observe": "browser_observe",
++                "browser_act": "browser_act",
++                "act_element": "browser_act",
++                "act": "browser_act",
++                "browser_extract": "browser_extract",
++                "extract_data": "browser_extract",
++                "extract": "browser_extract",
+             }
+ 
+             if norm_name in LOCAL_PRIMITIVE_MAP:
+@@ -470,20 +526,119 @@ class ExecutorGateway:
+                     kwargs.pop("task_id", None)
+                     kwargs.pop("trace_id", None)
+ 
+-                    if local_fn_name == "browser_action":
+-                        self._log("EXECUTOR", f"🌐 [LOCAL-BROWSER-EXEC] Executing '{request.tool_name}' via CloakBrowser Visual Satellite.", task_id)
+-                        from services.tools.definitions.browser_interact import browser_action
+-                        b_url = kwargs.get("url") or kwargs.get("target_url") or "https://www.google.com"
+-                        b_obj = kwargs.get("objective") or kwargs.get("task") or "Browse and report"
+-                        local_res = await asyncio.to_thread(browser_action, url=b_url, objective=b_obj)
+-                        is_ok = local_res.get("status") in ("success", "captured")
+-                        out_msg = local_res.get("analysis") or local_res.get("markdown") or json.dumps(local_res, ensure_ascii=False)
+-                        self._log("EXECUTOR", f"[{request.tool_name}] {'✅ Browser interaction succeeded' if is_ok else '⚠️ Browser error: ' + str(local_res.get('message', ''))}", task_id)
++                    if local_fn_name in ("browser_action", "web_read", "browser_observe", "browser_act", "browser_extract"):
++                        try:
++                            from tools.definitions import browser_interact
++                        except ImportError:
++                            try:
++                                from services.tools.definitions import browser_interact
++                            except ImportError:
++                                import browser_interact
++                        self._log("EXECUTOR", f"🌐 [LOCAL-BROWSER-EXEC] Executing '{request.tool_name}' ({local_fn_name}) via Sovereign Browser Subsystem.", task_id)
++                        if local_fn_name == "web_read":
++                            b_url = kwargs.get("url") or kwargs.get("target_url") or ""
++                            b_filter = kwargs.get("filter") or kwargs.get("filter_keyword")
++                            b_outline = kwargs.get("outline", False)
++                            b_prefer_llms = kwargs.get("prefer_llms_txt", True)
++                            local_res = await asyncio.to_thread(
++                                browser_interact.web_read,
++                                url=b_url,
++                                filter_keyword=b_filter,
++                                extract_outline=b_outline,
++                                prefer_llms_txt=b_prefer_llms,
++                            )
++                        elif local_fn_name == "browser_observe":
++                            b_url = kwargs.get("url") or kwargs.get("target_url")
++                            b_goal = kwargs.get("goal") or kwargs.get("objective")
++                            local_res = await asyncio.to_thread(
++                                browser_interact.browser_observe,
++                                url=b_url,
++                                goal=b_goal,
++                            )
++                        elif local_fn_name == "browser_act":
++                            b_ref = kwargs.get("element_ref") or kwargs.get("ref")
++                            b_act = kwargs.get("action", "click")
++                            b_val = kwargs.get("value")
++                            b_confirm = kwargs.get("confirm", False)
++                            b_refresh = kwargs.get("force_refresh", False)
++                            local_res = await asyncio.to_thread(
++                                browser_interact.browser_act,
++                                element_ref=b_ref,
++                                action=b_act,
++                                value=b_val,
++                                confirm=b_confirm,
++                                force_refresh=b_refresh,
++                            )
++                        elif local_fn_name == "browser_extract":
++                            b_goal = kwargs.get("goal") or kwargs.get("objective") or "Extract structured data"
++                            b_schema = kwargs.get("schema_definition") or kwargs.get("schema")
++                            local_res = await asyncio.to_thread(
++                                browser_interact.browser_extract,
++                                goal=b_goal,
++                                schema_definition=b_schema,
++                            )
++                        else:  # browser_action / browser_control
++                            b_url = kwargs.get("url") or kwargs.get("target_url") or "https://www.google.com"
++                            b_act = kwargs.get("action")
++                            b_obj = kwargs.get("objective") or kwargs.get("task") or (f"Action: {b_act}" if b_act else f"Đọc và tổng hợp nội dung từ {b_url}")
++                            
++                            # Fast-path: Nếu là load_page / read / xem trang, ưu tiên dùng FastWebReader (<100ms, 0MB VRAM)
++                            if not any(kw in f"{b_act or ''} {b_obj}".lower() for kw in ("screenshot", "chụp", "visual", "ảnh")) and (b_act in ("load_page", "read", "view", "open") or any(kw in str(b_obj).lower() for kw in ("xem trang", "đọc trang", "tổng hợp"))):
++                                fast_res = await asyncio.to_thread(browser_interact.web_read, url=b_url)
++                                if fast_res.get("status") == "success" and fast_res.get("content"):
++                                    local_res = fast_res
++                                else:
++                                    local_res = await asyncio.to_thread(browser_interact.browser_action, url=b_url, objective=b_obj)
++                            else:
++                                local_res = await asyncio.to_thread(browser_interact.browser_action, url=b_url, objective=b_obj)
++
++                        needs_evidence = any(
++                            token in f"{b_act or ''} {b_obj}".lower()
++                            for token in ("screenshot", "chụp", "visual", "ảnh")
++                        )
++                        evidence_ok = local_res.get("evidence_complete") is True
++                        is_ok = (
++                            local_res.get("status") in ("success", "captured")
++                            or local_res.get("success") is True
++                            or bool(local_res.get("content"))
++                            or bool(local_res.get("snapshot"))
++                        ) and (not needs_evidence or evidence_ok)
++                        if needs_evidence and not evidence_ok:
++                            local_res["status"] = "inconclusive"
++                            local_res["message"] = "Browser evidence incomplete: screenshot, DOM, hash, or capture time missing."
++                        out_msg = (
++                            local_res.get("content")
++                            or local_res.get("snapshot")
++                            or local_res.get("analysis")
++                            or local_res.get("markdown")
++                            or local_res.get("message")
++                            or json.dumps(local_res, ensure_ascii=False)
++                        )
++                        self._log("EXECUTOR", f"[{request.tool_name}] {'✅ Browser interaction succeeded' if is_ok else '⚠️ Browser status: ' + str(local_res.get('message', ''))}", task_id)
++                        if is_ok:
++                            rcpt_ok, rcpt_dict, rcpt_err = _seal_receipt_fail_closed(
++                                integrity, request.tool_name, request.tool_args, out_msg, decision, task_id
++                            )
++                            if not rcpt_ok:
++                                return ExecutionResult(
++                                    outcome=DecisionOutcome.DENY,
++                                    tool_executed=False,
++                                    result=rcpt_err,
++                                    reason=rcpt_err,
++                                    action=request.tool_name,
++                                    risk_tier=decision.risk_tier,
++                                    lds_verdict=decision.lds_verdict
++                                )
++                        else:
++                            rcpt_dict = None
+                         return ExecutionResult(
+                             outcome=DecisionOutcome.ALLOW,
+                             tool_executed=is_ok,
+                             result=out_msg,
+-                            action=request.tool_name
++                            action=request.tool_name,
++                            receipt=rcpt_dict,
++                            risk_tier=decision.risk_tier,
++                            lds_verdict=decision.lds_verdict
+                         )
+ 
+                     import intelligence.skills.DEVOPS.SYSTEM_CORE_EXECUTOR.logic as core_exec
+@@ -545,11 +700,30 @@ class ExecutorGateway:
+ 
+                         err_detail = local_res.get('msg') or local_res.get('stderr') or (str(local_res.get('stdout', ''))[:300] if not is_ok else '')
+                         self._log("EXECUTOR", f"[{request.tool_name}] {'✅ Local execution succeeded' if is_ok else '⚠️ Local execution returned error: ' + str(err_detail)}", task_id)
++                        if is_ok:
++                            rcpt_ok, rcpt_dict, rcpt_err = _seal_receipt_fail_closed(
++                                integrity, request.tool_name, request.tool_args, out_msg, decision, task_id
++                            )
++                            if not rcpt_ok:
++                                return ExecutionResult(
++                                    outcome=DecisionOutcome.DENY,
++                                    tool_executed=False,
++                                    result=rcpt_err,
++                                    reason=rcpt_err,
++                                    action=request.tool_name,
++                                    risk_tier=decision.risk_tier,
++                                    lds_verdict=decision.lds_verdict
++                                )
++                        else:
++                            rcpt_dict = None
+                         return ExecutionResult(
+                             outcome=DecisionOutcome.ALLOW,
+                             tool_executed=is_ok,
+                             result=out_msg,
+-                            action=request.tool_name
++                            action=request.tool_name,
++                            receipt=rcpt_dict,
++                            risk_tier=decision.risk_tier,
++                            lds_verdict=decision.lds_verdict
+                         )
+                 except Exception as local_err:
+                     self._log("WARN", f"[LOCAL-DIRECT-FAIL] Local execution of '{request.tool_name}' failed: {local_err}. Falling back to HTTP executor.", task_id)
+@@ -637,11 +811,30 @@ class ExecutorGateway:
+                             data.get("msg") or data.get("message") or data.get("detail")
+                             or data.get("error") or data.get("output") or "No output."
+                         )
++                    if is_success:
++                        rcpt_ok, rcpt_dict, rcpt_err = _seal_receipt_fail_closed(
++                            integrity, request.tool_name, request.tool_args, output, decision, task_id
++                        )
++                        if not rcpt_ok:
++                            return ExecutionResult(
++                                outcome=DecisionOutcome.DENY,
++                                tool_executed=False,
++                                result=rcpt_err,
++                                reason=rcpt_err,
++                                action=request.tool_name,
++                                risk_tier=decision.risk_tier,
++                                lds_verdict=decision.lds_verdict
++                            )
++                    else:
++                        rcpt_dict = None
+                     return ExecutionResult(
+                         outcome=DecisionOutcome.ALLOW,
+                         tool_executed=is_success,
+                         result=output,
+-                        action=request.tool_name
++                        action=request.tool_name,
++                        receipt=rcpt_dict,
++                        risk_tier=decision.risk_tier,
++                        lds_verdict=decision.lds_verdict
+                     )
+ 
+                 except Exception as e:
+diff --git a/tests/test_dynamic_skill_creator.py b/tests/test_dynamic_skill_creator.py
+index 9811310..0d76a74 100644
+--- a/tests/test_dynamic_skill_creator.py
++++ b/tests/test_dynamic_skill_creator.py
+@@ -1,23 +1,244 @@
+-import sys, os
+-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
++# -*- coding: utf-8 -*-
++import hashlib
++import json
++import os
++import shutil
++import sys
++import tempfile
+ import unittest
+-from core.kernel.dynamic_skill_creator import dynamic_skill_creator
++
++sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
++
++from core.kernel.dynamic_skill_creator import DynamicSkillCreator, dynamic_skill_creator
++
+ 
+ class TestDynamicSkillCreator(unittest.TestCase):
++    def setUp(self):
++        self.tmp_root = tempfile.mkdtemp(prefix="jkai_skill_gov_")
++        self.skills_dir = os.path.join(self.tmp_root, "skills")
++        self.cands_dir = os.path.join(self.tmp_root, "candidates")
++        self.ckpts_dir = os.path.join(self.tmp_root, "checkpoints")
++        self.creator = DynamicSkillCreator(
++            skills_root=self.skills_dir,
++            candidates_dir=self.cands_dir,
++            checkpoints_dir=self.ckpts_dir,
++        )
++
++    def tearDown(self):
++        shutil.rmtree(self.tmp_root, ignore_errors=True)
++
+     def test_create_dynamic_skill(self):
+-        sample_code = """# Dynamic Skill Logic
+-def run_custom_audit(data=None):
+-    return {"status": "success", "audit": "Passed dynamic code audit"}
+-"""
+-        res = dynamic_skill_creator.create_skill(
++        sample_code = (
++            "# Dynamic Skill Logic\n"
++            "def run_custom_audit(data=None):\n"
++            "    return {'status': 'success', 'audit': 'Passed dynamic code audit'}\n"
++        )
++        res = self.creator.create_skill(
+             skill_name="test_dynamic_audit",
+             description="Thao tác kiểm toán động",
+             python_code=sample_code,
+-            category="TEST"
++            category="TEST",
++            approved=True,
++            approver_id="master_admin",
++            require_hot_reload=False,
+         )
+         self.assertEqual(res["status"], "success")
+         self.assertEqual(res["skill_name"], "test_dynamic_audit")
+         self.assertTrue(os.path.exists(res["skill_dir"]))
++        self.assertIn("receipt", res)
++        self.assertTrue(res["receipt"]["receipt_id"].startswith("rcpt_"))
++
++    def test_proposal_only_does_not_write_production_logic_py(self):
++        code = "def calc_metric(x):\n    return x * 2\n"
++        res = self.creator.create_skill(
++            skill_name="staged_metric",
++            description="Chỉ tạo đề xuất ứng viên",
++            python_code=code,
++            category="CUSTOM",
++            proposal_only=True,
++        )
++        self.assertEqual(res["status"], "proposed")
++        self.assertTrue(os.path.exists(res["candidate_file"]))
++        target_logic = os.path.join(self.skills_dir, "CUSTOM", "staged_metric", "logic.py")
++        self.assertFalse(os.path.exists(target_logic))
++
++    def test_blocks_path_traversal_in_name_and_category(self):
++        code = "def safe_fn():\n    return 1\n"
++        res1 = self.creator.create_skill(
++            skill_name="../../etc/passwd",
++            description="Traversal attempt",
++            python_code=code,
++            category="CUSTOM",
++            approved=True,
++        )
++        self.assertEqual(res1["status"], "rejected")
++        self.assertEqual(res1["stage"], "PATH_VALIDATION")
++
++        res2 = self.creator.create_skill(
++            skill_name="normal_skill",
++            description="Traversal category",
++            python_code=code,
++            category="../OUTSIDE",
++            approved=True,
++        )
++        self.assertEqual(res2["status"], "rejected")
++        self.assertEqual(res2["stage"], "PATH_VALIDATION")
++
++    def test_blocks_dangerous_ast_imports_and_calls(self):
++        dangerous_samples = [
++            "import subprocess\ndef bad():\n    subprocess.run(['ls'])\n",
++            "import os\ndef bad():\n    os.system('rm -rf /')\n",
++            "def bad(x):\n    return eval(x)\n",
++            "def bad(x):\n    exec(x)\n",
++            "import shutil\ndef bad():\n    shutil.rmtree('/tmp/a')\n",
++        ]
++        for sample in dangerous_samples:
++            res = self.creator.create_skill(
++                skill_name="malicious_skill",
++                description="Test AST block",
++                python_code=sample,
++                category="SECURITY",
++                approved=True,
++            )
++            self.assertEqual(res["status"], "rejected")
++            self.assertEqual(res["stage"], "AST_ALLOWLIST")
++
++    def test_blocks_secrets_and_prompt_injection_via_state_sanitizer(self):
++        leaked_code = (
++            "def leak_fn():\n"
++            "    key = 'sk-1234567890abcdefghijklmnopqrstuvwx'\n"
++            "    return key\n"
++        )
++        res = self.creator.create_skill(
++            skill_name="secret_leak_skill",
++            description="Contains OpenAI key",
++            python_code=leaked_code,
++            category="CUSTOM",
++            approved=True,
++        )
++        self.assertEqual(res["status"], "rejected")
++        self.assertEqual(res["stage"], "STATE_SANITIZER")
++
++    def test_blocks_failed_regression_100_gate(self):
++        code = "def compute(a):\n    return a - 1\n"
++        res = self.creator.create_skill(
++            skill_name="reg_fail_skill",
++            description="Regression fails",
++            python_code=code,
++            category="CUSTOM",
++            approved=True,
++            regression_validator=lambda src: False,
++        )
++        self.assertEqual(res["status"], "rejected")
++        self.assertEqual(res["stage"], "REGRESSION_100")
++
++    def test_production_requires_explicit_approval_and_blocks_llm_self_approval(self):
++        code = "def prod_fn():\n    return 'ok'\n"
++        old_env = os.environ.get("JKAI_ENV")
++        old_sec = os.environ.get("JKAI_GOVERNANCE_SECRET")
++        try:
++            os.environ["JKAI_ENV"] = "production"
++            os.environ["JKAI_GOVERNANCE_SECRET"] = "prod_test_secret_key_2026_sovereign"
++            # Missing approval in production -> rejected
++            res_unapproved = self.creator.create_skill(
++                skill_name="prod_skill",
++                description="Unapproved in prod",
++                python_code=code,
++                category="CUSTOM",
++            )
++            self.assertEqual(res_unapproved["status"], "rejected")
++            self.assertEqual(res_unapproved["stage"], "APPROVAL_GATE")
++
++            # LLM self-approval -> rejected
++            res_llm = self.creator.create_skill(
++                skill_name="prod_skill",
++                description="LLM self-approved",
++                python_code=code,
++                category="CUSTOM",
++                approved=True,
++                approver_id="llm",
++            )
++            self.assertEqual(res_llm["status"], "rejected")
++            self.assertEqual(res_llm["stage"], "APPROVAL_GATE")
++        finally:
++            if old_env is None:
++                os.environ.pop("JKAI_ENV", None)
++            else:
++                os.environ["JKAI_ENV"] = old_env
++            if old_sec is None:
++                os.environ.pop("JKAI_GOVERNANCE_SECRET", None)
++            else:
++                os.environ["JKAI_GOVERNANCE_SECRET"] = old_sec
++
++    def test_restore_drill_checkpoint_partial_crash_rollback_and_sha256_verify(self):
++        # 1. Publish v1.0.0 baseline skill
++        v1_code = "def execute_v1():\n    return 'version_1_stable'\n"
++        res_v1 = self.creator.create_skill(
++            skill_name="critical_router_skill",
++            description="Baseline v1 skill",
++            python_code=v1_code,
++            category="CORE",
++            version="1.0.0",
++            approved=True,
++            approver_id="master_admin",
++            require_hot_reload=False,
++        )
++        self.assertEqual(res_v1["status"], "success")
++        logic_path = os.path.join(res_v1["skill_dir"], "logic.py")
++        v1_sha256 = hashlib.sha256(open(logic_path, "rb").read()).hexdigest()
++        self.assertEqual(v1_sha256, res_v1["code_sha256"])
++
++        # 2. Attempt v2.0.0 upgrade with simulated partial publish crash
++        v2_code = "def execute_v2():\n    return 'version_2_broken_mid_write'\n"
++        res_v2 = self.creator.create_skill(
++            skill_name="critical_router_skill",
++            description="Mutated v2 skill",
++            python_code=v2_code,
++            category="CORE",
++            version="2.0.0",
++            approved=True,
++            approver_id="master_admin",
++            require_hot_reload=False,
++            _simulate_partial_publish_crash=True,
++        )
++        self.assertEqual(res_v2["status"], "rolled_back_on_error")
++        self.assertEqual(res_v2["stage"], "ATOMIC_PUBLISH")
++        rb = res_v2["rollback"]
++        self.assertEqual(rb["status"], "rolled_back")
++        self.assertEqual(rb["restored_logic_sha256"], v1_sha256)
++        self.assertEqual(rb["expected_logic_sha256"], v1_sha256)
++        self.assertIn("hmac_signature", rb["receipt"])
++
++        # 3. Verify file on disk has exact v1 SHA-256 and SKILL.md is also restored to v1.0.0
++        disk_sha256 = hashlib.sha256(open(logic_path, "rb").read()).hexdigest()
++        self.assertEqual(disk_sha256, v1_sha256)
++        md_text = open(os.path.join(res_v1["skill_dir"], "SKILL.md"), "r", encoding="utf-8").read()
++        self.assertIn("version: 1.0.0", md_text)
++
++    def test_hot_reload_failure_triggers_rollback_when_strict(self):
++        v1_code = "def stable_fn():\n    return 'v1'\n"
++        old_url = os.environ.get("EXECUTOR_URL")
++        try:
++            os.environ["EXECUTOR_URL"] = "http://127.0.0.1:59999"
++            res = self.creator.create_skill(
++                skill_name="strict_reload_skill",
++                description="Requires hot reload",
++                python_code=v1_code,
++                category="CUSTOM",
++                approved=True,
++                approver_id="master_admin",
++                require_hot_reload=True,
++            )
++            self.assertEqual(res["status"], "rolled_back_on_error")
++            self.assertEqual(res["stage"], "HOT_RELOAD")
++            logic_path = os.path.join(self.skills_dir, "CUSTOM", "strict_reload_skill", "logic.py")
++            self.assertFalse(os.path.exists(logic_path))
++        finally:
++            if old_url is None:
++                os.environ.pop("EXECUTOR_URL", None)
++            else:
++                os.environ["EXECUTOR_URL"] = old_url
++
+ 
+ if __name__ == "__main__":
+     unittest.main()
+diff --git a/tests/test_slice_6_1_weekly_exam_suite.py b/tests/test_slice_6_1_weekly_exam_suite.py
+index ee6dc9a..ab2be98 100644
+--- a/tests/test_slice_6_1_weekly_exam_suite.py
++++ b/tests/test_slice_6_1_weekly_exam_suite.py
+@@ -129,9 +129,11 @@ def test_condition_4_runner_budget_and_chained_ledger(tmp_path):
+     report_a = runner.run_weekly_exam("A", dry_run=True)
+     assert report_a["duration_seconds"] < 1.0  # Rất nhẹ, phù hợp CI/CD
+     assert report_a["total_tasks"] == 20
+-    assert report_a["accuracy"] >= 0.90
++    assert report_a["accuracy"] is None  # Dry-run tuyệt đối không tạo điểm giả
++    assert report_a["capability_score"] is None
++    assert report_a["plumbing_accuracy"] == 1.0
+     assert report_a["capability_status"] == "PLUMBING_ONLY"  # Khẳng định rõ chỉ đo hạ tầng
+-    assert "wilson_95_ci" in report_a
++    assert report_a["wilson_95_ci"] is None
+     assert all(k in report_a["group_breakdown"] for k in (
+         "A_MATH_FIDELITY", "B_ANAPHORA_GROUNDING", "C_RETRIEVAL_CITATION",
+         "D_TOOL_AND_FILEOPS", "E_MASTER_COMMUNICATION"

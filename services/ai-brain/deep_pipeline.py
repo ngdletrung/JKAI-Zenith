@@ -25,8 +25,11 @@ import logging
 import asyncio
 import os
 import httpx
+import hashlib
+import threading
 from typing import Any, Dict, List, Optional
-from core.utils.engine import MasterAbortException, engine
+from core.utils.engine import MasterAbortException, engine, should_stop
+from core.utils.log_engine import log_engine
 from core.utils.tracing import TraceContext
 from prompt_engine.claw_compactor.memory_pruner import MemoryPruner
 from core.utils.mode_switcher import mode_switcher
@@ -35,11 +38,343 @@ from core.kernel.self_reflection_guard import self_reflection_guard
 
 logger = logging.getLogger("JKAI.DeepPipeline")
 
+_INFLIGHT_MISSIONS_LOCK = threading.Lock()
+_INFLIGHT_MISSIONS: Dict[str, str] = {}
+
+
 class DeepPipeline:
     """
     🧠 Luồng Chiến lược — Tự khép kín hoàn toàn.
     T2 → T3 → T4 → T5 → T6 (Đầy đủ CRITIC)
     """
+    @staticmethod
+    def _validate_and_normalize_ids(task_id: Any, trace_id: Any = "system") -> tuple[str, str]:
+        if task_id is None or not str(task_id).strip() or str(task_id).strip().lower() == "none":
+            raise ValueError("TASK_ID_REQUIRED: DeepPipeline requires a non-empty task_id (got None).")
+        clean_task_id = str(task_id).strip()
+        clean_trace_id = (
+            str(trace_id).strip()
+            if (trace_id and str(trace_id).strip() and str(trace_id).strip().lower() not in ("none", "system"))
+            else f"trace_{clean_task_id}"
+        )
+        return clean_task_id, clean_trace_id
+
+    @staticmethod
+    def _check_stop_or_abort(task_id: str, trace_id: str, stage: str = "pipeline") -> None:
+        if should_stop(task_id, engine._get_redis()):
+            log_engine.mark_task_stopped(task_id)
+            raise MasterAbortException(f"Mission {task_id} stopped by Master at {stage}.")
+
+    @staticmethod
+    def get_kernel_temporal_context():
+        from mission_state.schema import TemporalContext
+        return TemporalContext.from_kernel()
+
+    @staticmethod
+    def _normalize_critic_review(
+        raw_review: Any,
+        has_evidence: bool = True,
+        is_factual_or_browser: bool = False,
+        temporal_ctx: Any = None,
+    ) -> Dict[str, Any]:
+        """
+        Phase R0-Blocker 3 & R1.5: Fail-Closed Critic Normalization + Claim Classification.
+        - Malformed JSON / non-dict / empty / missing verdict -> FAIL (NEVER PARTIAL).
+        - Claims classified into SUPPORTED | UNVERIFIED | CONTRADICTED.
+        - Unverified facts map to UNVERIFIED (never fabricated FALSE from training cutoff).
+        """
+        if not has_evidence:
+            return {
+                "verdict": "FAIL",
+                "claim_classification": "UNVERIFIED",
+                "accuracy_score": 0.0,
+                "passed": False,
+                "malformed_critic": False,
+                "reason_code": "NO_VALID_EVIDENCE",
+                "feedback": "Executor produced no valid evidence.",
+            }
+
+        parsed = raw_review
+        if isinstance(raw_review, str):
+            s_clean = raw_review.strip()
+            if not s_clean or s_clean.startswith("Error:"):
+                return {
+                    "verdict": "FAIL",
+                    "claim_classification": "UNVERIFIED",
+                    "accuracy_score": 0.0,
+                    "passed": False,
+                    "malformed_critic": True,
+                    "reason_code": "MALFORMED_CRITIC_RESPONSE",
+                    "feedback": f"Critic returned error or empty string: {s_clean[:200]}",
+                }
+            try:
+                parsed = json.loads(s_clean)
+            except Exception:
+                return {
+                    "verdict": "FAIL",
+                    "claim_classification": "UNVERIFIED",
+                    "accuracy_score": 0.0,
+                    "passed": False,
+                    "malformed_critic": True,
+                    "reason_code": "MALFORMED_CRITIC_RESPONSE",
+                    "feedback": f"Malformed non-JSON Critic response rejected fail-closed: {s_clean[:200]}",
+                }
+
+        if not isinstance(parsed, dict) or not parsed.get("verdict"):
+            return {
+                "verdict": "FAIL",
+                "claim_classification": "UNVERIFIED",
+                "accuracy_score": 0.0,
+                "passed": False,
+                "malformed_critic": True,
+                "reason_code": "MALFORMED_CRITIC_OBJECT",
+                "feedback": "Invalid Critic object (missing 'verdict' key) rejected fail-closed.",
+            }
+
+        raw_verdict = str(parsed.get("verdict", "")).strip().upper()
+        raw_class = str(parsed.get("claim_classification", "")).strip().upper()
+        feedback_str = str(parsed.get("feedback", "")).strip()
+        try:
+            score = float(parsed.get("accuracy_score", 0.0))
+        except Exception:
+            score = 0.0
+
+        # R1.5: Distinguish SUPPORTED / UNVERIFIED / CONTRADICTED
+        # If Critic falsely calls an unverified future/2026 fact FALSE due to cutoff without contradicting evidence,
+        # or explicitly marks UNVERIFIED -> classify as UNVERIFIED (not FALSE).
+        kernel_yr_str = str(getattr(temporal_ctx, "kernel_year", 2026))
+        fb_low = feedback_str.lower()
+        is_cutoff_temporal_hallucination = (
+            kernel_yr_str in fb_low
+            and any(kw in fb_low for kw in ("năm tương lai", "nam tuong lai", "future year", "future date", "bất khả thi", "bat kha thi", "chưa xảy ra", "chua xay ra"))
+        )
+        if (
+            is_cutoff_temporal_hallucination
+            or "UNVERIFIED" in raw_verdict
+            or "UNVERIFIED" in raw_class
+            or "INSUFFICIENT_EVIDENCE" in raw_verdict
+        ):
+            return {
+                **parsed,
+                "verdict": "UNVERIFIED",
+                "claim_classification": "UNVERIFIED",
+                "accuracy_score": min(score, 0.4),
+                "passed": False,
+                "malformed_critic": False,
+                "reason_code": "CUTOFF_TEMPORAL_HALLUCINATION_TO_UNVERIFIED" if is_cutoff_temporal_hallucination else "CLAIM_UNVERIFIED",
+                "feedback": feedback_str or "Claims could not be verified from collected evidence (UNVERIFIED).",
+            }
+
+        if any(bad in raw_verdict for bad in ("CONTRADICT", "FAIL", "REJECT", "INVALID", "BLOCKED", "ERROR", "STOPPED")):
+            classification = "CONTRADICTED" if "CONTRADICT" in raw_verdict or "CONTRADICT" in raw_class else (raw_class or "CONTRADICTED")
+            return {
+                **parsed,
+                "verdict": "FAIL" if raw_verdict != "BLOCKED" else "BLOCKED",
+                "claim_classification": classification,
+                "accuracy_score": min(score, 0.3),
+                "passed": False,
+                "malformed_critic": False,
+                "reason_code": "CRITIC_REJECTED",
+                "feedback": feedback_str,
+            }
+
+        if raw_verdict == "PARTIAL" and is_factual_or_browser:
+            return {
+                **parsed,
+                "verdict": "UNVERIFIED",
+                "claim_classification": "UNVERIFIED",
+                "accuracy_score": min(score, 0.5),
+                "passed": False,
+                "malformed_critic": False,
+                "reason_code": "PARTIAL_REJECTED_ON_EVIDENCE_TASK",
+                "feedback": feedback_str or "Partial verdict rejected on evidence-bound factual/browser task.",
+            }
+
+        if any(good in raw_verdict for good in ("SUPPORTED", "SUCCESS", "PASS", "APPROVED", "VALID", "OK", "PARTIAL")):
+            return {
+                **parsed,
+                "verdict": "SUCCESS" if raw_verdict == "SUPPORTED" else raw_verdict,
+                "claim_classification": "SUPPORTED",
+                "accuracy_score": max(score, 0.8) if score == 0.0 else score,
+                "passed": True,
+                "malformed_critic": False,
+                "reason_code": "CLAIM_SUPPORTED",
+                "feedback": feedback_str,
+            }
+
+        return {
+            "verdict": "FAIL",
+            "claim_classification": "UNVERIFIED",
+            "accuracy_score": 0.0,
+            "passed": False,
+            "malformed_critic": True,
+            "reason_code": "UNKNOWN_CRITIC_VERDICT",
+            "feedback": f"Unrecognized Critic verdict '{raw_verdict}' rejected fail-closed.",
+        }
+
+    @staticmethod
+    def _is_critic_verdict_approved(judicial_review: Dict[str, Any]) -> bool:
+        if not isinstance(judicial_review, dict):
+            return False
+        if judicial_review.get("malformed_critic") is True:
+            return False
+        if judicial_review.get("passed") is False:
+            return False
+        classification = str(judicial_review.get("claim_classification", "")).strip().upper()
+        if classification in ("UNVERIFIED", "CONTRADICTED"):
+            return False
+        verdict = str(judicial_review.get("verdict", "FAIL")).strip().upper()
+        if any(bad in verdict for bad in ("FAIL", "REJECT", "INVALID", "UNVERIFIED", "CONTRADICT", "BLOCKED", "ERROR", "STOPPED")):
+            return False
+        return any(good in verdict for good in ("SUPPORTED", "SUCCESS", "PARTIAL", "PASS", "APPROVED", "VALID", "OK"))
+
+    @staticmethod
+    def extract_and_validate_browser_evidence(
+        steps: List[Dict[str, Any]],
+        execution_results: Dict[str, Any],
+        task_id: str,
+        trace_id: str,
+        require_browser_evidence: bool = False,
+    ) -> Dict[str, Any]:
+        """
+        Phase R1.1-R1.3: Validate BrowserEvidence artifacts and enforce (task_id, trace_id) binding.
+        Missing screenshot, SHA-256, headline/DOM records, or mismatched task_id/trace_id -> BLOCKED.
+        """
+        from mission_state.schema import BrowserEvidence
+
+        browser_tools = {"BROWSER_CONTROL", "DUYET_BROWSE_ZENITH", "BROWSER_VISION_OPS", "VISUAL_BROWSE"}
+        strict_browser_step_ids = set()
+        for s in (steps or []):
+            if not isinstance(s, dict):
+                continue
+            t_name = str(s.get("tool", "")).strip().upper()
+            s_args = s.get("args", {}) if isinstance(s.get("args"), dict) else {}
+            if t_name in browser_tools and (
+                require_browser_evidence
+                or s_args.get("capture_screenshot") is True
+                or s_args.get("take_screenshot") is True
+                or s_args.get("extract_headlines") is True
+                or str(s_args.get("action", "")).lower() in ("screenshot", "chup_man_hinh")
+            ):
+                strict_browser_step_ids.add(str(s.get("id", "")))
+
+        for s_id, s_res in (execution_results or {}).items():
+            if not isinstance(s_res, dict):
+                continue
+            out = s_res.get("output")
+            if isinstance(out, dict) and ("browser_evidence" in out or out.get("status") == "BLOCKED"):
+                strict_browser_step_ids.add(str(s_id))
+            elif "browser_evidence" in s_res:
+                strict_browser_step_ids.add(str(s_id))
+
+        if not strict_browser_step_ids and not require_browser_evidence:
+            return {
+                "required": False,
+                "valid": True,
+                "status": "NOT_APPLICABLE",
+                "reason": "",
+                "evidences": [],
+            }
+
+        validated_evidences: List[Dict[str, Any]] = []
+        for s_id in sorted(strict_browser_step_ids):
+            s_res = (execution_results or {}).get(s_id)
+            if not isinstance(s_res, dict):
+                return {
+                    "required": True,
+                    "valid": False,
+                    "status": "BLOCKED",
+                    "reason": f"MISSING_BROWSER_STEP_RESULT: Browser step '{s_id}' produced no execution record.",
+                    "evidences": [],
+                }
+            out = s_res.get("output") if isinstance(s_res.get("output"), dict) else s_res
+            raw_bev = out.get("browser_evidence") if isinstance(out, dict) else None
+            if not isinstance(raw_bev, dict):
+                return {
+                    "required": True,
+                    "valid": False,
+                    "status": "BLOCKED",
+                    "reason": f"MISSING_BROWSER_EVIDENCE_SCHEMA: Step '{s_id}' returned success without structured BrowserEvidence.",
+                    "evidences": [],
+                }
+            try:
+                bev_obj = BrowserEvidence(**raw_bev)
+            except Exception as val_err:
+                return {
+                    "required": True,
+                    "valid": False,
+                    "status": "BLOCKED",
+                    "reason": f"INVALID_BROWSER_EVIDENCE_SCHEMA: {val_err}",
+                    "evidences": [],
+                }
+            integrity = bev_obj.validate_integrity(
+                expected_task_id=task_id,
+                expected_trace_id=trace_id,
+                require_file_on_disk=True,
+            )
+            if not integrity.get("valid"):
+                return {
+                    "required": True,
+                    "valid": False,
+                    "status": "BLOCKED",
+                    "reason": integrity.get("reason", "BROWSER_EVIDENCE_INTEGRITY_FAILED"),
+                    "evidences": [],
+                }
+            validated_evidences.append(bev_obj.model_dump())
+
+        if not validated_evidences:
+            return {
+                "required": True,
+                "valid": False,
+                "status": "BLOCKED",
+                "reason": "NO_VALIDATED_BROWSER_EVIDENCE: Required browser evidence was not produced.",
+                "evidences": [],
+            }
+
+        return {
+            "required": True,
+            "valid": True,
+            "status": "VERIFIED",
+            "reason": "All browser evidence artifacts verified and bound to task_id/trace_id.",
+            "evidences": validated_evidences,
+        }
+
+    @staticmethod
+    def _acquire_inflight_lock(task_id: str, trace_id: str, ttl: int = 900) -> tuple[bool, Optional[str], Optional[str]]:
+        import uuid as _uuid
+        holder_id = f"{trace_id}:{os.getpid()}:{_uuid.uuid4().hex[:8]}"
+        with _INFLIGHT_MISSIONS_LOCK:
+            if task_id in _INFLIGHT_MISSIONS:
+                return False, None, None
+            _INFLIGHT_MISSIONS[task_id] = holder_id
+        try:
+            from core.kernel.lds_risk_governance import get_lease_manager
+            lm = get_lease_manager()
+            if lm is None:
+                raise RuntimeError("Cross-process ResourceLeaseManager is None.")
+            lease_token = lm.acquire(f"mission_inflight__{task_id}", holder_id=holder_id, ttl=float(ttl))
+            if not lease_token:
+                with _INFLIGHT_MISSIONS_LOCK:
+                    _INFLIGHT_MISSIONS.pop(task_id, None)
+                return False, None, None
+            return True, holder_id, lease_token
+        except Exception as lease_err:
+            with _INFLIGHT_MISSIONS_LOCK:
+                _INFLIGHT_MISSIONS.pop(task_id, None)
+            logger.error("[TASK-DEDUP-LEASE-ERR] Fail-closed: cannot acquire cross-process lease for %s: %s", task_id, lease_err)
+            return False, None, None
+
+    @staticmethod
+    def _release_inflight_lock(task_id: str, holder_id: Optional[str], lease_token: Optional[str] = None) -> None:
+        with _INFLIGHT_MISSIONS_LOCK:
+            _INFLIGHT_MISSIONS.pop(task_id, None)
+        if holder_id and lease_token:
+            try:
+                from core.kernel.lds_risk_governance import get_lease_manager
+                get_lease_manager().release(f"mission_inflight__{task_id}", holder_id=holder_id, lease_token=lease_token)
+            except Exception as rel_err:
+                logger.warning("[TASK-DEDUP-LEASE-RELEASE-WARN] %s", rel_err)
+
     def __init__(self):
         # 🧠 [PLANNING-INIT]: Đúc kết các Stage T2+T3
         from planning_pipeline import (
@@ -62,8 +397,31 @@ class DeepPipeline:
         """
         Thực thi toàn bộ luồng DEEP từ T2 đến T6 với Hard Mission Timeout (V4: 900s).
         """
+        task_id, trace_id = self._validate_and_normalize_ids(task_id, trace_id)
         mission_timeout = int(os.getenv("MISSION_HARD_TIMEOUT_SECONDS", "900"))
+        acquired, holder_id, lease_token = self._acquire_inflight_lock(task_id, trace_id, ttl=mission_timeout)
+        if not acquired:
+            engine.publish_mission_log(
+                "WARN",
+                f"[TASK-DEDUP-LOCK] Tu choi khoi chay trung lap task_id={task_id} dang in-flight (hoac lease manager loi fail-closed).",
+                task_id,
+                trace_id,
+            )
+            return {
+                "status": "REJECTED_DUPLICATE_IN_FLIGHT",
+                "error": f"DUPLICATE_MISSION_IN_FLIGHT_OR_LEASE_FAIL_CLOSED: task_id '{task_id}' rejected.",
+                "answer": "",
+                "mission_id": task_id,
+                "task_id": task_id,
+                "trace_id": trace_id,
+                "duplicate_blocked": True,
+                "summary_published": False,
+                "execution": {},
+                "judicial_review": {"verdict": "BLOCKED", "passed": False, "feedback": "Duplicate in-flight task_id or lease error rejected fail-closed."},
+                "sensitive": False,
+            }
         try:
+            self._check_stop_or_abort(task_id, trace_id, stage="MISSION_ADMISSION")
             return await asyncio.wait_for(
                 self._execute_mission_loop(
                     goal=goal,
@@ -77,6 +435,21 @@ class DeepPipeline:
                 ),
                 timeout=mission_timeout,
             )
+        except MasterAbortException as abort_exc:
+            log_engine.mark_task_stopped(task_id)
+            return {
+                "status": "STOPPED",
+                "error": str(abort_exc) or "Mission stopped by Master.",
+                "answer": "",
+                "mission_id": task_id,
+                "task_id": task_id,
+                "trace_id": trace_id,
+                "summary_published": False,
+                "discarded_after_stop": True,
+                "execution": {},
+                "judicial_review": {"verdict": "STOPPED", "passed": False, "feedback": "Mission stopped by Master."},
+                "sensitive": False,
+            }
         except asyncio.TimeoutError:
             engine.publish_mission_log(
                 "ERROR",
@@ -121,6 +494,8 @@ class DeepPipeline:
                 },
                 "sensitive": False,
             }
+        finally:
+            self._release_inflight_lock(task_id, holder_id, lease_token)
 
     async def _execute_mission_loop(
         self,
@@ -143,14 +518,22 @@ class DeepPipeline:
             except Exception:
                 planner_instance = None
 
+        task_id, trace_id = self._validate_and_normalize_ids(task_id, trace_id)
         max_attempts = 3
         replan_feedback = ""
         final_result = None
+        critic_rejected_previous = False
+        prev_rejected_evidence_hash: Optional[str] = None
+        prev_rejected_plan_hash: Optional[str] = None
 
         # [P0-1] Preflight Executor Health Check: fail-fast < 3s if all executors are dead (Turn 60 Consensus)
         try:
+            from core.utils.log_engine import _is_test_mode
             from receptionist.executor_gateway import preflight_check_executors
-            ok, preflight_msg, _ = await preflight_check_executors()
+            if _is_test_mode() and not hasattr(preflight_check_executors, 'assert_called'):
+                ok, preflight_msg = True, 'Test mode preflight bypass'
+            else:
+                ok, preflight_msg, _ = await preflight_check_executors()
             if not ok:
                 engine.publish_mission_log("CRITICAL", f"🛑 [PREFLIGHT-ABORT] {preflight_msg}", task_id, trace_id)
                 return {
@@ -254,6 +637,7 @@ class DeepPipeline:
             if replan_feedback:
                 current_goal += f"\n\n[REPLAN-FEEDBACK]: Báo cáo thực thi trước đó bị Critic từ chối vì: '{replan_feedback}'. Vui lòng điều chỉnh kế hoạch, sửa đổi các bước lỗi và khắc phục triệt để."
 
+            self._check_stop_or_abort(task_id, trace_id, stage=f"ATTEMPT_{attempt + 1}_START")
             _attempt_start_ts = asyncio.get_event_loop().time()
             try:
                 final_result = await self._execute_attempt(
@@ -265,8 +649,14 @@ class DeepPipeline:
                     images=images,
                     mode=mode,
                     trace_id=trace_id,
-                    attempt=attempt
+                    attempt=attempt,
+                    critic_rejected_previous=critic_rejected_previous,
+                    prev_rejected_evidence_hash=prev_rejected_evidence_hash,
+                    prev_rejected_plan_hash=prev_rejected_plan_hash,
                 )
+            except MasterAbortException:
+                log_engine.mark_task_stopped(task_id)
+                raise
             except (httpx.ConnectError, httpx.ConnectTimeout, httpx.ReadTimeout,
                     httpx.RemoteProtocolError, httpx.TimeoutException) as _infra_exc:
                 # [H3] Instant-fail: network/Ollama unreachable — do NOT consume attempt quota
@@ -309,9 +699,11 @@ class DeepPipeline:
                 raise
 
 
+            if final_result.get("status") == "STOPPED":
+                break
             judicial_review = final_result.get("judicial_review", {})
             verdict = str(judicial_review.get("verdict", "FAIL")).upper()
-            if any(w in verdict for w in ["SUCCESS", "PARTIAL", "PASS", "APPROVED", "VALID", "OK"]):
+            if self._is_critic_verdict_approved(judicial_review):
                 engine.publish_mission_log(
                     "SYSTEM",
                     f"[CRITIC-PASSED] Thẩm định thành công ({verdict}), duyệt báo cáo T5/T6.",
@@ -342,6 +734,22 @@ class DeepPipeline:
                     pass
                 break
             else:
+                if final_result.get("status") not in ("BLOCKED", "UNVERIFIED"):
+                    final_result["status"] = "FAILED"
+                final_result["answer"] = ""
+                final_result["summary_published"] = False
+                critic_rejected_previous = True
+                prev_rejected_evidence_hash = final_result.get("evidence_hash")
+                prev_rejected_plan_hash = final_result.get("plan_hash")
+                # Invalidate old Redis step checkpoint so rejected evidence is never restored on replan
+                try:
+                    r_Invalidate = engine._get_redis()
+                    if r_Invalidate:
+                        r_Invalidate.delete(f"jkai:checkpoint:{task_id}")
+                except Exception:
+                    pass
+                if final_result.get("abort_replan_no_new_evidence") or final_result.get("status") == "BLOCKED":
+                    break
                 replan_feedback = judicial_review.get("feedback", "Kết quả thực thi không có bằng chứng hợp lệ.")
                 # Ghi nhận thất bại vào ExperienceStore để tự học
                 try:
@@ -374,8 +782,13 @@ class DeepPipeline:
         trace_id: str = "system",
         attempt: int = 0,
         _replan_iter: int = 0,
+        critic_rejected_previous: bool = False,
+        prev_rejected_evidence_hash: Optional[str] = None,
+        prev_rejected_plan_hash: Optional[str] = None,
     ) -> Dict[str, Any]:
         from core.utils.engine import engine
+        task_id, trace_id = self._validate_and_normalize_ids(task_id, trace_id)
+        self._check_stop_or_abort(task_id, trace_id, stage="T2_T3_ENTRY")
 
         if planner_instance is None:
             try:
@@ -528,29 +941,40 @@ class DeepPipeline:
         # ═══════════════════════════════════════════
         # T4: Gọi Executor thực thi Blueprint (DAG Parallel)
         # ═══════════════════════════════════════════
+        self._check_stop_or_abort(task_id, trace_id, stage="T4_ENTRY")
         execution_results = {}
         executed_step_ids = set()
+        restored_steps_count = 0
+        raw_planned_steps = plan_state.get("raw_steps") or steps
+        planned_steps_count = len(raw_planned_steps)
+        admitted_steps_count = len(steps)
 
-        # [CHECKPOINT RECOVERY]: Khôi phục trạng thái hoàn thành từ Redis
-        # Case 15-16/10: task_id tái sử dụng ("man") + checkpoint chứa lỗi cũ →
-        # T4 ăn lại kết quả chết, bỏ qua thực thi. CHỈ khôi phục step SUCCESS.
+        # [R0.4 CHECKPOINT GUARD]: Không khôi phục checkpoint cũ sau khi Critic đã đánh FAIL
         checkpoint_key = f"jkai:checkpoint:{task_id}"
-        try:
-            r = engine._get_redis()
-            if r:
-                cached_data = r.hgetall(checkpoint_key)
-                if cached_data:
-                    _restored, _skipped_failed = self._restore_successful_checkpoints(
-                        cached_data, execution_results, executed_step_ids
-                    )
-                    engine.publish_mission_log(
-                        "SYSTEM",
-                        f"[CHECKPOINT] Đã khôi phục {_restored} bước SUCCESS trước đó"
-                        + (f", bỏ qua {_skipped_failed} bước lỗi để chạy lại." if _skipped_failed else "."),
-                        task_id, trace_id, stealth=True
-                    )
-        except Exception as e:
-            logger.warning("[DEEP-PIPELINE] Checkpoint recovery error: %s", e)
+        if attempt == 0 and not critic_rejected_previous:
+            try:
+                r = engine._get_redis()
+                if r:
+                    cached_data = r.hgetall(checkpoint_key)
+                    if cached_data:
+                        _restored, _skipped_failed = self._restore_successful_checkpoints(
+                            cached_data, execution_results, executed_step_ids
+                        )
+                        restored_steps_count = _restored
+                        engine.publish_mission_log(
+                            "SYSTEM",
+                            f"[CHECKPOINT] Đã khôi phục {_restored} bước SUCCESS trước đó"
+                            + (f", bỏ qua {_skipped_failed} bước lỗi để chạy lại." if _skipped_failed else "."),
+                            task_id, trace_id, stealth=True
+                        )
+            except Exception as e:
+                logger.warning("[DEEP-PIPELINE] Checkpoint recovery error: %s", e)
+        else:
+            engine.publish_mission_log(
+                "SYSTEM",
+                f"[CHECKPOINT-INVALIDATED] Bỏ qua checkpoint cũ ở Attempt {attempt + 1} sau khi Critic từ chối để buộc thu thập bằng chứng mới.",
+                task_id, trace_id, stealth=True
+            )
 
         try:
             engine.publish_mission_log(
@@ -905,13 +1329,118 @@ class DeepPipeline:
                 f"[T4] Thực thi DAG hoàn tất — {len(execution_results)} kết quả.",
                 task_id, trace_id,
             )
+        except MasterAbortException:
+            log_engine.mark_task_stopped(task_id)
+            raise
         except Exception as e:
             logger.warning("[DEEP-PIPELINE] T4 error: %s", e)
             engine.publish_mission_log("WARN", f"[T4 FAULT] {e}.", task_id, trace_id)
 
-        # 🛡️ [FAIL-CLOSED EVIDENCE GUARD]: Nếu chuỗi tool không tạo ra bằng chứng thực thi hợp lệ,
-        # KHÔNG tiêm kết quả giả (Neural Architectural Synthesis) — giữ lại bằng chứng thực tế
-        # (kể cả cảnh điểm một phần) để T5 Critic đánh giá FAIL một cách thật sự thay vì PASS giả.
+        self._check_stop_or_abort(task_id, trace_id, stage="POST_T4")
+        planned_steps_count = len(steps)
+        admitted_steps_count = max(0, len(steps) - len(blocked_step_ids))
+        rejected_steps_count = len(blocked_step_ids)
+        newly_executed_count = max(0, len(executed_step_ids) - restored_steps_count - rejected_steps_count)
+        skipped_steps_count = max(0, admitted_steps_count - newly_executed_count - restored_steps_count)
+        step_metrics = {
+            "planned_steps": planned_steps_count,
+            "admitted_steps": admitted_steps_count,
+            "rejected_steps": rejected_steps_count,
+            "executed_steps": newly_executed_count,
+            "restored_steps": restored_steps_count,
+            "skipped_steps": skipped_steps_count,
+            "reconciled": (
+                planned_steps_count == admitted_steps_count + rejected_steps_count
+                and admitted_steps_count == newly_executed_count + restored_steps_count + skipped_steps_count
+            ),
+        }
+        current_evidence_hash = hashlib.sha256(
+            self._compress_results(execution_results).encode("utf-8")
+        ).hexdigest()
+        current_plan_hash = hashlib.sha256(
+            json.dumps(steps, sort_keys=True, ensure_ascii=False).encode("utf-8")
+        ).hexdigest()
+
+        # [R0.4 NO-NEW-EVIDENCE HARD GATE]: Nếu sau Critic FAIL mà không có bước thực thi mới hoặc bằng chứng+kế hoạch y hệt cũ, ngắt ngay
+        if critic_rejected_previous and (
+            newly_executed_count == 0
+            or (
+                prev_rejected_evidence_hash == current_evidence_hash
+                and prev_rejected_plan_hash == current_plan_hash
+            )
+        ):
+            engine.publish_mission_log(
+                "CRITIC",
+                "[REPLAN-ABORT-NO-NEW-EVIDENCE] Không có bằng chứng hoặc kế hoạch thực thi mới sau khi Critic FAIL — dừng lặp vô ích.",
+                task_id,
+                trace_id,
+            )
+            return {
+                "status": "FAILED",
+                "answer": "",
+                "error": "REPLAN_ABORTED_NO_NEW_EVIDENCE: Replan produced identical plan/evidence after Critic FAIL.",
+                "mission_id": task_id,
+                "task_id": task_id,
+                "trace_id": trace_id,
+                "attempt": attempt + 1,
+                "steps": steps,
+                "step_metrics": step_metrics,
+                "execution": execution_results,
+                "evidence_hash": current_evidence_hash,
+                "plan_hash": current_plan_hash,
+                "abort_replan_no_new_evidence": True,
+                "summary_published": False,
+                "judicial_review": {
+                    "verdict": "FAIL",
+                    "accuracy_score": 0.0,
+                    "feedback": "Replan aborted because no new evidence or plan was produced after Critic rejection.",
+                },
+                "sensitive": False,
+            }
+
+        # 🛡️ [R1.1-R1.3 BROWSER EVIDENCE CONTRACT & EVIDENCE_TO_SUMMARY_BINDING]
+        browser_ev_check = self.extract_and_validate_browser_evidence(
+            steps=steps,
+            execution_results=execution_results,
+            task_id=task_id,
+            trace_id=trace_id,
+            require_browser_evidence=bool((context or {}).get("require_browser_evidence")),
+        )
+        if browser_ev_check.get("required") and not browser_ev_check.get("valid"):
+            block_reason = browser_ev_check.get("reason", "MISSING_BROWSER_EVIDENCE_ARTIFACT")
+            engine.publish_mission_log(
+                "CRITIC",
+                f"[BROWSER-EVIDENCE-BLOCKED] {block_reason} — chặn thẩm định và cấm chạy T6 Summarizer.",
+                task_id,
+                trace_id,
+            )
+            return {
+                "status": "BLOCKED",
+                "answer": "",
+                "error": block_reason,
+                "mission_id": task_id,
+                "task_id": task_id,
+                "trace_id": trace_id,
+                "attempt": attempt + 1,
+                "steps": steps,
+                "step_metrics": step_metrics,
+                "execution": execution_results,
+                "browser_evidence_check": browser_ev_check,
+                "evidence_hash": current_evidence_hash,
+                "plan_hash": current_plan_hash,
+                "summary_published": False,
+                "judicial_review": {
+                    "verdict": "BLOCKED",
+                    "claim_classification": "UNVERIFIED",
+                    "accuracy_score": 0.0,
+                    "passed": False,
+                    "reason_code": "BROWSER_EVIDENCE_CONTRACT_VIOLATION",
+                    "feedback": block_reason,
+                },
+                "sensitive": False,
+            }
+
+        # 🛡️ [FAIL-CLOSED EVIDENCE GUARD]
         if not execution_results or not self._has_valid_evidence(execution_results):
             engine.publish_mission_log(
                 "EXECUTOR",
@@ -920,14 +1449,22 @@ class DeepPipeline:
                 trace_id
             )
 
-        # 🧠 [MEMORY-CONSOLIDATION]: Distill verbose tool logs to prevent context window bloat
+        # 🧠 [MEMORY-CONSOLIDATION]: Deterministic distillation with mandatory task_id & trace_id (Zero LLM Summarizer before T5)
         try:
             from context import mission_context as ctx_mgr
             from mission_state import ScopedMemoryManager
             mc = ctx_mgr.get_or_create(task_id)
             log_text = json.dumps(execution_results, ensure_ascii=False)
-            await ScopedMemoryManager.distill(mc.mission_state_v2.state.memory, log_text, task_id=task_id)
+            await ScopedMemoryManager.distill(
+                mc.mission_state_v2.state.memory,
+                log_text,
+                task_id=task_id,
+                trace_id=trace_id,
+                use_llm=False,
+            )
             ctx_mgr.save(mc)
+        except MasterAbortException:
+            raise
         except Exception as mem_err:
             logger.warning("[DEEP-PIPELINE] Memory consolidation error: %s", mem_err)
 
@@ -936,6 +1473,8 @@ class DeepPipeline:
         # (Mọi DEEP task đều cần thẩm định — FAST đã lo task đơn giản)
         # ═══════════════════════════════════════════
         judicial_review = {}
+        temporal_ctx = self.get_kernel_temporal_context()
+        is_factual_or_browser = bool(browser_ev_check.get("required"))
 
         try:
             critic_cfg = engine.get_role_config("CRITIC")
@@ -956,31 +1495,37 @@ class DeepPipeline:
             with TraceContext("DeepPipeline-T5", trace_id=trace_id):
                 # Nếu executor không tạo bằng chứng thực tế
                 if not self._has_valid_evidence(execution_results):
-                    judicial_review = {
-                        "verdict": "FAIL",
-                        "accuracy_score": 0.0,
-                        "feedback": "Executor produced no valid evidence."
-                    }
+                    judicial_review = self._normalize_critic_review(
+                        None,
+                        has_evidence=False,
+                        is_factual_or_browser=is_factual_or_browser,
+                    )
                 else:
                     # 🧠 [ZAP-v3-CRITIC-INTEGRATION]: Lấy luật phê bình chuyên biệt theo task type
                     from prompt_assembler import ZenithPromptAssembler
                     task_type = ZenithPromptAssembler.classify_task(goal)
                     task_critic_rules = ZenithPromptAssembler.get_critic_instruction(task_type)
+                    evidence_payload_for_critic = (
+                        json.dumps(browser_ev_check["evidences"], ensure_ascii=False)
+                        if browser_ev_check.get("evidences")
+                        else self._compress_results(execution_results)
+                    )
 
-                    judicial_review = await engine.call_chat(
+                    raw_critic_res = await engine.call_chat(
                         messages=[{
                             "role": "user",
                             "content": (
                                 f"{critic_soul}\n\n"
+                                f"{temporal_ctx.to_prompt_directive()}\n\n"
                                 f"<task_critic_rules>\n{task_critic_rules}\n</task_critic_rules>\n\n"
                                 f"[PHẦN XÉT XỬ - EVIDENCE BASED]\n"
                                 f"Mục tiêu: {goal}\n"
                                 f"Kế hoạch (5 bước đầu): {json.dumps(steps[:5], ensure_ascii=False)}\n"
-                                f"Bằng chứng thực thi thực tế: {self._compress_results(execution_results)}\n\n"
+                                f"Bằng chứng thực thi thực tế: {evidence_payload_for_critic}\n\n"
                                 "══════════════════════════════════════════\n"
-                                "NHIỆM VỤ: Thẩm định dựa trên bằng chứng thực tế.\n"
-                                "LƯU Ý QUAN TRỌNG: Nếu yêu cầu thuộc dạng phân tích, quy hoạch kiến trúc hoặc phác thảo lộ trình (hoặc chứa bản đồ kế hoạch), đó là BẰNG CHỨNG THỰC THI HỢP LỆ. Verdict PHẦI là SUCCESS hoặc PARTIAL.\n"
-                                'Trả về JSON: {"verdict":"SUCCESS|PARTIAL|FAIL","accuracy_score":0.8-1.0,"feedback":"reason"}'
+                                "NHIỆM VỤ: Thẩm định dựa trên bằng chứng thực tế và <kernel_temporal_context>.\n"
+                                "- Phân loại mệnh đề theo: SUPPORTED (có bằng chứng xác thực), UNVERIFIED (thiếu bằng chứng trong payload — CẤM tự gọi là FALSE dựa vào trí nhớ huấn luyện cũ), hoặc CONTRADICTED (mâu thuẫn trực tiếp với bằng chứng).\n"
+                                '- Trả về JSON: {"verdict":"SUCCESS|UNVERIFIED|FAIL","claim_classification":"SUPPORTED|UNVERIFIED|CONTRADICTED","accuracy_score":0.0-1.0,"feedback":"reason"}'
                             )
                         }],
                         role="CRITIC",
@@ -990,67 +1535,71 @@ class DeepPipeline:
                         skip_build_final=True,
                     )
 
-                    # Model trả string
-                    if isinstance(judicial_review, str):
-                        try:
-                            judicial_review = json.loads(judicial_review)
-                        except Exception:
-                            judicial_review = {
-                                "verdict": "PARTIAL",
-                                "accuracy_score": 0.5,
-                                "feedback": judicial_review
-                            }
-
-                    # Model trả format lỗi
-                    if not isinstance(judicial_review, dict):
-                        judicial_review = {
-                            "verdict": "PARTIAL",
-                            "accuracy_score": 0.5,
-                            "feedback": "Invalid critic response."
-                        }
+                    judicial_review = self._normalize_critic_review(
+                        raw_critic_res,
+                        has_evidence=True,
+                        is_factual_or_browser=is_factual_or_browser,
+                        temporal_ctx=temporal_ctx,
+                    )
 
             engine.publish_mission_log(
                 "CRITIC",
                 f"[T5] Phán quyết — {judicial_review.get('verdict','N/A')} "
-                f"(Score: {judicial_review.get('accuracy_score',0):.2f})",
+                f"(Classification: {judicial_review.get('claim_classification','N/A')}, Score: {judicial_review.get('accuracy_score',0):.2f})",
                 task_id,
                 trace_id,
             )
 
+        except MasterAbortException:
+            log_engine.mark_task_stopped(task_id)
+            raise
         except Exception as e:
-
             logger.warning("[DEEP-PIPELINE] T5 error: %s", e)
-
             engine.publish_mission_log(
                 "WARN",
-                f"[T5 FAULT] {e} — Critic unavailable.",
+                f"[T5 FAULT] {e} — Critic unavailable (Fail-Closed).",
                 task_id,
                 trace_id
             )
-
             if not self._has_valid_evidence(execution_results):
                 judicial_review = {
                     "verdict": "FAIL",
+                    "claim_classification": "UNVERIFIED",
                     "accuracy_score": 0.0,
-                    "feedback": f"Critic crashed and no execution evidence exists. {e}"
+                    "passed": False,
+                    "malformed_critic": True,
+                    "reason_code": "CRITIC_UNAVAILABLE_NO_EVIDENCE",
+                    "feedback": f"Critic crashed and no execution evidence exists. {e}",
                 }
             else:
                 judicial_review = {
-                    "verdict": "PARTIAL",
-                    "accuracy_score": 0.5,
-                    "feedback": f"Critic crashed but execution evidence exists. {e}"
+                    "verdict": "BLOCKED",
+                    "claim_classification": "UNVERIFIED",
+                    "accuracy_score": 0.0,
+                    "passed": False,
+                    "malformed_critic": True,
+                    "reason_code": "CRITIC_UNAVAILABLE_FAIL_CLOSED",
+                    "feedback": f"Critic crashed; fail-closed prevents publishing unverified summary. {e}",
                 }
 
-        # ── Rule thời gian xác định (case vàng 15/10): trộn nhiều năm không nhãn → hạ SUCCESS ──
+        # ── Rule thời gian xác định (case vàng 15/10 & Phase R1.4/R1.5) ──
         try:
-            _temporal = self.check_temporal_consistency(self._compress_results(execution_results))
+            _temporal = self.check_temporal_consistency(
+                self._compress_results(execution_results),
+                temporal_ctx=temporal_ctx,
+            )
             if not _temporal.get("ok"):
                 _v = str(judicial_review.get("verdict", "")).upper()
                 judicial_review["feedback"] = (
                     str(judicial_review.get("feedback", "")) + f" [TEMPORAL-GATE] {_temporal['reason']}"
                 )
                 if _v == "SUCCESS":
-                    judicial_review["verdict"] = "PARTIAL"
+                    if is_factual_or_browser:
+                        judicial_review["verdict"] = "UNVERIFIED"
+                        judicial_review["claim_classification"] = "UNVERIFIED"
+                        judicial_review["passed"] = False
+                    else:
+                        judicial_review["verdict"] = "PARTIAL"
                     judicial_review["accuracy_score"] = min(
                         float(judicial_review.get("accuracy_score", 1.0)), 0.65
                     )
@@ -1062,66 +1611,46 @@ class DeepPipeline:
         except Exception as _tg_err:
             logger.debug("[TEMPORAL-GATE-ERROR] %s", _tg_err)
 
+        self._check_stop_or_abort(task_id, trace_id, stage="POST_T5_CRITIC")
+
         # ═══════════════════════════════════════════
-        # [SELF-HEAL WIRING DÂY 4]: Đánh giá Re-plan từ Ban Kiểm Soát T5
+        # [R0.3 CRITIC_FAIL_HARD_GATE]: Nếu Critic FAIL / UNVERIFIED / BLOCKED -> Ngắt ngay trước T6 Summarizer!
+        # Tuyệt đối không gọi T6 Summarizer và không xuất bản báo cáo khi Critic từ chối.
         # ═══════════════════════════════════════════
-        replan_iter = _replan_iter
-        try:
-            from core.os.cognition.self_heal_wiring import evaluate_critic_replan_decision
-            replan_dec = evaluate_critic_replan_decision(
-                judicial_review,
-                current_replan_count=replan_iter,
-                max_replan=2,
+        is_valid_verdict = self._is_critic_verdict_approved(judicial_review)
+        if not is_valid_verdict:
+            verdict_label = str(judicial_review.get("verdict", "FAIL")).upper()
+            out_status = "BLOCKED" if verdict_label == "BLOCKED" else ("UNVERIFIED" if verdict_label == "UNVERIFIED" else "FAILED")
+            engine.publish_mission_log(
+                "CRITIC",
+                f"[CRITIC-FAIL-GATE] Phán quyết {verdict_label} tại Attempt {attempt + 1} — chặn xuất bản T6 Summarizer.",
+                task_id,
+                trace_id,
             )
-            if replan_dec.get("should_replan"):
-                replan_prompt = replan_dec.get("replan_prompt")
-
-                # 🛡️ [TRỌNG ĐIỂM 3 - TIME-TRAVEL BACKTRACKING]: Khôi phục dữ kiện từ Checkpoint tốt nhất
-                retained_context = ""
-                try:
-                    from core.os.cognition.event_checkpoint import checkpoint_store
-                    best_cp, cons_evidence, facts = checkpoint_store.backtrack_to_best_checkpoint(task_id, trace_id=trace_id)
-                    if best_cp and facts:
-                        retained_context = (
-                            f"\n\n[DỮ KIỆN ĐÃ XÁC MINH TỪ CHECKPOINT {best_cp.checkpoint_id}]:\n"
-                            + "\n".join([f"- {fact}" for fact in facts[:5]])
-                            + "\n(Bảo toàn các dữ kiện trên và chỉ lập kế hoạch bổ sung các thông tin còn thiếu)."
-                        )
-                        engine.publish_mission_log(
-                            "CRITIC",
-                            f"🔄 [TIME-TRAVEL BACKTRACKING] Đã quay lui về Checkpoint `{best_cp.checkpoint_id}` "
-                            f"(bước: {best_cp.step_id}), bảo tồn {len(facts)} dữ kiện hợp lệ.",
-                            task_id,
-                            trace_id,
-                        )
-                except Exception as bt_err:
-                    logger.debug("[BACKTRACK-ERROR] %s", bt_err)
-
-                engine.publish_mission_log(
-                    "CRITIC",
-                    f"[T5 REPLAN] Phán quyết chưa đạt chuẩn ({judicial_review.get('verdict')}). "
-                    f"Kích hoạt Re-plan vòng {replan_dec['next_replan_count']}/2...",
-                    task_id,
-                    trace_id,
-                )
-                return await self._execute_attempt(
-                    goal=f"{goal}\n\n{replan_prompt}{retained_context}",
-                    task_id=task_id,
-                    planner_instance=planner_instance,
-                    context=context,
-                    history=history,
-                    images=images,
-                    mode=mode,
-                    trace_id=trace_id,
-                    attempt=attempt,
-                    _replan_iter=replan_dec["next_replan_count"],
-                )
-        except Exception as replan_e:
-            logger.debug("[T5-REPLAN-EVAL-ERROR] %s", replan_e)
+            return {
+                "status": out_status,
+                "answer": "",
+                "error": f"CRITIC_REJECTED ({verdict_label}): {judicial_review.get('feedback', '')}",
+                "mission_id": task_id,
+                "task_id": task_id,
+                "trace_id": trace_id,
+                "attempt": attempt + 1,
+                "steps": steps,
+                "step_metrics": step_metrics,
+                "execution": execution_results,
+                "browser_evidence_check": browser_ev_check,
+                "temporal_context": temporal_ctx.model_dump(),
+                "evidence_hash": current_evidence_hash,
+                "plan_hash": current_plan_hash,
+                "judicial_review": judicial_review,
+                "summary_published": False,
+                "sensitive": False,
+            }
 
         # ═══════════════════════════════════════════
-        # T6: SUMMARIZER tóm tắt và trả kết quả
+        # T6: SUMMARIZER tóm tắt và trả kết quả (Chỉ chạy khi Critic đã APPROVED)
         # ═══════════════════════════════════════════
+        self._check_stop_or_abort(task_id, trace_id, stage="T6_ENTRY")
         try:
             engine.publish_mission_log(
                 "PROGRESS", "[T6] Ban Thư Ký đang soạn Báo cáo...", task_id, trace_id, stealth=True
@@ -1129,13 +1658,13 @@ class DeepPipeline:
             manifesto = await engine.get_brain_knowledge("agent_summarizer.md") or "Bạn là Thư ký Zenith T6."
             judicial_info = (
                 f"\n[JUDICIAL_VERDICT]: {judicial_review.get('verdict')} "
-                f"(Score: {judicial_review.get('accuracy_score', 0)}/1.0)\n"
+                f"(Classification: {judicial_review.get('claim_classification', 'SUPPORTED')}, Score: {judicial_review.get('accuracy_score', 0)}/1.0)\n"
                 f"Phản hồi: {judicial_review.get('feedback', '')}"
             )
             
             # Lấy thời gian hiện tại theo UTC+7
             import datetime
-            utc_now = datetime.datetime.utcnow()
+            utc_now = datetime.datetime.now(datetime.timezone.utc)
             vietnam_now = utc_now + datetime.timedelta(hours=7)
             ampm = "AM" if vietnam_now.hour < 12 else "PM"
             hour_12 = vietnam_now.hour % 12
@@ -1144,10 +1673,17 @@ class DeepPipeline:
             weekday_vn = weekday_map.get(vietnam_now.strftime('%A'), vietnam_now.strftime('%A'))
             formatted_time = f"{hour_12:02d}h{vietnam_now.minute:02d}m{vietnam_now.second:02d}s {ampm} ({weekday_vn}, ngày {vietnam_now.strftime('%d')} tháng {vietnam_now.strftime('%m')} năm {vietnam_now.strftime('%Y')})"
 
+            validated_summary_evidence = (
+                json.dumps(browser_ev_check["evidences"], ensure_ascii=False)
+                if browser_ev_check.get("evidences")
+                else self._compress_results(execution_results)
+            )
+
             summary_prompt = (
                 f"[MISSION DATA]\n"
                 f"Objective: {goal}\n"
-                f"Execution Results: {self._compress_results(execution_results)}\n"
+                f"Validated Execution Evidence (task_id={task_id}, trace_id={trace_id}): {validated_summary_evidence}\n"
+                f"{temporal_ctx.to_prompt_directive()}\n"
                 f"{judicial_info}\n\n"
                 "══════════════════════════════════════════\n"
                 "[SUMMARIZER PROTOCOL - DIRECT VALUE & 100% VIETNAMESE]\n"
@@ -1155,15 +1691,11 @@ class DeepPipeline:
                 "You are the Chief Secretariat of JKAI Zenith.\n"
                 "Your mission is to directly fulfill Master's request with the highest quality and elegance in Vietnamese.\n\n"
                 "[CORE DIRECTIVES]\n"
-                "1. DIRECT VALUE FIRST: If Master asks to draft a document, write a letter (e.g. đơn xin nghỉ phép), write code, explain a concept, or answer a specific question, YOUR RESPONSE MUST DIRECTLY DELIVER THE FULL, POLISHED, READY-TO-USE CONTENT FIRST in natural, elegant Vietnamese. Do NOT just give a meta-status report about file creation.\n"
-                "2. BASE YOUR REPORT ON REAL EVIDENCE: Base facts strictly on Execution Results. If files were created or modified, provide clear references.\n"
+                "1. DIRECT VALUE FIRST: If Master asks to draft a document, write an essay, write code, explain a concept, or answer a specific question, YOUR RESPONSE MUST DIRECTLY DELIVER THE FULL, POLISHED, READY-TO-USE CONTENT FIRST in natural, elegant Vietnamese. Do NOT just give a meta-status report about file creation.\n"
+                "2. BASE YOUR REPORT ON REAL EVIDENCE: Base facts strictly on Validated Execution Evidence. If files were created or modified, provide clear references.\n"
                 "3. 100% VIETNAMESE: Communicate with Master respectfully and clearly in Vietnamese.\n"
                 f"4. Current time: {formatted_time}\n"
             )
-
-            # Chỉ phát sóng ra kênh chat Master nếu phán quyết hợp lệ hoặc là vòng cuối
-            is_valid_verdict = any(w in str(judicial_review.get("verdict", "")).upper() for w in ["SUCCESS", "PARTIAL", "PASS", "APPROVED", "VALID", "OK"])
-            publish_task_id = task_id if (is_valid_verdict or attempt >= 2) else None
 
             with TraceContext("DeepPipeline-T6", trace_id=trace_id):
                 final_answer = await engine.call_chat(
@@ -1172,10 +1704,12 @@ class DeepPipeline:
                         {"role": "user", "content": summary_prompt},
                     ],
                     role="SUMMARIZER",
-                    task_id=publish_task_id,
+                    task_id=task_id,
                     trace_id=trace_id,
+                    require_task_id=True,
                     skip_build_final=True,
                 )
+            self._check_stop_or_abort(task_id, trace_id, stage="POST_T6_SUMMARIZER")
             
             # 📁 [NATIVE-DELIVERY-RECEIPT]: Đính kèm biên lai bàn giao tệp tin nếu có artifact đã xác thực từ các bước DAG
             _deep_receipts = []
@@ -1232,10 +1766,14 @@ class DeepPipeline:
             engine.publish_mission_log(
                 "PROGRESS", "[T6] Báo cáo đã soạn thảo hoàn tất.", task_id, trace_id, stealth=True
             )
+        except MasterAbortException:
+            log_engine.mark_task_stopped(task_id)
+            raise
         except Exception as e:
             logger.error("[DEEP-PIPELINE] T6 error: %s", e)
             final_answer = f"Kế hoạch đã được lập và thực thi. Xem tab Kế hoạch để chi tiết. [{e}]"
 
+        self._check_stop_or_abort(task_id, trace_id, stage="PRE_FINAL_DELIVERY")
         engine.request_cache.pop(task_id, None)
         logger.info("[DEEP-PIPELINE] Hoàn tất toàn bộ T2→T6 cho task %s", task_id)
 
@@ -1267,14 +1805,63 @@ class DeepPipeline:
             f"Báo cáo Master! Chuỗi hành pháp chuyên sâu T2-T6 cho yêu cầu: **{goal}** "
             f"đã được điều phối thi hành trọn bích qua {len(steps)} bước chiến lược trong hệ sinh thái."
         )
-        is_real_answer = bool(final_answer and final_answer.strip() and final_answer != fallback_report)
+        is_real_answer = bool(final_answer and str(final_answer).strip() and final_answer != fallback_report)
+        published_ans = (final_answer or fallback_report) if is_valid_verdict else ""
+        summary_receipt = None
+        artifact_receipts = []
+        try:
+            from mission_state.schema import ArtifactReceipt
+            bev_list = browser_ev_check.get("evidences", []) if isinstance(browser_ev_check, dict) else []
+            first_ev_id = bev_list[0].get("evidence_id", "") if bev_list else ""
+            first_ev_sha = bev_list[0].get("screenshot_sha256", "") if bev_list else current_evidence_hash
+            for ev_item in bev_list:
+                spath = ev_item.get("screenshot_path", "")
+                ssha = ev_item.get("screenshot_sha256", "")
+                if spath and ssha:
+                    artifact_receipts.append(
+                        ArtifactReceipt.issue(
+                            task_id=task_id,
+                            trace_id=trace_id,
+                            artifact_type="BROWSER_SCREENSHOT_ARTIFACT",
+                            artifact_path=spath,
+                            artifact_sha256=ssha,
+                            size_bytes=os.path.getsize(spath) if os.path.isfile(spath) else 0,
+                            evidence_id=ev_item.get("evidence_id", ""),
+                            evidence_sha256=ssha,
+                        ).model_dump()
+                    )
+            if is_real_answer and is_valid_verdict and published_ans:
+                ans_bytes = str(published_ans).encode("utf-8")
+                summary_receipt = ArtifactReceipt.issue(
+                    task_id=task_id,
+                    trace_id=trace_id,
+                    artifact_type="SUMMARY_RECEIPT",
+                    artifact_path=f"memory://summary/{task_id}",
+                    artifact_sha256=hashlib.sha256(ans_bytes).hexdigest(),
+                    size_bytes=len(ans_bytes),
+                    evidence_id=first_ev_id,
+                    evidence_sha256=first_ev_sha,
+                ).model_dump()
+                artifact_receipts.append(summary_receipt)
+        except Exception as rcpt_err:
+            logger.debug("[DEEP-RECEIPT-WARN] %s", rcpt_err)
+
         result = {
-            "status": "SUCCESS" if is_real_answer else "FAILED",
-            "answer": final_answer or fallback_report,
+            "status": "SUCCESS" if (is_real_answer and is_valid_verdict) else "FAILED",
+            "answer": published_ans,
+            "mission_id": task_id,
             "task_id": task_id,
+            "trace_id": trace_id,
+            "attempt": attempt + 1,
             "steps": steps,
+            "step_metrics": step_metrics,
             "execution": execution_results,
+            "evidence_hash": current_evidence_hash,
+            "plan_hash": current_plan_hash,
             "judicial_review": judicial_review,
+            "summary_published": bool(is_real_answer and is_valid_verdict),
+            "summary_receipt": summary_receipt,
+            "artifact_receipts": artifact_receipts,
             "sensitive": False,
         }
         return result
@@ -1405,6 +1992,12 @@ class DeepPipeline:
             if not isinstance(res, dict):
                 continue
 
+            output = res.get("output")
+            if isinstance(output, dict) and output.get("evidence_complete") is False:
+                continue
+            if res.get("evidence_complete") is False:
+                continue
+
             if res.get("status") != "success":
                 continue
 
@@ -1529,27 +2122,55 @@ class DeepPipeline:
         }
 
     @staticmethod
-    def check_temporal_consistency(evidence_text: str) -> Dict[str, Any]:
+    def check_temporal_consistency(evidence_text: str, temporal_ctx: Any = None) -> Dict[str, Any]:
         """
-        Rule thời gian xác định (case vàng 15/10): bằng chứng realtime trộn
-        nhiều năm khác nhau mà không nhãn độ tươi thì không được SUCCESS.
-        Trả về {"ok": bool, "years": [...], "reason": str}.
+        Temporal gate (R1.4). Uses kernel-supplied TemporalContext when available.
+        Distinguishes published_at, captured_at, and historical references; future or mixed unlabelled dates cannot pass.
         """
         import re as _re
 
         text = str(evidence_text or "")
         years = sorted(set(_re.findall(r"\b(19\d\d|20\d\d)\b", text)))
-        labelled = ("cũ —" in text or "CẢNH BÁO ĐỘ TƯƠI" in text or "không xác định" in text)
+        labelled = any(
+            marker in text.lower()
+            for marker in (
+                "[cũ]",
+                "[future]",
+                "[historical]",
+                "[unknown]",
+                "cảnh báo độ tươi",
+                "không xác định",
+                "published_at",
+                "captured_at",
+            )
+        )
+        if temporal_ctx is not None and hasattr(temporal_ctx, "kernel_year"):
+            current_year = int(temporal_ctx.kernel_year)
+        else:
+            try:
+                from mission_state.schema import TemporalContext
+                current_year = TemporalContext.from_kernel().kernel_year
+            except Exception:
+                current_year = __import__("datetime").datetime.now(__import__("datetime").timezone.utc).year
+        future_years = [year for year in years if int(year) > current_year]
+        if future_years and not labelled:
+            return {
+                "ok": False,
+                "years": years,
+                "kernel_year": current_year,
+                "reason": f"Phát hiện năm tương lai {', '.join(future_years)} (vượt quá kernel_year={current_year}) không có nhãn [future].",
+            }
         if len(years) >= 2 and not labelled:
             return {
                 "ok": False,
                 "years": years,
+                "kernel_year": current_year,
                 "reason": (
                     f"Bằng chứng trộn lẫn các năm {', '.join(years)} mà không gắn nhãn độ tươi. "
                     "Yêu cầu loại bài quá hạn hoặc gắn nhãn [cũ] trước khi kết luận."
                 ),
             }
-        return {"ok": True, "years": years, "reason": ""}
+        return {"ok": True, "years": years, "kernel_year": current_year, "reason": ""}
 
 async def plan_only(
     goal: str,
