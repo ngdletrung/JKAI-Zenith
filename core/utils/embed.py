@@ -4,6 +4,7 @@ import re
 import asyncio
 from typing import List, Optional
 from core.utils.model_router import ModelRouter
+from core.knowledge_sources.cache import cache_layer
 
 class Embedder:
     _instance = None
@@ -24,9 +25,13 @@ class Embedder:
         self._router = ModelRouter(self.rules_path)
         self._rules_cache = None
         self._rules_last_mtime = 0
-        self._embedding_cache = {}  # 🧠 [NEURAL-CACHE]: Lưu trữ vector để tránh tính toán trùng lặp
-        self._max_cache_size = 1000
         self._semaphore = asyncio.Semaphore(30)  # 🛡️ [CONCURRENCY-GUARD]: Giới hạn 30 luồng embedding song song thưa Master
+
+    @staticmethod
+    def _cache_key(model: str, text: str) -> str:
+        # Model-qualified full-text key; CacheLayer hashes it with SHA-256.
+        # Truncating the text (e.g. text[:200]) silently collides vectors across documents.
+        return f"{model}\x00{text}"
         
     def _get_rules_from_file(self):
         """Elite Logic: Trích xuất thông tin từ rule_hardware.md thông qua ModelRouter."""
@@ -90,15 +95,16 @@ class Embedder:
 
     async def get_embedding_async(self, text: str, model: str = None) -> Optional[List[float]]:
         if not text: return None
-        
-        # 🧠 [CACHE-CHECK]
-        cache_key = f"{model}:{text[:200]}"
-        if cache_key in self._embedding_cache:
-            return self._embedding_cache[cache_key]
+
+        rules = self._get_rules_from_file()
+        target_model = model or rules["model"]
+        cache_key = self._cache_key(target_model, text)
+        # Redis access is sync; keep it off the event loop.
+        cached = await asyncio.to_thread(cache_layer.get_embedding, cache_key)
+        if cached is not None:
+            return cached
 
         async with self._semaphore:  # 🛡️ [CONCURRENCY-CONTROL]
-            rules = self._get_rules_from_file()
-            target_model = model or rules["model"]
             opts = self._get_options(rules)
             
             # ✂️ [NEURAL-CHUNKING]: Tự động chia nhỏ văn bản nếu quá dài (Tránh lỗi 500 Ollama)
@@ -130,12 +136,7 @@ class Embedder:
                 res_vec = await self._call_ollama_embed(text, target_model, opts)
 
             if res_vec:
-                if len(self._embedding_cache) >= self._max_cache_size:
-                    # Xóa bớt 20% cache cũ khi đầy
-                    del_keys = list(self._embedding_cache.keys())[:int(self._max_cache_size * 0.2)]
-                    for k in del_keys:
-                        self._embedding_cache.pop(k, None)
-                self._embedding_cache[cache_key] = res_vec
+                await asyncio.to_thread(cache_layer.set_embedding, cache_key, res_vec)
             return res_vec
 
     async def _call_ollama_embed(self, text: str, model: str, opts: dict) -> Optional[List[float]]:
@@ -170,16 +171,15 @@ class Embedder:
     def get_embedding(self, text: str) -> Optional[List[float]]:
         """Lấy vector tri thức (Sync - Dùng cho các service truyền thống)."""
         if not text: return None
-        
-        # 🧠 [CACHE-CHECK]
-        cache_key = f"default:{text[:200]}"
-        if cache_key in self._embedding_cache:
-            return self._embedding_cache[cache_key]
 
         rules = self._get_rules_from_file()
         opts = self._get_options(rules)
         target_model = rules["model"]
-        
+        cache_key = self._cache_key(target_model, text)
+        cached = cache_layer.get_embedding(cache_key)
+        if cached is not None:
+            return cached
+
         MAX_CHARS = 4000
         if len(text) > MAX_CHARS:
             chunks = [text[i:i+MAX_CHARS] for i in range(0, len(text), MAX_CHARS)]
@@ -200,9 +200,13 @@ class Embedder:
             for i in range(dim):
                 mean_vector[i] /= count
                 
-            return mean_vector
+            res_vec = mean_vector
         else:
-            return self._call_ollama_embed_sync(text, target_model, opts)
+            res_vec = self._call_ollama_embed_sync(text, target_model, opts)
+
+        if res_vec:
+            cache_layer.set_embedding(cache_key, res_vec)
+        return res_vec
 
     def _call_ollama_embed_sync(self, text: str, model: str, opts: dict) -> Optional[List[float]]:
         import time

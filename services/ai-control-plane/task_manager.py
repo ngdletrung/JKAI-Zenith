@@ -983,9 +983,33 @@ class TaskManager:
                 jr_payload["model_override"] = "gemini-1.5-pro"
 
             jr = await self.router.route_to_judicial_review(jr_payload)
-            
+
             async with w_lock:
                 core.apply_event("REFLECTED", actor="JUDICIAL_BOARD", payload=jr)
+
+            # [C31]: Phán quyết tư pháp là cổng chặn, không chỉ là báo cáo.
+            from core.os.cognition.judicial_gate import classify_judicial_outcome, STOP, PARTIAL
+            _judicial_action = classify_judicial_outcome(jr)
+            if _judicial_action in (STOP, PARTIAL):
+                try:
+                    from core.telemetry.system_counters import system_counters
+                    system_counters.bump("judicial", _judicial_action)
+                except Exception:
+                    pass
+
+            if _judicial_action == STOP:
+                _jr_feedback = jr.get("feedback", "không có bằng chứng thực thi") if isinstance(jr, dict) else "phán quyết không hợp lệ"
+                async with w_lock:
+                    core.transition(TaskState.FAILED, actor="JUDICIAL_BOARD",
+                                    reason=f"Thẩm định tư pháp không có bằng chứng: {_jr_feedback}")
+                self._log("ERROR", f"⛔ [JUDICIAL-STOP]: Mission dừng — {_jr_feedback}", tid, trid)
+                return {"status": "failed", "task_id": tid, "judicial_review": jr,
+                        "answer": f"Mission dừng vì không có bằng chứng thực thi: {_jr_feedback}"}
+
+            if _judicial_action == PARTIAL:
+                self._log("WARN", f"⚠️ [JUDICIAL-PARTIAL]: {jr.get('accuracy_score')} — {jr.get('feedback', '')}", tid, trid)
+
+            async with w_lock:
                 core.transition(TaskState.VERIFIED, actor="CORPORATE_BOARD", reason="Báo cáo kiểm toán chất lượng công vụ được Ban Thư ký phê duyệt.")
 
             # T6: Thu hoạch Tri thức

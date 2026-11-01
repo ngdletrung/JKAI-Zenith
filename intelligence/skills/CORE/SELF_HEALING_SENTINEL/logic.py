@@ -23,15 +23,15 @@ class SelfHealing:
                 "ai-executor": f"{registry.get_service_url('executor').rstrip('/')}/health",
                 "ai-control-plane": f"{registry.get_service_url('control_plane').rstrip('/')}/health",
                 "ai-browser": os.getenv("AI_BROWSER_URL", "http://ai-browser:8000/health"),
-                "mission-control": os.getenv("MISSION_CONTROL_URL", "http://mission-control:5173")
+                "mission-control": os.getenv("MISSION_CONTROL_URL", "http://mission-control:9998/api/ping")
             }
         except Exception:
             self.SERVICES_MAP = {
                 "ai-brain": "http://ai-brain:8000/health",
-                "ai-executor": "http://ai-executor:8000/health",
+                "ai-executor": "http://ai-executor-1:8000/health",
                 "ai-control-plane": "http://ai-control-plane:8000/health",
                 "ai-browser": "http://ai-browser:8000/health",
-                "mission-control": "http://mission-control:5173"
+                "mission-control": "http://mission-control:9998/api/ping"
             }
 
         # 🧠 [NEURAL-INTEGRATION]: Ket noi voi Bo nao va Do thi thua Master

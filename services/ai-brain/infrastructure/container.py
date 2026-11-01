@@ -30,13 +30,11 @@ class ServiceContainer:
         from receptionist.auth_interceptor import AuthInterceptor
         from receptionist.command_router import CommandRouter
         from receptionist.memory_gateway import MemoryGateway
-        from receptionist.planner_gateway import PlannerGateway
         from receptionist.executor_gateway import ExecutorGateway
         
         self.auth_interceptor = AuthInterceptor(self.redis_conn)
         self.command_router = CommandRouter(self.redis_conn, self.http_client)
         self.memory_gateway = MemoryGateway(self.redis_conn)
-        self.planner_gateway = PlannerGateway(self.http_client)
         self.executor_gateway = ExecutorGateway(self.http_client)
 
     async def close(self):

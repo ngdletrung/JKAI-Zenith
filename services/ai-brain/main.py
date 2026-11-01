@@ -137,8 +137,21 @@ async def startup_event():
         except Exception as amg_err:
             logger.warning("[AMG-DISCOVERY-ERR] Failed to discover models on startup: %s", amg_err)
 
+        # Embedding warmup is independent of model summoning: a slow or failing
+        # model warmup must not prevent the vector cache from being primed.
+        async def _embed_warmup_task():
+            try:
+                from runtime.warmup_manager import hot_file_paths, warm_hot_embeddings
+                paths = hot_file_paths()
+                warmed = await asyncio.to_thread(warm_hot_embeddings, paths)
+                logger.info("[EMBED-WARMUP] %d/%d hot file(s) cached.", warmed, len(paths))
+            except Exception as embed_warm_err:
+                logger.warning("[EMBED-WARMUP-ERR] %s", embed_warm_err)
+
+        asyncio.create_task(_embed_warmup_task())
+
         await engine.warmup_all_models()
-        
+
         #  [STARTUP-SYNC]: Tự động đồng bộ hóa toàn diện khi khởi động thưa Master
         try:
             from core.tools.sync_pipeline import run_sync_pipeline
@@ -472,6 +485,123 @@ async def stop_task():
     redis_safe(lambda r: r.set("agent:stop_signal", "true", ex=60))
     return {"status": "ok", "msg": "Hệ thống đang ngắt mạch nơ-ron thưa Master!"}
 
+_warmup_lock = asyncio.Lock()
+
+@app.post('/warmup')
+async def warmup_cache():
+    """Prime the shared embedding cache and report the real number of warmed files."""
+    async with _warmup_lock:
+        try:
+            from runtime.warmup_manager import warmup_report
+            report = await asyncio.to_thread(warmup_report)
+        except Exception as e:
+            logger.error("[WARMUP-ERR] %s", e)
+            return {"status": "error", "warmed": 0, "msg": str(e)}
+    _publish_log(
+        "SYSTEM",
+        f"[WARMUP] Đã nạp {report['warmed']}/{report['total']} tệp tri thức nóng vào bộ nhớ đệm.",
+    )
+    return report
+
+@app.get('/cache/stats')
+async def cache_statistics():
+    """Cache effectiveness summed across every ai-brain worker that reported recently."""
+    try:
+        from core.knowledge_sources.cache import cache_layer
+        report = cache_layer.aggregate_stats()
+        return {
+            "status": "ok",
+            "stats": report["aggregate"],
+            "local": report["local"],
+            "workers": report["workers"],
+            "pid": report["pid"],
+            "ttl": report["ttl"],
+        }
+    except Exception as e:
+        logger.error("[CACHE-STATS-ERR] %s", e)
+        return {"status": "error", "msg": str(e)}
+
+@app.get('/firewall/stats')
+async def firewall_statistics():
+    """Semantic firewall activity summed across workers, plus the cognitive counters it feeds."""
+    try:
+        from telemetry.metrics import cognitive_metrics
+        report = semantic_firewall.aggregate_stats()
+        return {"status": "ok", "stats": report["aggregate"], "local": report["local"],
+                "pid": report["pid"], "source": report["source"],
+                "cognitive_local": cognitive_metrics.snapshot()}
+    except Exception as e:
+        logger.error("[FIREWALL-STATS-ERR] %s", e)
+        return {"status": "error", "msg": str(e)}
+
+
+def _record_critic_decision(outcome: str) -> None:
+    """Critic la cong chat luong duy nhat cua cau tra loi; phan quyet phai dem duoc."""
+    try:
+        from telemetry.metrics import cognitive_metrics
+        from core.telemetry.system_counters import system_counters
+        cognitive_metrics.record_critic_decision(outcome)
+        system_counters.bump("critic", outcome)
+    except Exception:
+        pass
+
+
+@app.get('/critic/stats')
+async def critic_statistics():
+    """Critic audit outcomes summed across workers."""
+    try:
+        from telemetry.metrics import cognitive_metrics
+        from core.telemetry.system_counters import system_counters
+        report = system_counters.read("critic")
+        return {"status": "ok", "source": report["source"], "stats": report["counters"],
+                "local": cognitive_metrics.snapshot()["critic_decisions"], "pid": os.getpid()}
+    except Exception as e:
+        logger.error("[CRITIC-STATS-ERR] %s", e)
+        return {"status": "error", "msg": str(e)}
+
+
+@app.get('/judicial/stats')
+async def judicial_statistics():
+    """Judicial gate outcomes (stop/partial) recorded by ai-control-plane."""
+    try:
+        from core.telemetry.system_counters import system_counters
+        report = system_counters.read("judicial")
+        return {"status": "ok", "source": report["source"], "stats": report["counters"],
+                "pid": os.getpid()}
+    except Exception as e:
+        logger.error("[JUDICIAL-STATS-ERR] %s", e)
+        return {"status": "error", "msg": str(e)}
+
+_assimilate_busy = False
+
+@app.post('/assimilate')
+async def assimilate_intel():
+    """Run the knowledge sync pipeline on demand (same pipeline as the Import watcher)."""
+    global _assimilate_busy
+    if _assimilate_busy:
+        return {"ok": False, "status": "already_running"}
+
+    _assimilate_busy = True
+
+    async def _run_assimilation():
+        global _assimilate_busy
+        try:
+            from core.tools.sync_pipeline import run_sync_pipeline
+            result = await run_sync_pipeline("manual_import")
+            _publish_log(
+                "ZENITH",
+                f"[ASSIMILATE] Hoàn tất: {result.get('ok', 0)}/{result.get('total', 0)} phases OK.",
+            )
+        except Exception as e:
+            logger.error("[ASSIMILATE-ERR] %s", e)
+            _publish_log("SYSTEM", f"[ASSIMILATE-ERR]: {e}")
+        finally:
+            _assimilate_busy = False
+
+    asyncio.ensure_future(_run_assimilation())
+    _publish_log("ZENITH", "[ASSIMILATE] Đồng hóa tri thức mới được kích hoạt thưa Master.")
+    return {"ok": True, "status": "started"}
+
 @app.post('/plan')
 async def plan_task(request: Request):
     data = await _safe_get_json(request)
@@ -504,8 +634,7 @@ async def plan_task(request: Request):
         return {"steps": [], "ambiguous": False, "error": str(e)}
 
 @app.post('/review')
-async def review_plan(request: Request):
-    data = await request.json()
+async def review_plan(data: dict):
     sync_hlc_from_payload(data)
     try:
         return await critic.review_plan(data.get('goal', ''), data.get('steps', []))
@@ -514,58 +643,27 @@ async def review_plan(request: Request):
         return {"approved": False, "error": str(e), "feedback": f"CRITIC_FAIL_CLOSED: Lỗi thẩm định kế hoạch: {str(e)}"}
 
 @app.post('/review_execution')
-async def review_execution_endpoint(request: Request):
+async def review_execution_endpoint(data: dict):
     """
     [JUDICIAL-REVIEW-ENDPOINT]: Thẩm định kết quả thực thi công vụ (T5 Judicial Review).
-    Kiểm tra bằng chứng thực tế, trả về FAIL nếu không có bằng chứng hợp lệ (Fail-closed).
+    Chỉ PASS khi mọi bước thực sự trả về dữ liệu; thiếu bằng chứng thì FAIL.
     """
-    data = await request.json()
     sync_hlc_from_payload(data)
-    results = data.get("results", {})
-    task_id = data.get("task_id", "unknown")
-
-    # Kiểm tra bằng chứng thực thi
-    if not results:
-        return {
-            "verdict": "FAIL",
-            "passed": False,
-            "accuracy_score": 0.0,
-            "feedback": "Executor produced no valid evidence.",
-        }
-
-    has_error = False
-    if isinstance(results, list):
-        for r in results:
-            if isinstance(r, dict) and r.get("status") == "error":
-                has_error = True
-                break
-    elif isinstance(results, dict) and results.get("status") == "error":
-        has_error = True
-
-    if has_error:
-        return {
-            "verdict": "FAIL",
-            "passed": False,
-            "accuracy_score": 0.3,
-            "feedback": "Execution results contain recorded errors.",
-        }
-
-    return {
-        "verdict": "PASS",
-        "passed": True,
-        "accuracy_score": 0.95,
-        "feedback": "Judicial verification confirmed valid execution evidence.",
-    }
+    try:
+        from security.evidence_judge import judge_execution_evidence
+        return judge_execution_evidence(data.get("results", {}))
+    except Exception as e:
+        logger.error("[JUDICIAL-REVIEW-ERR] %s", e)
+        return {"verdict": "FAIL", "passed": False, "accuracy_score": 0.0,
+                "feedback": f"Judicial review failed closed: {e}"}
 
 @app.post('/dispatch')
-async def dispatch_task(request: Request):
-    data = await request.json()
+async def dispatch_task(data: dict):
     sync_hlc_from_payload(data)
     return await dispatcher_new.dispatch(data.get('goal', ''), data.get('task_id', 'sys'))
 
 @app.post('/summarize')
-async def summarize_task(request: Request):
-    data = await request.json()
+async def summarize_task(data: dict):
     sync_hlc_from_payload(data)
     role_cfg = engine.get_role_config('SUMMARIZER')
     steps_info = ""
@@ -589,8 +687,7 @@ async def summarize_task(request: Request):
     return {"type": "MISSION", "summary": response}
 
 @app.post('/memorize')
-async def memorize_conversation(request: Request):
-    data = await request.json()
+async def memorize_conversation(data: dict):
     goal, answer, task_id = data.get('goal', ''), data.get('answer', ''), data.get('task_id', 'mem')
     if len(goal) + len(answer) < 50: return {"status": "skipped"}
     try:
@@ -608,9 +705,8 @@ async def memorize_conversation(request: Request):
     return {"status": "error"}
 
 @app.post('/distill')
-async def distill_knowledge(request: Request):
+async def distill_knowledge(data: dict):
     """ [COGNITIVE-DISTILLATION]: Chắt lọc tri thức vào 12 Trụ cột thưa Master."""
-    data = await request.json()
     task_id = data.get('task_id', 'unknown')
     goal = data.get('goal', 'unknown')
     
@@ -624,11 +720,10 @@ async def distill_knowledge(request: Request):
         return {"status": "error", "reason": str(e)}
 
 @app.post('/distill_judicial')
-async def distill_judicial_endpoint(request: Request):
+async def distill_judicial_endpoint(data: dict):
     """
     [DISTILL-JUDICIAL-ENDPOINT]: Đúc kết bài học phán quyết tư pháp.
     """
-    data = await request.json()
     sync_hlc_from_payload(data)
     task_id = data.get("task_id", "unknown")
     jr = data.get("judicial_review", {})
@@ -817,10 +912,12 @@ async def receptionist_task(request: Request):
         # ️ 1. CRITIC ENFORCEMENT: Nếu bị từ chối và Critic đã sửa đổi câu trả lời, ép sử dụng ngay lập tức
         if not approved and corrected:
             _publish_log("ZENITH", "️ [CRITIC-ENFORCE]: Sử dụng trực tiếp câu trả lời đã chỉnh sửa của Hội đồng Thẩm định.")
+            _record_critic_decision("enforce")
             return normalize_and_format_answer(corrected)
             
         # ️ 2. FALLBACK RETRY: Nếu bị từ chối nhưng không có câu trả lời sửa sẵn, tiến hành chạy lại
         if not approved and action_plan and retry_count < 1:
+            _record_critic_decision("retry")
             _publish_log("WARN", f" [CRITIC-RETRY]: Critic từ chối. Retry với action_plan ({len(action_plan)} bước)...")
             # [P1-3]: I4 — original_goal immutable. Feedback truyền qua history,
             # KHÔNG nối [CRITIC-FEEDBACK] vào goal (state contamination).
@@ -856,9 +953,11 @@ async def receptionist_task(request: Request):
             has_sha = bool(re.search(r"\b[0-9a-fA-F]{16,64}\b", current_answer))
             if has_canary and has_sha and len(current_answer) > 150:
                 _publish_log("ZENITH", f"🛡️ [DETERMINISTIC-OVERRIDE]: Phản hồi chứa đủ mã Canary và SHA-256 thực chứng vật lý. Áp dụng triết lý HybridVerifier: Deterministic Gate ghi đè phán quyết Critic LLM.")
+                _record_critic_decision("deterministic_override")
                 return normalize_and_format_answer(current_answer)
 
             _publish_log("WARN", f"❌ [CRITIC-DOUBLE-REJECT]: Critic từ chối sau {retry_count + 1} lần thẩm định. Chặn giao phản hồi.")
+            _record_critic_decision("double_reject")
             try:
                 from core.kernel.error_signature import get_error_signature_engine
                 sig_engine = get_error_signature_engine()
@@ -875,6 +974,7 @@ async def receptionist_task(request: Request):
                 logger.debug(f"Error signature recording non-fatal: {sig_err}")
             return normalize_and_format_answer("CRITIC_DOUBLE_REJECT: khong giao cau tra loi")
 
+        _record_critic_decision("approve")
         return normalize_and_format_answer(corrected or current_answer)
     
     # Nếu là câu hỏi thường (không có từ khóa hành động/kiểm toán) và ở fast mode -> trả về ngay
@@ -901,16 +1001,14 @@ async def receptionist_task(request: Request):
     return {'status': 'ok', 'answer': final_answer}
 
 @app.post('/chat')
-async def chat_task(request: Request):
-    data = await request.json()
+async def chat_task(data: dict):
     sync_hlc_from_payload(data)
     role_cfg = engine.get_role_config('CHAT')
     response = await engine.call_chat(messages=data.get('messages', []), model=role_cfg.get('model'), lock_timeout=data.get('lock_timeout'))
     return {'status': 'ok', 'answer': response}
 
 @app.post('/stream')
-async def stream_chat(request: Request):
-    data = await request.json()
+async def stream_chat(data: dict):
     sync_hlc_from_payload(data)
     goal, task_id, role, history, images = data.get('goal', ''), data.get('task_id', 'stream'), data.get('role', 'RECEPTIONIST'), data.get('history', []), data.get('images', [])
 

@@ -77,12 +77,14 @@ class ServiceRouter:
             return {"steps": [], "ambiguous": False, "error": f"Planner unreachable: {e}"}
 
     async def route_to_brain_critic(self, data: dict):
+        # Fail-closed: an unreachable critic must never auto-approve a plan.
+        fallback = {"approved": False, "feedback": "Critic unavailable; plan not approved."}
         try:
             resp = await self._post_with_retry(f"{self.brain_url}/review", json=data)
-            return self._safe_json(resp, {"approved": True, "feedback": "Critic error, auto-approved."})
+            return self._safe_json(resp, fallback)
         except Exception as e:
             logger.error(f"[ROUTER] Critic failed: {e}")
-            return {"approved": True, "feedback": f"Critic error: {e}"}
+            return {"approved": False, "feedback": f"Critic error: {e}"}
 
     async def route_to_judicial_review(self, data: dict):
         try:

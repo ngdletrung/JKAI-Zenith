@@ -23,7 +23,14 @@ async def run_sync_pipeline(task_id: str = "sync_pipeline") -> dict:
     for i, phase in enumerate(PHASES):
         try:
             result = await _run_phase(phase, task_id)
-            phases_results[phase] = {"status": "ok", "result": result}
+            inner_status = (result or {}).get("status")
+            if inner_status in (None, "ok", "success"):
+                phase_status = "ok"
+            elif inner_status == "skipped":
+                phase_status = "skipped"
+            else:
+                phase_status = "error"
+            phases_results[phase] = {"status": phase_status, "result": result}
         except Exception as e:
             logger.error(f"[PIPELINE-ERR] Phase {phase}: {e}")
             phases_results[phase] = {"status": "error", "error": str(e)}
@@ -70,14 +77,11 @@ async def _run_phase(phase: str, task_id: str) -> dict:
 
     if phase == "rag_ingest":
         try:
-            import sys, os
-            root_dir = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-            if root_dir not in sys.path:
-                sys.path.insert(0, root_dir)
-                
-            from rag.ingest.ingest_cron import run_ingest
-            await run_ingest(task_id=task_id)
-            return {"status": "ok", "msg": "RAG ingest triggered"}
+            payload = await asyncio.to_thread(_post_rag_scan)
+            return {
+                "status": payload.get("status", "ok"),
+                "msg": payload.get("message", "RAG ingest triggered"),
+            }
         except Exception as e:
             return {"status": "skipped", "msg": f"RAG ingest unavailable: {e}"}
 
@@ -89,6 +93,17 @@ async def _run_phase(phase: str, task_id: str) -> dict:
         return await _flush_caches(task_id)
 
     return {"status": "error", "msg": f"Unknown phase: {phase}"}
+
+
+def _post_rag_scan(timeout: int = 300) -> dict:
+    """Trigger RAG ingest over HTTP; ai-brain has no /rag mount to import from."""
+    import json
+    import urllib.request
+
+    rag_url = os.getenv("RAG_API_URL", "http://rag-service:8000").rstrip("/")
+    req = urllib.request.Request(f"{rag_url}/ingest/scan", data=b"", method="POST")
+    with urllib.request.urlopen(req, timeout=timeout) as resp:
+        return json.loads(resp.read().decode("utf-8"))
 
 
 async def _flush_caches(task_id: str) -> dict:

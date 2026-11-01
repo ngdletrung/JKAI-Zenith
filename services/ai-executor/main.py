@@ -1,7 +1,7 @@
 import os
 import json
 import time
-from fastapi import FastAPI, Request
+from fastapi import FastAPI
 from executor import Executor
 
 app = FastAPI(title="JKAI Executor Service", version="31.0")
@@ -105,13 +105,12 @@ async def chat_endpoint(payload: dict):
     }
 
 @app.post("/v1/chat/completions")
-async def openai_completions(request: Request):
+async def openai_completions(payload: dict):
     """
     🌉 [OPENAI-PROXY]: Giao diện tương thích OpenAI cho các đặc vụ ngoại vi (như OpenHands).
     Tuân thủ nguyên tắc: Không set cứng model, gọi theo Role EXECUTOR.
     Tận dụng Smart Fallback của engine.py thưa Master.
     """
-    payload = await request.json()
     role_type = os.getenv("EXECUTOR_ROLE", "ALPHA")
     role = f"EXECUTOR_{role_type}"
     

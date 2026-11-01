@@ -327,6 +327,20 @@ class Receptionist:
         trace_id = kwargs.get("trace_id")
         max_turns = 10 if mode == "deep" else 3
         context = (history or []) + [{"role": "user", "content": step_goal}]
+
+        # [EXPLICIT-AUTHORITY]: The chat session owner registers its runtime authority here.
+        # ExecutorGateway is fail-closed when no contract/snapshot exists; admission stages
+        # register a stricter contract first, so this never overrides one.
+        try:
+            from core.kernel.task_contract_store import (
+                get_active_contract, get_policy_snapshot,
+                get_or_create_default_contract, get_or_create_policy_snapshot,
+            )
+            if get_active_contract(task_id) is None and get_policy_snapshot(task_id) is None:
+                get_or_create_default_contract(task_id)
+                get_or_create_policy_snapshot(task_id)
+        except Exception as authority_err:
+            logger.warning("[EXPLICIT-AUTHORITY] Default runtime authority registration failed: %s", authority_err)
         
         images = kwargs.get("images")
         if images:
@@ -582,6 +596,11 @@ class Receptionist:
                     hallucination_keywords = ["gia", "la", "dang", "hien tai", "theo", "cu the"]
                     if any(k in res_content.lower() for k in hallucination_keywords) and len(res_content) > 50:
                         self._log("GUARDRAIL", "HALLUCINATION-DETECTED: Model is trying to reply without grounding data. Intervening.", task_id, trace_id=trace_id)
+                        try:
+                            from telemetry.metrics import cognitive_metrics
+                            cognitive_metrics.record_hallucination()
+                        except Exception:
+                            pass
                         return "He thong khong tim thay du lieu thuc te de tra loi chinh xac yeu cau cua Ngai. Toi xin loi vi su bat tien nay thua Master."
                 
                 return res_content

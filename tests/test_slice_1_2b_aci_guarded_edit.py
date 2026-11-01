@@ -220,6 +220,7 @@ def run_20_case_aci_benchmark_with_timing_retry(
     return last_report
 
 
+@pytest.mark.perf
 def test_aci_20_case_static_benchmark():
     report = run_20_case_aci_benchmark_with_timing_retry(max_attempts=3, budget_ms=15.0)
     assert report["implemented"] is True, "analyze_python_aci_diagnostics not implemented in ast_code_auditor.py"

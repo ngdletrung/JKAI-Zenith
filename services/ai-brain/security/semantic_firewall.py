@@ -2,9 +2,11 @@
 SemanticFirewall v2 — Tường lửa ngữ nghĩa Production-grade
 Bao phủ 10+ attack pattern, có structured logging và audit trail.
 """
+import os
 import re
 import logging
-import time
+
+from core.telemetry.system_counters import system_counters
 
 logger = logging.getLogger("jkai.security.firewall")
 
@@ -72,6 +74,7 @@ class SemanticFirewall:
         Tra ve: {"safe": bool, "reason": str, "category": str}
         """
         self._total_scanned += 1
+        self._bump("total_scanned")
         lower = raw_input.lower()
 
         # 1. Jailbreak & Role Confusion
@@ -102,15 +105,51 @@ class SemanticFirewall:
         return {"safe": True, "category": None, "reason": None}
 
     def get_stats(self) -> dict:
-        """Tra ve thong ke hoat dong cua firewall."""
+        """Tra ve thong ke hoat dong cua firewall (pham vi worker hien tai)."""
         return {
             "total_scanned": self._total_scanned,
             "blocked_count": self._blocked_count,
             "block_rate": round(self._blocked_count / max(self._total_scanned, 1) * 100, 2),
         }
 
+    def aggregate_stats(self) -> dict:
+        """Thong ke toan he thong, khong phu thuoc worker nao dang tra loi.
+
+        Bo dem goc duoc cong don qua SystemCounters (source="redis"); khi Redis
+        khong san sang thi tra ve so lieu cua worker hien tai (source="local").
+        """
+        local = self.get_stats()
+        result = {
+            "pid": os.getpid(),
+            "source": "local",
+            "aggregate": dict(local),
+            "local": local,
+        }
+        data = system_counters.read("firewall")
+        if data["source"] != "redis":
+            return result
+
+        scanned = int(data["counters"].get("total_scanned", 0))
+        blocked = int(data["counters"].get("blocked_count", 0))
+        result["source"] = "redis"
+        result["aggregate"] = {
+            "total_scanned": scanned,
+            "blocked_count": blocked,
+            "block_rate": round(blocked / max(scanned, 1) * 100, 2),
+        }
+        return result
+
+    def _bump(self, field: str) -> None:
+        system_counters.bump("firewall", field)
+
     def _block(self, reason: str, category: str, raw_input: str) -> dict:
         self._blocked_count += 1
+        self._bump("blocked_count")
+        try:
+            from telemetry.metrics import cognitive_metrics
+            cognitive_metrics.record_semantic_hit()
+        except Exception:
+            pass
         logger.warning(
             "[FIREWALL-BLOCKED]: category=%s | reason=%s | input_preview='%s'",
             category, reason, raw_input[:80].replace("\n", " ")

@@ -15,11 +15,15 @@ logger = logging.getLogger("jkai.recovery.maintenance")
 
 
 class MaintenanceRunner:
-    """Tiến trình bảo trì hợp lệ duy nhất được cấp phép nhận Maintenance Grant."""
+    """Điểm duy nhất được cấp phép yêu cầu Kernel cấp Maintenance Grant."""
 
     @classmethod
-    def execute_maintenance_task(cls, task_name: str, target_file: str) -> Dict[str, Any]:
-        """Thực thi tác vụ bảo trì (ví dụ nén/xoay vòng file log)."""
+    def authorize_maintenance_task(cls, task_name: str, target_file: str) -> Dict[str, Any]:
+        """Xin grant và kiểm tra thẩm quyền cho một thao tác bảo trì.
+
+        Hàm này chỉ thẩm quyền, không thực thi file — nơi gọi phải tự thực hiện
+        sau khi được cho phép, để log không báo "đang chạy" khi chưa chạy gì.
+        """
         # Cấp token bảo trì hợp lệ 30s từ Kernel
         token = KernelGrantIssuer.issue_maintenance_grant(
             scope="audit_maintenance",
@@ -35,8 +39,8 @@ class MaintenanceRunner:
         )
 
         if check_res.get("allowed"):
-            logger.info("🛠️ [MAINTENANCE-RUNNER]: Executing '%s' on %s with verified grant.", task_name, target_file)
-            return {"success": True, "token_verified": True, "task": task_name}
-        else:
-            logger.warning("❌ [MAINTENANCE-REJECTED]: %s", check_res.get("reason"))
-            return {"success": False, "token_verified": False, "reason": check_res.get("reason")}
+            logger.info("🛠️ [MAINTENANCE-AUTHORISED]: '%s' on %s với grant hợp lệ.", task_name, target_file)
+            return {"authorized": True, "token_verified": True, "task": task_name}
+
+        logger.warning("❌ [MAINTENANCE-REJECTED]: %s", check_res.get("reason"))
+        return {"authorized": False, "token_verified": False, "reason": check_res.get("reason")}

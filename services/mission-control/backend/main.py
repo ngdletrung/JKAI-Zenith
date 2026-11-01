@@ -11,7 +11,7 @@ logger = logging.getLogger("main")
 from flask import Flask, send_from_directory, jsonify, request
 from flask_socketio import SocketIO, emit
 from api.tasks import bp as tasks_bp
-from mc_core.warmup import start_warmup_sequence
+from mc_core.warmup import acquire_action_slot, start_warmup_sequence
 from mc_core.redis_client import redis_safe
 
 from config import config
@@ -207,20 +207,23 @@ def get_live_hardware_pulse():
 
 
 
+_last_pubsub_pulse_ts = 0.0
+
 def hardware_pulse_broadcaster():
     """
-    Phat tin hieu nhip tim phan cung (CPU, RAM, GPU) near-realtime moi 0.5 giay toi Master UI.
-    - interval=0.5s: UI nhan update ~2 lan/giay (thay vi 0.67 lan/giay truoc day)
-    - host_bridge dung cpu_percent(interval=0.1) de do chinh xac thay vi cached value
+    Fallback broadcaster: Chỉ phát khi kênh Redis Pub/Sub bị mất kết nối quá 2.5s.
+    Ngăn chặn hoàn toàn hiện tượng xung đột packet kép (Double-Broadcaster Jitter).
     """
-    print("[JKAI] Hardware Pulse Broadcaster ONLINE (0.5s interval, near-realtime).", flush=True)
+    global _last_pubsub_pulse_ts
+    print("[JKAI] Hardware Pulse Fallback Watcher ONLINE.", flush=True)
     while True:
         try:
-            pulse_data = get_live_hardware_pulse()
-            socketio.emit("hardware_pulse", pulse_data)
-            time.sleep(0.5)
+            if time.time() - _last_pubsub_pulse_ts > 2.5:
+                pulse_data = get_live_hardware_pulse()
+                socketio.emit("hardware_pulse", pulse_data)
+            time.sleep(1.0)
         except Exception as e:
-            time.sleep(1)
+            time.sleep(2)
 
 # ====================== BACKGROUND: Redis ➜ SocketIO Bridge ======================
 def redis_log_broadcaster():
@@ -268,6 +271,8 @@ def redis_log_broadcaster():
                         data = json.loads(message['data'])
                         
                         if channel == "monitor:pulse_channel":
+                            global _last_pubsub_pulse_ts
+                            _last_pubsub_pulse_ts = time.time()
                             pulse_data = data.get("data", data)
                             socketio.emit("hardware_pulse", pulse_data)
                         elif channel == "monitor:file_edit_channel":
@@ -872,27 +877,42 @@ def trigger_action():
     elif action == 'set_rules':
         msg = "🛡️ **Operational Guard**: Karpathy's 4 Principles enforced across all neural layers."
     elif action == 'import_intel':
-        import requests as req
-        try:
-            r = req.post(f"{AI_BRAIN_URL}/assimilate", timeout=120)
-            if r.status_code == 200:
-                msg = "📥 **Intel Ingestion Authorized**: Quy trình đồng hóa tri thức đang diễn ra dưới sự giám sát của Master."
-            else:
-                msg = f"⚠️ **Assimilation Failed**: Bộ não AI phản hồi lỗi ({r.status_code})."
-        except Exception as e:
-            msg = f"❌ **Neural Link Error**: Không thể kết nối với bộ não AI ({str(e)})."
+        if not acquire_action_slot('import_intel', seconds=10):
+            msg = "⏳ **Assimilation Throttled**: Lệnh đồng hóa vừa được gửi, vui lòng chờ vài giây."
+        else:
+            import requests as req
+            try:
+                r = req.post(f"{AI_BRAIN_URL}/assimilate", timeout=120)
+                payload = r.json() if r.headers.get('content-type', '').startswith('application/json') else {}
+                if r.status_code == 200 and payload.get('status') == 'already_running':
+                    msg = "⏳ **Assimilation Busy**: Bộ não AI đang đồng hóa tri thức, yêu cầu trùng lặp đã được bỏ qua."
+                elif r.status_code == 200:
+                    msg = "📥 **Intel Ingestion Authorized**: Quy trình đồng hóa tri thức đang diễn ra dưới sự giám sát của Master."
+                else:
+                    msg = f"⚠️ **Assimilation Failed**: Bộ não AI phản hồi lỗi ({r.status_code})."
+            except Exception as e:
+                msg = f"❌ **Neural Link Error**: Không thể kết nối với bộ não AI ({str(e)})."
     elif action == 'generate_report':
         return generate_report()
     elif action == 'warmup':
-        import requests as req
-        try:
-            r = req.post(f"{AI_BRAIN_URL}/warmup", timeout=5)
-            if r.status_code == 200:
-                msg = "🚀 **Neural Warmup Initialized**: Toàn bộ quân đoàn nơ-ron đang được triệu hồi vào VRAM/RAM."
-            else:
-                msg = f"⚠️ **Warmup Failed**: AI Brain không phản hồi đúng ({r.status_code})."
-        except Exception as e:
-            msg = f"❌ **Link Failure**: Không thể gửi lệnh Warmup ({str(e)})."
+        if not acquire_action_slot('warmup', seconds=10):
+            msg = "⏳ **Warmup Throttled**: Lệnh warmup vừa được gửi, vui lòng chờ vài giây."
+        else:
+            import requests as req
+            try:
+                r = req.post(f"{AI_BRAIN_URL}/warmup", timeout=120)
+                payload = r.json() if r.headers.get('content-type', '').startswith('application/json') else {}
+                if r.status_code == 200 and payload.get('status') == 'ok':
+                    msg = (
+                        "🚀 **Neural Warmup Complete**: Đã nạp "
+                        f"{payload.get('warmed', 0)}/{payload.get('total', 0)} tệp tri thức nóng vào bộ nhớ đệm."
+                    )
+                elif r.status_code == 404:
+                    msg = "⚠️ **Warmup Unavailable**: Bộ não AI chưa mở endpoint /warmup (404)."
+                else:
+                    msg = f"⚠️ **Warmup Failed**: AI Brain phản hồi lỗi ({r.status_code})."
+            except Exception as e:
+                msg = f"❌ **Link Failure**: Không thể gửi lệnh Warmup ({str(e)})."
     elif action == 'clear_log_history':
         redis_safe(lambda r: r.delete("monitor:log_history"))
         msg = "🧹 **Neural Log Purged**. Nhật ký tiến trình đã được quét sạch."

@@ -35,7 +35,7 @@ def sync_nuclear():
     # --- GIAI ĐOẠN 2: GHI NHỚ ---
     try:
         logger.info("[STAGE 2] Đang nạp tri thức vào Ma trận RAG...")
-        resp_rag = requests.post(f"{RAG_URL}/ingest/intelligence", timeout=600)
+        resp_rag = requests.post(f"{RAG_URL}/ingest/scan", timeout=600)
         if resp_rag.status_code == 200:
             data = resp_rag.json()
             results.append(f"✅ Ghi nhớ: {data.get('message', 'Hoàn tất')}")

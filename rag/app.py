@@ -7,6 +7,11 @@ import hashlib
 import time
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
+
+try:
+    from ids import deterministic_point_id
+except ImportError:  # imported as rag.app from the repo root
+    from rag.ids import deterministic_point_id
 try:
     from qdrant_client import QdrantClient, AsyncQdrantClient
     from qdrant_client.http.models import VectorParams, Distance
@@ -551,7 +556,7 @@ async def ingest_text(req: IngestTextRequest):
         for i, (node, vector) in enumerate(zip(nodes, vectors)):
             if vector:
                 points.append({
-                    "id": abs(hash(node.get_content())) % 10**12,
+                    "id": deterministic_point_id(node.get_content(), i),
                     "vector": vector,
                     "payload": {
                         "text": node.get_content(),

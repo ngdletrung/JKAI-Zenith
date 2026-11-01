@@ -75,18 +75,19 @@ def test_p1_2_dispatcher_wires_skill_sunset_gate():
 
 
 def test_p1_3_review_execution_fails_closed_without_evidence():
-    """Kiểm tra endpoint /review_execution fail-closed khi không có kết quả hợp lệ."""
-    # Gọi trực tiếp logic thẩm định bằng chứng
-    payload_empty = {"goal": "test goal", "results": [], "task_id": "t1"}
-    
-    # Kết quả rỗng -> FAIL
-    has_evidence = bool(payload_empty.get("results"))
-    assert has_evidence is False
+    """Endpoint /review_execution phải fail-closed; thiếu bằng chứng cụ thể thì không được PASS.
 
-    # Kết quả có lỗi -> FAIL
-    payload_error = {"goal": "test goal", "results": [{"status": "error", "msg": "crash"}], "task_id": "t2"}
-    has_err = any(r.get("status") == "error" for r in payload_error["results"])
-    assert has_err is True
+    Bản cũ của test này chỉ assert trên biến cục bộ của chính nó nên không bao giờ
+    phát hiện endpoint đang trả PASS 0.95 cho payload không có bằng chứng.
+    """
+    from security.evidence_judge import judge_execution_evidence
+
+    assert judge_execution_evidence([])["verdict"] == "FAIL"
+    assert judge_execution_evidence({"goal": "test goal"})["verdict"] == "FAIL"
+    assert judge_execution_evidence([{"step": "S1"}])["verdict"] == "FAIL"
+    assert judge_execution_evidence([{"status": "success"}])["verdict"] == "FAIL"
+    assert judge_execution_evidence([{"status": "error", "msg": "crash"}])["verdict"] == "FAIL"
+    assert judge_execution_evidence([{"status": "success", "output": "file written"}])["verdict"] == "PASS"
 
 
 def test_p1_4_router_judicial_review_fails_closed_on_error():

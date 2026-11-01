@@ -23,7 +23,6 @@ load_dotenv()
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 MASTER_ID = int(os.getenv("MASTER_ID", "0"))
 CONTROL_PLANE_URL = os.getenv("AI_CONTROL_PLANE_URL", "http://ai-control-plane:8000")
-DASHBOARD_URL = "http://mission-control:5173"
 REDIS_HOST = os.getenv("REDIS_HOST", "redis-ai")
 REDIS_PASS = os.getenv("REDIS_PASSWORD")
 
