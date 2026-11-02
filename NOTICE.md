@@ -186,6 +186,100 @@ This project incorporates components from several third-party projects. Full lic
 
 ---
 
+### Agent-Desktop: Semantic Desktop Control (Apache License 2.0 / Vercel Labs)
+- **Project**: [agent-desktop](https://github.com/vercel-labs/agent-desktop)
+- **License**: [Apache-2.0.txt](file:///d:/Docker/JKAI/LICENSES/Apache-2.0.txt)
+- **Notice**: Copyright (c) Vercel Labs. Licensed under the Apache License 2.0.
+- **Assimilation scope**: The semantic UIA element-tree model with stable short refs, action-by-ref (never raw-coordinate) targeting, and read-only observe/stream separation are studied as research references and clean-room reimplemented in `services/ai_desktop/uia_tree_inspector.py`, `services/ai_desktop/semantic_action_ir.py` and `scripts/host_bridge.py`. Portions of the actionability preflight (`crates/core/src/actionability`), the three-state ref resolver (`crates/windows/src/tree/resolve/resolve_match.rs`) and the delivery-to-retry disposition (`crates/core/src/actions/delivery_semantics.rs`) are adapted into Python in `services/ai_desktop/actionability.py`, `services/ai_desktop/ref_resolution.py` and `services/ai_desktop/delivery_policy.py`. No Rust source, assets, or upstream trademark is used as a code identifier; runtime is 100% local.
+- **Lưu ý**: Bản quyền thuộc về Vercel Labs. Cấp phép theo Apache License 2.0. Mô hình cây phần tử UIA ngữ nghĩa với ref ngắn ổn định, thao tác theo ref thay vì toạ độ thô, và tách biệt luồng quan sát read-only được nghiên cứu và triển khai phòng sạch độc lập trong JKAI.
+
+### Windows-Use: Windows Accessibility Automation (MIT License / CursorTouch)
+- **Project**: [Windows-Use](https://github.com/CursorTouch/Windows-Use)
+- **License**: [MIT.txt](file:///d:/Docker/JKAI/LICENSES/MIT.txt)
+- **Notice**: Copyright (c) 2025 CursorTouch. Licensed under the MIT License.
+- **Assimilation scope**: The accessibility-tree-first observation model and control-pattern based actions (Invoke/Value/Text/Toggle) are studied and clean-room reimplemented in `services/ai_desktop/uia_tree_inspector.py`, `services/ai_desktop/semantic_action_ir.py` and `services/ai_desktop/semantic_action_dispatcher.py`. The UIA CacheRequest property/pattern selection is adapted into `services/ai_desktop/uia_cache.py`. Its PostHog telemetry module is never imported.
+- **Lưu ý**: Bản quyền thuộc về CursorTouch. Cấp phép theo MIT License. Mô hình quan sát dựa trên cây trợ năng và thao tác theo control pattern được nghiên cứu và triển khai phòng sạch.
+
+### UI-TARS: End-to-End GUI Agent (Apache License 2.0 / ByteDance)
+- **Project**: [UI-TARS](https://github.com/bytedance/UI-TARS)
+- **License**: [Apache-2.0.txt](file:///d:/Docker/JKAI/LICENSES/Apache-2.0.txt)
+- **Notice**: Copyright (c) ByteDance. Licensed under the Apache License 2.0.
+- **Assimilation scope**: The typed GUI action-space concept (click / type / key-combo / scroll / focus) and screenshot-grounded coordinate normalisation are studied as research references and clean-room reimplemented as `SemanticActionIR` in `services/ai_desktop/semantic_action_ir.py`. The smart-resize geometry helpers are adapted into `services/ai_desktop/image_geometry.py` and used by the OCR pixel guard in `services/ai_desktop/ocr_observer.py`. No model weights, datasets or inference code are vendored; no cloud inference endpoint is used.
+- **Lưu ý**: Bản quyền thuộc về ByteDance. Cấp phép theo Apache License 2.0. Khái niệm không gian hành động GUI có kiểu và chuẩn hoá toạ độ theo ảnh chụp được nghiên cứu và triển khai phòng sạch. Không kèm weights/dataset/mã nguồn upstream.
+
+### UI-TARS-desktop: Desktop Operator Shell (Apache License 2.0 / ByteDance)
+- **Project**: [UI-TARS-desktop](https://github.com/bytedance/UI-TARS-desktop)
+- **License**: [Apache-2.0.txt](file:///d:/Docker/JKAI/LICENSES/Apache-2.0.txt)
+- **Notice**: Copyright (c) ByteDance. Licensed under the Apache License 2.0.
+- **Assimilation scope**: The desktop-operator UI/telemetry separation (operator view versus actuator worker) and the short-lived session/lease concept for mutation authority are studied and clean-room reimplemented in `scripts/host_bridge.py` (read-only satellite on port 9997) and `scripts/host_mutation_server.py` (single mutation owner on port 9996). No upstream code is copied or bundled.
+- **Lưu ý**: Bản quyền thuộc về ByteDance. Cấp phép theo Apache License 2.0. Mô hình tách biệt giao diện vận hành và tiến trình thực thi, cùng khái niệm phiên/lease ngắn hạn cho thẩm quyền thay đổi, được nghiên cứu và triển khai phòng sạch.
+
+---
+
+## 🖱️ 2.1 DESKTOP OBSERVATION & NATIVE BINDINGS / QUAN SÁT DESKTOP & LIÊN KẾT NATIVE
+
+These components are **not redistributed** with JKAI; they are optional host-side
+dependencies resolved through the operator's Python environment or system
+installation. The machine-readable ledger is
+[config/security/third_party_manifest.json](file:///d:/Docker/JKAI/config/security/third_party_manifest.json)
+and the fail-closed verifier is
+[scripts/verify_third_party_licenses.py](file:///d:/Docker/JKAI/scripts/verify_third_party_licenses.py).
+*Các thành phần này **không được phân phối kèm** JKAI; chúng là phụ thuộc tuỳ chọn
+phía host, được cài qua môi trường Python hoặc hệ điều hành của người vận hành.*
+
+### Pillow (HPND License / Python Imaging Library)
+- **Project**: [Pillow](https://github.com/python-pillow/Pillow)
+- **License**: [HPND.txt](file:///d:/Docker/JKAI/LICENSES/HPND.txt)
+- **Notice**: Copyright (c) 1997-2011 Secret Labs AB, Copyright (c) 1995-2011 Fredrik Lundh and contributors, and the Pillow contributors. Licensed under the HPND (Python Imaging Library) license.
+- **Usage scope**: In-memory screen capture for the read-only OCR observation adapter (`services/ai_desktop/ocr_observer.py`). Captured pixels are never written to disk and never enter the mutation path.
+- **Lưu ý**: Bản quyền thuộc Secret Labs AB, Fredrik Lundh và các nhà đóng góp Pillow. Ảnh chụp vùng cửa sổ chỉ tồn tại trong bộ nhớ để OCR read-only, không ghi đĩa và không đi vào luồng thay đổi trạng thái.
+
+### pytesseract (Apache License 2.0)
+- **Project**: [pytesseract](https://github.com/madmaze/pytesseract)
+- **License**: [Apache-2.0.txt](file:///d:/Docker/JKAI/LICENSES/Apache-2.0.txt)
+- **Notice**: Copyright (c) the pytesseract contributors. Licensed under the Apache License 2.0.
+- **Usage scope**: Optional lazy import in `services/ai_desktop/ocr_observer.py`; absence degrades to an honest `OCR_UNAVAILABLE` status, never a silent fallback.
+- **Lưu ý**: Bản quyền thuộc các nhà đóng góp pytesseract. Import lazy; nếu thiếu thư viện, hệ thống báo `OCR_UNAVAILABLE` thay vì fallback âm thầm.
+
+### Tesseract OCR and tessdata eng (Apache License 2.0)
+- **Project**: [Tesseract OCR](https://github.com/tesseract-ocr/tesseract) / [tessdata_fast](https://github.com/tesseract-ocr/tessdata_fast)
+- **License**: [Apache-2.0.txt](file:///d:/Docker/JKAI/LICENSES/Apache-2.0.txt)
+- **Notice**: Copyright (c) the Tesseract OCR contributors. Licensed under the Apache License 2.0. Tesseract OCR and its `tessdata eng` language data are installed by the operator; JKAI never downloads binaries or language data at runtime.
+- **Lưu ý**: Bản quyền thuộc các nhà đóng góp Tesseract OCR. Bộ OCR và dữ liệu ngôn ngữ `tessdata eng` do người vận hành cài đặt; JKAI không tải xuống lúc chạy.
+
+### comtypes (MIT License)
+- **Project**: [comtypes](https://github.com/enthought/comtypes)
+- **License**: [MIT.txt](file:///d:/Docker/JKAI/LICENSES/MIT.txt)
+- **Notice**: Copyright (c) comtypes contributors. Licensed under the MIT License.
+- **Usage scope**: Host-side UIA3 COM binding used by the fail-closed click/scroll executors (`services/ai_desktop/uia_click_executor.py`, `uia_tree_inspector.py`). Never installed in containers.
+- **Lưu ý**: Bản quyền thuộc các nhà đóng góp comtypes. Chỉ dùng phía host cho UIA3 COM; không cài trong container.
+
+### pywin32 (PSF License)
+- **Project**: [pywin32](https://github.com/mhammond/pywin32)
+- **License**: [PSF-2.0.txt](file:///d:/Docker/JKAI/LICENSES/PSF-2.0.txt)
+- **Notice**: Copyright (c) 1994-2026 Python Software Foundation and pywin32 contributors. Licensed under the Python Software Foundation License.
+- **Usage scope**: Host-side Win32 APIs for HWND validation, PID resolution, and window messages. Never installed in containers.
+- **Lưu ý**: Bản quyền thuộc Python Software Foundation và các nhà đóng góp pywin32. Chỉ dùng phía host cho Win32 API; không cài trong container.
+
+### WindowsAgentArena (MIT License / Microsoft)
+- **Project**: [WindowsAgentArena](https://github.com/microsoft/WindowsAgentArena)
+- **License**: [MIT.txt](file:///d:/Docker/JKAI/LICENSES/MIT.txt)
+- **Notice**: Copyright (c) Microsoft Corporation. Licensed under the MIT License.
+- **Assimilation scope**: Only the isolated-VM scenario design and task-grading patterns informed `tests/live/live_e2e_isolated_desktop.py`. No upstream code, VM images, or task datasets are bundled.
+- **Lưu ý**: Bản quyền thuộc Microsoft Corporation. Chỉ học mẫu thiết kế kịch bản VM cô lập và cách chấm điểm; không kèm mã nguồn, image hay dataset.
+
+### Evaluated and not adopted / Đã đánh giá và không tích hợp
+
+- **PyAutoGUI (BSD-3-Clause)** — rejected for the control path: global coordinate-based input injection conflicts with JKAI's no-raw-coordinate mutation invariant.
+- **pywinauto (BSD-3-Clause)** — deferred: acceptable only as an independent test oracle; production control remains the fail-closed comtypes executor.
+- **Python-UIAutomation-for-Windows (Apache-2.0)** — deferred: a second UIA stack would duplicate the control path with no safety gain.
+- **mss (MIT)** — deferred: Pillow ImageGrab already owns capture.
+- **UI-TARS-desktop (Apache-2.0)** — deferred: model-weight license is unverified and the 8GB local GPU budget cannot host the reference models.
+- **OmniParser (repository MIT, icon_detect weights AGPL-3.0)** — rejected: AGPL-3.0 weights are incompatible with JKAI's MIT distribution.
+- **Lưu ý**: Các mục trên được ghi nhận trong manifest với trạng thái `deferred`/`rejected` kèm lý do; cổng kiểm tra sẽ chặn mọi nỗ lực đưa giấy phép bị cấm vào trạng thái `approved`.
+
+---
+
 ## 🧠 3. ARTIFICIAL INTELLIGENCE & DATA / TRÍ TUỆ NHÂN TẠO & DỮ LIỆU
 
 ### DeepSeek-V3 / R1 (MIT License)
@@ -252,6 +346,11 @@ To ensure legal compliance and avoid licensing risks when using or assimilating 
 4. **Protocol 4: Sovereign Refactoring & Non-Tampering (Tái cấu trúc độc lập, không vá tạm)**
    - Assimilate only the architectural essence into the JKAI Sovereign Substrate.
    - Do not directly copy-paste code with proprietary dependencies without abstraction.
+5. **Protocol 5: Machine-Checked Ledger (Sổ cái được kiểm tra tự động)**
+   - Every evaluated third-party component MUST be recorded in [`config/security/third_party_manifest.json`](file:///d:/Docker/JKAI/config/security/third_party_manifest.json) with its SPDX license, egress, modifications, usage sites, and status (`approved` / `deferred` / `rejected`).
+   - Run `python scripts/verify_third_party_licenses.py` before merging. The gate fails on forbidden licenses in `approved` entries, missing license texts, missing NOTICE/CREDITS attribution, remote egress, and rejected packages present in `requirements.txt`.
+   - *Mọi thành phần bên thứ ba đã đánh giá BẮT BUỘC được ghi vào manifest kèm giấy phép SPDX, luồng dữ liệu ra ngoài, phạm vi sửa đổi, nơi dùng và trạng thái. Chạy cổng kiểm tra trước khi merge; cổng sẽ fail-closed nếu vi phạm.*
+
 
 ---
 *Verified for International & Local Open Source Compliance. v20.0*

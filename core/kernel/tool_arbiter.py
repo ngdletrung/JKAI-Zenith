@@ -36,6 +36,7 @@ class ToolDomain(str, enum.Enum):
     BROWSER = "BROWSER"     # M2: Visual web, screenshot, DOM interaction
     SEARCHWEB = "SEARCHWEB" # M3: Global web search (no URL)
     FAST_DOC = "FAST_DOC"   # M4: Headless URL reader, llms.txt, text extraction
+    DESKTOP_OS = "DESKTOP_OS" # M5: Native Windows OS GUI Automation, UIA, smooth mouse
     HYBRID = "HYBRID"       # Multi-stage composite workflows
     GENERAL = "GENERAL"     # Pure reasoning / conceptual chat
 
@@ -71,6 +72,10 @@ class ArbiterVerdict:
     def is_fast_doc(self) -> bool:
         """Kiểm tra xem có ưu tiên Fast Doc reader (0MB VRAM) không."""
         return self.primary_domain == ToolDomain.FAST_DOC
+
+    def is_desktop_os(self) -> bool:
+        """Kiểm tra xem có phải tác vụ điều khiển toàn màn hình Desktop Windows M5 không."""
+        return self.primary_domain == ToolDomain.DESKTOP_OS
 
     def is_search_web(self) -> bool:
         return self.primary_domain == ToolDomain.SEARCHWEB
@@ -195,13 +200,48 @@ class DeterministicToolArbiter:
         "search web", "tìm trên mạng", "tra cứu thông tin"
     }
 
+    # [Q-FIX-7] Các khối bối cảnh được hệ thống tiêm vào goal (không phải ý định gốc của Master).
+    # Entity trong các khối này KHÔNG được phép định tuyến arbiter (tránh nhiễm độc kế hoạch).
+    INJECTED_BLOCK_MARKERS = (
+        "[BÀI HỌC KINH NGHIỆM TỪ QUÁ KHỨ]",
+        "[REPLAN-FEEDBACK]",
+        "[CONTEXT FROM KNOWLEDGE BASE]",
+        "[SKILL DNA]",
+        "<VERIFIED_EXPERIENCE_RECALL>",
+        "<KNOWN_SYSTEM_GAPS_AND_DEFECTS>",
+        "<PAST_FAILURE_CRITIC_AWARENESS>",
+        "<TOOL_CATALOG>",
+    )
+    SYSTEM_OBSERVE_KEYWORDS = {
+        "trạng thái hệ thống", "chẩn đoán hệ thống", "chẩn đoán trạng thái",
+        "system status", "system health", "sức khỏe hệ thống", "tài nguyên hệ thống",
+        "telemetry", "phần cứng của hệ thống", "phần cứng hệ thống",
+        "vram", "ram đang sử dụng", "ram đang dùng", "model đang hoạt động",
+        "mô hình ai đang hoạt động", "dịch vụ nào đang chạy", "trạng thái dịch vụ",
+    }
+
+    @classmethod
+    def strip_injected_context(cls, goal: str) -> str:
+        """Cắt bỏ mọi khối bối cảnh hệ thống tiêm vào đuôi goal, chỉ giữ mục tiêu gốc."""
+        text = goal or ""
+        cut_at = len(text)
+        for marker in cls.INJECTED_BLOCK_MARKERS:
+            idx = text.find(marker)
+            if idx != -1:
+                cut_at = min(cut_at, idx)
+        return text[:cut_at].strip()
+
+    @classmethod
+    def is_self_observation_goal(cls, text_low: str) -> bool:
+        return any(kw in text_low for kw in cls.SYSTEM_OBSERVE_KEYWORDS)
+
     @classmethod
     def arbitrate(cls, goal: str, context: Optional[Dict[str, Any]] = None) -> ArbiterVerdict:
         """
         Phân xử mục tiêu nhiệm vụ và trả về kết luận phân tuyến toán học xác định.
         Thực thi trong < 0.1ms với 0 LLM overhead.
         """
-        raw_goal = (goal or "").strip()
+        raw_goal = cls.strip_injected_context(goal)
         if not raw_goal:
             return ArbiterVerdict(
                 primary_domain=ToolDomain.GENERAL,
@@ -227,6 +267,22 @@ class DeterministicToolArbiter:
                 cleaned_goal = stripped_candidate
 
         g_low = cleaned_goal.lower()
+
+        # --- B2_SYSTEM_OBSERVE. MIỀN TỰ QUAN SÁT HỆ THỐNG (READ-ONLY TELEMETRY) ---
+        # Đặt TRƯỚC mọi nhánh file/terminal để bối cảnh nhiễm (tên tệp trong bài học cũ)
+        # không thể kéo mục tiêu chẩn đoán hệ thống sang VIEW_FILE sai hướng.
+        if cls.is_self_observation_goal(g_low) and not cls.URL_REGEX.search(cleaned_goal):
+            return ArbiterVerdict(
+                primary_domain=ToolDomain.GENERAL,
+                confidence=0.97,
+                is_hypothetical=is_hypothetical,
+                hypothetical_wrapper=hypo_wrapper,
+                core_cleaned_goal=cleaned_goal,
+                primary_target="JKAI system telemetry (read-only)",
+                mandatory_tools=["get_system_status"],
+                forbidden_tools=["VIEW_FILE", "WRITE_TO_FILE", "SYSTEM_CMD"],
+                reason=f"{'[GIẢ ĐỊNH / MÔ PHỎNG]: ' if is_hypothetical else ''}Tác vụ tự quan sát trạng thái hệ thống (read-only). BẮT BUỘC dùng get_system_status để lấy số liệu thật, CẤM đọc tệp/suy diễn.",
+            )
 
         # -------------------------------------------------------------
         # BƯỚC 1: TRÍCH XUẤT THỰC THỂ (URL, FILE, COMMAND, CODE SEARCH)
@@ -378,6 +434,53 @@ class DeterministicToolArbiter:
                 reason=f"{hypo_prefix_note}Đọc sâu trích xuất văn bản siêu tốc từ URL đích danh '{primary_url}'. Ưu tiên Fast Doc Reader (0MB VRAM). CẤM SearchWeb.",
             )
 
+        # --- B2_DESKTOP_OBSERVE. MIỀN QUAN SÁT DESKTOP HOST THỤ ĐỘNG (READ-ONLY) ---
+        DESKTOP_OBSERVER_KEYWORDS = {
+            "host_desktop_observer", "get_host_hardware_telemetry", "get_host_desktop_windows",
+            "phần cứng của máy tính host", "phần cứng host", "danh sách cửa sổ", "cửa sổ desktop",
+            "cửa sổ ứng dụng đang mở", "host satellite", "desktop windows"
+        }
+        has_observer = any(kw in g_low for kw in DESKTOP_OBSERVER_KEYWORDS)
+        is_mutation_action = any(k in g_low for k in ["click", "nhấp chuột", "bấm chuột", "gõ phím", "nhập văn bản"])
+        if has_observer and not is_mutation_action:
+            return ArbiterVerdict(
+                primary_domain=ToolDomain.DESKTOP_OS,
+                secondary_domains=[],
+                confidence=1.0,
+                is_hypothetical=is_hypothetical,
+                hypothetical_wrapper=hypo_wrapper,
+                core_cleaned_goal=cleaned_goal,
+                is_visual_required=False,
+                primary_target="Host Satellite Read-Only Desktop Observer",
+                mandatory_tools=["get_system_status"],
+                forbidden_tools=["SEARCH_WEB_GLOBAL", "search_web", "BROWSER_CONTROL", "SYSTEM_CMD"],
+                reason=f"{hypo_prefix_note}Tác vụ Passive Read-Only quan sát phần cứng host. BẮT BUỘC dùng typed tool get_system_status.",
+            )
+
+        # --- B2_DESKTOP. MIỀN DESKTOP OS COMPUTER-USE (M5: Toàn màn hình Windows / ứng dụng desktop / chuột trực quan) ---
+        DESKTOP_OS_KEYWORDS = {
+            "desktop", "toàn màn hình windows", "toàn màn hình", "màn hình máy tính",
+            "ứng dụng desktop", "cửa sổ windows", "notepad", "calculator", "calc.exe",
+            "thao tác chuột desktop", "di chuột trên màn hình", "con trỏ chuột windows",
+            "desktop computer use", "desktop agent", "os agent", "desktop ui"
+        }
+        has_desktop_os = any(kw in g_low for kw in DESKTOP_OS_KEYWORDS)
+        if has_desktop_os and (any(kw in g_low for kw in cls.VISUAL_KEYWORDS) or any(k in g_low for k in ["chuột", "mouse", "click", "mở", "bấm", "nhấp", "di chuyển"])):
+            target_app = "notepad.exe" if "notepad" in g_low else ("calc.exe" if "calc" in g_low else "Windows Desktop")
+            return ArbiterVerdict(
+                primary_domain=ToolDomain.DESKTOP_OS,
+                secondary_domains=[],
+                confidence=0.98,
+                is_hypothetical=is_hypothetical,
+                hypothetical_wrapper=hypo_wrapper,
+                core_cleaned_goal=cleaned_goal,
+                is_visual_required=True,
+                primary_target=target_app,
+                mandatory_tools=["desktop_observe", "desktop_act"],
+                forbidden_tools=["SEARCH_WEB_GLOBAL", "search_web", "BROWSER_CONTROL"],
+                reason=f"{hypo_prefix_note}Tác vụ điều khiển toàn màn hình Desktop Windows M5 ({target_app}). BẮT BUỘC dùng Desktop OS Actuator & Smooth Mouse Engine.",
+            )
+
         # --- B2. MIỀN WEB-GUI / COMPUTER-USE (M2: Không cần URL đích danh nếu chỉ định rõ giao diện web / WebFig / click) ---
         WEB_GUI_KEYWORDS = {
             "webfig", "routeros", "mikrotik", "giao diện web", "trên giao diện",
@@ -513,6 +616,17 @@ class DeterministicToolArbiter:
             if verdict.is_hypothetical else ""
         )
 
+        if verdict.mandatory_tools == ["get_system_status"]:
+            return (
+                f"\n<arbiter_constraint priority='HIGHEST'>{hypo_warn}\n"
+                f"🚨 BẮT BUỘC DÙNG TOOL TỰ QUAN SÁT HỆ THỐNG:\n"
+                f"- Mục tiêu: {verdict.primary_target}\n"
+                f"- Bước đầu tiên PHẢI gọi tool 'get_system_status' (args: {{}}) để lấy số liệu runtime thật.\n"
+                f"- TUYỆT ĐỐI CẤM đọc docker-compose.yml, tệp cấu hình hay suy diễn số liệu.\n"
+                f"- Nếu số liệu không truy xuất được, báo rõ 'không có dữ liệu'; KHÔNG được bịa.\n"
+                f"</arbiter_constraint>\n"
+            )
+
         if verdict.primary_domain == ToolDomain.BROWSER:
             return (
                 f"\n<arbiter_constraint priority='HIGHEST'>{hypo_warn}\n"
@@ -563,6 +677,15 @@ class DeterministicToolArbiter:
                 f"- CẤM dùng BROWSER_CONTROL khi chưa biết URL cụ thể!\n"
                 f"</arbiter_constraint>\n"
             )
+        elif verdict.primary_domain == ToolDomain.DESKTOP_OS:
+            return (
+                f"\n<arbiter_constraint priority='HIGHEST'>{hypo_warn}\n"
+                f"🚨 BẮT BUỘC SỬ DỤNG TOOL QUAN SÁT HỆ THỐNG HOST (READ-ONLY):\n"
+                f"- Mục tiêu: Thu thập telemetry phần cứng và trạng thái máy Host Master.\n"
+                f"- Bạn BẮT BUỘC dùng tool 'get_system_status' (args: {{}}) cho dữ liệu phần cứng.\n"
+                f"- TUYỆT ĐỐI CẤM sử dụng SEARCH_WEB_GLOBAL, SYSTEM_CMD, hoặc BROWSER_CONTROL!\n"
+                f"</arbiter_constraint>\n"
+            )
         elif verdict.primary_domain == ToolDomain.HYBRID:
             return (
                 f"\n<arbiter_constraint priority='HIGHEST'>{hypo_warn}\n"
@@ -590,6 +713,17 @@ class DeterministicToolArbiter:
                 sys.path.insert(0, str(brain_dir))
             from planner import PlanStep, HardwareTarget
 
+        if verdict.mandatory_tools == ["get_system_status"]:
+            return PlanStep(
+                id="auto_system_status_01",
+                tool="get_system_status",
+                args={},
+                description="Auto-recovery: Lấy telemetry hệ thống thật (read-only) từ Mission Control",
+                assigned_agent="agent_executor_alpha.md",
+                hardware_target=HardwareTarget.ALPHA,
+                expert_mindset="Quan sát viên read-only: chỉ báo cáo số liệu runtime thật, không suy diễn.",
+                verification="Có active model, GPU + tổng VRAM MB, % RAM, trạng thái 6 dịch vụ và measured_at."
+            )
         if verdict.primary_domain == ToolDomain.BROWSER:
             target_url = verdict.primary_target or (verdict.extracted_urls[0] if verdict.extracted_urls else "https://vietnamnet.vn/")
             return PlanStep(
@@ -620,8 +754,8 @@ class DeterministicToolArbiter:
                 verification=f"Nội dung toàn văn từ {target_url} được trích xuất thành công."
             )
         elif verdict.primary_domain == ToolDomain.FILE:
-            if verdict.is_codebase_search:
-                q = verdict.extracted_code_query or "TODO"
+            if verdict.is_codebase_search and verdict.extracted_code_query:
+                q = verdict.extracted_code_query
                 return PlanStep(
                     id="auto_grep_01",
                     tool="grep_search",
@@ -632,7 +766,9 @@ class DeterministicToolArbiter:
                     expert_mindset="Tìm kiếm từ khóa trong codebase nội bộ bằng công cụ grep.",
                     verification="Nhận được kết quả các dòng mã khớp."
                 )
-            target_file = verdict.primary_target or "README.md"
+            target_file = verdict.primary_target
+            if not target_file or target_file == "codebase":
+                target_file = "README.md"
             return PlanStep(
                 id="auto_file_01",
                 tool="VIEW_FILE",
@@ -654,6 +790,17 @@ class DeterministicToolArbiter:
                 hardware_target=HardwareTarget.ALPHA,
                 expert_mindset="Thực thi lệnh shell có kiểm duyệt và lưu vết audit.",
                 verification="Lệnh trả về mã thoát hợp lệ và log được ghi nhận."
+            )
+        elif verdict.primary_domain == ToolDomain.DESKTOP_OS:
+            return PlanStep(
+                id="auto_host_telemetry_01",
+                tool="get_system_status",
+                args={},
+                description="Auto-recovery: Thu thập telemetry phần cứng Host (read-only)",
+                assigned_agent="agent_executor_alpha.md",
+                hardware_target=HardwareTarget.ALPHA,
+                expert_mindset="Thu thập telemetry CPU, RAM, GPU, VRAM từ Mission Control.",
+                verification="Nhận được phản hồi status == success kèm dữ liệu phần cứng và measured_at."
             )
         elif verdict.primary_domain == ToolDomain.HYBRID:
             # Ưu tiên bước đầu tiên theo domain thứ nhất
