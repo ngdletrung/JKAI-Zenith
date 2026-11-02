@@ -83,7 +83,24 @@ JKAI Zenith is built upon the integration of world-class open-source technologie
 | **Agent Skills** | Addy Osmani | MIT | 24 Skills & Workflows Architecture / Kiến trúc 24 kỹ năng và quy trình |
 | **Zero-Mem** | HKUST / PolyU / SWUFE / Jilin Univ | CC BY-NC-SA 4.0 | Zero-Token Memory Operations & DEMS / Quản trị bộ nhớ phi tạo sinh & DEMS |
 | **TypeSafe Jev** | TypeSafe AI / PJ Burnhill | Proprietary Ref / Terms | Fast System One Semantic Judgment / Phán đoán ngữ nghĩa System One |
+| **Agent-Desktop concepts** | Vercel Labs | Apache 2.0 | Semantic UIA tree with stable refs, action-by-ref targeting & read-only observe stream; actionability, ref-resolution and delivery-retry portions adapted into `actionability.py`, `ref_resolution.py`, `delivery_policy.py` / Cây UIA ngữ nghĩa với ref ổn định; các phần actionability, phân giải ref và delivery-retry được chuyển thể |
+| **Windows-Use concepts** | CursorTouch | MIT | Accessibility-tree observation and control-pattern actions (Invoke/Value/Text/Toggle); CacheRequest selection adapted into `uia_cache.py` / Quan sát cây trợ năng & thao tác theo control pattern; phần chọn CacheRequest được chuyển thể |
+| **UI-TARS concepts** | ByteDance | Apache 2.0 | Typed GUI action space (click/type/key-combo/scroll/focus) and screenshot-grounded coordinate normalisation; smart-resize geometry adapted into `image_geometry.py` / Không gian hành động GUI có kiểu & chuẩn hoá toạ độ; phần smart-resize được chuyển thể |
+| **UI-TARS-desktop concepts** | ByteDance | Apache 2.0 | Operator-view versus actuator-worker separation and short-lived lease authority, clean-room reference only / Tách biệt giao diện vận hành và worker thực thi, thẩm quyền lease ngắn hạn, tham khảo phòng sạch |
 
+
+---
+
+## 🖱️ 5.1 DESKTOP OBSERVATION & NATIVE BINDINGS / QUAN SÁT DESKTOP & LIÊN KẾT NATIVE
+| Technology / Công nghệ | Organization / Tổ chức | License / Giấy phép | Role / Vai trò |
+| :--- | :--- | :--- | :--- |
+| **Pillow** | Python Pillow contributors | HPND | In-memory window capture for read-only OCR / Chụp cửa sổ trong bộ nhớ cho OCR read-only |
+| **pytesseract** | pytesseract contributors | Apache 2.0 | Optional OCR binding, lazy import / Liên kết OCR tuỳ chọn, import lazy |
+| **Tesseract OCR** | Tesseract OCR contributors | Apache 2.0 | Operator-installed OCR engine / Động cơ OCR do người vận hành cài |
+| **tessdata eng** | Tesseract OCR contributors | Apache 2.0 | English language data / Dữ liệu ngôn ngữ tiếng Anh |
+| **comtypes** | comtypes contributors | MIT | Host-side UIA3 COM binding / Liên kết COM UIA3 phía host |
+| **pywin32** | Python Software Foundation / pywin32 contributors | PSF License | Host-side Win32 API surface / Bề mặt Win32 API phía host |
+| **WindowsAgentArena** | Microsoft | MIT | Isolated-VM scenario & grading patterns, reference only / Mẫu kịch bản VM cô lập & chấm điểm, chỉ tham khảo |
 
 ---
 
@@ -92,6 +109,7 @@ Dự án JKAI Zenith cam kết hoạt động minh bạch và tuân thủ các q
 - **Giấy phép Dự án**: [**LICENSE (MIT)**](file:///d:/Docker/JKAI/LICENSE)
 - **Thông báo bên thứ ba**: [**NOTICE.md**](file:///d:/Docker/JKAI/NOTICE.md)
 - **Full License Texts**: [**LICENSES/**](file:///d:/Docker/JKAI/LICENSES/)
+- **Machine-checked ledger**: [**config/security/third_party_manifest.json**](file:///d:/Docker/JKAI/config/security/third_party_manifest.json) · gate: `python scripts/verify_third_party_licenses.py`
 
 ---
 

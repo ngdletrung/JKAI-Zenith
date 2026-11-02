@@ -1,0 +1,4 @@
+user default on #ad89b64d66caa8e30e5d5ce4a9763f4ecc205814c412175f3e2c50027471426d ~* &* +@all
+user jkai-desktop on #5e0c36f25e43a7bf2cf3d8f128cebf49943d565fdf268a013b335ddd8283422d ~jkai:desktop:requests ~jkai:desktop:receipts ~jkai:desktop:approvals resetchannels -@all +ping +xgroup +xreadgroup +xack +xadd +hset +expire +client|setinfo
+user jkai-desktop-tool on #34289aef3ef1d6c746b2e762dab89e6fba4e88cbc0945d49855cd7e4f68796d4 ~jkai:desktop:requests ~jkai:desktop:receipts resetchannels -@all +ping +xadd +xrange +xrevrange +client|setinfo
+user jkai-desktop-master on #9a57f6853cfeb8992c0eba5e5140f9f3cdf6920ba22ab5b1dc2f109256e46496 ~jkai:desktop:approvals ~jkai:desktop:receipts resetchannels -@all +ping +hget +hgetall +hset +eval +xadd +client|setinfo

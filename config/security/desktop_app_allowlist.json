@@ -1,0 +1,117 @@
+{
+  "version": "1.0",
+  "policy_name": "M5_PHASE_3_SCOPED_DESKTOP_ALLOWLIST",
+  "global_invariants": {
+    "zero_blind_coordinate_clicking": true,
+    "pure_read_only_sampler_port": 9997,
+    "disallow_browser_mutation": true,
+    "disallow_shell_mutation": true,
+    "disallow_file_dialog": true,
+    "disallow_destructive_actions": true
+  },
+  "destructive_keywords": [
+    "delete",
+    "remove",
+    "destroy",
+    "format",
+    "submit",
+    "send",
+    "publish",
+    "purchase",
+    "buy",
+    "checkout",
+    "pay",
+    "password",
+    "credential",
+    "token",
+    "secret",
+    "admin",
+    "administrator",
+    "uac",
+    "elevate",
+    "shutdown",
+    "restart",
+    "kill",
+    "terminate"
+  ],
+  "allowed_applications": {
+    "notepad.exe": {
+      "app_name": "Notepad Scratch",
+      "allowed_actions": [
+        "type_text",
+        "click",
+        "scroll",
+        "focus"
+      ],
+      "element_allowlist": [
+        "Text Editor",
+        "Line down"
+      ],
+      "max_text_length": 500
+    },
+    "wordpad.exe": {
+      "app_name": "WordPad Scratch",
+      "allowed_actions": [
+        "type_text",
+        "focus"
+      ],
+      "element_allowlist": [
+        "Rich Text Window"
+      ],
+      "max_text_length": 500
+    },
+    "calculatorapp.exe": {
+      "app_name": "Windows Calculator Sandbox",
+      "allowed_actions": [
+        "focus",
+        "click"
+      ],
+      "element_allowlist": [
+        "num0Button",
+        "num1Button",
+        "num2Button",
+        "num3Button",
+        "num4Button",
+        "num5Button",
+        "num6Button",
+        "num7Button",
+        "num8Button",
+        "num9Button",
+        "plusButton",
+        "minusButton",
+        "multiplyButton",
+        "divideButton",
+        "equalButton",
+        "clearButton",
+        "clearEntryButton"
+      ],
+      "allow_raw_xy": false
+    },
+    "calculator.exe": {
+      "app_name": "Classic Calculator Sandbox",
+      "allowed_actions": [
+        "focus",
+        "click"
+      ],
+      "element_allowlist": [
+        "num0Button",
+        "num1Button",
+        "num2Button",
+        "num3Button",
+        "num4Button",
+        "num5Button",
+        "num6Button",
+        "num7Button",
+        "num8Button",
+        "num9Button",
+        "plusButton",
+        "minusButton",
+        "multiplyButton",
+        "divideButton",
+        "equalButton",
+        "clearButton"
+      ],
+      "allow_raw_xy": false
+    }
+  }
+}
