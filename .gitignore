@@ -118,3 +118,10 @@ JKAI_MAP_GRAPH.md
 *.rar
 *.zip
 *.7z
+
+# Local secret material (never commit)
+data/secrets/
+data/runtime_secrets/
+
+# Desktop agent runtime audit (hash-chained receipts)
+var/audit/
